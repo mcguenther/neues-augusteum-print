@@ -8,6 +8,10 @@ einsetzen kann.
 
 ![Vorschau](vorschau.png)
 
+![Einzelgebäude 1:1000](vorschau/einzelgebaeude_1zu1000.png)
+
+Vorschaubilder zu jeder einzelnen Datei liegen in [`vorschau/`](vorschau/).
+
 ## Gebäude
 
 | Nr. | Gebäude | 1:1000 (B × T × H) | 1:1500 (B × T × H) |
@@ -70,7 +74,12 @@ pip install -r requirements.txt
 python3 generate.py                # 1:1000 und 1:1500
 python3 generate.py --scale 750    # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch        # aktuelle OSM-Daten laden
+python3 preview.py                 # nur Vorschaubilder neu rendern
+python3 preview.py datei.stl --azim -90 --elev 40   # eigene Ansicht einer Datei
 ```
+
+`generate.py` rendert am Ende automatisch alle Vorschaubilder nach `vorschau/`
+(eigener Software-Renderer, kein Grafikkarte/Display nötig).
 
 Welche Gebäude enthalten sind, steht in der Liste `BUILDINGS` in `generate.py`
 (per OSM-ID). Weitere Gebäude, z. B. Gewandhaus (`r152769`) oder Oper

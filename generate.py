@@ -8,6 +8,8 @@ Aufruf:
     python3 generate.py                 # Standard-Maßstäbe 1:1000 und 1:1500
     python3 generate.py --scale 750     # beliebiger Maßstab
     python3 generate.py --fetch         # OSM-Daten vorher neu herunterladen
+
+Danach werden automatisch Vorschaubilder nach vorschau/ gerendert (preview.py).
 """
 import argparse
 import math
@@ -468,71 +470,13 @@ def build_scale(feats, scale, outdir):
     return solids, footprints
 
 
-COLORS = ["#3B5991", "#7d9bd1", "#c9a227", "#8fb573", "#d7845b", "#9a9a9a", "#a0522d"]
-
-
-def _draw(ax, meshes, elev, azim, labels=True):
-    import matplotlib
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-    light = np.array([0.5, -0.6, 0.8])
-    light /= np.linalg.norm(light)
-    allv = []
-    for tm, col, lab in meshes:
-        shade = 0.45 + 0.55 * np.clip(tm.face_normals @ light, 0, 1)
-        fc = np.clip(np.array(matplotlib.colors.to_rgb(col))[None, :] * shade[:, None], 0, 1)
-        ax.add_collection3d(Poly3DCollection(tm.triangles, facecolors=fc, edgecolors="none"))
-        allv.append(tm.vertices)
-        if labels and lab:
-            c = tm.bounds.mean(axis=0)
-            ax.text(c[0], c[1], tm.bounds[1][2] + 4, lab, fontsize=10, ha="center", weight="bold")
-    v = np.vstack(allv)
-    mn, mx = v.min(axis=0), v.max(axis=0)
-    ax.set_xlim(mn[0], mx[0])
-    ax.set_ylim(mn[1], mx[1])
-    ax.set_zlim(0, mx[2])
-    ax.set_box_aspect(mx - mn + [0, 0, 0])
-    ax.view_init(elev=elev, azim=azim)
-    ax.set_axis_off()
-
-
-def render_preview(feats, path):
-    """Vorschau: Gesamtansicht und Einzelgebäude (Maßstab 1:1000, Werte in mm)."""
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    meshes = []
-    for b, col in zip(BUILDINGS, COLORS):
-        _, parts = building_parts(feats, b["osm"])
-        tm = to_trimesh(building_solid([(p, t) for p, t, _ in parts], 1.0, MIN_FEATURE))
-        meshes.append((tm, col, b["slug"][:2]))
-    fig = plt.figure(figsize=(14, 12), dpi=100)
-    ax = fig.add_axes([0.0, 0.33, 0.62, 0.64], projection="3d")
-    _draw(ax, meshes, 28, -25)  # Blick von Südosten (vom Augustusplatz)
-    ax.set_title("Campus Augustusplatz – Blick vom Augustusplatz (Südosten)", fontsize=12)
-    for i, (b, (tm, col, _)) in enumerate(zip(BUILDINGS, meshes)):
-        r, c = divmod(i, 4)
-        ax2 = fig.add_axes([0.01 + c * 0.25, 0.0 + (1 - r) * 0.16, 0.23, 0.16], projection="3d")
-        t = tm.copy()
-        t.apply_translation([-t.bounds[0][0], -t.bounds[0][1], 0])
-        _draw(ax2, [(t, col, None)], 25, -35, labels=False)
-        ax2.set_title("%s  %s\n%.0f × %.0f × %.0f mm (1:1000)" % (
-            b["slug"][:2], b["name"][:42], *tm.extents), fontsize=8)
-    legend = "\n".join("%s  %s" % (b["slug"][:2], b["name"]) for b in BUILDINGS)
-    fig.text(0.64, 0.62, legend, fontsize=10, va="center")
-    fig.text(0.64, 0.38, "Daten © OpenStreetMap-Mitwirkende (ODbL)", fontsize=9, color="#555")
-    fig.savefig(path)
-    plt.close(fig)
-    print("Vorschau:", os.path.relpath(path, HERE))
-
-
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, action="append",
                     help="Maßstab 1:N (mehrfach möglich, Standard: 1000 und 1500)")
     ap.add_argument("--fetch", action="store_true", help="OSM-Daten neu herunterladen")
     ap.add_argument("--out", default=os.path.join(HERE, "stl"))
-    ap.add_argument("--no-preview", action="store_true")
+    ap.add_argument("--no-preview", action="store_true", help="keine Vorschaubilder rendern")
     args = ap.parse_args()
     if args.fetch or not os.path.exists(OSM_FILE):
         fetch_osm()
@@ -548,7 +492,8 @@ def main():
     for sc in args.scale or [1000, 1500]:
         build_scale(feats, sc, os.path.join(args.out, "1zu%d" % sc))
     if not args.no_preview:
-        render_preview(feats, os.path.join(HERE, "vorschau.png"))
+        import preview
+        preview.default_previews(args.out)
 
 
 if __name__ == "__main__":
