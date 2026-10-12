@@ -24,9 +24,13 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
 2. Die passenden PNGs **im Chat mit `SendUserFile` (display: "render") zeigen**,
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
-   - Überblick: `vorschau.png` (Gesamtmodell 1:1500, farbige Objekte)
-   - Alle Einzelgebäude auf einen Blick: `vorschau/einzelgebaeude_1zu1000.png`
-   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<maßstab>/<name>.png`
+   - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
+   - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
+     OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
+     `vorschau/vergleich_farbig_ost.png`
+   - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
+   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
+   - Farben: `vorschau/farben.png`, Messfelder `vorschau/farben_fotoproben.jpg`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -35,6 +39,14 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    (`--azim -90` = Blick von Süden, `0` = von Osten/Augustusplatz).
 
 Die gerenderten Bilder in `vorschau/` werden mit committet.
+
+## Datenquellen
+
+`generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
+Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
+(LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
+Farben: `python3 farben.py` schreibt `data/farben.json` (Messfelder für Fassaden in
+`data/fassaden_proben.json`).
 
 ## Prüfen vor dem Commit
 

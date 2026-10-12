@@ -10,7 +10,7 @@ fi
 cd "${CLAUDE_PROJECT_DIR:-$(dirname "$0")/../..}"
 
 # Schon alles da? Dann nichts tun (idempotent, schneller Start).
-if python3 -c "import manifold3d, trimesh, shapely, numpy, scipy, lxml, networkx, matplotlib, PIL" 2>/dev/null; then
+if python3 -c "import manifold3d, trimesh, shapely, numpy, scipy, lxml, networkx, matplotlib, PIL, pyproj, laspy, lazrs" 2>/dev/null; then
   echo "Python-Abhängigkeiten bereits installiert."
   exit 0
 fi

@@ -1,0 +1,215 @@
+{
+ "_quellen": {
+  "dach": "Stadt Leipzig, Luftbild 2024 (20 cm, WMTS), dl-de/by-2-0, Median im Grundriss",
+  "fassade_foto": "Panoramax-Straßenfotos, CC-BY-SA-4.0, Ausschnitte in data/fassaden_proben.json",
+  "fassade_osm": "OpenStreetMap building:colour / building:material (ODbL)"
+ },
+ "01_paulinum": {
+  "name": "Paulinum (Aula und Universitätskirche St. Pauli)",
+  "dach": "#6d7f85",
+  "fassade": "#fff6ea",
+  "fassade_quelle": "Foto (Panoramax): Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk; Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto); Giebel: hellgrauer Naturstein neben dem Fenster",
+  "akzente": [],
+  "osm": "OSM building:colour=blue (w186275390)"
+ },
+ "02_neues_augusteum": {
+  "name": "Neues Augusteum",
+  "dach": "#728291",
+  "fassade": "#40545a",
+  "fassade_quelle": "Foto (Panoramax): Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
+  "akzente": [],
+  "osm": "OSM building:colour=#3B5991 (w192282776)"
+ },
+ "03_hoersaalgebaeude": {
+  "name": "Hörsaalgebäude (mit Mensa am Park)",
+  "dach": "#b7b2b1",
+  "fassade": "#d8d6d0",
+  "fassade_quelle": "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten",
+  "akzente": []
+ },
+ "04_seminargebaeude": {
+  "name": "Seminargebäude",
+  "dach": "#bdc0be",
+  "fassade": "#d8d6d0",
+  "fassade_quelle": "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten",
+  "akzente": []
+ },
+ "05_institutsgebaeude": {
+  "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
+  "dach": "#a2a9aa",
+  "fassade": "#c3bab1",
+  "fassade_quelle": "Foto (Panoramax): Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
+  "akzente": [
+   {
+    "rgb": "#3a464a",
+    "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein"
+   },
+   {
+    "rgb": "#7e413b",
+    "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang"
+   }
+  ]
+ },
+ "06_city_hochhaus": {
+  "name": "City-Hochhaus (\"Uniriese\")",
+  "dach": "#a2abaf",
+  "fassade": "#d3d3d3",
+  "fassade_quelle": "OSM building:colour=lightgrey (w1445157852)",
+  "akzente": [],
+  "osm": "OSM building:colour=lightgrey (w1445157852)"
+ },
+ "07_moritzbastei": {
+  "name": "Moritzbastei",
+  "dach": "#aba6a2",
+  "fassade": "#9c5a3c",
+  "fassade_quelle": "OSM building:material=brick (w191797878)",
+  "akzente": [],
+  "osm": "OSM building:material=brick (w191797878)"
+ },
+ "_proben": [
+  {
+   "gebaeude": "02_neues_augusteum",
+   "rolle": "haupt",
+   "notiz": "Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.05,
+    0.2,
+    0.25,
+    0.57
+   ],
+   "rgb": "#40545a",
+   "roh": "#1f374d",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.335,
+    0.3,
+    0.365,
+    0.58
+   ],
+   "rgb": "#fff6ea",
+   "roh": "#85a1c8",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.385,
+    0.2,
+    0.48,
+    0.53
+   ],
+   "rgb": "#424b4f",
+   "roh": "#203143",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "haupt",
+   "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
+   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+   "box": [
+    0.0,
+    0.245,
+    0.43,
+    0.265
+   ],
+   "rgb": "#c3bab1",
+   "roh": "#d1cdc5",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang",
+   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+   "box": [
+    0.445,
+    0.215,
+    0.6,
+    0.29
+   ],
+   "rgb": "#7e413b",
+   "roh": "#874742",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto)",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.005,
+    0.12,
+    0.075,
+    0.6
+   ],
+   "rgb": "#fffffe",
+   "roh": "#809cc1",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel: hellgrauer Naturstein neben dem Fenster",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.085,
+    0.2,
+    0.105,
+    0.6
+   ],
+   "rgb": "#e1cac1",
+   "roh": "#607493",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.115,
+    0.15,
+    0.27,
+    0.58
+   ],
+   "rgb": "#314144",
+   "roh": "#152534",
+   "datum": "2022-03-27",
+   "lizenz": "CC-BY-SA-4.0",
+   "fotograf": "Robot8A",
+   "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+  }
+ ]
+}

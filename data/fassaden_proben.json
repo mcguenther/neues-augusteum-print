@@ -1,0 +1,130 @@
+{
+ "_hinweis": "Bildausschnitte (relativ 0..1: x0, y0, x1, y1) aus Panoramax-Straßenfotos (CC-BY-SA-4.0, Fotograf: Robot8A, 27.03.2022), aus denen farben.py die Fassadenfarbe als Median bestimmt. 'rolle': haupt = vorherrschende Fassadenfarbe, akzent = auffällige Zweitfarbe. 'weissabgleich': je Foto ein Ausschnitt mit neutral grauem Granitpflaster in derselben Beleuchtung (Schatten, Himmelslicht) – damit werden Blaustich und Schattenhelligkeit korrigiert (Pflaster := Grau 150/255, Annahme), bevor die Farbe gemessen wird.",
+ "proben": [
+  {
+   "gebaeude": "02_neues_augusteum",
+   "rolle": "haupt",
+   "notiz": "Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.05,
+    0.2,
+    0.25,
+    0.57
+   ]
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.335,
+    0.3,
+    0.365,
+    0.58
+   ]
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein",
+   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+   "box": [
+    0.385,
+    0.2,
+    0.48,
+    0.53
+   ]
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "haupt",
+   "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
+   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+   "box": [
+    0.0,
+    0.245,
+    0.43,
+    0.265
+   ]
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang",
+   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+   "box": [
+    0.445,
+    0.215,
+    0.6,
+    0.29
+   ]
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto)",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.005,
+    0.12,
+    0.075,
+    0.6
+   ]
+  },
+  {
+   "gebaeude": "01_paulinum",
+   "rolle": "haupt",
+   "notiz": "Giebel: hellgrauer Naturstein neben dem Fenster",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.085,
+    0.2,
+    0.105,
+    0.6
+   ]
+  },
+  {
+   "gebaeude": "05_institutsgebaeude",
+   "rolle": "akzent",
+   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)",
+   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+   "box": [
+    0.115,
+    0.15,
+    0.27,
+    0.58
+   ]
+  }
+ ],
+ "weissabgleich": {
+  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
+   "box": [
+    0.05,
+    0.72,
+    0.4,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  },
+  "00e4adee-a436-499a-bda1-4d828b1d3750": {
+   "box": [
+    0.05,
+    0.72,
+    0.45,
+    0.82
+   ],
+   "notiz": "Granitpflaster Grimmaische Straße im Gebäudeschatten"
+  },
+  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
+   "box": [
+    0.1,
+    0.72,
+    0.5,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  }
+ }
+}
