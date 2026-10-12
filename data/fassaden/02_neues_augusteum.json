@@ -1,0 +1,170 @@
+{
+ "farben": {
+  "glas_stein": {
+   "notiz": "Glas mit grauen/beigen Natursteinlamellen (Gesamteindruck, Ost und Hof)",
+   "proben": [
+    {
+     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+     "box": [
+      0.05,
+      0.2,
+      0.25,
+      0.57
+     ],
+     "notiz": "Ostfassade am Augustusplatz: Glas mit Natursteinlamellen (Schatten, WB)"
+    },
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.76,
+      0.3,
+      0.98,
+      0.5
+     ],
+     "notiz": "Westfassade Innenhof: Stein/Glas-Mosaik (Sonne, ohne WB)"
+    },
+    {
+     "bild": "pl_platz_romero",
+     "box": [
+      0.45,
+      0.76,
+      0.56,
+      0.9
+     ],
+     "notiz": "Ostfassade von Süden: Lamellen (Sonne, ohne WB)"
+    }
+   ]
+  },
+  "lamellen": {
+   "notiz": "oberstes Geschoss: dunkle senkrechte Lamellen (Metall/Stein)",
+   "proben": [
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.64,
+      0.3,
+      0.76,
+      0.36
+     ],
+     "notiz": "Westfassade Innenhof: Lamellenband oben (ohne WB)"
+    },
+    {
+     "bild": "pl_platz_romero",
+     "box": [
+      0.3,
+      0.61,
+      0.46,
+      0.65
+     ],
+     "notiz": "Ostfassade: Lamellenband oben (ohne WB)"
+    },
+    {
+     "bild": "hof_beck_2",
+     "box": [
+      0.6,
+      0.38,
+      0.8,
+      0.44
+     ],
+     "notiz": "Westfassade Innenhof: Lamellenband (Sonne, ohne WB)"
+    }
+   ]
+  },
+  "glas_eg": {
+   "notiz": "Erdgeschoss Hofseite: dunkles, grünlich spiegelndes Glas",
+   "proben": [
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.57,
+      0.72,
+      0.62,
+      0.9
+     ],
+     "notiz": "Erdgeschoss Innenhof: Glas neben dem Portal (ohne WB)"
+    },
+    {
+     "bild": "hof_beck_2",
+     "box": [
+      0.61,
+      0.66,
+      0.67,
+      0.85
+     ],
+     "notiz": "Erdgeschoss Innenhof: Glasfront (ohne WB)"
+    }
+   ]
+  },
+  "sandstein": {
+   "notiz": "Sandsteinportal des alten Augusteums (Innenhof)",
+   "proben": [
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.64,
+      0.62,
+      0.665,
+      0.74
+     ],
+     "notiz": "Portal: Sandstein (ohne WB)"
+    },
+    {
+     "bild": "hof_beck_2",
+     "box": [
+      0.69,
+      0.66,
+      0.74,
+      0.76
+     ],
+     "notiz": "Portal: Sandstein (ohne WB)"
+    }
+   ]
+  }
+ },
+ "basis": "glas_stein",
+ "zonen": [
+  {
+   "name": "Lamellenband oben",
+   "farbe": "lamellen",
+   "z": [
+    27.5,
+    36
+   ]
+  },
+  {
+   "name": "Erdgeschoss Hofseite",
+   "farbe": "glas_eg",
+   "seite": "W",
+   "z": [
+    0,
+    9.8
+   ]
+  }
+ ],
+ "bilder": {
+  "pl_hof_derbrauni": {
+   "titel": "File:Exterior of Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Exterior_of_Paulinum.jpg/3840px-Exterior_of_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Derbrauni",
+   "datum": "2025-06-17"
+  },
+  "pl_platz_romero": {
+   "titel": "File:Leipzig - Augusteum & Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augusteum_%26_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Leipzig_-_Augusteum_%26_Paulinum.jpg/1920px-Leipzig_-_Augusteum_%26_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "datum": "2015-08-03"
+  },
+  "hof_beck_2": {
+   "titel": "File:Leipzig Universität lub 2025-03-22 img02 Neues Augusteum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img02_Neues_Augusteum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Leipzig_Universit%C3%A4t_lub_2025-03-22_img02_Neues_Augusteum.jpg/1920px-Leipzig_Universit%C3%A4t_lub_2025-03-22_img02_Neues_Augusteum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Lukas Beck",
+   "datum": "2025-03-22"
+  }
+ }
+}

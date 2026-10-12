@@ -1,0 +1,61 @@
+{
+ "farben": {
+  "kopfbau_dunkel": {
+   "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
+   "proben": [
+    {
+     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+     "box": [
+      0.385,
+      0.2,
+      0.48,
+      0.53
+     ],
+     "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein"
+    },
+    {
+     "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+     "box": [
+      0.115,
+      0.15,
+      0.27,
+      0.58
+     ],
+     "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)"
+    }
+   ]
+  },
+  "naturstein": {
+   "notiz": "heller Naturstein",
+   "proben": [
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.0,
+      0.245,
+      0.43,
+      0.265
+     ],
+     "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)"
+    }
+   ]
+  },
+  "rotbraun": {
+   "notiz": "rotbraunes Band",
+   "proben": [
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.445,
+      0.215,
+      0.6,
+      0.29
+     ],
+     "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang"
+    }
+   ]
+  }
+ },
+ "basis": "naturstein",
+ "zonen": []
+}

@@ -501,11 +501,12 @@ def build_scale(quelle, scale, outdir):
         for b in sel:
             objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
                          b["slug"]))
+        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s)
         path = os.path.join(outdir, "komplett_%s_objekte.3mf" % variant)
-        export_3mf(objs, path)
+        export_3mf(coloured, path)
         print("  %s (%d Objekte, farbig)" % (os.path.relpath(path, HERE), len(objs)))
         if RENDER_COLOUR:
-            render_coloured(objs, shift, s, quelle, scale, variant)
+            render_coloured(coloured, quelle, scale, variant)
 
     return models
 
@@ -524,14 +525,41 @@ def paint_code(n):
     return {1: "4", 2: "8"}[n] if n < 3 else "%XC" % (n - 3)
 
 
-def export_3mf(objs, path):
-    """3MF mit Farben für Slicer und Betrachter.
+_ROOF_CLASS = None
 
-    - Jedes Objekt bekommt sein Fassaden-Filament als Objekt-Extruder
+
+def colourise(objs, offset, s):
+    """Zerschneidet und färbt die Objekte nach den Fassaden-Zonen (fassaden.py).
+
+    Liefert [(name, Netz, Hex-Farbe je Dreieck)]; ohne data/farben.json einfarbig.
+    """
+    global _ROOF_CLASS
+    import fassaden
+    farben, plate = colour_table()
+    out = []
+    for name, tm, slug in objs:
+        e = farben.get(slug) if slug else None
+        if not e:
+            out.append((name, tm, np.array([plate] * len(tm.faces), dtype=object)))
+            continue
+        if _ROOF_CLASS is None:
+            import farben as F
+            _ROOF_CLASS = F.roof_classifier(farben)
+        mesh, hexes = fassaden.colour_mesh(tm, slug, (offset, s), e, _ROOF_CLASS)
+        if not mesh.is_watertight:
+            print("  Warnung: %s nach dem Zerschneiden nicht dicht" % name)
+        out.append((name, mesh, hexes))
+    return out
+
+
+def export_3mf(objs, path):
+    """3MF mit Farben für Slicer und Betrachter. objs: [(name, Netz, Hex je Dreieck)].
+
+    - Jedes Objekt bekommt sein häufigstes Wand-Filament als Objekt-Extruder
       (Metadata/model_settings.config für Bambu Studio/OrcaSlicer,
       Metadata/Slic3r_PE_model.config für PrusaSlicer).
-    - Dachdreiecke sind mit dem Dach-Filament vorbemalt (paint_color bzw.
-      slic3rpe:mmu_segmentation).
+    - Alle anderen Dreiecke (Fassaden-Zonen, Dachflächen) sind mit ihrem
+      Filament vorbemalt (paint_color bzw. slic3rpe:mmu_segmentation).
     - Zusätzlich basematerials/displaycolor (3MF-Kernspezifikation) für Betrachter
       wie Windows 3D Viewer; Slicer ignorieren das.
     Die Filament-Nummern sind global (farben.filamente, Legende in vorschau/farben.png);
@@ -543,24 +571,26 @@ def export_3mf(objs, path):
     import farben as F
     escape = lambda t: esc(t, {'"': "&quot;"})
     farben, plate = colour_table()
-    pal = [c for c, _ in F.filamente(farben)]
+    pal = [f["rgb"] for f in farben["_filamente"]] if farben else [plate]
     mats = ["F%d %s" % (i + 1, c) for i, c in enumerate(pal)]
+    nr_of = {}
     objects, items, bambu, prusa = [], [], [], []
-    for oid, (name, tm, slug) in enumerate(objs, start=2):
-        e = farben.get(slug) if slug else None
-        wall = F.filament_nr(farben, e["fassade"] if e else plate)
-        roof = F.filament_nr(farben, (e.get("dach") or e["fassade"]) if e else plate)
-        is_roof = tm.face_normals[:, 2] > ROOF_NZ if e else np.zeros(len(tm.faces), bool)
-        paint = paint_code(roof) if roof != wall else None
+    for oid, (name, tm, hexes) in enumerate(objs, start=2):
+        for h in set(hexes):
+            if h not in nr_of:
+                nr_of[h] = F.filament_nr(farben, h) if farben else 1
+        nrs = np.array([nr_of[h] for h in hexes])
+        walls = np.abs(tm.face_normals[:, 2]) <= ROOF_NZ
+        wall = int(np.bincount(nrs[walls] if walls.any() else nrs).argmax())
         v = "".join('<vertex x="%.4f" y="%.4f" z="%.4f"/>' % tuple(p) for p in tm.vertices)
         tris = []
-        for (a, b_, c), r in zip(tm.faces, is_roof):
-            if r and paint:
+        for (a, b_, c), n in zip(tm.faces, nrs):
+            if n != wall:
+                code = paint_code(int(n))
                 tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d" paint_color="%s" '
-                            'slic3rpe:mmu_segmentation="%s"/>' % (a, b_, c, roof - 1, paint, paint))
+                            'slic3rpe:mmu_segmentation="%s"/>' % (a, b_, c, n - 1, code, code))
             else:
-                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>'
-                            % (a, b_, c, (roof if r else wall) - 1))
+                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>' % (a, b_, c, n - 1))
         objects.append('<object id="%d" name="%s" type="model" pid="1" pindex="%d"><mesh><vertices>%s'
                        '</vertices><triangles>%s</triangles></mesh></object>'
                        % (oid, escape(name), wall - 1, v, "".join(tris)))
@@ -595,41 +625,45 @@ def export_3mf(objs, path):
         z.writestr("Metadata/Slic3r_PE_model.config", xml % "".join(prusa))
 
 
-def render_coloured(objs, shift, s, quelle, scale, variant):
-    """Farbige Vorschau: Fassaden aus data/farben.json, Dächer je Dreieck aus dem Luftbild."""
+def render_coloured(objs, quelle, scale, variant):
+    """Farbige Vorschau in den Filamentfarben – so, wie es gedruckt wird."""
     import farben as F
     import preview
     farben, plate = colour_table()
-    try:
-        sample = F.dop_sampler()
-    except Exception as e:  # ohne Luftbild: einheitliche Dachfarbe
-        print("  (Luftbild nicht verfügbar: %s)" % e)
-        sample = None
+    pal = [preview.rgb(f["rgb"]) for f in farben["_filamente"]] if farben else [preview.rgb(plate)]
     meshes = []
-    for name, tm, slug in objs:
-        e = farben.get(slug) if slug else None
-        if not e:
-            meshes.append((tm, plate))
-            continue
-        cols = np.tile(preview.rgb(e["fassade"]), (len(tm.faces), 1))
-        roof = tm.face_normals[:, 2] > ROOF_NZ
-        if sample is not None and roof.any():
-            c = tm.triangles_center[roof]
-            cols[roof] = sample((c[:, 0] - shift[0]) / s, (c[:, 1] - shift[1]) / s)
-        elif e.get("dach"):
-            cols[roof] = preview.rgb(e["dach"])
-        meshes.append((tm, cols))
+    for name, tm, hexes in objs:
+        nrs = {h: (F.filament_nr(farben, h) if farben else 1) for h in set(hexes)}
+        meshes.append((tm, np.array([pal[nrs[h] - 1] for h in hexes])))
     label = "1:%d, %s" % (scale, preview.QUELLEN_NAMEN.get(quelle, quelle))
     for suffix, azim, elev, blick in (("", -30, 32, "von Südwesten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
         im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev)
         out = preview.caption(im, "Farbig %s%s  (%s)" % (
             blick, ", mit Extras" if "extras" in variant else "", label),
-            "Dächer: Luftbild 2024 © Stadt Leipzig · Fassaden: gemessen in Straßenfotos "
-            "(data/farben.json)")
+            "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
+            % len(pal))
         path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s.png" % (variant, suffix))
         os.makedirs(os.path.dirname(path), exist_ok=True)
         out.save(path, optimize=True)
         print("  Vorschau:", os.path.relpath(path, HERE))
+    if "extras" in variant:  # Einzelgebäude farbig, je von zwei Seiten
+        tiles = []
+        for (name, tm, _), (m, cols) in zip(objs[1:], meshes[1:]):
+            for azim in (-35, 145):
+                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25)
+                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südwesten" if azim < 0 else "Nordosten")))
+        preview.contact_sheet(tiles, os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
+                              "Einzelgebäude farbig (%s)" % label, cols=4, cell=(560, 530))
+
+
+def refresh_colours():
+    """data/farben.json neu messen, wenn Fassaden- oder Fotodateien neuer sind."""
+    import glob
+    import farben
+    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS]
+    if not os.path.exists(farben.FARBEN) or max(map(os.path.getmtime, src)) > os.path.getmtime(farben.FARBEN):
+        print("Fassadendaten geändert – Farben neu messen (farben.py)")
+        farben.main()
 
 
 QUELLEN = ["osm", "lod2", "laserscan"]
@@ -657,6 +691,7 @@ def main():
     if args.fetch and "laserscan" in quellen:
         import laserscan
         laserscan.fetch()
+    refresh_colours()
     for q in quellen:
         for sc in args.scale or [1000, 1500]:
             models = build_scale(q, sc, os.path.join(args.out, q, "1zu%d" % sc))
@@ -666,6 +701,11 @@ def main():
     if not args.no_preview:
         import preview
         preview.default_previews(args.out)
+        import fassaden
+        print("\nFassaden-Prüfansichten")
+        for b in BUILDINGS:
+            if fassaden.load_spec(b["slug"]):
+                fassaden.check(b["slug"])
 
 
 if __name__ == "__main__":

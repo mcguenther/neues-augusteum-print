@@ -1,0 +1,355 @@
+{
+ "farben": {
+  "platten": {
+   "notiz": "helle Fassadenplatten",
+   "proben": [
+    {
+     "bild": "03_hoersaal_1",
+     "box": [
+      0.32,
+      0.03,
+      0.56,
+      0.48
+     ],
+     "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten"
+    },
+    {
+     "bild": "04_seminar_2",
+     "box": [
+      0.62,
+      0.1,
+      0.85,
+      0.27
+     ],
+     "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten (zweites Foto)"
+    },
+    {
+     "bild": "06_cityhochhaus_3",
+     "box": [
+      0.02,
+      0.5,
+      0.19,
+      0.58
+     ],
+     "notiz": "Obergeschoss Mensa am Park: helle Fassadenplatten (Sonne)"
+    }
+   ]
+  },
+  "sockel": {
+   "notiz": "dunkler Naturstein (Sockel, EG)",
+   "proben": [
+    {
+     "bild": "03_hoersaal_1",
+     "box": [
+      0.27,
+      0.66,
+      0.45,
+      0.85
+     ],
+     "notiz": "Sockel: dunkler Naturstein"
+    },
+    {
+     "bild": "04_seminar_2",
+     "box": [
+      0.55,
+      0.62,
+      0.78,
+      0.78
+     ],
+     "notiz": "Sockel Hörsaalgebäude (N-Ende), Foto 2 (Schatten, Weißabgleich)"
+    },
+    {
+     "bild": "03_hoersaal_3",
+     "box": [
+      0.22,
+      0.7,
+      0.3,
+      0.85
+     ],
+     "notiz": "Sockel: dunkle Steinplatte (Schatten, ohne Weißabgleich)"
+    }
+   ]
+  },
+  "glas": {
+   "notiz": "Fensterbänder/Glasflächen (dunkles, spiegelndes Glas)",
+   "proben": [
+    {
+     "bild": "03_hoersaal_3",
+     "box": [
+      0.3,
+      0.44,
+      0.42,
+      0.56
+     ],
+     "notiz": "Glasband 1. OG Westfassade (spiegelt Gegenüber)"
+    },
+    {
+     "bild": "03_hoersaal_2",
+     "box": [
+      0.45,
+      0.47,
+      0.56,
+      0.57
+     ],
+     "notiz": "Glasband 1. OG Westfassade"
+    },
+    {
+     "bild": "03_hoersaal_2",
+     "box": [
+      0.7,
+      0.3,
+      0.85,
+      0.4
+     ],
+     "notiz": "Glasband, weiter hinten (dunkler)"
+    },
+    {
+     "bild": "03_hoersaal_6",
+     "box": [
+      0.45,
+      0.28,
+      0.65,
+      0.42
+     ],
+     "notiz": "Mensa am Park: Glasgeschoss (Sonne, spiegelt Himmel)"
+    }
+   ]
+  },
+  "rot": {
+   "notiz": "rote Verkleidung (Bänder, Paneele, Mensa-Stützen, Brücke)",
+   "proben": [
+    {
+     "bild": "06_cityhochhaus_3",
+     "box": [
+      0.0,
+      0.72,
+      0.06,
+      0.85
+     ],
+     "notiz": "Mensa am Park: rote Verkleidung"
+    },
+    {
+     "bild": "03_hoersaal_1",
+     "box": [
+      0.27,
+      0.52,
+      0.5,
+      0.58
+     ],
+     "notiz": "rotes Band über dem Sockel (Westfassade)"
+    },
+    {
+     "bild": "04_seminar_2",
+     "box": [
+      0.3,
+      0.26,
+      0.47,
+      0.36
+     ],
+     "notiz": "rote Brücke/Treppenturm am Nordende (Foto 2)"
+    },
+    {
+     "bild": "04_seminar_1",
+     "box": [
+      0.66,
+      0.15,
+      0.92,
+      0.24
+     ],
+     "notiz": "rote Brücke (Foto 3)"
+    },
+    {
+     "bild": "03_hoersaal_5",
+     "box": [
+      0.02,
+      0.12,
+      0.14,
+      0.3
+     ],
+     "notiz": "rote Verkleidung am Mensa-Eingang (Köhler-Panorama, stark tonemapped, nur als Aufhellung)"
+    }
+   ]
+  }
+ },
+ "basis": "platten",
+ "zonen": [
+  {
+   "name": "Sockel Westfassade (Naturstein, EG)",
+   "farbe": "sockel",
+   "seite": "W",
+   "z": [
+    0,
+    3.2
+   ]
+  },
+  {
+   "name": "Rotes Band über Sockel, Nordblock West",
+   "farbe": "rot",
+   "seite": "W",
+   "z": [
+    3.2,
+    3.95
+   ],
+   "entlang": [
+    0.19,
+    0.345
+   ]
+  },
+  {
+   "name": "Glasband 1. OG, Südteil West",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    3.2,
+    5.4
+   ],
+   "entlang": [
+    0.385,
+    1.0
+   ]
+  },
+  {
+   "name": "Hohe Glasbahn (Eingangsbereich) West",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    3.2,
+    12.0
+   ],
+   "entlang": [
+    0.345,
+    0.385
+   ]
+  },
+  {
+   "name": "Fensterband 2. OG mit roten Paneelen, Südblock West",
+   "farbe": "rot",
+   "seite": "W",
+   "z": [
+    5.8,
+    8.8
+   ],
+   "entlang": [
+    0.385,
+    0.46
+   ]
+  },
+  {
+   "name": "Roter Treppenturm/Brücke Nordende West",
+   "farbe": "rot",
+   "seite": "W",
+   "z": [
+    0,
+    18.7
+   ],
+   "entlang": [
+    0.143,
+    0.19
+   ]
+  },
+  {
+   "name": "Mensa EG: rote Stützen/Verkleidung",
+   "farbe": "rot",
+   "seite": [
+    60,
+    200
+   ],
+   "z": [
+    0,
+    5.0
+   ]
+  },
+  {
+   "name": "Mensa Glasband 1",
+   "farbe": "glas",
+   "seite": [
+    60,
+    200
+   ],
+   "z": [
+    5.9,
+    7.9
+   ]
+  },
+  {
+   "name": "Mensa Glasband 2",
+   "farbe": "glas",
+   "seite": [
+    60,
+    200
+   ],
+   "z": [
+    9.0,
+    12.0
+   ]
+  },
+  {
+   "name": "Mensa Glasband 3",
+   "farbe": "glas",
+   "seite": [
+    60,
+    200
+   ],
+   "z": [
+    13.0,
+    16.0
+   ]
+  },
+  {
+   "name": "Mensa Glasband 4 (Obergeschoss)",
+   "farbe": "glas",
+   "seite": [
+    60,
+    200
+   ],
+   "z": [
+    17.0,
+    20.5
+   ]
+  },
+  {
+   "name": "Südostwand des Westflügels: weiße Platten oben",
+   "farbe": "platten",
+   "seite": [
+    120,
+    170
+   ],
+   "z": [
+    8.0,
+    24.0
+   ]
+  },
+  {
+   "name": "Südostwand Westflügel: rote Lamellen am Westende",
+   "farbe": "rot",
+   "seite": [
+    120,
+    170
+   ],
+   "z": [
+    0,
+    8.0
+   ],
+   "entlang": [
+    0.0,
+    0.4
+   ]
+  },
+  {
+   "name": "Südostwand Westflügel: Glas Mensa-Eingang",
+   "farbe": "glas",
+   "seite": [
+    120,
+    170
+   ],
+   "z": [
+    0,
+    8.0
+   ],
+   "entlang": [
+    0.4,
+    1.0
+   ]
+  }
+ ]
+}

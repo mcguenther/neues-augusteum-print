@@ -45,8 +45,9 @@ def rgb(c):
     return np.array(matplotlib.colors.to_rgb(c))
 
 
-def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
-    """meshes: Liste von (trimesh.Trimesh, Farbe). Liefert PIL-Bild."""
+def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False):
+    """meshes: Liste von (trimesh.Trimesh, Farbe oder Farben je Dreieck). Liefert PIL-Bild,
+    mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild."""
     a, e = np.radians(azim), np.radians(elev)
     cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
     right = np.array([-np.sin(a), np.cos(a), 0.0])
@@ -99,7 +100,10 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
     img[:] = np.array(BG) / 255
     hit = fid >= 0
     f = fid[hit]
-    shade = 0.42 + 0.48 * np.clip(norms[f] @ light, 0, 1) + 0.10 * np.clip(norms[f] @ cam, 0, 1)
+    if flat:  # fast unschattiert: Farben beurteilen
+        shade = 0.82 + 0.18 * np.clip(norms[f] @ cam, 0, 1)
+    else:
+        shade = 0.42 + 0.48 * np.clip(norms[f] @ light, 0, 1) + 0.10 * np.clip(norms[f] @ cam, 0, 1)
     img[hit] = np.clip(cols[f] * shade[:, None], 0, 1)
 
     # Kantenlinien: Sprünge in Flächennormale oder Tiefe
@@ -116,8 +120,15 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
         e_ = crease | jump | sil
         edge[: H - dy, : W - dx] |= e_
     img[edge] *= 0.35
-    im = Image.fromarray((img * 255).astype(np.uint8))
-    return im.resize(size, Image.LANCZOS)
+    im = Image.fromarray((img * 255).astype(np.uint8)).resize(size, Image.LANCZOS)
+    if return_proj:
+        cx, cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+
+        def proj(P):
+            P = np.asarray(P, float)
+            return ((P @ right - cx) * k + W / 2) / ss, (H / 2 - (P @ up - cy) * k) / ss
+        return im, proj
+    return im
 
 
 def caption(im, title, subtitle=None):

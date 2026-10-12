@@ -1,0 +1,41 @@
+{
+ "farben": {
+  "ziegel": {
+   "notiz": "Ziegel",
+   "proben": [
+    {
+     "bild": "07_moritzbastei_3",
+     "box": [
+      0.14,
+      0.43,
+      0.175,
+      0.49
+     ],
+     "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)"
+    },
+    {
+     "bild": "07_moritzbastei_3",
+     "box": [
+      0.31,
+      0.42,
+      0.36,
+      0.5
+     ],
+     "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)"
+    },
+    {
+     "bild": "07_moritzbastei_1",
+     "box": [
+      0.44,
+      0.47,
+      0.5,
+      0.72
+     ],
+     "notiz": "Eingangsbau: Ziegel (tiefe Sonne)"
+    }
+   ]
+  }
+ },
+ "basis": "ziegel",
+ "zonen": []
+}

@@ -1,0 +1,281 @@
+{
+ "farben": {
+  "fassade": {
+   "notiz": "helle graue Natursteinplatten mit Fensterreihen (Lochfassade, Gesamteindruck)",
+   "proben": [
+    {
+     "bild": "06_cityhochhaus_3",
+     "box": [
+      0.74,
+      0.4,
+      0.82,
+      0.78
+     ],
+     "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)"
+    },
+    {
+     "bild": "06_cityhochhaus_1",
+     "box": [
+      0.46,
+      0.3,
+      0.56,
+      0.75
+     ],
+     "notiz": "NO-Fassade (Platten und Fenster, Gesamteindruck, Schatten)"
+    },
+    {
+     "bild": "06_cityhochhaus_2",
+     "box": [
+      0.5,
+      0.3,
+      0.6,
+      0.55
+     ],
+     "notiz": "NO-Fassade (Platten und Fenster, Gesamteindruck)"
+    },
+    {
+     "bild": "06_vincentz_schumann",
+     "box": [
+      0.43,
+      0.3,
+      0.58,
+      0.55
+     ],
+     "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)"
+    },
+    {
+     "bild": "06_vincentz_mensa",
+     "box": [
+      0.76,
+      0.1,
+      0.86,
+      0.28
+     ],
+     "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)"
+    },
+    {
+     "bild": "06_vincentz_unistr",
+     "box": [
+      0.45,
+      0.45,
+      0.6,
+      0.62
+     ],
+     "notiz": "S-Fassade von unten (Platten und Fenster)"
+    }
+   ]
+  },
+  "glas": {
+   "notiz": "dunkles Glas (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
+   "proben": [
+    {
+     "bild": "06_cityhochhaus_3",
+     "box": [
+      0.52,
+      0.2,
+      0.65,
+      0.5
+     ],
+     "notiz": "SW-Glasfront"
+    },
+    {
+     "bild": "06_vincentz_mensa",
+     "box": [
+      0.66,
+      0.12,
+      0.74,
+      0.42
+     ],
+     "notiz": "SW-Glasfront"
+    },
+    {
+     "bild": "06_vincentz_schumann",
+     "box": [
+      0.28,
+      0.25,
+      0.34,
+      0.55
+     ],
+     "notiz": "SW-Glasfront"
+    },
+    {
+     "bild": "06_vincentz_unistr",
+     "box": [
+      0.21,
+      0.62,
+      0.27,
+      0.82
+     ],
+     "notiz": "SW-Glasfront von unten"
+    },
+    {
+     "bild": "06_vincentz_moritzbastei",
+     "box": [
+      0.235,
+      0.2,
+      0.255,
+      0.45
+     ],
+     "notiz": "SW-Glasfront schräg"
+    },
+    {
+     "bild": "06_cityhochhaus_1",
+     "box": [
+      0.4,
+      0.3,
+      0.425,
+      0.7
+     ],
+     "notiz": "Ostspitze Glasband"
+    }
+   ]
+  },
+  "sockel": {
+   "notiz": "dunkler Sockelbau/Eingangsbereich",
+   "proben": [
+    {
+     "bild": "06_cityhochhaus_1",
+     "box": [
+      0.45,
+      0.81,
+      0.58,
+      0.84
+     ],
+     "notiz": "dunkles Vordach/Sockel"
+    },
+    {
+     "bild": "06_cityhochhaus_2",
+     "box": [
+      0.03,
+      0.65,
+      0.3,
+      0.85
+     ],
+     "notiz": "dunkle Metallpaneele Sockelbau"
+    }
+   ]
+  }
+ },
+ "basis": "fassade",
+ "zonen": [
+  {
+   "name": "Sockelbau Ost/Nord (Annahme)",
+   "farbe": "sockel",
+   "seite": [
+    330,
+    130
+   ],
+   "z": [
+    0,
+    7
+   ]
+  },
+  {
+   "name": "Glasfront Südwest",
+   "farbe": "glas",
+   "seite": [
+    190,
+    250
+   ],
+   "z": [
+    0,
+    150
+   ]
+  },
+  {
+   "name": "Glasfront Westseite Mitte/Süd",
+   "farbe": "glas",
+   "seite": [
+    276,
+    310
+   ],
+   "z": [
+    0,
+    150
+   ]
+  },
+  {
+   "name": "Glasband Ostspitze",
+   "farbe": "glas",
+   "seite": [
+    85,
+    130
+   ],
+   "z": [
+    7,
+    150
+   ]
+  }
+ ],
+ "bilder": {
+  "06_vincentz_mensa": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-07",
+   "fassade": "SW glass face + S face seen from Universitaetsstrasse across Mensa am Park"
+  },
+  "06_vincentz_schumann": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_-_Robert-Schumann-Denkmal_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_-_Robert-Schumann-Denkmal_%2B_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_-_Robert-Schumann-Denkmal_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-07",
+   "fassade": "whole tower from the south (Lennéanlage), glass SW face left, S face right"
+  },
+  "06_vincentz_moritzbastei": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-07",
+   "fassade": "tower behind Moritzbastei terrace from the south"
+  },
+  "06_vincentz_unistr": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-07",
+   "fassade": "tower from below, SW glass face left"
+  },
+  "06_vincentz_goethe": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Leipzig_-_Goethestra%C3%9Fe_%2B_7K%C3%B6nigliches_Palais_%2B_Kroch-Hochhaus_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Goethestra%C3%9Fe_%2B_7K%C3%B6nigliches_Palais_%2B_Kroch-Hochhaus_%2B_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Goethestra%C3%9Fe_%2B_7K%C3%B6nigliches_Palais_%2B_Kroch-Hochhaus_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-07",
+   "fassade": "tower from the north (Goethestrasse)"
+  }
+ },
+ "weissabgleich": {
+  "06_cityhochhaus_3": {
+   "box": [
+    0.62,
+    0.917,
+    0.85,
+    0.935
+   ],
+   "notiz": "Platzpflaster Universitätsstraße (Sonne)"
+  },
+  "06_vincentz_mensa": {
+   "box": [
+    0.62,
+    0.8,
+    0.7,
+    0.83
+   ],
+   "notiz": "Pflaster Platz (Sonne)"
+  },
+  "06_vincentz_schumann": {
+   "box": [
+    0.72,
+    0.955,
+    0.95,
+    0.975
+   ],
+   "notiz": "Wegbelag Lennéanlage (Sonne)"
+  }
+ }
+}

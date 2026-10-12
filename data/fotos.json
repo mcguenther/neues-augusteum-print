@@ -1,369 +1,5 @@
 {
- "_hinweis": "Bildausschnitte (relativ 0..1: x0, y0, x1, y1), aus denen farben.py die Fassadenfarbe als Median bestimmt. 'bild' ist eine Panoramax-ID oder ein Schlüssel in 'bilder' (Wikimedia Commons; 'ansicht' = Perspektive aus einem 360°-Panorama). 'rolle': haupt = vorherrschende Fassadenfarbe (Median über alle Proben), akzent = auffällige Zweitfarbe. 'weissabgleich': je Foto ein Ausschnitt mit grauem Pflaster in derselben Beleuchtung – damit werden Farbstich und Helligkeit korrigiert (Pflaster := Grau 150/255, Annahme), bevor gemessen wird.",
- "proben": [
-  {
-   "gebaeude": "02_neues_augusteum",
-   "rolle": "haupt",
-   "notiz": "Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
-   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
-   "box": [
-    0.05,
-    0.2,
-    0.25,
-    0.57
-   ]
-  },
-  {
-   "gebaeude": "01_paulinum",
-   "rolle": "haupt",
-   "notiz": "Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk",
-   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
-   "box": [
-    0.335,
-    0.3,
-    0.365,
-    0.58
-   ]
-  },
-  {
-   "gebaeude": "05_institutsgebaeude",
-   "rolle": "akzent",
-   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein",
-   "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
-   "box": [
-    0.385,
-    0.2,
-    0.48,
-    0.53
-   ]
-  },
-  {
-   "gebaeude": "05_institutsgebaeude",
-   "rolle": "haupt",
-   "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
-   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
-   "box": [
-    0.0,
-    0.245,
-    0.43,
-    0.265
-   ]
-  },
-  {
-   "gebaeude": "05_institutsgebaeude",
-   "rolle": "akzent",
-   "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang",
-   "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
-   "box": [
-    0.445,
-    0.215,
-    0.6,
-    0.29
-   ]
-  },
-  {
-   "gebaeude": "01_paulinum",
-   "rolle": "haupt",
-   "notiz": "Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto)",
-   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
-   "box": [
-    0.005,
-    0.12,
-    0.075,
-    0.6
-   ]
-  },
-  {
-   "gebaeude": "01_paulinum",
-   "rolle": "haupt",
-   "notiz": "Giebel: hellgrauer Naturstein neben dem Fenster",
-   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
-   "box": [
-    0.085,
-    0.2,
-    0.105,
-    0.6
-   ]
-  },
-  {
-   "gebaeude": "05_institutsgebaeude",
-   "rolle": "akzent",
-   "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)",
-   "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
-   "box": [
-    0.115,
-    0.15,
-    0.27,
-    0.58
-   ]
-  },
-  {
-   "gebaeude": "03_hoersaalgebaeude",
-   "rolle": "haupt",
-   "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten",
-   "bild": "03_hoersaal_1",
-   "box": [
-    0.32,
-    0.03,
-    0.56,
-    0.48
-   ]
-  },
-  {
-   "gebaeude": "03_hoersaalgebaeude",
-   "rolle": "haupt",
-   "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten (zweites Foto)",
-   "bild": "04_seminar_2",
-   "box": [
-    0.62,
-    0.1,
-    0.85,
-    0.27
-   ]
-  },
-  {
-   "gebaeude": "03_hoersaalgebaeude",
-   "rolle": "haupt",
-   "notiz": "Obergeschoss Mensa am Park: helle Fassadenplatten (Sonne)",
-   "bild": "06_cityhochhaus_3",
-   "box": [
-    0.02,
-    0.5,
-    0.19,
-    0.58
-   ]
-  },
-  {
-   "gebaeude": "03_hoersaalgebaeude",
-   "rolle": "akzent",
-   "notiz": "Mensa am Park: rote Verkleidung",
-   "bild": "06_cityhochhaus_3",
-   "box": [
-    0.0,
-    0.72,
-    0.06,
-    0.85
-   ]
-  },
-  {
-   "gebaeude": "03_hoersaalgebaeude",
-   "rolle": "akzent",
-   "notiz": "Sockel: dunkler Naturstein",
-   "bild": "03_hoersaal_1",
-   "box": [
-    0.27,
-    0.66,
-    0.45,
-    0.85
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "akzent",
-   "notiz": "rote Brücke zum Hörsaalgebäude",
-   "bild": "04_seminar_2",
-   "box": [
-    0.3,
-    0.26,
-    0.47,
-    0.36
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "akzent",
-   "notiz": "rote Brücke zum Hörsaalgebäude (zweites Foto)",
-   "bild": "04_seminar_1",
-   "box": [
-    0.66,
-    0.15,
-    0.92,
-    0.24
-   ]
-  },
-  {
-   "gebaeude": "06_city_hochhaus",
-   "rolle": "haupt",
-   "notiz": "Fassade (Platten und Fenster, Gesamteindruck)",
-   "bild": "06_cityhochhaus_3",
-   "box": [
-    0.72,
-    0.42,
-    0.8,
-    0.82
-   ]
-  },
-  {
-   "gebaeude": "06_city_hochhaus",
-   "rolle": "haupt",
-   "notiz": "Ostfassade (Platten und Fenster, Gesamteindruck)",
-   "bild": "06_cityhochhaus_1",
-   "box": [
-    0.46,
-    0.3,
-    0.56,
-    0.75
-   ]
-  },
-  {
-   "gebaeude": "07_moritzbastei",
-   "rolle": "haupt",
-   "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)",
-   "bild": "07_moritzbastei_3",
-   "box": [
-    0.14,
-    0.43,
-    0.175,
-    0.49
-   ]
-  },
-  {
-   "gebaeude": "07_moritzbastei",
-   "rolle": "haupt",
-   "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)",
-   "bild": "07_moritzbastei_3",
-   "box": [
-    0.31,
-    0.42,
-    0.36,
-    0.5
-   ]
-  },
-  {
-   "gebaeude": "07_moritzbastei",
-   "rolle": "haupt",
-   "notiz": "Eingangsbau: Ziegel (tiefe Sonne)",
-   "bild": "07_moritzbastei_1",
-   "box": [
-    0.44,
-    0.47,
-    0.5,
-    0.72
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "haupt",
-   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
-   "bild": "04_seminar_1",
-   "box": [
-    0.28,
-    0.39,
-    0.36,
-    0.45
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "haupt",
-   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
-   "bild": "04_seminar_1",
-   "box": [
-    0.4,
-    0.31,
-    0.47,
-    0.38
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "haupt",
-   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
-   "bild": "04_seminar_1",
-   "box": [
-    0.05,
-    0.43,
-    0.14,
-    0.5
-   ]
-  },
-  {
-   "gebaeude": "04_seminargebaeude",
-   "rolle": "akzent",
-   "notiz": "rotbraunes Brüstungsband",
-   "bild": "04_seminar_1",
-   "box": [
-    0.49,
-    0.4,
-    0.6,
-    0.46
-   ]
-  }
- ],
- "weissabgleich": {
-  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
-   "box": [
-    0.05,
-    0.72,
-    0.4,
-    0.95
-   ],
-   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
-  },
-  "00e4adee-a436-499a-bda1-4d828b1d3750": {
-   "box": [
-    0.05,
-    0.72,
-    0.45,
-    0.82
-   ],
-   "notiz": "Granitpflaster Grimmaische Straße im Gebäudeschatten"
-  },
-  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
-   "box": [
-    0.1,
-    0.72,
-    0.5,
-    0.95
-   ],
-   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
-  },
-  "03_hoersaal_1": {
-   "box": [
-    0.0,
-    0.9,
-    0.2,
-    1.0
-   ],
-   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
-  },
-  "04_seminar_2": {
-   "box": [
-    0.6,
-    0.82,
-    0.95,
-    0.87
-   ],
-   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
-  },
-  "04_seminar_1": {
-   "box": [
-    0.75,
-    0.92,
-    1.0,
-    1.0
-   ],
-   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
-  },
-  "07_moritzbastei_3": {
-   "box": [
-    0.3,
-    0.75,
-    0.7,
-    0.95
-   ],
-   "notiz": "Platzpflaster Kurt-Masur-Platz (bedeckt)"
-  },
-  "07_moritzbastei_1": {
-   "box": [
-    0.3,
-    0.8,
-    0.6,
-    0.95
-   ],
-   "notiz": "Platzpflaster Kurt-Masur-Platz (Sonne)"
-  }
- },
+ "_hinweis": "Fotokatalog für die Fassadenfarben. Schlüssel = Panoramax-ID oder eigener Name. 'ansicht' = Perspektive aus einem 360°-Panorama (farben.persp). 'weissabgleich': je Foto ein Ausschnitt (relativ x0,y0,x1,y1) mit grauem Pflaster in derselben Beleuchtung; damit werden Farbstich und Helligkeit korrigiert (Pflaster := Grau REF_GRAU, Annahme).",
  "bilder": {
   "03_hoersaal_1": {
    "gebaeude": "03_hoersaalgebaeude",
@@ -590,6 +226,89 @@
    "urheber": "Chabe01",
    "datum": "2025-11-25",
    "fassade": "inner bastion wall (old brick, ivy) and terrace, with Hoersaalgebaeude in background left"
+  },
+  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
+   "quelle": "panoramax"
+  },
+  "00e4adee-a436-499a-bda1-4d828b1d3750": {
+   "quelle": "panoramax"
+  },
+  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
+   "quelle": "panoramax"
+  }
+ },
+ "weissabgleich": {
+  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
+   "box": [
+    0.05,
+    0.72,
+    0.4,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  },
+  "00e4adee-a436-499a-bda1-4d828b1d3750": {
+   "box": [
+    0.05,
+    0.72,
+    0.45,
+    0.82
+   ],
+   "notiz": "Granitpflaster Grimmaische Straße im Gebäudeschatten"
+  },
+  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
+   "box": [
+    0.1,
+    0.72,
+    0.5,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  },
+  "03_hoersaal_1": {
+   "box": [
+    0.0,
+    0.9,
+    0.2,
+    1.0
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "04_seminar_2": {
+   "box": [
+    0.6,
+    0.82,
+    0.95,
+    0.87
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "04_seminar_1": {
+   "box": [
+    0.75,
+    0.92,
+    1.0,
+    1.0
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "07_moritzbastei_3": {
+   "box": [
+    0.3,
+    0.75,
+    0.7,
+    0.95
+   ],
+   "notiz": "Platzpflaster Kurt-Masur-Platz (bedeckt)"
+  },
+  "07_moritzbastei_1": {
+   "box": [
+    0.3,
+    0.8,
+    0.6,
+    0.95
+   ],
+   "notiz": "Platzpflaster Kurt-Masur-Platz (Sonne)"
   }
  }
 }
