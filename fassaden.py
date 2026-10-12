@@ -100,11 +100,19 @@ def split_plane(mesh, normal, origin):
     if len(a.faces) == 0 or len(b.faces) == 0:
         return mesh
     m = trimesh.util.concatenate([a, b])
-    m.merge_vertices(digits_vertex=6)
-    # nur Dreiecke mit doppeltem Eckpunkt entfernen; kollineare (flache) Dreiecke
-    # werden topologisch gebraucht, sonst entstehen Löcher
-    f = m.faces
-    m.update_faces((f[:, 0] != f[:, 1]) & (f[:, 1] != f[:, 2]) & (f[:, 0] != f[:, 2]))
+    # Nur Punkte auf der Schnittebene zusammenführen: Das Ausgangsnetz kann an
+    # Engstellen getrennte Eckpunkte an derselben Position haben (Manifold), die
+    # getrennt bleiben müssen.
+    v = m.vertices
+    on = np.abs(v @ normal - np.dot(normal, origin)) < 1e-7 * max(1.0, np.abs(v).max())
+    idx = np.arange(len(v))
+    if on.any():
+        key = np.round(v[on], 6)
+        _, first, inv = np.unique(key, axis=0, return_index=True, return_inverse=True)
+        idx[on] = np.nonzero(on)[0][first][inv.ravel()]
+    f = idx[m.faces]
+    keep = (f[:, 0] != f[:, 1]) & (f[:, 1] != f[:, 2]) & (f[:, 0] != f[:, 2])
+    m = trimesh.Trimesh(v, f[keep], process=False)
     m.remove_unreferenced_vertices()
     return m
 
@@ -170,8 +178,14 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
     off, s = np.asarray(to_local[0], float), float(to_local[1])
     m = trimesh.Trimesh((tm.vertices - off) / s, tm.faces.copy(), process=False)
     zones = farben.get("zonen", []) if farben else []
+    dicht = m.is_watertight
     for n, o in zone_planes(m, zones):
-        m = split_plane(m, n, o)
+        # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
+        for d in (0.0, 0.003, -0.003, 0.01, -0.01):
+            m2 = split_plane(m, n, np.asarray(o, float) + d * np.asarray(n, float))
+            if not dicht or m2.is_watertight:
+                m = m2
+                break
     extents = {}
     for zo in zones:
         if "seite" in zo and "entlang" in zo:

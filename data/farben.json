@@ -38,13 +38,202 @@
  "01_paulinum": {
   "name": "Paulinum (Aula und Universitätskirche St. Pauli)",
   "dach": "#6d7f85",
-  "basis": "weiss",
-  "zonen": [],
+  "basis": "stein_glas",
+  "zonen": [
+   {
+    "name": "Glasstreifen SO, vor dem Giebel",
+    "farbe": "glas",
+    "seite": "O",
+    "entlang": [
+     0.0,
+     0.2
+    ],
+    "z": [
+     0,
+     36
+    ]
+   },
+   {
+    "name": "Ostgiebel Naturstein",
+    "farbe": "stein_hell",
+    "seite": "O",
+    "entlang": [
+     0.2,
+     0.72
+    ],
+    "z": [
+     0,
+     50
+    ]
+   },
+   {
+    "name": "Spitzbogen-Blende unten",
+    "farbe": "weiss",
+    "seite": "O",
+    "entlang": [
+     0.29,
+     0.47
+    ],
+    "z": [
+     0,
+     9
+    ]
+   },
+   {
+    "name": "Spitzbogen-Blende Mitte",
+    "farbe": "weiss",
+    "seite": "O",
+    "entlang": [
+     0.31,
+     0.45
+    ],
+    "z": [
+     9,
+     18
+    ]
+   },
+   {
+    "name": "Spitzbogen-Blende oben",
+    "farbe": "weiss",
+    "seite": "O",
+    "entlang": [
+     0.34,
+     0.42
+    ],
+    "z": [
+     18,
+     27
+    ]
+   },
+   {
+    "name": "Turm Ost",
+    "farbe": "zink",
+    "seite": "O",
+    "entlang": [
+     0.0,
+     0.24
+    ],
+    "z": [
+     36,
+     60
+    ]
+   },
+   {
+    "name": "Turm Nord",
+    "farbe": "zink",
+    "seite": "N",
+    "entlang": [
+     0.2,
+     0.4
+    ],
+    "z": [
+     36,
+     60
+    ]
+   },
+   {
+    "name": "Turm Süd",
+    "farbe": "zink",
+    "seite": "S",
+    "entlang": [
+     0.6,
+     0.82
+    ],
+    "z": [
+     34,
+     60
+    ]
+   },
+   {
+    "name": "Turm West",
+    "farbe": "zink",
+    "seite": "W",
+    "entlang": [
+     0.76,
+     1.0
+    ],
+    "z": [
+     0,
+     60
+    ]
+   }
+  ],
   "farben": {
+   "stein_hell": {
+    "rgb": "#d6c8c2",
+    "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
+    "quelle": "Foto (4 Messfelder)",
+    "proben": [
+     {
+      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+      "box": [
+       0.287,
+       0.15,
+       0.321,
+       0.55
+      ],
+      "notiz": "Giebel Ost: Steinfläche links vom weißen Spitzbogen (Schatten, WB)",
+      "rgb": "#e6d0c8",
+      "roh": "#7088ab",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+     },
+     {
+      "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+      "box": [
+       0.085,
+       0.2,
+       0.105,
+       0.6
+      ],
+      "notiz": "Giebel Ost: Stein neben dem Fenster (zweites Foto, Schatten, WB)",
+      "rgb": "#e1cac1",
+      "roh": "#607493",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+     },
+     {
+      "bild": "pl_giebel_romero",
+      "box": [
+       0.44,
+       0.45,
+       0.52,
+       0.75
+      ],
+      "notiz": "Giebel Ost: Stein links (Sonne, ohne WB)",
+      "rgb": "#c9c5c2",
+      "roh": "#c9c5c2",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_giebel_romero",
+      "box": [
+       0.8,
+       0.55,
+       0.92,
+       0.85
+      ],
+      "notiz": "Giebel Ost: Stein rechts (Sonne, ohne WB)",
+      "rgb": "#cac5c1",
+      "roh": "#cac5c1",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg"
+     }
+    ]
+   },
    "weiss": {
-    "rgb": "#fff6ea",
-    "notiz": "weißer Naturstein / Maßwerkfenster am Giebel",
-    "quelle": "Foto (3 Messfelder)",
+    "rgb": "#faf2ec",
+    "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
+    "quelle": "Foto (4 Messfelder)",
     "proben": [
      {
       "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
@@ -79,36 +268,223 @@
       "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
      },
      {
-      "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
+      "bild": "pl_giebel_romero",
       "box": [
-       0.085,
-       0.2,
-       0.105,
-       0.6
+       0.6,
+       0.7,
+       0.64,
+       0.95
       ],
-      "notiz": "Giebel: hellgrauer Naturstein neben dem Fenster",
-      "rgb": "#e1cac1",
-      "roh": "#607493",
+      "notiz": "Spitzbogen-Blende (Sonne, ohne WB)",
+      "rgb": "#f4eeed",
+      "roh": "#f4eeed",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_giebel_romero2",
+      "box": [
+       0.4,
+       0.7,
+       0.43,
+       0.95
+      ],
+      "notiz": "Spitzbogen-Blende, Detailfoto (Sonne, ohne WB)",
+      "rgb": "#e9e4e4",
+      "roh": "#e9e4e4",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Paulinum.jpg"
+     }
+    ]
+   },
+   "stein_glas": {
+    "rgb": "#778f93",
+    "notiz": "Seiten/Westgiebel: graue Steinbänder mit senkrechten Glasstreifen (Gesamteindruck)",
+    "quelle": "Foto (3 Messfelder)",
+    "proben": [
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.28,
+       0.38,
+       0.4,
+       0.5
+      ],
+      "notiz": "Westgiebel Innenhof: Stein-/Glasstreifen (Sonne, ohne WB)",
+      "rgb": "#7790a4",
+      "roh": "#7790a4",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.12,
+       0.45,
+       0.16,
+       0.62
+      ],
+      "notiz": "Westgiebel Innenhof, linke Flanke: Stein (Sonne, ohne WB)",
+      "rgb": "#7c7d7a",
+      "roh": "#7c7d7a",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "hof_beck_1",
+      "box": [
+       0.55,
+       0.45,
+       0.7,
+       0.58
+      ],
+      "notiz": "Westgiebel Innenhof (Sonne/Schatten gemischt, ohne WB)",
+      "rgb": "#6d8f93",
+      "roh": "#6d8f93",
+      "datum": "2025-03-22",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Lukas Beck",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg"
+     }
+    ]
+   },
+   "glas": {
+    "rgb": "#34464c",
+    "notiz": "Glasstreifen links vom Giebel (dunkles, spiegelndes Glas)",
+    "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+      "box": [
+       0.22,
+       0.2,
+       0.245,
+       0.5
+      ],
+      "notiz": "Glasstreifen links vom Giebel",
+      "rgb": "#4e595a",
+      "roh": "#263a4d",
       "datum": "2022-03-27",
       "lizenz": "CC-BY-SA-4.0",
       "urheber": "Robot8A",
-      "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+     },
+     {
+      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+      "box": [
+       0.17,
+       0.2,
+       0.215,
+       0.5
+      ],
+      "notiz": "Glas/dunkler Stein weiter links",
+      "rgb": "#1b343f",
+      "roh": "#0d2236",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+     }
+    ]
+   },
+   "zink": {
+    "rgb": "#8c969f",
+    "notiz": "Dachreiter/Turmspitze: graues Zinkblech",
+    "quelle": "Foto (3 Messfelder)",
+    "proben": [
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.47,
+       0.2,
+       0.49,
+       0.45
+      ],
+      "notiz": "Turm: beleuchtete Fläche (ohne WB)",
+      "rgb": "#9ba2a4",
+      "roh": "#9ba2a4",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.455,
+       0.2,
+       0.47,
+       0.45
+      ],
+      "notiz": "Turm: Schattenseite (ohne WB)",
+      "rgb": "#475461",
+      "roh": "#475461",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_giebel_romero",
+      "box": [
+       0.42,
+       0.2,
+       0.47,
+       0.35
+      ],
+      "notiz": "Turm von Osten (ohne WB)",
+      "rgb": "#8c969f",
+      "roh": "#8c969f",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg"
      }
     ]
    }
   },
-  "fassade": "#fff6ea"
+  "fassade": "#778f93"
  },
  "02_neues_augusteum": {
   "name": "Neues Augusteum",
   "dach": "#728291",
   "basis": "glas_stein",
-  "zonen": [],
+  "zonen": [
+   {
+    "name": "Lamellenband oben",
+    "farbe": "lamellen",
+    "z": [
+     27.5,
+     36
+    ]
+   },
+   {
+    "name": "Sandsteinportal Innenhof (Lage geschätzt)",
+    "farbe": "sandstein",
+    "seite": "W",
+    "z": [
+     0,
+     10
+    ],
+    "entlang": [
+     0.1,
+     0.3
+    ]
+   }
+  ],
   "farben": {
    "glas_stein": {
-    "rgb": "#40545a",
-    "notiz": "Glas mit grauen Natursteinlamellen (Ostfassade)",
-    "quelle": "Foto (1 Messfeld)",
+    "rgb": "#405664",
+    "notiz": "Glas mit grauen/beigen Natursteinlamellen (Gesamteindruck, Ost und Hof)",
+    "quelle": "Foto (3 Messfelder)",
     "proben": [
      {
       "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
@@ -118,18 +494,110 @@
        0.25,
        0.57
       ],
-      "notiz": "Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
+      "notiz": "Ostfassade am Augustusplatz: Glas mit Natursteinlamellen (Schatten, WB)",
       "rgb": "#40545a",
       "roh": "#1f374d",
       "datum": "2022-03-27",
       "lizenz": "CC-BY-SA-4.0",
       "urheber": "Robot8A",
       "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
+     },
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.76,
+       0.3,
+       0.98,
+       0.5
+      ],
+      "notiz": "Westfassade Innenhof: Stein/Glas-Mosaik (Sonne, ohne WB)",
+      "rgb": "#3c5664",
+      "roh": "#3c5664",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_platz_romero",
+      "box": [
+       0.45,
+       0.76,
+       0.56,
+       0.9
+      ],
+      "notiz": "Ostfassade von Süden: Lamellen (Sonne, ohne WB)",
+      "rgb": "#939c9d",
+      "roh": "#939c9d",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augusteum_%26_Paulinum.jpg"
      }
     ]
+   },
+   "lamellen": {
+    "rgb": "#383f58",
+    "notiz": "oberstes Geschoss: dunkle senkrechte Lamellen (Metall/Stein)",
+    "quelle": "Foto (3 Messfelder)",
+    "proben": [
+     {
+      "bild": "pl_hof_derbrauni",
+      "box": [
+       0.64,
+       0.3,
+       0.76,
+       0.36
+      ],
+      "notiz": "Westfassade Innenhof: Lamellenband oben (ohne WB)",
+      "rgb": "#383e4c",
+      "roh": "#383e4c",
+      "datum": "2025-06-17",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Derbrauni",
+      "url": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg"
+     },
+     {
+      "bild": "pl_platz_romero",
+      "box": [
+       0.3,
+       0.61,
+       0.46,
+       0.65
+      ],
+      "notiz": "Ostfassade: Lamellenband oben (ohne WB)",
+      "rgb": "#52545d",
+      "roh": "#52545d",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augusteum_%26_Paulinum.jpg"
+     },
+     {
+      "bild": "hof_beck_2",
+      "box": [
+       0.6,
+       0.38,
+       0.8,
+       0.44
+      ],
+      "notiz": "Westfassade Innenhof: Lamellenband (Sonne, ohne WB)",
+      "rgb": "#2f3f58",
+      "roh": "#2f3f58",
+      "datum": "2025-03-22",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Lukas Beck",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img02_Neues_Augusteum.jpg"
+     }
+    ]
+   },
+   "sandstein": {
+    "rgb": "#b39f7f",
+    "notiz": "Sandsteinportal des alten Augusteums (Innenhof)",
+    "quelle": "geschätzt nach Fotos (Sandstein im Foto teils im Schatten, Messfelder nicht verwertbar)"
    }
   },
-  "fassade": "#40545a"
+  "fassade": "#405664"
  },
  "03_hoersaalgebaeude": {
   "name": "Hörsaalgebäude (mit Mensa am Park)",
@@ -137,24 +605,181 @@
   "basis": "platten",
   "zonen": [
    {
-    "name": "Test Sockel",
+    "name": "Sockel Westfassade (Naturstein, EG)",
     "farbe": "sockel",
+    "seite": "W",
     "z": [
      0,
-     4.2
+     3.2
     ]
    },
    {
-    "name": "Test rot",
+    "name": "Rotes Band über Sockel, Nordblock West",
     "farbe": "rot",
     "seite": "W",
     "z": [
-     4.2,
-     5.0
+     3.2,
+     3.95
     ],
     "entlang": [
-     0.2,
-     0.6
+     0.19,
+     0.345
+    ]
+   },
+   {
+    "name": "Glasband 1. OG, Südteil West",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     3.2,
+     5.4
+    ],
+    "entlang": [
+     0.385,
+     1.0
+    ]
+   },
+   {
+    "name": "Hohe Glasbahn (Eingangsbereich) West",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     3.2,
+     12.0
+    ],
+    "entlang": [
+     0.345,
+     0.385
+    ]
+   },
+   {
+    "name": "Fensterband 2. OG mit roten Paneelen, Südblock West",
+    "farbe": "rot",
+    "seite": "W",
+    "z": [
+     5.8,
+     8.8
+    ],
+    "entlang": [
+     0.385,
+     0.46
+    ]
+   },
+   {
+    "name": "Roter Treppenturm/Brücke Nordende West",
+    "farbe": "rot",
+    "seite": "W",
+    "z": [
+     0,
+     18.7
+    ],
+    "entlang": [
+     0.143,
+     0.19
+    ]
+   },
+   {
+    "name": "Mensa EG: rote Stützen/Verkleidung",
+    "farbe": "rot",
+    "seite": [
+     60,
+     200
+    ],
+    "z": [
+     0,
+     5.0
+    ]
+   },
+   {
+    "name": "Mensa Glasband 1",
+    "farbe": "glas",
+    "seite": [
+     60,
+     200
+    ],
+    "z": [
+     5.9,
+     7.9
+    ]
+   },
+   {
+    "name": "Mensa Glasband 2",
+    "farbe": "glas",
+    "seite": [
+     60,
+     200
+    ],
+    "z": [
+     9.0,
+     12.0
+    ]
+   },
+   {
+    "name": "Mensa Glasband 3",
+    "farbe": "glas",
+    "seite": [
+     60,
+     200
+    ],
+    "z": [
+     13.0,
+     16.0
+    ]
+   },
+   {
+    "name": "Mensa Glasband 4 (Obergeschoss)",
+    "farbe": "glas",
+    "seite": [
+     60,
+     200
+    ],
+    "z": [
+     17.0,
+     20.5
+    ]
+   },
+   {
+    "name": "Südostwand des Westflügels: weiße Platten oben",
+    "farbe": "platten",
+    "seite": [
+     120,
+     170
+    ],
+    "z": [
+     8.0,
+     24.0
+    ]
+   },
+   {
+    "name": "Südostwand Westflügel: rote Lamellen am Westende",
+    "farbe": "rot",
+    "seite": [
+     120,
+     170
+    ],
+    "z": [
+     0,
+     8.0
+    ],
+    "entlang": [
+     0.0,
+     0.4
+    ]
+   },
+   {
+    "name": "Südostwand Westflügel: Glas Mensa-Eingang",
+    "farbe": "glas",
+    "seite": [
+     120,
+     170
+    ],
+    "z": [
+     0,
+     8.0
+    ],
+    "entlang": [
+     0.4,
+     1.0
     ]
    }
   ],
@@ -214,33 +839,10 @@
      }
     ]
    },
-   "rot": {
-    "rgb": "#582526",
-    "notiz": "rote Verkleidung",
-    "quelle": "Foto (1 Messfeld)",
-    "proben": [
-     {
-      "bild": "06_cityhochhaus_3",
-      "box": [
-       0.0,
-       0.72,
-       0.06,
-       0.85
-      ],
-      "notiz": "Mensa am Park: rote Verkleidung",
-      "rgb": "#582526",
-      "roh": "#582526",
-      "datum": "2019-08-14",
-      "lizenz": "CC BY-SA 4.0",
-      "urheber": "Krzysztof Golik",
-      "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
-     }
-    ]
-   },
    "sockel": {
-    "rgb": "#46474f",
-    "notiz": "dunkler Naturstein (Sockel)",
-    "quelle": "Foto (1 Messfeld)",
+    "rgb": "#4a4a4f",
+    "notiz": "dunkler Naturstein (Sockel, EG)",
+    "quelle": "Foto (3 Messfelder)",
     "proben": [
      {
       "bild": "03_hoersaal_1",
@@ -257,23 +859,149 @@
       "lizenz": "CC BY-SA 4.0",
       "urheber": "osmplus_org",
       "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_2",
+      "box": [
+       0.55,
+       0.62,
+       0.78,
+       0.78
+      ],
+      "notiz": "Sockel Hörsaalgebäude (N-Ende), Foto 2 (Schatten, Weißabgleich)",
+      "rgb": "#676569",
+      "roh": "#464851",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M56S000_(1370673024472636_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "03_hoersaal_3",
+      "box": [
+       0.22,
+       0.7,
+       0.3,
+       0.85
+      ],
+      "notiz": "Sockel: dunkle Steinplatte (Schatten, ohne Weißabgleich)",
+      "rgb": "#4a4a4a",
+      "roh": "#4a4a4a",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M04S000_(1098528572090834_at_UXjkI5V2TNfplbYdaSq18H).jpg"
      }
     ]
-   }
-  },
-  "fassade": "#f4ede7"
- },
- "04_seminargebaeude": {
-  "name": "Seminargebäude",
-  "dach": "#bdc0be",
-  "basis": "wabenplatten",
-  "zonen": [],
-  "farben": {
-   "rot": {
-    "rgb": "#92544f",
-    "notiz": "rote Verkleidung",
-    "quelle": "Foto (2 Messfelder)",
+   },
+   "glas": {
+    "rgb": "#5b7070",
+    "notiz": "Fensterbänder/Glasflächen (dunkles, spiegelndes Glas)",
+    "quelle": "Foto (4 Messfelder)",
     "proben": [
+     {
+      "bild": "03_hoersaal_3",
+      "box": [
+       0.3,
+       0.44,
+       0.42,
+       0.56
+      ],
+      "notiz": "Glasband 1. OG Westfassade (spiegelt Gegenüber)",
+      "rgb": "#747674",
+      "roh": "#747674",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M04S000_(1098528572090834_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "03_hoersaal_2",
+      "box": [
+       0.45,
+       0.47,
+       0.56,
+       0.57
+      ],
+      "notiz": "Glasband 1. OG Westfassade",
+      "rgb": "#636c6b",
+      "roh": "#636c6b",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H42M02S000_(26109123682011481_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "03_hoersaal_2",
+      "box": [
+       0.7,
+       0.3,
+       0.85,
+       0.4
+      ],
+      "notiz": "Glasband, weiter hinten (dunkler)",
+      "rgb": "#4a5253",
+      "roh": "#4a5253",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H42M02S000_(26109123682011481_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "03_hoersaal_6",
+      "box": [
+       0.45,
+       0.28,
+       0.65,
+       0.42
+      ],
+      "notiz": "Mensa am Park: Glasgeschoss (Sonne, spiegelt Himmel)",
+      "rgb": "#537499",
+      "roh": "#537499",
+      "datum": "2010-10-17",
+      "lizenz": "CC BY 3.0",
+      "urheber": "Michimaya",
+      "url": "https://commons.wikimedia.org/wiki/File:Mensaampark.jpg"
+     }
+    ]
+   },
+   "rot": {
+    "rgb": "#863138",
+    "notiz": "rote Verkleidung (Bänder, Paneele, Mensa-Stützen, Brücke)",
+    "quelle": "Foto (5 Messfelder)",
+    "proben": [
+     {
+      "bild": "06_cityhochhaus_3",
+      "box": [
+       0.0,
+       0.72,
+       0.06,
+       0.85
+      ],
+      "notiz": "Mensa am Park: rote Verkleidung",
+      "rgb": "#582526",
+      "roh": "#582526",
+      "datum": "2019-08-14",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Krzysztof Golik",
+      "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
+     },
+     {
+      "bild": "03_hoersaal_1",
+      "box": [
+       0.27,
+       0.52,
+       0.5,
+       0.58
+      ],
+      "notiz": "rotes Band über dem Sockel (Westfassade)",
+      "rgb": "#5e272b",
+      "roh": "#3c191d",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
      {
       "bild": "04_seminar_2",
       "box": [
@@ -282,7 +1010,7 @@
        0.47,
        0.36
       ],
-      "notiz": "rote Brücke zum Hörsaalgebäude",
+      "notiz": "rote Brücke/Treppenturm am Nordende (Foto 2)",
       "rgb": "#864643",
       "roh": "#5b3234",
       "datum": "2025-10-02",
@@ -298,20 +1026,157 @@
        0.92,
        0.24
       ],
-      "notiz": "rote Brücke zum Hörsaalgebäude (zweites Foto)",
+      "notiz": "rote Brücke (Foto 3)",
       "rgb": "#9e625b",
       "roh": "#644243",
       "datum": "2025-10-02",
       "lizenz": "CC BY-SA 4.0",
       "urheber": "osmplus_org",
       "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "03_hoersaal_5",
+      "box": [
+       0.02,
+       0.12,
+       0.14,
+       0.3
+      ],
+      "notiz": "rote Verkleidung am Mensa-Eingang (Köhler-Panorama, stark tonemapped, nur als Aufhellung)",
+      "rgb": "#8a3138",
+      "roh": "#8a3138",
+      "datum": "2025-04-12",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Joachim Köhler",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG_3028-8x3B-360x180G-PanoS-12-04-2025.jpg"
      }
     ]
+   }
+  },
+  "fassade": "#f4ede7"
+ },
+ "04_seminargebaeude": {
+  "name": "Seminargebäude",
+  "dach": "#bdc0be",
+  "basis": "wabenplatten",
+  "zonen": [
+   {
+    "name": "Sockel umlaufend (EG, Naturstein)",
+    "farbe": "sockel",
+    "z": [
+     0,
+     4.4
+    ]
    },
+   {
+    "name": "Rotbraunes Brüstungsband 1. OG West",
+    "farbe": "band_rotbraun",
+    "seite": "W",
+    "z": [
+     4.9,
+     6.7
+    ]
+   },
+   {
+    "name": "Rotbraunes Brüstungsband 1. OG Ost (angenommen)",
+    "farbe": "band_rotbraun",
+    "seite": "O",
+    "z": [
+     4.9,
+     6.7
+    ]
+   },
+   {
+    "name": "Fensterband 2. OG W",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     8.25,
+     10.0
+    ]
+   },
+   {
+    "name": "Fensterband 3. OG W",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     12.1,
+     13.85
+    ]
+   },
+   {
+    "name": "Fensterband 4. OG W",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     15.95,
+     17.7
+    ]
+   },
+   {
+    "name": "Fensterband 5. OG W",
+    "farbe": "glas",
+    "seite": "W",
+    "z": [
+     19.8,
+     21.55
+    ]
+   },
+   {
+    "name": "Fensterband 2. OG O (angenommen)",
+    "farbe": "glas",
+    "seite": "O",
+    "z": [
+     8.25,
+     10.0
+    ]
+   },
+   {
+    "name": "Fensterband 3. OG O (angenommen)",
+    "farbe": "glas",
+    "seite": "O",
+    "z": [
+     12.1,
+     13.85
+    ]
+   },
+   {
+    "name": "Fensterband 4. OG O (angenommen)",
+    "farbe": "glas",
+    "seite": "O",
+    "z": [
+     15.95,
+     17.7
+    ]
+   },
+   {
+    "name": "Fensterband 5. OG O (angenommen)",
+    "farbe": "glas",
+    "seite": "O",
+    "z": [
+     19.8,
+     21.55
+    ]
+   },
+   {
+    "name": "Glasbau Eingang West",
+    "farbe": "glasfassade",
+    "seite": "W",
+    "z": [
+     4.4,
+     23.6
+    ],
+    "entlang": [
+     0.76,
+     0.9
+    ]
+   }
+  ],
+  "farben": {
    "wabenplatten": {
-    "rgb": "#f6f2fc",
+    "rgb": "#f2ecf8",
     "notiz": "weiße Wabenplatten",
-    "quelle": "Foto (3 Messfelder)",
+    "quelle": "Foto (4 Messfelder)",
     "proben": [
      {
       "bild": "04_seminar_1",
@@ -360,13 +1225,29 @@
       "lizenz": "CC BY-SA 4.0",
       "urheber": "osmplus_org",
       "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_4",
+      "box": [
+       0.02,
+       0.3,
+       0.2,
+       0.335
+      ],
+      "notiz": "weiße Wabenplatte zwischen Fensterbändern (Foto 4)",
+      "rgb": "#eddee8",
+      "roh": "#eddee8",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M26S000_(801079682620035_at_UXjkI5V2TNfplbYdaSq18H).jpg"
      }
     ]
    },
    "band_rotbraun": {
-    "rgb": "#543535",
-    "notiz": "rotbraunes Brüstungsband",
-    "quelle": "Foto (1 Messfeld)",
+    "rgb": "#4f312c",
+    "notiz": "rotbraunes Brüstungsband über dem Sockel",
+    "quelle": "Foto (3 Messfelder)",
     "proben": [
      {
       "bild": "04_seminar_1",
@@ -383,22 +1264,577 @@
       "lizenz": "CC BY-SA 4.0",
       "urheber": "osmplus_org",
       "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_3",
+      "box": [
+       0.52,
+       0.53,
+       0.74,
+       0.58
+      ],
+      "notiz": "rotbraunes Band (Schatten, ohne Weißabgleich)",
+      "rgb": "#332426",
+      "roh": "#332426",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_4",
+      "box": [
+       0.0,
+       0.52,
+       0.14,
+       0.56
+      ],
+      "notiz": "rotbraunes Band (Foto 4)",
+      "rgb": "#4f312c",
+      "roh": "#4f312c",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M26S000_(801079682620035_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     }
+    ]
+   },
+   "sockel": {
+    "rgb": "#4d4f56",
+    "notiz": "dunkler Naturstein (Sockel, EG)",
+    "quelle": "Foto (3 Messfelder)",
+    "proben": [
+     {
+      "bild": "04_seminar_1",
+      "box": [
+       0.3,
+       0.62,
+       0.4,
+       0.68
+      ],
+      "notiz": "Sockelplatte (Weißabgleich)",
+      "rgb": "#4d4f56",
+      "roh": "#31353f",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_2",
+      "box": [
+       0.06,
+       0.7,
+       0.12,
+       0.74
+      ],
+      "notiz": "Sockel Südende (Weißabgleich)",
+      "rgb": "#5e5b5e",
+      "roh": "#404149",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M56S000_(1370673024472636_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_3",
+      "box": [
+       0.82,
+       0.66,
+       0.88,
+       0.72
+      ],
+      "notiz": "Sockelplatte (Schatten, ohne Weißabgleich)",
+      "rgb": "#343b3e",
+      "roh": "#343b3e",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     }
+    ]
+   },
+   "glas": {
+    "rgb": "#515e7d",
+    "notiz": "Fensterbänder (dunkles Glas in Bändern)",
+    "quelle": "Foto (3 Messfelder)",
+    "proben": [
+     {
+      "bild": "04_seminar_3",
+      "box": [
+       0.52,
+       0.07,
+       0.64,
+       0.15
+      ],
+      "notiz": "Fensterband (spiegelt Himmel)",
+      "rgb": "#475e7d",
+      "roh": "#475e7d",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_3",
+      "box": [
+       0.54,
+       0.31,
+       0.62,
+       0.37
+      ],
+      "notiz": "Fensterband mit Spiegelung der Gegenbebauung (Schatten, ohne Weißabgleich)",
+      "rgb": "#514643",
+      "roh": "#514643",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_4",
+      "box": [
+       0.05,
+       0.235,
+       0.18,
+       0.285
+      ],
+      "notiz": "Fensterband (Foto 4)",
+      "rgb": "#738ebf",
+      "roh": "#738ebf",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M26S000_(801079682620035_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     }
+    ]
+   },
+   "glasfassade": {
+    "rgb": "#60769c",
+    "notiz": "Glasbau am Eingang (Pfosten-Riegel-Fassade, blau spiegelnd)",
+    "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "04_seminar_3",
+      "box": [
+       0.12,
+       0.07,
+       0.34,
+       0.3
+      ],
+      "notiz": "Glasbau, oberer Teil",
+      "rgb": "#506789",
+      "roh": "#506789",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+     },
+     {
+      "bild": "04_seminar_4",
+      "box": [
+       0.3,
+       0.05,
+       0.55,
+       0.3
+      ],
+      "notiz": "Glasbau, oberer Teil (Foto 4)",
+      "rgb": "#6f85af",
+      "roh": "#6f85af",
+      "datum": "2025-10-02",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "osmplus_org",
+      "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M26S000_(801079682620035_at_UXjkI5V2TNfplbYdaSq18H).jpg"
      }
     ]
    }
   },
-  "fassade": "#f6f2fc"
+  "fassade": "#f2ecf8"
  },
  "05_institutsgebaeude": {
   "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
   "dach": "#a2a9aa",
   "basis": "naturstein",
-  "zonen": [],
+  "zonen": [
+   {
+    "name": "Erdgeschoss N dunkel",
+    "farbe": "dunkel",
+    "seite": "N",
+    "z": [
+     0,
+     5.7
+    ],
+    "entlang": [
+     0.0,
+     1.0
+    ]
+   },
+   {
+    "name": "Glasfront West 1.-2. OG",
+    "farbe": "glasfront",
+    "seite": "N",
+    "z": [
+     5.7,
+     13.1
+    ],
+    "entlang": [
+     0.615,
+     1.0
+    ]
+   },
+   {
+    "name": "Rotes Band über EG (Durchgang bis Westteil)",
+    "farbe": "rotbraun",
+    "seite": "N",
+    "z": [
+     5.7,
+     7.5
+    ],
+    "entlang": [
+     0.358,
+     0.615
+    ]
+   },
+   {
+    "name": "Brücke über Durchgang",
+    "farbe": "rotbraun",
+    "seite": "N",
+    "z": [
+     8.6,
+     11.4
+    ],
+    "entlang": [
+     0.292,
+     0.358
+    ]
+   },
+   {
+    "name": "Kopfbau Nord",
+    "farbe": "kopfbau_dunkel",
+    "seite": "N",
+    "entlang": [
+     0.0,
+     0.14
+    ]
+   },
+   {
+    "name": "Kopfbau Ost",
+    "farbe": "kopfbau_dunkel",
+    "seite": "O",
+    "entlang": [
+     0.04,
+     0.53
+    ]
+   },
+   {
+    "name": "Kopfbau Süd",
+    "farbe": "kopfbau_dunkel",
+    "seite": "S",
+    "entlang": [
+     0.9,
+     1.0
+    ]
+   },
+   {
+    "name": "Hof: dunkler Sockel + Glasband",
+    "farbe": "dunkel",
+    "seite": "S",
+    "z": [
+     0,
+     9.3
+    ],
+    "entlang": [
+     0.347,
+     0.9
+    ]
+   },
+   {
+    "name": "Hof: rote Obergeschosse",
+    "farbe": "rotbraun",
+    "seite": "S",
+    "z": [
+     9.3,
+     24.2
+    ],
+    "entlang": [
+     0.347,
+     0.824
+    ]
+   }
+  ],
   "farben": {
-   "kopfbau_dunkel": {
-    "rgb": "#3a464a",
-    "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
+   "naturstein": {
+    "rgb": "#c4beb6",
+    "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
+    "quelle": "Foto (4 Messfelder)",
+    "proben": [
+     {
+      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "box": [
+       0.0,
+       0.0,
+       0.42,
+       0.26
+      ],
+      "notiz": "Nordfassade Grimmaische Straße, Obergeschosse links vom Durchgang (Gesamteindruck)",
+      "rgb": "#c6bfb5",
+      "roh": "#d5d2c9",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+     },
+     {
+      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "box": [
+       0.62,
+       0.0,
+       0.8,
+       0.15
+      ],
+      "notiz": "Nordfassade, Obergeschosse rechts vom Durchgang",
+      "rgb": "#c9c3bc",
+      "roh": "#d8d7d1",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+     },
+     {
+      "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+      "box": [
+       0.0,
+       0.0,
+       0.4,
+       0.15
+      ],
+      "notiz": "Nordfassade, zweites Foto (gleiche Stelle, Weißabgleich Pflaster)",
+      "rgb": "#c2bcb7",
+      "roh": "#dddbd4",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=e939ff76-25c6-469a-8746-a8f5fbff1ff1"
+     },
+     {
+      "bild": "6ffae1bc-11a8-4756-b78a-cb61b502ca01",
+      "box": [
+       0.62,
+       0.0,
+       0.8,
+       0.12
+      ],
+      "notiz": "Nordfassade, drittes Foto",
+      "rgb": "#b9b3b0",
+      "roh": "#d9d6d0",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=6ffae1bc-11a8-4756-b78a-cb61b502ca01"
+     }
+    ]
+   },
+   "rotbraun": {
+    "rgb": "#7e423d",
+    "notiz": "rotbraune Verkleidung: Brücke über dem Durchgang und Band über dem Erdgeschoss; Hofseite rote Obergeschosse",
+    "quelle": "Foto (5 Messfelder)",
+    "proben": [
+     {
+      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "box": [
+       0.445,
+       0.215,
+       0.6,
+       0.29
+      ],
+      "notiz": "Nordfassade: rotbraune Brücke über dem Durchgang",
+      "rgb": "#7e413b",
+      "roh": "#874742",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+     },
+     {
+      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "box": [
+       0.62,
+       0.33,
+       0.85,
+       0.39
+      ],
+      "notiz": "Nordfassade: rotbraunes Band über den Schaufenstern",
+      "rgb": "#854239",
+      "roh": "#8f4940",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+     },
+     {
+      "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+      "box": [
+       0.44,
+       0.205,
+       0.62,
+       0.295
+      ],
+      "notiz": "Brücke (zweites Foto)",
+      "rgb": "#7d423d",
+      "roh": "#8f4d47",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=e939ff76-25c6-469a-8746-a8f5fbff1ff1"
+     },
+     {
+      "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+      "box": [
+       0.62,
+       0.335,
+       0.85,
+       0.395
+      ],
+      "notiz": "Band (zweites Foto)",
+      "rgb": "#84453d",
+      "roh": "#975147",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=e939ff76-25c6-469a-8746-a8f5fbff1ff1"
+     },
+     {
+      "bild": "hof_beck_1",
+      "box": [
+       0.15,
+       0.54,
+       0.35,
+       0.64
+      ],
+      "notiz": "Innenhof: rote Obergeschosse der Südfassade (Sonne, ohne WB)",
+      "rgb": "#5a3b43",
+      "roh": "#5a3b43",
+      "datum": "2025-03-22",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Lukas Beck",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg"
+     }
+    ]
+   },
+   "dunkel": {
+    "rgb": "#36383a",
+    "notiz": "Erdgeschoss: dunkle Schaufensterfronten/Natursteinsockel",
+    "quelle": "Foto (4 Messfelder)",
+    "proben": [
+     {
+      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "box": [
+       0.0,
+       0.4,
+       0.43,
+       0.57
+      ],
+      "notiz": "Nordfassade EG: Schaufenster mit dunklen Fascien",
+      "rgb": "#303534",
+      "roh": "#343a3a",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+     },
+     {
+      "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+      "box": [
+       0.0,
+       0.4,
+       0.4,
+       0.57
+      ],
+      "notiz": "Nordfassade EG (zweites Foto)",
+      "rgb": "#313535",
+      "roh": "#383e3e",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=e939ff76-25c6-469a-8746-a8f5fbff1ff1"
+     },
+     {
+      "bild": "6ffae1bc-11a8-4756-b78a-cb61b502ca01",
+      "box": [
+       0.0,
+       0.4,
+       0.4,
+       0.57
+      ],
+      "notiz": "Nordfassade EG (drittes Foto)",
+      "rgb": "#3b3b3e",
+      "roh": "#454749",
+      "datum": "2022-03-27",
+      "lizenz": "CC-BY-SA-4.0",
+      "urheber": "Robot8A",
+      "url": "https://api.panoramax.xyz/#focus=pic&pic=6ffae1bc-11a8-4756-b78a-cb61b502ca01"
+     },
+     {
+      "bild": "hof_beck_1",
+      "box": [
+       0.15,
+       0.73,
+       0.3,
+       0.78
+      ],
+      "notiz": "Innenhof: dunkler Sockel der Südfassade (ohne WB)",
+      "rgb": "#3b3e43",
+      "roh": "#3b3e43",
+      "datum": "2025-03-22",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Lukas Beck",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg"
+     }
+    ]
+   },
+   "glasfront": {
+    "rgb": "#747879",
+    "notiz": "Westteil Nordfassade: spiegelnde Glasfront im 1. und 2. OG",
     "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "gr_dguendel_2",
+      "box": [
+       0.6,
+       0.47,
+       0.7,
+       0.56
+      ],
+      "notiz": "Glasfront über Erdgeschoss (Sommer 2016, Sonne, ohne WB)",
+      "rgb": "#868b8d",
+      "roh": "#868b8d",
+      "datum": "2016-07-26",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Dguendel",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig,_auf_der_Grimmaischen_Stra%C3%9Fe,_Bild_2.jpg"
+     },
+     {
+      "bild": "gr_dguendel_2",
+      "box": [
+       0.7,
+       0.47,
+       0.78,
+       0.55
+      ],
+      "notiz": "Glasfront (zweites Feld)",
+      "rgb": "#626465",
+      "roh": "#626465",
+      "datum": "2016-07-26",
+      "lizenz": "CC BY 4.0",
+      "urheber": "Dguendel",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig,_auf_der_Grimmaischen_Stra%C3%9Fe,_Bild_2.jpg"
+     }
+    ]
+   },
+   "kopfbau_dunkel": {
+    "rgb": "#424b4f",
+    "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
+    "quelle": "Foto (3 Messfelder)",
     "proben": [
      {
       "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
@@ -424,87 +1860,106 @@
        0.27,
        0.58
       ],
-      "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)",
+      "notiz": "Kopfbau (zweites Foto)",
       "rgb": "#314144",
       "roh": "#152534",
       "datum": "2022-03-27",
       "lizenz": "CC-BY-SA-4.0",
       "urheber": "Robot8A",
       "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
-     }
-    ]
-   },
-   "naturstein": {
-    "rgb": "#c3bab1",
-    "notiz": "heller Naturstein",
-    "quelle": "Foto (1 Messfeld)",
-    "proben": [
+     },
      {
-      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+      "bild": "pl_platz_romero",
       "box": [
-       0.0,
-       0.245,
-       0.43,
-       0.265
+       0.75,
+       0.7,
+       0.97,
+       0.88
       ],
-      "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
-      "rgb": "#c3bab1",
-      "roh": "#d1cdc5",
-      "datum": "2022-03-27",
-      "lizenz": "CC-BY-SA-4.0",
-      "urheber": "Robot8A",
-      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
-     }
-    ]
-   },
-   "rotbraun": {
-    "rgb": "#7e413b",
-    "notiz": "rotbraunes Band",
-    "quelle": "Foto (1 Messfeld)",
-    "proben": [
-     {
-      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
-      "box": [
-       0.445,
-       0.215,
-       0.6,
-       0.29
-      ],
-      "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang",
-      "rgb": "#7e413b",
-      "roh": "#874742",
-      "datum": "2022-03-27",
-      "lizenz": "CC-BY-SA-4.0",
-      "urheber": "Robot8A",
-      "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
+      "notiz": "Kopfbau von Süden (Sonne, ohne WB)",
+      "rgb": "#505655",
+      "roh": "#505655",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augusteum_%26_Paulinum.jpg"
      }
     ]
    }
   },
-  "fassade": "#c3bab1"
+  "fassade": "#c4beb6"
  },
  "06_city_hochhaus": {
   "name": "City-Hochhaus (\"Uniriese\")",
   "dach": "#a2abaf",
   "basis": "fassade",
-  "zonen": [],
+  "zonen": [
+   {
+    "name": "Sockelbau Ost/Nord (Annahme)",
+    "farbe": "sockel",
+    "seite": [
+     330,
+     130
+    ],
+    "z": [
+     0,
+     7
+    ]
+   },
+   {
+    "name": "Glasfront Südwest",
+    "farbe": "glas",
+    "seite": [
+     190,
+     250
+    ],
+    "z": [
+     0,
+     119
+    ]
+   },
+   {
+    "name": "Glasfront Westseite Mitte/Süd",
+    "farbe": "glas",
+    "seite": [
+     276,
+     310
+    ],
+    "z": [
+     0,
+     119
+    ]
+   },
+   {
+    "name": "Glasband Ostspitze",
+    "farbe": "glas",
+    "seite": [
+     85,
+     130
+    ],
+    "z": [
+     7,
+     150
+    ]
+   }
+  ],
   "farben": {
    "fassade": {
-    "rgb": "#7b848e",
-    "notiz": "Platten und Fenster (Gesamteindruck)",
-    "quelle": "Foto (2 Messfelder)",
+    "rgb": "#bfccd6",
+    "notiz": "helle graue Natursteinplatten mit Fensterreihen (Lochfassade, Gesamteindruck)",
+    "quelle": "Foto (5 Messfelder)",
     "proben": [
      {
       "bild": "06_cityhochhaus_3",
       "box": [
-       0.72,
-       0.42,
-       0.8,
-       0.82
+       0.74,
+       0.4,
+       0.82,
+       0.78
       ],
-      "notiz": "Fassade (Platten und Fenster, Gesamteindruck)",
-      "rgb": "#a6afb9",
-      "roh": "#a6afb9",
+      "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)",
+      "rgb": "#939ca9",
+      "roh": "#a7afba",
       "datum": "2019-08-14",
       "lizenz": "CC BY-SA 4.0",
       "urheber": "Krzysztof Golik",
@@ -518,29 +1973,260 @@
        0.56,
        0.75
       ],
-      "notiz": "Ostfassade (Platten und Fenster, Gesamteindruck)",
+      "notiz": "NO-Fassade (Platten und Fenster, Gesamteindruck, Schatten)",
       "rgb": "#505862",
       "roh": "#505862",
       "datum": "2015-08-03",
       "lizenz": "CC BY 2.0",
       "urheber": "Fred Romero from Paris, France",
       "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg"
+     },
+     {
+      "bild": "06_cityhochhaus_2",
+      "box": [
+       0.5,
+       0.3,
+       0.6,
+       0.55
+      ],
+      "notiz": "NO-Fassade (Platten und Fenster, Gesamteindruck)",
+      "rgb": "#d6d5d6",
+      "roh": "#d6d5d6",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero from Paris, France",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig.jpg"
+     },
+     {
+      "bild": "06_vincentz_schumann",
+      "box": [
+       0.43,
+       0.3,
+       0.58,
+       0.55
+      ],
+      "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)",
+      "rgb": "#cbd6e1",
+      "roh": "#cbd6e1",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_-_Robert-Schumann-Denkmal_%2B_City-Hochhaus_01_ies.jpg"
+     },
+     {
+      "bild": "06_vincentz_mensa",
+      "box": [
+       0.55,
+       0.2,
+       0.63,
+       0.55
+      ],
+      "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)",
+      "rgb": "#bfccd7",
+      "roh": "#bfccd7",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg"
+     }
+    ]
+   },
+   "glas": {
+    "rgb": "#394655",
+    "notiz": "dunkles Glas (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
+    "quelle": "Foto (6 Messfelder)",
+    "proben": [
+     {
+      "bild": "06_cityhochhaus_3",
+      "box": [
+       0.52,
+       0.2,
+       0.65,
+       0.5
+      ],
+      "notiz": "SW-Glasfront",
+      "rgb": "#475059",
+      "roh": "#515a62",
+      "datum": "2019-08-14",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Krzysztof Golik",
+      "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
+     },
+     {
+      "bild": "06_vincentz_mensa",
+      "box": [
+       0.38,
+       0.15,
+       0.49,
+       0.45
+      ],
+      "notiz": "SW-Glasfront",
+      "rgb": "#121d2f",
+      "roh": "#121d2f",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg"
+     },
+     {
+      "bild": "06_vincentz_schumann",
+      "box": [
+       0.28,
+       0.25,
+       0.34,
+       0.55
+      ],
+      "notiz": "SW-Glasfront",
+      "rgb": "#2b3b51",
+      "roh": "#2b3b51",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_-_Robert-Schumann-Denkmal_%2B_City-Hochhaus_01_ies.jpg"
+     },
+     {
+      "bild": "06_vincentz_unistr",
+      "box": [
+       0.21,
+       0.62,
+       0.27,
+       0.82
+      ],
+      "notiz": "SW-Glasfront von unten",
+      "rgb": "#121b35",
+      "roh": "#121b35",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_City-Hochhaus_01_ies.jpg"
+     },
+     {
+      "bild": "06_vincentz_moritzbastei",
+      "box": [
+       0.235,
+       0.2,
+       0.255,
+       0.45
+      ],
+      "notiz": "SW-Glasfront schräg",
+      "rgb": "#577da3",
+      "roh": "#577da3",
+      "datum": "2015-07-07",
+      "lizenz": "CC BY-SA 3.0",
+      "urheber": "Frank Vincentz",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg"
+     },
+     {
+      "bild": "06_cityhochhaus_1",
+      "box": [
+       0.4,
+       0.3,
+       0.425,
+       0.7
+      ],
+      "notiz": "Ostspitze Glasband",
+      "rgb": "#606d79",
+      "roh": "#606d79",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero from Paris, France",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg"
+     }
+    ]
+   },
+   "sockel": {
+    "rgb": "#24303e",
+    "notiz": "dunkler Sockelbau/Eingangsbereich",
+    "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "06_cityhochhaus_1",
+      "box": [
+       0.45,
+       0.81,
+       0.58,
+       0.84
+      ],
+      "notiz": "dunkles Vordach/Sockel",
+      "rgb": "#171a1e",
+      "roh": "#171a1e",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero from Paris, France",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg"
+     },
+     {
+      "bild": "06_cityhochhaus_2",
+      "box": [
+       0.03,
+       0.65,
+       0.3,
+       0.85
+      ],
+      "notiz": "dunkle Metallpaneele Sockelbau",
+      "rgb": "#32455e",
+      "roh": "#32455e",
+      "datum": "2015-08-03",
+      "lizenz": "CC BY 2.0",
+      "urheber": "Fred Romero from Paris, France",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig.jpg"
      }
     ]
    }
   },
-  "fassade": "#7b848e"
+  "fassade": "#bfccd6"
  },
  "07_moritzbastei": {
   "name": "Moritzbastei",
   "dach": "#aba6a2",
   "basis": "ziegel",
-  "zonen": [],
+  "zonen": [
+   {
+    "name": "Außenwand Süd/Ost/Südwest (Stein)",
+    "farbe": "stein",
+    "seite": [
+     60,
+     255
+    ],
+    "z": [
+     0,
+     4.9
+    ]
+   },
+   {
+    "name": "Putzanbau Nordende (Westseite)",
+    "farbe": "putz",
+    "seite": [
+     255,
+     300
+    ],
+    "entlang": [
+     0,
+     0.38
+    ],
+    "z": [
+     0,
+     3.8
+    ]
+   },
+   {
+    "name": "Ziegelband oben außen",
+    "farbe": "ziegel",
+    "seite": [
+     60,
+     255
+    ],
+    "z": [
+     4.9,
+     6.6
+    ]
+   }
+  ],
   "farben": {
    "ziegel": {
-    "rgb": "#714b39",
-    "notiz": "Ziegel",
-    "quelle": "Foto (3 Messfelder)",
+    "rgb": "#624b39",
+    "notiz": "Ziegel (rotbraun): Eingangsbau, Innenwände zum Hof, Brüstungsband oben",
+    "quelle": "Foto (5 Messfelder)",
     "proben": [
      {
       "bild": "07_moritzbastei_3",
@@ -589,105 +2275,246 @@
       "lizenz": "CC BY-SA 4.0",
       "urheber": "Chabe01",
       "url": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_5.jpg"
+     },
+     {
+      "bild": "07_moritzbastei_1",
+      "box": [
+       0.15,
+       0.44,
+       0.28,
+       0.52
+      ],
+      "notiz": "Treppenwand: Ziegel (Schatten)",
+      "rgb": "#482d29",
+      "roh": "#593327",
+      "datum": "2025-11-25",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Chabe01",
+      "url": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_5.jpg"
+     },
+     {
+      "bild": "07_pano_ne_nordende",
+      "box": [
+       0.93,
+       0.38,
+       0.99,
+       0.46
+      ],
+      "notiz": "Treppenwand: Ziegel (Sonne)",
+      "rgb": "#5d4b5c",
+      "roh": "#5d4b5c",
+      "datum": "2025-03-28",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Joachim Köhler",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vNordOst-IMG_2256-8x3B-360x180G-PanoS-28-03-2025.jpg"
+     }
+    ]
+   },
+   "stein": {
+    "rgb": "#928e89",
+    "notiz": "hellgraue Natursteinmauer (Außenwand Süd/Ost, teils mit Efeu)",
+    "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "07_pano_se_ost",
+      "box": [
+       0.02,
+       0.5,
+       0.28,
+       0.68
+      ],
+      "notiz": "Ostwand: Stein mit kahlem Efeu",
+      "rgb": "#908c87",
+      "roh": "#908c87",
+      "datum": "2025-03-28",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Joachim Köhler",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg"
+     },
+     {
+      "bild": "07_pano_se_sued",
+      "box": [
+       0.76,
+       0.5,
+       0.96,
+       0.7
+      ],
+      "notiz": "Südwand: Stein mit kahlem Efeu",
+      "rgb": "#948f8b",
+      "roh": "#948f8b",
+      "datum": "2025-03-28",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Joachim Köhler",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg"
+     }
+    ]
+   },
+   "putz": {
+    "rgb": "#8c8a86",
+    "notiz": "weiß verputzter Anbau am Nordende",
+    "quelle": "Foto (2 Messfelder)",
+    "proben": [
+     {
+      "bild": "07_pano_ne_nordende",
+      "box": [
+       0.8,
+       0.52,
+       0.9,
+       0.62
+      ],
+      "notiz": "Putzwand Nordende (Sonne)",
+      "rgb": "#838693",
+      "roh": "#838693",
+      "datum": "2025-03-28",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Joachim Köhler",
+      "url": "https://commons.wikimedia.org/wiki/File:Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vNordOst-IMG_2256-8x3B-360x180G-PanoS-28-03-2025.jpg"
+     },
+     {
+      "bild": "07_moritzbastei_2",
+      "box": [
+       0.1,
+       0.47,
+       0.2,
+       0.62
+      ],
+      "notiz": "Putzanbau (tiefe Sonne)",
+      "rgb": "#958d7a",
+      "roh": "#958d7a",
+      "datum": "2025-11-25",
+      "lizenz": "CC BY-SA 4.0",
+      "urheber": "Chabe01",
+      "url": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_6.jpg"
      }
     ]
    }
   },
-  "fassade": "#714b39"
+  "fassade": "#624b39"
  },
  "_filamente": [
   {
    "nr": 1,
    "rgb": "#e4e0d8",
    "fuer": [
-    "Platte"
+    "Platte",
+    "Dach hell"
    ]
   },
   {
    "nr": 2,
-   "rgb": "#faf2e8",
+   "rgb": "#8a9192",
    "fuer": [
-    "01 weiss",
-    "03 platten"
+    "01 stein_glas",
+    "01 zink",
+    "Dach grau",
+    "07 stein",
+    "07 putz"
    ]
   },
   {
    "nr": 3,
-   "rgb": "#434d55",
+   "rgb": "#404a55",
    "fuer": [
-    "02 glas_stein",
+    "01 glas",
+    "02 lamellen",
+    "06 glas",
+    "03 sockel",
+    "05 kopfbau_dunkel",
     "Dach dunkel",
-    "03 sockel"
+    "04 sockel",
+    "02 glas_stein"
    ]
   },
   {
    "nr": 4,
-   "rgb": "#582526",
+   "rgb": "#d6c8c2",
    "fuer": [
-    "03 rot"
+    "01 stein_hell"
    ]
   },
   {
    "nr": 5,
-   "rgb": "#f6f2fc",
+   "rgb": "#f5eeee",
    "fuer": [
+    "01 weiss",
+    "03 platten",
     "04 wabenplatten"
    ]
   },
   {
    "nr": 6,
-   "rgb": "#c3bab1",
+   "rgb": "#b59180",
    "fuer": [
-    "05 naturstein"
+    "02 sandstein",
+    "Dach rot"
    ]
   },
   {
    "nr": 7,
-   "rgb": "#7b848e",
+   "rgb": "#823a3a",
    "fuer": [
-    "06 fassade"
+    "03 rot",
+    "05 rotbraun"
    ]
   },
   {
    "nr": 8,
-   "rgb": "#714b39",
+   "rgb": "#667375",
    "fuer": [
-    "07 ziegel"
+    "03 glas",
+    "Dach grau",
+    "05 glasfront"
    ]
   },
   {
    "nr": 9,
-   "rgb": "#b3b7b6",
+   "rgb": "#4f312c",
    "fuer": [
-    "Dach hell"
+    "04 band_rotbraun"
    ]
   },
   {
    "nr": 10,
-   "rgb": "#647077",
+   "rgb": "#515e7d",
    "fuer": [
-    "Dach grau"
+    "04 glas"
    ]
   },
   {
    "nr": 11,
-   "rgb": "#929798",
+   "rgb": "#60769c",
    "fuer": [
-    "Dach grau"
+    "04 glasfassade"
    ]
   },
   {
    "nr": 12,
-   "rgb": "#d4d9da",
+   "rgb": "#bcbab6",
    "fuer": [
+    "05 naturstein",
     "Dach hell"
    ]
   },
   {
    "nr": 13,
-   "rgb": "#b78380",
+   "rgb": "#2d343c",
    "fuer": [
-    "Dach rot"
+    "05 dunkel",
+    "06 sockel"
+   ]
+  },
+  {
+   "nr": 14,
+   "rgb": "#bfccd6",
+   "fuer": [
+    "06 fassade"
+   ]
+  },
+  {
+   "nr": 15,
+   "rgb": "#624b39",
+   "fuer": [
+    "07 ziegel"
    ]
   }
  ]

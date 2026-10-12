@@ -1,5 +1,175 @@
 {
  "farben": {
+  "naturstein": {
+   "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
+   "proben": [
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.0,
+      0.0,
+      0.42,
+      0.26
+     ],
+     "notiz": "Nordfassade Grimmaische Straße, Obergeschosse links vom Durchgang (Gesamteindruck)"
+    },
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.62,
+      0.0,
+      0.8,
+      0.15
+     ],
+     "notiz": "Nordfassade, Obergeschosse rechts vom Durchgang"
+    },
+    {
+     "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+     "box": [
+      0.0,
+      0.0,
+      0.4,
+      0.15
+     ],
+     "notiz": "Nordfassade, zweites Foto (gleiche Stelle, Weißabgleich Pflaster)"
+    },
+    {
+     "bild": "6ffae1bc-11a8-4756-b78a-cb61b502ca01",
+     "box": [
+      0.62,
+      0.0,
+      0.8,
+      0.12
+     ],
+     "notiz": "Nordfassade, drittes Foto"
+    }
+   ]
+  },
+  "rotbraun": {
+   "notiz": "rotbraune Verkleidung: Brücke über dem Durchgang und Band über dem Erdgeschoss; Hofseite rote Obergeschosse",
+   "proben": [
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.445,
+      0.215,
+      0.6,
+      0.29
+     ],
+     "notiz": "Nordfassade: rotbraune Brücke über dem Durchgang"
+    },
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.62,
+      0.33,
+      0.85,
+      0.39
+     ],
+     "notiz": "Nordfassade: rotbraunes Band über den Schaufenstern"
+    },
+    {
+     "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+     "box": [
+      0.44,
+      0.205,
+      0.62,
+      0.295
+     ],
+     "notiz": "Brücke (zweites Foto)"
+    },
+    {
+     "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+     "box": [
+      0.62,
+      0.335,
+      0.85,
+      0.395
+     ],
+     "notiz": "Band (zweites Foto)"
+    },
+    {
+     "bild": "hof_beck_1",
+     "box": [
+      0.15,
+      0.54,
+      0.35,
+      0.64
+     ],
+     "notiz": "Innenhof: rote Obergeschosse der Südfassade (Sonne, ohne WB)"
+    }
+   ]
+  },
+  "dunkel": {
+   "notiz": "Erdgeschoss: dunkle Schaufensterfronten/Natursteinsockel",
+   "proben": [
+    {
+     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "box": [
+      0.0,
+      0.4,
+      0.43,
+      0.57
+     ],
+     "notiz": "Nordfassade EG: Schaufenster mit dunklen Fascien"
+    },
+    {
+     "bild": "e939ff76-25c6-469a-8746-a8f5fbff1ff1",
+     "box": [
+      0.0,
+      0.4,
+      0.4,
+      0.57
+     ],
+     "notiz": "Nordfassade EG (zweites Foto)"
+    },
+    {
+     "bild": "6ffae1bc-11a8-4756-b78a-cb61b502ca01",
+     "box": [
+      0.0,
+      0.4,
+      0.4,
+      0.57
+     ],
+     "notiz": "Nordfassade EG (drittes Foto)"
+    },
+    {
+     "bild": "hof_beck_1",
+     "box": [
+      0.15,
+      0.73,
+      0.3,
+      0.78
+     ],
+     "notiz": "Innenhof: dunkler Sockel der Südfassade (ohne WB)"
+    }
+   ]
+  },
+  "glasfront": {
+   "notiz": "Westteil Nordfassade: spiegelnde Glasfront im 1. und 2. OG",
+   "proben": [
+    {
+     "bild": "gr_dguendel_2",
+     "box": [
+      0.6,
+      0.47,
+      0.7,
+      0.56
+     ],
+     "notiz": "Glasfront über Erdgeschoss (Sommer 2016, Sonne, ohne WB)"
+    },
+    {
+     "bild": "gr_dguendel_2",
+     "box": [
+      0.7,
+      0.47,
+      0.78,
+      0.55
+     ],
+     "notiz": "Glasfront (zweites Feld)"
+    }
+   ]
+  },
   "kopfbau_dunkel": {
    "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
    "proben": [
@@ -21,41 +191,173 @@
       0.27,
       0.58
      ],
-     "notiz": "Kopfbau am Augustusplatz: dunkles Glas mit dunklem Stein (zweites Foto)"
-    }
-   ]
-  },
-  "naturstein": {
-   "notiz": "heller Naturstein",
-   "proben": [
+     "notiz": "Kopfbau (zweites Foto)"
+    },
     {
-     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
+     "bild": "pl_platz_romero",
      "box": [
-      0.0,
-      0.245,
-      0.43,
-      0.265
+      0.75,
+      0.7,
+      0.97,
+      0.88
      ],
-     "notiz": "Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)"
-    }
-   ]
-  },
-  "rotbraun": {
-   "notiz": "rotbraunes Band",
-   "proben": [
-    {
-     "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
-     "box": [
-      0.445,
-      0.215,
-      0.6,
-      0.29
-     ],
-     "notiz": "Nordfassade Grimmaische Straße: rotbraunes Band über dem Durchgang"
+     "notiz": "Kopfbau von Süden (Sonne, ohne WB)"
     }
    ]
   }
  },
  "basis": "naturstein",
- "zonen": []
+ "zonen": [
+  {
+   "name": "Erdgeschoss N dunkel",
+   "farbe": "dunkel",
+   "seite": "N",
+   "z": [
+    0,
+    5.7
+   ],
+   "entlang": [
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "name": "Glasfront West 1.-2. OG",
+   "farbe": "glasfront",
+   "seite": "N",
+   "z": [
+    5.7,
+    13.1
+   ],
+   "entlang": [
+    0.615,
+    1.0
+   ]
+  },
+  {
+   "name": "Rotes Band über EG (Durchgang bis Westteil)",
+   "farbe": "rotbraun",
+   "seite": "N",
+   "z": [
+    5.7,
+    7.5
+   ],
+   "entlang": [
+    0.358,
+    0.615
+   ]
+  },
+  {
+   "name": "Brücke über Durchgang",
+   "farbe": "rotbraun",
+   "seite": "N",
+   "z": [
+    8.6,
+    11.4
+   ],
+   "entlang": [
+    0.292,
+    0.358
+   ]
+  },
+  {
+   "name": "Kopfbau Nord",
+   "farbe": "kopfbau_dunkel",
+   "seite": "N",
+   "entlang": [
+    0.0,
+    0.14
+   ]
+  },
+  {
+   "name": "Kopfbau Ost",
+   "farbe": "kopfbau_dunkel",
+   "seite": "O",
+   "entlang": [
+    0.04,
+    0.53
+   ]
+  },
+  {
+   "name": "Kopfbau Süd",
+   "farbe": "kopfbau_dunkel",
+   "seite": "S",
+   "entlang": [
+    0.9,
+    1.0
+   ]
+  },
+  {
+   "name": "Hof: dunkler Sockel + Glasband",
+   "farbe": "dunkel",
+   "seite": "S",
+   "z": [
+    0,
+    9.3
+   ],
+   "entlang": [
+    0.347,
+    0.9
+   ]
+  },
+  {
+   "name": "Hof: rote Obergeschosse",
+   "farbe": "rotbraun",
+   "seite": "S",
+   "z": [
+    9.3,
+    24.2
+   ],
+   "entlang": [
+    0.347,
+    0.824
+   ]
+  }
+ ],
+ "bilder": {
+  "gr_dguendel_2": {
+   "titel": "File:Leipzig, auf der Grimmaischen Straße, Bild 2.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig,_auf_der_Grimmaischen_Stra%C3%9Fe,_Bild_2.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Leipzig%2C_auf_der_Grimmaischen_Stra%C3%9Fe%2C_Bild_2.jpg/1920px-Leipzig%2C_auf_der_Grimmaischen_Stra%C3%9Fe%2C_Bild_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Dguendel",
+   "datum": "2016-07-26"
+  },
+  "pl_platz_romero": {
+   "titel": "File:Leipzig - Augusteum & Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augusteum_%26_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Leipzig_-_Augusteum_%26_Paulinum.jpg/1920px-Leipzig_-_Augusteum_%26_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "datum": "2015-08-03"
+  },
+  "hof_beck_1": {
+   "titel": "File:Leipzig Universität lub 2025-03-22 img01 Neues Augusteum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg/1920px-Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Lukas Beck",
+   "datum": "2025-03-22"
+  }
+ },
+ "weissabgleich": {
+  "e939ff76-25c6-469a-8746-a8f5fbff1ff1": {
+   "box": [
+    0.05,
+    0.85,
+    0.45,
+    0.95
+   ],
+   "notiz": "Pflaster Grimmaische Straße"
+  },
+  "6ffae1bc-11a8-4756-b78a-cb61b502ca01": {
+   "box": [
+    0.05,
+    0.85,
+    0.45,
+    0.95
+   ],
+   "notiz": "Pflaster Grimmaische Straße"
+  }
+ }
 }

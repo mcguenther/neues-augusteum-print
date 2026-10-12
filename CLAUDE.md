@@ -51,9 +51,14 @@ Die gerenderten Bilder in `vorschau/` werden mit committet.
 `generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
 Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
-Farben: `python3 farben.py` schreibt `data/farben.json` (Messfelder für Fassaden in
-`data/fassaden_proben.json`, Fotos aus Panoramax/Wikimedia Commons; Commons drosselt
-geteilte IPs, `farben.py` wiederholt dann mit Wartezeit).
+Farben: je Gebäude `data/fassaden/<slug>.json` (Farben mit Messfeldern in Fotos +
+Fassaden-Zonen), Fotokatalog `data/fotos.json` (Panoramax/Wikimedia Commons; Commons
+drosselt geteilte IPs, `farben.py` wiederholt dann mit Wartezeit). `farben.py` misst
+alles und schreibt `data/farben.json` (macht `generate.py` automatisch bei Änderungen).
+Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
+(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
+Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
+`vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
 
 ## Prüfen vor dem Commit
 

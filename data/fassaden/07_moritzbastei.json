@@ -1,7 +1,7 @@
 {
  "farben": {
   "ziegel": {
-   "notiz": "Ziegel",
+   "notiz": "Ziegel (rotbraun): Eingangsbau, Innenwände zum Hof, Brüstungsband oben",
    "proben": [
     {
      "bild": "07_moritzbastei_3",
@@ -32,10 +32,168 @@
       0.72
      ],
      "notiz": "Eingangsbau: Ziegel (tiefe Sonne)"
+    },
+    {
+     "bild": "07_moritzbastei_1",
+     "box": [
+      0.15,
+      0.44,
+      0.28,
+      0.52
+     ],
+     "notiz": "Treppenwand: Ziegel (Schatten)"
+    },
+    {
+     "bild": "07_pano_ne_nordende",
+     "box": [
+      0.93,
+      0.38,
+      0.99,
+      0.46
+     ],
+     "notiz": "Treppenwand: Ziegel (Sonne)"
+    }
+   ]
+  },
+  "stein": {
+   "notiz": "hellgraue Natursteinmauer (Außenwand Süd/Ost, teils mit Efeu)",
+   "proben": [
+    {
+     "bild": "07_pano_se_ost",
+     "box": [
+      0.02,
+      0.5,
+      0.28,
+      0.68
+     ],
+     "notiz": "Ostwand: Stein mit kahlem Efeu"
+    },
+    {
+     "bild": "07_pano_se_sued",
+     "box": [
+      0.76,
+      0.5,
+      0.96,
+      0.7
+     ],
+     "notiz": "Südwand: Stein mit kahlem Efeu"
+    }
+   ]
+  },
+  "putz": {
+   "notiz": "weiß verputzter Anbau am Nordende",
+   "proben": [
+    {
+     "bild": "07_pano_ne_nordende",
+     "box": [
+      0.8,
+      0.52,
+      0.9,
+      0.62
+     ],
+     "notiz": "Putzwand Nordende (Sonne)"
+    },
+    {
+     "bild": "07_moritzbastei_2",
+     "box": [
+      0.1,
+      0.47,
+      0.2,
+      0.62
+     ],
+     "notiz": "Putzanbau (tiefe Sonne)"
     }
    ]
   }
  },
  "basis": "ziegel",
- "zonen": []
+ "zonen": [
+  {
+   "name": "Außenwand Süd/Ost/Südwest (Stein)",
+   "farbe": "stein",
+   "seite": [
+    60,
+    255
+   ],
+   "z": [
+    0,
+    4.9
+   ]
+  },
+  {
+   "name": "Putzanbau Nordende (Westseite)",
+   "farbe": "putz",
+   "seite": [
+    255,
+    300
+   ],
+   "entlang": [
+    0,
+    0.38
+   ],
+   "z": [
+    0,
+    3.8
+   ]
+  },
+  {
+   "name": "Ziegelband oben außen",
+   "farbe": "ziegel",
+   "seite": [
+    60,
+    255
+   ],
+   "z": [
+    4.9,
+    6.6
+   ]
+  }
+ ],
+ "bilder": {
+  "07_pano_se_ost": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg/3840px-Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-03-28",
+   "ansicht": {
+    "yaw": 15,
+    "pitch": 5,
+    "hfov": 70,
+    "W": 1400,
+    "H": 900
+   },
+   "fassade": "east wall of the Moritzbastei from the south-east (park), grey stone wall with bare ivy, brick cornice"
+  },
+  "07_pano_se_sued": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg/3840px-Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-03-28",
+   "ansicht": {
+    "yaw": 320,
+    "pitch": 5,
+    "hfov": 70,
+    "W": 1400,
+    "H": 900
+   },
+   "fassade": "south wall of the Moritzbastei from the south-east, stone wall with bare ivy, brick cornice"
+  },
+  "07_pano_ne_nordende": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vNordOst-IMG_2256-8x3B-360x180G-PanoS-28-03-2025.jpg/3840px-Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vNordOst-IMG_2256-8x3B-360x180G-PanoS-28-03-2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vNordOst-IMG_2256-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-03-28",
+   "ansicht": {
+    "yaw": 285,
+    "pitch": 3,
+    "hfov": 75,
+    "W": 1400,
+    "H": 900
+   },
+   "fassade": "north end of the Moritzbastei seen from the north-east: white plaster annex, brick stair wall"
+  }
+ }
 }

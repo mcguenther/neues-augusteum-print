@@ -45,7 +45,8 @@ def rgb(c):
     return np.array(matplotlib.colors.to_rgb(c))
 
 
-def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False):
+def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False,
+           light_from_view=False):
     """meshes: Liste von (trimesh.Trimesh, Farbe oder Farben je Dreieck). Liefert PIL-Bild,
     mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild."""
     a, e = np.radians(azim), np.radians(elev)
@@ -53,6 +54,8 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
     right = np.array([-np.sin(a), np.cos(a), 0.0])
     up = np.cross(cam, right)
     light = np.array([-0.35, -0.55, 0.76])
+    if light_from_view:  # Licht von links oben hinter der Kamera: sichtbare Seiten hell
+        light = 0.7 * cam - 0.45 * right + np.array([0, 0, 0.8])
     light /= np.linalg.norm(light)
 
     tris, cols, norms = [], [], []

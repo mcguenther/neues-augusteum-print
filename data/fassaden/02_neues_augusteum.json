@@ -70,55 +70,10 @@
     }
    ]
   },
-  "glas_eg": {
-   "notiz": "Erdgeschoss Hofseite: dunkles, grünlich spiegelndes Glas",
-   "proben": [
-    {
-     "bild": "pl_hof_derbrauni",
-     "box": [
-      0.57,
-      0.72,
-      0.62,
-      0.9
-     ],
-     "notiz": "Erdgeschoss Innenhof: Glas neben dem Portal (ohne WB)"
-    },
-    {
-     "bild": "hof_beck_2",
-     "box": [
-      0.61,
-      0.66,
-      0.67,
-      0.85
-     ],
-     "notiz": "Erdgeschoss Innenhof: Glasfront (ohne WB)"
-    }
-   ]
-  },
   "sandstein": {
    "notiz": "Sandsteinportal des alten Augusteums (Innenhof)",
-   "proben": [
-    {
-     "bild": "pl_hof_derbrauni",
-     "box": [
-      0.64,
-      0.62,
-      0.665,
-      0.74
-     ],
-     "notiz": "Portal: Sandstein (ohne WB)"
-    },
-    {
-     "bild": "hof_beck_2",
-     "box": [
-      0.69,
-      0.66,
-      0.74,
-      0.76
-     ],
-     "notiz": "Portal: Sandstein (ohne WB)"
-    }
-   ]
+   "hex": "#b39f7f",
+   "quelle": "geschätzt nach Fotos (Sandstein im Foto teils im Schatten, Messfelder nicht verwertbar)"
   }
  },
  "basis": "glas_stein",
@@ -132,12 +87,16 @@
    ]
   },
   {
-   "name": "Erdgeschoss Hofseite",
-   "farbe": "glas_eg",
+   "name": "Sandsteinportal Innenhof (Lage geschätzt)",
+   "farbe": "sandstein",
    "seite": "W",
    "z": [
     0,
-    9.8
+    10
+   ],
+   "entlang": [
+    0.1,
+    0.3
    ]
   }
  ],

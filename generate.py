@@ -636,8 +636,8 @@ def render_coloured(objs, quelle, scale, variant):
         nrs = {h: (F.filament_nr(farben, h) if farben else 1) for h in set(hexes)}
         meshes.append((tm, np.array([pal[nrs[h] - 1] for h in hexes])))
     label = "1:%d, %s" % (scale, preview.QUELLEN_NAMEN.get(quelle, quelle))
-    for suffix, azim, elev, blick in (("", -30, 32, "von Südwesten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
-        im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev)
+    for suffix, azim, elev, blick in (("", -30, 32, "von Südosten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
+        im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev, light_from_view=True)
         out = preview.caption(im, "Farbig %s%s  (%s)" % (
             blick, ", mit Extras" if "extras" in variant else "", label),
             "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
@@ -650,8 +650,8 @@ def render_coloured(objs, quelle, scale, variant):
         tiles = []
         for (name, tm, _), (m, cols) in zip(objs[1:], meshes[1:]):
             for azim in (-35, 145):
-                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25)
-                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südwesten" if azim < 0 else "Nordosten")))
+                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25, light_from_view=True)
+                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten")))
         preview.contact_sheet(tiles, os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
                               "Einzelgebäude farbig (%s)" % label, cols=4, cell=(560, 530))
 

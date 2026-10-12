@@ -104,55 +104,61 @@ nicht – er sieht nur von oben.
 
 ## Farben
 
-`data/farben.json` enthält je Gebäude eine Fassaden- und eine Dachfarbe (plus
-Akzentfarben), erzeugt mit `python3 farben.py`:
+Die Modelle sind **abschnittsweise** eingefärbt: Jede Fassade ist in Zonen
+gegliedert (Sockel, Bänder, Fensterbänder, Glasflächen, farbige Verkleidungen,
+eigene Bauteile wie die Mensa am Park), und die Dächer zeigen die Farbflächen
+aus dem Luftbild. Einzelne Steine oder Fenster einer Lochfassade werden nicht
+abgebildet, deren Fläche erscheint im Gesamteindruck.
 
+![Farbig vom Augustusplatz](vorschau/vergleich_farbig_ost.png)
+
+- **Fassaden** (`data/fassaden/<gebäude>.json`): benannte Farben, jede gemessen als
+  Median über Bildausschnitte aus offen lizenzierten **Straßenfotos**
+  (Fotokatalog `data/fotos.json`: Panoramax, Wikimedia Commons inkl. einer
+  360°-Fahrt durch die Universitätsstraße, die `farben.py` selbst in normale
+  Ansichten umrechnet), mit Weißabgleich am grauen Pflaster in derselben
+  Beleuchtung. Dazu die **Zonen**: Höhe über Gelände, Fassadenseite
+  (Himmelsrichtung) und Abschnitt entlang der Fassade. Format und Prüfwerkzeug
+  siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
 - **Dächer**: [Luftbild 2024 der Stadt Leipzig](https://opendata.leipzig.de/dataset/luftbild-2024-20-cm-bodenauflosung-stadt-leipzig)
-  (20 cm, dl-de/by-2-0), Median im Grundriss. In den farbigen Vorschauen wird jede
-  Dachfläche einzeln aus dem Luftbild eingefärbt. Das GeoSN-Orthofoto 2025 ist auch
-  frei, aber im März aufgenommen, mit langen Schatten des Uniriesen über dem Campus.
-- **Fassaden**: Für Fassaden gibt es keine offenen Farbdaten (das texturierte
-  Stadtmodell ist nicht frei). Gemessen wird deshalb in offen lizenzierten
-  **Straßenfotos** in festgelegten Bildausschnitten (`data/fassaden_proben.json`),
-  mit Weißabgleich am grauen Pflaster in derselben Beleuchtung:
-  - Paulinum, Neues Augusteum, Institutsgebäude: Panoramax (März 2022),
-  - Hörsaal- und Seminargebäude: 360°-Fahrt durch die Universitätsstraße
-    (Mapillary-Spiegel auf Wikimedia Commons, Oktober 2025) – `farben.py` rechnet
-    die Panoramen selbst in normale Ansichten um,
-  - Uniriese und Moritzbastei: Fotos von Wikimedia Commons.
-
-  Je Gebäude wird über mehrere Messfelder (oft aus mehreren Fotos) der Median
-  genommen. Auffällige Zweitfarben (rote Verkleidung der Mensa am Park, rote
-  Brücke am Seminargebäude, rotbraunes Band am Institutsgebäude, dunkle Sockel)
-  stehen als Akzentfarben in `data/farben.json`.
+  (20 cm, dl-de/by-2-0). Daraus werden wenige typische Dachfarben bestimmt
+  (Dachpalette, k-means); jede Dachfläche bekommt die Klasse, die das Luftbild an
+  ihr zeigt (rote Dächer, helle und dunkle Flachdächer, Glas).
+- `python3 farben.py` misst alles neu und schreibt `data/farben.json`;
+  `generate.py` macht das automatisch, wenn sich Fassaden- oder Fotodaten geändert
+  haben.
 
 ![Farben](vorschau/farben.png)
 
 ![Messfelder](vorschau/farben_fotoproben.jpg)
 
-Die Farben sind Anhaltswerte (Fotos im Schatten, Glasfassaden spiegeln) – zum
-Auswählen von Filamenten taugen sie, als exakte Farbtöne nicht.
+Die Farben sind Anhaltswerte (Fotos im Schatten, Glas spiegelt); die Lage der
+Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa ±0,5–1 m,
+Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
 
 ## Mehrfarbig drucken
 
-Die `*_objekte.3mf` enthalten die Farben in den Formaten, die die Slicer selbst
+Die `*_objekte.3mf` sind fertig vorbemalt, in den Formaten, die die Slicer selbst
 lesen (geprüft am Quellcode von PrusaSlicer 2.7–2.9, Bambu Studio und OrcaSlicer):
 
-- **Objekt-Filament** = Fassadenfarbe des Gebäudes (`Metadata/model_settings.config`
-  für Bambu/Orca, `Metadata/Slic3r_PE_model.config` für PrusaSlicer).
-- **Dächer vorbemalt** mit der Dachfarbe (`paint_color` bzw.
-  `slic3rpe:mmu_segmentation` an den Dachdreiecken) – im Slicer als
-  Mehrfarben-Bemalung sichtbar und nachbearbeitbar.
-- Zusätzlich `basematerials` (3MF-Standard) für Betrachter wie den Windows-3D-Viewer;
-  Slicer ignorieren diese.
+- Jedes Gebäude ist an seinen Zonengrenzen zerschnitten (Netz bleibt dicht).
+- **Objekt-Filament** = häufigste Wandfarbe des Gebäudes
+  (`Metadata/model_settings.config` für Bambu/Orca, `Metadata/Slic3r_PE_model.config`
+  für PrusaSlicer).
+- **Alle anderen Flächen vorbemalt** (`paint_color` bzw.
+  `slic3rpe:mmu_segmentation`) – im Slicer als Mehrfarben-Bemalung sichtbar und
+  nachbearbeitbar.
+- Zusätzlich `basematerials` (3MF-Standard) für Betrachter wie den
+  Windows-3D-Viewer; Slicer ignorieren diese.
 
-Die Filament-Nummern F1–F10 sind für alle Dateien gleich; welche Farbe zu welcher
-Nummer gehört, zeigt `vorschau/farben.png` (Feld „F…“, Liste in
-`data/farben.json` → `_filamente`). Kaum unterscheidbare Töne (z. B. die hellen
-Fassaden von Paulinum und Hörsaalgebäude) teilen sich ein Filament
-(`FILAMENT_TOLERANZ` in `farben.py`). Die Filamentfarben selbst kann eine 3MF-Datei
-ohne vollständiges Druckerprofil nicht mitbringen: Bambu Studio/OrcaSlicer legen
-beim Öffnen automatisch genügend Filamente an (Farben anpassen bzw. gleiche Farben
+Die Filament-Nummern sind für alle Dateien gleich; welche Farbe zu welcher Nummer
+gehört, zeigt `vorschau/farben.png` (Feld „F…“, Liste in `data/farben.json` →
+`_filamente`). Ähnliche Töne werden automatisch zusammengelegt, höchstens 15
+Filamente (Grenze PrusaSlicer; `FILAMENT_TOLERANZ`, `MAX_FILAMENTE` in
+`farben.py`). Die farbigen Vorschaubilder zeigen genau diese Filamentfarben, also
+das, was gedruckt wird. Die Filamentfarben selbst kann eine 3MF-Datei ohne
+vollständiges Druckerprofil nicht mitbringen: Bambu Studio/OrcaSlicer legen beim
+Öffnen automatisch genügend Filamente an (Farben anpassen bzw. gleiche Farben
 zusammenlegen), in PrusaSlicer braucht es ein Mehrfarb-Druckerprofil (MMU/XL).
 Wer weniger Filamente hat, ordnet einfach mehreren Nummern dasselbe Filament zu.
 Cura liest keine Farben aus 3MF.
@@ -179,7 +185,8 @@ python3 generate.py                     # alle Quellen, 1:1000 und 1:1500
 python3 generate.py --quelle laserscan  # nur eine Quelle (mehrfach angebbar)
 python3 generate.py --scale 750         # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch             # Quelldaten neu laden (LoD2 130 MB, Laserscan 240 MB)
-python3 farben.py                       # Farben neu bestimmen (data/farben.json)
+python3 farben.py                       # Farben neu messen (data/farben.json)
+python3 fassaden.py 03_hoersaalgebaeude # Prüfansicht der Fassaden-Zonen eines Gebäudes
 python3 preview.py                      # nur Vorschaubilder neu rendern
 python3 preview.py datei.stl --azim -90 --elev 40   # eigene Ansicht einer Datei
 ```
