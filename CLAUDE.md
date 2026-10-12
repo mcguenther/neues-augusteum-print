@@ -3,6 +3,12 @@
 Repo: 3D-Druckmodelle des Campus Augustusplatz (Uni Leipzig) aus OSM-Daten.
 Antworten im Chat auf Deutsch.
 
+## Arbeitsweise
+
+Teilaufgaben wie Recherche, Datenquellen prüfen oder viele Dateien/Fotos
+durchsuchen an Sonnet-Subagents (`model: "sonnet"`) abgeben, wo das sinnvoll ist;
+Geometrie- und Generatorarbeit selbst machen.
+
 ## Setup
 
 In Cloud-Sessions installiert der SessionStart-Hook
@@ -46,7 +52,8 @@ Die gerenderten Bilder in `vorschau/` werden mit committet.
 Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
 Farben: `python3 farben.py` schreibt `data/farben.json` (Messfelder für Fassaden in
-`data/fassaden_proben.json`).
+`data/fassaden_proben.json`, Fotos aus Panoramax/Wikimedia Commons; Commons drosselt
+geteilte IPs, `farben.py` wiederholt dann mit Wartezeit).
 
 ## Prüfen vor dem Commit
 

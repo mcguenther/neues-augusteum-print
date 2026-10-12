@@ -44,6 +44,7 @@ SIMPLIFY = 0.08     # mm Toleranz beim Vereinfachen des Netzes (unter Schichthö
 LOD2_CAP = 4.0      # m, so weit darf der Scan über das LoD2-Dach ragen (Aufbauten)
 LOD2_SNAP = 0.5     # m, innerhalb dieser Abweichung gilt die (glatte) LoD2-Dachfläche
 EDGE = 1.0          # m Randstreifen, in dem Löcher im Scan aus dem LoD2-Dach gefüllt werden
+NOTCH = 3.0         # m: schmalere Vertiefungen unter dem LoD2-Dach gelten als Messlücke
 
 
 def footprints_utm():
@@ -161,6 +162,86 @@ def heightfield_solid(grid, x0, y0, res, s, z_floor=0.0):
     return m3d.Manifold(mesh)
 
 
+def main_axis(fp):
+    """Hauptrichtung des Grundrisses (Grad, 0..90): längengewichtetes Mittel der Kanten mod 90°."""
+    ang, w = [], []
+    for p in G.polys_of(fp):
+        c = np.asarray(p.exterior.coords)
+        d = np.diff(c, axis=0)
+        ang.append(np.arctan2(d[:, 1], d[:, 0]))
+        w.append(np.hypot(d[:, 0], d[:, 1]))
+    ang, w = np.concatenate(ang), np.concatenate(w)
+    z = (w * np.exp(4j * ang)).sum()  # Richtungen mod 90° als Vektormittel
+    return np.degrees(np.angle(z) / 4)
+
+
+def rot2(xy, deg, c):
+    t = np.radians(deg)
+    R = np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]])
+    return (np.asarray(xy) - c) @ R.T + c
+
+
+def building_grid(pts, fp, info, theta=0.0):
+    """Höhenraster (absolute Höhen, m) eines Gebäudes; fp = Grundriss lokal in m.
+
+    Das Raster ist um `theta` (Grad) gedreht – an der Hauptachse des Gebäudes
+    ausgerichtet, damit Kanten und Dachstufen nicht als Treppen im Raster
+    erscheinen. Liefert (grid, zl, minx, miny, punkte, c) im gedrehten System
+    (Drehung um -theta um den Punkt c); zl = LoD2-Dach im selben Raster.
+    """
+    from shapely import affinity
+    c = np.array(fp.centroid.coords[0])
+    near = pts[np.hypot(pts[:, 0] - c[0], pts[:, 1] - c[1]) < fp.hausdorff_distance(fp.centroid) + 3]
+    pts = np.column_stack([rot2(near[:, :2], -theta, c), near[:, 2]])
+    fp = affinity.rotate(fp, -theta, origin=tuple(c))
+    roofs = []
+    for poly, n, d in info["roofs"]:
+        n2 = np.r_[rot2(n[:2], -theta, 0), n[2]]
+        roofs.append((affinity.rotate(poly, -theta, origin=tuple(c)), n2, d - n[:2] @ c + n2[:2] @ c))
+
+    minx, miny, maxx, maxy = fp.buffer(1.0).bounds
+    sel = pts[(pts[:, 0] >= minx) & (pts[:, 0] <= maxx) & (pts[:, 1] >= miny) & (pts[:, 1] <= maxy)]
+    # nur Punkte im (leicht verkleinerten) Grundriss: keine Fassaden der Nachbarn
+    sel = sel[shapely.contains_xy(fp.buffer(-0.3), sel[:, 0], sel[:, 1])]
+    grid = height_grid(sel, (minx, miny, maxx, maxy))
+    if grid is None:
+        return None
+    # Deckel aus dem LoD2-Dach: Punkte, die deutlich darüber liegen, gehören zu
+    # Nachbargebäuden an der gemeinsamen Grenze (z. B. Giebel des Paulinums).
+    # Wo Scan und LoD2-Dach übereinstimmen, die glatte Dachebene nehmen (kein Messrauschen);
+    # Abweichungen (Aufbauten, Oberlichter, Höfe, Turmkrone) kommen aus dem Scan.
+    zl = lod2_grid(roofs, grid.shape, minx, miny, RASTER)
+    has = ~np.isnan(zl)
+    zl0 = np.where(has, zl, 0)
+    grid[has] = np.minimum(grid[has], zl[has] + LOD2_CAP)
+    snap = has & (np.abs(grid - zl0) < LOD2_SNAP)
+    grid[snap] = zl[snap]
+    # Randzellen, die nur Fassaden- statt Dachpunkte sahen (Kataster-Grundriss etwas
+    # größer als die Dachkante), würden als Schlitze in den Wänden erscheinen.
+    X, Y = np.meshgrid(minx + (np.arange(grid.shape[1]) + 0.5) * RASTER,
+                       miny + (np.arange(grid.shape[0]) + 0.5) * RASTER)
+    low = has & (grid < zl0 - LOD2_SNAP)
+    edge = low & ~shapely.contains_xy(fp.buffer(-EDGE), X, Y)
+    grid[edge] = zl[edge]
+    # Schmale Vertiefungen unter dem LoD2-Dach (Rillen hinter der Dachkante, Schlitze
+    # zwischen Aufbauten) auffüllen; was eine Öffnung mit NOTCH Durchmesser übersteht
+    # (Lichthöfe, Terrassen, Einschnitte), ist echt und bleibt.
+    r = int(round(NOTCH / 2 / RASTER))
+    yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
+    wide = ndimage.binary_opening(low & ~edge, structure=(xx ** 2 + yy ** 2) <= r * r)
+    notch = low & ~edge & ~wide
+    grid[notch] = zl[notch]
+    # schmale Rinnen (1–2 Zellen) schließen: ohnehin nicht druckbar, meist Messlücken
+    grid = ndimage.grey_closing(grid, size=3)
+    # Zellen außerhalb des Grundrisses = nächste Zelle innen. Sonst interpoliert das Netz
+    # an der Dachkante zum (beliebigen) Außenwert, und die Wandoberkante bekommt Kerben.
+    inside = shapely.contains_xy(fp, X, Y)
+    if inside.any():
+        _, (iy, ix) = ndimage.distance_transform_edt(~inside, return_indices=True)
+        grid = grid[iy, ix]
+    return grid, zl, minx, miny, len(sel), c
+
+
 def models(s):
     """Volumenkörper (mm), Grundrisse (mm) und Infos je Gebäude-Slug."""
     if not os.path.exists(LAZ_FILE):
@@ -169,37 +250,20 @@ def models(s):
     out = {}
     for slug, (_, fp_mm, info) in lod2.models(s).items():
         fp = G.scale_geom(fp_mm, 1.0 / s)  # zurück in m (lokal)
-        minx, miny, maxx, maxy = fp.buffer(1.0).bounds
-        sel = pts[(pts[:, 0] >= minx) & (pts[:, 0] <= maxx) & (pts[:, 1] >= miny) & (pts[:, 1] <= maxy)]
-        # nur Punkte im (leicht verkleinerten) Grundriss: keine Fassaden der Nachbarn
-        sel = sel[shapely.contains_xy(fp.buffer(-0.3), sel[:, 0], sel[:, 1])]
-        grid = height_grid(sel, (minx, miny, maxx, maxy))
-        if grid is None:
+        theta = main_axis(fp)
+        res = building_grid(pts, fp, info, theta)
+        if res is None:
             continue
-        # Deckel aus dem LoD2-Dach: Punkte, die deutlich darüber liegen, gehören zu
-        # Nachbargebäuden an der gemeinsamen Grenze (z. B. Giebel des Paulinums)
-        # Wo Scan und LoD2-Dach übereinstimmen, die glatte Dachebene nehmen (kein Messrauschen);
-        # Abweichungen (Aufbauten, Oberlichter, Höfe, Turmkrone) kommen aus dem Scan.
-        zl = lod2_grid(info["roofs"], grid.shape, minx, miny, RASTER)
-        has = ~np.isnan(zl)
-        grid[has] = np.minimum(grid[has], zl[has] + LOD2_CAP)
-        snap = has & (np.abs(grid - np.where(has, zl, 0)) < LOD2_SNAP)
-        grid[snap] = zl[snap]
-        # Randzellen, die nur Fassaden- statt Dachpunkte sahen (Kataster-Grundriss etwas
-        # größer als die Dachkante), würden als Schlitze in den Wänden erscheinen.
-        X, Y = np.meshgrid(minx + (np.arange(grid.shape[1]) + 0.5) * RASTER,
-                           miny + (np.arange(grid.shape[0]) + 0.5) * RASTER)
-        edge = has & ~shapely.contains_xy(fp.buffer(-EDGE), X, Y) & (grid < np.where(has, zl, 0) - LOD2_SNAP)
-        grid[edge] = zl[edge]
-        # schmale Rinnen (1–2 Zellen) schließen: ohnehin nicht druckbar, meist Messlücken
-        grid = ndimage.grey_closing(grid, size=3)
+        grid, _, minx, miny, npts, c = res
         hf = heightfield_solid(grid - info["ground_z"], minx, miny, RASTER, s).simplify(SIMPLIFY)
+        # zurück ins Kartensystem drehen
+        hf = hf.translate([-c[0] * s, -c[1] * s, 0]).rotate([0, 0, theta]).translate([c[0] * s, c[1] * s, 0])
         # erst danach ausschneiden, damit die Außenwände exakt eben bleiben
         solid = hf ^ G.extrude(fp_mm, -1, (grid.max() - info["ground_z"]) * s + 1)
         comps = solid.decompose()
         vmax = max(c.volume() for c in comps)
         solid = G.union([c for c in comps if c.volume() > 0.005 * vmax])
-        out[slug] = (solid, fp_mm, dict(ground_z=info["ground_z"], punkte=len(sel)))
+        out[slug] = (solid, fp_mm, dict(ground_z=info["ground_z"], punkte=npts, raster_drehung=round(theta, 1)))
     return out
 
 

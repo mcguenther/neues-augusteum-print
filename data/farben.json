@@ -1,14 +1,14 @@
 {
  "_quellen": {
   "dach": "Stadt Leipzig, Luftbild 2024 (20 cm, WMTS), dl-de/by-2-0, Median im Grundriss",
-  "fassade_foto": "Panoramax-Straßenfotos, CC-BY-SA-4.0, Ausschnitte in data/fassaden_proben.json",
+  "fassade_foto": "Straßenfotos (Panoramax, Wikimedia Commons; Lizenzen je Probe), Ausschnitte in data/fassaden_proben.json",
   "fassade_osm": "OpenStreetMap building:colour / building:material (ODbL)"
  },
  "01_paulinum": {
   "name": "Paulinum (Aula und Universitätskirche St. Pauli)",
   "dach": "#6d7f85",
   "fassade": "#fff6ea",
-  "fassade_quelle": "Foto (Panoramax): Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk; Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto); Giebel: hellgrauer Naturstein neben dem Fenster",
+  "fassade_quelle": "Foto (3 Messfelder): Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk; Giebel: weiße Fensterfläche mit Maßwerk; Giebel: hellgrauer Naturstein neben dem Fenster",
   "akzente": [],
   "osm": "OSM building:colour=blue (w186275390)"
  },
@@ -16,29 +16,47 @@
   "name": "Neues Augusteum",
   "dach": "#728291",
   "fassade": "#40545a",
-  "fassade_quelle": "Foto (Panoramax): Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
+  "fassade_quelle": "Foto (1 Messfeld): Ostfassade am Augustusplatz: Glas mit grauen Natursteinlamellen",
   "akzente": [],
   "osm": "OSM building:colour=#3B5991 (w192282776)"
  },
  "03_hoersaalgebaeude": {
   "name": "Hörsaalgebäude (mit Mensa am Park)",
   "dach": "#b7b2b1",
-  "fassade": "#d8d6d0",
-  "fassade_quelle": "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten",
-  "akzente": []
+  "fassade": "#f4ede7",
+  "fassade_quelle": "Foto (3 Messfelder): Westfassade Universitätsstraße: helle Fassadenplatten; Obergeschoss Mensa am Park: helle Fassadenplatten",
+  "akzente": [
+   {
+    "rgb": "#582526",
+    "notiz": "Mensa am Park: rote Verkleidung"
+   },
+   {
+    "rgb": "#46474f",
+    "notiz": "Sockel: dunkler Naturstein"
+   }
+  ]
  },
  "04_seminargebaeude": {
   "name": "Seminargebäude",
   "dach": "#bdc0be",
-  "fassade": "#d8d6d0",
-  "fassade_quelle": "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten",
-  "akzente": []
+  "fassade": "#f6f2fc",
+  "fassade_quelle": "Foto (3 Messfelder): Westfassade Universitätsstraße: weiße Wabenplatten",
+  "akzente": [
+   {
+    "rgb": "#92544f",
+    "notiz": "rote Brücke zum Hörsaalgebäude"
+   },
+   {
+    "rgb": "#543535",
+    "notiz": "rotbraunes Brüstungsband"
+   }
+  ]
  },
  "05_institutsgebaeude": {
   "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
   "dach": "#a2a9aa",
   "fassade": "#c3bab1",
-  "fassade_quelle": "Foto (Panoramax): Nordfassade Grimmaische Straße: heller Naturstein (Brüstungsband)",
+  "fassade_quelle": "Foto (1 Messfeld): Nordfassade Grimmaische Straße: heller Naturstein",
   "akzente": [
    {
     "rgb": "#3a464a",
@@ -53,16 +71,16 @@
  "06_city_hochhaus": {
   "name": "City-Hochhaus (\"Uniriese\")",
   "dach": "#a2abaf",
-  "fassade": "#d3d3d3",
-  "fassade_quelle": "OSM building:colour=lightgrey (w1445157852)",
+  "fassade": "#7b848e",
+  "fassade_quelle": "Foto (2 Messfelder): Fassade; Ostfassade",
   "akzente": [],
   "osm": "OSM building:colour=lightgrey (w1445157852)"
  },
  "07_moritzbastei": {
   "name": "Moritzbastei",
   "dach": "#aba6a2",
-  "fassade": "#9c5a3c",
-  "fassade_quelle": "OSM building:material=brick (w191797878)",
+  "fassade": "#714b39",
+  "fassade_quelle": "Foto (3 Messfelder): Eingangsbau: Ziegel",
   "akzente": [],
   "osm": "OSM building:material=brick (w191797878)"
  },
@@ -82,7 +100,7 @@
    "roh": "#1f374d",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
   },
   {
@@ -100,7 +118,7 @@
    "roh": "#85a1c8",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
   },
   {
@@ -118,7 +136,7 @@
    "roh": "#203143",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365"
   },
   {
@@ -136,7 +154,7 @@
    "roh": "#d1cdc5",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
   },
   {
@@ -154,7 +172,7 @@
    "roh": "#874742",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750"
   },
   {
@@ -172,7 +190,7 @@
    "roh": "#809cc1",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
   },
   {
@@ -190,7 +208,7 @@
    "roh": "#607493",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
   },
   {
@@ -208,8 +226,373 @@
    "roh": "#152534",
    "datum": "2022-03-27",
    "lizenz": "CC-BY-SA-4.0",
-   "fotograf": "Robot8A",
+   "urheber": "Robot8A",
    "url": "https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58"
+  },
+  {
+   "gebaeude": "03_hoersaalgebaeude",
+   "rolle": "haupt",
+   "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten",
+   "bild": "03_hoersaal_1",
+   "box": [
+    0.32,
+    0.03,
+    0.56,
+    0.48
+   ],
+   "rgb": "#f4ede8",
+   "roh": "#9c969c",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "03_hoersaalgebaeude",
+   "rolle": "haupt",
+   "notiz": "Westfassade Universitätsstraße: helle Fassadenplatten (zweites Foto)",
+   "bild": "04_seminar_2",
+   "box": [
+    0.62,
+    0.1,
+    0.85,
+    0.27
+   ],
+   "rgb": "#fbeee7",
+   "roh": "#abaab3",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M56S000_(1370673024472636_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "03_hoersaalgebaeude",
+   "rolle": "haupt",
+   "notiz": "Obergeschoss Mensa am Park: helle Fassadenplatten (Sonne)",
+   "bild": "06_cityhochhaus_3",
+   "box": [
+    0.02,
+    0.5,
+    0.19,
+    0.58
+   ],
+   "rgb": "#aeb0af",
+   "roh": "#aeb0af",
+   "datum": "2019-08-14",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Krzysztof Golik",
+   "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
+  },
+  {
+   "gebaeude": "03_hoersaalgebaeude",
+   "rolle": "akzent",
+   "notiz": "Mensa am Park: rote Verkleidung",
+   "bild": "06_cityhochhaus_3",
+   "box": [
+    0.0,
+    0.72,
+    0.06,
+    0.85
+   ],
+   "rgb": "#582526",
+   "roh": "#582526",
+   "datum": "2019-08-14",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Krzysztof Golik",
+   "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
+  },
+  {
+   "gebaeude": "03_hoersaalgebaeude",
+   "rolle": "akzent",
+   "notiz": "Sockel: dunkler Naturstein",
+   "bild": "03_hoersaal_1",
+   "box": [
+    0.27,
+    0.66,
+    0.45,
+    0.85
+   ],
+   "rgb": "#46474f",
+   "roh": "#2d2d35",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "akzent",
+   "notiz": "rote Brücke zum Hörsaalgebäude",
+   "bild": "04_seminar_2",
+   "box": [
+    0.3,
+    0.26,
+    0.47,
+    0.36
+   ],
+   "rgb": "#864643",
+   "roh": "#5b3234",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M56S000_(1370673024472636_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "akzent",
+   "notiz": "rote Brücke zum Hörsaalgebäude (zweites Foto)",
+   "bild": "04_seminar_1",
+   "box": [
+    0.66,
+    0.15,
+    0.92,
+    0.24
+   ],
+   "rgb": "#9e625b",
+   "roh": "#644243",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "06_city_hochhaus",
+   "rolle": "haupt",
+   "notiz": "Fassade (Platten und Fenster, Gesamteindruck)",
+   "bild": "06_cityhochhaus_3",
+   "box": [
+    0.72,
+    0.42,
+    0.8,
+    0.82
+   ],
+   "rgb": "#a6afb9",
+   "roh": "#a6afb9",
+   "datum": "2019-08-14",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Krzysztof Golik",
+   "url": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg"
+  },
+  {
+   "gebaeude": "06_city_hochhaus",
+   "rolle": "haupt",
+   "notiz": "Ostfassade (Platten und Fenster, Gesamteindruck)",
+   "bild": "06_cityhochhaus_1",
+   "box": [
+    0.46,
+    0.3,
+    0.56,
+    0.75
+   ],
+   "rgb": "#505862",
+   "roh": "#505862",
+   "datum": "2015-08-03",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero from Paris, France",
+   "url": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg"
+  },
+  {
+   "gebaeude": "07_moritzbastei",
+   "rolle": "haupt",
+   "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)",
+   "bild": "07_moritzbastei_3",
+   "box": [
+    0.14,
+    0.43,
+    0.175,
+    0.49
+   ],
+   "rgb": "#714b39",
+   "roh": "#7f553e",
+   "datum": "2026-09-13",
+   "lizenz": "CC0",
+   "urheber": "NutzerAusBerlin",
+   "url": "https://commons.wikimedia.org/wiki/File:Leipzig_20260913_Moritzbastei.jpg"
+  },
+  {
+   "gebaeude": "07_moritzbastei",
+   "rolle": "haupt",
+   "notiz": "Eingangsbau: Ziegel (bedeckter Himmel)",
+   "bild": "07_moritzbastei_3",
+   "box": [
+    0.31,
+    0.42,
+    0.36,
+    0.5
+   ],
+   "rgb": "#624234",
+   "roh": "#6e4a39",
+   "datum": "2026-09-13",
+   "lizenz": "CC0",
+   "urheber": "NutzerAusBerlin",
+   "url": "https://commons.wikimedia.org/wiki/File:Leipzig_20260913_Moritzbastei.jpg"
+  },
+  {
+   "gebaeude": "07_moritzbastei",
+   "rolle": "haupt",
+   "notiz": "Eingangsbau: Ziegel (tiefe Sonne)",
+   "bild": "07_moritzbastei_1",
+   "box": [
+    0.44,
+    0.47,
+    0.5,
+    0.72
+   ],
+   "rgb": "#745240",
+   "roh": "#8f5c3d",
+   "datum": "2025-11-25",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Chabe01",
+   "url": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_5.jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "haupt",
+   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
+   "bild": "04_seminar_1",
+   "box": [
+    0.28,
+    0.39,
+    0.36,
+    0.45
+   ],
+   "rgb": "#f6f2fe",
+   "roh": "#9ca3ba",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "haupt",
+   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
+   "bild": "04_seminar_1",
+   "box": [
+    0.4,
+    0.31,
+    0.47,
+    0.38
+   ],
+   "rgb": "#fff5f5",
+   "roh": "#a3a5b4",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "haupt",
+   "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten",
+   "bild": "04_seminar_1",
+   "box": [
+    0.05,
+    0.43,
+    0.14,
+    0.5
+   ],
+   "rgb": "#e5e6fc",
+   "roh": "#919bb9",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  },
+  {
+   "gebaeude": "04_seminargebaeude",
+   "rolle": "akzent",
+   "notiz": "rotbraunes Brüstungsband",
+   "bild": "04_seminar_1",
+   "box": [
+    0.49,
+    0.4,
+    0.6,
+    0.46
+   ],
+   "rgb": "#543535",
+   "roh": "#352427",
+   "datum": "2025-10-02",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "url": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg"
+  }
+ ],
+ "_filamente": [
+  {
+   "nr": 1,
+   "rgb": "#e4e0d8",
+   "fuer": [
+    "Platte"
+   ]
+  },
+  {
+   "nr": 2,
+   "rgb": "#fff6ea",
+   "fuer": [
+    "01 Fassade",
+    "03 Fassade"
+   ]
+  },
+  {
+   "nr": 3,
+   "rgb": "#6d7f85",
+   "fuer": [
+    "01 Dach",
+    "02 Dach"
+   ]
+  },
+  {
+   "nr": 4,
+   "rgb": "#40545a",
+   "fuer": [
+    "02 Fassade"
+   ]
+  },
+  {
+   "nr": 5,
+   "rgb": "#b7b2b1",
+   "fuer": [
+    "03 Dach",
+    "05 Fassade"
+   ]
+  },
+  {
+   "nr": 6,
+   "rgb": "#f6f2fc",
+   "fuer": [
+    "04 Fassade"
+   ]
+  },
+  {
+   "nr": 7,
+   "rgb": "#bdc0be",
+   "fuer": [
+    "04 Dach"
+   ]
+  },
+  {
+   "nr": 8,
+   "rgb": "#a2a9aa",
+   "fuer": [
+    "05 Dach",
+    "06 Dach",
+    "07 Dach"
+   ]
+  },
+  {
+   "nr": 9,
+   "rgb": "#7b848e",
+   "fuer": [
+    "06 Fassade"
+   ]
+  },
+  {
+   "nr": 10,
+   "rgb": "#714b39",
+   "fuer": [
+    "07 Fassade"
+   ]
   }
  ]
 }

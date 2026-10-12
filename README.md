@@ -56,7 +56,7 @@ Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 | `komplett_campus*.stl` | Alle Campusgebäude auf einer 2 mm Sockelplatte, in einem Stück |
 | `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese und Moritzbastei |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |
-| `komplett_*_objekte.3mf` | Sockelplatte und Gebäude als **getrennte Objekte** an der richtigen Position, mit **Fassaden- und Dachfarbe** als Material (siehe [Farben](#farben)): im Slicer einzelne Teile weglassen oder Filamenten zuordnen |
+| `komplett_*_objekte.3mf` | Sockelplatte und Gebäude als **getrennte Objekte** an der richtigen Position, **mehrfarbig vorbereitet**: jedes Gebäude hat sein Fassaden-Filament, die Dächer sind mit dem Dach-Filament vorbemalt (siehe [Mehrfarbig drucken](#mehrfarbig-drucken)) |
 
 Die Platten tragen eine eingravierte Beschriftung (mit Quellenangabe) und einen Nordpfeil.
 
@@ -84,11 +84,14 @@ entlang der OSM-Grundrisse aufgeteilt; Volumen = Prismen unter allen Dachfläche
 ### Laserscan GeoSN (`stl/laserscan/`)
 [Laserscandaten des GeoSN](https://www.geodaten.sachsen.de/downloadbereich-digitale-hoehenmodelle-4851.html)
 (Befliegung 9. 1. 2023, ca. 18 Punkte/m²). Ausschnitt in `data/laserscan_campus.laz`.
-Je Gebäude wird ein Höhenraster (30 cm) aus den Dachpunkten gebildet und mit dem
-LoD2-Grundriss ausgeschnitten – dadurch senkrechte, glatte Außenwände. Wo der Scan
-höchstens ±0,5 m vom LoD2-Dach abweicht, wird die glatte LoD2-Dachfläche genommen
-(kein Messrauschen); alles andere (Aufbauten, Oberlichter, Lichthöfe, Turmkrone)
-kommt aus dem Scan. Fassadendetails (Fenster, Gesimse) enthält auch der Laserscan
+Je Gebäude wird ein Höhenraster (30 cm, an der Hauptachse des Gebäudes
+ausgerichtet, damit Kanten nicht treppig werden) aus den Dachpunkten gebildet und
+mit dem LoD2-Grundriss ausgeschnitten – dadurch senkrechte, glatte Außenwände. Wo
+der Scan höchstens ±0,5 m vom LoD2-Dach abweicht, wird die glatte LoD2-Dachfläche
+genommen (kein Messrauschen); schmale Vertiefungen unter dem LoD2-Dach (< 3 m,
+meist Messlücken an Dachkanten oder über Glas) werden ebenfalls aus LoD2 gefüllt.
+Alles andere (Aufbauten, Oberlichter, Lichthöfe, Dachterrassen, Turmkrone) kommt
+aus dem Scan. Fassadendetails (Fenster, Gesimse) enthält auch der Laserscan
 nicht – er sieht nur von oben.
 
 ### Weitere geprüfte Quellen
@@ -109,13 +112,19 @@ Akzentfarben), erzeugt mit `python3 farben.py`:
   Dachfläche einzeln aus dem Luftbild eingefärbt. Das GeoSN-Orthofoto 2025 ist auch
   frei, aber im März aufgenommen, mit langen Schatten des Uniriesen über dem Campus.
 - **Fassaden**: Für Fassaden gibt es keine offenen Farbdaten (das texturierte
-  Stadtmodell ist nicht frei). Gemessen wird deshalb in **Panoramax-Straßenfotos**
-  (CC-BY-SA-4.0, März 2022) in festgelegten Bildausschnitten
-  (`data/fassaden_proben.json`), mit Weißabgleich am grauen Granitpflaster im selben
-  Schatten. Das gibt es für Paulinum, Neues Augusteum und Institutsgebäude. Für den
-  Uniriesen und die Moritzbastei kommen Farbe/Material aus OSM; für Hörsaal- und
-  Seminargebäude gibt es kein offenes Foto, dort ist ein helles Steingrau als
-  **Annahme** gesetzt.
+  Stadtmodell ist nicht frei). Gemessen wird deshalb in offen lizenzierten
+  **Straßenfotos** in festgelegten Bildausschnitten (`data/fassaden_proben.json`),
+  mit Weißabgleich am grauen Pflaster in derselben Beleuchtung:
+  - Paulinum, Neues Augusteum, Institutsgebäude: Panoramax (März 2022),
+  - Hörsaal- und Seminargebäude: 360°-Fahrt durch die Universitätsstraße
+    (Mapillary-Spiegel auf Wikimedia Commons, Oktober 2025) – `farben.py` rechnet
+    die Panoramen selbst in normale Ansichten um,
+  - Uniriese und Moritzbastei: Fotos von Wikimedia Commons.
+
+  Je Gebäude wird über mehrere Messfelder (oft aus mehreren Fotos) der Median
+  genommen. Auffällige Zweitfarben (rote Verkleidung der Mensa am Park, rote
+  Brücke am Seminargebäude, rotbraunes Band am Institutsgebäude, dunkle Sockel)
+  stehen als Akzentfarben in `data/farben.json`.
 
 ![Farben](vorschau/farben.png)
 
@@ -123,6 +132,30 @@ Akzentfarben), erzeugt mit `python3 farben.py`:
 
 Die Farben sind Anhaltswerte (Fotos im Schatten, Glasfassaden spiegeln) – zum
 Auswählen von Filamenten taugen sie, als exakte Farbtöne nicht.
+
+## Mehrfarbig drucken
+
+Die `*_objekte.3mf` enthalten die Farben in den Formaten, die die Slicer selbst
+lesen (geprüft am Quellcode von PrusaSlicer 2.7–2.9, Bambu Studio und OrcaSlicer):
+
+- **Objekt-Filament** = Fassadenfarbe des Gebäudes (`Metadata/model_settings.config`
+  für Bambu/Orca, `Metadata/Slic3r_PE_model.config` für PrusaSlicer).
+- **Dächer vorbemalt** mit der Dachfarbe (`paint_color` bzw.
+  `slic3rpe:mmu_segmentation` an den Dachdreiecken) – im Slicer als
+  Mehrfarben-Bemalung sichtbar und nachbearbeitbar.
+- Zusätzlich `basematerials` (3MF-Standard) für Betrachter wie den Windows-3D-Viewer;
+  Slicer ignorieren diese.
+
+Die Filament-Nummern F1–F10 sind für alle Dateien gleich; welche Farbe zu welcher
+Nummer gehört, zeigt `vorschau/farben.png` (Feld „F…“, Liste in
+`data/farben.json` → `_filamente`). Kaum unterscheidbare Töne (z. B. die hellen
+Fassaden von Paulinum und Hörsaalgebäude) teilen sich ein Filament
+(`FILAMENT_TOLERANZ` in `farben.py`). Die Filamentfarben selbst kann eine 3MF-Datei
+ohne vollständiges Druckerprofil nicht mitbringen: Bambu Studio/OrcaSlicer legen
+beim Öffnen automatisch genügend Filamente an (Farben anpassen bzw. gleiche Farben
+zusammenlegen), in PrusaSlicer braucht es ein Mehrfarb-Druckerprofil (MMU/XL).
+Wer weniger Filamente hat, ordnet einfach mehreren Nummern dasselbe Filament zu.
+Cura liest keine Farben aus 3MF.
 
 ## Druckhinweise
 
@@ -170,7 +203,11 @@ Plattendicke, Bettgröße) stehen oben in `generate.py`, die Laserscan-Parameter
   Bodenordnung, [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
 - Laserscandaten: © Landesamt für Geobasisinformation Sachsen (GeoSN),
   [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
-- Straßenfotos für die Fassadenfarben (`vorschau/farben_fotoproben.jpg`): Robot8A via
-  [Panoramax](https://panoramax.xyz), CC-BY-SA-4.0.
+- Straßenfotos für die Fassadenfarben (`vorschau/farben_fotoproben.jpg`, Urheber und
+  Lizenz je Foto in der Bildunterschrift und in `data/fassaden_proben.json`):
+  Robot8A via [Panoramax](https://panoramax.xyz) (CC-BY-SA-4.0); osmplus_org
+  (Mapillary-Spiegel), Krzysztof Golik, Chabe01 (alle CC BY-SA 4.0), Fred Romero
+  (CC BY 2.0) und NutzerAusBerlin (CC0) via
+  [Wikimedia Commons](https://commons.wikimedia.org).
 
 Die erzeugten Modelle sind abgeleitete Werke; bei Weitergabe bitte die Quellen nennen.

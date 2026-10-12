@@ -7,10 +7,10 @@
   Das GeoSN-DOP 2025 (März) wäre auch frei verfügbar, hat aber lange
   Schlagschatten des Uniriesen über dem Campus; das Leipziger Luftbild ist
   sommerlicher und deutlich schattenärmer.
-- Fassadenfarbe: Median über Bildausschnitte aus Panoramax-Straßenfotos
-  (CC-BY-SA-4.0), definiert in data/fassaden_proben.json. Für Fassaden ohne
-  offenes Foto: OSM-Tags building:colour / building:material, sonst eine
-  ausdrücklich als Annahme markierte Farbe.
+- Fassadenfarbe: Median über Bildausschnitte aus offen lizenzierten Straßenfotos
+  (Panoramax, Wikimedia Commons inkl. 360°-Panoramen), definiert in
+  data/fassaden_proben.json, mit Weißabgleich am Pflaster. Ohne Foto: OSM-Tags
+  building:colour / building:material, sonst eine als Annahme markierte Farbe.
 
 Ergebnis: data/farben.json (wird von preview.py für die farbigen Vorschauen und
 von generate.py für die farbigen 3MF-Dateien benutzt). Bilder werden nur in
@@ -46,11 +46,49 @@ REF_GRAU = 150.0  # angenommener Grauwert (0..255) des Granitpflasters für Wei�
 MATERIAL = {"brick": "#9c5a3c", "stone": "#c9c5bc", "plaster": "#dcd8cf", "glass": "#6f8796",
             "concrete": "#b5b2ab", "metal": "#9da3a6"}
 OSM_NAMED = {"lightgrey": "#d3d3d3", "gray": "#808080", "grey": "#808080", "white": "#f2f2f2"}
-# Gebäude ohne offenes Foto und ohne brauchbare OSM-Angabe (Annahme, s. README)
-ANNAHME = {
-    "03_hoersaalgebaeude": ("#d8d6d0", "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten"),
-    "04_seminargebaeude": ("#d8d6d0", "Annahme: helle Natursteinfassade wie die übrigen Campus-Neubauten"),
-}
+
+
+PLATTE = "#e4e0d8"  # Sockelplatte / Grundplatte
+
+
+FILAMENT_TOLERANZ = 16  # RGB-Abstand, unter dem zwei Farben ein Filament teilen
+
+
+def filamente(farben):
+    """Globale Filament-Palette: Liste [(hex, [Verwendungen])], Filament-Nr. = Index + 1.
+
+    Reihenfolge: Platte, dann je Gebäude Fassade und Dach. Sehr ähnliche Farben
+    (RGB-Abstand < FILAMENT_TOLERANZ) teilen sich ein Filament – im Druck ist der
+    Unterschied ohnehin nicht sichtbar. PrusaSlicer erlaubt höchstens 15 Filamente.
+    """
+    pal = [(PLATTE.lower(), ["Platte"])]
+    for b in G.BUILDINGS:
+        e = farben.get(b["slug"])
+        if not e:
+            continue
+        for rolle, c in (("Fassade", e["fassade"]), ("Dach", e.get("dach") or e["fassade"])):
+            use = "%s %s" % (b["slug"][:2], rolle)
+            for pc, uses in pal:
+                if np.linalg.norm(rgb255(pc) - rgb255(c)) < FILAMENT_TOLERANZ:
+                    uses.append(use)
+                    break
+            else:
+                pal.append((c.lower(), [use]))
+    if len(pal) > 15:
+        print("  Warnung: %d Filamentfarben > 15 (Grenze PrusaSlicer)" % len(pal))
+    return pal
+
+
+def filament_nr(farben, colour):
+    """Filament-Nummer (1-basiert) einer Gebäudefarbe in der Palette."""
+    for i, (pc, _) in enumerate(filamente(farben)):
+        if np.linalg.norm(rgb255(pc) - rgb255(colour)) < FILAMENT_TOLERANZ:
+            return i + 1
+    raise KeyError(colour)
+
+
+def rgb255(c):
+    return np.array([int(c[i:i + 2], 16) for i in (1, 3, 5)], float)
 
 
 def hexcol(rgb):
@@ -58,11 +96,24 @@ def hexcol(rgb):
 
 
 def fetch(url, path):
+    """Lädt url nach path (Cache). Wikimedia drosselt geteilte IPs: mit Wartezeit wiederholen."""
+    import time
     if not os.path.exists(path):
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        req = urllib.request.Request(url, headers={"User-Agent": "neues-augusteum-print/1.0"})
-        with urllib.request.urlopen(req, timeout=180) as r, open(path, "wb") as f:
-            f.write(r.read())
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "neues-augusteum-print/1.0 (3D-Druckmodelle Campus Augustusplatz)"})
+        for k in range(6):
+            try:
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    data = r.read()
+                break
+            except OSError as e:
+                if k == 5:
+                    raise
+                wait = int(getattr(e, "headers", None) and e.headers.get("Retry-After") or 0) or 5 * (k + 1)
+                time.sleep(min(wait, 60))
+        with open(path, "wb") as f:
+            f.write(data)
     return path
 
 
@@ -155,12 +206,42 @@ def roof_colours(img, bounds, cells):
 # --------------------------------------------------------------------------
 # Fassaden
 # --------------------------------------------------------------------------
+def persp(img, yaw, pitch=0.0, hfov=65.0, W=1600, H=1000):
+    """Perspektivische Ansicht aus einem 360°-Panorama (equirektangular)."""
+    from scipy.ndimage import map_coordinates
+    A = np.asarray(img)
+    h, w = A.shape[:2]
+    f = (W / 2) / np.tan(np.radians(hfov / 2))
+    X, Y = np.meshgrid(np.arange(W) - W / 2 + 0.5, np.arange(H) - H / 2 + 0.5)
+    Z = np.full_like(X, f)
+    p = np.radians(pitch)
+    Yr, Zr = Y * np.cos(p) - Z * np.sin(p), Y * np.sin(p) + Z * np.cos(p)
+    lon = np.arctan2(X, Zr) + np.radians(yaw)
+    lat = np.arctan2(-Yr, np.hypot(X, Zr))
+    u = ((lon / (2 * np.pi)) + 0.5) % 1 * w
+    v = (0.5 - lat / np.pi) * h
+    out = np.stack([map_coordinates(A[..., c], [v - 0.5, u - 0.5], order=1, mode="wrap") for c in range(3)], -1)
+    return Image.fromarray(out.astype(np.uint8))
+
+
 def photo(pid):
+    """Foto (PIL) und Metadaten {datum, lizenz, urheber, url} – Panoramax-ID oder Eintrag in „bilder“."""
+    bilder = json.load(open(PROBEN)).get("bilder", {})
+    if pid in bilder:
+        b = bilder[pid]
+        path = fetch(b["url"], os.path.join(CACHE, "commons", pid + ".jpg"))
+        im = Image.open(path).convert("RGB")
+        if b.get("ansicht"):
+            im = persp(im, **b["ansicht"])
+        return im, dict(datum=b["datum"], lizenz=b["lizenz"], urheber=b["urheber"], url=b["seite"])
     meta_path = os.path.join(CACHE, "panoramax", pid + ".json")
     fetch(PANORAMAX.format(pid), meta_path)
     meta = json.load(open(meta_path))
     path = fetch(meta["assets"]["sd"]["href"], os.path.join(CACHE, "panoramax", pid + ".jpg"))
-    return Image.open(path).convert("RGB"), meta
+    pr = meta["properties"]
+    return Image.open(path).convert("RGB"), dict(
+        datum=pr["datetime"][:10], lizenz=pr.get("license"), urheber=pr.get("geovisio:producer"),
+        url="https://api.panoramax.xyz/#focus=pic&pic=%s" % pid)
 
 
 def box_median(im, b):
@@ -181,11 +262,7 @@ def facade_samples():
             # Weißabgleich + Belichtung: Pflaster -> neutrales Granitgrau (Annahme REF_GRAU)
             ref = box_median(im, wb["box"])
             rgb = np.clip(rgb * REF_GRAU / ref, 0, 255)
-        res.append(dict(p, rgb=hexcol(rgb), roh=hexcol(box_median(im, p["box"])),
-                        datum=meta["properties"]["datetime"][:10],
-                        lizenz=meta["properties"].get("license"),
-                        fotograf=meta["properties"].get("geovisio:producer"),
-                        url="https://api.panoramax.xyz/#focus=pic&pic=%s" % p["bild"]))
+        res.append(dict(p, rgb=hexcol(rgb), roh=hexcol(box_median(im, p["box"])), **meta))
     return res
 
 
@@ -213,7 +290,8 @@ def main():
     osm = osm_facades()
     farben = {"_quellen": {
         "dach": "Stadt Leipzig, Luftbild 2024 (20 cm, WMTS), dl-de/by-2-0, Median im Grundriss",
-        "fassade_foto": "Panoramax-Straßenfotos, CC-BY-SA-4.0, Ausschnitte in data/fassaden_proben.json",
+        "fassade_foto": "Straßenfotos (Panoramax, Wikimedia Commons; Lizenzen je Probe), Ausschnitte in "
+                        "data/fassaden_proben.json",
         "fassade_osm": "OpenStreetMap building:colour / building:material (ODbL)"}}
     for b in G.BUILDINGS:
         slug = b["slug"]
@@ -222,11 +300,13 @@ def main():
         haupt = [p for p in mine if p["rolle"] == "haupt"]
         if haupt:
             e["fassade"] = hexcol(np.median([[int(p["rgb"][i:i + 2], 16) for i in (1, 3, 5)] for p in haupt], axis=0))
-            e["fassade_quelle"] = "Foto (Panoramax): " + "; ".join(p["notiz"] for p in haupt)
+            notizen = list(dict.fromkeys(p["notiz"].split(" (")[0] for p in haupt))
+            e["fassade_quelle"] = "Foto (%d Messfeld%s): %s" % (len(haupt), "er" if len(haupt) > 1 else "",
+                                                               "; ".join(notizen))
         elif slug in osm and osm[slug][1]:
             e["fassade"], e["fassade_quelle"] = osm[slug][1], osm[slug][0]
         else:
-            e["fassade"], e["fassade_quelle"] = ANNAHME.get(slug, ("#d0cec8", "Annahme"))
+            e["fassade"], e["fassade_quelle"] = "#d0cec8", "Annahme (kein Foto, keine OSM-Angabe)"
         groups = {}  # gleiche Stelle aus mehreren Fotos zusammenfassen
         for p in mine:
             if p["rolle"] == "akzent":
@@ -237,6 +317,7 @@ def main():
             e["osm"] = osm[slug][0]
         farben[slug] = e
     farben["_proben"] = proben
+    farben["_filamente"] = [dict(nr=i + 1, rgb=c, fuer=u) for i, (c, u) in enumerate(filamente(farben))]
     with open(FARBEN, "w") as f:
         json.dump(farben, f, indent=1, ensure_ascii=False)
     print("Farben ->", os.path.relpath(FARBEN, G.HERE))
@@ -250,6 +331,7 @@ def swatches(farben, proben):
     """Übersichtsbild: Farbfelder je Gebäude + Foto-Ausschnitte (vorschau/farben.png)."""
     from preview import font, NAMES, OUT, BG
     rows = [b["slug"] for b in G.BUILDINGS]
+    pal = filamente(farben)
     W, rh = 1100, 92
     im = Image.new("RGB", (W, 70 + rh * len(rows) + 40), BG)
     d = ImageDraw.Draw(im)
@@ -263,41 +345,52 @@ def swatches(farben, proben):
         x = 640
         for lab, c in [("Fassade", e["fassade"]), ("Dach", e["dach"])] + [("Akzent", a["rgb"]) for a in e["akzente"]]:
             d.rectangle((x, y + 6, x + 90, y + 60), fill=c, outline=(60, 60, 60))
+            nr = filament_nr(farben, c) if lab != "Akzent" else None
+            if nr:
+                hell = sum(int(c[i:i + 2], 16) for i in (1, 3, 5)) > 380
+                d.text((x + 6, y + 10), "F%d" % nr, fill=(20, 20, 20) if hell else (240, 240, 240), font=font(16, True))
             d.text((x, y + 64), "%s %s" % (lab, c), fill=(60, 60, 60), font=font(11))
             x += 112
-    d.text((16, im.height - 30), "Dach: Luftbild 2024 © Stadt Leipzig (dl-de/by-2-0) · Fassade: Panoramax-Fotos "
-           "(CC-BY-SA-4.0, Robot8A) bzw. OSM (ODbL)", fill=(90, 90, 90), font=font(13))
+    d.text((16, im.height - 30), "Dach: Luftbild 2024 © Stadt Leipzig (dl-de/by-2-0) · Fassade: Fotos (Panoramax, "
+           "Commons) bzw. OSM · F1–F%d = Filament-Nr. in den 3MF-Dateien (F1 = Platte)"
+           % len(pal), fill=(90, 90, 90), font=font(13))
     path = os.path.join(OUT, "farben.png")
     os.makedirs(OUT, exist_ok=True)
     im.save(path, optimize=True)
     print("  Vorschau:", os.path.relpath(path, G.HERE))
-    # Foto-Ausschnitte zum Nachprüfen
+    # Foto-Ausschnitte zum Nachprüfen, mit Urheber und Lizenz je Foto
+    wbs = json.load(open(PROBEN)).get("weissabgleich", {})
     tiles = []
     for pid in dict.fromkeys(p["bild"] for p in proben):
-        ph, _ = photo(pid)
+        ph, meta = photo(pid)
         ph = ph.copy()
+        k = ph.width / 1600
         dr = ImageDraw.Draw(ph)
         for p in [p for p in proben if p["bild"] == pid]:
             b = p["box"]
             box = (b[0] * ph.width, b[1] * ph.height, b[2] * ph.width, b[3] * ph.height)
-            dr.rectangle(box, outline=(255, 0, 255), width=6)
-            dr.rectangle((box[0], box[3] + 4, box[0] + 46, box[3] + 50), fill=p["rgb"], outline=(255, 0, 255))
-            dr.text((box[0] + 4, box[1] + 6), p["gebaeude"][:2], fill=(255, 0, 255), font=font(40, True))
-        wb = json.load(open(PROBEN)).get("weissabgleich", {}).get(pid)
-        if wb:
-            b = wb["box"]
+            dr.rectangle(box, outline=(255, 0, 255), width=max(2, int(5 * k)))
+            s_ = int(40 * k)
+            dr.rectangle((box[0], box[3] + 4, box[0] + s_, box[3] + 4 + s_), fill=p["rgb"], outline=(255, 0, 255))
+            dr.text((box[0] + 4, box[1] + 4), p["gebaeude"][:2], fill=(255, 0, 255), font=font(int(34 * k), True))
+        if pid in wbs:
+            b = wbs[pid]["box"]
             dr.rectangle((b[0] * ph.width, b[1] * ph.height, b[2] * ph.width, b[3] * ph.height),
-                         outline=(0, 230, 255), width=6)
-            dr.text((b[0] * ph.width + 6, b[1] * ph.height + 6), "Weißabgleich", fill=(0, 230, 255), font=font(34, True))
-        ph.thumbnail((900, 700))
-        tiles.append(ph)
-    sheet = Image.new("RGB", (sum(t.width for t in tiles), max(t.height for t in tiles) + 34), BG)
-    x = 0
-    for t in tiles:
-        sheet.paste(t, (x, 0))
-        x += t.width
-    ImageDraw.Draw(sheet).text((10, sheet.height - 26), "Foto: Robot8A via Panoramax, CC-BY-SA-4.0 – "
-                               "Messfelder (magenta, Feld darunter = gemessene Farbe) und Weißabgleich-Referenz (cyan)", fill=(60, 60, 60), font=font(15))
+                         outline=(0, 230, 255), width=max(2, int(5 * k)))
+        ph.thumbnail((620, 470))
+        t = Image.new("RGB", (640, 520), BG)
+        t.paste(ph, ((640 - ph.width) // 2, 0))
+        ImageDraw.Draw(t).text((10, 478), "%s · %s · %s" % (meta["urheber"], meta["lizenz"], meta["datum"]),
+                               fill=(60, 60, 60), font=font(14))
+        tiles.append(t)
+    cols = 3
+    rows_ = (len(tiles) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * 640, rows_ * 520 + 40), BG)
+    for i, t in enumerate(tiles):
+        sheet.paste(t, ((i % cols) * 640, (i // cols) * 520))
+    ImageDraw.Draw(sheet).text((10, sheet.height - 30), "Messfelder (magenta, Feld darunter = gemessene Farbe nach "
+                               "Weißabgleich), Weißabgleich-Referenz (cyan). Fotos: Panoramax / Wikimedia Commons, "
+                               "Lizenzen siehe Bildunterschrift.", fill=(60, 60, 60), font=font(15))
     path = os.path.join(OUT, "farben_fotoproben.jpg")
     sheet.save(path, quality=85)
     print("  Vorschau:", os.path.relpath(path, G.HERE))

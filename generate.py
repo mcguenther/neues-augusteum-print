@@ -515,55 +515,84 @@ ROOF_NZ = 0.35  # Dreiecke mit steilerer Normale als ~70° zählen als Dach
 
 def colour_table():
     import farben
-    f = farben.load_farben() or {}
-    plate = "#e4e0d8"
-    return f, plate
+    return farben.load_farben() or {}, farben.PLATTE
+
+
+def paint_code(n):
+    """Kodierung „ganzes Dreieck = Filament n“ für paint_color / slic3rpe:mmu_segmentation
+    (TriangleSelector::serialize in PrusaSlicer/Bambu Studio/OrcaSlicer)."""
+    return {1: "4", 2: "8"}[n] if n < 3 else "%XC" % (n - 3)
 
 
 def export_3mf(objs, path):
-    """3MF (Kernspezifikation) mit je Objekt Materialien „Fassade“ und „Dach“.
+    """3MF mit Farben für Slicer und Betrachter.
 
-    Die Farben stehen als basematerials/displaycolor im Modell; Slicer wie
-    PrusaSlicer/Bambu Studio zeigen sie als Objekt-/Materialfarbe an bzw. man
-    kann sie als Vorlage für die Filamentzuordnung nutzen.
+    - Jedes Objekt bekommt sein Fassaden-Filament als Objekt-Extruder
+      (Metadata/model_settings.config für Bambu Studio/OrcaSlicer,
+      Metadata/Slic3r_PE_model.config für PrusaSlicer).
+    - Dachdreiecke sind mit dem Dach-Filament vorbemalt (paint_color bzw.
+      slic3rpe:mmu_segmentation).
+    - Zusätzlich basematerials/displaycolor (3MF-Kernspezifikation) für Betrachter
+      wie Windows 3D Viewer; Slicer ignorieren das.
+    Die Filament-Nummern sind global (farben.filamente, Legende in vorschau/farben.png);
+    die Filamentfarben selbst lassen sich ohne vollständiges Slicer-Profil nicht
+    mitliefern und müssen im Slicer einmal eingestellt werden.
     """
     import zipfile
     from xml.sax.saxutils import escape as esc
+    import farben as F
     escape = lambda t: esc(t, {'"': "&quot;"})
     farben, plate = colour_table()
-    mats, objects, items = [], [], []
+    pal = [c for c, _ in F.filamente(farben)]
+    mats = ["F%d %s" % (i + 1, c) for i, c in enumerate(pal)]
+    objects, items, bambu, prusa = [], [], [], []
     for oid, (name, tm, slug) in enumerate(objs, start=2):
         e = farben.get(slug) if slug else None
-        if e:
-            m_wall, m_roof = len(mats), len(mats) + 1
-            mats += [("%s – Fassade" % name, e["fassade"]), ("%s – Dach" % name, e["dach"] or e["fassade"])]
-            per = np.where(tm.face_normals[:, 2] > ROOF_NZ, m_roof, m_wall)
-        else:
-            per = np.full(len(tm.faces), len(mats))
-            mats.append((name, plate))
+        wall = F.filament_nr(farben, e["fassade"] if e else plate)
+        roof = F.filament_nr(farben, (e.get("dach") or e["fassade"]) if e else plate)
+        is_roof = tm.face_normals[:, 2] > ROOF_NZ if e else np.zeros(len(tm.faces), bool)
+        paint = paint_code(roof) if roof != wall else None
         v = "".join('<vertex x="%.4f" y="%.4f" z="%.4f"/>' % tuple(p) for p in tm.vertices)
-        t = "".join('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>' % (a, b_, c, m)
-                    for (a, b_, c), m in zip(tm.faces, per))
+        tris = []
+        for (a, b_, c), r in zip(tm.faces, is_roof):
+            if r and paint:
+                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d" paint_color="%s" '
+                            'slic3rpe:mmu_segmentation="%s"/>' % (a, b_, c, roof - 1, paint, paint))
+            else:
+                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>'
+                            % (a, b_, c, (roof if r else wall) - 1))
         objects.append('<object id="%d" name="%s" type="model" pid="1" pindex="%d"><mesh><vertices>%s'
-                       '</vertices><triangles>%s</triangles></mesh></object>' % (oid, escape(name), per[0], v, t))
+                       '</vertices><triangles>%s</triangles></mesh></object>'
+                       % (oid, escape(name), wall - 1, v, "".join(tris)))
         items.append('<item objectid="%d"/>' % oid)
-    base = "".join('<base name="%s" displaycolor="%sFF"/>' % (escape(n), c.upper()) for n, c in mats)
+        bambu.append('<object id="%d"><metadata key="name" value="%s"/><metadata key="extruder" value="%d"/>'
+                     '</object>' % (oid, escape(name), wall))
+        prusa.append('<object id="%d" instances_count="1"><metadata type="object" key="name" value="%s"/>'
+                     '<metadata type="object" key="extruder" value="%d"/><volume firstid="0" lastid="%d">'
+                     '<metadata type="volume" key="name" value="%s"/></volume></object>'
+                     % (oid, escape(name), wall, len(tm.faces) - 1, escape(name)))
+    base = "".join('<base name="%s" displaycolor="%sFF"/>' % (escape(n), c.upper()) for n, c in zip(mats, pal))
     model = ('<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="de-DE" '
-             'xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">'
+             'xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" '
+             'xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">'
              '<metadata name="Title">Campus Augustusplatz</metadata>'
              '<resources><basematerials id="1">%s</basematerials>%s</resources><build>%s</build></model>'
              % (base, "".join(objects), "".join(items)))
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<config>%s</config>\n'
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("[Content_Types].xml",
                    '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/'
                    'package/2006/content-types"><Default Extension="rels" ContentType="application/'
                    'vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" '
-                   'ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>')
+                   'ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>'
+                   '<Default Extension="config" ContentType="text/xml"/></Types>')
         z.writestr("_rels/.rels",
                    '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/'
                    'package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" '
                    'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
         z.writestr("3D/3dmodel.model", model)
+        z.writestr("Metadata/model_settings.config", xml % "".join(bambu))
+        z.writestr("Metadata/Slic3r_PE_model.config", xml % "".join(prusa))
 
 
 def render_coloured(objs, shift, s, quelle, scale, variant):
@@ -595,7 +624,7 @@ def render_coloured(objs, shift, s, quelle, scale, variant):
         im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev)
         out = preview.caption(im, "Farbig %s%s  (%s)" % (
             blick, ", mit Extras" if "extras" in variant else "", label),
-            "Dächer: Luftbild 2024 © Stadt Leipzig · Fassaden: Panoramax-Fotos / OSM / Annahme "
+            "Dächer: Luftbild 2024 © Stadt Leipzig · Fassaden: gemessen in Straßenfotos "
             "(data/farben.json)")
         path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s.png" % (variant, suffix))
         os.makedirs(os.path.dirname(path), exist_ok=True)
