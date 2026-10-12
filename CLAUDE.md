@@ -5,6 +5,10 @@ Antworten im Chat auf Deutsch.
 
 ## Setup
 
+In Cloud-Sessions installiert der SessionStart-Hook
+(`.claude/hooks/session-start.sh`) die Abhängigkeiten automatisch. Lokal bzw.
+falls etwas fehlt:
+
 ```bash
 pip install -r requirements.txt
 ```
