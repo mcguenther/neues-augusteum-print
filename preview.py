@@ -29,7 +29,7 @@ BG = (250, 250, 248)
 NAMES = {
     "01": "Paulinum", "02": "Neues Augusteum", "03": "Hörsaalgebäude",
     "04": "Seminargebäude", "05": "Institutsgebäude", "06": "City-Hochhaus (Uniriese)",
-    "07": "Moritzbastei",
+    "07": "Moritzbastei", "08": "Innenhof (Leibnizforum)",
 }
 
 

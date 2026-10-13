@@ -48,9 +48,11 @@ NOTCH = 3.0         # m: schmalere Vertiefungen unter dem LoD2-Dach gelten als M
 
 
 def footprints_utm():
-    """Alle Grundrisse (OSM + LoD2) in UTM, als Auswahlbereich für die Punkte."""
+    """Alle Grundrisse (OSM + LoD2) und der Innenhof in UTM, als Auswahlbereich für die Punkte."""
+    import innenhof
     to_utm = lambda a: np.column_stack(lod2.local_to_utm(a[:, 0], a[:, 1]))
     geoms = [shapely.transform(g, to_utm) for g in lod2.osm_outlines_local().values()]
+    geoms.append(shapely.transform(innenhof.hof_polygon_local(), to_utm))
     for b in lod2.load_lod2():
         for r, _ in b["roofs"]:
             geoms.append(shapely.Polygon(np.column_stack(lod2.local_to_utm(r[:, 0], r[:, 1]))).buffer(0))

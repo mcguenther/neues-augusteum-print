@@ -36,6 +36,7 @@ Maße bei 1:1000 (B × T × H in mm, 1 mm = 1 m):
 | 05 | Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12) | 105 × 48 × 18 | 106 × 45 × 31 | 105 × 45 × 32 |
 | 06 | *Extra:* City-Hochhaus („Uniriese“) | 48 × 45 × 155 | 47 × 46 × 142 | 47 × 46 × 145 |
 | 07 | *Extra:* Moritzbastei | 67 × 65 × 4 | 67 × 64 × 6 | 67 × 64 × 9 |
+| 08 | Innenhof (Leibnizforum), siehe [unten](#innenhof-leibnizforum) | HOFMASS_OSM | HOFMASS_LOD2 | HOFMASS_LS |
 
 Auffällig: Für Hörsaal-, Seminar- und Institutsgebäude hat OSM keine Höhen, sie
 werden dort aus der Geschosszahl geschätzt und sind deutlich zu niedrig (z. B.
@@ -46,13 +47,44 @@ Paulinum und Neues Augusteum bilden in echt einen zusammenhängenden Baukörper;
 hier sind sie getrennt, passen aber Kante an Kante zusammen. Bei LoD2/Laserscan
 verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
 
+## Innenhof (Leibnizforum)
+
+Der Innenhof zwischen Paulinum/Neuem Augusteum, Seminar-, Hörsaal- und
+Institutsgebäude ist ein eigenes Druckteil `08_innenhof` (gehört zum Campus):
+
+![Innenhof 1:1000](vorschau/laserscan/1zu1000/08_innenhof.png)
+
+- **Höhenlage**: Der Hof liegt 2,3 m über dem Straßenniveau, auf dem die Gebäude
+  stehen (Laserscan: Hof 116,8 m, Gebäudesockel im LoD2 114,5 m ü. NHN; zur
+  Grimmaischen Straße führen 19 Stufen hinab). Das Teil ist deshalb ein Podest; vor
+  Hörsaal- und Seminargebäude liegt eine Terrasse 0,7 m höher (Treppe in den Hof).
+- **Objekte** (im Laserscan GeoSN 2023 gemessen, `werkzeuge/innenhof_messen.py` →
+  `data/innenhof.json`): 6 Hochbeete (6,3 × 3,3 m, 0,5 m hoch), 4 Sitzpodeste
+  (3,3 × 3,3 m, 0,5 m), 9 Einzelbänke, das **Leibnizdenkmal** (Granitsockel,
+  Bronze-Postament, stehende Figur; Spitze 6,1 m über dem Hof) und die drei
+  **Gleditschien** vor dem Augusteum (9–11 m hoch, Krone als Doppelkegel mit
+  45°-Unterseite, damit sie ohne Stützen druckbar ist).
+- **Vereinfachung**: Kleine Objekte werden auf 0,8 mm Breite und 0,4 mm Höhe
+  gebracht; Laternen und Poller fehlen. Die Hofgrenze ist die Fläche auf Hofniveau
+  innerhalb der OSM-Fußgängerfläche; die Passagen zur Universitätsstraße und zum
+  Augustusplatz gehören nicht dazu.
+- **Einsetzen**: Die Hofplatte ist 1 mm tiefer als die Oberkante der Platte und
+  steckt in der Grundplatte in einer eigenen Aussparung; im Komplettmodell ist sie
+  in die Sockelplatte eingelassen. Bäume über den Gebäudekanten sind am Hofrand
+  abgeschnitten, damit die Gebäude daneben passen.
+- **Farben**: Pflaster, Platz, Beete, Podeste und Bänke von oben im Luftbild 2024
+  gemessen; Denkmal (Bronze fast schwarz, Granit rötlich-grau, helles Mosaik um den
+  Sockel) und Baumkronen in Fotos (Wikimedia Commons, Panoramax).
+- Das **Schinkeltor** ist heute der Westeingang des Neuen Augusteums und gehört
+  deshalb zur Augusteum-Fassade (Sandstein-Zone), nicht zum Hofteil.
+
 ## Dateien
 
 Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 
 | Datei | Inhalt |
 |-------|--------|
-| `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert |
+| `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert (dazu `08_innenhof.stl`) |
 | `komplett_campus*.stl` | Alle Campusgebäude auf einer 2 mm Sockelplatte, in einem Stück |
 | `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese und Moritzbastei |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |
@@ -198,6 +230,7 @@ python3 generate.py --scale 750         # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch             # Quelldaten neu laden (LoD2 130 MB, Laserscan 240 MB)
 python3 farben.py                       # Farben neu messen (data/farben.json)
 python3 fassaden.py 03_hoersaalgebaeude # Prüfansicht der Fassaden-Zonen eines Gebäudes
+python3 werkzeuge/innenhof_messen.py    # Innenhof-Objekte im Laserscan neu messen
 python3 preview.py                      # nur Vorschaubilder neu rendern
 python3 preview.py datei.stl --azim -90 --elev 40   # eigene Ansicht einer Datei
 ```

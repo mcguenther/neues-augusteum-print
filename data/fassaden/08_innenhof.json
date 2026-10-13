@@ -1,0 +1,314 @@
+{
+ "_hinweis": "Innenhof (Leibnizforum): Farben je Teil (siehe innenhof.py, TEILE). Draufsicht-Farben im Luftbild 2024 gemessen (luftbild: benannte Flächen/Objekte aus data/innenhof.json, beleuchtete Pixel), Seitenflächen und Denkmal in Fotos. 'zonen' ordnen jedem Teil eine Farbe zu.",
+ "farben": {
+  "pflaster": {
+   "notiz": "heller Plattenbelag am Rand und auf der Terrasse",
+   "luftbild": [
+    {
+     "flaeche": "rand"
+    },
+    {
+     "flaeche": "terrasse"
+    }
+   ]
+  },
+  "platz": {
+   "notiz": "dunklerer Plattenbelag des Platzes in der Mitte",
+   "luftbild": [
+    {
+     "flaeche": "platz"
+    }
+   ]
+  },
+  "denkmalplatz": {
+   "notiz": "helle Plattform um das Leibnizdenkmal",
+   "luftbild": [
+    {
+     "flaeche": "denkmalplatz"
+    }
+   ],
+   "proben": [
+    {
+     "bild": "hof_leibniz_beck",
+     "box": [
+      0.66,
+      0.82,
+      0.76,
+      0.87
+     ],
+     "notiz": "Plattform ums Denkmal (Foto)"
+    },
+    {
+     "bild": "hof_leibniz_chabe",
+     "box": [
+      0.655,
+      0.83,
+      0.74,
+      0.895
+     ],
+     "notiz": "Plattform ums Denkmal (Foto)"
+    },
+    {
+     "bild": "hof_leibniz_vincentz",
+     "box": [
+      0.05,
+      0.88,
+      0.2,
+      0.98
+     ],
+     "notiz": "Plattform ums Denkmal (Foto)"
+    }
+   ]
+  },
+  "beet": {
+   "notiz": "Bepflanzung der Hochbeete (von oben)",
+   "luftbild": [
+    {
+     "objekt": "beet"
+    }
+   ]
+  },
+  "beet_rand": {
+   "notiz": "Einfassung der Hochbeete (vorläufig)",
+   "hex": "#8c8c88"
+  },
+  "podest": {
+   "notiz": "Sitzpodeste (von oben)",
+   "luftbild": [
+    {
+     "objekt": "podest"
+    }
+   ]
+  },
+  "bank": {
+   "notiz": "Einzelbänke (von oben)",
+   "luftbild": [
+    {
+     "objekt": "bank"
+    }
+   ]
+  },
+  "sockel": {
+   "notiz": "gestufter Granitsockel, rötlich-grau",
+   "proben": [
+    {
+     "bild": "hof_leibniz_beck",
+     "box": [
+      0.396,
+      0.701,
+      0.573,
+      0.757
+     ],
+     "notiz": "Granitsockel"
+    },
+    {
+     "bild": "hof_leibniz_chabe",
+     "box": [
+      0.42,
+      0.745,
+      0.56,
+      0.8
+     ],
+     "notiz": "Granitsockel"
+    },
+    {
+     "bild": "hof_leibniz_vincentz",
+     "box": [
+      0.37,
+      0.815,
+      0.63,
+      0.86
+     ],
+     "notiz": "Granitsockel"
+    }
+   ]
+  },
+  "bronze": {
+   "notiz": "Bronze mit dunkler Patina (Figur und Postament)",
+   "proben": [
+    {
+     "bild": "hof_leibniz_beck",
+     "box": [
+      0.445,
+      0.21,
+      0.5,
+      0.28
+     ],
+     "notiz": "Figur (Gehrock)"
+    },
+    {
+     "bild": "hof_leibniz_beck",
+     "box": [
+      0.453,
+      0.486,
+      0.482,
+      0.611
+     ],
+     "notiz": "Postament"
+    },
+    {
+     "bild": "hof_leibniz_chabe",
+     "box": [
+      0.46,
+      0.22,
+      0.52,
+      0.3
+     ],
+     "notiz": "Figur (Gehrock)"
+    },
+    {
+     "bild": "hof_leibniz_chabe",
+     "box": [
+      0.443,
+      0.436,
+      0.536,
+      0.467
+     ],
+     "notiz": "Postament"
+    },
+    {
+     "bild": "hof_leibniz_vincentz",
+     "box": [
+      0.461,
+      0.33,
+      0.539,
+      0.369
+     ],
+     "notiz": "Figur (Gehrock)"
+    },
+    {
+     "bild": "hof_leibniz_vincentz",
+     "box": [
+      0.38,
+      0.75,
+      0.6,
+      0.765
+     ],
+     "notiz": "Postament"
+    }
+   ]
+  },
+  "stamm": {
+   "notiz": "Baumstamm (vorläufig)",
+   "hex": "#5a5148"
+  },
+  "krone": {
+   "notiz": "Gleditschien-Krone im Sommer (vorläufig)",
+   "hex": "#7f9a4c"
+  }
+ },
+ "basis": "pflaster",
+ "zonen": [
+  {
+   "name": "platz",
+   "teil": "platz",
+   "farbe": "platz"
+  },
+  {
+   "name": "denkmalplatz",
+   "teil": "denkmalplatz",
+   "farbe": "denkmalplatz"
+  },
+  {
+   "name": "beet",
+   "teil": "beet",
+   "farbe": "beet"
+  },
+  {
+   "name": "beet_rand",
+   "teil": "beet_rand",
+   "farbe": "beet_rand"
+  },
+  {
+   "name": "podest",
+   "teil": "podest",
+   "farbe": "podest"
+  },
+  {
+   "name": "bank",
+   "teil": "bank",
+   "farbe": "bank"
+  },
+  {
+   "name": "sockel",
+   "teil": "sockel",
+   "farbe": "sockel"
+  },
+  {
+   "name": "bronze",
+   "teil": "bronze",
+   "farbe": "bronze"
+  },
+  {
+   "name": "stamm",
+   "teil": "stamm",
+   "farbe": "stamm"
+  },
+  {
+   "name": "krone",
+   "teil": "krone",
+   "farbe": "krone"
+  }
+ ],
+ "bilder": {
+  "hof_leibniz_beck": {
+   "gebaeude": "08_innenhof",
+   "titel": "File:Leipzig Universität lub 2025-03-22 img04 Leibniz-Denkmal.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img04_Leibniz-Denkmal.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Leipzig_Universit%C3%A4t_lub_2025-03-22_img04_Leibniz-Denkmal.jpg/1920px-Leipzig_Universit%C3%A4t_lub_2025-03-22_img04_Leibniz-Denkmal.jpg",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Lukas Beck",
+   "datum": "2025-03-22",
+   "fassade": "Leibnizdenkmal im Innenhof, sonnig"
+  },
+  "hof_leibniz_chabe": {
+   "gebaeude": "08_innenhof",
+   "titel": "File:Statue Gottfried Wilhelm Leibniz - Leipzig (DED5) - 2025-11-25 - 1.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Statue_Gottfried_Wilhelm_Leibniz_-_Leipzig_(DED5)_-_2025-11-25_-_1.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Statue_Gottfried_Wilhelm_Leibniz_-_Leipzig_%28DED5%29_-_2025-11-25_-_1.jpg/1920px-Statue_Gottfried_Wilhelm_Leibniz_-_Leipzig_%28DED5%29_-_2025-11-25_-_1.jpg",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Chabe01",
+   "datum": "2025-11-25",
+   "fassade": "Leibnizdenkmal, bedeckt"
+  },
+  "hof_leibniz_vincentz": {
+   "gebaeude": "08_innenhof",
+   "titel": "File:Leipzig - Universitätsstraße - Leipnitz-Denkmal 01 ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Leipnitz-Denkmal_01_ies.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Leipnitz-Denkmal_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Leipnitz-Denkmal_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "datum": "2015-07-13",
+   "fassade": "Leibnizdenkmal im Innenhof, bedeckt"
+  }
+ },
+ "weissabgleich": {
+  "hof_leibniz_beck": {
+   "box": [
+    0.72,
+    0.88,
+    0.94,
+    0.97
+   ],
+   "notiz": "graues Hofpflaster"
+  },
+  "hof_leibniz_chabe": {
+   "box": [
+    0.25,
+    0.96,
+    0.45,
+    0.99
+   ],
+   "notiz": "graues Hofpflaster"
+  },
+  "hof_leibniz_vincentz": {
+   "box": [
+    0.02,
+    0.8,
+    0.3,
+    0.84
+   ],
+   "notiz": "graues Hofpflaster"
+  }
+ }
+}

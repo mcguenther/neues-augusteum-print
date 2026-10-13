@@ -51,6 +51,10 @@ BUILDINGS = [
          name="Moritzbastei"),
 ]
 
+# Innenhof (Leibnizforum) als eigenes Druckteil, siehe innenhof.py
+HOF = dict(slug="08_innenhof", group="campus", name="Innenhof (Leibnizforum)")
+OBJEKTE = BUILDINGS + [HOF]  # alles, was gedruckt und eingefärbt wird
+
 LEVEL_HEIGHT = 3.5        # m pro Geschoss, falls keine Höhe in OSM
 ROOF_LEVEL_HEIGHT = 3.0   # m pro Dachgeschoss, falls keine Dachhöhe in OSM
 DEFAULT_HEIGHT = 10.0     # m, falls weder Höhe noch Geschosse bekannt
@@ -452,8 +456,10 @@ def build_scale(quelle, scale, outdir):
     os.makedirs(outdir, exist_ok=True)
     print("\nQuelle %s, Maßstab 1:%d -> %s" % (quelle, scale, os.path.relpath(outdir, HERE)))
 
+    import innenhof
     models = source_models(quelle, s)
-    buildings = [b for b in BUILDINGS if b["slug"] in models]
+    models[HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()])
+    buildings = [b for b in OBJEKTE if b["slug"] in models]
     solids = {k: v[0] for k, v in models.items()}
     footprints = {k: v[1] for k, v in models.items()}
 
@@ -497,6 +503,9 @@ def build_scale(quelle, scale, outdir):
 
         # 4) 3MF: Platte + jedes Gebäude als eigenes Objekt an korrekter Position,
         #    mit Fassaden-/Dachfarbe als Material je Dreieck (data/farben.json)
+        #    Der Innenhof ist in die Sockelplatte eingelassen (seine Platte füllt die Vertiefung).
+        if HOF in sel:
+            base = base - extrude(footprints[HOF["slug"]], BASE_THICKNESS - POCKET_DEPTH, BASE_THICKNESS + 1)
         objs = [("Sockelplatte", to_trimesh(base.translate(shift)), None)]
         for b in sel:
             objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
@@ -545,6 +554,10 @@ def colourise(objs, offset, s):
         if _ROOF_CLASS is None:
             import farben as F
             _ROOF_CLASS = F.roof_classifier(farben)
+        if slug == HOF["slug"]:
+            import innenhof
+            out.append((name, tm, innenhof.colour_mesh(tm, (offset, s), e)))
+            continue
         mesh, hexes = fassaden.colour_mesh(tm, slug, (offset, s), e, _ROOF_CLASS)
         if not mesh.is_watertight:
             print("  Warnung: %s nach dem Zerschneiden nicht dicht" % name)
