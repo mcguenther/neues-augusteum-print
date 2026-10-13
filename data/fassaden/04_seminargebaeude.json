@@ -1,0 +1,195 @@
+{
+ "farben": {
+  "wabenplatten": {
+   "notiz": "weiße Wabenplatten",
+   "hex": "#eeebe7",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+  },
+  "band_rotbraun": {
+   "notiz": "rotbraunes Brüstungsband über dem Sockel",
+   "hex": "#723830",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+  },
+  "sockel": {
+   "notiz": "dunkler Naturstein (Sockel, EG)",
+   "hex": "#46464a",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+  },
+  "glas": {
+   "notiz": "Fensterbänder (dunkles Glas in Bändern)",
+   "hex": "#46526a",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+  },
+  "glasfassade": {
+   "notiz": "Glasbau am Eingang (Pfosten-Riegel-Fassade, blau spiegelnd)",
+   "proben": [
+    {
+     "bild": "04_seminar_3",
+     "box": [
+      0.12,
+      0.07,
+      0.34,
+      0.3
+     ],
+     "notiz": "Glasbau, oberer Teil"
+    },
+    {
+     "bild": "04_seminar_4",
+     "box": [
+      0.3,
+      0.05,
+      0.55,
+      0.3
+     ],
+     "notiz": "Glasbau, oberer Teil (Foto 4)"
+    }
+   ]
+  }
+ },
+ "basis": "wabenplatten",
+ "zonen": [
+  {
+   "name": "Sockel umlaufend (EG, Naturstein)",
+   "farbe": "sockel",
+   "z": [
+    0,
+    4.4
+   ]
+  },
+  {
+   "name": "Glasbau Eingang West, EG",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    0.5,
+    4.4
+   ],
+   "entlang": [
+    0.76,
+    0.9
+   ]
+  },
+  {
+   "name": "Rotbraunes Brüstungsband 1. OG West",
+   "farbe": "band_rotbraun",
+   "seite": "W",
+   "z": [
+    4.9,
+    6.7
+   ]
+  },
+  {
+   "name": "Rotbraunes Brüstungsband 1. OG Ost (angenommen)",
+   "farbe": "band_rotbraun",
+   "seite": "O",
+   "z": [
+    4.9,
+    6.7
+   ]
+  },
+  {
+   "name": "Fensterband 2. OG W",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    8.25,
+    10.0
+   ]
+  },
+  {
+   "name": "Fensterband 3. OG W",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    12.1,
+    13.85
+   ]
+  },
+  {
+   "name": "Fensterband 4. OG W",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    15.95,
+    17.7
+   ]
+  },
+  {
+   "name": "Fensterband 5. OG W",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    19.8,
+    21.55
+   ]
+  },
+  {
+   "name": "Fensterband 2. OG O (angenommen)",
+   "farbe": "glas",
+   "seite": "O",
+   "z": [
+    8.25,
+    10.0
+   ]
+  },
+  {
+   "name": "Fensterband 3. OG O (angenommen)",
+   "farbe": "glas",
+   "seite": "O",
+   "z": [
+    12.1,
+    13.85
+   ]
+  },
+  {
+   "name": "Fensterband 4. OG O (angenommen)",
+   "farbe": "glas",
+   "seite": "O",
+   "z": [
+    15.95,
+    17.7
+   ]
+  },
+  {
+   "name": "Fensterband 5. OG O (angenommen)",
+   "farbe": "glas",
+   "seite": "O",
+   "z": [
+    19.8,
+    21.55
+   ]
+  },
+  {
+   "name": "Glasbau Eingang West",
+   "farbe": "glasfassade",
+   "seite": "W",
+   "z": [
+    4.4,
+    23.6
+   ],
+   "entlang": [
+    0.76,
+    0.9
+   ]
+  }
+ ],
+ "bilder": {
+  "04_seminar_4": {
+   "gebaeude": "04_seminargebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M26S000 (801079682620035 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M26S000_(801079682620035_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Mapillary_%28osmplus_org%29_2025-10-02_09H41M26S000_%28801079682620035_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M26S000_%28801079682620035_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse) Seminargebaeude, Glasbau am Eingang + weisse Wabenplatten, ganze Fassade (Mapillary-360-Frame 114)",
+   "ansicht": {
+    "yaw": 171.199534,
+    "pitch": 15,
+    "hfov": 80,
+    "W": 1600,
+    "H": 1000
+   }
+  }
+ }
+}

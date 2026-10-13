@@ -3,6 +3,12 @@
 Repo: 3D-Druckmodelle des Campus Augustusplatz (Uni Leipzig) aus OSM-Daten.
 Antworten im Chat auf Deutsch.
 
+## Arbeitsweise
+
+Teilaufgaben wie Recherche, Datenquellen prüfen oder viele Dateien/Fotos
+durchsuchen an Sonnet-Subagents (`model: "sonnet"`) abgeben, wo das sinnvoll ist;
+Geometrie- und Generatorarbeit selbst machen.
+
 ## Setup
 
 In Cloud-Sessions installiert der SessionStart-Hook
@@ -19,16 +25,19 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
 
 1. Nach **jeder Änderung** an Modellen oder Generator `python3 generate.py`
    ausführen. Das erzeugt die STL/3MF-Dateien und rendert automatisch alle
-   Vorschaubilder nach `vorschau/` und die README-Bilder nach `vorschau/readme/`; danach aktualisiert
-   `readme.py` die Platzhalter-Blöcke (`<!-- AUTO:... -->`) in `README.md`.
+   Vorschaubilder nach `vorschau/` (und `vorschau.png` für die README).
    Nur Vorschauen neu erzeugen: `python3 preview.py`.
 2. Die passenden PNGs **im Chat mit `SendUserFile` (display: "render") zeigen**,
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
-   - Überblick: `vorschau/readme/hero.png` (Gesamtmodell 1:1500, farbige Objekte)
-   - Alle README-Bilder (transparent, ohne Beschriftung): `vorschau/readme/`
-   - Alle Einzelgebäude auf einen Blick: `vorschau/einzelgebaeude_1zu1000.png`
-   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<maßstab>/<name>.png`
+   - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
+   - README-Bilder (farbig, transparent, ohne Beschriftung): `vorschau/readme/`
+   - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
+     OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
+     `vorschau/vergleich_farbig_ost.png`
+   - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
+   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
+   - Farben: `vorschau/farben.png`, Messfelder `vorschau/farben_fotoproben.jpg`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -38,14 +47,30 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
 
 Die gerenderten Bilder in `vorschau/` werden mit committet.
 
+## Datenquellen
+
+`generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
+Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
+(LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
+Farben: je Gebäude `data/fassaden/<slug>.json` (Farben mit Messfeldern in Fotos +
+Fassaden-Zonen), Fotokatalog `data/fotos.json` (Panoramax/Wikimedia Commons; Commons
+drosselt geteilte IPs, `farben.py` wiederholt dann mit Wartezeit). `farben.py` misst
+alles und schreibt `data/farben.json` (macht `generate.py` automatisch bei Änderungen).
+Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
+(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
+Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
+`vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
+
 ## README
 
 `README.md` ist normaler Text und darf von Hand bearbeitet werden – nur die Blöcke
-zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Campus-Vergleich,
-Gebäudegalerie, Grundplatte) werden von `readme.py` überschrieben. Titel und
-Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`). Neue Gebäude
-tauchen nach `python3 generate.py` automatisch in der Galerie auf. Nach Änderungen
-die README mit Chromium/Playwright (hell und dunkel) rendern und ansehen.
+zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Quellenvergleich,
+Maßstäbe, Gebäudegalerie mit Maßen, Grundplatte) werden von `readme.py` überschrieben.
+`generate.py`/`preview.py` rufen es nach dem Rendern auf; die Bilder dafür
+(`preview.readme_assets`) entstehen farbig aus den `*_objekte.3mf`. Titel und
+Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäude
+erscheinen automatisch in der Galerie. Nach Änderungen die README mit
+Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
 ## Prüfen vor dem Commit
 

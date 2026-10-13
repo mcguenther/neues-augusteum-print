@@ -1,0 +1,360 @@
+{
+ "farben": {
+  "stein_hell": {
+   "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.44,
+      0.45,
+      0.52,
+      0.75
+     ],
+     "notiz": "Giebel Ost: Stein links (Sonne, ohne WB)"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.8,
+      0.55,
+      0.92,
+      0.85
+     ],
+     "notiz": "Giebel Ost: Stein rechts (Sonne, ohne WB)"
+    }
+   ]
+  },
+  "weiss": {
+   "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.6,
+      0.7,
+      0.64,
+      0.95
+     ],
+     "notiz": "Spitzbogen-Blende (Sonne, ohne WB)"
+    },
+    {
+     "bild": "pl_giebel_romero2",
+     "box": [
+      0.4,
+      0.7,
+      0.43,
+      0.95
+     ],
+     "notiz": "Spitzbogen-Blende, Detailfoto (Sonne, ohne WB)"
+    }
+   ]
+  },
+  "stein_glas": {
+   "notiz": "Seiten/Westgiebel: graue Steinbänder mit senkrechten Glasstreifen (Gesamteindruck)",
+   "proben": [
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.28,
+      0.38,
+      0.4,
+      0.5
+     ],
+     "notiz": "Westgiebel Innenhof: Stein-/Glasstreifen (Sonne, ohne WB)"
+    },
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.12,
+      0.45,
+      0.16,
+      0.62
+     ],
+     "notiz": "Westgiebel Innenhof, linke Flanke: Stein (Sonne, ohne WB)"
+    },
+    {
+     "bild": "hof_beck_1",
+     "box": [
+      0.55,
+      0.45,
+      0.7,
+      0.58
+     ],
+     "notiz": "Westgiebel Innenhof (Sonne/Schatten gemischt, ohne WB)"
+    }
+   ]
+  },
+  "glas": {
+   "notiz": "Glasstreifen links vom Giebel (dunkles, spiegelndes Glas)",
+   "proben": [
+    {
+     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+     "box": [
+      0.22,
+      0.2,
+      0.245,
+      0.5
+     ],
+     "notiz": "Glasstreifen links vom Giebel"
+    },
+    {
+     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
+     "box": [
+      0.17,
+      0.2,
+      0.215,
+      0.5
+     ],
+     "notiz": "Glas/dunkler Stein weiter links"
+    }
+   ]
+  },
+  "zink": {
+   "notiz": "Dachreiter/Turmspitze: graues Zinkblech",
+   "proben": [
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.47,
+      0.2,
+      0.49,
+      0.45
+     ],
+     "notiz": "Turm: beleuchtete Fläche (ohne WB)"
+    },
+    {
+     "bild": "pl_hof_derbrauni",
+     "box": [
+      0.455,
+      0.2,
+      0.47,
+      0.45
+     ],
+     "notiz": "Turm: Schattenseite (ohne WB)"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.42,
+      0.2,
+      0.47,
+      0.35
+     ],
+     "notiz": "Turm von Osten (ohne WB)"
+    }
+   ]
+  },
+  "fensterglas": {
+   "notiz": "großes Maßwerkfenster im Spitzbogen: helles türkisblaues Glas mit weißem Maßwerk (Gesamteindruck)",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero2",
+     "box": [
+      0.47,
+      0.75,
+      0.69,
+      0.97
+     ],
+     "notiz": "Fenster, unterer Teil (Sonne)"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.645,
+      0.8,
+      0.775,
+      0.97
+     ],
+     "notiz": "Fenster, unterer Teil (Sonne)"
+    }
+   ]
+  },
+  "rosette_innen": {
+   "notiz": "Rosette: Maßwerk mit türkisblauem Glas (innerhalb des weißen Rings)",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero2",
+     "box": [
+      0.475,
+      0.215,
+      0.53,
+      0.275
+     ],
+     "notiz": "Rosette innen"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.625,
+      0.345,
+      0.665,
+      0.39
+     ],
+     "notiz": "Rosette innen"
+    }
+   ]
+  }
+ },
+ "basis": "stein_glas",
+ "zonen": [
+  {
+   "name": "Glasstreifen SO, vor dem Giebel",
+   "farbe": "glas",
+   "seite": "O",
+   "entlang": [
+    0.0,
+    0.2
+   ],
+   "z": [
+    0,
+    36
+   ]
+  },
+  {
+   "name": "Ostgiebel Naturstein",
+   "farbe": "stein_hell",
+   "seite": "O",
+   "entlang": [
+    0.2,
+    0.72
+   ],
+   "z": [
+    0,
+    50
+   ]
+  },
+  {
+   "name": "Spitzbogen-Blende (weißer Kalkstein)",
+   "farbe": "weiss",
+   "seite": "O",
+   "bogen": {
+    "entlang": 0.389,
+    "breite": 11.9,
+    "z0": 0,
+    "kaempfer": 17.5
+   },
+   "notiz": "Breite 11,9 m in 15,7 m Höhe, Scheitel 27,8 m: Kameramodell aus Foto pl_giebel_romero2 (Giebelkanten + LoD2-First)"
+  },
+  {
+   "name": "Maßwerkfenster",
+   "farbe": "fensterglas",
+   "seite": "O",
+   "bogen": {
+    "entlang": 0.389,
+    "breite": 6.7,
+    "z0": 7.0,
+    "kaempfer": 15.5
+   },
+   "notiz": "Breite 6,7 m, Scheitel 21,3 m (Kameramodell); Unterkante ~7 m aus Panoramax-Foto f1201d36"
+  },
+  {
+   "name": "Rosette (weißer Ring)",
+   "farbe": "weiss",
+   "seite": "O",
+   "kreis": {
+    "entlang": 0.389,
+    "z": 33.1,
+    "d": 5.5
+   },
+   "notiz": "Mitte 33,1 m über Gelände, Durchmesser 5,5 m: Kameramodell aus Foto pl_giebel_romero2"
+  },
+  {
+   "name": "Rosette (Maßwerk/Glas)",
+   "farbe": "rosette_innen",
+   "seite": "O",
+   "kreis": {
+    "entlang": 0.389,
+    "z": 33.1,
+    "d": 3.3
+   },
+   "stufen": 5
+  },
+  {
+   "name": "Turm Ost",
+   "farbe": "zink",
+   "seite": "O",
+   "entlang": [
+    0.0,
+    0.24
+   ],
+   "z": [
+    36,
+    60
+   ]
+  },
+  {
+   "name": "Turm Nord",
+   "farbe": "zink",
+   "seite": "N",
+   "entlang": [
+    0.2,
+    0.4
+   ],
+   "z": [
+    36,
+    60
+   ]
+  },
+  {
+   "name": "Turm Süd",
+   "farbe": "zink",
+   "seite": "S",
+   "entlang": [
+    0.6,
+    0.82
+   ],
+   "z": [
+    34,
+    60
+   ]
+  },
+  {
+   "name": "Turm West",
+   "farbe": "zink",
+   "seite": "W",
+   "entlang": [
+    0.76,
+    1.0
+   ],
+   "z": [
+    30,
+    60
+   ]
+  }
+ ],
+ "bilder": {
+  "pl_giebel_romero": {
+   "titel": "File:Leipzig - Neues Augusteum & Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg/1920px-Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "datum": "2015-08-03"
+  },
+  "pl_giebel_romero2": {
+   "titel": "File:Leipzig - Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Leipzig_-_Paulinum.jpg/1920px-Leipzig_-_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "datum": "2015-08-03"
+  },
+  "pl_hof_derbrauni": {
+   "titel": "File:Exterior of Paulinum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Exterior_of_Paulinum.jpg/3840px-Exterior_of_Paulinum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Derbrauni",
+   "datum": "2025-06-17"
+  },
+  "hof_beck_1": {
+   "titel": "File:Leipzig Universität lub 2025-03-22 img01 Neues Augusteum.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg/1920px-Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Lukas Beck",
+   "datum": "2025-03-22"
+  }
+ }
+}

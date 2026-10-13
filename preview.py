@@ -11,6 +11,8 @@ Aufruf:
 import argparse
 import glob
 import os
+import re
+import zipfile
 
 import matplotlib
 import numpy as np
@@ -46,27 +48,31 @@ def rgb(c):
     return np.array(matplotlib.colors.to_rgb(c))
 
 
-def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06,
-           transparent=False, px_per_mm=None, pad=10):
-    """meshes: Liste von (trimesh.Trimesh, Farbe). Liefert PIL-Bild.
+def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False,
+           light_from_view=False, transparent=False, px_per_mm=None, pad=10):
+    """meshes: Liste von (trimesh.Trimesh, Farbe oder Farben je Dreieck). Liefert PIL-Bild,
+    mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild.
 
     transparent: RGBA mit freigestelltem Hintergrund (für die README).
     px_per_mm:   feste Pixel-Skala statt Einpassen in `size`; die Bildgröße folgt
                  dann aus der Ausdehnung (+ `pad` Pixel Rand). So lassen sich
-                 verschiedene Maßstäbe im gleichen Verhältnis darstellen.
+                 mehrere Modelle im gleichen Verhältnis darstellen.
     """
     a, e = np.radians(azim), np.radians(elev)
     cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
     right = np.array([-np.sin(a), np.cos(a), 0.0])
     up = np.cross(cam, right)
     light = np.array([-0.35, -0.55, 0.76])
+    if light_from_view:  # Licht von links oben hinter der Kamera: sichtbare Seiten hell
+        light = 0.7 * cam - 0.45 * right + np.array([0, 0, 0.8])
     light /= np.linalg.norm(light)
 
     tris, cols, norms = [], [], []
     for m, c in meshes:
         tris.append(m.triangles)
         norms.append(m.face_normals)
-        cols.append(np.repeat(rgb(c)[None], len(m.faces), axis=0))
+        c = np.asarray(c, float) if not isinstance(c, str) else rgb(c)
+        cols.append(c if c.ndim == 2 else np.repeat(c[None], len(m.faces), axis=0))
     tris, cols, norms = np.vstack(tris), np.vstack(cols), np.vstack(norms)
 
     sx, sy, sz = tris @ right, tris @ up, tris @ cam
@@ -112,7 +118,10 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06,
     img[:] = np.array(OUTLINE if transparent else BG) / 255
     hit = fid >= 0
     f = fid[hit]
-    shade = 0.42 + 0.48 * np.clip(norms[f] @ light, 0, 1) + 0.10 * np.clip(norms[f] @ cam, 0, 1)
+    if flat:  # fast unschattiert: Farben beurteilen
+        shade = 0.82 + 0.18 * np.clip(norms[f] @ cam, 0, 1)
+    else:
+        shade = 0.42 + 0.48 * np.clip(norms[f] @ light, 0, 1) + 0.10 * np.clip(norms[f] @ cam, 0, 1)
     img[hit] = np.clip(cols[f] * shade[:, None], 0, 1)
 
     # Kantenlinien: Sprünge in Flächennormale oder Tiefe
@@ -129,14 +138,19 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06,
         e_ = crease | jump | sil
         edge[: H - dy, : W - dx] |= e_
     img[edge] *= 0.35
-    im = Image.fromarray((img * 255).astype(np.uint8))
-    if not transparent:
-        return im.resize(size, Image.LANCZOS)
-    # Silhouette samt Kantenlinie bleibt deckend, alles andere ist transparent;
-    # der Hintergrund trägt die Linienfarbe, damit am Rand kein heller Saum entsteht.
-    alpha = Image.fromarray(((hit | edge) * 255).astype(np.uint8))
-    im = im.resize(size, Image.LANCZOS)
-    im.putalpha(alpha.resize(size, Image.LANCZOS))
+    im = Image.fromarray((img * 255).astype(np.uint8)).resize(size, Image.LANCZOS)
+    if transparent:
+        # Silhouette samt Kantenlinie bleibt deckend, alles andere ist transparent; der
+        # Hintergrund trägt die Linienfarbe, damit am Rand kein heller Saum entsteht.
+        alpha = Image.fromarray(((hit | edge) * 255).astype(np.uint8))
+        im.putalpha(alpha.resize(size, Image.LANCZOS))
+    if return_proj:
+        cx, cy = (xmin + xmax) / 2, (ymin + ymax) / 2
+
+        def proj(P):
+            P = np.asarray(P, float)
+            return ((P @ right - cx) * k + W / 2) / ss, (H / 2 - (P @ up - cy) * k) / ss
+        return im, proj
     return im
 
 
@@ -157,14 +171,13 @@ def dims(m):
 
 
 def load_mesh(path):
-    m = trimesh.load(path)
+    m = trimesh.load(path, process=False)
     if isinstance(m, trimesh.Scene):
         return [(g, None, name) for name, g in m.geometry.items()]
     return [(m, None, os.path.basename(path))]
 
 
-def colored(path):
-    """Teile einer STL/3MF mit Farben (Sockel hell, Gebäude aus der Palette)."""
+def render_file(path, out_png, title=None, azim=-35, elev=30, size=(900, 700)):
     parts = load_mesh(path)
     meshes, ci = [], 0
     for g, _, name in parts:
@@ -176,11 +189,6 @@ def colored(path):
             col = PALETTE[ci % len(PALETTE)]
             ci += 1
         meshes.append((g, col))
-    return meshes
-
-
-def render_file(path, out_png, title=None, azim=-35, elev=30, size=(900, 700)):
-    meshes = colored(path)
     im = render(meshes, size=size, azim=azim, elev=elev)
     allm = trimesh.util.concatenate([m for m, _ in meshes])
     rel = os.path.relpath(path, HERE)
@@ -205,15 +213,35 @@ def contact_sheet(images, out_png, title, cols=4, cell=(420, 360)):
     print("  Vorschau:", os.path.relpath(out_png, HERE))
 
 
+QUELLEN_NAMEN = {"osm": "OpenStreetMap", "lod2": "LoD2 Stadt Leipzig", "laserscan": "Laserscan GeoSN"}
+HERO = ("laserscan", "1zu1500", "komplett_campus_mit_extras_farbig_ost.png")
+
+
 # --------------------------------------------------------------------------
-# Bilder für die README: transparent, ohne Beschriftung, zugeschnitten.
-# Mehrere Maßstäbe desselben Objekts teilen sich eine Pixel/mm-Skala, damit der
-# Größenunterschied (1:1000 ist 1,5-mal so groß wie 1:1500) sichtbar bleibt.
-# Die Bilder sind mit DENSITY-facher Auflösung gerendert (scharf auf HiDPI);
-# die README zeigt sie mit Breite = Pixelbreite / DENSITY.
+# Bilder für die README: farbig (Filamentfarben aus den 3MF), transparent, ohne
+# Beschriftung, zugeschnitten. Modelle, die verglichen werden, teilen sich eine
+# Pixel/mm-Skala, damit Größenunterschiede sichtbar bleiben. Die Bilder sind mit
+# DENSITY-facher Auflösung gerendert (scharf auf HiDPI); die README zeigt sie mit
+# Breite = Pixelbreite / DENSITY (siehe readme.py).
 # --------------------------------------------------------------------------
 README_DIR = os.path.join(OUT, "readme")
 DENSITY = 2
+README_VIEW = dict(azim=25, elev=28, light_from_view=True)  # vom Augustusplatz (Osten)
+
+
+def load_3mf_coloured(path):
+    """[(Name, Netz, RGB je Dreieck)] aus einer *_objekte.3mf (Farbe = Filament-Grundmaterial)."""
+    import html
+    xml = zipfile.ZipFile(path).read("3D/3dmodel.model").decode()
+    pal = np.array([[int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+                    for h in re.findall(r'displaycolor="#([0-9A-Fa-f]{6})', xml)])
+    out = []
+    for m in re.finditer(r'<object id="\d+" name="([^"]*)".*?<vertices>(.*?)</vertices>'
+                         r'<triangles>(.*?)</triangles>', xml, re.S):
+        v = np.array(re.findall(r'<vertex x="([^"]+)" y="([^"]+)" z="([^"]+)"', m.group(2)), float)
+        t = np.array(re.findall(r'v1="(\d+)" v2="(\d+)" v3="(\d+)" pid="1" p1="(\d+)"', m.group(3)), int)
+        out.append((html.unescape(m.group(1)), trimesh.Trimesh(v, t[:, :3], process=False), pal[t[:, 3]]))
+    return out
 
 
 def _fit(meshes, max_w, max_h, azim, elev):
@@ -223,8 +251,7 @@ def _fit(meshes, max_w, max_h, azim, elev):
     right = np.array([-np.sin(a), np.cos(a), 0.0])
     up = np.cross(cam, right)
     pts = np.vstack([m.vertices for m, _ in meshes])
-    w, h = np.ptp(pts @ right), np.ptp(pts @ up)
-    return min(max_w / w, max_h / h)
+    return min(max_w / np.ptp(pts @ right), max_h / np.ptp(pts @ up))
 
 
 def _save(im, name):
@@ -234,65 +261,83 @@ def _save(im, name):
     print("  README-Bild:", os.path.relpath(path, HERE))
 
 
-def _render_group(files, name_for, max_w, max_h, azim, elev):
-    """Rendert Dateien verschiedener Maßstäbe mit gemeinsamer Skala.
-
-    files: {Maßstabsordner: Pfad}; die Skala richtet sich nach dem größten Modell.
-    """
-    first = min(files, key=lambda sc: int(sc[3:]))  # kleinste Verhältniszahl = größtes Modell
-    k = _fit(colored(files[first]), max_w, max_h, azim, elev) * DENSITY
-    for sc, path in files.items():
-        _save(render(colored(path), azim=azim, elev=elev, transparent=True, px_per_mm=k,
-                     pad=6 * DENSITY), name_for(sc))
+def _render_group(groups, max_w, max_h, view):
+    """groups: {Dateiname: Meshes}; gemeinsame Skala, passend für das größte Modell."""
+    k = min(_fit(m, max_w, max_h, view["azim"], view["elev"]) for m in groups.values()) * DENSITY
+    for name, meshes in groups.items():
+        _save(render(meshes, transparent=True, px_per_mm=k, pad=6 * DENSITY, **view), name)
 
 
 def readme_assets(stl_dir=os.path.join(HERE, "stl")):
     print("\nREADME-Bilder")
-    scales = sorted(os.path.basename(d) for d in glob.glob(os.path.join(stl_dir, "1zu*")))
-    path = lambda sc, *p: os.path.join(stl_dir, sc, *p)
+    quellen = [q for q in QUELLEN_NAMEN if os.path.isdir(os.path.join(stl_dir, q))]
+    objekte = lambda q, sc: os.path.join(stl_dir, q, sc, "komplett_campus_mit_extras_objekte.3mf")
+    quellen = [q for q in quellen if os.path.exists(objekte(q, "1zu1500"))]
+    if not quellen:
+        return
+    cache = {}
 
-    # Gesamtcampus je Maßstab (gemeinsame Skala) und Titelbild
-    camp = {sc: path(sc, "komplett_campus_mit_extras_objekte.3mf") for sc in scales
-            if os.path.exists(path(sc, "komplett_campus_mit_extras_objekte.3mf"))}
-    if camp:
-        _render_group(camp, lambda sc: "campus_%s.png" % sc, 440, 760, -30, 32)
-        small = max(camp, key=lambda sc: int(sc[3:]))
-        meshes = colored(camp[small])
-        k = _fit(meshes, 900, 560, -30, 32) * DENSITY
-        _save(render(meshes, azim=-30, elev=32, transparent=True, px_per_mm=k, pad=8 * DENSITY),
-              "hero.png")
+    def coloured(q, sc):
+        if (q, sc) not in cache:
+            cache[q, sc] = load_3mf_coloured(objekte(q, sc))
+        return cache[q, sc]
 
-    # Einzelgebäude je Maßstab
-    slugs = sorted({os.path.basename(f)[:-4] for sc in scales
-                    for f in glob.glob(path(sc, "einzeln", "*.stl"))})
-    for slug in slugs:
-        files = {sc: path(sc, "einzeln", slug + ".stl") for sc in scales
-                 if os.path.exists(path(sc, "einzeln", slug + ".stl"))}
-        _render_group(files, lambda sc, slug=slug: "%s_%s.png" % (slug, sc), 300, 270, -35, 30)
+    meshes = lambda q, sc: [(m, c) for _, m, c in coloured(q, sc)]
+    best = quellen[-1]  # detailreichste Quelle (Laserscan)
+
+    # Titelbild und Campus je Quelle (gleiche Skala) sowie beide Maßstäbe der besten Quelle
+    k = _fit(meshes(best, "1zu1500"), 900, 560, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
+    _save(render(meshes(best, "1zu1500"), transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW),
+          "hero.png")
+    _render_group({"campus_%s.png" % q: meshes(q, "1zu1500") for q in quellen}, 270, 400, README_VIEW)
+    if os.path.exists(objekte(best, "1zu1000")):
+        _render_group({"campus_%s_1zu1500.png" % best: meshes(best, "1zu1500"),
+                       "campus_%s_1zu1000.png" % best: meshes(best, "1zu1000")}, 440, 600, README_VIEW)
+
+    # Einzelgebäude je Quelle (1:1000), je Gebäude gemeinsame Skala
+    names = [n for n, _, _ in coloured(best, "1zu1000")][1:]
+    for i in range(1, len(names) + 1):
+        groups = {}
+        for q in quellen:
+            objs = coloured(q, "1zu1000")
+            if i < len(objs):
+                groups["%02d_%s.png" % (i, q)] = [(objs[i][1], objs[i][2])]
+        _render_group(groups, 190, 230, dict(README_VIEW, azim=-35))
 
     # Grundplatte mit darüber schwebenden Gebäuden
-    plate = path(scales[-1], "grundplatte_campus_mit_extras.stl") if scales else None
-    objs = path(scales[-1], "komplett_campus_mit_extras_objekte.3mf") if scales else None
-    if plate and os.path.exists(plate) and os.path.exists(objs):
-        meshes = [(m, PLATE_COLOR) for m, _ in colored(plate)]
-        for (m, c), (_, _, name) in zip(colored(objs), load_mesh(objs)):
-            if not name.lower().startswith("sockel"):
-                m = m.copy()
-                m.apply_translation([0, 0, 28])
-                meshes.append((m, c))
-        k = _fit(meshes, 560, 700, -30, 32) * DENSITY
-        _save(render(meshes, azim=-30, elev=32, transparent=True, px_per_mm=k, pad=8 * DENSITY),
-              "grundplatte_%s.png" % scales[-1])
+    plate = os.path.join(stl_dir, best, "1zu1500", "grundplatte_campus_mit_extras.stl")
+    if os.path.exists(plate):
+        parts = [(trimesh.load(plate, process=False), PLATE_COLOR)]
+        for _, m, c in coloured(best, "1zu1500")[1:]:
+            m = m.copy()
+            m.apply_translation([0, 0, 28])
+            parts.append((m, c))
+        k = _fit(parts, 560, 700, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
+        _save(render(parts, transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW), "grundplatte.png")
 
 
 def default_previews(stl_dir=os.path.join(HERE, "stl")):
-    """Standard-Vorschauen für alle erzeugten Maßstäbe."""
+    """Standard-Vorschauen für alle erzeugten Quellen und Maßstäbe, dazu Vergleichsbilder."""
     print("\nVorschaubilder")
-    os.makedirs(OUT, exist_ok=True)
-    for sdir in sorted(glob.glob(os.path.join(stl_dir, "1zu*"))):
+    for qdir in sorted(glob.glob(os.path.join(stl_dir, "*"))):
+        if os.path.isdir(qdir) and glob.glob(os.path.join(qdir, "1zu*")):
+            source_previews(qdir, os.path.join(OUT, os.path.basename(qdir)))
+    comparisons(stl_dir)
+    hero = os.path.join(OUT, *HERO)
+    if os.path.exists(hero):
+        Image.open(hero).save(os.path.join(HERE, "vorschau.png"), optimize=True)
+        print("  Vorschau: vorschau.png")
+    readme_assets(stl_dir)
+    import readme
+    readme.update()
+
+
+def source_previews(qdir, out):
+    quelle = QUELLEN_NAMEN.get(os.path.basename(qdir), os.path.basename(qdir))
+    for sdir in sorted(glob.glob(os.path.join(qdir, "1zu*"))):
         scale = os.path.basename(sdir)
-        odir = os.path.join(OUT, scale)
-        label = scale.replace("1zu", "1:")
+        odir = os.path.join(out, scale)
+        label = "%s, %s" % (scale.replace("1zu", "1:"), quelle)
         singles = []
         for f in sorted(glob.glob(os.path.join(sdir, "einzeln", "*.stl"))):
             slug = os.path.basename(f)[:-4]
@@ -313,11 +358,66 @@ def default_previews(stl_dir=os.path.join(HERE, "stl")):
             render_file(f, os.path.join(odir, base + ".png"), "Komplettmodell (1 Druckteil) %s" % label,
                         azim=-30, elev=32)
         if singles:
-            contact_sheet(singles, os.path.join(OUT, "einzelgebaeude_%s.png" % scale),
+            contact_sheet(singles, os.path.join(out, "einzelgebaeude_%s.png" % scale),
                           "Einzelgebäude %s" % label)
-    readme_assets(stl_dir)
-    import readme
-    readme.update()
+
+
+def comparisons(stl_dir, scale="1zu1000"):
+    """Gleiche Ansicht je Gebäude aus allen Quellen nebeneinander (vorschau/vergleich/)."""
+    quellen = [q for q in QUELLEN_NAMEN if os.path.isdir(os.path.join(stl_dir, q, scale, "einzeln"))]
+    if len(quellen) < 2:
+        return
+    odir = os.path.join(OUT, "vergleich")
+    os.makedirs(odir, exist_ok=True)
+    slugs = sorted({os.path.basename(f)[:-4] for q in quellen
+                    for f in glob.glob(os.path.join(stl_dir, q, scale, "einzeln", "*.stl"))})
+    rows = []
+    for slug in slugs:
+        cells = []
+        for q in quellen:
+            f = os.path.join(stl_dir, q, scale, "einzeln", slug + ".stl")
+            if not os.path.exists(f):
+                cells.append(None)
+                continue
+            m = trimesh.load(f, process=False)
+            im = render([(m, SINGLE_COLOR)], size=(560, 460))
+            cells.append(caption(im, QUELLEN_NAMEN[q], "%s  ·  %d Dreiecke" % (dims(m), len(m.faces))))
+        rows.append((slug, cells))
+        grid([(slug, cells)], os.path.join(odir, "%s_%s.png" % (slug, scale)),
+             "%s %s – Vergleich der Quellen (%s)" % (slug[:2], NAMES.get(slug[:2], slug),
+                                                      scale.replace("1zu", "1:")))
+    grid(rows, os.path.join(OUT, "vergleich_%s.png" % scale),
+         "Vergleich der Quellen, Einzelgebäude %s" % scale.replace("1zu", "1:"), thumb=(380, 330))
+    # farbige Gesamtmodelle (von generate.py gerendert) untereinander
+    for blick in ("_ost", ""):
+        ims = [os.path.join(OUT, q, "1zu1500", "komplett_campus_mit_extras_farbig%s.png" % blick) for q in quellen]
+        ims = [Image.open(f) for f in ims if os.path.exists(f)]
+        if len(ims) > 1:
+            grid([("", ims)], os.path.join(OUT, "vergleich_farbig%s.png" % blick),
+                 "Vergleich der Quellen, farbig (1:1500)", thumb=(760, 600))
+
+
+def grid(rows, out_png, title, thumb=None):
+    cells = [c for _, r in rows for c in r if c is not None]
+    cw, ch = thumb or (max(c.width for c in cells), max(c.height for c in cells))
+    ncol = max(len(r) for _, r in rows)
+    lab = 210 if len(rows) > 1 else 0
+    sheet = Image.new("RGB", (lab + ncol * cw, 60 + len(rows) * ch), BG)
+    d = ImageDraw.Draw(sheet)
+    d.text((16, 14), title, fill=(30, 30, 30), font=font(28, True))
+    for i, (slug, r) in enumerate(rows):
+        if lab:
+            name = NAMES.get(slug[:2], slug).replace(" (", "\n(").replace(" ", "\n", 1 if len(NAMES.get(slug[:2], slug)) > 16 else 0)
+            d.multiline_text((12, 60 + i * ch + ch // 2 - 30), "%s\n%s" % (slug[:2], name),
+                             fill=(30, 30, 30), font=font(19, True))
+        for j, c in enumerate(r):
+            if c is None:
+                continue
+            t = c.copy()
+            t.thumbnail((cw, ch))
+            sheet.paste(t, (lab + j * cw + (cw - t.width) // 2, 60 + i * ch))
+    sheet.save(out_png, optimize=True)
+    print("  Vorschau:", os.path.relpath(out_png, HERE))
 
 
 def main():
