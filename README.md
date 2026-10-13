@@ -1,12 +1,40 @@
-# Campus Augustusplatz – 3D-Druck
+<h1 align="center">Campus Augustusplatz</h1>
+
+<p align="center">
+  <b>Farbige 3D-Druckmodelle der Universität Leipzig</b><br>
+  Neues Augusteum · Paulinum · Hörsaalgebäude und mehr – aus Stadtmodell, Laserscan und Straßenfotos
+</p>
+
+<!-- AUTO:hero -->
+<p align="center">
+  <img src="vorschau/readme/hero.png" alt="Campus Augustusplatz als farbiges 3D-Modell" width="916">
+</p>
+<!-- /AUTO:hero -->
+
+<p align="center">
+  <b>7 Gebäude</b> &nbsp;·&nbsp; <b>3 Datenquellen</b> &nbsp;·&nbsp; <b>2 Maßstäbe</b> &nbsp;·&nbsp;
+  mehrfarbig für den Slicer vorbereitet &nbsp;·&nbsp; ohne Stützen druckbar
+</p>
 
 Druckdateien für das **Neue Augusteum**, das **Paulinum** und die übrigen Gebäude
 des Campus Augustusplatz der Universität Leipzig. Jedes Gebäude lässt sich einzeln
 drucken. Zusätzlich gibt es ein Komplettmodell und eine Grundplatte mit Aussparungen,
-in die man die einzeln gedruckten Gebäude einsetzen kann.
+in die man die einzeln gedruckten Gebäude einsetzen kann. Die Bilder hier zeigen die
+Modelle in den **Filamentfarben, mit denen sie gedruckt werden** (Fassaden-Zonen aus
+Straßenfotos, Dächer aus dem Luftbild – siehe [Farben](#farben)).
+
+## Der Campus in drei Detailstufen
 
 Alle Modelle gibt es aus **drei Datenquellen nebeneinander**, damit man sie vergleichen
-kann (Details siehe [Datenquellen](#datenquellen)):
+kann (Details siehe [Datenquellen](#datenquellen)). Hier derselbe Campus in 1:1500,
+im gleichen Bildmaßstab:
+
+<!-- AUTO:quellen -->
+<table>
+<tr><th align="center"><b>OpenStreetMap</b><br><sub>Klötzchen aus Grundriss und Höhe</sub></th><th align="center"><b>LoD2 Stadt Leipzig</b><br><sub>amtliche Höhen und Dachformen</sub></th><th align="center"><b>Laserscan GeoSN</b><br><sub>gemessene Dachlandschaft</sub></th></tr>
+<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_osm.png" alt="OpenStreetMap" width="282"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_lod2.png" alt="LoD2 Stadt Leipzig" width="280"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan.png" alt="Laserscan GeoSN" width="280"></td></tr>
+</table>
+<!-- /AUTO:quellen -->
 
 | Quelle | Ordner | Detailgrad |
 |--------|--------|------------|
@@ -14,28 +42,37 @@ kann (Details siehe [Datenquellen](#datenquellen)):
 | 3D-Stadtmodell LoD2 der Stadt Leipzig | `stl/lod2/` | amtliche Höhen, Dachformen und größere Dachaufbauten |
 | Laserscan GeoSN 2023 (+ LoD2) | `stl/laserscan/` | gemessene Dachlandschaft: Technikaufbauten, Oberlichter, Höfe, Turmkrone |
 
-![Vorschau](vorschau.png)
+### Und in zwei Maßstäben
 
-![Vergleich der Quellen](vorschau/vergleich_1zu1000.png)
+Jede Quelle gibt es in 1:1500 und 1:1000 (hier der Laserscan, wieder im gleichen
+Bildmaßstab):
 
-![Vergleich farbig](vorschau/vergleich_farbig_ost.png)
+<!-- AUTO:massstaebe -->
+<table>
+<tr><th align="center"><b>1:1500</b><br><sub>kompakt</sub></th><th align="center"><b>1:1000</b><br><sub>groß, mehr Detail</sub></th></tr>
+<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1500.png" alt="1:1500" width="316"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1000.png" alt="1:1000" width="452"></td></tr>
+<tr><td align="center"><sub>102 × 213 × 98 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>147 × 307 × 147 mm<br>in 2 Teile geteilt</sub></td></tr>
+</table>
+<!-- /AUTO:massstaebe -->
 
-Vorschaubilder zu jeder einzelnen Datei liegen in [`vorschau/`](vorschau/)
-(`vorschau/<quelle>/…`, Einzelvergleiche in `vorschau/vergleich/`).
+## Die Gebäude
 
-## Gebäude
+Jedes Gebäude als eigene STL-Datei (flache Unterseite, zentriert), hier in 1:1000
+(B × T × H; 1 mm = 1 m) aus allen drei Quellen. Die Bilder einer Zeile haben
+denselben Bildmaßstab; bei 1:1500 sind alle Maße ⅔ so groß.
 
-Maße bei 1:1000 (B × T × H in mm, 1 mm = 1 m):
-
-| Nr. | Gebäude | OSM | LoD2 | Laserscan |
-|----|---------|-----|------|-----------|
-| 01 | Paulinum (Aula/Universitätskirche St. Pauli) | 55 × 41 × 55 | 59 × 37 × 59 | 59 × 37 × 59 |
-| 02 | Neues Augusteum | 60 × 70 × 28 | 63 × 78 × 34 | 63 × 78 × 38 |
-| 03 | Hörsaalgebäude (mit Mensa am Park) | 82 × 136 × 14 | 83 × 136 × 23 | 83 × 136 × 25 |
-| 04 | Seminargebäude | 38 × 98 × 21 | 39 × 100 × 24 | 39 × 100 × 28 |
-| 05 | Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12) | 105 × 48 × 18 | 106 × 45 × 31 | 105 × 45 × 32 |
-| 06 | *Extra:* City-Hochhaus („Uniriese“) | 48 × 45 × 155 | 47 × 46 × 142 | 47 × 46 × 145 |
-| 07 | *Extra:* Moritzbastei | 67 × 65 × 4 | 67 × 64 × 6 | 67 × 64 × 9 |
+<!-- AUTO:gebaeude -->
+<table>
+<tr><th align="left">Gebäude</th><th align="center"><b>OpenStreetMap</b><br><sub>Klötzchen aus Grundriss und Höhe</sub></th><th align="center"><b>LoD2 Stadt Leipzig</b><br><sub>amtliche Höhen und Dachformen</sub></th><th align="center"><b>Laserscan GeoSN</b><br><sub>gemessene Dachlandschaft</sub></th></tr>
+<tr><td valign="middle"><b>01 Paulinum</b><br><sub>Aula und Universitätskirche St. Pauli</sub></td><td align="center" valign="middle"><img src="vorschau/readme/01_osm.png" alt="Paulinum, OpenStreetMap" width="151"><br><sub>55 × 41 × 55 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/01_lod2.png" alt="Paulinum, LoD2 Stadt Leipzig" width="149"><br><sub>59 × 37 × 59 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/01_laserscan.png" alt="Paulinum, Laserscan GeoSN" width="148"><br><sub>59 × 37 × 59 mm</sub></td></tr>
+<tr><td valign="middle"><b>02 Neues Augusteum</b><br><sub>am Augustusplatz</sub></td><td align="center" valign="middle"><img src="vorschau/readme/02_osm.png" alt="Neues Augusteum, OpenStreetMap" width="196"><br><sub>60 × 70 × 28 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/02_lod2.png" alt="Neues Augusteum, LoD2 Stadt Leipzig" width="202"><br><sub>63 × 78 × 34 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/02_laserscan.png" alt="Neues Augusteum, Laserscan GeoSN" width="202"><br><sub>63 × 78 × 37 mm</sub></td></tr>
+<tr><td valign="middle"><b>03 Hörsaalgebäude</b><br><sub>mit Mensa am Park</sub></td><td align="center" valign="middle"><img src="vorschau/readme/03_osm.png" alt="Hörsaalgebäude, OpenStreetMap" width="196"><br><sub>82 × 136 × 14 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/03_lod2.png" alt="Hörsaalgebäude, LoD2 Stadt Leipzig" width="202"><br><sub>83 × 136 × 23 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/03_laserscan.png" alt="Hörsaalgebäude, Laserscan GeoSN" width="202"><br><sub>83 × 136 × 25 mm</sub></td></tr>
+<tr><td valign="middle"><b>04 Seminargebäude</b></td><td align="center" valign="middle"><img src="vorschau/readme/04_osm.png" alt="Seminargebäude, OpenStreetMap" width="200"><br><sub>38 × 98 × 21 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/04_lod2.png" alt="Seminargebäude, LoD2 Stadt Leipzig" width="202"><br><sub>39 × 100 × 24 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/04_laserscan.png" alt="Seminargebäude, Laserscan GeoSN" width="202"><br><sub>39 × 100 × 28 mm</sub></td></tr>
+<tr><td valign="middle"><b>05 Institutsgebäude</b><br><sub>Wirtschaftswiss. Fakultät, Grimmaische Str. 12</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_osm.png" alt="Institutsgebäude, OpenStreetMap" width="202"><br><sub>105 × 48 × 18 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_lod2.png" alt="Institutsgebäude, LoD2 Stadt Leipzig" width="202"><br><sub>106 × 45 × 31 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_laserscan.png" alt="Institutsgebäude, Laserscan GeoSN" width="201"><br><sub>105 × 45 × 32 mm</sub></td></tr>
+<tr><td valign="middle"><b>06 City-Hochhaus</b> <sup>Extra</sup><br><sub>„Uniriese“</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_osm.png" alt="City-Hochhaus, OpenStreetMap" width="83"><br><sub>48 × 45 × 155 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_lod2.png" alt="City-Hochhaus, LoD2 Stadt Leipzig" width="83"><br><sub>47 × 46 × 142 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_laserscan.png" alt="City-Hochhaus, Laserscan GeoSN" width="83"><br><sub>47 × 46 × 145 mm</sub></td></tr>
+<tr><td valign="middle"><b>07 Moritzbastei</b> <sup>Extra</sup><br><sub>historische Bastion</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_osm.png" alt="Moritzbastei, OpenStreetMap" width="202"><br><sub>67 × 65 × 4 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_lod2.png" alt="Moritzbastei, LoD2 Stadt Leipzig" width="202"><br><sub>67 × 64 × 6 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_laserscan.png" alt="Moritzbastei, Laserscan GeoSN" width="202"><br><sub>67 × 64 × 9 mm</sub></td></tr>
+</table>
+<!-- /AUTO:gebaeude -->
 
 Auffällig: Für Hörsaal-, Seminar- und Institutsgebäude hat OSM keine Höhen, sie
 werden dort aus der Geschosszahl geschätzt und sind deutlich zu niedrig (z. B.
@@ -45,6 +82,31 @@ eingetragen; LoD2/Laserscan enden an der Dachkrone (142–145 m).
 Paulinum und Neues Augusteum bilden in echt einen zusammenhängenden Baukörper;
 hier sind sie getrennt, passen aber Kante an Kante zusammen. Bei LoD2/Laserscan
 verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
+
+## Grundplatte zum Einsetzen
+
+Die Grundplatte hat passgenaue Aussparungen (0,25 mm Spiel): Gebäude einzeln
+drucken – oder in verschiedenen Farben –, einsetzen, fertig.
+
+<!-- AUTO:grundplatte -->
+<p align="center">
+  <img src="vorschau/readme/grundplatte.png" alt="Grundplatte mit darüber schwebenden Gebäuden" width="576">
+</p>
+<!-- /AUTO:grundplatte -->
+
+<details>
+<summary><b>Alle Vorschaubilder</b> (Quellenvergleich, farbig, jede einzelne Datei)</summary>
+
+<br>
+
+![Vergleich der Quellen](vorschau/vergleich_1zu1000.png)
+
+![Vergleich farbig](vorschau/vergleich_farbig_ost.png)
+
+Vorschaubilder zu jeder einzelnen Datei liegen in [`vorschau/`](vorschau/)
+(`vorschau/<quelle>/…`, Einzelvergleiche in `vorschau/vergleich/`).
+
+</details>
 
 ## Dateien
 
@@ -198,12 +260,15 @@ python3 generate.py --scale 750         # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch             # Quelldaten neu laden (LoD2 130 MB, Laserscan 240 MB)
 python3 farben.py                       # Farben neu messen (data/farben.json)
 python3 fassaden.py 03_hoersaalgebaeude # Prüfansicht der Fassaden-Zonen eines Gebäudes
-python3 preview.py                      # nur Vorschaubilder neu rendern
+python3 preview.py                      # nur Vorschau- und README-Bilder neu rendern
+python3 readme.py                       # nur die automatischen Blöcke der README aktualisieren
 python3 preview.py datei.stl --azim -90 --elev 40   # eigene Ansicht einer Datei
 ```
 
 `generate.py` rendert am Ende automatisch alle Vorschaubilder nach `vorschau/`
-(eigener Software-Renderer, keine Grafikkarte/kein Display nötig).
+(eigener Software-Renderer, keine Grafikkarte/kein Display nötig) und aktualisiert die
+Bilder und Maße in dieser README (Bereiche zwischen `<!-- AUTO:… -->`-Markern; der
+übrige Text darf von Hand bearbeitet werden).
 
 Welche Gebäude enthalten sind, steht in der Liste `BUILDINGS` in `generate.py`
 (per OSM-ID). Weitere Gebäude, z. B. Gewandhaus (`r152769`) oder Oper

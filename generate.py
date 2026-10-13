@@ -33,22 +33,29 @@ OSM_FILE = os.path.join(HERE, "data", "augustusplatz.osm")
 OSM_BBOX = (12.3770, 51.3370, 12.3830, 51.3400)  # lon_min, lat_min, lon_max, lat_max
 ORIGIN = (12.3800, 51.3385)  # Bezugspunkt der lokalen Projektion (lon, lat)
 
-# Ausgewählte Gebäude (OSM-ID: w = way, r = relation)
+# Ausgewählte Gebäude (OSM-ID: w = way, r = relation); title/note erscheinen in der README
 BUILDINGS = [
     dict(slug="01_paulinum", osm="w226096975", group="campus",
-         name="Paulinum (Aula und Universitätskirche St. Pauli)"),
+         name="Paulinum (Aula und Universitätskirche St. Pauli)",
+         title="Paulinum", note="Aula und Universitätskirche St. Pauli"),
     dict(slug="02_neues_augusteum", osm="w35479085", group="campus",
-         name="Neues Augusteum"),
+         name="Neues Augusteum",
+         title="Neues Augusteum", note="am Augustusplatz"),
     dict(slug="03_hoersaalgebaeude", osm="w186275377", group="campus",
-         name="Hörsaalgebäude (mit Mensa am Park)"),
+         name="Hörsaalgebäude (mit Mensa am Park)",
+         title="Hörsaalgebäude", note="mit Mensa am Park"),
     dict(slug="04_seminargebaeude", osm="w35460251", group="campus",
-         name="Seminargebäude"),
+         name="Seminargebäude",
+         title="Seminargebäude", note=""),
     dict(slug="05_institutsgebaeude", osm="w35460253", group="campus",
-         name="Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)"),
+         name="Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
+         title="Institutsgebäude", note="Wirtschaftswiss. Fakultät, Grimmaische Str. 12"),
     dict(slug="06_city_hochhaus", osm="w35462506", group="extra",
-         name="City-Hochhaus (\"Uniriese\")"),
+         name="City-Hochhaus (\"Uniriese\")",
+         title="City-Hochhaus", note="„Uniriese“"),
     dict(slug="07_moritzbastei", osm="r1769862", group="extra",
-         name="Moritzbastei"),
+         name="Moritzbastei",
+         title="Moritzbastei", note="historische Bastion"),
 ]
 
 LEVEL_HEIGHT = 3.5        # m pro Geschoss, falls keine Höhe in OSM

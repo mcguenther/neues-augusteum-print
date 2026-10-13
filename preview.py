@@ -11,6 +11,8 @@ Aufruf:
 import argparse
 import glob
 import os
+import re
+import zipfile
 
 import matplotlib
 import numpy as np
@@ -25,6 +27,7 @@ PALETTE = ["#3B5991", "#7d9bd1", "#c9a227", "#8fb573", "#d7845b", "#9a9a9a", "#a
 PLATE_COLOR = "#e4e0d8"
 SINGLE_COLOR = "#6f8fc7"
 BG = (250, 250, 248)
+OUTLINE = (44, 50, 66)  # Linienfarbe bei transparenten README-Bildern
 
 NAMES = {
     "01": "Paulinum", "02": "Neues Augusteum", "03": "Hörsaalgebäude",
@@ -46,9 +49,15 @@ def rgb(c):
 
 
 def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False,
-           light_from_view=False):
+           light_from_view=False, transparent=False, px_per_mm=None, pad=10):
     """meshes: Liste von (trimesh.Trimesh, Farbe oder Farben je Dreieck). Liefert PIL-Bild,
-    mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild."""
+    mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild.
+
+    transparent: RGBA mit freigestelltem Hintergrund (für die README).
+    px_per_mm:   feste Pixel-Skala statt Einpassen in `size`; die Bildgröße folgt
+                 dann aus der Ausdehnung (+ `pad` Pixel Rand). So lassen sich
+                 mehrere Modelle im gleichen Verhältnis darstellen.
+    """
     a, e = np.radians(azim), np.radians(elev)
     cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
     right = np.array([-np.sin(a), np.cos(a), 0.0])
@@ -67,9 +76,15 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
     tris, cols, norms = np.vstack(tris), np.vstack(cols), np.vstack(norms)
 
     sx, sy, sz = tris @ right, tris @ up, tris @ cam
-    W, H = size[0] * ss, size[1] * ss
     xmin, xmax, ymin, ymax = sx.min(), sx.max(), sy.min(), sy.max()
-    k = (1 - 2 * margin) * min(W / max(xmax - xmin, 1e-9), H / max(ymax - ymin, 1e-9))
+    if px_per_mm:
+        k = px_per_mm * ss
+        size = (int(np.ceil((xmax - xmin) * px_per_mm)) + 2 * pad,
+                int(np.ceil((ymax - ymin) * px_per_mm)) + 2 * pad)
+        W, H = size[0] * ss, size[1] * ss
+    else:
+        W, H = size[0] * ss, size[1] * ss
+        k = (1 - 2 * margin) * min(W / max(xmax - xmin, 1e-9), H / max(ymax - ymin, 1e-9))
     px = (sx - (xmin + xmax) / 2) * k + W / 2
     py = H / 2 - (sy - (ymin + ymax) / 2) * k
 
@@ -100,7 +115,7 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
         fid[y_lo:y_hi + 1, x_lo:x_hi + 1][upd] = i
 
     img = np.empty((H, W, 3))
-    img[:] = np.array(BG) / 255
+    img[:] = np.array(OUTLINE if transparent else BG) / 255
     hit = fid >= 0
     f = fid[hit]
     if flat:  # fast unschattiert: Farben beurteilen
@@ -124,6 +139,11 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
         edge[: H - dy, : W - dx] |= e_
     img[edge] *= 0.35
     im = Image.fromarray((img * 255).astype(np.uint8)).resize(size, Image.LANCZOS)
+    if transparent:
+        # Silhouette samt Kantenlinie bleibt deckend, alles andere ist transparent; der
+        # Hintergrund trägt die Linienfarbe, damit am Rand kein heller Saum entsteht.
+        alpha = Image.fromarray(((hit | edge) * 255).astype(np.uint8))
+        im.putalpha(alpha.resize(size, Image.LANCZOS))
     if return_proj:
         cx, cy = (xmin + xmax) / 2, (ymin + ymax) / 2
 
@@ -197,6 +217,105 @@ QUELLEN_NAMEN = {"osm": "OpenStreetMap", "lod2": "LoD2 Stadt Leipzig", "lasersca
 HERO = ("laserscan", "1zu1500", "komplett_campus_mit_extras_farbig_ost.png")
 
 
+# --------------------------------------------------------------------------
+# Bilder für die README: farbig (Filamentfarben aus den 3MF), transparent, ohne
+# Beschriftung, zugeschnitten. Modelle, die verglichen werden, teilen sich eine
+# Pixel/mm-Skala, damit Größenunterschiede sichtbar bleiben. Die Bilder sind mit
+# DENSITY-facher Auflösung gerendert (scharf auf HiDPI); die README zeigt sie mit
+# Breite = Pixelbreite / DENSITY (siehe readme.py).
+# --------------------------------------------------------------------------
+README_DIR = os.path.join(OUT, "readme")
+DENSITY = 2
+README_VIEW = dict(azim=25, elev=28, light_from_view=True)  # vom Augustusplatz (Osten)
+
+
+def load_3mf_coloured(path):
+    """[(Name, Netz, RGB je Dreieck)] aus einer *_objekte.3mf (Farbe = Filament-Grundmaterial)."""
+    import html
+    xml = zipfile.ZipFile(path).read("3D/3dmodel.model").decode()
+    pal = np.array([[int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+                    for h in re.findall(r'displaycolor="#([0-9A-Fa-f]{6})', xml)])
+    out = []
+    for m in re.finditer(r'<object id="\d+" name="([^"]*)".*?<vertices>(.*?)</vertices>'
+                         r'<triangles>(.*?)</triangles>', xml, re.S):
+        v = np.array(re.findall(r'<vertex x="([^"]+)" y="([^"]+)" z="([^"]+)"', m.group(2)), float)
+        t = np.array(re.findall(r'v1="(\d+)" v2="(\d+)" v3="(\d+)" pid="1" p1="(\d+)"', m.group(3)), int)
+        out.append((html.unescape(m.group(1)), trimesh.Trimesh(v, t[:, :3], process=False), pal[t[:, 3]]))
+    return out
+
+
+def _fit(meshes, max_w, max_h, azim, elev):
+    """Pixel/mm, mit der die Meshes in max_w x max_h (CSS-Pixel) passen."""
+    a, e = np.radians(azim), np.radians(elev)
+    cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
+    right = np.array([-np.sin(a), np.cos(a), 0.0])
+    up = np.cross(cam, right)
+    pts = np.vstack([m.vertices for m, _ in meshes])
+    return min(max_w / np.ptp(pts @ right), max_h / np.ptp(pts @ up))
+
+
+def _save(im, name):
+    os.makedirs(README_DIR, exist_ok=True)
+    path = os.path.join(README_DIR, name)
+    im.save(path, optimize=True)
+    print("  README-Bild:", os.path.relpath(path, HERE))
+
+
+def _render_group(groups, max_w, max_h, view):
+    """groups: {Dateiname: Meshes}; gemeinsame Skala, passend für das größte Modell."""
+    k = min(_fit(m, max_w, max_h, view["azim"], view["elev"]) for m in groups.values()) * DENSITY
+    for name, meshes in groups.items():
+        _save(render(meshes, transparent=True, px_per_mm=k, pad=6 * DENSITY, **view), name)
+
+
+def readme_assets(stl_dir=os.path.join(HERE, "stl")):
+    print("\nREADME-Bilder")
+    quellen = [q for q in QUELLEN_NAMEN if os.path.isdir(os.path.join(stl_dir, q))]
+    objekte = lambda q, sc: os.path.join(stl_dir, q, sc, "komplett_campus_mit_extras_objekte.3mf")
+    quellen = [q for q in quellen if os.path.exists(objekte(q, "1zu1500"))]
+    if not quellen:
+        return
+    cache = {}
+
+    def coloured(q, sc):
+        if (q, sc) not in cache:
+            cache[q, sc] = load_3mf_coloured(objekte(q, sc))
+        return cache[q, sc]
+
+    meshes = lambda q, sc: [(m, c) for _, m, c in coloured(q, sc)]
+    best = quellen[-1]  # detailreichste Quelle (Laserscan)
+
+    # Titelbild und Campus je Quelle (gleiche Skala) sowie beide Maßstäbe der besten Quelle
+    k = _fit(meshes(best, "1zu1500"), 900, 560, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
+    _save(render(meshes(best, "1zu1500"), transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW),
+          "hero.png")
+    _render_group({"campus_%s.png" % q: meshes(q, "1zu1500") for q in quellen}, 270, 400, README_VIEW)
+    if os.path.exists(objekte(best, "1zu1000")):
+        _render_group({"campus_%s_1zu1500.png" % best: meshes(best, "1zu1500"),
+                       "campus_%s_1zu1000.png" % best: meshes(best, "1zu1000")}, 440, 600, README_VIEW)
+
+    # Einzelgebäude je Quelle (1:1000), je Gebäude gemeinsame Skala
+    names = [n for n, _, _ in coloured(best, "1zu1000")][1:]
+    for i in range(1, len(names) + 1):
+        groups = {}
+        for q in quellen:
+            objs = coloured(q, "1zu1000")
+            if i < len(objs):
+                groups["%02d_%s.png" % (i, q)] = [(objs[i][1], objs[i][2])]
+        _render_group(groups, 190, 230, dict(README_VIEW, azim=-35))
+
+    # Grundplatte mit darüber schwebenden Gebäuden
+    plate = os.path.join(stl_dir, best, "1zu1500", "grundplatte_campus_mit_extras.stl")
+    if os.path.exists(plate):
+        parts = [(trimesh.load(plate, process=False), PLATE_COLOR)]
+        for _, m, c in coloured(best, "1zu1500")[1:]:
+            m = m.copy()
+            m.apply_translation([0, 0, 28])
+            parts.append((m, c))
+        k = _fit(parts, 560, 700, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
+        _save(render(parts, transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW), "grundplatte.png")
+
+
 def default_previews(stl_dir=os.path.join(HERE, "stl")):
     """Standard-Vorschauen für alle erzeugten Quellen und Maßstäbe, dazu Vergleichsbilder."""
     print("\nVorschaubilder")
@@ -208,6 +327,9 @@ def default_previews(stl_dir=os.path.join(HERE, "stl")):
     if os.path.exists(hero):
         Image.open(hero).save(os.path.join(HERE, "vorschau.png"), optimize=True)
         print("  Vorschau: vorschau.png")
+    readme_assets(stl_dir)
+    import readme
+    readme.update()
 
 
 def source_previews(qdir, out):

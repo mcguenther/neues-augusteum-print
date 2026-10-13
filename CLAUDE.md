@@ -31,6 +31,7 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
    - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
+   - README-Bilder (farbig, transparent, ohne Beschriftung): `vorschau/readme/`
    - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
      OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
      `vorschau/vergleich_farbig_ost.png`
@@ -59,6 +60,17 @@ Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.
 (Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
 `vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
+
+## README
+
+`README.md` ist normaler Text und darf von Hand bearbeitet werden – nur die Blöcke
+zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Quellenvergleich,
+Maßstäbe, Gebäudegalerie mit Maßen, Grundplatte) werden von `readme.py` überschrieben.
+`generate.py`/`preview.py` rufen es nach dem Rendern auf; die Bilder dafür
+(`preview.readme_assets`) entstehen farbig aus den `*_objekte.3mf`. Titel und
+Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäude
+erscheinen automatisch in der Galerie. Nach Änderungen die README mit
+Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
 ## Prüfen vor dem Commit
 
