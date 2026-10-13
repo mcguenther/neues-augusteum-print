@@ -48,7 +48,99 @@ def rgb(c):
     return np.array(matplotlib.colors.to_rgb(c))
 
 
-def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return_proj=False, flat=False,
+def _raster_loop(px, py, sz, ids, zbuf, fid):
+    """Dreiecke einzeln rastern (für große Dreiecke); Gleichstand gewinnt der kleinere Index."""
+    H, W = zbuf.shape
+    for i in ids:
+        x0, y0, z0 = px[i], py[i], sz[i]
+        x_lo, x_hi = int(max(np.floor(x0.min()), 0)), int(min(np.ceil(x0.max()), W - 1))
+        y_lo, y_hi = int(max(np.floor(y0.min()), 0)), int(min(np.ceil(y0.max()), H - 1))
+        if x_lo > x_hi or y_lo > y_hi:
+            continue
+        gx, gy = np.meshgrid(np.arange(x_lo, x_hi + 1) + 0.5, np.arange(y_lo, y_hi + 1) + 0.5)
+        (ax_, bx, cx), (ay, by, cy) = x0, y0
+        den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay - cy)
+        if abs(den) < 1e-12:
+            continue
+        w0 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / den
+        w1 = ((cy - ay) * (gx - cx) + (ax_ - cx) * (gy - cy)) / den
+        w2 = 1 - w0 - w1
+        inside = (w0 >= -1e-6) & (w1 >= -1e-6) & (w2 >= -1e-6)
+        if not inside.any():
+            continue
+        depth = w0 * z0[0] + w1 * z0[1] + w2 * z0[2]
+        zb = zbuf[y_lo:y_hi + 1, x_lo:x_hi + 1]
+        fb = fid[y_lo:y_hi + 1, x_lo:x_hi + 1]
+        upd = inside & ((depth > zb) | ((depth == zb) & (i < fb)))
+        zb[upd] = depth[upd]
+        fb[upd] = i
+
+
+def rasterize(px, py, sz, ids, W, H, max_box=48, budget=1 << 21):
+    """Z-Buffer-Rasterisierung der Dreiecke `ids` (Pixelkoordinaten px, py; Tiefe sz je Eckpunkt).
+
+    Liefert (zbuf, fid) – Tiefe und Dreiecksindex je Pixel (-1 = leer). Kleine Dreiecke
+    (Bounding-Box bis max_box Pixel) werden in Stapeln gleicher Boxgröße vektorisiert
+    gerastert, große einzeln. Dieselben Formeln und dieselbe Rangfolge wie die
+    Einzelschleife (bei Gleichstand gewinnt der kleinere Index): Ergebnis identisch.
+    """
+    zbuf = np.full((H, W), -np.inf)
+    fid = np.full((H, W), -1, dtype=np.int64)
+    ids = np.asarray(ids)
+    x_lo = np.maximum(np.floor(px[ids].min(1)), 0).astype(np.int64)
+    x_hi = np.minimum(np.ceil(px[ids].max(1)), W - 1).astype(np.int64)
+    y_lo = np.maximum(np.floor(py[ids].min(1)), 0).astype(np.int64)
+    y_hi = np.minimum(np.ceil(py[ids].max(1)), H - 1).astype(np.int64)
+    ok = (x_lo <= x_hi) & (y_lo <= y_hi)
+    box = np.maximum(x_hi - x_lo, y_hi - y_lo) + 1
+    big = ok & (box > max_box)
+    _raster_loop(px, py, sz, ids[big], zbuf, fid)
+    small = ok & ~big
+    cls = np.where(small, np.ceil(np.log2(np.maximum(box, 1))).astype(int), -1)  # Boxkante 2^cls
+    for c in range(0, int(np.log2(max_box)) + 2):
+        sel = np.nonzero(cls == c)[0]
+        if not len(sel):
+            continue
+        K = 1 << c
+        step = max(1, budget // (K * K))
+        off = np.arange(K)
+        for lo in range(0, len(sel), step):
+            s_ = sel[lo:lo + step]
+            t = ids[s_]
+            X, Y, Z = px[t], py[t], sz[t]
+            gx = x_lo[s_][:, None, None] + off[None, None, :] + 0.5
+            gy = y_lo[s_][:, None, None] + off[None, :, None] + 0.5
+            ax_, bx, cx = X[:, 0, None, None], X[:, 1, None, None], X[:, 2, None, None]
+            ay, by, cy = Y[:, 0, None, None], Y[:, 1, None, None], Y[:, 2, None, None]
+            den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay - cy)
+            good = np.abs(den) >= 1e-12
+            den = np.where(good, den, 1.0)
+            w0 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / den
+            w1 = ((cy - ay) * (gx - cx) + (ax_ - cx) * (gy - cy)) / den
+            w2 = 1 - w0 - w1
+            inside = ((w0 >= -1e-6) & (w1 >= -1e-6) & (w2 >= -1e-6) & good
+                      & (gx < (x_hi[s_][:, None, None] + 1)) & (gy < (y_hi[s_][:, None, None] + 1)))
+            depth = w0 * Z[:, 0, None, None] + w1 * Z[:, 1, None, None] + w2 * Z[:, 2, None, None]
+            n, yy, xx = np.nonzero(inside)
+            if not len(n):
+                continue
+            pix = (y_lo[s_][n] + yy) * W + (x_lo[s_][n] + xx)
+            d, tri = depth[n, yy, xx], t[n]
+            # je Pixel den besten Treffer: größte Tiefe, bei Gleichstand kleinster Index
+            order = np.lexsort((tri, -d, pix))
+            pix, d, tri = pix[order], d[order], tri[order]
+            first = np.r_[True, pix[1:] != pix[:-1]]
+            pix, d, tri = pix[first], d[first], tri[first]
+            zf, ff = zbuf.reshape(-1), fid.reshape(-1)
+            upd = (d > zf[pix]) | ((d == zf[pix]) & (tri < ff[pix]))
+            zf[pix[upd]], ff[pix[upd]] = d[upd], tri[upd]
+    return zbuf, fid
+
+
+SS = 2  # Überabtastung (Kantenglättung); 1 = schneller, gröber (generate.py --fast)
+
+
+def render(meshes, size=(900, 700), azim=-35, elev=30, ss=None, margin=0.06, return_proj=False, flat=False,
            light_from_view=False, transparent=False, px_per_mm=None, pad=10):
     """meshes: Liste von (trimesh.Trimesh, Farbe oder Farben je Dreieck). Liefert PIL-Bild,
     mit return_proj zusätzlich eine Funktion Weltpunkt -> Pixel (x, y) im Bild.
@@ -58,6 +150,7 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
                  dann aus der Ausdehnung (+ `pad` Pixel Rand). So lassen sich
                  mehrere Modelle im gleichen Verhältnis darstellen.
     """
+    ss = ss or SS
     a, e = np.radians(azim), np.radians(elev)
     cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
     right = np.array([-np.sin(a), np.cos(a), 0.0])
@@ -88,31 +181,7 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06, return
     px = (sx - (xmin + xmax) / 2) * k + W / 2
     py = H / 2 - (sy - (ymin + ymax) / 2) * k
 
-    zbuf = np.full((H, W), -np.inf)
-    fid = np.full((H, W), -1, dtype=np.int64)
-    visible = norms @ cam > -1e-9  # Rückseiten weglassen
-    for i in np.nonzero(visible)[0]:
-        x0, y0, z0 = px[i], py[i], sz[i]
-        x_lo, x_hi = int(max(np.floor(x0.min()), 0)), int(min(np.ceil(x0.max()), W - 1))
-        y_lo, y_hi = int(max(np.floor(y0.min()), 0)), int(min(np.ceil(y0.max()), H - 1))
-        if x_lo > x_hi or y_lo > y_hi:
-            continue
-        gx, gy = np.meshgrid(np.arange(x_lo, x_hi + 1) + 0.5, np.arange(y_lo, y_hi + 1) + 0.5)
-        (ax_, bx, cx), (ay, by, cy) = x0, y0
-        den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay - cy)
-        if abs(den) < 1e-12:
-            continue
-        w0 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / den
-        w1 = ((cy - ay) * (gx - cx) + (ax_ - cx) * (gy - cy)) / den
-        w2 = 1 - w0 - w1
-        inside = (w0 >= -1e-6) & (w1 >= -1e-6) & (w2 >= -1e-6)
-        if not inside.any():
-            continue
-        depth = w0 * z0[0] + w1 * z0[1] + w2 * z0[2]
-        zb = zbuf[y_lo:y_hi + 1, x_lo:x_hi + 1]
-        upd = inside & (depth > zb)
-        zb[upd] = depth[upd]
-        fid[y_lo:y_hi + 1, x_lo:x_hi + 1][upd] = i
+    zbuf, fid = rasterize(px, py, sz, np.nonzero(norms @ cam > -1e-9)[0], W, H)  # ohne Rückseiten
 
     img = np.empty((H, W, 3))
     img[:] = np.array(OUTLINE if transparent else BG) / 255
@@ -261,15 +330,20 @@ def _save(im, name):
     print("  README-Bild:", os.path.relpath(path, HERE))
 
 
-def _render_group(groups, max_w, max_h, view):
+def _render_one(meshes, kw):
+    return render(meshes, **kw)
+
+
+def _group_jobs(groups, max_w, max_h, view):
     """groups: {Dateiname: Meshes}; gemeinsame Skala, passend für das größte Modell."""
     k = min(_fit(m, max_w, max_h, view["azim"], view["elev"]) for m in groups.values()) * DENSITY
-    for name, meshes in groups.items():
-        _save(render(meshes, transparent=True, px_per_mm=k, pad=6 * DENSITY, **view), name)
+    return [(name, meshes, dict(transparent=True, px_per_mm=k, pad=6 * DENSITY, **view))
+            for name, meshes in groups.items()]
 
 
 def readme_assets(stl_dir=os.path.join(HERE, "stl")):
     print("\nREADME-Bilder")
+    import parallel
     quellen = [q for q in QUELLEN_NAMEN if os.path.isdir(os.path.join(stl_dir, q))]
     objekte = lambda q, sc: os.path.join(stl_dir, q, sc, "komplett_campus_mit_extras_objekte.3mf")
     quellen = [q for q in quellen if os.path.exists(objekte(q, "1zu1500"))]
@@ -284,25 +358,27 @@ def readme_assets(stl_dir=os.path.join(HERE, "stl")):
 
     meshes = lambda q, sc: [(m, c) for _, m, c in coloured(q, sc)]
     best = quellen[-1]  # detailreichste Quelle (Laserscan)
+    jobs = []  # (Dateiname, Meshes, render-Argumente); gerendert wird am Ende parallel
 
     # Titelbild und Campus je Quelle (gleiche Skala) sowie beide Maßstäbe der besten Quelle
     k = _fit(meshes(best, "1zu1500"), 900, 560, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
-    _save(render(meshes(best, "1zu1500"), transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW),
-          "hero.png")
-    _render_group({"campus_%s.png" % q: meshes(q, "1zu1500") for q in quellen}, 270, 400, README_VIEW)
+    jobs.append(("hero.png", meshes(best, "1zu1500"),
+                 dict(transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW)))
+    jobs += _group_jobs({"campus_%s.png" % q: meshes(q, "1zu1500") for q in quellen}, 270, 400, README_VIEW)
     if os.path.exists(objekte(best, "1zu1000")):
-        _render_group({"campus_%s_1zu1500.png" % best: meshes(best, "1zu1500"),
-                       "campus_%s_1zu1000.png" % best: meshes(best, "1zu1000")}, 440, 600, README_VIEW)
+        jobs += _group_jobs({"campus_%s_1zu1500.png" % best: meshes(best, "1zu1500"),
+                             "campus_%s_1zu1000.png" % best: meshes(best, "1zu1000")}, 440, 600, README_VIEW)
 
     # Einzelgebäude je Quelle (1:1000), je Gebäude gemeinsame Skala
-    names = [n for n, _, _ in coloured(best, "1zu1000")][1:]
+    have1000 = [q for q in quellen if os.path.exists(objekte(q, "1zu1000"))]
+    names = [n for n, _, _ in coloured(best, "1zu1000")][1:] if best in have1000 else []
     for i in range(1, len(names) + 1):
         groups = {}
-        for q in quellen:
+        for q in have1000:
             objs = coloured(q, "1zu1000")
             if i < len(objs):
                 groups["%02d_%s.png" % (i, q)] = [(objs[i][1], objs[i][2])]
-        _render_group(groups, 190, 230, dict(README_VIEW, azim=-35))
+        jobs += _group_jobs(groups, 190, 230, dict(README_VIEW, azim=-35))
 
     # Grundplatte mit darüber schwebenden Gebäuden
     plate = os.path.join(stl_dir, best, "1zu1500", "grundplatte_campus_mit_extras.stl")
@@ -313,27 +389,40 @@ def readme_assets(stl_dir=os.path.join(HERE, "stl")):
             m.apply_translation([0, 0, 28])
             parts.append((m, c))
         k = _fit(parts, 560, 700, README_VIEW["azim"], README_VIEW["elev"]) * DENSITY
-        _save(render(parts, transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW), "grundplatte.png")
+        jobs.append(("grundplatte.png", parts, dict(transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW)))
+
+    for (name, _, _), im in zip(jobs, parallel.starmap(_render_one, [(m, kw) for _, m, kw in jobs])):
+        _save(im, name)
 
 
-def default_previews(stl_dir=os.path.join(HERE, "stl")):
-    """Standard-Vorschauen für alle erzeugten Quellen und Maßstäbe, dazu Vergleichsbilder."""
+def default_previews(stl_dir=os.path.join(HERE, "stl"), fast=False):
+    """Standard-Vorschauen für alle erzeugten Quellen und Maßstäbe, dazu Vergleichsbilder.
+
+    fast: nur die Bilder je Quelle (kein Vergleich, kein vorschau.png, keine README-Bilder)."""
+    import parallel
     print("\nVorschaubilder")
-    for qdir in sorted(glob.glob(os.path.join(stl_dir, "*"))):
-        if os.path.isdir(qdir) and glob.glob(os.path.join(qdir, "1zu*")):
-            source_previews(qdir, os.path.join(OUT, os.path.basename(qdir)))
-    comparisons(stl_dir)
+    with parallel.phase("Vorschaubilder je Quelle"):
+        for qdir in sorted(glob.glob(os.path.join(stl_dir, "*"))):
+            if os.path.isdir(qdir) and glob.glob(os.path.join(qdir, "1zu*")):
+                source_previews(qdir, os.path.join(OUT, os.path.basename(qdir)))
+    if fast:
+        return
+    with parallel.phase("Quellenvergleich"):
+        comparisons(stl_dir)
     hero = os.path.join(OUT, *HERO)
     if os.path.exists(hero):
         Image.open(hero).save(os.path.join(HERE, "vorschau.png"), optimize=True)
         print("  Vorschau: vorschau.png")
-    readme_assets(stl_dir)
-    import readme
-    readme.update()
+    with parallel.phase("README-Bilder + README"):
+        readme_assets(stl_dir)
+        import readme
+        readme.update()
 
 
-def source_previews(qdir, out):
+def source_preview_jobs(qdir, out):
+    """Aufgaben (render_file-Argumente) für alle Dateien einer Quelle; sheets: Kontaktblätter."""
     quelle = QUELLEN_NAMEN.get(os.path.basename(qdir), os.path.basename(qdir))
+    jobs, sheets = [], []
     for sdir in sorted(glob.glob(os.path.join(qdir, "1zu*"))):
         scale = os.path.basename(sdir)
         odir = os.path.join(out, scale)
@@ -342,24 +431,38 @@ def source_previews(qdir, out):
         for f in sorted(glob.glob(os.path.join(sdir, "einzeln", "*.stl"))):
             slug = os.path.basename(f)[:-4]
             name = NAMES.get(slug[:2], slug)
-            singles.append(render_file(f, os.path.join(odir, slug + ".png"),
-                                       "%s %s  (%s)" % (slug[:2], name, label)))
+            singles.append(len(jobs))
+            jobs.append((f, os.path.join(odir, slug + ".png"), "%s %s  (%s)" % (slug[:2], name, label)))
         for f in sorted(glob.glob(os.path.join(sdir, "*_objekte.3mf"))):
             base = os.path.basename(f)[:-4]
-            render_file(f, os.path.join(odir, base + ".png"),
-                        "Gesamtmodell %s  (%s)" % ("mit Extras" if "extras" in base else "Campus", label),
-                        azim=-30, elev=32, size=(1100, 800))
+            jobs.append((f, os.path.join(odir, base + ".png"),
+                         "Gesamtmodell %s  (%s)" % ("mit Extras" if "extras" in base else "Campus", label),
+                         -30, 32, (1100, 800)))
         for f in sorted(glob.glob(os.path.join(sdir, "grundplatte_*.stl"))):
             base = os.path.basename(f)[:-4]
-            render_file(f, os.path.join(odir, base + ".png"), "Grundplatte %s" % label,
-                        azim=-90, elev=55)
+            jobs.append((f, os.path.join(odir, base + ".png"), "Grundplatte %s" % label, -90, 55))
         for f in sorted(glob.glob(os.path.join(sdir, "komplett_*.stl"))):
             base = os.path.basename(f)[:-4]
-            render_file(f, os.path.join(odir, base + ".png"), "Komplettmodell (1 Druckteil) %s" % label,
-                        azim=-30, elev=32)
+            jobs.append((f, os.path.join(odir, base + ".png"), "Komplettmodell (1 Druckteil) %s" % label, -30, 32))
         if singles:
-            contact_sheet(singles, os.path.join(out, "einzelgebaeude_%s.png" % scale),
-                          "Einzelgebäude %s" % label)
+            sheets.append((singles, os.path.join(out, "einzelgebaeude_%s.png" % scale),
+                           "Einzelgebäude %s" % label))
+    return jobs, sheets
+
+
+def source_previews(qdir, out):
+    """Alle Bilder einer Quelle rendern (parallel) und die Kontaktblätter der Einzelgebäude bauen."""
+    import parallel
+    jobs, sheets = source_preview_jobs(qdir, out)
+    images = parallel.starmap(render_file, jobs)
+    for idx, path, title in sheets:
+        contact_sheet([images[i] for i in idx], path, title)
+
+
+def _render_cell(f, q):
+    m = trimesh.load(f, process=False)
+    im = render([(m, SINGLE_COLOR)], size=(560, 460))
+    return caption(im, QUELLEN_NAMEN[q], "%s  ·  %d Dreiecke" % (dims(m), len(m.faces)))
 
 
 def comparisons(stl_dir, scale="1zu1000"):
@@ -371,17 +474,14 @@ def comparisons(stl_dir, scale="1zu1000"):
     os.makedirs(odir, exist_ok=True)
     slugs = sorted({os.path.basename(f)[:-4] for q in quellen
                     for f in glob.glob(os.path.join(stl_dir, q, scale, "einzeln", "*.stl"))})
+    import parallel
+    todo = [(slug, q) for slug in slugs for q in quellen
+            if os.path.exists(os.path.join(stl_dir, q, scale, "einzeln", slug + ".stl"))]
+    done = dict(zip(todo, parallel.starmap(_render_cell, [(os.path.join(stl_dir, q, scale, "einzeln", s + ".stl"), q)
+                                                         for s, q in todo])))
     rows = []
     for slug in slugs:
-        cells = []
-        for q in quellen:
-            f = os.path.join(stl_dir, q, scale, "einzeln", slug + ".stl")
-            if not os.path.exists(f):
-                cells.append(None)
-                continue
-            m = trimesh.load(f, process=False)
-            im = render([(m, SINGLE_COLOR)], size=(560, 460))
-            cells.append(caption(im, QUELLEN_NAMEN[q], "%s  ·  %d Dreiecke" % (dims(m), len(m.faces))))
+        cells = [done.get((slug, q)) for q in quellen]
         rows.append((slug, cells))
         grid([(slug, cells)], os.path.join(odir, "%s_%s.png" % (slug, scale)),
              "%s %s – Vergleich der Quellen (%s)" % (slug[:2], NAMES.get(slug[:2], slug),
