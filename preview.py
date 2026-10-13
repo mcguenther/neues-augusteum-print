@@ -25,6 +25,7 @@ PALETTE = ["#3B5991", "#7d9bd1", "#c9a227", "#8fb573", "#d7845b", "#9a9a9a", "#a
 PLATE_COLOR = "#e4e0d8"
 SINGLE_COLOR = "#6f8fc7"
 BG = (250, 250, 248)
+OUTLINE = (44, 50, 66)  # Linienfarbe bei transparenten README-Bildern
 
 NAMES = {
     "01": "Paulinum", "02": "Neues Augusteum", "03": "Hörsaalgebäude",
@@ -45,8 +46,15 @@ def rgb(c):
     return np.array(matplotlib.colors.to_rgb(c))
 
 
-def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
-    """meshes: Liste von (trimesh.Trimesh, Farbe). Liefert PIL-Bild."""
+def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06,
+           transparent=False, px_per_mm=None, pad=10):
+    """meshes: Liste von (trimesh.Trimesh, Farbe). Liefert PIL-Bild.
+
+    transparent: RGBA mit freigestelltem Hintergrund (für die README).
+    px_per_mm:   feste Pixel-Skala statt Einpassen in `size`; die Bildgröße folgt
+                 dann aus der Ausdehnung (+ `pad` Pixel Rand). So lassen sich
+                 verschiedene Maßstäbe im gleichen Verhältnis darstellen.
+    """
     a, e = np.radians(azim), np.radians(elev)
     cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
     right = np.array([-np.sin(a), np.cos(a), 0.0])
@@ -62,9 +70,15 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
     tris, cols, norms = np.vstack(tris), np.vstack(cols), np.vstack(norms)
 
     sx, sy, sz = tris @ right, tris @ up, tris @ cam
-    W, H = size[0] * ss, size[1] * ss
     xmin, xmax, ymin, ymax = sx.min(), sx.max(), sy.min(), sy.max()
-    k = (1 - 2 * margin) * min(W / max(xmax - xmin, 1e-9), H / max(ymax - ymin, 1e-9))
+    if px_per_mm:
+        k = px_per_mm * ss
+        size = (int(np.ceil((xmax - xmin) * px_per_mm)) + 2 * pad,
+                int(np.ceil((ymax - ymin) * px_per_mm)) + 2 * pad)
+        W, H = size[0] * ss, size[1] * ss
+    else:
+        W, H = size[0] * ss, size[1] * ss
+        k = (1 - 2 * margin) * min(W / max(xmax - xmin, 1e-9), H / max(ymax - ymin, 1e-9))
     px = (sx - (xmin + xmax) / 2) * k + W / 2
     py = H / 2 - (sy - (ymin + ymax) / 2) * k
 
@@ -95,7 +109,7 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
         fid[y_lo:y_hi + 1, x_lo:x_hi + 1][upd] = i
 
     img = np.empty((H, W, 3))
-    img[:] = np.array(BG) / 255
+    img[:] = np.array(OUTLINE if transparent else BG) / 255
     hit = fid >= 0
     f = fid[hit]
     shade = 0.42 + 0.48 * np.clip(norms[f] @ light, 0, 1) + 0.10 * np.clip(norms[f] @ cam, 0, 1)
@@ -116,7 +130,14 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=2, margin=0.06):
         edge[: H - dy, : W - dx] |= e_
     img[edge] *= 0.35
     im = Image.fromarray((img * 255).astype(np.uint8))
-    return im.resize(size, Image.LANCZOS)
+    if not transparent:
+        return im.resize(size, Image.LANCZOS)
+    # Silhouette samt Kantenlinie bleibt deckend, alles andere ist transparent;
+    # der Hintergrund trägt die Linienfarbe, damit am Rand kein heller Saum entsteht.
+    alpha = Image.fromarray(((hit | edge) * 255).astype(np.uint8))
+    im = im.resize(size, Image.LANCZOS)
+    im.putalpha(alpha.resize(size, Image.LANCZOS))
+    return im
 
 
 def caption(im, title, subtitle=None):
@@ -142,7 +163,8 @@ def load_mesh(path):
     return [(m, None, os.path.basename(path))]
 
 
-def render_file(path, out_png, title=None, azim=-35, elev=30, size=(900, 700)):
+def colored(path):
+    """Teile einer STL/3MF mit Farben (Sockel hell, Gebäude aus der Palette)."""
     parts = load_mesh(path)
     meshes, ci = [], 0
     for g, _, name in parts:
@@ -154,6 +176,11 @@ def render_file(path, out_png, title=None, azim=-35, elev=30, size=(900, 700)):
             col = PALETTE[ci % len(PALETTE)]
             ci += 1
         meshes.append((g, col))
+    return meshes
+
+
+def render_file(path, out_png, title=None, azim=-35, elev=30, size=(900, 700)):
+    meshes = colored(path)
     im = render(meshes, size=size, azim=azim, elev=elev)
     allm = trimesh.util.concatenate([m for m, _ in meshes])
     rel = os.path.relpath(path, HERE)
@@ -176,6 +203,86 @@ def contact_sheet(images, out_png, title, cols=4, cell=(420, 360)):
         sheet.paste(t, (c * cell[0] + (cell[0] - t.width) // 2, 60 + r * cell[1]))
     sheet.save(out_png, optimize=True)
     print("  Vorschau:", os.path.relpath(out_png, HERE))
+
+
+# --------------------------------------------------------------------------
+# Bilder für die README: transparent, ohne Beschriftung, zugeschnitten.
+# Mehrere Maßstäbe desselben Objekts teilen sich eine Pixel/mm-Skala, damit der
+# Größenunterschied (1:1000 ist 1,5-mal so groß wie 1:1500) sichtbar bleibt.
+# Die Bilder sind mit DENSITY-facher Auflösung gerendert (scharf auf HiDPI);
+# die README zeigt sie mit Breite = Pixelbreite / DENSITY.
+# --------------------------------------------------------------------------
+README_DIR = os.path.join(OUT, "readme")
+DENSITY = 2
+
+
+def _fit(meshes, max_w, max_h, azim, elev):
+    """Pixel/mm, mit der die Meshes in max_w x max_h (CSS-Pixel) passen."""
+    a, e = np.radians(azim), np.radians(elev)
+    cam = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
+    right = np.array([-np.sin(a), np.cos(a), 0.0])
+    up = np.cross(cam, right)
+    pts = np.vstack([m.vertices for m, _ in meshes])
+    w, h = np.ptp(pts @ right), np.ptp(pts @ up)
+    return min(max_w / w, max_h / h)
+
+
+def _save(im, name):
+    os.makedirs(README_DIR, exist_ok=True)
+    path = os.path.join(README_DIR, name)
+    im.save(path, optimize=True)
+    print("  README-Bild:", os.path.relpath(path, HERE))
+
+
+def _render_group(files, name_for, max_w, max_h, azim, elev):
+    """Rendert Dateien verschiedener Maßstäbe mit gemeinsamer Skala.
+
+    files: {Maßstabsordner: Pfad}; die Skala richtet sich nach dem größten Modell.
+    """
+    first = min(files, key=lambda sc: int(sc[3:]))  # kleinste Verhältniszahl = größtes Modell
+    k = _fit(colored(files[first]), max_w, max_h, azim, elev) * DENSITY
+    for sc, path in files.items():
+        _save(render(colored(path), azim=azim, elev=elev, transparent=True, px_per_mm=k,
+                     pad=6 * DENSITY), name_for(sc))
+
+
+def readme_assets(stl_dir=os.path.join(HERE, "stl")):
+    print("\nREADME-Bilder")
+    scales = sorted(os.path.basename(d) for d in glob.glob(os.path.join(stl_dir, "1zu*")))
+    path = lambda sc, *p: os.path.join(stl_dir, sc, *p)
+
+    # Gesamtcampus je Maßstab (gemeinsame Skala) und Titelbild
+    camp = {sc: path(sc, "komplett_campus_mit_extras_objekte.3mf") for sc in scales
+            if os.path.exists(path(sc, "komplett_campus_mit_extras_objekte.3mf"))}
+    if camp:
+        _render_group(camp, lambda sc: "campus_%s.png" % sc, 440, 760, -30, 32)
+        small = max(camp, key=lambda sc: int(sc[3:]))
+        meshes = colored(camp[small])
+        k = _fit(meshes, 900, 560, -30, 32) * DENSITY
+        _save(render(meshes, azim=-30, elev=32, transparent=True, px_per_mm=k, pad=8 * DENSITY),
+              "hero.png")
+
+    # Einzelgebäude je Maßstab
+    slugs = sorted({os.path.basename(f)[:-4] for sc in scales
+                    for f in glob.glob(path(sc, "einzeln", "*.stl"))})
+    for slug in slugs:
+        files = {sc: path(sc, "einzeln", slug + ".stl") for sc in scales
+                 if os.path.exists(path(sc, "einzeln", slug + ".stl"))}
+        _render_group(files, lambda sc, slug=slug: "%s_%s.png" % (slug, sc), 300, 270, -35, 30)
+
+    # Grundplatte mit darüber schwebenden Gebäuden
+    plate = path(scales[-1], "grundplatte_campus_mit_extras.stl") if scales else None
+    objs = path(scales[-1], "komplett_campus_mit_extras_objekte.3mf") if scales else None
+    if plate and os.path.exists(plate) and os.path.exists(objs):
+        meshes = [(m, PLATE_COLOR) for m, _ in colored(plate)]
+        for (m, c), (_, _, name) in zip(colored(objs), load_mesh(objs)):
+            if not name.lower().startswith("sockel"):
+                m = m.copy()
+                m.apply_translation([0, 0, 28])
+                meshes.append((m, c))
+        k = _fit(meshes, 560, 700, -30, 32) * DENSITY
+        _save(render(meshes, azim=-30, elev=32, transparent=True, px_per_mm=k, pad=8 * DENSITY),
+              "grundplatte_%s.png" % scales[-1])
 
 
 def default_previews(stl_dir=os.path.join(HERE, "stl")):
@@ -208,10 +315,9 @@ def default_previews(stl_dir=os.path.join(HERE, "stl")):
         if singles:
             contact_sheet(singles, os.path.join(OUT, "einzelgebaeude_%s.png" % scale),
                           "Einzelgebäude %s" % label)
-    hero = os.path.join(OUT, "1zu1500", "komplett_campus_mit_extras_objekte.png")
-    if os.path.exists(hero):
-        Image.open(hero).save(os.path.join(HERE, "vorschau.png"), optimize=True)
-        print("  Vorschau: vorschau.png")
+    readme_assets(stl_dir)
+    import readme
+    readme.update()
 
 
 def main():
