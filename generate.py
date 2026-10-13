@@ -33,26 +33,34 @@ OSM_FILE = os.path.join(HERE, "data", "augustusplatz.osm")
 OSM_BBOX = (12.3770, 51.3370, 12.3830, 51.3400)  # lon_min, lat_min, lon_max, lat_max
 ORIGIN = (12.3800, 51.3385)  # Bezugspunkt der lokalen Projektion (lon, lat)
 
-# Ausgewählte Gebäude (OSM-ID: w = way, r = relation)
+# Ausgewählte Gebäude (OSM-ID: w = way, r = relation); title/note erscheinen in der README
 BUILDINGS = [
     dict(slug="01_paulinum", osm="w226096975", group="campus",
-         name="Paulinum (Aula und Universitätskirche St. Pauli)"),
+         name="Paulinum (Aula und Universitätskirche St. Pauli)",
+         title="Paulinum", note="Aula und Universitätskirche St. Pauli"),
     dict(slug="02_neues_augusteum", osm="w35479085", group="campus",
-         name="Neues Augusteum"),
+         name="Neues Augusteum",
+         title="Neues Augusteum", note="am Augustusplatz"),
     dict(slug="03_hoersaalgebaeude", osm="w186275377", group="campus",
-         name="Hörsaalgebäude (mit Mensa am Park)"),
+         name="Hörsaalgebäude (mit Mensa am Park)",
+         title="Hörsaalgebäude", note="mit Mensa am Park"),
     dict(slug="04_seminargebaeude", osm="w35460251", group="campus",
-         name="Seminargebäude"),
+         name="Seminargebäude",
+         title="Seminargebäude", note=""),
     dict(slug="05_institutsgebaeude", osm="w35460253", group="campus",
-         name="Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)"),
+         name="Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
+         title="Institutsgebäude", note="Wirtschaftswiss. Fakultät, Grimmaische Str. 12"),
     dict(slug="06_city_hochhaus", osm="w35462506", group="extra",
-         name="City-Hochhaus (\"Uniriese\")"),
+         name="City-Hochhaus (\"Uniriese\")",
+         title="City-Hochhaus", note="„Uniriese“"),
     dict(slug="07_moritzbastei", osm="r1769862", group="extra",
-         name="Moritzbastei"),
+         name="Moritzbastei",
+         title="Moritzbastei", note="historische Bastion"),
 ]
 
 # Innenhof (Leibnizforum) als eigenes Druckteil, siehe innenhof.py
-HOF = dict(slug="08_innenhof", group="campus", name="Innenhof (Leibnizforum)")
+HOF = dict(slug="08_innenhof", group="campus", name="Innenhof (Leibnizforum)",
+           title="Innenhof", note="Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen")
 OBJEKTE = BUILDINGS + [HOF]  # alles, was gedruckt und eingefärbt wird
 
 LEVEL_HEIGHT = 3.5        # m pro Geschoss, falls keine Höhe in OSM
@@ -459,6 +467,8 @@ def build_scale(quelle, scale, outdir):
     import innenhof
     models = source_models(quelle, s)
     models[HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()])
+    colour_cache = {}  # campus ist Teilmenge von campus_mit_extras: Gebäude nur einmal zerschneiden/färben
+    render_jobs = []
     buildings = [b for b in OBJEKTE if b["slug"] in models]
     solids = {k: v[0] for k, v in models.items()}
     footprints = {k: v[1] for k, v in models.items()}
@@ -510,14 +520,16 @@ def build_scale(quelle, scale, outdir):
         for b in sel:
             objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
                          b["slug"]))
-        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s)
+        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s, colour_cache)
         path = os.path.join(outdir, "komplett_%s_objekte.3mf" % variant)
         export_3mf(coloured, path)
         print("  %s (%d Objekte, farbig)" % (os.path.relpath(path, HERE), len(objs)))
         if RENDER_COLOUR:
-            render_coloured(coloured, quelle, scale, variant)
+            render_jobs += colour_render_jobs(coloured, quelle, scale, variant)
 
-    return models
+    infos = ["  %-22s %s" % (slug, ", ".join("%s=%s" % kv for kv in info.items() if kv[0] != "attrs"))
+             for slug, (_, _, info) in models.items()]
+    return infos, render_jobs
 
 
 ROOF_NZ = 0.35  # Dreiecke mit steilerer Normale als ~70° zählen als Dach
@@ -537,10 +549,12 @@ def paint_code(n):
 _ROOF_CLASS = None
 
 
-def colourise(objs, offset, s):
+def colourise(objs, offset, s, cache=None):
     """Zerschneidet und färbt die Objekte nach den Fassaden-Zonen (fassaden.py).
 
     Liefert [(name, Netz, Hex-Farbe je Dreieck)]; ohne data/farben.json einfarbig.
+    cache: {slug: (Netz relativ zu offset, Farben)} – dasselbe Gebäude in mehreren Varianten
+    (verschiedener offset) wird nur einmal zerschnitten.
     """
     global _ROOF_CLASS
     import fassaden
@@ -558,9 +572,16 @@ def colourise(objs, offset, s):
             import innenhof
             out.append((name, tm, innenhof.colour_mesh(tm, (offset, s), e)))
             continue
+        off = np.asarray(offset, float)
+        if cache is not None and slug in cache:
+            rel, hexes = cache[slug]
+            out.append((name, trimesh.Trimesh(rel.vertices + off, rel.faces, process=False), hexes))
+            continue
         mesh, hexes = fassaden.colour_mesh(tm, slug, (offset, s), e, _ROOF_CLASS)
         if not mesh.is_watertight:
             print("  Warnung: %s nach dem Zerschneiden nicht dicht" % name)
+        if cache is not None:
+            cache[slug] = (trimesh.Trimesh(mesh.vertices - off, mesh.faces, process=False), hexes)
         out.append((name, mesh, hexes))
     return out
 
@@ -638,8 +659,21 @@ def export_3mf(objs, path):
         z.writestr("Metadata/Slic3r_PE_model.config", xml % "".join(prusa))
 
 
-def render_coloured(objs, quelle, scale, variant):
-    """Farbige Vorschau in den Filamentfarben – so, wie es gedruckt wird."""
+def _render_job(meshes, kw, title, subtitle, path):
+    """Ein Bild rendern (läuft in einem Worker); speichert, wenn path gesetzt ist."""
+    import preview
+    out = preview.caption(preview.render(meshes, **kw), title, subtitle)
+    if path:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        out.save(path, optimize=True)
+        print("  Vorschau:", os.path.relpath(path, HERE))
+    return out
+
+
+def colour_render_jobs(objs, quelle, scale, variant):
+    """Aufgaben (func, args) für die farbigen Vorschauen in den Filamentfarben – so, wie es
+    gedruckt wird. Bei „extras“ folgen die Kacheln des Einzelgebäude-Blatts; ihre Bilder und
+    der Zielpfad stehen in sheet_jobs, siehe finish_colour_sheets."""
     import farben as F
     import preview
     farben, plate = colour_table()
@@ -649,24 +683,44 @@ def render_coloured(objs, quelle, scale, variant):
         nrs = {h: (F.filament_nr(farben, h) if farben else 1) for h in set(hexes)}
         meshes.append((tm, np.array([pal[nrs[h] - 1] for h in hexes])))
     label = "1:%d, %s" % (scale, preview.QUELLEN_NAMEN.get(quelle, quelle))
+    jobs = []
     for suffix, azim, elev, blick in (("", -30, 32, "von Südosten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
-        im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev, light_from_view=True)
-        out = preview.caption(im, "Farbig %s%s  (%s)" % (
-            blick, ", mit Extras" if "extras" in variant else "", label),
-            "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
-            % len(pal))
         path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s.png" % (variant, suffix))
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        out.save(path, optimize=True)
-        print("  Vorschau:", os.path.relpath(path, HERE))
+        jobs.append((_render_job, (meshes, dict(size=(1100, 800), azim=azim, elev=elev, light_from_view=True),
+                                   "Farbig %s%s  (%s)" % (blick, ", mit Extras" if "extras" in variant else "", label),
+                                   "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 "
+                                   "© Stadt Leipzig" % len(pal), path)))
     if "extras" in variant:  # Einzelgebäude farbig, je von zwei Seiten
         tiles = []
         for (name, tm, _), (m, cols) in zip(objs[1:], meshes[1:]):
             for azim in (-35, 145):
-                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25, light_from_view=True)
-                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten")))
-        preview.contact_sheet(tiles, os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
-                              "Einzelgebäude farbig (%s)" % label, cols=4, cell=(560, 530))
+                tiles.append((_render_job, ([(m, cols)], dict(size=(560, 460), azim=azim, elev=25,
+                                                              light_from_view=True),
+                                            name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten"), None)))
+        sheet = (os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
+                 "Einzelgebäude farbig (%s)" % label, len(tiles))
+        jobs += tiles
+        jobs.append(("sheet", sheet))
+    return jobs
+
+
+def run_render_jobs(jobs):
+    """Führt alle Render-Aufgaben parallel aus und setzt die Kachelblätter zusammen."""
+    import parallel
+    import preview
+    real = [j for j in jobs if j[0] != "sheet"]
+    images = iter(parallel.starmap(_call, real))
+    done = []
+    for f, a in jobs:
+        if f == "sheet":
+            path, title, n = a
+            preview.contact_sheet(done[-n:], path, title, cols=4, cell=(560, 530))
+        else:
+            done.append(next(images))
+
+
+def _call(f, a):
+    return f(*a)
 
 
 def refresh_colours():
@@ -681,6 +735,7 @@ def refresh_colours():
 
 QUELLEN = ["osm", "lod2", "laserscan"]
 RENDER_COLOUR = True
+FAST_RASTER = 0.6  # m, Laserscan-Höhenraster im Schnelllauf (Standard 0.3)
 
 
 def main():
@@ -692,9 +747,25 @@ def main():
     ap.add_argument("--fetch", action="store_true", help="Quelldaten neu herunterladen")
     ap.add_argument("--out", default=os.path.join(HERE, "stl"))
     ap.add_argument("--no-preview", action="store_true", help="keine Vorschaubilder rendern")
+    ap.add_argument("--fast", action="store_true",
+                    help="Schnelllauf zum Testen: gleiche Daten, aber Laser-Raster 2x gröber, Vorschau ohne "
+                         "Kantenglättung, nur Maßstab 1:1500 (außer --scale), keine README-/Fassaden-/Vergleichsbilder; "
+                         "schreibt nach stl-fast/ und vorschau-fast/ (nicht eingecheckt)")
+    ap.add_argument("--jobs", type=int, default=None, help="parallele Prozesse (Standard: alle Kerne, 1 = seriell)")
     args = ap.parse_args()
     global RENDER_COLOUR
     RENDER_COLOUR = not args.no_preview
+    import parallel
+    import preview
+    if args.jobs:
+        parallel.JOBS = args.jobs
+    if args.fast:
+        import laserscan
+        laserscan.RASTER = FAST_RASTER
+        preview.SS = 1
+        preview.OUT = os.path.join(HERE, "vorschau-fast")
+        if args.out == os.path.join(HERE, "stl"):
+            args.out = os.path.join(HERE, "stl-fast")
     quellen = args.quelle or QUELLEN
     if args.fetch or not os.path.exists(OSM_FILE):
         fetch_osm()
@@ -704,21 +775,29 @@ def main():
     if args.fetch and "laserscan" in quellen:
         import laserscan
         laserscan.fetch()
-    refresh_colours()
+    with parallel.phase("Farben messen (nur bei Änderung)"):
+        refresh_colours()
+    scales = args.scale or ([1500] if args.fast else [1000, 1500])
+    tasks = [(q, sc, os.path.join(args.out, q, "1zu%d" % sc)) for q in quellen for sc in scales]
+    with parallel.phase("Modelle bauen, färben, exportieren"):
+        results = parallel.starmap(build_scale, tasks)
+    render_jobs = []
     for q in quellen:
-        for sc in args.scale or [1000, 1500]:
-            models = build_scale(q, sc, os.path.join(args.out, q, "1zu%d" % sc))
-        for slug, (_, _, info) in models.items():
-            print("  %-22s %s" % (slug, ", ".join("%s=%s" % kv for kv in info.items()
-                                                    if kv[0] != "attrs")))
+        idx = [i for i, t in enumerate(tasks) if t[0] == q]
+        print("\nQuelle %s:" % q)
+        print("\n".join(results[idx[-1]][0]))
+    for _, jobs in results:
+        render_jobs += jobs
+    with parallel.phase("Farbvorschauen (3D-Rendering)"):
+        run_render_jobs(render_jobs)
     if not args.no_preview:
-        import preview
-        preview.default_previews(args.out)
-        import fassaden
-        print("\nFassaden-Prüfansichten")
-        for b in BUILDINGS:
-            if fassaden.load_spec(b["slug"]):
-                fassaden.check(b["slug"])
+        preview.default_previews(args.out, fast=args.fast)
+        if not args.fast:
+            import fassaden
+            print("\nFassaden-Prüfansichten")
+            with parallel.phase("Fassaden-Prüfansichten"):
+                parallel.starmap(fassaden.check, [(b["slug"],) for b in BUILDINGS if fassaden.load_spec(b["slug"])])
+    parallel.report()
 
 
 if __name__ == "__main__":

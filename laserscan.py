@@ -103,8 +103,9 @@ def load_points():
     return np.column_stack([x, y, np.asarray(las.z)[keep]])
 
 
-def height_grid(pts, bounds, res=RASTER):
+def height_grid(pts, bounds, res=None):
     """Höchster Punkt je Rasterzelle, Lücken gefüllt, Ausreißer entfernt."""
+    res = res or RASTER
     minx, miny, maxx, maxy = bounds
     nx, ny = int(np.ceil((maxx - minx) / res)) + 1, int(np.ceil((maxy - miny) / res)) + 1
     ix = np.floor((pts[:, 0] - minx) / res).astype(int)
