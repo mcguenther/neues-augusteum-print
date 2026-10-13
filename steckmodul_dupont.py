@@ -745,6 +745,32 @@ def insertion_checks(parts):
 
 
 # --------------------------------------------------------------------------
+# Kräfte (Abschätzung; Kontaktkräfte sind für Kit-Teile nicht belegt)
+# --------------------------------------------------------------------------
+E_PLA = 3500.0        # N/mm², Biegemodul PLA (PETG ≈ 2000)
+MU = 0.3              # Reibwert PLA/PLA
+PIN_PULL = (0.3, 1.0)   # S  Haltekraft je Stift in einer Dupont-Buchse, N
+PIN_PUSH = (1.0, 2.0)   # S  Steckkraft je Stift, N
+
+
+def forces():
+    T = TONGUE
+    b, t, L = T["z1"] - T["z0"], T["t"], T["L"]
+    delta = T["bump"] - CLR                      # Auslenkung der Federzunge beim Vorbeigleiten
+    I = b * t ** 3 / 12
+    Fn = 3 * E_PLA * I * delta / L ** 3          # Normalkraft der Zunge
+    a = math.radians(45)
+    Fax = Fn * (math.tan(a) + MU) / (1 - MU * math.tan(a))   # axiale Kraft über die 45°-Flanke
+    eps = 3 * t * delta / (2 * L ** 2)
+    pins_pull = (NPIN * PIN_PULL[0], NPIN * PIN_PULL[1])
+    pins_push = (NPIN * PIN_PUSH[0], NPIN * PIN_PUSH[1])
+    return dict(tongue_n=round(Fn, 2), tongue_ax=round(Fax, 2), tongue_eps=round(eps * 100, 2),
+                tongue_delta=round(delta, 2), pins_pull=pins_pull, pins_push=pins_push,
+                hold=(round(pins_pull[0] + Fax, 1), round(pins_pull[1] + Fax, 1)),
+                insert=(round(pins_push[0] + Fax, 1), round(pins_push[1] + Fax, 1)))
+
+
+# --------------------------------------------------------------------------
 # Gebäudetabelle
 # --------------------------------------------------------------------------
 def building_table():
@@ -985,6 +1011,10 @@ def build():
           ", ".join("%.1f" % b for b in bump) + " mm³")
     print("  -> %s" % ("keine Kollisionen" if not bad else "%d Kollisionen!" % bad))
 
+    fo = forces()
+    print("\nKräfte (Abschätzung): Federzunge %.2f N normal, %.2f N axial (Dehnung %.2f %%); Stifte halten %.1f–%.1f N,"
+          " Gebäude hält %.1f–%.1f N, Stecken %.1f–%.1f N" % (fo["tongue_n"], fo["tongue_ax"], fo["tongue_eps"],
+                                                           *fo["pins_pull"], *fo["hold"], *fo["insert"]))
     rows, need_xy = building_table()
     print("\nGebäude (Luft = Höhe − Dach − Pausenebene; passt ≥ 6, knapp ≥ 2 mm):")
     for r in rows:
@@ -1012,6 +1042,9 @@ def build():
                     LID_T=LID_T, TONGUE_L=TONGUE["L"], TONGUE_T=TONGUE["t"], BUMP=TONGUE["bump"],
                     z_detent=z_detent(), KEY_CLR=KEY_CLR, KASS_CLR=KASS_CLR,
                     PADS=list(PADS), pin_x=pin_x()),
+        forces=forces(),
+        plate_t_by_dock={v: round(-(layer_down({"A": d["z_bend"] - 3.0, "B": d["z_tailB"] - 3.5,
+                                                 "C": d["z_mcb"] - 4.0}[v]) - LID_T), 1) for v in VARIANTS},
         buildings=rows, need_xy=[round(v, 1) for v in need_xy],
         lifts=[dict(label=l, g=round(g, 3)) for l, g in lifts], insertion=rows_ins,
         sizes={n: [round(float(v), 1) for v in to_tm(m).extents] for n, m in files.items()},

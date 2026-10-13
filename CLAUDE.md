@@ -81,6 +81,19 @@ Plan und Prototyp für beleuchtete Gebäude (WS2812B, JST-XH-Stecker): `stecker/
 Animation) zusammen. Die Ausgabe muss `dicht=True` und „keine Kollisionen“ zeigen. Die
 Steckermaße stehen oben in `steckmodul.py` und sind teils aus Zeichnungen abgeleitet.
 
+## Steckmechanismus mit Dupont-Teilen (Plan B)
+
+Alternative aus dem vorhandenen 2,54-mm-Dupont-Set: `stecker/dupont/PLAN.md`. Gebäude haben
+immer einen Fuß; die Buchse sitzt im Fuß und wird in einer Druckpause eingelegt (Rückfallebene:
+Kassette von unten mit Schieber). `python3 steckmodul_dupont.py` erzeugt Platte mit Docks A/B/C,
+Deckel, Würfel (Pause/Kassette), Kassette, Schieber, Pausenprobe, Montagelehre und Passprobe nach
+`stl/steckmodul_dupont/`, Bilder nach `vorschau/steckmodul_dupont/` und
+`stecker/dupont/daten.json`; die Ausgabe nennt die Pausenhöhe und muss `dicht=True` und
+„keine Kollisionen“ zeigen. `python3 stecker/dupont/baue_ansicht.py` baut
+`stecker/dupont/ansicht.html`. Kaufteil-Maße (belegt/geschätzt markiert) stehen oben im
+Generator; Zahlen in Plan und Seite kommen aus `dims()`, `forces()` und `building_table()`.
+Hilfsfunktionen werden aus `steckmodul.py` importiert, dort also nichts umbenennen.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.

@@ -1,0 +1,915 @@
+<title>Leuchtgebäude Dupont-Dock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: schmale Textspalte, 3D-Ansichten in voller Breite; Maße immer in Monospace.
+   Gleiches System wie stecker/ansicht.html (JST-Plan), dazu eine Farbe für die Druckpause. */
+:root {
+  --bg: #f3f4f1;
+  --panel: #ffffff;
+  --fg: #1b2220;
+  --muted: #5a6560;
+  --line: #d6dbd6;
+  --accent: #a85f00;
+  --accent-fill: #f0a21a;
+  --on-accent: #1b1300;
+  --pause: #127a83;
+  --pause-fill: #1aa3ad;
+  --on-pause: #ffffff;
+  --ok: #2f7d4f;
+  --mid: #9a6a00;
+  --warn: #b5471f;
+  --canvas: #e7eae5;
+  --edge: #1b2220;
+  --c-plate: #8fa3b8;
+  --c-lid: #6f8196;
+  --c-cube: #ece5d2;
+  --c-header: #2d3236;
+  --c-housing: #3a3f44;
+  --c-term: #c9a227;
+  --c-led: #fff3c4;
+  --c-wire: #c8423b;
+  --c-kass: #e3862a;
+  --c-key: #4f9c6b;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+    --pause: #5fd0d8; --pause-fill: #1aa3ad; --on-pause: #04191b;
+    --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-lid: #4b5c70; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #6b737a;
+    --c-term: #d6b13a; --c-led: #fff0b0; --c-wire: #e0564d; --c-kass: #d9781a; --c-key: #4c9a69;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --pause: #5fd0d8; --pause-fill: #1aa3ad; --on-pause: #04191b;
+  --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-lid: #4b5c70; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #6b737a;
+  --c-term: #d6b13a; --c-led: #fff0b0; --c-wire: #e0564d; --c-kass: #d9781a; --c-key: #4c9a69;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-inline: 16px; padding-block: 24px 64px; margin: 0; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num, [data-v] { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cols { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.cols > * { min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.card h3 .tag, .tag { font-family: var(--mono); font-size: 0.8rem; background: var(--accent-fill); color: var(--on-accent); padding: 0.1em 0.5em; border-radius: 3px; margin-right: 0.4em; }
+.card p { font-size: 0.95rem; }
+.card.main { border-color: var(--accent-fill); }
+.muted { color: var(--muted); }
+.small { font-size: 0.88rem; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+td.num, th.num { text-align: right; }
+.ok { color: var(--ok); } .warn { color: var(--warn); } .mid { color: var(--mid); }
+.pill { font-family: var(--mono); font-size: 0.78rem; padding: 1px 8px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.src { font-family: var(--mono); font-size: 0.72rem; padding: 0 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); }
+.src.B { color: var(--ok); border-color: currentColor; } .src.S { color: var(--warn); border-color: currentColor; } .src.A { color: var(--mid); border-color: currentColor; }
+ul.tight, ol.tight { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 5px; max-width: 70ch; }
+.decide { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.decide > div { padding: 14px 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.decide .lab { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.decide .val { font-weight: 600; }
+.decide .val .num { font-weight: 500; }
+
+/* Viewer */
+.viewer { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.stage { position: relative; background: var(--canvas); min-width: 0; max-width: 100%; aspect-ratio: 2 / 1; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+.hud { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--muted); }
+.chip.on { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.chip.pz { background: var(--pause-fill); color: var(--on-pause); border-color: transparent; font-weight: 500; }
+.side { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px 28px; border-top: 1px solid var(--line); min-width: 0; align-items: start; }
+.side > * { min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.readout { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 0.9rem; margin: 0; }
+.readout dt { color: var(--muted); } .readout dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.phase { min-height: 6.6em; font-size: 0.93rem; }
+.phase b { display: block; margin-bottom: 2px; }
+.ctrl { display: flex; flex-direction: column; gap: 6px; }
+.ctrl > label, .ctrl > .lab { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+input[type=range] { width: 100%; accent-color: var(--accent-fill); }
+#layer { accent-color: var(--pause-fill); }
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { cursor: pointer; font-family: var(--mono); font-size: 0.85rem; padding: 5px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.seg input:focus-visible + label, button:focus-visible, input[type=range]:focus-visible, .chk input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; font-size: 0.9rem; cursor: pointer; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+button.primary { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.chk { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; }
+.chk input { accent-color: var(--accent-fill); width: 16px; height: 16px; }
+.desc { font-size: 0.85rem; color: var(--muted); }
+.side > .wide { grid-column: span 2; }
+@media (max-width: 700px) { .side > .wide { grid-column: auto; } }
+@media (max-width: 700px) { .stage { aspect-ratio: 4 / 3.6; } }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; max-width: 100%; height: auto; }
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--fg); }
+svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+svg .mut { fill: var(--muted); }
+.note { border-left: 3px solid var(--accent-fill); padding: 4px 0 4px 14px; max-width: 72ch; }
+.note.pz { border-left-color: var(--pause-fill); }
+
+/* Druckablauf */
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.steps button { width: 100%; text-align: left; display: grid; grid-template-columns: 2em 1fr; gap: 10px; align-items: start; padding: 10px 12px; background: var(--bg); }
+.steps button .n { width: 1.8em; height: 1.8em; border-radius: 50%; display: grid; place-items: center; font-family: var(--mono); font-size: 0.8rem; background: var(--line); color: var(--fg); }
+.steps button b { display: block; font-weight: 600; }
+.steps button span.t { font-size: 0.88rem; color: var(--muted); }
+.steps button[aria-pressed="true"] { border-color: var(--pause-fill); background: color-mix(in srgb, var(--pause-fill) 10%, var(--panel)); }
+.steps button[aria-pressed="true"] .n { background: var(--pause-fill); color: var(--on-pause); }
+.slicer { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.slicer .card { gap: 6px; }
+.path { font-family: var(--mono); font-size: 0.82rem; line-height: 1.5; }
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+details > summary { cursor: pointer; font-weight: 600; }
+details[open] > summary { margin-bottom: 8px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Campus Augustusplatz · Beleuchtung · Plan B</span>
+  <h1>Leuchtgebäude mit Dupont-Steckern</h1>
+  <p class="lead">Jedes Gebäude bekommt einen Fuß, der in eine tiefe Mulde der Grundplatte taucht. In der Mulde stehen vier Stifte einer Stiftleiste, im Fuß sitzt eine Dupont-Buchse. Alles kommt aus dem vorhandenen 2,54-mm-Set. Buchse, Adern und LED werden während einer Druckpause ins Gebäude gelegt und überdruckt.</p>
+</header>
+
+<div class="decide" aria-label="Entscheidungen auf einen Blick">
+  <div><span class="lab">Platte</span><span class="val">Winkelleiste, 4 Pins, von unten eingeschoben</span><span class="desc">Muldenboden hält gegen Zug, Deckel-Stempel gegen Druck</span></div>
+  <div><span class="lab">Gebäude</span><span class="val">Buchse 1×4 im Fuß, über einer Trichterplatte</span><span class="desc">Fuß <span data-v="F" data-f="1"></span> mm, Stifte <span data-v="E" data-f="1"></span> mm in der Buchse</span></div>
+  <div><span class="lab">Montage</span><span class="val">Druckpause bei <span data-v="pause_mm"></span> mm</span><span class="desc">nach Schicht <span data-v="pause_layer" data-f="0"></span>, Riegel überdruckt Buchse und Adern</span></div>
+  <div><span class="lab">Rückfallebene</span><span class="val">Kassette von unten mit Schieber</span><span class="desc">ohne Pause, reparierbar, zwei Zusatzteile</span></div>
+</div>
+
+<!-- ============================ 3D ============================ -->
+<section aria-labelledby="h-view">
+  <h2 id="h-view">So greift es ineinander</h2>
+  <div class="viewer">
+    <div class="stage" id="stage">
+      <canvas id="cv" aria-label="3D-Ansicht des Steckmechanismus, mit Maus oder Finger drehbar"></canvas>
+      <div class="hud" id="hud"></div>
+    </div>
+    <div class="side">
+     <div class="col">
+      <div class="ctrl">
+        <label for="s">Gebäude einstecken</label>
+        <input type="range" id="s" min="0" max="1000" value="1000">
+        <div class="row">
+          <button class="primary" id="play" type="button">Abspielen</button>
+          <button id="reset" type="button">Zurück</button>
+        </div>
+      </div>
+      <div class="phase" id="phase" aria-live="polite"></div>
+      <dl class="readout">
+        <dt>Hub über dem Sitz</dt><dd id="r-g">–</dd>
+        <dt>Fuß gerade in der Mulde</dt><dd id="r-foot">–</dd>
+        <dt>Stift in der Buchse</dt><dd id="r-eng">–</dd>
+        <dt>DETECT / LED</dt><dd id="r-led">–</dd>
+      </dl>
+     </div>
+     <div class="col">
+      <div class="ctrl">
+        <span class="lab" id="l-mode">Gebäude</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-mode">
+          <input type="radio" name="mode" id="mode0" value="pause" checked><label for="mode0">Druckpause</label>
+          <input type="radio" name="mode" id="mode1" value="kass"><label for="mode1">Kassette</label>
+        </div>
+        <span class="desc" id="d-mode"></span>
+      </div>
+      <div class="ctrl">
+        <span class="lab" id="l-dock">Dock in der Platte</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-dock">
+          <input type="radio" name="dock" id="dock0" value="0" checked><label for="dock0">A Winkel</label>
+          <input type="radio" name="dock" id="dock1" value="1"><label for="dock1">B gerade</label>
+          <input type="radio" name="dock" id="dock2" value="2"><label for="dock2">C Crimp</label>
+        </div>
+        <span class="desc" id="d-dock"></span>
+      </div>
+     </div>
+     <div class="col">
+      <div class="ctrl">
+        <label for="ex">Explosion</label>
+        <input type="range" id="ex" min="0" max="100" value="0">
+      </div>
+      <div class="ctrl">
+        <span class="lab">Darstellung</span>
+        <label class="chk"><input type="checkbox" id="cut" checked> Querschnitt durch Pin 2</label>
+        <label class="chk"><input type="checkbox" id="showcube" checked> Gebäude zeigen</label>
+        <div class="row" style="margin-top:4px">
+          <button type="button" data-view="side">Schnitt</button>
+          <button type="button" data-view="iso">Schräg</button>
+          <button type="button" data-view="under">Von unten</button>
+        </div>
+      </div>
+     </div>
+    </div>
+  </div>
+  <p class="small muted">Ziehen dreht, Mausrad oder zwei Finger zoomen. Platte, Deckel, Gebäude, Kassette und Schieber sind die Druckdateien aus <code>steckmodul_dupont.py</code>. Stiftleiste, Buchse mit Kontakten, Adern und LED sind Platzhalter mit den Maßen der Kaufteile. Der Querschnitt geht durch Pin 2 (DIN).</p>
+</section>
+
+<!-- ============================ DRUCK ============================ -->
+<section aria-labelledby="h-druck">
+  <h2 id="h-druck">Druck mit Pause: was wann zu tun ist</h2>
+  <p>Die Lichtkammer ist nach dem Druck zu. Deshalb kommt alles, was ins Gebäude muss, während einer Pause hinein: Der Drucker hält an, sobald die Tasche für die Buchse fertig ist. Buchse, Adern und LED liegen dann als vorbereitete Einheit vollständig unter der Pausenebene. Die erste Schicht danach ist ein Riegel, der Buchse und Adern festhält.</p>
+  <div class="viewer">
+    <div class="stage" id="stage2">
+      <canvas id="cv2" aria-label="Gebäude im Querschnitt, Schicht für Schicht gedruckt"></canvas>
+      <div class="hud" id="hud2"></div>
+    </div>
+    <div class="side">
+      <div class="col">
+        <div class="ctrl">
+          <label for="layer">Druckhöhe über dem Bett</label>
+          <input type="range" id="layer" min="0" max="1000" value="488">
+          <div class="row">
+            <button class="primary" id="play2" type="button">Ablauf abspielen</button>
+          </div>
+        </div>
+        <dl class="readout">
+          <dt>Höhe</dt><dd id="r-h">–</dd>
+          <dt>Schicht (0,2 mm)</dt><dd id="r-l">–</dd>
+          <dt>Pause</dt><dd><span data-v="pause_mm"></span> mm · nach Schicht <span data-v="pause_layer" data-f="0"></span></dd>
+        </dl>
+        <p class="desc">Oben offen dargestellt ist die gerade gedruckte Schicht. Der Querschnitt geht durch Pin 2.</p>
+      </div>
+      <div class="col wide">
+        <ol class="steps" id="steps">
+          <li><button type="button" data-step="0" aria-pressed="true"><span class="n">1</span><span><b>Drucken bis zur Pause</b><span class="t">Fuß, Trichterplatte, Tasche und Kammerboden entstehen. Der Drucker hält nach <span data-v="pause_mm"></span> mm an.</span></span></button></li>
+          <li><button type="button" data-step="1" aria-pressed="false"><span class="n">2</span><span><b>Einheit einlegen</b><span class="t">Buchse mit der Steckseite nach unten in die Tasche drücken, Dreieck zur Kerbe. Adern flach über den Sockel, LED in die Mulde. Mit einer Karte über die Sockelkante streichen: Nichts darf hängen bleiben.</span></span></button></li>
+          <li><button type="button" data-step="2" aria-pressed="false"><span class="n">3</span><span><b>Weiterdrucken</b><span class="t">Erste Schicht ist der Riegel, eine Brücke über <span data-v="pk_w" data-f="1"></span> mm. Danach Kammerwände und Dach. Innerhalb von 10 Minuten fortsetzen, Bett bleibt warm.</span></span></button></li>
+          <li><button type="button" data-step="3" aria-pressed="false"><span class="n">4</span><span><b>Nachbearbeiten</b><span class="t">Trichter unten mit einem 1-mm-Bohrer von Hand entgraten. Durchgang zwischen Kontakt 1 und 4 prüfen (DETECT-Brücke).</span></span></button></li>
+          <li><button type="button" data-step="4" aria-pressed="false"><span class="n">5</span><span><b>Stecken</b><span class="t">Kodier-Ecke beachten, in der Mitte drücken. Die Animation oben zeigt die Phasen.</span></span></button></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="slicer">
+    <div class="card"><h3>PrusaSlicer</h3><p class="path">Vorschau → Schichtregler auf <span data-v="pause_next"></span> → Rechtsklick auf „+“ → Pause einfügen</p><p class="small muted">Druckereinstellungen → Benutzerdefinierter G-Code → „Pause-Druck G-Code“ = <code>M601</code></p></div>
+    <div class="card"><h3>Bambu Studio</h3><p class="path">Vorschau → Schichtregler auf <span data-v="pause_next"></span> → Rechtsklick → Pause hinzufügen</p><p class="small muted">Der Drucker hält vor dieser Schicht an und wartet auf „Fortsetzen“.</p></div>
+    <div class="card"><h3>Cura</h3><p class="path">Erweiterungen → Nachbearbeitung → G-Code ändern → Skript hinzufügen → Pause at height</p><p class="small muted">Höhe <span data-v="pause_next"></span> mm oder Schicht <span data-v="pause_next_layer" data-f="0"></span>; Methode zur Firmware: Marlin <code>M0</code>, Klipper <code>PAUSE</code>, Prusa <code>M601</code>.</p></div>
+  </div>
+  <p class="note pz">In allen drei Slicern gilt: Die Pause gehört <b>vor</b> die Schicht, deren Oberkante bei <span data-v="pause_next"></span> mm liegt (Schicht <span data-v="pause_next_layer" data-f="0"></span>). In der Vorschau muss die Tasche dann offen und der Riegel noch nicht gedruckt sein. Der Generator rechnet die Höhe aus und rundet sie auf die Schichthöhe <code>LAYER</code>. Zum Üben gibt es die <code>pausenprobe.stl</code>: derselbe Sockel, <span data-v="probe_h" data-f="1"></span> mm hoch, etwa 20 Minuten.</p>
+</section>
+
+<!-- ============================ MASSKETTE ============================ -->
+<section aria-labelledby="h-mass">
+  <h2 id="h-mass">Maßkette im Querschnitt</h2>
+  <p>Der Fuß ist so hoch, dass er <span data-v="guide" data-f="1"></span> mm gerade in der Mulde steckt, bevor eine Stiftspitze die Trichterplatte erreicht. Dazu kommen die beiden Fasen (<span data-v="CH_F" data-f="1"></span> mm am Fuß, <span data-v="CH_P" data-f="1"></span> mm an der Mulde) und der Weg der Stifte über dem Muldenboden.</p>
+  <div class="seg" role="radiogroup" aria-label="Zustand in der Maßkette" style="align-self:flex-start">
+    <input type="radio" name="chain" id="ch0" value="contact" checked><label for="ch0">Stift erreicht die Trichterplatte</label>
+    <input type="radio" name="chain" id="ch1" value="seated"><label for="ch1">Gesteckt</label>
+  </div>
+  <div class="fig scroll"><svg id="chain" role="img" aria-label="Maßkette, Querschnitt durch Pin 2, im Maßstab" width="960" height="580" viewBox="0 0 960 580"></svg></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Größe</th><th class="num">mm</th><th>Rechnung</th></tr></thead>
+    <tbody>
+      <tr><td>Stift über dem Muldenboden</td><td class="num" data-v="g1"></td><td>Steckseite <span data-v="HDR_UP" data-f="1"></span> − Muldenboden <span data-v="CEIL" data-f="1"></span></td></tr>
+      <tr><td>Fußhöhe = Muldentiefe</td><td class="num" data-v="F"></td><td>Stift + Führung <span data-v="GUIDE" data-f="1"></span> + beide Fasen, auf Schichten gerundet</td></tr>
+      <tr><td>Einstecktiefe in der Buchse</td><td class="num" data-v="E"></td><td>Stift über dem Muldenboden − Trichterplatte <span data-v="FUNNEL_T" data-f="1"></span></td></tr>
+      <tr><td>Erster elektrischer Kontakt bei Hub</td><td class="num" data-v="contact_lift"></td><td>Kontaktpunkt etwa <span data-v="CONTACT" data-f="1"></span> mm in der Buchse (geschätzt)</td></tr>
+      <tr><td>Kabelseite der Buchse / Taschenoberkante</td><td class="num"><span data-v="z_ht"></span> / <span data-v="z_pt"></span></td><td>Buchse <span data-v="HSG_H"></span> hoch, Tasche <span data-v="HSG_TOL"></span> höher für die Toleranz</td></tr>
+      <tr><td>Pausenebene über der Platte</td><td class="num" data-v="z_cav"></td><td>Tasche + Ader <span data-v="WIRE_D" data-f="1"></span> + Luft <span data-v="WIRE_GAP" data-f="1"></span>, auf Schicht gerundet</td></tr>
+      <tr><td>LED-Chip oben</td><td class="num" data-v="led_top"></td><td>Pausenebene − <span data-v="LED_GAP" data-f="1"></span> Luft</td></tr>
+      <tr><td>Riegel</td><td class="num"><span data-v="z_cav"></span> – <span data-v="z_riegel"></span></td><td><span data-v="RIEGEL_T" data-f="1"></span> mm, erste Schichten nach der Pause</td></tr>
+      <tr><td>Druckhöhe der Pause</td><td class="num" data-v="pause_mm"></td><td>Pausenebene + Fuß</td></tr>
+      <tr><td>Plattendicke mit Deckel</td><td class="num"><span data-v="tA" data-f="1"></span> / <span data-v="tB" data-f="1"></span> / <span data-v="tC" data-f="1"></span></td><td>nur Dock A / B / C; der Prototyp hat alle drei, also <span data-v="plate_t" data-f="1"></span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============================ DOCKS ============================ -->
+<section aria-labelledby="h-docks">
+  <h2 id="h-docks">Welche Stiftleiste in die Platte?</h2>
+  <p>Jeder Steckerteil wird von unten in eine Tasche geschoben. Der <span data-v="CEIL" data-f="1"></span> mm dicke Muldenboden mit vier <span data-v="HOLE" data-f="1"></span>-mm-Löchern hält ihn gegen Zug, zwei Stempel im Deckel drücken von unten gegen die Stirnenden. Crush-Rippen halten ihn, bis der Deckel verschraubt ist. Der Prototyp hat alle drei Docks nebeneinander.</p>
+  <div class="cols">
+    <div class="card main"><h3><span class="tag">A</span>Winkelleiste</h3><p>Stifte nach oben, die Lötenden liegen waagrecht im Kabelraum und sind gut zu löten. Andersherum passt die Leiste nicht in die Tasche: Sie ist damit verpolsicher.</p><p class="small"><b>Platte <span data-v="tA" data-f="1"></span> mm</b> · 4 Lötstellen · Empfehlung</p></div>
+    <div class="card"><h3><span class="tag">B</span>Gerade Leiste</h3><p>Lötenden zeigen <span data-v="HDR_TAIL" data-f="1"></span> mm senkrecht nach unten. Das Löten ist enger, die Leiste ist symmetrisch und braucht eine Pin-1-Marke.</p><p class="small"><b>Platte <span data-v="tB" data-f="1"></span> mm</b> · 4 Lötstellen</p></div>
+    <div class="card"><h3><span class="tag">C</span>Male-Crimp-Gehäuse</h3><p>Ein 1×4-Gehäuse mit Male-Crimp-Pins aus dem Set, direkt ans Flachbandkabel gecrimpt. Ganz ohne Löten. Die Stifte wackeln im Gehäuse, der Muldenboden richtet sie aus.</p><p class="small"><b>Platte <span data-v="tC" data-f="1"></span> mm</b> · lötfrei</p></div>
+  </div>
+  <p class="small muted">Verworfen: gerade Leiste mit einer zweiten Dupont-Buchse unter der Platte. Die Lötseite ist nur <span data-v="HDR_TAIL" data-f="1"></span> mm lang, eine Buchse erreicht darauf kaum ihren Kontaktpunkt. Lötfrei geht es mit Dock C sicherer. Leiste abbrechen: zwischen Pin 4 und 5 mit der Flachzange über die Kante biegen, Bruchkante glätten.</p>
+</section>
+
+<!-- ============================ HALTEN ============================ -->
+<section aria-labelledby="h-halt">
+  <h2 id="h-halt">Was hält, ohne Kleber</h2>
+  <p>Dupont-Buchsen rasten nicht, sie halten nur über die Reibung der Kontakte. Deshalb hält jede Richtung ein Formschluss, und das Gebäude bekommt eine eigene Rastung in der Mulde.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Stelle</th><th>Richtung</th><th>Lösung</th><th class="num">Kraft</th></tr></thead>
+    <tbody>
+      <tr><td>Buchse im Gebäude</td><td>Druck nach oben beim Stecken</td><td>Riegel über den Adern, die Adern sind das Polster</td><td class="num">&gt; 50 N <span class="src A">A</span></td></tr>
+      <tr><td></td><td>Zug nach unten beim Ziehen</td><td>Trichterplatte unter der Steckseite</td><td class="num">&gt; 50 N <span class="src A">A</span></td></tr>
+      <tr><td></td><td>seitlich</td><td>Crush-Rippen (<span data-v="RIB"></span> mm) an Stirnseiten und glatter Seite. Die Seite mit den Rastfenstern bleibt frei, sonst entriegeln die Zungen die Kontakte.</td><td class="num">–</td></tr>
+      <tr><td>Adern</td><td>Zug an der LED</td><td>Riegel klemmt die Adern auf die Buchse</td><td class="num">–</td></tr>
+      <tr><td>Stiftleiste</td><td>Zug nach oben</td><td>Muldenboden <span data-v="CEIL" data-f="1"></span> mm</td><td class="num">&gt; 30 N <span class="src A">A</span></td></tr>
+      <tr><td></td><td>Druck nach unten</td><td>Stempel im Deckel</td><td class="num">&gt; 50 N <span class="src A">A</span></td></tr>
+      <tr><td>Gebäude</td><td>Herausziehen</td><td>Kontakte <span data-v="pp0" data-f="1"></span>–<span data-v="pp1" data-f="1"></span> N plus Federzunge <span data-v="tongue_ax" data-f="1"></span> N</td><td class="num"><b><span data-v="hold0" data-f="1"></span>–<span data-v="hold1" data-f="1"></span> N</b> <span class="src S">S</span></td></tr>
+      <tr><td></td><td>Stecken</td><td>Kontakte <span data-v="ps0" data-f="1"></span>–<span data-v="ps1" data-f="1"></span> N plus Federzunge</td><td class="num"><span data-v="ins0" data-f="1"></span>–<span data-v="ins1" data-f="1"></span> N <span class="src S">S</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="cols">
+    <div class="card"><h3>Federzunge in der Mulde</h3><p>Ein waagrechter Biegebalken in der Muldenwand, <span data-v="TONGUE_L" data-f="0"></span> mm lang und <span data-v="TONGUE_T" data-f="1"></span> mm dick, in der Druckebene gebogen. Die Nase (<span data-v="BUMP" data-f="1"></span> mm, 45°) rastet in eine V-Nut am Fuß. Auslenkung <span data-v="tongue_delta"></span> mm, Normalkraft <span data-v="tongue_n"></span> N, Dehnung <span data-v="tongue_eps"></span> % (PLA verträgt 4 bis 8 %).</p></div>
+    <div class="card"><h3>Ziele und Messung</h3><p>Stecken unter 15 N, Ziehen zwischen 3 und 8 N. Mit einer Federwaage messen: Fadenschlaufe am Gebäude, senkrecht ziehen, Höchstwert ablesen, Platte festhalten. Fünf Messungen, Mittelwert und kleinsten Wert notieren.</p></div>
+    <div class="card"><h3>Platte hebt mit?</h3><p>Die Mini-Platte wiegt etwa 50 g und kommt beim Ziehen mit. Die große Platte liegt mit etwa 500 g an der Grenze. Gummifüße helfen gegen Rutschen, nicht gegen Abheben; die zweite Hand auf der Platte schon. Option bei zu wenig Halt: Magnete 6 × 2 mm in Fuß und Muldenboden.</p></div>
+  </div>
+</section>
+
+<!-- ============================ GEBÄUDE ============================ -->
+<section aria-labelledby="h-geb">
+  <h2 id="h-geb">Passt es in jedes Gebäude?</h2>
+  <p>Die Buchse ist <span data-v="HSG_H" data-f="1"></span> mm hoch, steckt aber zu <span data-v="inFoot" data-f="1"></span> mm im Fuß. Ins sichtbare Gebäude ragt die Einheit nur bis zur Pausenebene bei <span data-v="z_cav" data-f="1"></span> mm. Gerechnet ist die Luft über der Pausenebene unter einem <span data-v="ROOF" data-f="1"></span>-mm-Dach: <span class="pill ok">passt</span> ab 6 mm, <span class="pill mid">knapp</span> ab 2 mm. Die Einheit braucht mit Rand <span data-v="nx" data-f="1"></span> × <span data-v="ny" data-f="1"></span> mm Grundfläche.</p>
+  <div class="scroll"><table id="btab"></table></div>
+  <p class="small muted">Gebäudemaße aus dem Laserscan bei 1:1500, für 1:1000 mal 1,5. Das City-Hochhaus braucht für seine Höhe mehrere LEDs. Die Moritzbastei bleibt wie geplant ohne LED; mit einer tieferen Mulde nur für sie ginge es.</p>
+</section>
+
+<!-- ============================ RÜCKFALL ============================ -->
+<section aria-labelledby="h-kass">
+  <h2 id="h-kass">Rückfallebene: Kassette von unten</h2>
+  <p>Wenn die Druckpause nicht klappt oder ein Gebäude reparierbar bleiben soll: Buchse und LED sitzen in einer gedruckten Kassette. Sie wird von unten in einen Schacht im Fuß geschoben. Ein Schieber in einer Schwalbenschwanz-Nut unter dem Fuß hält sie und ist zugleich die Trichterplatte. Solange das Gebäude steckt, blockieren die Muldenwände den Schieber. In der 3D-Ansicht oben auf „Kassette“ schalten.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Weg</th><th>Urteil</th></tr></thead>
+    <tbody>
+      <tr><td><b>a) Druckpause</b></td><td class="ok">Hauptlösung. Keine Zusatzteile, formschlüssig, gleiche Höhe für alle Gebäude.</td></tr>
+      <tr><td>b) Buchse von unten, LED hochkant vorweg durch den Schacht</td><td>Die LED steht dann senkrecht über der Buchse, das braucht über 30 mm Höhe. Kein Anschlag für die Buchse, weil LED und Buchse fast gleich breit sind.</td></tr>
+      <tr><td>c) Steckmodul wie im JST-Plan</td><td>Als Kassette übernommen, aber mit Schieber statt Schnapparmen.</td></tr>
+      <tr><td>d) Gebäude zweiteilig</td><td>Sichtbare Fuge, jede Trennstelle anders. Nur für das City-Hochhaus mit mehreren LEDs.</td></tr>
+      <tr><td><b>e) Kassette mit Schieber</b></td><td class="ok">Rückfallebene. Reparierbar, ohne Pause. Kostet einen Schacht von etwa 13 × 25 mm und zwei Zusatzteile.</td></tr>
+      <tr><td>f) Heißkleber</td><td>Nur in offener Kammer, also nur mit d) oder für Reparaturen.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>Reparieren:</b> Die überdruckte Buchse lässt sich nicht lösen. Fällt eine LED aus, wird das Gebäude neu gedruckt (Würfel etwa 2 Stunden, 15 g). Darum wird jede Einheit in der Montagelehre gebaut und geprüft, bevor sie in den Druck kommt. <b>Schrägdach:</b> Die Pause liegt <span data-v="z_cav" data-f="1"></span> mm über der Platte, weit unter jedem Dach. An Buchse und LED ändert sich nichts, flache Dächer bekommen innen eine 45°-Decke.</p>
+</section>
+
+<!-- ============================ TEILE ============================ -->
+<section aria-labelledby="h-teile">
+  <h2 id="h-teile">Teile, Maße und Einkauf</h2>
+  <div class="cols">
+    <div class="card"><h3>Aus dem Set (vorhanden)</h3><ul class="tight small">
+      <li>Female-Crimp-Pins: 4 je Gebäude</li>
+      <li>Gehäuse 1×4: 1 je Gebäude (Dock C: 1 mehr je Dock)</li>
+      <li>Stiftleiste abgewinkelt: 1 Leiste reicht für 10 Docks</li>
+      <li>Stiftleiste gerade (Dock B), Male-Crimp-Pins (Dock C)</li>
+      <li>Flachbandkabel 1,5 m, 10 Adern: Adern für die Einheiten und die Docks</li>
+    </ul></div>
+    <div class="card"><h3>Fehlt noch</h3><ul class="tight small">
+      <li>WS2812B-Streifen, 60 LED/m, 10 mm breit, ohne Silikon</li>
+      <li>M3-Blechschrauben 8 mm (4 für die Mini-Platte)</li>
+      <li>Schrumpfschlauch 1,5 mm, Litze 22 AWG für die 5-V-Sammelleitung</li>
+      <li>ESP32, 74AHCT125, 330 Ω je Dock, 1000 µF, Netzteil 5 V 2 A</li>
+      <li>Federwaage bis 2 kg (zum Testen), optional Magnete 6 × 2 mm</li>
+    </ul></div>
+    <div class="card"><h3>Crimpen, kurz</h3><ol class="tight small">
+      <li>Ader <span class="num">2,0 mm</span> abisolieren.</li>
+      <li>Kontakt ins kleinste Nest, Drahtkralle zuerst, dann Isolationskralle. Bei 28 AWG die Isolation fest zudrücken.</li>
+      <li>Kontakt mit der Rastlanze zur Fensterseite ins Gehäuse schieben, bis er klickt.</li>
+      <li>Reihenfolge 1 GND, 2 DIN, 3 +5 V, 4 DETECT; Dreieck = Pin 1.</li>
+      <li>Mit 5 N an jeder Ader ziehen.</li>
+    </ol></div>
+  </div>
+  <details>
+    <summary>Maße der Kaufteile mit Quelle</summary>
+    <div class="scroll">
+    <table>
+      <thead><tr><th>Teil</th><th>Maß</th><th class="num">mm</th><th>Quelle</th></tr></thead>
+      <tbody>
+        <tr><td>Gehäuse 1×4</td><td>Breite × Dicke × Höhe</td><td class="num"><span data-v="HSG_W"></span> × <span data-v="HSG_T"></span> × <span data-v="HSG_H"></span></td><td><span class="src B">B</span> Pololu-Zeichnung, Höhe ±0,25</td></tr>
+        <tr><td></td><td>Eintrittsöffnung je Kammer</td><td class="num">≈ 1,0</td><td><span class="src S">S</span></td></tr>
+        <tr><td>Female-Crimp-Pin</td><td>Länge; Kasten</td><td class="num"><span data-v="TERM_L" data-f="1"></span>; <span data-v="TERM_BOX" data-f="1"></span> × <span data-v="TERM_BOX_L" data-f="1"></span></td><td><span class="src B">B</span> Pololu-Zeichnung</td></tr>
+        <tr><td></td><td>Kontaktpunkt ab Steckseite</td><td class="num">≈ <span data-v="CONTACT" data-f="1"></span></td><td><span class="src S">S</span></td></tr>
+        <tr><td>Male-Crimp-Pin</td><td>Überstand über das Gehäuse</td><td class="num">≈ <span data-v="MPIN_UP" data-f="1"></span></td><td><span class="src S">S</span> Länge 18,0 belegt</td></tr>
+        <tr><td>Stiftleiste gerade</td><td>Körper; oben; unten</td><td class="num"><span data-v="HDR_BODY"></span>; <span data-v="HDR_UP" data-f="1"></span>; <span data-v="HDR_TAIL" data-f="1"></span></td><td><span class="src B">B</span> Würth WR-PHD</td></tr>
+        <tr><td>Stiftleiste abgewinkelt</td><td>Biegung hinter Körper; Lötende</td><td class="num"><span data-v="RA_BACK" data-f="1"></span>; <span data-v="RA_TAIL" data-f="1"></span></td><td><span class="src B">B</span> Würth WR-PHD</td></tr>
+        <tr><td>Stift</td><td>Vierkant</td><td class="num" data-v="PIN_SQ"></td><td><span class="src B">B</span></td></tr>
+        <tr><td>Ader Flachband</td><td>Durchmesser</td><td class="num">≈ <span data-v="WIRE_D" data-f="1"></span></td><td><span class="src S">S</span> 28 AWG</td></tr>
+        <tr><td>Haltekraft je Kontakt</td><td>Ziehen; Stecken</td><td class="num">0,3–1,0 N; 1–2 N</td><td><span class="src S">S</span> Größenordnung aus Buchsenleisten-Datenblättern</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </details>
+  <div class="cols">
+    <div class="card"><h3>Elektrik</h3><p class="small">Pins 1 GND, 2 DIN, 3 +5 V, 4 DETECT. DETECT ist im Gebäude an GND gebrückt, die Ader läuft in einer Querrinne unter den anderen zum GND-Pad. Der Controller liest DETECT mit Pull-up, LOW heißt „Gebäude steckt“. Je Dock eine eigene Datenleitung, Pegel über 74AHCT125, 330 Ω in Reihe. Sieben LEDs bleiben unter 0,5 A.</p></div>
+    <div class="card"><h3>Hot-Plug</h3><p class="small">Alle Stifte sind gleich lang, GND hat keinen Vorsprung. Die Datenleitung eines Docks bleibt LOW, bis DETECT seit 100 ms LOW meldet.</p></div>
+    <div class="card"><h3>Platte verdrahten</h3><p class="small">Das Flachbandkabel aus dem Set taugt für die Docks: je Dock vier Adern auftrennen und an die Lötenden der Winkelleiste löten. 5 V und GND bei mehr als vier Docks über eine dickere Sammelleitung entlang der Rinne.</p></div>
+  </div>
+</section>
+
+<!-- ============================ VERGLEICH ============================ -->
+<section aria-labelledby="h-vgl">
+  <h2 id="h-vgl">Vergleich mit dem JST-XH-Plan</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>JST XH (Plan 1)</th><th>Dupont (dieser Plan)</th></tr></thead>
+    <tbody>
+      <tr><td>Haltekraft Stecker</td><td class="ok">Hülse führt, Buchse sitzt fest</td><td class="warn">nur Kontaktreibung, dazu Federzunge</td></tr>
+      <tr><td>Platz im Gebäude</td><td>Modul 23,7 × 17 mm im Boden</td><td>Einheit <span data-v="unit_w" data-f="1"></span> × <span data-v="unit_l" data-f="1"></span> mm, Buchse zu zwei Dritteln im Fuß</td></tr>
+      <tr><td>Kosten</td><td>Header, Buchsen, Kabel kaufen</td><td class="ok">alles im Set außer LED-Streifen</td></tr>
+      <tr><td>Lötarbeit</td><td>Header auf Platine</td><td>4 Lötstellen je Dock (A) oder keine (C); LED immer</td></tr>
+      <tr><td>Wiederholbarkeit</td><td class="ok">Fertigteile</td><td>Handcrimpen, No-Name-Toleranzen</td></tr>
+      <tr><td>Kodierung</td><td class="ok">Stecker gepolt</td><td>über Fuß, Leistenform und Einheit</td></tr>
+      <tr><td>Stapelhöhe</td><td>Header 7,0 + Buchse 7,75</td><td>Leiste 2,54 + Stift 6,0 + Buchse 14,0</td></tr>
+      <tr><td>Plattendicke</td><td>17,45 mm</td><td><span data-v="tA" data-f="1"></span> mm mit Dock A</td></tr>
+      <tr><td>Montage im Gebäude</td><td>Modul von unten mit Schnapparmen</td><td>Druckpause, sonst Kassette</td></tr>
+      <tr><td>Hauptrisiko</td><td>Schnapparme in PLA, lange Toleranzkette</td><td>Kontakt bei <span data-v="E" data-f="1"></span> mm Einstecktiefe, Handgriff in der Pause</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>Empfehlung:</b> Mit dem vorhandenen Set zuerst diesen Prototyp drucken. Wenn Passprobe und Pausenprobe gelingen und die Kontakte bei <span data-v="E" data-f="1"></span> mm sicher sind, ist der Dupont-Plan für die ganze Platte besser: nichts zukaufen, kein Steckmodul, weniger Teile im Gebäude. Der JST-Plan ist besser, wenn Gebäude sehr oft gesteckt werden oder die Dupont-Kontakte im Test unter 3 N halten oder aussetzen.</p>
+</section>
+
+<!-- ============================ TEST ============================ -->
+<section aria-labelledby="h-test">
+  <h2 id="h-test">Testplan</h2>
+  <p>Die Reihenfolge spart Filament: zuerst die kleinen Proben, dann Platte und Würfel. Jede Zeile nennt, wann der Schritt als gescheitert gilt und was dann zu ändern ist.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Test</th><th>Erfolg</th><th>Sonst</th></tr></thead>
+    <tbody>
+      <tr><td><b>1</b> Passprobe, Teile messen</td><td>Buchse sitzt in der 0,1-Tasche mit leichtem Druck, Stift gleitet durchs 1,1-Loch</td><td>Gemessene Maße oben im Generator eintragen</td></tr>
+      <tr><td><b>2</b> Kontakt bei <span data-v="E" data-f="1"></span> mm</td><td>Leiste mit 1,8-mm-Abstandsstück in eine Buchse: Durchgang stabil beim Wackeln</td><td>Muldenboden und Trichterplatte auf 0,6 mm (Einstecktiefe 4,6); bleibt es unsicher: JST-Plan</td></tr>
+      <tr><td><b>3</b> Pausenprobe</td><td>Düse streift nichts, Buchse wackelt nicht, Ader hält 5 N</td><td>Streift: <code>WIRE_GAP</code> 0,4; lose: <code>RIB</code> 0,2</td></tr>
+      <tr><td><b>4</b> Platte A, B, C mit Deckel</td><td>Steckerteil hält 30 N Zug und Druck</td><td>Muldenboden 1,2 mm, Stempel breiter</td></tr>
+      <tr><td><b>5</b> Würfel mit Pause stecken</td><td>Stecken unter 15 N, Ziehen 3 bis 8 N, LED an, DETECT LOW</td><td>Unter 3 N: Nase 0,6 mm oder Magnete; über 8 N: Nase 0,4 mm</td></tr>
+      <tr><td><b>6</b> Kodierung</td><td>Gedrehter Würfel fällt nicht in die Mulde</td><td>Kodier-Ecke größer</td></tr>
+      <tr><td><b>7</b> 50 Steckzyklen</td><td>Ziehkraft fällt um weniger als 30 %, kein Aussetzer</td><td>JST-Plan</td></tr>
+      <tr><td><b>8</b> Kassette</td><td>Schieber hält, Tausch unter 2 Minuten</td><td>Raste am Schieber ergänzen</td></tr>
+      <tr><td><b>9</b> Licht</td><td>0,4- oder 0,8-mm-Fenster leuchtet gleichmäßig</td><td>Wanddicke anpassen</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small muted">Druckteile in <code>stl/steckmodul_dupont/</code>, alle in Druckausrichtung und ohne Stützen: <span id="sizes"></span></p>
+</section>
+
+<!-- ============================ ANNAHMEN ============================ -->
+<section aria-labelledby="h-ann">
+  <h2 id="h-ann">Offene Annahmen</h2>
+  <p>Diese Werte sind geschätzt oder hängen vom Kit ab. Sie stehen als Parameter oben in <code>steckmodul_dupont.py</code>; nachmessen, eintragen, neu erzeugen.</p>
+  <ul class="tight">
+    <li>Gehäusemaße des Kits und die Eintrittsöffnung der Kammern (≈ 1,0 mm).</li>
+    <li>Stiftlängen der Leisten (6,0 oben, 3,0 unten) und bei der Winkelleiste die Lage der Biegung (1,5 mm hinter dem Körper).</li>
+    <li>Überstand der Male-Crimp-Pins aus dem Gehäuse (≈ 6 mm), nur für Dock C.</li>
+    <li>Sicherer Kontakt bei <span data-v="E" data-f="1"></span> mm Einstecktiefe; Kontaktpunkt bei ≈ 1,5 mm angenommen.</li>
+    <li>Halte- und Steckkraft je Kontakt (0,3 bis 1,0 N bzw. 1 bis 2 N).</li>
+    <li>Aderdurchmesser des Flachbandkabels (≈ 0,9 mm) und ob 28 AWG sicher crimpt.</li>
+    <li>Pad-Reihenfolge des eigenen LED-Streifens (Parameter <code>PADS</code>, hier <span id="pads"></span> von links nach rechts mit dem Din-Ende zur Buchse).</li>
+    <li>Biegemodul und Reibwert des Filaments für die Federzunge.</li>
+    <li>Seite der Rastfenster am Gehäuse; im Modell zeigt sie von der LED weg.</li>
+  </ul>
+</section>
+
+<footer class="small muted" style="max-width:72ch">
+  Maße der Stiftleisten aus den Würth-Zeichnungen WR-PHD 61300411121 und 61300411021, Gehäuse und Crimpkontakte aus den Maßzeichnungen bei Pololu (Produkte 1903, 1930, 1931). Kräfte sind Schätzungen. Dateien: <code>steckmodul_dupont.py</code>, <code>stl/steckmodul_dupont/</code>, <code>stecker/dupont/PLAN.md</code>, Vorschaubilder in <code>vorschau/steckmodul_dupont/</code>.
+</footer>
+
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const DATA = JSON.parse($('data').textContent);
+  const D = DATA.dims, P = DATA.params, FO = DATA.forces, XS = DATA.xs;
+  const fmt = (v, n = 2) => (+v).toFixed(n).replace('.', ',').replace('-', '−');
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Zahlen aus den Daten einsetzen ---------- */
+  const C = {
+    pause_next: D.pause_mm + P.LAYER, pause_next_layer: D.pause_layer + 1,
+    probe_h: D.z_riegel + D.F, tA: DATA.plate_t_by_dock.A, tB: DATA.plate_t_by_dock.B, tC: DATA.plate_t_by_dock.C,
+    pp0: FO.pins_pull[0], pp1: FO.pins_pull[1], ps0: FO.pins_push[0], ps1: FO.pins_push[1],
+    hold0: FO.hold[0], hold1: FO.hold[1], ins0: FO.insert[0], ins1: FO.insert[1],
+    inFoot: -D.z_face, nx: DATA.need_xy[0], ny: DATA.need_xy[1],
+    unit_w: D.sock_w, unit_l: D.LY1 - (D.HY - D.sock_d / 2)
+  };
+  const val = (k) => (k in C ? C[k] : k in D ? D[k] : k in P ? P[k] : FO[k]);
+  document.querySelectorAll('[data-v]').forEach((el) => {
+    const v = val(el.dataset.v);
+    if (v === undefined) { el.textContent = '?'; return; }
+    el.textContent = fmt(v, el.dataset.f !== undefined ? +el.dataset.f : 2);
+  });
+  $('pads').textContent = P.PADS.join(', ');
+  const NAMES = { platte_ABC: 'Platte', deckel: 'Deckel', wuerfel_pause: 'Würfel Pause', wuerfel_kassette: 'Würfel Kassette',
+    kassette: 'Kassette', schieber: 'Schieber', pausenprobe: 'Pausenprobe', montagelehre: 'Montagelehre', passprobe: 'Passprobe' };
+  $('sizes').textContent = Object.entries(DATA.sizes).map(([k, s]) => NAMES[k] + ' ' + s.map((v) => fmt(v, 1)).join(' × ')).join(' · ');
+
+  /* ---------- Gebäudetabelle ---------- */
+  (function () {
+    const cls = { passt: 'ok', knapp: 'mid', nein: 'warn' };
+    let h = '<thead><tr><th>Gebäude</th><th class="num">B × T × H (1:1500)</th><th>1:1500</th><th class="num">Luft</th><th>1:1000</th><th class="num">Luft</th></tr></thead><tbody>';
+    for (const r of DATA.buildings) {
+      const a = r['1500'], b = r['1000'];
+      const cell = (x) => '<td><span class="pill ' + cls[x.status] + '">' + x.status + '</span>' +
+        (x.status === 'nein' && x.xy ? ' <span class="small muted">mit Fuß ' + fmt(x.F_need, 1) + '</span>' : '') + '</td><td class="num">' + fmt(x.air, 1) + '</td>';
+      h += '<tr><td>' + r.name + '</td><td class="num">' + fmt(a.W, 1) + ' × ' + fmt(a.T, 1) + ' × ' + fmt(a.H, 1) + '</td>' + cell(a) + cell(b) + '</tr>';
+    }
+    $('btab').innerHTML = h + '</tbody>';
+  })();
+
+  /* ---------- Maßkette (SVG, Querschnitt y–z im Maßstab) ---------- */
+  function drawChain(state) {
+    const g = state === 'seated' ? 0 : D.g1;
+    const S = 9, Y0 = 330, ZT = 31, T0 = 16;
+    const px = (y) => Y0 + y * S, py = (z) => T0 + (ZT - z) * S;
+    const R = (y0, y1, z0, z1, fill, extra = '') => `<rect x="${px(Math.min(y0, y1))}" y="${py(Math.max(z0, z1))}" width="${Math.abs(y1 - y0) * S}" height="${Math.abs(z1 - z0) * S}" style="fill:${fill}" ${extra}/>`;
+    const poly = (pts, fill, extra = '') => `<polygon points="${pts.map(([y, z]) => px(y) + ',' + py(z)).join(' ')}" style="fill:${fill}" ${extra}/>`;
+    const st = 'stroke="var(--edge)" stroke-width="0.6"';
+    const HY = D.HY, pw = D.pw / 2, F = D.F;
+    let s = '';
+    // Platte, Deckel, Mulde, Kabelraum
+    s += R(-21.6, 21.6, D.z_lt, 0, 'var(--c-plate)');
+    s += R(-21.6, 21.6, D.z_lb, D.z_lt, 'var(--c-lid)');
+    s += poly([[-pw, -F], [pw, -F], [pw, -P.CH_P], [pw + P.CH_P, 0.01], [-pw - P.CH_P, 0.01], [-pw, -P.CH_P]], 'var(--panel)');
+    s += R(-pw - P.RELIEF, pw + P.RELIEF, -F, -P.CH_P - P.BAND, 'var(--panel)');
+    s += R(HY - 5, HY + 9, D.z_lt, D.z_bb, 'var(--panel)');
+    s += R(HY + 4.5 - 4, HY + 21.6 - HY, D.z_lt, D.z_lt + 4, 'var(--panel)');
+    // Stempel und Winkelleiste
+    s += R(HY - 1, HY + 1, D.z_lt, D.z_bb, 'var(--c-lid)', 'opacity="0.55"');
+    s += R(HY - P.HDR_BODY / 2, HY + P.HDR_BODY / 2, D.z_bb, D.z_hb, 'var(--c-header)');
+    s += R(HY - P.PIN_SQ / 2, HY + P.PIN_SQ / 2, D.z_bend - P.PIN_SQ / 2, D.z_tip, 'var(--c-header)');
+    s += R(HY - P.PIN_SQ / 2, HY + P.HDR_BODY / 2 + P.RA_TAIL, D.z_bend - P.PIN_SQ / 2, D.z_bend + P.PIN_SQ / 2, 'var(--c-header)');
+    // Gebäude (um g angehoben)
+    const m = (z) => z + g;
+    const cw = P.CUBE / 2;
+    s += poly([[-cw + P.CH_F, m(-F)], [cw - P.CH_F, m(-F)], [cw, m(-F + P.CH_F)], [cw, m(P.CUBE_H)], [-cw, m(P.CUBE_H)], [-cw, m(-F + P.CH_F)]], 'var(--c-cube)', st);
+    s += R(-cw + 1.2, cw - 1.2, m(D.z_floor), m(P.CUBE_H - P.ROOF), 'var(--panel)');
+    s += R(HY - D.sock_d / 2, HY + D.sock_d / 2, m(D.z_floor - 0.01), m(D.z_riegel), 'var(--c-cube)');
+    s += R(HY - D.pk_d / 2, HY + D.pk_d / 2, m(D.z_face), m(D.z_cav), 'var(--panel)');
+    s += R(HY + D.pk_d / 2 - 0.01, HY + D.sock_d / 2 + 0.01, m(D.z_notch), m(D.z_cav), 'var(--panel)');
+    s += R(D.LY0 - 0.15, D.LY1 + 0.15, m(D.z_s), m(D.z_floor), 'var(--panel)');
+    s += R(HY - P.HOLE / 2, HY + P.HOLE / 2, m(-F), m(D.z_face), 'var(--panel)');
+    s += poly([[HY - P.FUNNEL_D / 2, m(-F)], [HY + P.FUNNEL_D / 2, m(-F)], [HY + P.HOLE / 2, m(-F + (P.FUNNEL_D - P.HOLE) / 2)], [HY - P.HOLE / 2, m(-F + (P.FUNNEL_D - P.HOLE) / 2)]], 'var(--panel)');
+    // Buchse, Kontakt, LED, Ader
+    s += R(HY - P.HSG_T / 2, HY + P.HSG_T / 2, m(D.z_face), m(D.z_ht), 'var(--c-housing)', st);
+    s += R(HY - 0.75, HY + 0.75, m(D.z_face + 0.5), m(D.z_face + 5.0), 'var(--c-term)');
+    s += R(HY - 0.5, HY + 0.5, m(D.z_face + 5.0), m(D.z_face + 12.2), 'var(--c-term)');
+    s += R(D.LY0, D.LY1, m(D.z_s), m(D.z_s + 0.3), 'var(--c-led)', st);
+    s += R(D.LY0 + P.LED_L / 2 - 2.5, D.LY0 + P.LED_L / 2 + 2.5, m(D.z_s + 0.3), m(D.led_top), 'var(--c-led)', st);
+    const zw = D.z_ht + P.WIRE_D / 2;
+    s += `<path d="M${px(HY)} ${py(m(D.z_ht - 0.5))}V${py(m(zw))}H${px(HY + D.sock_d / 2 + 0.4)}L${px(D.LY0 + 1.2)} ${py(m(D.z_s + 0.3 + P.WIRE_D / 2))}" style="fill:none;stroke:var(--c-wire);stroke-width:${P.WIRE_D * S * 0.9};stroke-linejoin:round"/>`;
+    // Pausenebene
+    s += `<path d="M${px(-cw - 3)} ${py(m(D.z_cav))}H${px(cw + 3)}" style="stroke:var(--pause);stroke-width:1.5;stroke-dasharray:6 4;fill:none"/>`;
+    s += `<text x="${px(cw - 1.6)}" y="${py(m(D.z_cav)) - 5}" text-anchor="end" style="fill:var(--pause);font-weight:600">Pausenebene</text>`;
+    // Führungsband
+    const xr = px(21.6) + 22;
+    const dim = (z0, z1, x, label, bold) => `<path class="dim" d="M${x - 5} ${py(z0)}h10M${x - 5} ${py(z1)}h10M${x} ${py(z0)}V${py(z1)}"/>` +
+      `<text x="${x + 9}" y="${(py(z0) + py(z1)) / 2 + 4}" ${bold ? 'style="font-weight:600"' : ''}>${label}</text>`;
+    if (g > 0) {
+      const gz0 = -P.CH_P, gz1 = m(-F + P.CH_F);
+      s += `<rect x="${px(pw) + 3}" y="${py(gz0)}" width="6" height="${(gz0 - gz1) * S}" style="fill:var(--accent-fill)"/>`;
+      s += dim(gz0, gz1, xr, 'Führung ' + fmt(gz0 - gz1, 1) + ' mm', true);
+      s += dim(-F, D.z_tip, xr + 150, 'Stift über Muldenboden ' + fmt(D.g1, 1), false);
+    } else {
+      s += dim(0, -F, xr, 'Fuß = Mulde ' + fmt(F, 1), true);
+      s += dim(D.z_tip, D.z_face, xr + 150, 'Stift in Buchse ' + fmt(D.E, 1), false);
+    }
+    s += dim(0, D.z_lb, xr + 290, 'Platte ' + fmt(-D.z_lb, 1), false);
+    s += dim(m(-F), m(D.z_cav), px(-21.6) - 30, '', false).replace(/<text.*<\/text>/, '');
+    s += `<text x="${px(-21.6) - 38}" y="${(py(m(-F)) + py(m(D.z_cav))) / 2 + 4}" text-anchor="end">Pause ${fmt(D.pause_mm)}</text>`;
+    s += `<text x="${px(D.LY0 + 1)}" y="${py(m(D.z_s)) + 13}" class="mut">LED</text>`;
+    s += `<text x="${px(HY + 1.4)}" y="${py(D.z_lt + 3)}" class="mut">Stempel</text>`;
+    s += `<text x="${px(HY - D.sock_d / 2) - 4}" y="${py(m(D.z_riegel)) + 2}" text-anchor="end" class="mut">Riegel</text>`;
+    s += `<text x="${px(HY) - 12}" y="${py(m(D.z_face + 6))}" text-anchor="end" class="mut">Buchse</text>`;
+    s += `<text x="${px(HY + 4.6)}" y="${py(D.z_bend) + 4}" class="mut">Lötende</text>`;
+    s += `<text x="${px(-21.6) - 8}" y="${py(-14)}" text-anchor="end">Platte</text>`;
+    s += `<text x="${px(-21.6) - 8}" y="${py(D.z_lb) - 2}" text-anchor="end">Deckel</text>`;
+    $('chain').innerHTML = s;
+  }
+  drawChain('contact');
+  document.querySelectorAll('input[name=chain]').forEach((r) => r.addEventListener('change', () => drawChain(r.value)));
+
+  /* ---------- 3D: gemeinsame Teile ---------- */
+  if (!window.THREE) {
+    for (const id of ['stage', 'stage2']) $(id).innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Die Tabellen und die Maßkette gelten trotzdem.</p>';
+    return;
+  }
+  const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+  const geoCache = new Map();
+  const toGeo = (e) => {
+    if (geoCache.has(e)) return geoCache.get(e);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(b64(e.v)), 3));
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(e.i)), 1));
+    g.computeVertexNormals();
+    const edges = new THREE.EdgesGeometry(g, 28);
+    const r = { g, edges };
+    geoCache.set(e, r);
+    return r;
+  };
+  const TOKENS = { plate: '--c-plate', lid: '--c-lid', cube: '--c-cube', header: '--c-header', housing: '--c-housing',
+    term: '--c-term', led: '--c-led', wire: '--c-wire', kass: '--c-kass', key: '--c-key' };
+
+  function makeViewer(canvas, stage, opts) {
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+    catch (e) { stage.innerHTML = '<p style="padding:24px">WebGL ist in diesem Browser nicht verfügbar.</p>'; return null; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.localClippingEnabled = true;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(30, 2, 1, 1000);
+    camera.up.set(0, 0, 1);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.75));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(60, -50, 90); scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(-60, 80, 30); scene.add(fill);
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 });
+    const mats = {};
+    for (const k in TOKENS) {
+      mats[k] = new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: k === 'header' || k === 'term' ? 0.25 : 0.04, flatShading: true, side: THREE.DoubleSide });
+      if (opts && opts.clip && opts.clip.includes(k)) mats[k].clippingPlanes = opts.planes;
+    }
+    const v = { renderer, scene, camera, mats, edgeMat, dirty: true, view: Object.assign({}, opts.view), target: [0, 0, 0] };
+    v.mesh = (enc, mat, parent) => {
+      const { g, edges } = toGeo(enc);
+      const m = new THREE.Mesh(g, mats[mat]);
+      const lm = edgeMat.clone();
+      if (mats[mat].clippingPlanes) lm.clippingPlanes = mats[mat].clippingPlanes;
+      m.add(new THREE.LineSegments(edges, lm));
+      (parent || scene).add(m);
+      return m;
+    };
+    v.theme = () => {
+      for (const k in mats) mats[k].color.set(css(TOKENS[k]));
+      renderer.setClearColor(css('--canvas'));
+      scene.traverse((o) => { if (o.isLineSegments) o.material.color.set(css('--edge')); });
+      v.dirty = true;
+    };
+    v.cam = () => {
+      const a = v.view.az * Math.PI / 180, e = v.view.el * Math.PI / 180, t = v.target, r = v.view.dist * (v.zoom || 1);
+      camera.position.set(t[0] + r * Math.cos(e) * Math.cos(a), t[1] + r * Math.cos(e) * Math.sin(a), t[2] + r * Math.sin(e));
+      camera.lookAt(t[0], t[1], t[2]);
+    };
+    v.resize = () => {
+      const w = stage.clientWidth, h = stage.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); v.dirty = true;
+    };
+    new ResizeObserver(v.resize).observe(stage);
+    // Drehen und Zoomen
+    const ptrs = new Map(); let pinch = 0;
+    canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; });
+    canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+    canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+    canvas.addEventListener('pointermove', (e) => {
+      const p = ptrs.get(e.pointerId); if (!p) return;
+      if (ptrs.size === 1) { v.view.az -= (e.clientX - p[0]) * 0.4; v.view.el = Math.max(-85, Math.min(89, v.view.el + (e.clientY - p[1]) * 0.3)); }
+      p[0] = e.clientX; p[1] = e.clientY;
+      if (ptrs.size === 2) {
+        const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+        if (pinch) v.view.dist = Math.max(30, Math.min(400, v.view.dist * pinch / d)); pinch = d;
+      }
+      v.dirty = true;
+    });
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); v.view.dist = Math.max(30, Math.min(400, v.view.dist * (1 + e.deltaY * 0.001))); v.dirty = true; }, { passive: false });
+    v.draw = () => { if (v.dirty) { v.cam(); renderer.render(scene, camera); v.dirty = false; } };
+    return v;
+  }
+
+  const PT = DATA.parts;
+  /* ---------- Viewer 1: Stecken ---------- */
+  const V1 = makeViewer($('cv'), $('stage'), { view: { az: 28, el: 16, dist: 150 } });
+  const st = { s: 1, mode: 'pause', dock: 0, ex: 0, cut: true, cube: true, play: false, dir: -1, hold: 0 };
+  const G0 = 24;
+  const VIEWS = { side: { az: 2, el: 4, dist: 140 }, iso: { az: 28, el: 16, dist: 150 }, under: { az: 35, el: -38, dist: 150 } };
+  let o1 = null;
+  if (V1) {
+    const stat = new THREE.Group(), mover = new THREE.Group();
+    V1.scene.add(stat, mover);
+    const pair = (enc, mat, parent, x) => {
+      const h = new THREE.Group();
+      const f = V1.mesh(enc.full, mat, h), c = V1.mesh(enc.cut, mat, h);
+      if (x) h.position.x = x;
+      (parent || V1.scene).add(h);
+      return { h, f, c };
+    };
+    o1 = {
+      stat, mover,
+      plateF: V1.mesh(PT.plate.full, 'plate', stat), plateC: PT.plate.cut.map((e) => V1.mesh(e, 'plate', stat)),
+      lidG: new THREE.Group(),
+      headers: ['A', 'B', 'C'].map((k, i) => pair(PT.header[k], 'header', stat, XS[i])),
+      cube: pair(PT.cube, 'cube', mover), cubeK: pair(PT.cube_k, 'cube', mover), kass: pair(PT.kass, 'kass', mover),
+      key: pair(PT.key, 'key', mover), housing: pair(PT.housing, 'housing', mover), terms: pair(PT.terms, 'term', mover),
+      wires: pair(PT.wires, 'wire', mover), wiresK: pair(PT.wires_k, 'wire', mover), led: pair(PT.led, 'led', mover)
+    };
+    stat.add(o1.lidG);
+    o1.lidF = V1.mesh(PT.lid.full, 'lid', o1.lidG); o1.lidC = PT.lid.cut.map((e) => V1.mesh(e, 'lid', o1.lidG));
+    o1.glow = new THREE.PointLight(0xffc766, 0, 70, 1.5); mover.add(o1.glow); o1.glow.position.set(0, 0, 12);
+  }
+  const PH = ['Aufsetzen', 'Fase fängt', 'Führung', 'Kontakt', 'Gesteckt'];
+  function phaseOf(g) {
+    if (g > D.F + 0.001) return 0;
+    if (g > D.F - P.CH_F - P.CH_P + 0.001) return 1;
+    if (g > D.g1 + 0.001) return 2;
+    if (g > 0.02) return 3;
+    return 4;
+  }
+  const PH_TXT = [
+    () => 'Das Gebäude schwebt über seiner Mulde. Die abgeschrägte Ecke zeigt, wie herum es passt.',
+    () => 'Die ' + fmt(P.CH_F, 1) + '-mm-Fase am Fuß gleitet an der ' + fmt(P.CH_P, 1) + '-mm-Fase der Mulde ab. Zusammen fangen sie bis ' + fmt(P.CH_F + P.CH_P + P.CLR, 1) + ' mm Versatz.',
+    (g) => 'Der Fuß gleitet gerade im Führungsband, jetzt ' + fmt(Math.max(0, D.F - g - P.CH_F - P.CH_P), 1) + ' mm tief. Die Stifte haben das Gebäude noch nicht berührt.',
+    (g) => g > D.E ? 'Die Stiftspitzen sind in den Trichtern der Trichterplatte und werden auf die Öffnungen der Buchse ausgerichtet. Der Fuß steckt da schon ' + fmt(D.guide, 1) + ' mm gerade in der Mulde.'
+      : g > D.contact_lift ? 'Die Stifte gleiten in die Kontakte der Buchse. Die Federzunge in der Muldenwand wird zur Seite gedrückt.'
+      : 'Die Kontaktfedern liegen an den Stiften an. DETECT wird LOW, der Controller gibt die Datenleitung frei.',
+    () => 'Der Fuß sitzt auf dem Muldenboden, die Stifte stecken ' + fmt(D.E, 1) + ' mm in der Buchse. Die Federzunge rastet in die Nut am Fuß und hält das Gebäude mit.'
+  ];
+  const MODE_TXT = {
+    pause: 'Buchse, Adern und LED wurden in der Druckpause eingelegt, ein Riegel hält sie. Nicht lösbar.',
+    kass: 'Buchse und LED sitzen in einer Kassette (orange), die ein Schieber (grün) im Fuß hält. Lösbar.'
+  };
+  const DOCK_TXT = [
+    'A: abgewinkelte Leiste, Lötenden waagrecht im Kabelraum. Verpolsicher, Platte ' + fmt(DATA.plate_t_by_dock.A, 1) + ' mm.',
+    'B: gerade Leiste, Lötenden senkrecht nach unten. Platte ' + fmt(DATA.plate_t_by_dock.B, 1) + ' mm.',
+    'C: Gehäuse mit Male-Crimp-Pins, ganz ohne Löten. Platte ' + fmt(DATA.plate_t_by_dock.C, 1) + ' mm.'
+  ];
+  function pose1() {
+    const g = G0 * (1 - st.s), e = st.ex;
+    const ph = phaseOf(g);
+    if (o1) {
+      const x = XS[st.dock];
+      o1.mover.position.set(x, 0, g);
+      const vis = (p, on) => { p.h.visible = on; p.f.visible = on && !st.cut; p.c.visible = on && st.cut; };
+      const k = st.mode === 'kass';
+      vis(o1.cube, st.cube && !k); vis(o1.cubeK, st.cube && k); vis(o1.kass, k); vis(o1.key, k);
+      vis(o1.housing, true); vis(o1.terms, true); vis(o1.wires, !k); vis(o1.wiresK, k); vis(o1.led, true);
+      o1.headers.forEach((p, i) => {
+        p.h.visible = !st.cut || i <= st.dock;
+        p.f.visible = p.h.visible && (!st.cut || i < st.dock);
+        p.c.visible = st.cut && i === st.dock;
+      });
+      o1.plateF.visible = !st.cut; o1.plateC.forEach((m, i) => { m.visible = st.cut && i === st.dock; });
+      o1.lidF.visible = !st.cut; o1.lidC.forEach((m, i) => { m.visible = st.cut && i === st.dock; });
+      // Explosion
+      o1.lidG.position.z = -14 * e;
+      o1.cube.h.position.z = 44 * e; o1.cubeK.h.position.z = 44 * e;
+      o1.kass.h.position.z = 26 * e; o1.key.h.position.z = 8 * e;
+      for (const p of [o1.housing, o1.terms, o1.wires, o1.wiresK]) p.h.position.z = 18 * e;
+      o1.led.h.position.z = 28 * e;
+      const on = g <= D.contact_lift && e < 0.02;
+      V1.mats.led.emissive = new THREE.Color(on ? 0xffc766 : 0x000000);
+      V1.mats.cube.emissive = new THREE.Color(on ? 0x3a2808 : 0x000000);
+      o1.glow.intensity = on ? 1.3 : 0;
+      V1.target = [x, 0, 2 + 12 * e];
+      V1.zoom = 1 + 0.45 * e;
+      V1.dirty = true;
+    }
+    const footIn = Math.max(0, Math.min(D.F - P.CH_F - P.CH_P, D.F - g - P.CH_F - P.CH_P));
+    const eng = Math.max(0, D.E - g);
+    $('r-g').textContent = fmt(g, 1) + ' mm';
+    $('r-foot').textContent = fmt(footIn, 1) + ' mm';
+    $('r-eng').textContent = fmt(eng, 1) + ' von ' + fmt(D.E, 1) + ' mm';
+    $('r-led').textContent = g <= D.contact_lift ? 'LOW · LED an' : 'HIGH · aus';
+    $('phase').innerHTML = '<b>' + PH[ph] + '</b>' + PH_TXT[ph](g);
+    $('hud').innerHTML = PH.map((p, i) => '<span class="chip' + (i === ph ? ' on' : '') + '">' + p + '</span>').join('');
+    $('d-mode').textContent = MODE_TXT[st.mode];
+    $('d-dock').textContent = DOCK_TXT[st.dock];
+  }
+  $('s').addEventListener('input', (e) => { st.s = e.target.value / 1000; st.play = false; $('play').textContent = 'Abspielen'; pose1(); });
+  $('ex').addEventListener('input', (e) => { st.ex = e.target.value / 100; pose1(); });
+  $('cut').addEventListener('change', (e) => { st.cut = e.target.checked; pose1(); });
+  $('showcube').addEventListener('change', (e) => { st.cube = e.target.checked; pose1(); });
+  document.querySelectorAll('input[name=mode]').forEach((r) => r.addEventListener('change', () => { st.mode = r.value; pose1(); }));
+  document.querySelectorAll('input[name=dock]').forEach((r) => r.addEventListener('change', () => { st.dock = +r.value; pose1(); }));
+  document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => { if (V1) { Object.assign(V1.view, VIEWS[b.dataset.view]); V1.dirty = true; } }));
+  $('play').addEventListener('click', () => {
+    st.play = !st.play; $('play').textContent = st.play ? 'Anhalten' : 'Abspielen';
+    if (st.play) { if (st.s >= 0.999) st.s = 0; st.dir = 1; st.hold = 0; }
+  });
+  $('reset').addEventListener('click', () => { st.play = false; $('play').textContent = 'Abspielen'; st.s = 0; $('s').value = 0; pose1(); });
+
+  /* ---------- Viewer 2: Druckablauf ---------- */
+  const H_TOP = D.F + P.CUBE_H;               // Druckhöhe des Würfels
+  const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
+  const V2 = makeViewer($('cv2'), $('stage2'), { view: { az: 30, el: 24, dist: 82 }, clip: ['cube'], planes: [clipPlane] });
+  const pr = { h: D.pause_mm, step: 0, unit: 0, play: false, t: 0 };
+  let o2 = null;
+  if (V2) {
+    V2.target = [0, 0, 2];
+    const root = new THREE.Group(); V2.scene.add(root);
+    const unit = new THREE.Group(); root.add(unit);
+    o2 = { root, unit, cube: V2.mesh(PT.cube.cut, 'cube', root) };
+    for (const [k, m] of [['housing', 'housing'], ['terms', 'term'], ['wires', 'wire'], ['led', 'led']]) V2.mesh(PT[k].cut, m, unit);
+    const bed = new THREE.Mesh(new THREE.PlaneGeometry(46, 46), new THREE.MeshBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.18, side: THREE.DoubleSide }));
+    bed.position.set(0, 0, -D.F - 0.05); root.add(bed);
+    o2.pmat = new THREE.MeshBasicMaterial({ color: 0x1aa3ad, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false });
+    const pl = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), o2.pmat); pl.position.set(0, 0, D.z_cav); root.add(pl);
+    const ring = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(36, 36)), new THREE.LineBasicMaterial({ color: 0x1aa3ad }));
+    ring.position.copy(pl.position); root.add(ring); o2.ring = ring;
+    o2.head = new THREE.Mesh(new THREE.ConeGeometry(2.2, 5, 20), new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 0.6, roughness: 0.35 }));
+    o2.head.rotation.x = -Math.PI / 2; root.add(o2.head);
+  }
+  const STEP_H = [D.pause_mm, D.pause_mm, D.pause_mm + P.RIEGEL_T, H_TOP, H_TOP];
+  function pose2() {
+    const hz = pr.h - D.F;
+    const atPause = Math.abs(pr.h - D.pause_mm) < 0.05;
+    const unitIn = pr.h > D.pause_mm + 0.01 || pr.step >= 1;
+    if (o2) {
+      clipPlane.constant = hz + 0.001;
+      o2.unit.visible = unitIn || (atPause && pr.unit > 0);
+      o2.unit.position.z = unitIn ? (pr.step === 1 ? 14 * (1 - pr.unit) : 0) : 14;
+      o2.head.visible = pr.h < H_TOP - 0.01;
+      o2.head.position.set(-6, -8, hz + 2.6);
+      o2.pmat.opacity = atPause ? 0.24 : pr.h < D.pause_mm ? 0.14 : 0.06;
+      V2.dirty = true;
+    }
+    const layer = Math.max(0, Math.round(pr.h / P.LAYER));
+    $('r-h').textContent = fmt(pr.h, 2) + ' mm';
+    $('r-l').textContent = layer + ' von ' + Math.round(H_TOP / P.LAYER);
+    let chips = [['vor der Pause', pr.h < D.pause_mm - 0.01], ['Pause', atPause], ['Riegel', pr.h > D.pause_mm + 0.01 && pr.h <= D.pause_mm + P.RIEGEL_T + 0.01], ['Kammer und Dach', pr.h > D.pause_mm + P.RIEGEL_T + 0.01]];
+    $('hud2').innerHTML = chips.map(([t, on]) => '<span class="chip' + (on ? ' pz' : '') + '">' + t + '</span>').join('');
+    $('layer').value = Math.round(pr.h / H_TOP * 1000);
+  }
+  function setStep(i, animate) {
+    pr.step = i;
+    document.querySelectorAll('#steps button').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.step === i)));
+    pr.unit = i >= 1 ? 1 : 0;
+    const FROM = [0, D.pause_mm, D.pause_mm, D.pause_mm + P.RIEGEL_T, H_TOP];
+    if (animate && !reduced && i < 4) { pr.anim = { from: FROM[i], to: STEP_H[i] }; pr.h = FROM[i]; if (i === 1) pr.unit = 0; }
+    else { pr.h = STEP_H[i]; pr.anim = null; }
+    if (i === 4 && V1) { st.s = 0; st.play = true; st.dir = 1; $('play').textContent = 'Anhalten'; }
+    pose2();
+  }
+  document.querySelectorAll('#steps button').forEach((b) => b.addEventListener('click', () => setStep(+b.dataset.step, true)));
+  $('layer').addEventListener('input', (e) => {
+    pr.h = e.target.value / 1000 * H_TOP; pr.anim = null; pr.play = false; $('play2').textContent = 'Ablauf abspielen';
+    const i = pr.h < D.pause_mm - 0.01 ? 0 : pr.h <= D.pause_mm + 0.01 ? 1 : pr.h < H_TOP - 0.01 ? 2 : 3;
+    pr.step = i; pr.unit = i >= 1 ? 1 : 0;
+    document.querySelectorAll('#steps button').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.step === i)));
+    pose2();
+  });
+  $('play2').addEventListener('click', () => {
+    pr.play = !pr.play; $('play2').textContent = pr.play ? 'Anhalten' : 'Ablauf abspielen';
+    if (pr.play) { pr.queue = [1, 2, 3]; setStep(0, true); if (!pr.anim) pr.play = false; }
+  });
+
+  /* ---------- Thema und Schleife ---------- */
+  function theme() { if (V1) V1.theme(); if (V2) V2.theme(); }
+  theme();
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (st.play) {
+      if (st.hold > 0) st.hold -= dt;
+      else {
+        st.s += st.dir * dt / 5.0;
+        if (st.s >= 1) { st.s = 1; st.dir = -1; st.hold = 1.6; st.play = false; $('play').textContent = 'Abspielen'; }
+        if (st.s <= 0) { st.s = 0; st.dir = 1; st.hold = 0.6; }
+      }
+      $('s').value = Math.round(st.s * 1000); pose1();
+    }
+    if (pr.anim) {
+      const a = pr.anim;
+      if (pr.step === 1) { pr.unit = Math.min(1, pr.unit + dt / 1.6); pr.h = D.pause_mm; if (pr.unit >= 1) pr.anim = null; }
+      else {
+        const speed = Math.max(4, Math.abs(a.to - a.from) / 3.2);
+        pr.h = Math.min(a.to, pr.h + speed * dt);
+        if (pr.h < a.from) pr.h = a.from;
+        if (pr.h >= a.to - 1e-6) { pr.h = a.to; pr.anim = null; }
+      }
+      pose2();
+      if (!pr.anim && pr.play) {
+        if (pr.queue && pr.queue.length) { const n = pr.queue.shift(); setTimeout(() => { if (pr.play) setStep(n, true); }, 700); }
+        else { pr.play = false; $('play2').textContent = 'Ablauf abspielen'; }
+      }
+    }
+    if (V1) V1.draw();
+    if (V2) V2.draw();
+    requestAnimationFrame(frame);
+  }
+  if (V1) V1.resize(); if (V2) V2.resize();
+  pose1(); pose2(); requestAnimationFrame(frame);
+})();
+</script>
