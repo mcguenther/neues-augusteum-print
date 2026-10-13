@@ -2,7 +2,7 @@
  "farben": {
   "fassade": {
    "notiz": "helle graue Natursteinplatten mit Fensterreihen (Lochfassade, Gesamteindruck)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "06_cityhochhaus_3",
      "box": [
@@ -53,7 +53,9 @@
      ],
      "notiz": "S-Fassade (Platten und Fenster, Gesamteindruck)"
     }
-   ]
+   ],
+   "hex": "#bfccd6",
+   "quelle": "Foto (5 Messfelder)"
   },
   "glas": {
    "notiz": "dunkles Glas, fast schwarz-navy (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
@@ -62,7 +64,7 @@
   },
   "sockel": {
    "notiz": "dunkler Sockelbau/Eingangsbereich",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "06_cityhochhaus_1",
      "box": [
@@ -83,7 +85,9 @@
      ],
      "notiz": "dunkle Metallpaneele Sockelbau"
     }
-   ]
+   ],
+   "hex": "#24303e",
+   "quelle": "Foto (2 Messfelder)"
   }
  },
  "basis": "fassade",
@@ -137,7 +141,18 @@
    ]
   }
  ],
- "bilder": {
+ "weissabgleich": {
+  "06_cityhochhaus_3": {
+   "box": [
+    0.62,
+    0.917,
+    0.85,
+    0.935
+   ],
+   "notiz": "Platzpflaster Universitätsstraße (Sonne)"
+  }
+ },
+ "bilder_alt": {
   "06_vincentz_mensa": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
    "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
@@ -177,17 +192,6 @@
    "urheber": "Frank Vincentz",
    "datum": "2015-07-07",
    "fassade": "tower from the north (Goethestrasse)"
-  }
- },
- "weissabgleich": {
-  "06_cityhochhaus_3": {
-   "box": [
-    0.62,
-    0.917,
-    0.85,
-    0.935
-   ],
-   "notiz": "Platzpflaster Universitätsstraße (Sonne)"
   }
  }
 }

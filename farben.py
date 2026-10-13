@@ -384,12 +384,25 @@ def measure_probe(p, katalog):
     return dict(p, rgb=hexcol(rgb), roh=hexcol(roh), **meta)
 
 
+MESSUNG = os.path.join(G.HERE, "data", "messung.json")
+
+
+def messung(slug):
+    """Eintrag des Gebäudes aus data/messung.json (farbmessung.py) oder None."""
+    if not os.path.exists(MESSUNG):
+        return None
+    return json.load(open(MESSUNG)).get("gebaeude", {}).get(slug)
+
+
 def building_colours(slug):
     """Gemessene Farben, Basis und Zonen eines Gebäudes aus data/fassaden/<slug>.json."""
     import fassaden
     spec = fassaden.load_spec(slug)
     if spec is None:
         return None
+    m = messung(slug)
+    if m:       # Ergebnis der Fotoprojektion (farbmessung.py): Farben und Zonen ersetzen die Handwerte
+        spec = dict(spec, farben=m["farben"], zonen=m["zonen"])
     katalog = fotos(spec)
     out = dict(basis=spec["basis"], zonen=spec.get("zonen", []), farben={})
     for k, f in spec["farben"].items():
@@ -520,31 +533,60 @@ def main():
     proben = [p for b in G.OBJEKTE if b["slug"] in farben
               for k, f in farben[b["slug"]]["farben"].items()
               for p in [dict(q, gebaeude=b["slug"], farbe=k) for q in f.get("proben", [])]]
-    probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
-    write_sources(proben)
+    if proben:
+        probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
+    write_sources()
 
 
 QUELLEN_MD = os.path.join(G.HERE, "FOTOQUELLEN.md")
 
 
-def write_sources(proben):
-    """FOTOQUELLEN.md: alle verwendeten Fotos mit Urheber, Lizenz und Verwendung."""
-    fotos = {}
-    for p in proben:
-        f = fotos.setdefault(p["bild"], dict(p, verwendung=set()))
-        f["verwendung"].add("%s %s" % (p["gebaeude"][:2], p["farbe"]))
+def write_sources(_proben=None):
+    """FOTOQUELLEN.md: alle verwendeten Fotos mit Urheber, Lizenz und Verwendung.
+
+    1. Fotoprojektion (farbmessung.py, data/messung.json): die Fotos, aus denen die Fassadenfarben
+       neu bestimmt wurden (Katalog data/messfotos.json).
+    2. Handmessung (Altbestand): Fotos, aus denen die übrigen, unverändert übernommenen Farben stammen
+       (data/fassaden/*.json, Feld proben_alt)."""
+    import fassaden
     lines = ["# Fotoquellen der Fassadenfarben", "",
-             "Automatisch erzeugt von `farben.py`. In diesen Fotos wurden die Fassadenfarben gemessen",
-             "(Messfelder siehe `vorschau/farben_fotoproben.jpg` und `vorschau/fassaden/*_fotos.jpg`).",
-             "Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz des jeweiligen Fotos",
-             "(CC BY-SA: Weitergabe unter gleichen Bedingungen).", "",
-             "| Foto | Urheber | Lizenz | Datum | verwendet für |", "|---|---|---|---|---|"]
-    for pid, f in sorted(fotos.items(), key=lambda kv: (kv[1]["urheber"], kv[0])):
-        lines.append("| [%s](%s) | %s | %s | %s | %s |" % (pid, f["url"], f["urheber"], f["lizenz"], f["datum"],
-                                                       ", ".join(sorted(f["verwendung"]))))
+             "Automatisch erzeugt von `farben.py`. Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz",
+             "des jeweiligen Fotos (CC BY / CC BY-SA: Namensnennung, bei BY-SA Weitergabe unter gleichen Bedingungen).", ""]
+    mess = json.load(open(MESSUNG)) if os.path.exists(MESSUNG) else None
+    n1 = 0
+    if mess:
+        kat = json.load(open(os.path.join(G.HERE, "data", "messfotos.json")))["fotos"]
+        lines += ["## Fotoprojektion (Farbmessung am 3D-Modell)", "",
+                  "Das Modell wurde in jedes dieser Fotos projiziert (`kamera.py`, `registrierung.py`), die Pixel sind so",
+                  "den Wandflächen zugeordnet (`farbmessung.py`). Pose, Aufnahmezeit und Belichtung je Foto: `data/messfotos.json`,",
+                  "`data/messung.json`.", "",
+                  "| Foto | Urheber | Lizenz | Datum | Quelle |", "|---|---|---|---|---|"]
+        for fid, info in mess["fotos"].items():
+            e = kat[fid]
+            lines.append("| [%s](%s) | %s | %s | %s | %s |" % (fid, e["seite"], e["urheber"], e["lizenz"], (e.get("zeit") or e.get("datum", ""))[:10],
+                                                                e["quelle"]))
+            n1 += 1
+        lines.append("")
+    alt = {}
+    for b in G.OBJEKTE:
+        spec = fassaden.load_spec(b["slug"])
+        if not spec:
+            continue
+        katalog = {**json.load(open(FOTOS))["bilder"], **spec.get("bilder_alt", spec.get("bilder", {}))}
+        for k, fa in spec["farben"].items():
+            for p in fa.get("proben_alt", fa.get("proben", [])):
+                e = katalog.get(p["bild"])
+                if e and "seite" in e:
+                    alt.setdefault(p["bild"], dict(e, verwendung=set()))["verwendung"].add("%s %s" % (b["slug"][:2], k))
+    if alt:
+        lines += ["## Handmessung (Altbestand, für nicht neu gemessene Farben übernommen)", "",
+                  "| Foto | Urheber | Lizenz | Datum | verwendet für |", "|---|---|---|---|---|"]
+        for pid, e in sorted(alt.items(), key=lambda kv: (kv[1]["urheber"], kv[0])):
+            lines.append("| [%s](%s) | %s | %s | %s | %s |" % (pid, e["seite"], e["urheber"], e["lizenz"], e.get("datum", ""),
+                                                           ", ".join(sorted(e["verwendung"]))))
     with open(QUELLEN_MD, "w") as fh:
         fh.write("\n".join(lines) + "\n")
-    print("  Quellen:", os.path.relpath(QUELLEN_MD, G.HERE), "(%d Fotos)" % len(fotos))
+    print("  Quellen:", os.path.relpath(QUELLEN_MD, G.HERE), "(%d Fotos Projektion, %d Altbestand)" % (n1, len(alt)))
 
 
 def swatches(farben):

@@ -1,9 +1,31 @@
 # Fotoquellen der Fassadenfarben
 
-Automatisch erzeugt von `farben.py`. In diesen Fotos wurden die Fassadenfarben gemessen
-(Messfelder siehe `vorschau/farben_fotoproben.jpg` und `vorschau/fassaden/*_fotos.jpg`).
-Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz des jeweiligen Fotos
-(CC BY-SA: Weitergabe unter gleichen Bedingungen).
+Automatisch erzeugt von `farben.py`. Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz
+des jeweiligen Fotos (CC BY / CC BY-SA: Namensnennung, bei BY-SA Weitergabe unter gleichen Bedingungen).
+
+## Fotoprojektion (Farbmessung am 3D-Modell)
+
+Das Modell wurde in jedes dieser Fotos projiziert (`kamera.py`, `registrierung.py`), die Pixel sind so
+den Wandflächen zugeordnet (`farbmessung.py`). Pose, Aufnahmezeit und Belichtung je Foto: `data/messfotos.json`,
+`data/messung.json`.
+
+| Foto | Urheber | Lizenz | Datum | Quelle |
+|---|---|---|---|---|
+| [fl_52390789883](https://www.flickr.com/photos/28577026@N02/52390789883) | Allie_Caulfield | CC BY 2.0 | 2022-09-03 | flickr |
+| [fl_52389705137](https://www.flickr.com/photos/28577026@N02/52389705137) | Allie_Caulfield | CC BY 2.0 | 2022-09-04 | flickr |
+| [fl_13957964694](https://www.flickr.com/photos/27147144@N00/13957964694) | Martin Ibert | CC BY-SA 2.0 | 2014-04-19 | flickr |
+| [fl_25383321126](https://www.flickr.com/photos/129231073@N06/25383321126) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_24782688903](https://www.flickr.com/photos/129231073@N06/24782688903) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_25291096262](https://www.flickr.com/photos/129231073@N06/25291096262) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_25292032932](https://www.flickr.com/photos/129231073@N06/25292032932) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_25292025232](https://www.flickr.com/photos/129231073@N06/25292025232) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_25409407395](https://www.flickr.com/photos/129231073@N06/25409407395) | corno.fulgur75 | CC BY 2.0 | 2015-08-03 | flickr |
+| [fl_16905251612](https://www.flickr.com/photos/46604778@N00/16905251612) | domjisch | CC BY 2.0 | 2015-03-17 | flickr |
+| [fl_16719063090](https://www.flickr.com/photos/46604778@N00/16719063090) | domjisch | CC BY 2.0 | 2015-03-17 | flickr |
+| [fl_9656690560](https://www.flickr.com/photos/40787640@N03/9656690560) | prayerslayer | CC BY 2.0 | 2013-08-22 | flickr |
+| [fl_14005411673](https://www.flickr.com/photos/123851327@N06/14005411673) | Jackie_ffm | CC BY 2.0 | 2014-03-14 | flickr |
+
+## Handmessung (Altbestand, für nicht neu gemessene Farben übernommen)
 
 | Foto | Urheber | Lizenz | Datum | verwendet für |
 |---|---|---|---|---|
@@ -27,11 +49,6 @@ Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz des jeweiligen F
 | [hof_beck_1](https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg) | Lukas Beck | CC BY 4.0 | 2025-03-22 | 01 stein_glas, 05 dunkel, 05 rotbraun |
 | [hof_leibniz_beck](https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img04_Leibniz-Denkmal.jpg) | Lukas Beck | CC BY 4.0 | 2025-03-22 | 08 bronze, 08 denkmalplatz, 08 sockel |
 | [03_hoersaal_6](https://commons.wikimedia.org/wiki/File:Mensaampark.jpg) | Michimaya | CC BY 3.0 | 2010-10-17 | 03 glas |
-| [00e4adee-a436-499a-bda1-4d828b1d3750](https://api.panoramax.xyz/#focus=pic&pic=00e4adee-a436-499a-bda1-4d828b1d3750) | Robot8A | CC-BY-SA-4.0 | 2022-03-27 | 05 dunkel, 05 naturstein, 05 rotbraun |
-| [6ffae1bc-11a8-4756-b78a-cb61b502ca01](https://api.panoramax.xyz/#focus=pic&pic=6ffae1bc-11a8-4756-b78a-cb61b502ca01) | Robot8A | CC-BY-SA-4.0 | 2022-03-27 | 05 dunkel, 05 naturstein |
-| [e939ff76-25c6-469a-8746-a8f5fbff1ff1](https://api.panoramax.xyz/#focus=pic&pic=e939ff76-25c6-469a-8746-a8f5fbff1ff1) | Robot8A | CC-BY-SA-4.0 | 2022-03-27 | 05 dunkel, 05 naturstein, 05 rotbraun |
-| [ef4999dc-bec6-41c9-9c24-76fc35108365](https://api.panoramax.xyz/#focus=pic&pic=ef4999dc-bec6-41c9-9c24-76fc35108365) | Robot8A | CC-BY-SA-4.0 | 2022-03-27 | 01 glas, 02 glas_stein, 05 kopfbau_dunkel |
-| [f1201d36-4f89-4bda-a6e8-aa755bc9ea58](https://api.panoramax.xyz/#focus=pic&pic=f1201d36-4f89-4bda-a6e8-aa755bc9ea58) | Robot8A | CC-BY-SA-4.0 | 2022-03-27 | 05 kopfbau_dunkel |
 | [03_hoersaal_1](https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg) | osmplus_org | CC BY-SA 4.0 | 2025-10-02 | 03 platten, 03 rot, 03 sockel |
 | [03_hoersaal_2](https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H42M02S000_(26109123682011481_at_UXjkI5V2TNfplbYdaSq18H).jpg) | osmplus_org | CC BY-SA 4.0 | 2025-10-02 | 03 glas |
 | [03_hoersaal_3](https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M04S000_(1098528572090834_at_UXjkI5V2TNfplbYdaSq18H).jpg) | osmplus_org | CC BY-SA 4.0 | 2025-10-02 | 03 glas, 03 sockel |

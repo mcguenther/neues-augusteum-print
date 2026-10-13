@@ -217,37 +217,40 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
 
 ![Farbig vom Augustusplatz](vorschau/vergleich_farbig_ost.png)
 
-- **Fassaden** (`data/fassaden/<gebäude>.json`): benannte Farben, jede gemessen als
-  Median über Bildausschnitte aus offen lizenzierten **Straßenfotos**
-  (Fotokatalog `data/fotos.json`: Panoramax, Wikimedia Commons inkl. einer
-  360°-Fahrt durch die Universitätsstraße, die `farben.py` selbst in normale
-  Ansichten umrechnet), mit Weißabgleich am grauen Pflaster in derselben
-  Beleuchtung. Dazu die **Zonen**: Höhe über Gelände, Fassadenseite
-  (Himmelsrichtung) und Abschnitt entlang der Fassade; außerdem runde Flächen
-  (`kreis`, z. B. die Rosette am Paulinum) und Spitzbögen (`bogen`, z. B. Blende
-  und Maßwerkfenster des Paulinum-Giebels), die als feine Treppe angenähert
-  werden. Lage und Größe solcher Elemente lassen sich aus einem Foto mit einem
-  Kameramodell bestimmen (Giebelkontur aus LoD2 + Foto,
-  `werkzeuge/rosette_kamera.py`). Wo die Fotos eine Fläche nur im Schatten oder
-  mit Spiegelungen zeigen, steht statt der Messung eine feste Farbe (`hex`) mit
-  Begründung (`quelle`). Format und
-  Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in
-  `vorschau/fassaden/`.
+- **Fassaden** (`data/fassaden/<gebäude>.json`, `data/messung.json`): Die **Zonen** (Höhe über
+  Gelände, Fassadenseite, Abschnitt entlang der Fassade; außerdem runde Flächen `kreis`, z. B.
+  die Rosette am Paulinum, und Spitzbögen `bogen`, die als feine Treppe angenähert werden) sind
+  von Hand gesetzt, ebenso die Rückfallfarben (`hex`, aus der früheren Handmessung an Fotos).
+  Format und Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
+  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude und City-Hochhaus kommen aus der
+  **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
+  lizenzierte Fotos projiziert (Katalog `data/messfotos.json`: Flickr/Openverse und andere, Pose
+  über die Himmelslinie bestimmt, `registrierung.py`, `skyline.py`, `kamera.py`). Jedes Pixel gehört
+  so zu einer Wandzelle (1 m × 1 m, dieselben Koordinaten wie die Zonen). Aus der Aufnahmezeit
+  folgt der Sonnenstand, nur besonnte Zellen zählen (`farbmessung.py`). Über alle Fotos entsteht ein
+  Konsens, eine Guillotine-Zerlegung findet Flächen gleicher Farbe, die als neue Zonen über den
+  handgesetzten liegen (`fest`-Zonen wie Bögen, Portal und das weiße Audimax bleiben oben).
+  Wo kein besonntes Foto vorliegt, bleibt die bisherige Farbe. Gegenüberstellung alt/neu aus
+  derselben Kamera wie im Foto: [`vorschau/farbvergleich/index.html`](vorschau/farbvergleich/index.html).
 - **Dächer**: [Luftbild 2024 der Stadt Leipzig](https://opendata.leipzig.de/dataset/luftbild-2024-20-cm-bodenauflosung-stadt-leipzig)
   (20 cm, dl-de/by-2-0). Daraus werden wenige typische Dachfarben bestimmt
   (Dachpalette, k-means); jede Dachfläche bekommt die Klasse, die das Luftbild an
   ihr zeigt (rote Dächer, helle und dunkle Flachdächer, Glas).
-- `python3 farben.py` misst alles neu und schreibt `data/farben.json`;
-  `generate.py` macht das automatisch, wenn sich Fassaden- oder Fotodaten geändert
-  haben.
+- `python3 farbmessung.py messen` misst die Fassadenfarben aus den registrierten Fotos neu
+  (`data/messung.json`; Fotos hinzufügen und ausrichten: `registrierung.py`);
+  `python3 farben.py` setzt daraus `data/farben.json` zusammen. `generate.py` macht Letzteres
+  automatisch, wenn sich Fassaden- oder Messdaten geändert haben.
 
 ![Farben](vorschau/farben.png)
 
-![Messfelder](vorschau/farben_fotoproben.jpg)
+![Foto, altes Modell, neues Modell aus derselben Kamera](vorschau/farbvergleich/vergleich_romero.jpg)
 
-Die Farben sind Anhaltswerte (Fotos im Schatten, Glas spiegelt); die Lage der
-Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa ±0,5–1 m,
-Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
+Die Farben sind Anhaltswerte: Die Fotos stimmen untereinander nur grob überein (Belichtung,
+spiegelndes Glas, Ausrichtung auf einige Meter), die Messung zeigt die Richtung (hell statt
+schwarz, Audimax weiß), nicht den letzten Farbton. Hörsaal- und Seminargebäude, Moritzbastei
+und Innenhof haben keine registrierbaren sonnigen Fotos und behalten die Werte der früheren
+Handmessung. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
+±0,5–1 m, Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
 
 ## Mehrfarbig drucken
 
@@ -367,9 +370,10 @@ Plattendicke, Bettgröße) stehen oben in `generate.py`, die Laserscan-Parameter
   Bodenordnung, [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
 - Laserscandaten: © Landesamt für Geobasisinformation Sachsen (GeoSN),
   [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
-- Straßenfotos für die Fassadenfarben: Panoramax und Wikimedia Commons, Urheber,
-  Lizenz (CC0, CC BY, CC BY-SA) und Link je Foto in [`FOTOQUELLEN.md`](FOTOQUELLEN.md).
-  Die Vorschaubilder mit Fotoausschnitten (`vorschau/farben_fotoproben.jpg`,
-  `vorschau/fassaden/*_fotos.jpg`) stehen unter der Lizenz des jeweiligen Fotos.
+- Fotos für die Fassadenfarben: Flickr (über Openverse), Panoramax und Wikimedia Commons,
+  Urheber, Lizenz (CC0, CC BY, CC BY-SA) und Link je Foto in [`FOTOQUELLEN.md`](FOTOQUELLEN.md).
+  Die Vorschaubilder mit Fotoausschnitten (`vorschau/farbvergleich/`, `vorschau/fassaden/*_fotos.jpg`)
+  stehen unter der Lizenz des jeweiligen Fotos. Urheberrechtlich geschützte Profi-Fotos werden
+  nicht verwendet.
 
 Die erzeugten Modelle sind abgeleitete Werke; bei Weitergabe bitte die Quellen nennen.

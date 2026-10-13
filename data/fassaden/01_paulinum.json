@@ -2,7 +2,7 @@
  "farben": {
   "stein_hell": {
    "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_giebel_romero",
      "box": [
@@ -23,11 +23,13 @@
      ],
      "notiz": "Giebel Ost: Stein rechts (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#cac5c2",
+   "quelle": "Foto (2 Messfelder)"
   },
   "weiss": {
    "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_giebel_romero",
      "box": [
@@ -48,11 +50,13 @@
      ],
      "notiz": "Spitzbogen-Blende, Detailfoto (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#eee9e8",
+   "quelle": "Foto (2 Messfelder)"
   },
   "stein_glas": {
    "notiz": "Seiten/Westgiebel: graue Steinbänder mit senkrechten Glasstreifen (Gesamteindruck)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_hof_derbrauni",
      "box": [
@@ -83,11 +87,13 @@
      ],
      "notiz": "Westgiebel Innenhof (Sonne/Schatten gemischt, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#778f93",
+   "quelle": "Foto (3 Messfelder)"
   },
   "glas": {
    "notiz": "Glasstreifen links vom Giebel (dunkles, spiegelndes Glas)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
      "box": [
@@ -108,11 +114,13 @@
      ],
      "notiz": "Glas/dunkler Stein weiter links"
     }
-   ]
+   ],
+   "hex": "#34464c",
+   "quelle": "Foto (2 Messfelder)"
   },
   "zink": {
    "notiz": "Dachreiter/Turmspitze: graues Zinkblech",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_hof_derbrauni",
      "box": [
@@ -143,11 +151,13 @@
      ],
      "notiz": "Turm von Osten (ohne WB)"
     }
-   ]
+   ],
+   "hex": "#8c969f",
+   "quelle": "Foto (3 Messfelder)"
   },
   "fensterglas": {
    "notiz": "großes Maßwerkfenster im Spitzbogen: helles türkisblaues Glas mit weißem Maßwerk (Gesamteindruck)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_giebel_romero2",
      "box": [
@@ -168,11 +178,13 @@
      ],
      "notiz": "Fenster, unterer Teil (Sonne)"
     }
-   ]
+   ],
+   "hex": "#afd0d6",
+   "quelle": "Foto (2 Messfelder)"
   },
   "rosette_innen": {
    "notiz": "Rosette: Maßwerk mit türkisblauem Glas (innerhalb des weißen Rings)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "pl_giebel_romero2",
      "box": [
@@ -193,7 +205,9 @@
      ],
      "notiz": "Rosette innen"
     }
-   ]
+   ],
+   "hex": "#8f9088",
+   "quelle": "Foto (2 Messfelder)"
   }
  },
  "basis": "stein_glas",
@@ -323,7 +337,7 @@
    ]
   }
  ],
- "bilder": {
+ "bilder_alt": {
   "pl_giebel_romero": {
    "titel": "File:Leipzig - Neues Augusteum & Paulinum.jpg",
    "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Neues_Augusteum_%26_Paulinum.jpg",

@@ -53,7 +53,8 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
      `vorschau/vergleich_farbig_ost.png`
    - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
    - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
-   - Farben: `vorschau/farben.png`, Messfelder `vorschau/farben_fotoproben.jpg`
+   - Farben: `vorschau/farben.png`, Gegenüberstellung Foto | alt | neu `vorschau/farbvergleich/index.html`
+     (und die Bilder darin)
    - Profile mit 3/4 Filamenten: `vorschau/filamente_vergleich.png` (alle Farben | 4 | 3, je
      Gesamtmodell, Seminargebäude-Bänder, Paulinum-Fenster), `vorschau/laserscan/1zu1500/komplett_campus_mit_extras_farbig_ost_<N>filamente.png`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
@@ -70,17 +71,23 @@ Die gerenderten Bilder in `vorschau/` werden mit committet.
 `generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
 Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
-Farben: je Gebäude `data/fassaden/<slug>.json` (Farben mit Messfeldern in Fotos +
-Fassaden-Zonen), Fotokatalog `data/fotos.json` (Panoramax/Wikimedia Commons; Commons
-drosselt geteilte IPs, `farben.py` wiederholt dann mit Wartezeit). `farben.py` misst
-alles und schreibt `data/farben.json` (macht `generate.py` automatisch bei Änderungen).
+Farben: je Gebäude `data/fassaden/<slug>.json` (handgesetzte Zonen + Rückfallfarben als `hex`;
+die alten Messfelder stehen als `proben_alt`). Die Fassadenfarben von Paulinum, Neuem Augusteum,
+Institutsgebäude und City-Hochhaus kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
+(liest `data/messfotos.json`, schreibt `data/messung.json`). Neue Fotos aufnehmen und ausrichten:
+`registrierung.py suche <id>` (Pose per Himmelslinie), Überlagerung ansehen (`kamera.ueberlagerung`),
+bei Passung `"geprueft": true` im Katalog setzen. Wikimedia drosselt geteilte IPs (die Commons-API
+liefert 429; Seiten und `thumb.wikimedia.org` mit ≤ Originalbreite gehen). `farben.py` setzt
+`data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).
 Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
 Rotbraun) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Blaugrau) und `PROFIL_DACH_BLAU`
 (nur Paulinum, Neues Augusteum, Uniriese dürfen blaugraue Dächer haben, sonst Beige);
 `generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf` (ohne `--filamente` nur Laserscan mit Extras,
 mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am Profil das Vergleichsbild zeigen.
 Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
-(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
+(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Fotos der Messung).
+Alt/neu aus der Foto-Kamera: `werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json>`, dann
+`werkzeuge/farbmessung/bericht.py <alte farben.json>` (HTML nach `vorschau/farbvergleich/`).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
 `vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
 
