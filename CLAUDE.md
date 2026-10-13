@@ -19,6 +19,22 @@ falls etwas fehlt:
 pip install -r requirements.txt
 ```
 
+## Laufzeit / Schnelllauf
+
+Ein voller `python3 generate.py` brauchte früher ~24 min, fast alles davon im
+Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: ~5 min auf
+4 Kernen (alle Optimierungen ergeben dasselbe Ergebnis; Details und Messung:
+`werkzeuge/performance/`).
+
+- **Zum Testen/Iterieren: `python3 generate.py --fast`** – gleiche Daten, aber Laser-Raster
+  0,6 statt 0,3 m, Vorschau ohne Kantenglättung, nur Maßstab 1:1500, keine
+  README-/Fassaden-/Vergleichsbilder (~1,5 min). Schreibt nach `stl-fast/` und
+  `vorschau-fast/` (nicht eingecheckt, fasst `stl/` und `vorschau/` nicht an). Mit
+  `--quelle laserscan` / `--scale 1000` weiter eingrenzbar. Für Bilder im Chat reicht das.
+- Vor dem Commit der echten Ausgaben (`stl/`, `vorschau/`, README) den vollen Lauf ohne `--fast`.
+- `--jobs N` begrenzt die Prozesse (Standard: alle Kerne, `--jobs 1` seriell); am Ende
+  druckt `generate.py` die Laufzeit je Phase.
+
 ## Vorschaubilder im Chat – immer
 
 Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
@@ -31,6 +47,7 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
    - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
+   - README-Bilder (farbig, transparent, ohne Beschriftung): `vorschau/readme/`
    - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
      OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
      `vorschau/vergleich_farbig_ost.png`
@@ -66,6 +83,17 @@ Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.
 (Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
 `vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
+
+## README
+
+`README.md` ist normaler Text und darf von Hand bearbeitet werden – nur die Blöcke
+zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Quellenvergleich,
+Maßstäbe, Gebäudegalerie mit Maßen, Grundplatte) werden von `readme.py` überschrieben.
+`generate.py`/`preview.py` rufen es nach dem Rendern auf; die Bilder dafür
+(`preview.readme_assets`) entstehen farbig aus den `*_objekte.3mf`. Titel und
+Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäude
+erscheinen automatisch in der Galerie. Nach Änderungen die README mit
+Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
 ## Prüfen vor dem Commit
 

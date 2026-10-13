@@ -215,13 +215,22 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
     m = trimesh.Trimesh((tm.vertices - off) / s, tm.faces.copy(), process=False)
     zones = expand_zones(m, farben.get("zonen", [])) if farben else []
     dicht = m.is_watertight
-    for n, o in zone_planes(m, zones):
-        # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
-        for d in (0.0, 0.003, -0.003, 0.01, -0.01):
-            m2 = split_plane(m, n, np.asarray(o, float) + d * np.asarray(n, float))
-            if not dicht or m2.is_watertight:
-                m = m2
-                break
+    planes = zone_planes(m, zones)
+    # Schnellweg: alle Schnitte ohne Zwischenprüfung; die Dichtheitsprüfung kostet mehr als
+    # der Schnitt. Ist das Ergebnis dicht, wäre es auch jeder Zwischenstand gewesen.
+    m_fast = m
+    for n, o in planes:
+        m_fast = split_plane(m_fast, n, o)
+    if not dicht or m_fast.is_watertight:
+        m = m_fast
+    else:
+        for n, o in planes:
+            # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
+            for d in (0.0, 0.003, -0.003, 0.01, -0.01):
+                m2 = split_plane(m, n, np.asarray(o, float) + d * np.asarray(n, float))
+                if m2.is_watertight:
+                    m = m2
+                    break
     extents = {}
     for zo in zones:
         if "seite" in zo and "entlang" in zo:
