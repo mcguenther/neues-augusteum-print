@@ -19,6 +19,22 @@ falls etwas fehlt:
 pip install -r requirements.txt
 ```
 
+## Laufzeit / Schnelllauf
+
+Ein voller `python3 generate.py` brauchte früher ~24 min, fast alles davon im
+Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: ~5 min auf
+4 Kernen (alle Optimierungen ergeben dasselbe Ergebnis; Details und Messung:
+`werkzeuge/performance/`).
+
+- **Zum Testen/Iterieren: `python3 generate.py --fast`** – gleiche Daten, aber Laser-Raster
+  0,6 statt 0,3 m, Vorschau ohne Kantenglättung, nur Maßstab 1:1500, keine
+  README-/Fassaden-/Vergleichsbilder (~1,5 min). Schreibt nach `stl-fast/` und
+  `vorschau-fast/` (nicht eingecheckt, fasst `stl/` und `vorschau/` nicht an). Mit
+  `--quelle laserscan` / `--scale 1000` weiter eingrenzbar. Für Bilder im Chat reicht das.
+- Vor dem Commit der echten Ausgaben (`stl/`, `vorschau/`, README) den vollen Lauf ohne `--fast`.
+- `--jobs N` begrenzt die Prozesse (Standard: alle Kerne, `--jobs 1` seriell); am Ende
+  druckt `generate.py` die Laufzeit je Phase.
+
 ## Vorschaubilder im Chat – immer
 
 Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:

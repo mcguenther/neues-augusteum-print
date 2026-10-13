@@ -1,0 +1,74 @@
+[
+ {
+  "name": "Ist-Stand (voll, 1 Prozess)",
+  "phasen": {
+   "Farben messen (nur bei Änderung)": 0.0,
+   "Modelle bauen, färben, exportieren": 175.41830304400025,
+   "Farbvorschauen (3D-Rendering)": 586.8288978899998,
+   "Vorschaubilder je Quelle + Quellenvergleich": 390.37307022599987,
+   "README-Bilder + README": 189.01475164500016,
+   "Fassaden-Prüfansichten": 74.131337433
+  },
+  "gesamt": 1415.8
+ },
+ {
+  "name": "Rasterizer + Färb-Cache (voll, seriell)",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 119.8,
+   "Farbvorschauen (3D-Rendering)": 166.5,
+   "Vorschaubilder je Quelle + Quellenvergleich": 200.2,
+   "README-Bilder + README": 61.6,
+   "Fassaden-Prüfansichten": 50.3
+  },
+  "gesamt": 600.084447914
+ },
+ {
+  "name": "+ Parallel auf 4 Kernen (voll, identisches Ergebnis)",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 59.1,
+   "Farbvorschauen (3D-Rendering)": 78.3,
+   "Vorschaubilder je Quelle + Quellenvergleich": 96.0,
+   "README-Bilder + README": 52.5,
+   "Fassaden-Prüfansichten": 25.6
+  },
+  "gesamt": 313.143231816
+ },
+ {
+  "name": "dasselbe, nur Maßstab 1:1500",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 32.5,
+   "Farbvorschauen (3D-Rendering)": 35.0,
+   "Vorschaubilder je Quelle + Quellenvergleich": 36.0,
+   "README-Bilder + README": 40.3,
+   "Fassaden-Prüfansichten": 25.9
+  },
+  "gesamt": 169.7
+ },
+ {
+  "name": "--fast, beide Maßstäbe",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 63.1,
+   "Farbvorschauen (3D-Rendering)": 32.8,
+   "Vorschaubilder je Quelle + Quellenvergleich": 49.6
+  },
+  "gesamt": 147.201320339
+ },
+ {
+  "name": "--fast (nur 1:1500, alle Quellen)",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 32.1,
+   "Farbvorschauen (3D-Rendering)": 16.4,
+   "Vorschaubilder je Quelle + Quellenvergleich": 23.7
+  },
+  "gesamt": 73.697168722
+ },
+ {
+  "name": "--fast --quelle laserscan",
+  "phasen": {
+   "Modelle bauen, färben, exportieren": 29.6,
+   "Farbvorschauen (3D-Rendering)": 12.5,
+   "Vorschaubilder je Quelle + Quellenvergleich": 24.1
+  },
+  "gesamt": 67.73974377
+ }
+]
