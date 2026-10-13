@@ -207,13 +207,21 @@ def module(variant):
 # --------------------------------------------------------------------------
 # Würfel (Gebäude-Stellvertreter)
 # --------------------------------------------------------------------------
-def cube():
+def cube(foot=False):
+    """foot=True: Gebäude mit Fuß (Grundfläche nach unten verlängert, taucht in die tiefe Mulde)."""
     d = dims()
     body = keyed(CUBE, CUBE, 0, CUBE_H, KEY)
+    if foot:
+        D = d["D"]
+        fp = keyed(CUBE, CUBE, -D, 0.01, KEY)
+        # 45°-Fase an der Unterkante des Fußes (Einführhilfe)
+        fp = fp ^ frustum(CUBE - 2 * CH, CUBE - 2 * CH, -D, 0.01, D + 0.01)
+        body = union([body, fp])
     inner = keyed(CUBE - 2 * SHELL, CUBE - 2 * SHELL, FLOOR, CUBE_H - SHELL, KEY - 0.4)
     cut = [inner,
            cbox(d["head_w"] + 0.3, d["head_d"] + 0.3, -0.01, FLOOR + 0.01),      # Modulloch
-           cbox(d["collar_w"] + 0.4, d["collar_d"] + 0.4, -0.01, COLLAR_T + 0.05)]  # Kragennische
+           cbox(d["collar_w"] + 0.4, d["collar_d"] + 0.4, (-d["D"] if foot else 0.0) - 0.01,
+                COLLAR_T + 0.05)]                                                    # Kragennische (bei Fuß: Tunnel)
     # Lichtfenster: auf 0,4 mm abgedünnte Wandstellen (Test, wie viel Licht durchkommt)
     for cx_, cy_, axis in ((0, -1, "y"), (0, 1, "y"), (-1, 0, "x"), (1, 0, "x")):
         for z0, t in ((9.0, 0.4), (16.0, 0.8)):
@@ -227,16 +235,22 @@ def cube():
 # --------------------------------------------------------------------------
 # Dock-Platte mit drei Docks (Header-Halterung A, B, C)
 # --------------------------------------------------------------------------
-def dock_cuts(variant, cx):
+def dock_cuts(variant, cx, foot=False):
     d = dims()
     D, seat = d["D"], d["seat"]
     sw, sd = d["shaft_w"], d["shaft_d"]
     z_fl = -D - FLOOR_T
     cuts = []
-    # Aussparung der Gebäudegrundfläche (mit Kodier-Ecke) + Schacht mit Einführfase
-    cuts.append(keyed(CUBE + 2 * POCKET_CLEAR, CUBE + 2 * POCKET_CLEAR, -0.0, POCKET_DEPTH + 0.01, KEY, cx=cx))
-    cuts.append(keyed(sw, sd, -D, 0.01, KEY, cx=cx))
-    cuts.append(frustum(sw, sd, -CH, 0.0, CH, cx=cx).translate([0, 0, 0.0]))
+    if foot:
+        # Variante Fuß: Mulde über die ganze Grundfläche, so tief wie der Fuß des Gebäudes
+        pw = CUBE + 2 * POCKET_CLEAR
+        cuts.append(keyed(pw, pw, -D, 0.01, KEY, cx=cx))
+        cuts.append(frustum(pw, pw, -CH, 0.0, CH, cx=cx))
+    else:
+        # Aussparung der Gebäudegrundfläche (mit Kodier-Ecke) + Schacht mit Einführfase
+        cuts.append(keyed(CUBE + 2 * POCKET_CLEAR, CUBE + 2 * POCKET_CLEAR, -0.0, POCKET_DEPTH + 0.01, KEY, cx=cx))
+        cuts.append(keyed(sw, sd, -D, 0.01, KEY, cx=cx))
+        cuts.append(frustum(sw, sd, -CH, 0.0, CH, cx=cx))
     # Kabelraum unter dem Schachtboden und Rinne zur vorderen Plattenkante
     cuts.append(cbox(26.0, 15.0, d["plate_bottom"] - 0.01, z_fl + 0.01, cx=cx))
     cuts.append(box(cx - 3.0, cx + 3.0, -40.0, 0.0, d["plate_bottom"] - 0.01, d["plate_bottom"] + 3.0))
@@ -274,15 +288,16 @@ def dock_ribs(variant, cx):
     return ribs
 
 
-def plate():
+def plate(foot=False):
     d = dims()
+    top = 0.0 if foot else d["plate_top"]
     xs = [(i - 1) * DOCK_PITCH for i in range(3)]
     half_x = xs[-1] + CUBE / 2 + POCKET_CLEAR + 6.0
     half_y = CUBE / 2 + POCKET_CLEAR + 6.0
-    block = box(-half_x, half_x, -half_y, half_y, d["plate_bottom"], d["plate_top"])
+    block = box(-half_x, half_x, -half_y, half_y, d["plate_bottom"], top)
     cuts = []
     for v, cx in zip(VARIANTS, xs):
-        cuts += dock_cuts(v, cx)
+        cuts += dock_cuts(v, cx, foot)
     # Rinne nach vorne (−y): die Dock-Rinnen laufen bis zur Kante
     cuts = [c for c in cuts]
     plate_ = diff(block, *cuts)
@@ -297,7 +312,7 @@ def plate():
         for v, cx in zip(VARIANTS, xs):
             cs = generate.text_cross_section(v, 4.0, cx, -half_y + 1.2, anchor="center")
             if cs is not None:
-                letters.append(m3d.Manifold.extrude(cs, 0.6).translate([0, 0, d["plate_top"] - 0.4]))
+                letters.append(m3d.Manifold.extrude(cs, 0.6).translate([0, 0, top - 0.4]))
         plate_ = diff(plate_, *letters)
     except Exception as e:  # Gravur ist nur Zierde
         print("  (Gravur übersprungen: %s)" % e)
@@ -383,7 +398,7 @@ def vol_int(a, b):
     return (a ^ b).volume() if False else (a - (a - b)).volume()
 
 
-def checks(plate_man, xs, mods, cube_man):
+def checks(plate_man, xs, mods, cube_man, label=""):
     """Kollisions- und Maßprüfung im gesteckten Zustand (Dock 0 / Modul A als Beispiel)."""
     d = dims()
     out = []
@@ -401,7 +416,7 @@ def checks(plate_man, xs, mods, cube_man):
             c = cube_man.translate([cx, 0, 0])
             hdr = header_part().translate([cx, 0, 0])
             hsg = housing_part().translate([cx, 0, 0])
-            tag = "Dock %s / Modul %s" % (v, mv)
+            tag = "%sDock %s / Modul %s" % (label, v, mv)
             ck(tag + ": Modul ↔ Platte", m, pl)
             ck(tag + ": Modul ↔ Würfel", m, c)
             ck(tag + ": Würfel ↔ Platte", c, pl)
@@ -453,13 +468,14 @@ def previews():
     os.makedirs(out, exist_ok=True)
     d = dims()
     plate_man, xs, _ = plate()
+    plate_f, _, _ = plate(foot=True)
     mods = {v: module(v)[0] for v in VARIANTS}
     col = dict(plate="#8fa3b8", module="#e3862a", cube="#ece5d2", header="#2d3236", housing="#f4f1e8",
                pcb="#3f8f5e", led="#ffe9a0", wire="#c8423b")
 
-    def scene(cut, dock=0, mv="A", lift=0.0, ex=0.0):
+    def scene(cut, dock=0, mv="A", lift=0.0, ex=0.0, foot=False):
         f = half if cut else (lambda m: m)
-        parts = [(to_tm(f(plate_man)), col["plate"])]
+        parts = [(to_tm(f(plate_f if foot else plate_man)), col["plate"])]
         for i, x in enumerate(xs):
             parts.append((to_tm(f(header_part().translate([x, 0, ex * -0.0]))), col["header"]))
         parts.append((to_tm(f(pcb_part(xs[1]).translate([0, 0, -8 * ex]))), col["pcb"]))
@@ -467,7 +483,7 @@ def previews():
         x = xs[dock]
         z = lift + 22 * ex
         parts.append((to_tm(f(mods[mv].translate([x, 0, z]))), col["module"]))
-        parts.append((to_tm(f(cube().translate([x, 0, z + 34 * ex]))), col["cube"]))
+        parts.append((to_tm(f(cube(foot).translate([x, 0, z + 34 * ex]))), col["cube"]))
         parts.append((to_tm(f(housing_part().translate([x, 0, z - 14 * ex]))), col["housing"]))
         parts.append((to_tm(f(led_part().translate([x, 0, z + 15 * ex]))), col["led"]))
         if ex == 0:
@@ -478,6 +494,8 @@ def previews():
     im.save(os.path.join(out, "schnitt_gesteckt.png"))
     im = preview.render(scene(True, dock=1, mv="B", lift=d["E"]), size=(1300, 640), azim=118, elev=24)
     im.save(os.path.join(out, "schnitt_kontakt.png"))
+    im = preview.render(scene(True, dock=1, mv="B", lift=d["E"], foot=True), size=(1300, 640), azim=118, elev=24)
+    im.save(os.path.join(out, "schnitt_kontakt_fuss.png"))
     im = preview.render(scene(False, ex=0.9), size=(1300, 760), azim=125, elev=28)
     im.save(os.path.join(out, "explosion.png"))
     # Druckplatte: alle Druckteile nebeneinander
@@ -495,7 +513,7 @@ def previews():
     parts = [(to_tm(half(mods[v]).translate([i * 28, 0, 0])), col["module"]) for i, v in enumerate(VARIANTS)]
     im = preview.render(parts, size=(1300, 520), azim=125, elev=25)
     im.save(os.path.join(out, "module_schnitt.png"))
-    print("Vorschau: vorschau/steckmodul/ (5 Bilder)")
+    print("Vorschau: vorschau/steckmodul/ (6 Bilder)")
 
 
 def build():
@@ -513,7 +531,10 @@ def build():
         2 * (xs[-1] + CUBE / 2 + POCKET_CLEAR + 6), CUBE + 2 * POCKET_CLEAR + 12,
         d["plate_top"] - d["plate_bottom"], d["peg_w"], d["peg_d"], d["P"], d["shaft_w"], d["shaft_d"]))
 
-    files = [("dock_platte_ABC.stl", plate_man), ("wuerfel.stl", cube_man), ("passprobe.stl", passprobe())]
+    plate_f, _, _ = plate(foot=True)
+    cube_f = cube(foot=True)
+    files = [("dock_platte_ABC.stl", plate_man), ("wuerfel.stl", cube_man), ("passprobe.stl", passprobe()),
+             ("dock_platte_fuss_ABC.stl", plate_f), ("wuerfel_fuss.stl", cube_f)]
     files += [("steckmodul_%s.stl" % v, print_orient(m, d)) for v, m in mods.items()]
     for name, man in files:
         tm = to_tm(man)
@@ -523,11 +544,12 @@ def build():
 
     print("\nKollisionsprüfung (Überschneidungsvolumen, gesteckt):")
     bad = 0
-    for name, v, ok in checks(plate_man, xs, mods, cube_man):
-        if not ok:
-            bad += 1
-        if (not ok) or "Rippen" in name or "Dock A / Modul A" in name:
-            print("  %-52s %8.2f mm³  %s" % (name, v, "ok" if ok else "KOLLISION"))
+    for lab, pl, cu in (("", plate_man, cube_man), ("Fuß: ", plate_f, cube_f)):
+        for name, v, ok in checks(pl, xs, mods, cu, lab):
+            if not ok:
+                bad += 1
+            if (not ok) or "Rippen" in name or "Dock A / Modul A" in name:
+                print("  %-58s %8.2f mm³  %s" % (name, v, "ok" if ok else "KOLLISION"))
     print("  -> %s" % ("keine Kollisionen" if not bad else "%d Kollisionen!" % bad))
 
     # Daten für die HTML-Ansicht: Vollkörper und Halbschnitt (y ≤ 0)
@@ -540,7 +562,7 @@ def build():
                     HSG_H=HSG_H, ENGAGE=ENGAGE, GUIDE=GUIDE, SLIDE=SLIDE, CLR=CLR, SNUG=SNUG, RIB=RIB,
                     WALL=WALL, LED_W=LED_W, LED_L=LED_L, FLOOR=FLOOR, COLLAR_T=COLLAR_T),
         parts=dict(
-            plate=pair(plate_man), cube=pair(cube_man),
+            plate=pair(plate_man), cube=pair(cube_man), plate_foot=pair(plate_f), cube_foot=pair(cube_f),
             module={v: pair(m) for v, m in mods.items()},
             header=pair(header_part()), housing=pair(housing_part()), led=pair(led_part()),
             pcb=pair(pcb_part()), screws=pair(screws_part()),

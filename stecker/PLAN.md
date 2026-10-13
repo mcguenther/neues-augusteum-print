@@ -14,7 +14,7 @@ Prototyp erzeugen: `python3 steckmodul.py` (STL nach `stl/steckmodul/`, Bilder n
 
 | Frage | Entscheidung | Grund |
 |---|---|---|
-| Wer führt beim Stecken? | Zapfen am Modul im Schacht der Platte, mindestens 3,0 mm vor dem Kontakt | Die Gebäude-Aussparung ist nur 1 mm tief und greift erst nach dem Kontakt. Eine 9 mm tiefe Aussparung über die ganze Grundfläche würde jedes Gebäude 9 mm versenken. |
+| Wer führt beim Stecken? | Zapfen am Modul im Schacht der Platte, mindestens 3,0 mm vor dem Kontakt (Alternative: Fuß am Gebäude, siehe unten) | Die Gebäude-Aussparung ist nur 1 mm tief und greift erst nach dem Kontakt. Eine 9 mm tiefe Aussparung über die ganze Grundfläche würde jedes Gebäude 9 mm versenken. |
 | Wo sitzt der Stecker im Gebäude? | In einem Steckmodul, das von unten in ein Loch im Gebäudeboden rastet | Die Lichtkammer ist nach dem Druck geschlossen. LED und Kabel müssen vorher auf einem Bauteil sitzen, das man von unten einsetzt. Das Modul ist für alle Gebäude gleich. |
 | Welcher Stecker? | JST XH 2,5 mm, 4-polig: Header B4B-XH-A in der Platte, Buchse XHP-4 mit Kabel im Modul | Der Header hat eine Hülse, die Stifte schützt. Fertige XH-Kabel sind billig. PH (9,9 × 4,5 mm) wäre kleiner, die Datenblattmaße sind aber widersprüchlich. |
 | Pinbelegung | 1 GND, 2 DIN, 3 +5 V, 4 DETECT (im Modul an GND) | Ein Datenkanal je Dock, keine Bypass-Schaltung für leere Docks nötig. |
@@ -35,6 +35,23 @@ Prototyp erzeugen: `python3 steckmodul.py` (STL nach `stl/steckmodul/`, Bilder n
 
 Die Rechnung steht in `dims()` in `steckmodul.py`. Beim ersten Kontakt ist das Gebäude
 `E = 4,95 mm` über seinem Sitz, der Zapfen steckt dann `P − E = 3,0 mm` im Schacht.
+
+## Variante: Gebäude mit Fuß
+
+Statt Zapfen im Schacht kann das Gebäude um genau die Tiefe nach unten verlängert werden, die
+sonst in der Mulde verschwindet (`cube(foot=True)`, `plate(foot=True)`):
+
+- Fuß = Grundfläche, 8,45 mm nach unten extrudiert (`D`), unten mit 45°-Fase, mit Tunnel für das
+  Steckmodul (Kragennische nach unten durchgezogen).
+- Mulde = Gebäudeumriss + 0,25 mm Spiel, 8,45 mm tief, oben 1 mm Einführfase. Der Schacht entfällt,
+  der Header steht auf dem Muldenboden. Plattenoberseite ist z = 0, das Gebäude sitzt bündig.
+- Modul und Header-Halterungen bleiben unverändert. Führung beim ersten Kontakt: 8,45 − 4,95 = 3,5 mm
+  am ganzen Umriss (Zapfen im Schacht: 3,0 mm).
+- Plattenstärke 16,45 mm statt 17,45 mm.
+- Nachteile: Material (Grundfläche × 8,45 mm), längere Toleranzkette (Modul, Nische, Fuß, Mulde,
+  Header, darum Nische eher mit 0,1 mm Spiel), tiefe Mulde kann bei komplexen Umrissen klemmen,
+  Wand neben dem Tunnel nur 2,95 mm beim 30-mm-Würfel.
+- Dateien: `stl/steckmodul/dock_platte_fuss_ABC.stl`, `wuerfel_fuss.stl`.
 
 ## Halten
 

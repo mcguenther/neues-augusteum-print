@@ -150,12 +150,20 @@ svg .mut { fill: var(--muted); }
       <div class="phase" id="phase" aria-live="polite"></div>
       <dl class="readout">
         <dt>Hub über Sitz</dt><dd id="r-g">–</dd>
-        <dt>Zapfen im Schacht</dt><dd id="r-peg">–</dd>
+        <dt id="l-peg">Zapfen im Schacht</dt><dd id="r-peg">–</dd>
         <dt>Buchse in Hülse</dt><dd id="r-eng">–</dd>
         <dt>Detect-Pin / LED</dt><dd id="r-led">–</dd>
       </dl>
      </div>
      <div class="col">
+      <div class="ctrl">
+        <span class="lab" id="l-mode">Führung</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-mode">
+          <input type="radio" name="mode" id="mode0" value="peg" checked><label for="mode0">Zapfen im Schacht</label>
+          <input type="radio" name="mode" id="mode1" value="foot"><label for="mode1">Gebäude mit Fuß</label>
+        </div>
+        <span class="desc" id="d-mode"></span>
+      </div>
       <div class="ctrl">
         <span class="lab" id="l-dock">Dock in der Platte</span>
         <div class="seg" role="radiogroup" aria-labelledby="l-dock">
@@ -199,14 +207,42 @@ svg .mut { fill: var(--muted); }
 <!-- ============================ PRINZIP ============================ -->
 <section aria-labelledby="h-prinzip">
   <h2 id="h-prinzip">Das Prinzip</h2>
-  <p>Die Aussparung allein führt das Gebäude nicht tief genug. Sie ist nur 1 mm tief und würde bei 8 mm Steckweg erst nach dem Kontakt greifen. Darum führt ein <b>Zapfen im Schacht</b>: Unter dem Gebäude sitzt ein Steckmodul, dessen Zapfen mindestens <span class="num">3,0 mm</span> im Schacht der Platte steckt, bevor die Kontakte sich berühren. Danach gleitet die Buchse in die Hülse des Headers.</p>
+  <p>Die Aussparung allein führt das Gebäude nicht tief genug. Sie ist nur 1 mm tief und würde bei 8 mm Steckweg erst nach dem Kontakt greifen. Darum führt ein <b>Zapfen im Schacht</b>: Unter dem Gebäude sitzt ein Steckmodul, dessen Zapfen mindestens <span class="num">3,0 mm</span> im Schacht der Platte steckt, bevor die Kontakte sich berühren. Danach gleitet die Buchse in die Hülse des Headers. Eine zweite Möglichkeit ist ein Fuß am Gebäude, siehe <a href="#h-fuss">Variante: Gebäude mit Fuß</a>. Oben und in der Maßkette lässt sich zwischen beiden umschalten.</p>
   <div class="cols">
     <div class="card"><h3>Gebäude</h3><p>Bleibt hohl und bekommt unten ein genormtes Loch. Der Stecker ragt <b>nicht</b> nach unten heraus, die Gebäudeunterseite bleibt flach und liegt in der Aussparung wie bisher.</p></div>
     <div class="card"><h3>Steckmodul</h3><p>Ein gedrucktes Standardteil für alle Gebäude. Es trägt die Buchse (fertiges XH-Kabel) im Zapfen und die LED im Kopf. Es rastet von unten in den Gebäudeboden.</p></div>
     <div class="card"><h3>Grundplatte</h3><p>Der Header steht im Schacht nach oben, geschützt von den Schachtwänden. Darunter liegt ein Kabelraum mit Rinne zur Plattenkante.</p></div>
   </div>
+  <div class="seg" role="radiogroup" aria-label="Variante der Maßkette" style="align-self:flex-start">
+    <input type="radio" name="mode2" id="m2a" value="peg" checked><label for="m2a">Zapfen im Schacht</label>
+    <input type="radio" name="mode2" id="m2b" value="foot"><label for="m2b">Gebäude mit Fuß</label>
+  </div>
   <div class="fig scroll"><svg id="massketten" role="img" aria-label="Maßkette im Moment des ersten Kontakts" width="900" height="470" viewBox="0 0 900 470"></svg></div>
-  <p class="small muted">Schnitt durch die Steckachse im Moment des ersten Kontakts. Die Buchse hat noch <span class="num">4,95 mm</span> bis zum Anschlag, der Zapfen steckt dann <span class="num">3,0 mm</span> im Schacht. Alle Maße kommen aus <code>dims()</code> in <code>steckmodul.py</code>.</p>
+  <p class="small muted" id="chain-cap"></p>
+</section>
+
+<!-- ============================ FUSS ============================ -->
+<section aria-labelledby="h-fuss">
+  <h2 id="h-fuss">Variante: Gebäude mit Fuß</h2>
+  <p>Statt eines Zapfens im Schacht kann das Gebäude selbst nach unten verlängert werden, um genau den Teil, der in der Mulde verschwindet. Der Fuß ist die Grundfläche des Gebäudes, <span class="num">8,45 mm</span> nach unten extrudiert. Die Mulde in der Platte ist so tief wie der Fuß. Der sichtbare Teil des Gebäudes behält seine echte Höhe und beginnt bündig an der Plattenoberseite, statt 1 mm darunter.</p>
+  <p>Der Header steht auf dem Muldenboden, der Schacht entfällt. Das Steckmodul bleibt unverändert. Es sitzt in einem Tunnel durch den Fuß und hängt mit dem Zapfen darin. Beim ersten Kontakt steckt der Fuß <span class="num">3,5 mm</span> in der Mulde.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>Zapfen im Schacht</th><th>Gebäude mit Fuß</th></tr></thead>
+    <tbody>
+      <tr><td>Führung vor dem Kontakt</td><td>3,0 mm, nur am Zapfen</td><td>3,5 mm, am ganzen Umriss</td></tr>
+      <tr><td>Halt gegen Kippen</td><td>gering, die Aussparung ist 1 mm tief</td><td class="ok">hoch, die Mulde ist 8,45 mm tief</td></tr>
+      <tr><td>Plattenstärke</td><td>17,45 mm</td><td>16,45 mm</td></tr>
+      <tr><td>Plattenaufbau</td><td>Aussparung plus Schacht je Dock</td><td class="ok">nur eine tiefe Aussparung, wie bisher aus dem Umriss erzeugt</td></tr>
+      <tr><td>Gebäude</td><td>Boden flach, sitzt 1 mm versenkt</td><td>+ 8,45 mm Fuß, sitzt bündig auf der Platte</td></tr>
+      <tr><td>Material</td><td>nur das Modul</td><td class="warn">Grundfläche × 8,45 mm je Gebäude, im Slicer mit wenig Infill</td></tr>
+      <tr><td>Toleranzkette beim Stecken</td><td class="ok">kurz: Modul, Zapfen, Schacht</td><td class="warn">länger: Modul, Nische im Fuß, Fuß, Mulde, Header</td></tr>
+      <tr><td>Komplexe Gebäudeumrisse</td><td class="ok">Aussparung nur 1 mm tief, kaum Klemmgefahr</td><td class="warn">tiefe Mulde kann an Ecken klemmen: 0,3 mm Spiel und 1 mm Einführfase</td></tr>
+      <tr><td>Schmale Gebäude</td><td class="ok">Modul liegt frei im Boden</td><td class="warn">Wand neben dem Tunnel nur 2,95 mm (beim 30-mm-Würfel), Modul längs legen</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>Empfehlung:</b> Der Fuß ist robuster gegen Kippen und macht die Platte einfacher. Die Nische im Fuß muss dafür enger sitzen (<span class="num">0,1 mm</span> statt 0,2 mm), sonst addieren sich die Spiele. Beides ist im Prototyp enthalten (<code>wuerfel_fuss.stl</code>, <code>dock_platte_fuss_ABC.stl</code>), dieselben Module passen in beide. Danach entscheidet der Test mit dem echten Stecker.</p>
 </section>
 
 <!-- ============================ HALTEN ============================ -->
@@ -280,6 +316,7 @@ svg .mut { fill: var(--muted); }
       <tr><td>Dock-Platte</td><td>Unterseite auf dem Bett</td><td class="num">114,5 × 42,5 × 17,4</td><td>Schacht und Taschen sind nach oben offen, der Kabelraum nach unten. Keine Stützen.</td></tr>
       <tr><td>Steckmodul A/B/C</td><td>auf dem Kopf: LED-Fläche auf dem Bett, Zapfen nach oben</td><td class="num">23,7 × 17,0 × 12,95</td><td>Glatte LED-Fläche, offene Hülse oben, Schnappnasen ohne Stützen. Die STL liegt schon so.</td></tr>
       <tr><td>Würfel</td><td>Boden auf dem Bett</td><td class="num">30 × 30 × 24</td><td>Prüft das 28-mm-Dach als Brücke.</td></tr>
+      <tr><td>Fuß-Variante: Platte, Würfel</td><td>wie oben, Fuß auf dem Bett</td><td class="num">114,5 × 42,5 × 16,5 · 30 × 30 × 32,4</td><td>Tiefe Mulde statt Schacht, Würfel mit 8,45 mm Fuß und Tunnel für das Modul.</td></tr>
       <tr><td>Passprobe</td><td>flach</td><td class="num">60 × 24 × 8</td><td>Je drei Taschen für Buchse und Header mit 0,0, 0,1 und 0,2 mm Spiel. Zuerst drucken.</td></tr>
     </tbody>
   </table>
@@ -302,7 +339,7 @@ svg .mut { fill: var(--muted); }
 <!-- ============================ PROTOTYP ============================ -->
 <section aria-labelledby="h-proto">
   <h2 id="h-proto">Prototyp und Testplan</h2>
-  <p>Eine Mini-Platte mit drei Docks (A, B, C), drei Modulen und ein Würfel mit Lichtfenstern. Zusammen etwa 20 g Filament. Module und Docks sind frei kombinierbar, so entstehen neun Paarungen.</p>
+  <p>Eine Mini-Platte mit drei Docks (A, B, C), drei Modulen und ein Würfel mit Lichtfenstern. Zusammen etwa 20 g Filament. Module und Docks sind frei kombinierbar, so entstehen neun Paarungen. Optional gibt es dieselbe Platte und denselben Würfel mit Fuß, siehe oben.</p>
   <ol class="steps">
     <li><b>Passprobe drucken.</b> Echte Buchse und echten Header in die Taschen stecken und das passende Spiel wählen. Messen, ob die Buchse wirklich 10,7 mm breit und 5,7 mm tief ist und wo die Stufe sitzt.</li>
     <li><b>Platte drucken, Header einbauen.</b> A pressen, B auf Lochraster löten und verschrauben, C kleben. Mit einer Federwaage die Auszugskraft messen. Ziel: mindestens <span class="num">15 N</span>.</li>
@@ -349,7 +386,8 @@ svg .mut { fill: var(--muted); }
   };
 
   /* ---------- Maßkette (SVG) ---------- */
-  (function drawChain() {
+  function drawChain(mode) {
+    const foot = mode === 'foot';
     const svg = $('massketten');
     const S = 14, X0 = 330, ZT = 11.4, Y0 = 8;        // px je mm, Mittelachse, z der Oberkante, oberer Rand
     const px = (x) => X0 + x * S, py = (z) => Y0 + (ZT - z) * S;
@@ -358,9 +396,14 @@ svg .mut { fill: var(--muted); }
       `<rect x="${px(x0)}" y="${py(z1)}" width="${(x1 - x0) * S}" height="${(z1 - z0) * S}" style="fill:${fill}" ${extra}/>`;
     let s = '';
     const pw = 24;                                    // gezeigte halbe Plattenbreite
-    s += R(-pw, pw, D.plate_bottom, D.plate_top, 'var(--c-plate)');
-    s += R(-15.25, 15.25, 0, D.plate_top + .01, 'var(--panel)');                       // Aussparung
-    s += R(-D.shaft_w / 2, D.shaft_w / 2, -D.D, .01, 'var(--panel)');                  // Schacht
+    const top = foot ? 0 : D.plate_top;
+    s += R(-pw, pw, D.plate_bottom, top, 'var(--c-plate)');
+    if (foot) {
+      s += R(-15.25, 15.25, -D.D, .01, 'var(--panel)');                                // tiefe Mulde
+    } else {
+      s += R(-15.25, 15.25, 0, D.plate_top + .01, 'var(--panel)');                     // Aussparung
+      s += R(-D.shaft_w / 2, D.shaft_w / 2, -D.D, .01, 'var(--panel)');                // Schacht
+    }
     s += R(-13, 13, D.plate_bottom, -D.D - 3 + .01, 'var(--panel)');                   // Kabelraum
     // Header
     const hw = PRM.HDR_W;
@@ -378,11 +421,21 @@ svg .mut { fill: var(--muted); }
     // Buchse
     s += R(-PRM.HSG_W / 2, PRM.HSG_W / 2, mz(D.face), mz(D.hood_top), 'var(--c-housing)', 'stroke="var(--edge)" stroke-width="0.6"');
     s += R(-PRM.HSG_W / 2, PRM.HSG_W / 2, mz(D.hood_top), mz(D.rear), 'var(--c-housing)', 'stroke="var(--edge)" stroke-width="0.6"');
-    // Gebäudeboden
+    // Gebäudeboden, bei Fuß mit Tunnel
     s += R(-15, -D.head_w / 2 - .15, mz(0), mz(PRM.FLOOR), 'var(--c-cube)');
     s += R(D.head_w / 2 + .15, 15, mz(0), mz(PRM.FLOOR), 'var(--c-cube)');
-    // Führungsband: Zapfenspitze bis Schachtöffnung
-    s += `<rect x="${px(D.shaft_w / 2) + 4}" y="${py(0)}" width="6" height="${(D.guide) * S}" style="fill:var(--accent-fill)"/>`;
+    if (foot) {
+      const tw = (D.collar_w + 0.4) / 2;
+      s += R(-15, -tw, mz(-D.D), mz(0), 'var(--c-cube)', 'stroke="var(--edge)" stroke-width="0.6"');
+      s += R(tw, 15, mz(-D.D), mz(0), 'var(--c-cube)', 'stroke="var(--edge)" stroke-width="0.6"');
+      s += R(-tw, -D.collar_w / 2, mz(-0.0), mz(PRM.COLLAR_T + .05), 'var(--c-cube)');
+      s += R(D.collar_w / 2, tw, mz(-0.0), mz(PRM.COLLAR_T + .05), 'var(--c-cube)');
+    }
+    // Führungsband
+    const gl = foot ? D.D - g : D.guide;
+    const gx = foot ? px(15.25) + 4 : px(D.shaft_w / 2) + 4;
+    const gz0 = foot ? 0 : 0;
+    s += `<rect x="${gx}" y="${py(gz0)}" width="6" height="${gl * S}" style="fill:var(--accent-fill)"/>`;
     // Maßlinien rechts
     const dim = (z0, z1, xo, label, bold) => {
       const y0 = py(z0), y1 = py(z1);
@@ -390,21 +443,24 @@ svg .mut { fill: var(--muted); }
         `<text x="${xo + 9}" y="${(y0 + y1) / 2 + 4}" class="lbl" ${bold ? 'style="font-weight:600"' : ''}>${label}</text></g>`;
     };
     const xr = px(pw) + 10;
-    s += dim(0, -D.guide, px(D.shaft_w / 2) + 7, '', true).replace(/<text.*<\/text>/, '');
-    s += `<text x="${px(D.shaft_w / 2) + 20}" y="${py(-D.guide / 2) + 4}" class="lbl" style="font-weight:600">Führung ${fmt(D.guide, 1)} mm</text>`;
+    const gxl = foot ? px(15.25) : px(D.shaft_w / 2);
+    s += dim(0, -gl, gxl + 7, '', true).replace(/<text.*<\/text>/, '');
+    s += `<text x="${gxl + 20}" y="${py(-gl / 2) + 4}" class="lbl" style="font-weight:600">Führung ${fmt(gl, 1)} mm</text>`;
     s += dim(D.face, D.face + g, px(-hw / 2) - 14, '', false).replace(/<text.*<\/text>/, '');
     s += `<text x="${px(-hw / 2) - 24}" y="${py(D.face + g / 2) + 4}" class="lbl" text-anchor="end">Restweg bis Anschlag ${fmt(D.E, 2)}</text>`;
     s += `<text x="${px(-D.collar_w / 2) - 8}" y="${py(mz(0.6)) + 4}" class="mut" text-anchor="end">Gebäudeboden</text>`;
-    s += dim(D.plate_top, D.plate_bottom, xr, 'Platte ' + fmt(D.plate_top - D.plate_bottom, 1), false);
+    s += dim(top, D.plate_bottom, xr, 'Platte ' + fmt(top - D.plate_bottom, 2), false);
     s += dim(0, -D.D, xr + 112, '', false).replace(/<text.*<\/text>/, '');
-    s += `<text x="${xr + 121}" y="${py(-D.D / 2) + 4}" class="lbl">Schacht ${fmt(D.D, 2)}</text>`;
+    s += `<text x="${xr + 121}" y="${py(-D.D / 2) + 4}" class="lbl">${foot ? 'Fuß ' : 'Schacht '}${fmt(D.D, 2)}</text>`;
     s += dim(-D.D - 3, -D.D - 3 - 5, px(-pw) - 6, '', false).replace(/<text.*<\/text>/, '');
     s += `<text x="${px(-pw) - 12}" y="${py(-D.D - 5.5) + 4}" class="lbl" text-anchor="end">Kabelraum 5</text>`;
     s += `<text x="${px(0)}" y="${py(mz(5.0)) - 10}" class="lbl" text-anchor="middle" style="font-weight:600">Steckmodul</text>`;
-    s += `<text x="${px(-pw) + 8}" y="${py(D.plate_top) + 18}" class="mut" style="fill:#fff;mix-blend-mode:difference">Platte</text>`;
+    s += `<text x="${px(-pw) + 8}" y="${py(top) + 18}" class="mut" style="fill:#fff;mix-blend-mode:difference">Platte</text>`;
     s += `<text x="${px(0)}" y="${py(D.seat - 3.4) + 22}" class="mut" text-anchor="middle">Header B4B-XH-A</text>`;
     svg.innerHTML = s;
-  })();
+    $('chain-cap').innerHTML = 'Schnitt durch die Steckachse im Moment des ersten Kontakts. Die Buchse hat noch <span class="num">' + fmt(D.E, 2) + ' mm</span> bis zum Anschlag, ' + (foot ? 'der Fuß steckt dann <span class="num">' + fmt(D.D - D.E, 1) + ' mm</span> in der Mulde.' : 'der Zapfen steckt dann <span class="num">' + fmt(D.guide, 1) + ' mm</span> im Schacht.') + ' Alle Maße kommen aus <code>dims()</code> in <code>steckmodul.py</code>.';
+  }
+  drawChain('peg');
 
   /* ---------- Pinbelegung (SVG) ---------- */
   (function drawPins() {
@@ -472,30 +528,43 @@ svg .mut { fill: var(--muted); }
     return it;
   }
   const P = DATA.parts;
-  const plate = add(stat, 'plate', P.plate, mats.plate);
+  const plate = add(stat, 'plate', P.plate, mats.plate); plate.mode = 'peg';
+  const plateF = add(stat, 'plate', P.plate_foot, mats.plate); plateF.mode = 'foot';
   const headers = XS.map((x) => add(stat, 'header', P.header, mats.header, x));
   const pcb = add(stat, 'pcb', P.pcb, mats.pcb, XS[1]);
   const screws = add(stat, 'screws', P.screws, mats.screw, XS[1]);
   const mods = {}; for (const v of ['A', 'B', 'C']) mods[v] = add(mover, 'module', P.module[v], mats.module);
-  const cube = add(mover, 'cube', P.cube, mats.cube);
+  const cube = add(mover, 'cube', P.cube, mats.cube); cube.mode = 'peg';
+  const cubeF = add(mover, 'cube', P.cube_foot, mats.cube); cubeF.mode = 'foot';
   const housing = add(mover, 'housing', P.housing, mats.housing);
   const led = add(mover, 'led', P.led, mats.led);
   const wires = add(mover, 'wires', P.wires, mats.wire);
 
   /* ---------- Zustand ---------- */
   const G0 = 26;                                   // Starthöhe über dem Sitz (mm)
-  const st = { s: 1 - D.E / 26, dock: 0, mod: 'A', ex: 0, cut: true, cube: true, play: false, dir: 1, hold: 0 };
+  const st = { s: 1 - D.E / 26, mode: 'peg', dock: 0, mod: 'A', ex: 0, cut: true, cube: true, play: false, dir: 1, hold: 0 };
   const view = { az: 118, el: 24, dist: 125, tx: 0, tz: 4 };
   const VIEWS = { front: { az: 90, el: 6, dist: 85 }, iso: { az: 118, el: 24, dist: 120 }, top: { az: 90, el: 82, dist: 110 } };
   let dirty = true;
 
   const phases = [
-    ['Aufsetzen', 'Das Gebäude schwebt über seinem Dock. Die Zapfenspitze sucht die Schachtöffnung, die Einführfase fängt bis zu 1 mm Versatz ab.'],
-    ['Führung', 'Der Zapfen steckt im Schacht und führt das Modul mit ' + fmt(D.guide, 1) + ' mm Länge. Header und Buchse haben noch keinen Kontakt.'],
-    ['Stecken', 'Die Buchse gleitet in die Hülse des Headers. Der Steckdruck läuft über den Schachtboden und das Modul ins Gebäude.'],
-    ['Gesteckt', 'Das Gebäude liegt in der Aussparung, die Kontakte sitzen. Detect meldet das Gebäude, die LED leuchtet.']
+    ['Aufsetzen', null],
+    ['Führung', null],
+    ['Stecken', 'Die Buchse gleitet in die Hülse des Headers. Der Steckdruck läuft über den Boden unter dem Header und das Modul ins Gebäude.'],
+    ['Gesteckt', 'Das Gebäude sitzt auf der Platte, die Kontakte sitzen. Detect meldet das Gebäude, die LED leuchtet.']
   ];
-  function phaseOf(g) { return g > D.P ? 0 : (g >= D.E - 0.001 ? 1 : (g > 0.001 ? 2 : 3)); }
+  const PH_TXT = {
+    peg: ['Das Gebäude schwebt über seinem Dock. Die Zapfenspitze sucht die Schachtöffnung, die Einführfase fängt bis zu 1 mm Versatz ab.',
+          'Der Zapfen steckt im Schacht und führt das Modul mit ' + fmt(D.guide, 1) + ' mm Länge. Header und Buchse haben noch keinen Kontakt.'],
+    foot: ['Das Gebäude schwebt über seinem Dock. Die Unterkante des Fußes ist abgeschrägt und sucht die Mulde, die Einführfase fängt bis zu 1 mm Versatz ab.',
+           'Der Fuß steckt in der Mulde und führt das ganze Gebäude am Umriss, hier ' + fmt(D.D - D.E, 1) + ' mm lang. Header und Buchse haben noch keinen Kontakt.']
+  };
+  const MODE_TXT = {
+    peg: 'Das Gebäude liegt 1 mm tief in der Aussparung. Ein Zapfen am Modul führt im Schacht.',
+    foot: 'Der Fuß verlängert das Gebäude nach unten und taucht in eine 8,45 mm tiefe Mulde. Kein Schacht nötig.'
+  };
+  const topPhase = () => st.mode === 'foot' ? D.D : D.P;
+  function phaseOf(g) { return g > topPhase() ? 0 : (g >= D.E - 0.001 ? 1 : (g > 0.001 ? 2 : 3)); }
 
   function pose() {
     const g = G0 * (1 - st.s);
@@ -503,7 +572,7 @@ svg .mut { fill: var(--muted); }
     mover.position.set(XS[st.dock], 0, g + 22 * e);
     // Explosion: Teile weichen entlang z aus
     mods[st.mod].holder.position.z = 0;
-    cube.holder.position.z = 34 * e;
+    cube.holder.position.z = 34 * e; cubeF.holder.position.z = 34 * e;
     led.holder.position.z = 15 * e;
     housing.holder.position.z = -14 * e;
     wires.holder.visible = e < 0.02;
@@ -511,7 +580,8 @@ svg .mut { fill: var(--muted); }
     screws.holder.position.z = -15 * e;
     for (const v in mods) mods[v].holder.visible = v === st.mod;
     for (const it of items) for (const k of ['full', 'cut']) it.e[k].visible = (k === 'cut') === st.cut;
-    cube.holder.visible = st.cube;
+    for (const it of items) if (it.mode) it.holder.visible = it.mode === st.mode;
+    cube.holder.visible = st.cube && st.mode === 'peg'; cubeF.holder.visible = st.cube && st.mode === 'foot';
     const on = g < 0.05;
     mats.led.emissive = new THREE.Color(on ? 0xffc766 : 0x000000);
     mats.led.emissiveIntensity = on ? 1.0 : 0;
@@ -519,14 +589,19 @@ svg .mut { fill: var(--muted); }
     glow.position.set(XS[st.dock], st.cut ? -2 : 0, g + 22 * e + 8);
     glow.intensity = on ? 1.4 : 0;
     // Anzeigen
-    const pegIn = Math.max(0, Math.min(D.P, D.P - g));
+    const foot = st.mode === 'foot';
+    const gl = foot ? D.D : D.P;
+    const pegIn = Math.max(0, Math.min(gl, gl - g));
     const eng = Math.max(0, Math.min(D.E, D.E - g));
     $('r-g').textContent = fmt(g, 1) + ' mm';
-    $('r-peg').textContent = fmt(pegIn, 2) + ' von ' + fmt(D.P, 2);
+    $('l-peg').textContent = foot ? 'Fuß in der Mulde' : 'Zapfen im Schacht';
+    $('r-peg').textContent = fmt(pegIn, 2) + ' von ' + fmt(gl, 2);
     $('r-eng').textContent = fmt(eng, 2) + ' von ' + fmt(D.E, 2);
     $('r-led').textContent = on ? 'LOW · LED an' : 'HIGH · aus';
     const ph = phaseOf(g);
-    $('phase').innerHTML = '<b>' + phases[ph][0] + '</b>' + phases[ph][1];
+    const txt = ph === 0 ? PH_TXT[st.mode][0] : ph === 1 ? PH_TXT[st.mode][1] : phases[ph][1];
+    $('phase').innerHTML = '<b>' + phases[ph][0] + '</b>' + txt;
+    $('d-mode').textContent = MODE_TXT[st.mode];
     hud.innerHTML = phases.map((p, i) => '<span class="chip' + (i === ph ? ' on' : '') + '">' + p[0] + '</span>').join('');
     $('d-dock').textContent = DOCK_TXT[st.dock];
     $('d-mod').textContent = MOD_TXT[st.mod];
@@ -579,6 +654,12 @@ svg .mut { fill: var(--muted); }
   $('ex').addEventListener('input', (e) => { st.ex = e.target.value / 100; pose(); });
   $('cut').addEventListener('change', (e) => { st.cut = e.target.checked; pose(); });
   $('showcube').addEventListener('change', (e) => { st.cube = e.target.checked; pose(); });
+  function setMode(m) {
+    st.mode = m;
+    document.querySelectorAll('input[name=mode],input[name=mode2]').forEach((r) => { r.checked = r.value === m; });
+    drawChain(m); pose();
+  }
+  document.querySelectorAll('input[name=mode],input[name=mode2]').forEach((r) => r.addEventListener('change', () => setMode(r.value)));
   document.querySelectorAll('input[name=dock]').forEach((r) => r.addEventListener('change', () => { st.dock = +r.value; pose(); }));
   document.querySelectorAll('input[name=mod]').forEach((r) => r.addEventListener('change', () => { st.mod = r.value; pose(); }));
   $('play').addEventListener('click', () => {
