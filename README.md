@@ -101,6 +101,9 @@ nicht – er sieht nur von oben.
 - **Texturiertes LoD2 / LoD3 der Stadt Leipzig**: existiert, ist aber nur im
   Web-Viewer zu sehen, nicht als Open Data herunterladbar.
 - **Schrägluftbilder**: für Leipzig nicht offen verfügbar.
+- **Google Earth / Maps 3D**: nur zur Sichtkontrolle genutzt. Die Nutzungsbedingungen
+  erlauben kein Ableiten von Daten (Maße, Farben), und der Paulinum-Giebel ist dort
+  eingerüstet.
 
 ## Farben
 
@@ -118,8 +121,16 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
   360°-Fahrt durch die Universitätsstraße, die `farben.py` selbst in normale
   Ansichten umrechnet), mit Weißabgleich am grauen Pflaster in derselben
   Beleuchtung. Dazu die **Zonen**: Höhe über Gelände, Fassadenseite
-  (Himmelsrichtung) und Abschnitt entlang der Fassade. Format und Prüfwerkzeug
-  siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
+  (Himmelsrichtung) und Abschnitt entlang der Fassade; außerdem runde Flächen
+  (`kreis`, z. B. die Rosette am Paulinum) und Spitzbögen (`bogen`, z. B. Blende
+  und Maßwerkfenster des Paulinum-Giebels), die als feine Treppe angenähert
+  werden. Lage und Größe solcher Elemente lassen sich aus einem Foto mit einem
+  Kameramodell bestimmen (Giebelkontur aus LoD2 + Foto,
+  `werkzeuge/rosette_kamera.py`). Wo die Fotos eine Fläche nur im Schatten oder
+  mit Spiegelungen zeigen, steht statt der Messung eine feste Farbe (`hex`) mit
+  Begründung (`quelle`). Format und
+  Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in
+  `vorschau/fassaden/`.
 - **Dächer**: [Luftbild 2024 der Stadt Leipzig](https://opendata.leipzig.de/dataset/luftbild-2024-20-cm-bodenauflosung-stadt-leipzig)
   (20 cm, dl-de/by-2-0). Daraus werden wenige typische Dachfarben bestimmt
   (Dachpalette, k-means); jede Dachfläche bekommt die Klasse, die das Luftbild an
@@ -210,11 +221,9 @@ Plattendicke, Bettgröße) stehen oben in `generate.py`, die Laserscan-Parameter
   Bodenordnung, [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
 - Laserscandaten: © Landesamt für Geobasisinformation Sachsen (GeoSN),
   [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
-- Straßenfotos für die Fassadenfarben (`vorschau/farben_fotoproben.jpg`, Urheber und
-  Lizenz je Foto in der Bildunterschrift und in `data/fassaden_proben.json`):
-  Robot8A via [Panoramax](https://panoramax.xyz) (CC-BY-SA-4.0); osmplus_org
-  (Mapillary-Spiegel), Krzysztof Golik, Chabe01 (alle CC BY-SA 4.0), Fred Romero
-  (CC BY 2.0) und NutzerAusBerlin (CC0) via
-  [Wikimedia Commons](https://commons.wikimedia.org).
+- Straßenfotos für die Fassadenfarben: Panoramax und Wikimedia Commons, Urheber,
+  Lizenz (CC0, CC BY, CC BY-SA) und Link je Foto in [`FOTOQUELLEN.md`](FOTOQUELLEN.md).
+  Die Vorschaubilder mit Fotoausschnitten (`vorschau/farben_fotoproben.jpg`,
+  `vorschau/fassaden/*_fotos.jpg`) stehen unter der Lizenz des jeweiligen Fotos.
 
 Die erzeugten Modelle sind abgeleitete Werke; bei Weitergabe bitte die Quellen nennen.

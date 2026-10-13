@@ -56,69 +56,9 @@
    ]
   },
   "glas": {
-   "notiz": "dunkles Glas (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
-   "proben": [
-    {
-     "bild": "06_cityhochhaus_3",
-     "box": [
-      0.52,
-      0.2,
-      0.65,
-      0.5
-     ],
-     "notiz": "SW-Glasfront"
-    },
-    {
-     "bild": "06_vincentz_mensa",
-     "box": [
-      0.38,
-      0.15,
-      0.49,
-      0.45
-     ],
-     "notiz": "SW-Glasfront"
-    },
-    {
-     "bild": "06_vincentz_schumann",
-     "box": [
-      0.28,
-      0.25,
-      0.34,
-      0.55
-     ],
-     "notiz": "SW-Glasfront"
-    },
-    {
-     "bild": "06_vincentz_unistr",
-     "box": [
-      0.21,
-      0.62,
-      0.27,
-      0.82
-     ],
-     "notiz": "SW-Glasfront von unten"
-    },
-    {
-     "bild": "06_vincentz_moritzbastei",
-     "box": [
-      0.235,
-      0.2,
-      0.255,
-      0.45
-     ],
-     "notiz": "SW-Glasfront schräg"
-    },
-    {
-     "bild": "06_cityhochhaus_1",
-     "box": [
-      0.4,
-      0.3,
-      0.425,
-      0.7
-     ],
-     "notiz": "Ostspitze Glasband"
-    }
-   ]
+   "notiz": "dunkles Glas, fast schwarz-navy (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
+   "hex": "#222f45",
+   "quelle": "Prüflauf: Glasflächen der SW-Seite in sechs Fotos #142032…#354860 (Messung durch Spiegelungen aufgehellt)"
   },
   "sockel": {
    "notiz": "dunkler Sockelbau/Eingangsbereich",

@@ -192,7 +192,7 @@
    ],
    "entlang": [
     0.19,
-    0.345
+    0.25
    ]
   },
   {
@@ -204,7 +204,7 @@
     5.4
    ],
    "entlang": [
-    0.385,
+    0.3,
     1.0
    ]
   },
@@ -217,8 +217,8 @@
     12.0
    ],
    "entlang": [
-    0.345,
-    0.385
+    0.25,
+    0.3
    ]
   },
   {
@@ -230,8 +230,8 @@
     8.8
    ],
    "entlang": [
-    0.385,
-    0.46
+    0.3,
+    0.42
    ]
   },
   {
@@ -240,11 +240,37 @@
    "seite": "W",
    "z": [
     0,
-    18.7
+    15
    ],
    "entlang": [
     0.143,
     0.19
+   ]
+  },
+  {
+   "name": "Mensa-Foyer Glas West",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    1.0,
+    5.5
+   ],
+   "entlang": [
+    0.68,
+    1.0
+   ]
+  },
+  {
+   "name": "Rote Lamellen über dem Mensa-Foyer West",
+   "farbe": "rot",
+   "seite": "W",
+   "z": [
+    5.5,
+    10.5
+   ],
+   "entlang": [
+    0.74,
+    1.0
    ]
   },
   {
@@ -315,12 +341,28 @@
     170
    ],
    "z": [
-    8.0,
-    24.0
+    20.5,
+    30
    ]
   },
   {
-   "name": "Südostwand Westflügel: rote Lamellen am Westende",
+   "name": "Südostwand Westflügel: Glas Mensa-Halle",
+   "farbe": "glas",
+   "seite": [
+    120,
+    170
+   ],
+   "z": [
+    0.5,
+    8.5
+   ],
+   "entlang": [
+    0,
+    0.15
+   ]
+  },
+  {
+   "name": "Südostwand Westflügel: rote Arkade",
    "farbe": "rot",
    "seite": [
     120,
@@ -328,27 +370,11 @@
    ],
    "z": [
     0,
-    8.0
+    5
    ],
    "entlang": [
-    0.0,
-    0.4
-   ]
-  },
-  {
-   "name": "Südostwand Westflügel: Glas Mensa-Eingang",
-   "farbe": "glas",
-   "seite": [
-    120,
-    170
-   ],
-   "z": [
-    0,
-    8.0
-   ],
-   "entlang": [
-    0.4,
-    1.0
+    0.15,
+    0.43
    ]
   }
  ]

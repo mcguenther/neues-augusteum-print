@@ -23,6 +23,11 @@ Zonen-Felder (alle optional außer farbe):
   entlang  [t0, t1] Anteil entlang der Fassade dieser Seite, von links nach rechts
            gesehen von außen (0 = linkes Ende, 1 = rechtes Ende der Seite); nur mit seite
   flaechen "wand" (Standard), "dach" oder "alle"
+  kreis    {"entlang": Mitte (Anteil), "z": Mitte (m), "d": Durchmesser (m)} statt z/entlang:
+           runde Fläche (z. B. Rosette), angenähert durch "stufen" (Standard 7) Streifen; nur mit seite
+  bogen    {"entlang": Mitte, "breite": Spannweite (m), "z0": Unterkante (m), "kaempfer": Kämpferhöhe (m)}:
+           Spitzbogen (gleichseitig, Scheitel = Kämpfer + 0,866 · Breite), z. B. gotisches
+           Fenster; senkrechter Teil als ein Rechteck, Bogen in "stufen" (Standard 6) Streifen
 Das Netz wird an allen Zonengrenzen (Höhen, entlang-Positionen) zerschnitten,
 damit die Farbgrenzen exakt liegen. Dächer ohne Dach-Zone bekommen die Klasse
 der Dachpalette, die das Luftbild dort zeigt.
@@ -117,6 +122,37 @@ def split_plane(mesh, normal, origin):
     return m
 
 
+def expand_zones(mesh, zones):
+    """Löst runde (kreis) und spitzbogige (bogen) Zonen in Rechteck-Streifen auf."""
+    out = []
+    for zo in zones:
+        form = "kreis" if "kreis" in zo else "bogen" if "bogen" in zo else None
+        if form is None:
+            out.append(zo)
+            continue
+        ext = side_extent(mesh, zo["seite"])
+        if ext is None:
+            continue
+        L = ext[2] - ext[1]
+        base = {key: v for key, v in zo.items() if key not in ("kreis", "bogen", "stufen")}
+        k = zo[form]
+        fc = k["entlang"]
+        if form == "kreis":
+            n, r, zc = int(zo.get("stufen", 7)), k["d"] / 2, k["z"]
+            bands = [(zc - r + 2 * r * i / n, zc - r + 2 * r * (i + 1) / n) for i in range(n)]
+            half = lambda zm: np.sqrt(max(r * r - (zm - zc) ** 2, 0))
+        else:
+            n, S, zk = int(zo.get("stufen", 6)), k["breite"], k["kaempfer"]
+            rise = S * np.sqrt(3) / 2
+            bands = [(k["z0"], zk)] + [(zk + rise * i / n, zk + rise * (i + 1) / n) for i in range(n)]
+            half = lambda zm: S / 2 if zm <= zk else max(np.sqrt(max(S * S - (zm - zk) ** 2, 0)) - S / 2, 0)
+        for z0, z1 in bands:
+            w = half((z0 + z1) / 2) / L
+            if w > 0:
+                out.append(dict(base, z=[z0, z1], entlang=[fc - w, fc + w]))
+    return out
+
+
 def zone_planes(mesh, zones):
     """Schnittebenen (normal, origin) für alle Zonengrenzen."""
     planes = []
@@ -177,7 +213,7 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
     """
     off, s = np.asarray(to_local[0], float), float(to_local[1])
     m = trimesh.Trimesh((tm.vertices - off) / s, tm.faces.copy(), process=False)
-    zones = farben.get("zonen", []) if farben else []
+    zones = expand_zones(m, farben.get("zonen", [])) if farben else []
     dicht = m.is_watertight
     for n, o in zone_planes(m, zones):
         # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
@@ -191,7 +227,7 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
         if "seite" in zo and "entlang" in zo:
             extents[json.dumps(zo["seite"])] = side_extent(m, zo["seite"])
     if farben:
-        keys = zone_keys(m, farben, extents)
+        keys = zone_keys(m, dict(farben, zonen=zones), extents)
         hexes = np.array([farben["farben"][k]["rgb"] if k else None for k in keys], dtype=object)
     else:
         hexes = np.array([None] * len(m.faces), dtype=object)

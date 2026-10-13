@@ -37,43 +37,18 @@
   },
   "lamellen": {
    "notiz": "oberstes Geschoss: dunkle senkrechte Lamellen (Metall/Stein)",
-   "proben": [
-    {
-     "bild": "pl_hof_derbrauni",
-     "box": [
-      0.64,
-      0.3,
-      0.76,
-      0.36
-     ],
-     "notiz": "Westfassade Innenhof: Lamellenband oben (ohne WB)"
-    },
-    {
-     "bild": "pl_platz_romero",
-     "box": [
-      0.3,
-      0.61,
-      0.46,
-      0.65
-     ],
-     "notiz": "Ostfassade: Lamellenband oben (ohne WB)"
-    },
-    {
-     "bild": "hof_beck_2",
-     "box": [
-      0.6,
-      0.38,
-      0.8,
-      0.44
-     ],
-     "notiz": "Westfassade Innenhof: Lamellenband (Sonne, ohne WB)"
-    }
-   ]
+   "hex": "#444850",
+   "quelle": "Prüflauf: sonnige Flächen in pl_platz_romero / hof_beck_2 (Messfelder zu klein, mit Glas gemischt)"
   },
   "sandstein": {
    "notiz": "Sandsteinportal des alten Augusteums (Innenhof)",
    "hex": "#b39f7f",
    "quelle": "geschätzt nach Fotos (Sandstein im Foto teils im Schatten, Messfelder nicht verwertbar)"
+  },
+  "pavillon_weiss": {
+   "notiz": "weißer Pavillon (Vorhalle) im Innenhof vor dem Portal",
+   "hex": "#d4d4d2",
+   "quelle": "hof_beck_2 (Lukas Beck, CC BY 4.0): Wand im Schatten #acadaf…#b7b7b7, besonnter Scheitel #cfd2d3 (ohne WB) – hell gesetzt"
   }
  },
  "basis": "glas_stein",
@@ -87,16 +62,38 @@
    ]
   },
   {
-   "name": "Sandsteinportal Innenhof (Lage geschätzt)",
+   "name": "Lamellenband oben Ost (Augustusplatz)",
+   "farbe": "lamellen",
+   "seite": "O",
+   "z": [
+    23,
+    40
+   ]
+  },
+  {
+   "name": "Weißer Pavillon Innenhof",
+   "farbe": "pavillon_weiss",
+   "seite": "W",
+   "z": [
+    0,
+    10.8
+   ],
+   "entlang": [
+    0.19,
+    0.57
+   ]
+  },
+  {
+   "name": "Sandsteinportal (Schinkel-Portal) Innenhof",
    "farbe": "sandstein",
    "seite": "W",
    "z": [
     0,
-    10
+    11
    ],
    "entlang": [
-    0.1,
-    0.3
+    0.62,
+    0.82
    ]
   }
  ],

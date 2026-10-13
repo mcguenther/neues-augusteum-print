@@ -4,26 +4,6 @@
    "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
    "proben": [
     {
-     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
-     "box": [
-      0.287,
-      0.15,
-      0.321,
-      0.55
-     ],
-     "notiz": "Giebel Ost: Steinfläche links vom weißen Spitzbogen (Schatten, WB)"
-    },
-    {
-     "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
-     "box": [
-      0.085,
-      0.2,
-      0.105,
-      0.6
-     ],
-     "notiz": "Giebel Ost: Stein neben dem Fenster (zweites Foto, Schatten, WB)"
-    },
-    {
      "bild": "pl_giebel_romero",
      "box": [
       0.44,
@@ -48,26 +28,6 @@
   "weiss": {
    "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
    "proben": [
-    {
-     "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
-     "box": [
-      0.335,
-      0.3,
-      0.365,
-      0.58
-     ],
-     "notiz": "Giebel am Augustusplatz: weiße Fensterfläche mit Maßwerk"
-    },
-    {
-     "bild": "f1201d36-4f89-4bda-a6e8-aa755bc9ea58",
-     "box": [
-      0.005,
-      0.12,
-      0.075,
-      0.6
-     ],
-     "notiz": "Giebel: weiße Fensterfläche mit Maßwerk (zweites Foto)"
-    },
     {
      "bild": "pl_giebel_romero",
      "box": [
@@ -184,6 +144,56 @@
      "notiz": "Turm von Osten (ohne WB)"
     }
    ]
+  },
+  "fensterglas": {
+   "notiz": "großes Maßwerkfenster im Spitzbogen: helles türkisblaues Glas mit weißem Maßwerk (Gesamteindruck)",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero2",
+     "box": [
+      0.47,
+      0.75,
+      0.69,
+      0.97
+     ],
+     "notiz": "Fenster, unterer Teil (Sonne)"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.645,
+      0.8,
+      0.775,
+      0.97
+     ],
+     "notiz": "Fenster, unterer Teil (Sonne)"
+    }
+   ]
+  },
+  "rosette_innen": {
+   "notiz": "Rosette: Maßwerk mit türkisblauem Glas (innerhalb des weißen Rings)",
+   "proben": [
+    {
+     "bild": "pl_giebel_romero2",
+     "box": [
+      0.475,
+      0.215,
+      0.53,
+      0.275
+     ],
+     "notiz": "Rosette innen"
+    },
+    {
+     "bild": "pl_giebel_romero",
+     "box": [
+      0.625,
+      0.345,
+      0.665,
+      0.39
+     ],
+     "notiz": "Rosette innen"
+    }
+   ]
   }
  },
  "basis": "stein_glas",
@@ -215,43 +225,50 @@
    ]
   },
   {
-   "name": "Spitzbogen-Blende unten",
+   "name": "Spitzbogen-Blende (weißer Kalkstein)",
    "farbe": "weiss",
    "seite": "O",
-   "entlang": [
-    0.29,
-    0.47
-   ],
-   "z": [
-    0,
-    9
-   ]
+   "bogen": {
+    "entlang": 0.389,
+    "breite": 11.9,
+    "z0": 0,
+    "kaempfer": 17.5
+   },
+   "notiz": "Breite 11,9 m in 15,7 m Höhe, Scheitel 27,8 m: Kameramodell aus Foto pl_giebel_romero2 (Giebelkanten + LoD2-First)"
   },
   {
-   "name": "Spitzbogen-Blende Mitte",
-   "farbe": "weiss",
+   "name": "Maßwerkfenster",
+   "farbe": "fensterglas",
    "seite": "O",
-   "entlang": [
-    0.31,
-    0.45
-   ],
-   "z": [
-    9,
-    18
-   ]
+   "bogen": {
+    "entlang": 0.389,
+    "breite": 6.7,
+    "z0": 7.0,
+    "kaempfer": 15.5
+   },
+   "notiz": "Breite 6,7 m, Scheitel 21,3 m (Kameramodell); Unterkante ~7 m aus Panoramax-Foto f1201d36"
   },
   {
-   "name": "Spitzbogen-Blende oben",
+   "name": "Rosette (weißer Ring)",
    "farbe": "weiss",
    "seite": "O",
-   "entlang": [
-    0.34,
-    0.42
-   ],
-   "z": [
-    18,
-    27
-   ]
+   "kreis": {
+    "entlang": 0.389,
+    "z": 33.1,
+    "d": 5.5
+   },
+   "notiz": "Mitte 33,1 m über Gelände, Durchmesser 5,5 m: Kameramodell aus Foto pl_giebel_romero2"
+  },
+  {
+   "name": "Rosette (Maßwerk/Glas)",
+   "farbe": "rosette_innen",
+   "seite": "O",
+   "kreis": {
+    "entlang": 0.389,
+    "z": 33.1,
+    "d": 3.3
+   },
+   "stufen": 5
   },
   {
    "name": "Turm Ost",
@@ -301,7 +318,7 @@
     1.0
    ],
    "z": [
-    0,
+    30,
     60
    ]
   }

@@ -2,153 +2,23 @@
  "farben": {
   "wabenplatten": {
    "notiz": "weiße Wabenplatten",
-   "proben": [
-    {
-     "bild": "04_seminar_1",
-     "box": [
-      0.28,
-      0.39,
-      0.36,
-      0.45
-     ],
-     "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten"
-    },
-    {
-     "bild": "04_seminar_1",
-     "box": [
-      0.4,
-      0.31,
-      0.47,
-      0.38
-     ],
-     "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten"
-    },
-    {
-     "bild": "04_seminar_1",
-     "box": [
-      0.05,
-      0.43,
-      0.14,
-      0.5
-     ],
-     "notiz": "Westfassade Universitätsstraße: weiße Wabenplatten"
-    },
-    {
-     "bild": "04_seminar_4",
-     "box": [
-      0.02,
-      0.3,
-      0.2,
-      0.335
-     ],
-     "notiz": "weiße Wabenplatte zwischen Fensterbändern (Foto 4)"
-    }
-   ]
+   "hex": "#eeebe7",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
   },
   "band_rotbraun": {
    "notiz": "rotbraunes Brüstungsband über dem Sockel",
-   "proben": [
-    {
-     "bild": "04_seminar_1",
-     "box": [
-      0.49,
-      0.4,
-      0.6,
-      0.46
-     ],
-     "notiz": "rotbraunes Brüstungsband"
-    },
-    {
-     "bild": "04_seminar_3",
-     "box": [
-      0.52,
-      0.53,
-      0.74,
-      0.58
-     ],
-     "notiz": "rotbraunes Band (Schatten, ohne Weißabgleich)"
-    },
-    {
-     "bild": "04_seminar_4",
-     "box": [
-      0.0,
-      0.52,
-      0.14,
-      0.56
-     ],
-     "notiz": "rotbraunes Band (Foto 4)"
-    }
-   ]
+   "hex": "#723830",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
   },
   "sockel": {
    "notiz": "dunkler Naturstein (Sockel, EG)",
-   "proben": [
-    {
-     "bild": "04_seminar_1",
-     "box": [
-      0.3,
-      0.62,
-      0.4,
-      0.68
-     ],
-     "notiz": "Sockelplatte (Weißabgleich)"
-    },
-    {
-     "bild": "04_seminar_2",
-     "box": [
-      0.06,
-      0.7,
-      0.12,
-      0.74
-     ],
-     "notiz": "Sockel Südende (Weißabgleich)"
-    },
-    {
-     "bild": "04_seminar_3",
-     "box": [
-      0.82,
-      0.66,
-      0.88,
-      0.72
-     ],
-     "notiz": "Sockelplatte (Schatten, ohne Weißabgleich)"
-    }
-   ]
+   "hex": "#46464a",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
   },
   "glas": {
    "notiz": "Fensterbänder (dunkles Glas in Bändern)",
-   "proben": [
-    {
-     "bild": "04_seminar_3",
-     "box": [
-      0.52,
-      0.07,
-      0.64,
-      0.15
-     ],
-     "notiz": "Fensterband (spiegelt Himmel)"
-    },
-    {
-     "bild": "04_seminar_3",
-     "box": [
-      0.54,
-      0.31,
-      0.62,
-      0.37
-     ],
-     "notiz": "Fensterband mit Spiegelung der Gegenbebauung (Schatten, ohne Weißabgleich)"
-    },
-    {
-     "bild": "04_seminar_4",
-     "box": [
-      0.05,
-      0.235,
-      0.18,
-      0.285
-     ],
-     "notiz": "Fensterband (Foto 4)"
-    }
-   ]
+   "hex": "#46526a",
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
   },
   "glasfassade": {
    "notiz": "Glasbau am Eingang (Pfosten-Riegel-Fassade, blau spiegelnd)",
@@ -184,6 +54,19 @@
    "z": [
     0,
     4.4
+   ]
+  },
+  {
+   "name": "Glasbau Eingang West, EG",
+   "farbe": "glas",
+   "seite": "W",
+   "z": [
+    0.5,
+    4.4
+   ],
+   "entlang": [
+    0.76,
+    0.9
    ]
   },
   {

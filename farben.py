@@ -426,10 +426,34 @@ def main():
                                      for c in farben["_dachpalette"]))
     print("  Filamente: %d" % len(farben["_filamente"]))
     swatches(farben)
-    probe_sheet([p for b in G.BUILDINGS if b["slug"] in farben
-                 for k, f in farben[b["slug"]]["farben"].items()
-                 for p in [dict(q, gebaeude=b["slug"], farbe=k) for q in f.get("proben", [])]],
-                os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
+    proben = [p for b in G.BUILDINGS if b["slug"] in farben
+              for k, f in farben[b["slug"]]["farben"].items()
+              for p in [dict(q, gebaeude=b["slug"], farbe=k) for q in f.get("proben", [])]]
+    probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
+    write_sources(proben)
+
+
+QUELLEN_MD = os.path.join(G.HERE, "FOTOQUELLEN.md")
+
+
+def write_sources(proben):
+    """FOTOQUELLEN.md: alle verwendeten Fotos mit Urheber, Lizenz und Verwendung."""
+    fotos = {}
+    for p in proben:
+        f = fotos.setdefault(p["bild"], dict(p, verwendung=set()))
+        f["verwendung"].add("%s %s" % (p["gebaeude"][:2], p["farbe"]))
+    lines = ["# Fotoquellen der Fassadenfarben", "",
+             "Automatisch erzeugt von `farben.py`. In diesen Fotos wurden die Fassadenfarben gemessen",
+             "(Messfelder siehe `vorschau/farben_fotoproben.jpg` und `vorschau/fassaden/*_fotos.jpg`).",
+             "Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz des jeweiligen Fotos",
+             "(CC BY-SA: Weitergabe unter gleichen Bedingungen).", "",
+             "| Foto | Urheber | Lizenz | Datum | verwendet für |", "|---|---|---|---|---|"]
+    for pid, f in sorted(fotos.items(), key=lambda kv: (kv[1]["urheber"], kv[0])):
+        lines.append("| [%s](%s) | %s | %s | %s | %s |" % (pid, f["url"], f["urheber"], f["lizenz"], f["datum"],
+                                                       ", ".join(sorted(f["verwendung"]))))
+    with open(QUELLEN_MD, "w") as fh:
+        fh.write("\n".join(lines) + "\n")
+    print("  Quellen:", os.path.relpath(QUELLEN_MD, G.HERE), "(%d Fotos)" % len(fotos))
 
 
 def swatches(farben):
