@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Erzeugt 3D-Druckdateien (STL/3MF) der Gebäude am Campus Augustusplatz
-der Universität Leipzig aus OpenStreetMap-Daten.
+der Universität Leipzig – aus drei Datenquellen zum Vergleich:
 
-Daten: © OpenStreetMap-Mitwirkende, ODbL (https://www.openstreetmap.org/copyright)
+    osm        OpenStreetMap-Grundrisse + Höhen/Dachformen (© OSM-Mitwirkende, ODbL)
+    lod2       3D-Stadtmodell LoD2 der Stadt Leipzig (dl-de/by-2-0), siehe lod2.py
+    laserscan  Laserscan-Punktwolke GeoSN 2023 (dl-de/by-2-0), siehe laserscan.py
 
 Aufruf:
-    python3 generate.py                 # Standard-Maßstäbe 1:1000 und 1:1500
+    python3 generate.py                 # alle Quellen, Maßstäbe 1:1000 und 1:1500
+    python3 generate.py --quelle lod2   # nur eine Quelle (mehrfach angebbar)
     python3 generate.py --scale 750     # beliebiger Maßstab
-    python3 generate.py --fetch         # OSM-Daten vorher neu herunterladen
+    python3 generate.py --fetch         # Quelldaten vorher neu herunterladen
 
 Danach werden automatisch Vorschaubilder nach vorschau/ gerendert (preview.py).
 """
@@ -316,7 +319,7 @@ def union(solids):
 def to_trimesh(man):
     mesh = man.to_mesh()
     tm = trimesh.Trimesh(vertices=np.asarray(mesh.vert_properties)[:, :3],
-                         faces=np.asarray(mesh.tri_verts), process=True)
+                         faces=np.asarray(mesh.tri_verts), process=False)
     return tm
 
 
@@ -352,12 +355,19 @@ def plate_outline(fp_mm):
     return rect.buffer(-3, join_style=2).buffer(3)
 
 
-def engrave_labels(plate, outline, scale, title, top_z):
+ATTRIBUTION = {
+    "osm": "Daten © OpenStreetMap-Mitwirkende (ODbL)",
+    "lod2": "3D-Stadtmodell LoD2 © Stadt Leipzig (dl-de/by-2-0)",
+    "laserscan": "Laserscan © GeoSN, LoD2 © Stadt Leipzig (dl-de/by-2-0)",
+}
+
+
+def engrave_labels(plate, outline, scale, title, top_z, quelle="osm"):
     minx, miny, maxx, maxy = outline.bounds
     cuts = []
     avail = maxx - minx - 22  # Platz links vom Nordpfeil
     t1 = text_cross_section(title, 4.2, minx + 5, miny + LABEL_BAND / 2 - 0.3, max_width=avail)
-    t2 = text_cross_section("1:%d  ·  Daten © OpenStreetMap-Mitwirkende (ODbL)" % scale, 2.4,
+    t2 = text_cross_section("1:%d  ·  %s" % (scale, ATTRIBUTION[quelle]), 2.4,
                             minx + 5, miny + 2.4, max_width=avail)
     for t in (t1, t2):
         if t is not None:
@@ -408,27 +418,55 @@ def export(tm, path):
         os.path.relpath(path, HERE), *tm.extents, tm.is_watertight))
 
 
-def build_scale(feats, scale, outdir):
-    s = 1000.0 / scale  # mm pro m
-    os.makedirs(outdir, exist_ok=True)
-    print("\nMaßstab 1:%d -> %s" % (scale, os.path.relpath(outdir, HERE)))
-
-    solids, footprints = {}, {}
+def osm_models(s):
+    """Volumenkörper (mm), Grundriss (mm) und Infos je Gebäude aus OSM (s = mm pro m)."""
+    feats = load_features()
+    missing = [b["osm"] for b in BUILDINGS if b["osm"] not in feats]
+    if missing:
+        sys.exit("Gebäude nicht in den OSM-Daten gefunden: %s" % missing)
+    out = {}
     for b in BUILDINGS:
         outline, parts = building_parts(feats, b["osm"])
-        solids[b["slug"]] = building_solid([(p, t) for p, t, _ in parts], s, MIN_FEATURE)
-        footprints[b["slug"]] = scale_geom(unary_union([outline] + [p for p, _, _ in parts]), s)
+        out[b["slug"]] = (building_solid([(p, t) for p, t, _ in parts], s, MIN_FEATURE),
+                          scale_geom(unary_union([outline] + [p for p, _, _ in parts]), s),
+                          dict(parts=["%s(h=%.1f m, Dach %s %.1f m)" % (fid, *heights(t)[:1], heights(t)[2],
+                                                                        heights(t)[1])
+                                      for _, t, fid in parts]))
+    return out
+
+
+def source_models(quelle, s):
+    if quelle == "osm":
+        return osm_models(s)
+    if quelle == "lod2":
+        import lod2
+        return lod2.models(s)
+    if quelle == "laserscan":
+        import laserscan
+        return laserscan.models(s)
+    raise ValueError(quelle)
+
+
+def build_scale(quelle, scale, outdir):
+    s = 1000.0 / scale  # mm pro m
+    os.makedirs(outdir, exist_ok=True)
+    print("\nQuelle %s, Maßstab 1:%d -> %s" % (quelle, scale, os.path.relpath(outdir, HERE)))
+
+    models = source_models(quelle, s)
+    buildings = [b for b in BUILDINGS if b["slug"] in models]
+    solids = {k: v[0] for k, v in models.items()}
+    footprints = {k: v[1] for k, v in models.items()}
 
     # 1) Einzelgebäude: zentriert, flache Unterseite auf z=0
     os.makedirs(os.path.join(outdir, "einzeln"), exist_ok=True)
-    for b in BUILDINGS:
+    for b in buildings:
         tm = to_trimesh(solids[b["slug"]])
         c = tm.bounds.mean(axis=0)
         tm.apply_translation([-c[0], -c[1], -tm.bounds[0][2]])
         export(tm, os.path.join(outdir, "einzeln", b["slug"] + ".stl"))
 
     for variant, groups in (("campus", {"campus"}), ("campus_mit_extras", {"campus", "extra"})):
-        sel = [b for b in BUILDINGS if b["group"] in groups]
+        sel = [b for b in buildings if b["group"] in groups]
         fp = unary_union([footprints[b["slug"]] for b in sel])
         outline = plate_outline(fp)
         minx, miny = outline.bounds[0], outline.bounds[1]
@@ -437,7 +475,8 @@ def build_scale(feats, scale, outdir):
 
         # 2) Komplettmodell: alle Gebäude auf einer Sockelplatte
         base = extrude(outline, 0, BASE_THICKNESS)
-        base = engrave_labels(base, outline, scale, "Campus Augustusplatz · Universität Leipzig", BASE_THICKNESS)
+        base = engrave_labels(base, outline, scale, "Campus Augustusplatz · Universität Leipzig",
+                              BASE_THICKNESS, quelle)
         bld = union([solids[b["slug"]].translate([0, 0, BASE_THICKNESS - 0.01]) for b in sel])
         full = (base + bld).translate(shift)
         parts = split_tiles(full, [c - miny for c in cuts])
@@ -450,50 +489,223 @@ def build_scale(feats, scale, outdir):
         pockets = extrude(fp.buffer(POCKET_CLEARANCE, join_style=2), PLATE_THICKNESS - POCKET_DEPTH,
                           PLATE_THICKNESS + 1)
         plate = engrave_labels(plate - pockets, outline, scale,
-                               "Campus Augustusplatz · Universität Leipzig", PLATE_THICKNESS)
+                               "Campus Augustusplatz · Universität Leipzig", PLATE_THICKNESS, quelle)
         parts = split_tiles(plate.translate(shift), [c - miny for c in cuts])
         for i, part in enumerate(parts):
             suffix = "" if len(parts) == 1 else "_teil%d" % (i + 1)
             export(to_trimesh(part), os.path.join(outdir, "grundplatte_%s%s.stl" % (variant, suffix)))
 
-        # 4) 3MF: Platte + jedes Gebäude als eigenes Objekt an korrekter Position
-        scene = trimesh.Scene()
-        scene.add_geometry(to_trimesh(base.translate(shift)), node_name="Sockelplatte",
-                           geom_name="Sockelplatte")
+        # 4) 3MF: Platte + jedes Gebäude als eigenes Objekt an korrekter Position,
+        #    mit Fassaden-/Dachfarbe als Material je Dreieck (data/farben.json)
+        objs = [("Sockelplatte", to_trimesh(base.translate(shift)), None)]
         for b in sel:
-            tm = to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift))
-            scene.add_geometry(tm, node_name=b["name"], geom_name=b["slug"])
+            objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
+                         b["slug"]))
+        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s)
         path = os.path.join(outdir, "komplett_%s_objekte.3mf" % variant)
-        scene.export(path)
-        print("  %s (%d Objekte)" % (os.path.relpath(path, HERE), len(sel) + 1))
+        export_3mf(coloured, path)
+        print("  %s (%d Objekte, farbig)" % (os.path.relpath(path, HERE), len(objs)))
+        if RENDER_COLOUR:
+            render_coloured(coloured, quelle, scale, variant)
 
-    return solids, footprints
+    return models
+
+
+ROOF_NZ = 0.35  # Dreiecke mit steilerer Normale als ~70° zählen als Dach
+
+
+def colour_table():
+    import farben
+    return farben.load_farben() or {}, farben.PLATTE
+
+
+def paint_code(n):
+    """Kodierung „ganzes Dreieck = Filament n“ für paint_color / slic3rpe:mmu_segmentation
+    (TriangleSelector::serialize in PrusaSlicer/Bambu Studio/OrcaSlicer)."""
+    return {1: "4", 2: "8"}[n] if n < 3 else "%XC" % (n - 3)
+
+
+_ROOF_CLASS = None
+
+
+def colourise(objs, offset, s):
+    """Zerschneidet und färbt die Objekte nach den Fassaden-Zonen (fassaden.py).
+
+    Liefert [(name, Netz, Hex-Farbe je Dreieck)]; ohne data/farben.json einfarbig.
+    """
+    global _ROOF_CLASS
+    import fassaden
+    farben, plate = colour_table()
+    out = []
+    for name, tm, slug in objs:
+        e = farben.get(slug) if slug else None
+        if not e:
+            out.append((name, tm, np.array([plate] * len(tm.faces), dtype=object)))
+            continue
+        if _ROOF_CLASS is None:
+            import farben as F
+            _ROOF_CLASS = F.roof_classifier(farben)
+        mesh, hexes = fassaden.colour_mesh(tm, slug, (offset, s), e, _ROOF_CLASS)
+        if not mesh.is_watertight:
+            print("  Warnung: %s nach dem Zerschneiden nicht dicht" % name)
+        out.append((name, mesh, hexes))
+    return out
+
+
+def export_3mf(objs, path):
+    """3MF mit Farben für Slicer und Betrachter. objs: [(name, Netz, Hex je Dreieck)].
+
+    - Jedes Objekt bekommt sein häufigstes Wand-Filament als Objekt-Extruder
+      (Metadata/model_settings.config für Bambu Studio/OrcaSlicer,
+      Metadata/Slic3r_PE_model.config für PrusaSlicer).
+    - Alle anderen Dreiecke (Fassaden-Zonen, Dachflächen) sind mit ihrem
+      Filament vorbemalt (paint_color bzw. slic3rpe:mmu_segmentation).
+    - Zusätzlich basematerials/displaycolor (3MF-Kernspezifikation) für Betrachter
+      wie Windows 3D Viewer; Slicer ignorieren das.
+    Die Filament-Nummern sind global (farben.filamente, Legende in vorschau/farben.png);
+    die Filamentfarben selbst lassen sich ohne vollständiges Slicer-Profil nicht
+    mitliefern und müssen im Slicer einmal eingestellt werden.
+    """
+    import zipfile
+    from xml.sax.saxutils import escape as esc
+    import farben as F
+    escape = lambda t: esc(t, {'"': "&quot;"})
+    farben, plate = colour_table()
+    pal = [f["rgb"] for f in farben["_filamente"]] if farben else [plate]
+    mats = ["F%d %s" % (i + 1, c) for i, c in enumerate(pal)]
+    nr_of = {}
+    objects, items, bambu, prusa = [], [], [], []
+    for oid, (name, tm, hexes) in enumerate(objs, start=2):
+        for h in set(hexes):
+            if h not in nr_of:
+                nr_of[h] = F.filament_nr(farben, h) if farben else 1
+        nrs = np.array([nr_of[h] for h in hexes])
+        walls = np.abs(tm.face_normals[:, 2]) <= ROOF_NZ
+        wall = int(np.bincount(nrs[walls] if walls.any() else nrs).argmax())
+        v = "".join('<vertex x="%.4f" y="%.4f" z="%.4f"/>' % tuple(p) for p in tm.vertices)
+        tris = []
+        for (a, b_, c), n in zip(tm.faces, nrs):
+            if n != wall:
+                code = paint_code(int(n))
+                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d" paint_color="%s" '
+                            'slic3rpe:mmu_segmentation="%s"/>' % (a, b_, c, n - 1, code, code))
+            else:
+                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>' % (a, b_, c, n - 1))
+        objects.append('<object id="%d" name="%s" type="model" pid="1" pindex="%d"><mesh><vertices>%s'
+                       '</vertices><triangles>%s</triangles></mesh></object>'
+                       % (oid, escape(name), wall - 1, v, "".join(tris)))
+        items.append('<item objectid="%d"/>' % oid)
+        bambu.append('<object id="%d"><metadata key="name" value="%s"/><metadata key="extruder" value="%d"/>'
+                     '</object>' % (oid, escape(name), wall))
+        prusa.append('<object id="%d" instances_count="1"><metadata type="object" key="name" value="%s"/>'
+                     '<metadata type="object" key="extruder" value="%d"/><volume firstid="0" lastid="%d">'
+                     '<metadata type="volume" key="name" value="%s"/></volume></object>'
+                     % (oid, escape(name), wall, len(tm.faces) - 1, escape(name)))
+    base = "".join('<base name="%s" displaycolor="%sFF"/>' % (escape(n), c.upper()) for n, c in zip(mats, pal))
+    model = ('<?xml version="1.0" encoding="UTF-8"?>\n<model unit="millimeter" xml:lang="de-DE" '
+             'xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" '
+             'xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">'
+             '<metadata name="Title">Campus Augustusplatz</metadata>'
+             '<resources><basematerials id="1">%s</basematerials>%s</resources><build>%s</build></model>'
+             % (base, "".join(objects), "".join(items)))
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<config>%s</config>\n'
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml",
+                   '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/'
+                   'package/2006/content-types"><Default Extension="rels" ContentType="application/'
+                   'vnd.openxmlformats-package.relationships+xml"/><Default Extension="model" '
+                   'ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/>'
+                   '<Default Extension="config" ContentType="text/xml"/></Types>')
+        z.writestr("_rels/.rels",
+                   '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/'
+                   'package/2006/relationships"><Relationship Target="/3D/3dmodel.model" Id="rel0" '
+                   'Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
+        z.writestr("3D/3dmodel.model", model)
+        z.writestr("Metadata/model_settings.config", xml % "".join(bambu))
+        z.writestr("Metadata/Slic3r_PE_model.config", xml % "".join(prusa))
+
+
+def render_coloured(objs, quelle, scale, variant):
+    """Farbige Vorschau in den Filamentfarben – so, wie es gedruckt wird."""
+    import farben as F
+    import preview
+    farben, plate = colour_table()
+    pal = [preview.rgb(f["rgb"]) for f in farben["_filamente"]] if farben else [preview.rgb(plate)]
+    meshes = []
+    for name, tm, hexes in objs:
+        nrs = {h: (F.filament_nr(farben, h) if farben else 1) for h in set(hexes)}
+        meshes.append((tm, np.array([pal[nrs[h] - 1] for h in hexes])))
+    label = "1:%d, %s" % (scale, preview.QUELLEN_NAMEN.get(quelle, quelle))
+    for suffix, azim, elev, blick in (("", -30, 32, "von Südosten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
+        im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev, light_from_view=True)
+        out = preview.caption(im, "Farbig %s%s  (%s)" % (
+            blick, ", mit Extras" if "extras" in variant else "", label),
+            "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
+            % len(pal))
+        path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s.png" % (variant, suffix))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        out.save(path, optimize=True)
+        print("  Vorschau:", os.path.relpath(path, HERE))
+    if "extras" in variant:  # Einzelgebäude farbig, je von zwei Seiten
+        tiles = []
+        for (name, tm, _), (m, cols) in zip(objs[1:], meshes[1:]):
+            for azim in (-35, 145):
+                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25, light_from_view=True)
+                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten")))
+        preview.contact_sheet(tiles, os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
+                              "Einzelgebäude farbig (%s)" % label, cols=4, cell=(560, 530))
+
+
+def refresh_colours():
+    """data/farben.json neu messen, wenn Fassaden- oder Fotodateien neuer sind."""
+    import glob
+    import farben
+    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS]
+    if not os.path.exists(farben.FARBEN) or max(map(os.path.getmtime, src)) > os.path.getmtime(farben.FARBEN):
+        print("Fassadendaten geändert – Farben neu messen (farben.py)")
+        farben.main()
+
+
+QUELLEN = ["osm", "lod2", "laserscan"]
+RENDER_COLOUR = True
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, action="append",
                     help="Maßstab 1:N (mehrfach möglich, Standard: 1000 und 1500)")
-    ap.add_argument("--fetch", action="store_true", help="OSM-Daten neu herunterladen")
+    ap.add_argument("--quelle", action="append", choices=QUELLEN,
+                    help="Datenquelle (mehrfach möglich, Standard: alle)")
+    ap.add_argument("--fetch", action="store_true", help="Quelldaten neu herunterladen")
     ap.add_argument("--out", default=os.path.join(HERE, "stl"))
     ap.add_argument("--no-preview", action="store_true", help="keine Vorschaubilder rendern")
     args = ap.parse_args()
+    global RENDER_COLOUR
+    RENDER_COLOUR = not args.no_preview
+    quellen = args.quelle or QUELLEN
     if args.fetch or not os.path.exists(OSM_FILE):
         fetch_osm()
-    feats = load_features()
-    missing = [b["osm"] for b in BUILDINGS if b["osm"] not in feats]
-    if missing:
-        sys.exit("Gebäude nicht in den OSM-Daten gefunden: %s" % missing)
-    for b in BUILDINGS:
-        outline, parts = building_parts(feats, b["osm"])
-        info = ", ".join("%s(h=%.1f m, Dach %s %.1f m)" % ((fid,) + heights(t)[:1] + (heights(t)[2], heights(t)[1]))
-                         for _, t, fid in parts)
-        print("%-22s %s" % (b["slug"], info))
-    for sc in args.scale or [1000, 1500]:
-        build_scale(feats, sc, os.path.join(args.out, "1zu%d" % sc))
+    if args.fetch and "lod2" in quellen:
+        import lod2
+        lod2.fetch_lod2()
+    if args.fetch and "laserscan" in quellen:
+        import laserscan
+        laserscan.fetch()
+    refresh_colours()
+    for q in quellen:
+        for sc in args.scale or [1000, 1500]:
+            models = build_scale(q, sc, os.path.join(args.out, q, "1zu%d" % sc))
+        for slug, (_, _, info) in models.items():
+            print("  %-22s %s" % (slug, ", ".join("%s=%s" % kv for kv in info.items()
+                                                    if kv[0] != "attrs")))
     if not args.no_preview:
         import preview
         preview.default_previews(args.out)
+        import fassaden
+        print("\nFassaden-Prüfansichten")
+        for b in BUILDINGS:
+            if fassaden.load_spec(b["slug"]):
+                fassaden.check(b["slug"])
 
 
 if __name__ == "__main__":

@@ -1,0 +1,314 @@
+{
+ "_hinweis": "Fotokatalog für die Fassadenfarben. Schlüssel = Panoramax-ID oder eigener Name. 'ansicht' = Perspektive aus einem 360°-Panorama (farben.persp). 'weissabgleich': je Foto ein Ausschnitt (relativ x0,y0,x1,y1) mit grauem Pflaster in derselben Beleuchtung; damit werden Farbstich und Helligkeit korrigiert (Pflaster := Grau REF_GRAU, Annahme).",
+ "bilder": {
+  "03_hoersaal_1": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M07S000 (694036720403966 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M07S000_(694036720403966_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Mapillary_%28osmplus_org%29_2025-10-02_09H41M07S000_%28694036720403966_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M07S000_%28694036720403966_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse), northern part, ground floor dark grey stone + pale panels + red band + reflective glass",
+   "ansicht": {
+    "yaw": 165.558989,
+    "pitch": 10,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "03_hoersaal_2": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H42M02S000 (26109123682011481 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H42M02S000_(26109123682011481_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Mapillary_%28osmplus_org%29_2025-10-02_09H42M02S000_%2826109123682011481_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H42M02S000_%2826109123682011481_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse), north part seen obliquely from the south, grey stone base, pale panels, red panels",
+   "ansicht": {
+    "yaw": -12.045737,
+    "pitch": 10,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "03_hoersaal_3": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M04S000 (1098528572090834 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M04S000_(1098528572090834_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Mapillary_%28osmplus_org%29_2025-10-02_09H41M04S000_%281098528572090834_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M04S000_%281098528572090834_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse), north part, grey stone base + pale panels + red panel",
+   "ansicht": {
+    "yaw": -175.552857,
+    "pitch": 10,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "03_hoersaal_4": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vSüdWest-IMG 2346-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vS%C3%BCdWest-IMG_2346-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vS%C3%BCdWest-IMG_2346-8x3B-360x180G-PanoS-28-03-2025.jpg/3840px-Leipzig-Kurt-Masur-Platz-und-Moritzbastei-vS%C3%BCdWest-IMG_2346-8x3B-360x180G-PanoS-28-03-2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-03-28",
+   "fassade": "south, Mensa am Park ground floor (red columns/cafeteria) facing Kurt-Masur-Platz",
+   "ansicht": {
+    "yaw": 285,
+    "pitch": 8,
+    "hfov": 75,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "03_hoersaal_5": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG 3028-8x3B-360x180G-PanoS-12-04-2025.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG_3028-8x3B-360x180G-PanoS-12-04-2025.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG_3028-8x3B-360x180G-PanoS-12-04-2025.jpg/3840px-Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG_3028-8x3B-360x180G-PanoS-12-04-2025.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-04-12",
+   "fassade": "south/southwest corner, red-clad Mensa am Park entrance, cafeteria",
+   "ansicht": {
+    "yaw": 150,
+    "pitch": 8,
+    "hfov": 75,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "03_hoersaal_6": {
+   "gebaeude": "03_hoersaalgebaeude",
+   "titel": "File:Mensaampark.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mensaampark.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Mensaampark.jpg/1920px-Mensaampark.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 3.0",
+   "urheber": "Michimaya",
+   "datum": "2010-10-17",
+   "fassade": "east/south-east corner (Mensa am Park, red base, dark glass, white bands) with Uniriese behind, seen from Augustusplatz side"
+  },
+  "04_seminar_1": {
+   "gebaeude": "04_seminargebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M54S000 (1448833776209240 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M54S000_(1448833776209240_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Mapillary_%28osmplus_org%29_2025-10-02_09H41M54S000_%281448833776209240_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M54S000_%281448833776209240_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse) southern/middle part: white honeycomb panels, red band, dark grey base",
+   "ansicht": {
+    "yaw": -6.165451,
+    "pitch": 10,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "04_seminar_2": {
+   "gebaeude": "04_seminargebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M56S000 (1370673024472636 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M56S000_(1370673024472636_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Mapillary_%28osmplus_org%29_2025-10-02_09H41M56S000_%281370673024472636_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M56S000_%281370673024472636_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse) junction between Hoersaal- and Seminargebaeude: red bridge element, white panels, grey base",
+   "ansicht": {
+    "yaw": -6.683864,
+    "pitch": 10,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "04_seminar_3": {
+   "gebaeude": "04_seminargebaeude",
+   "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M52S000 (1132406702368202 at UXjkI5V2TNfplbYdaSq18H).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mapillary_(osmplus_org)_2025-10-02_09H41M52S000_(1132406702368202_at_UXjkI5V2TNfplbYdaSq18H).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Mapillary_%28osmplus_org%29_2025-10-02_09H41M52S000_%281132406702368202_at_UXjkI5V2TNfplbYdaSq18H%29.jpg/3840px-Mapillary_%28osmplus_org%29_2025-10-02_09H41M52S000_%281132406702368202_at_UXjkI5V2TNfplbYdaSq18H%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "osmplus_org",
+   "datum": "2025-10-02",
+   "fassade": "west (Universitaetsstrasse), entrance with \"Seminargebaeude\" sign, glass bay + white panels",
+   "ansicht": {
+    "yaw": -12.597728,
+    "pitch": 14,
+    "hfov": 65,
+    "W": 1600,
+    "H": 1000
+   }
+  },
+  "06_cityhochhaus_1": {
+   "gebaeude": "06_city_hochhaus",
+   "titel": "File:Leipzig - City-Hochhaus Leipzig (1).jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Leipzig_-_City-Hochhaus_Leipzig_%281%29.jpg/1920px-Leipzig_-_City-Hochhaus_Leipzig_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero from Paris, France",
+   "datum": "2015-08-03",
+   "fassade": "south-east/east face seen from the Gewandhaus side, upper tower"
+  },
+  "06_cityhochhaus_2": {
+   "gebaeude": "06_city_hochhaus",
+   "titel": "File:Leipzig - City-Hochhaus Leipzig.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Leipzig_-_City-Hochhaus_Leipzig.jpg/1920px-Leipzig_-_City-Hochhaus_Leipzig.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero from Paris, France",
+   "datum": "2015-08-03",
+   "fassade": "east face + north-east corner, with Mensa am Park at right"
+  },
+  "06_cityhochhaus_3": {
+   "gebaeude": "06_city_hochhaus",
+   "titel": "File:City-Hochhaus in Leipzig.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/City-Hochhaus_in_Leipzig.jpg/1920px-City-Hochhaus_in_Leipzig.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Krzysztof Golik",
+   "datum": "2019-08-14",
+   "fassade": "west/south-west side seen from Universitaetsstrasse/Roßplatz direction, whole tower with Mensa am Park in front"
+  },
+  "06_cityhochhaus_4": {
+   "gebaeude": "06_city_hochhaus",
+   "titel": "File:City-Hochhaus Leipzig vom Rossplatz.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:City-Hochhaus_Leipzig_vom_Rossplatz.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/City-Hochhaus_Leipzig_vom_Rossplatz.jpg/1920px-City-Hochhaus_Leipzig_vom_Rossplatz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Jacek Rużyczka",
+   "datum": "2014-06-08",
+   "fassade": "south-west face seen from Roßplatz"
+  },
+  "07_moritzbastei_1": {
+   "gebaeude": "07_moritzbastei",
+   "titel": "File:Bastion Saint-Moritz - Leipzig (DED5) - 2025-11-25 - 5.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_5.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_5.jpg/1920px-Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Chabe01",
+   "datum": "2025-11-25",
+   "fassade": "main south entrance front (brick, arch, \"MORITZBASTEI\" lettering) facing Kurt-Masur-Platz"
+  },
+  "07_moritzbastei_2": {
+   "gebaeude": "07_moritzbastei",
+   "titel": "File:Bastion Saint-Moritz - Leipzig (DED5) - 2025-11-25 - 6.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_6.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_6.jpg/1920px-Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_6.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Chabe01",
+   "datum": "2025-11-25",
+   "fassade": "entrance building seen obliquely from the south-west: brick wall + stair, white annex"
+  },
+  "07_moritzbastei_3": {
+   "gebaeude": "07_moritzbastei",
+   "titel": "File:Leipzig 20260913 Moritzbastei.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_20260913_Moritzbastei.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Leipzig_20260913_Moritzbastei.jpg/1920px-Leipzig_20260913_Moritzbastei.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC0",
+   "urheber": "NutzerAusBerlin",
+   "datum": "2026-09-13",
+   "fassade": "entrance building and bastion wall from the east side of Kurt-Masur-Platz, Hoersaalgebaeude background left"
+  },
+  "07_moritzbastei_4": {
+   "gebaeude": "07_moritzbastei",
+   "titel": "File:Bastion Saint-Moritz - Leipzig (DED5) - 2025-11-25 - 1.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Bastion_Saint-Moritz_-_Leipzig_(DED5)_-_2025-11-25_-_1.jpg",
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_1.jpg/1920px-Bastion_Saint-Moritz_-_Leipzig_%28DED5%29_-_2025-11-25_-_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Chabe01",
+   "datum": "2025-11-25",
+   "fassade": "inner bastion wall (old brick, ivy) and terrace, with Hoersaalgebaeude in background left"
+  },
+  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
+   "quelle": "panoramax"
+  },
+  "00e4adee-a436-499a-bda1-4d828b1d3750": {
+   "quelle": "panoramax"
+  },
+  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
+   "quelle": "panoramax"
+  }
+ },
+ "weissabgleich": {
+  "ef4999dc-bec6-41c9-9c24-76fc35108365": {
+   "box": [
+    0.05,
+    0.72,
+    0.4,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  },
+  "00e4adee-a436-499a-bda1-4d828b1d3750": {
+   "box": [
+    0.05,
+    0.72,
+    0.45,
+    0.82
+   ],
+   "notiz": "Granitpflaster Grimmaische Straße im Gebäudeschatten"
+  },
+  "f1201d36-4f89-4bda-a6e8-aa755bc9ea58": {
+   "box": [
+    0.1,
+    0.72,
+    0.5,
+    0.95
+   ],
+   "notiz": "Granitpflaster Augustusplatz im Gebäudeschatten"
+  },
+  "03_hoersaal_1": {
+   "box": [
+    0.0,
+    0.9,
+    0.2,
+    1.0
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "04_seminar_2": {
+   "box": [
+    0.6,
+    0.82,
+    0.95,
+    0.87
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "04_seminar_1": {
+   "box": [
+    0.75,
+    0.92,
+    1.0,
+    1.0
+   ],
+   "notiz": "Gehwegplatten Universitätsstraße im Schatten"
+  },
+  "07_moritzbastei_3": {
+   "box": [
+    0.3,
+    0.75,
+    0.7,
+    0.95
+   ],
+   "notiz": "Platzpflaster Kurt-Masur-Platz (bedeckt)"
+  },
+  "07_moritzbastei_1": {
+   "box": [
+    0.3,
+    0.8,
+    0.6,
+    0.95
+   ],
+   "notiz": "Platzpflaster Kurt-Masur-Platz (Sonne)"
+  }
+ }
+}

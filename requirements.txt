@@ -7,3 +7,5 @@ lxml
 networkx
 matplotlib
 pillow
+pyproj
+laspy[lazrs]
