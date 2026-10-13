@@ -72,6 +72,15 @@ Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäu
 erscheinen automatisch in der Galerie. Nach Änderungen die README mit
 Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
+## Steckmechanismus (LED-Gebäude)
+
+Plan und Prototyp für beleuchtete Gebäude (WS2812B, JST-XH-Stecker): `stecker/PLAN.md`.
+`python3 steckmodul.py` erzeugt Dock-Platte, Steckmodule, Würfel und Passprobe nach
+`stl/steckmodul/`, Vorschaubilder nach `vorschau/steckmodul/` und `stecker/daten.json`;
+`python3 stecker/baue_ansicht.py` setzt daraus `stecker/ansicht.html` (3D-Ansicht mit
+Animation) zusammen. Die Ausgabe muss `dicht=True` und „keine Kollisionen“ zeigen. Die
+Steckermaße stehen oben in `steckmodul.py` und sind teils aus Zeichnungen abgeleitet.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.
