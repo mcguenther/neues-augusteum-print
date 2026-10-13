@@ -10,6 +10,18 @@
     {
      "flaeche": "terrasse"
     }
+   ],
+   "proben": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.77,
+      0.54,
+      0.89,
+      0.57
+     ],
+     "notiz": "Großformatige Platten (Sonne, ohne WB)"
+    }
    ]
   },
   "platz": {
@@ -66,14 +78,59 @@
     {
      "objekt": "beet"
     }
+   ],
+   "proben": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.7,
+      0.425,
+      0.797,
+      0.475
+     ],
+     "notiz": "Bepflanzung: silbrig-grüne Stauden (Sonne, ohne WB)"
+    }
    ]
   },
   "beet_rand": {
-   "notiz": "Einfassung der Hochbeete (vorläufig)",
-   "hex": "#8c8c88"
+   "notiz": "Wände der Hochbeete: dunkles Anthrazit (Längsseiten), helle Endblöcke nur an den Stirnseiten",
+   "proben": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.783,
+      0.371,
+      0.867,
+      0.396
+     ],
+     "notiz": "Längswand hinteres Beet (ohne WB)"
+    },
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.51,
+      0.429,
+      0.58,
+      0.4375
+     ],
+     "notiz": "Längswand vorderes Beet, Schattenseite (ohne WB)"
+    }
+   ]
   },
   "podest": {
-   "notiz": "Sitzpodeste (von oben)",
+   "notiz": "Sitzpodeste: Holzauflage (Luftbild bräunlich-grau, Foto rotbraun)",
+   "proben": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.6,
+      0.41,
+      0.65,
+      0.43
+     ],
+     "notiz": "Holzbank mit Lehne auf dem Beet (Sonne, ohne WB)"
+    }
+   ],
    "luftbild": [
     {
      "objekt": "podest"
@@ -81,7 +138,19 @@
    ]
   },
   "bank": {
-   "notiz": "Einzelbänke (von oben)",
+   "notiz": "Einzelbänke: dunkler Block mit Holzauflage, von oben Holz",
+   "proben": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.6,
+      0.41,
+      0.65,
+      0.43
+     ],
+     "notiz": "Holzbank mit Lehne auf dem Beet (Sonne, ohne WB)"
+    }
+   ],
    "luftbild": [
     {
      "objekt": "bank"
@@ -189,12 +258,23 @@
    ]
   },
   "stamm": {
-   "notiz": "Baumstamm (vorläufig)",
+   "notiz": "Baumstamm, graubraun (geschätzt, im Modell nur ein 0,8-mm-Stiel)",
    "hex": "#5a5148"
   },
   "krone": {
-   "notiz": "Gleditschien-Krone im Sommer (vorläufig)",
-   "hex": "#7f9a4c"
+   "notiz": "Gleditschie belaubt (Sommer); im Luftbild kaum zu sehen (lichte, feine Krone)",
+   "proben": [
+    {
+     "bild": "hof_degrowth_mahnke",
+     "box": [
+      0.83,
+      0.18,
+      0.9,
+      0.3
+     ],
+     "notiz": "Krone vor weißem Pavillon (bedeckt, ohne WB; Hintergrund hellt leicht auf)"
+    }
+   ]
   }
  },
  "basis": "pflaster",
@@ -280,6 +360,33 @@
    "urheber": "Frank Vincentz",
    "datum": "2015-07-13",
    "fassade": "Leibnizdenkmal im Innenhof, bedeckt"
+  },
+  "hof_pano_koehler": {
+   "gebaeude": "08_innenhof",
+   "titel": "File:Leipzig-Uni-Campus-Neues-Augusteum-Innenhof-IMG 2406-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig-Uni-Campus-Neues-Augusteum-Innenhof-IMG_2406-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Leipzig-Uni-Campus-Neues-Augusteum-Innenhof-IMG_2406-8x3B-360x180G-PanoS-28-03-2025.jpg/3840px-Leipzig-Uni-Campus-Neues-Augusteum-Innenhof-IMG_2406-8x3B-360x180G-PanoS-28-03-2025.jpg",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Joachim Köhler",
+   "datum": "2025-03-28",
+   "fassade": "360°-Panorama von der Terrasse vor dem Seminargebäude in den Hof (Beete, Holzbänke, Pflaster)",
+   "ansicht": {
+    "yaw": -20,
+    "pitch": -15,
+    "hfov": 80,
+    "W": 1200,
+    "H": 800
+   }
+  },
+  "hof_degrowth_mahnke": {
+   "gebaeude": "08_innenhof",
+   "titel": "File:Degrowth Conference 2014 Photo by Eva Mahnke CC-BY-SA 05 Innenhof Universität Leipzig.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Degrowth_Conference_2014_Photo_by_Eva_Mahnke_CC-BY-SA_05_Innenhof_Universit%C3%A4t_Leipzig.jpg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Degrowth_Conference_2014_Photo_by_Eva_Mahnke_CC-BY-SA_05_Innenhof_Universit%C3%A4t_Leipzig.jpg/1920px-Degrowth_Conference_2014_Photo_by_Eva_Mahnke_CC-BY-SA_05_Innenhof_Universit%C3%A4t_Leipzig.jpg",
+   "lizenz": "CC BY-SA 3.0 de",
+   "urheber": "Eva Mahnke",
+   "datum": "2014-09-06",
+   "fassade": "Innenhof im Sommer, Gleditschie belaubt"
   }
  },
  "weissabgleich": {

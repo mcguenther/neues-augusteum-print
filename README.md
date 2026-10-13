@@ -36,7 +36,7 @@ Maße bei 1:1000 (B × T × H in mm, 1 mm = 1 m):
 | 05 | Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12) | 105 × 48 × 18 | 106 × 45 × 31 | 105 × 45 × 32 |
 | 06 | *Extra:* City-Hochhaus („Uniriese“) | 48 × 45 × 155 | 47 × 46 × 142 | 47 × 46 × 145 |
 | 07 | *Extra:* Moritzbastei | 67 × 65 × 4 | 67 × 64 × 6 | 67 × 64 × 9 |
-| 08 | Innenhof (Leibnizforum), siehe [unten](#innenhof-leibnizforum) | HOFMASS_OSM | HOFMASS_LOD2 | HOFMASS_LS |
+| 08 | Innenhof (Leibnizforum), siehe [unten](#innenhof-leibnizforum) | 54 × 95 × 15 | 54 × 95 × 15 | 54 × 95 × 15 |
 
 Auffällig: Für Hörsaal-, Seminar- und Institutsgebäude hat OSM keine Höhen, sie
 werden dort aus der Geschosszahl geschätzt und sind deutlich zu niedrig (z. B.
@@ -53,6 +53,9 @@ Der Innenhof zwischen Paulinum/Neuem Augusteum, Seminar-, Hörsaal- und
 Institutsgebäude ist ein eigenes Druckteil `08_innenhof` (gehört zum Campus):
 
 ![Innenhof 1:1000](vorschau/laserscan/1zu1000/08_innenhof.png)
+
+Die Höhen sind dieselben für alle drei Quellen; nur der Rand des Hofteils folgt den
+Gebäudegrundrissen der jeweiligen Quelle (Maße 1:1000 ca. 54 × 95 × 15 mm, mit Bäumen).
 
 - **Höhenlage**: Der Hof liegt 2,3 m über dem Straßenniveau, auf dem die Gebäude
   stehen (Laserscan: Hof 116,8 m, Gebäudesockel im LoD2 114,5 m ü. NHN; zur
@@ -74,7 +77,11 @@ Institutsgebäude ist ein eigenes Druckteil `08_innenhof` (gehört zum Campus):
   abgeschnitten, damit die Gebäude daneben passen.
 - **Farben**: Pflaster, Platz, Beete, Podeste und Bänke von oben im Luftbild 2024
   gemessen; Denkmal (Bronze fast schwarz, Granit rötlich-grau, helles Mosaik um den
-  Sockel) und Baumkronen in Fotos (Wikimedia Commons, Panoramax).
+  Sockel), Beetwände, Holzauflagen und Baumkronen in Fotos (Wikimedia Commons,
+  u. a. ein 360°-Panorama aus dem Hof). Weil höchstens 15 Filamente erlaubt sind,
+  teilen sich Hof und Gebäude Filamente: Beete und Podeste bekommen dasselbe
+  Holzbraun, und zwei blaugraue Töne an Paulinum und Augusteum fallen mit
+  benachbarten Grautönen zusammen, damit die Baumkronen grün bleiben.
 - Das **Schinkeltor** ist heute der Westeingang des Neuen Augusteums und gehört
   deshalb zur Augusteum-Fassade (Sandstein-Zone), nicht zum Hofteil.
 
