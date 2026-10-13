@@ -90,7 +90,7 @@ def block_gebaeude():
 
     src = sources()
     rows = ['<tr><th align="left">Gebäude</th>%s</tr>' % "".join(head(n, sub) for _, n, sub in src)]
-    for i, b in enumerate(generate.BUILDINGS, start=1):
+    for i, b in enumerate(generate.OBJEKTE, start=1):
         text = "<b>%s %s</b>" % (b["slug"][:2], b["title"])
         if b["group"] == "extra":
             text += " <sup>Extra</sup>"

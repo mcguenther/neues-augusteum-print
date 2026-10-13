@@ -60,6 +60,11 @@ BUILDINGS = [
          title="Moritzbastei", note="historische Bastion"),
 ]
 
+# Innenhof (Leibnizforum) als eigenes Druckteil, siehe innenhof.py
+HOF = dict(slug="08_innenhof", group="campus", name="Innenhof (Leibnizforum)",
+           title="Innenhof", note="Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen")
+OBJEKTE = BUILDINGS + [HOF]  # alles, was gedruckt und eingefärbt wird
+
 LEVEL_HEIGHT = 3.5        # m pro Geschoss, falls keine Höhe in OSM
 ROOF_LEVEL_HEIGHT = 3.0   # m pro Dachgeschoss, falls keine Dachhöhe in OSM
 DEFAULT_HEIGHT = 10.0     # m, falls weder Höhe noch Geschosse bekannt
@@ -461,10 +466,12 @@ def build_scale(quelle, scale, outdir):
     os.makedirs(outdir, exist_ok=True)
     print("\nQuelle %s, Maßstab 1:%d -> %s" % (quelle, scale, os.path.relpath(outdir, HERE)))
 
+    import innenhof
     models = source_models(quelle, s)
+    models[HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()])
     colour_cache = {}  # campus ist Teilmenge von campus_mit_extras: Gebäude nur einmal zerschneiden/färben
     render_jobs = []
-    buildings = [b for b in BUILDINGS if b["slug"] in models]
+    buildings = [b for b in OBJEKTE if b["slug"] in models]
     solids = {k: v[0] for k, v in models.items()}
     footprints = {k: v[1] for k, v in models.items()}
 
@@ -508,6 +515,9 @@ def build_scale(quelle, scale, outdir):
 
         # 4) 3MF: Platte + jedes Gebäude als eigenes Objekt an korrekter Position,
         #    mit Fassaden-/Dachfarbe als Material je Dreieck (data/farben.json)
+        #    Der Innenhof ist in die Sockelplatte eingelassen (seine Platte füllt die Vertiefung).
+        if HOF in sel:
+            base = base - extrude(footprints[HOF["slug"]], BASE_THICKNESS - POCKET_DEPTH, BASE_THICKNESS + 1)
         objs = [("Sockelplatte", to_trimesh(base.translate(shift)), None)]
         for b in sel:
             objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
@@ -599,6 +609,10 @@ def colourise(objs, offset, s, cache=None):
         if _ROOF_CLASS is None:
             import farben as F
             _ROOF_CLASS = F.roof_classifier(farben)
+        if slug == HOF["slug"]:
+            import innenhof
+            out.append((name, tm, innenhof.colour_mesh(tm, (offset, s), e)))
+            continue
         off = np.asarray(offset, float)
         if cache is not None and slug in cache:
             rel, hexes = cache[slug]

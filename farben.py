@@ -56,7 +56,7 @@ MAX_FILAMENTE = 15      # Grenze PrusaSlicer (Bambu/Orca: 32)
 def used_colours(farben):
     """Alle verwendeten Farben mit Verwendungszweck: [(hex, text)]."""
     out = [(PLATTE, "Platte")]
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = farben.get(b["slug"])
         if not e:
             continue
@@ -267,6 +267,25 @@ def dop_sampler():
     return sample
 
 
+def dop_probe(p):
+    """Farbe einer Fläche im Luftbild: Median der beleuchteten Pixel (ohne die dunkelsten 35 %,
+    also weitgehend ohne Schlagschatten). p = {"polygon": [[x, y], ...]} lokal in m oder eine
+    benannte Fläche des Innenhofs ({"objekt": "beet"}, {"flaeche": "rand"}, siehe innenhof.py)."""
+    import innenhof
+    poly = innenhof.probe_polygon(p)
+    img, (x0, y0, x1, y1) = load_dop()
+    to_utm = lambda a: np.column_stack(lod2.local_to_utm(a[:, 0], a[:, 1]))
+    poly = shapely.transform(poly, to_utm)
+    minx, miny, maxx, maxy = poly.bounds
+    c0, c1 = int((minx - x0) / WMTS_RES), int((maxx - x0) / WMTS_RES) + 1
+    r0, r1 = int((y1 - maxy) / WMTS_RES), int((y1 - miny) / WMTS_RES) + 1
+    X, Y = np.meshgrid(x0 + (np.arange(c0, c1) + 0.5) * WMTS_RES, y1 - (np.arange(r0, r1) + 0.5) * WMTS_RES)
+    px = img[r0:r1, c0:c1][shapely.contains_xy(poly, X, Y)].astype(float)
+    lum = px @ [0.299, 0.587, 0.114]
+    lit = px[lum >= np.percentile(lum, 35)]
+    return dict(p, rgb=hexcol(np.median(lit, axis=0)), pixel=int(len(px)))
+
+
 def roof_colours(img, bounds, cells):
     x0, y0, x1, y1 = bounds
     H, W, _ = img.shape
@@ -378,9 +397,15 @@ def building_colours(slug):
             out["farben"][k] = dict(rgb=f["hex"].lower(), notiz=f.get("notiz", ""), quelle=f.get("quelle", "fest"))
             continue
         proben = [measure_probe(p, katalog) for p in f.get("proben", [])]
-        rgb = hexcol(np.median([rgb255(p["rgb"]) for p in proben], axis=0))
-        out["farben"][k] = dict(rgb=rgb, notiz=f.get("notiz", ""), quelle="Foto (%d Messfeld%s)"
-                                % (len(proben), "er" if len(proben) > 1 else ""), proben=proben)
+        luft = [dop_probe(p) for p in f.get("luftbild", [])]
+        rgb = hexcol(np.median([rgb255(p["rgb"]) for p in proben + luft], axis=0))
+        quelle = []
+        if proben:
+            quelle.append("Foto (%d Messfeld%s)" % (len(proben), "er" if len(proben) > 1 else ""))
+        if luft:
+            quelle.append("Luftbild 2024 (%d Fläche%s)" % (len(luft), "n" if len(luft) > 1 else ""))
+        out["farben"][k] = dict(rgb=rgb, notiz=f.get("notiz", ""), quelle=" + ".join(quelle), proben=proben,
+                                luftbild=luft)
     return out
 
 
@@ -471,11 +496,11 @@ def main():
         "fassade": "Straßenfotos (Panoramax, Wikimedia Commons; Lizenzen je Messfeld), Messfelder und Zonen in "
                    "data/fassaden/<slug>.json, Fotokatalog data/fotos.json"}}
     farben["_dachpalette"] = roof_palette(img, bounds, cells)
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = building_colours(b["slug"])
         if e is None:
             continue
-        e = dict(name=b["name"], dach=dach[b["slug"]]["rgb"], **e)
+        e = dict(name=b["name"], dach=dach[b["slug"]]["rgb"] if b["slug"] in dach else None, **e)
         e["fassade"] = e["farben"][e["basis"]]["rgb"]
         farben[b["slug"]] = e
     farben["_filamente"] = [dict(nr=i + 1, rgb=c, fuer=u) for i, (c, u) in enumerate(filamente(farben))]
@@ -484,7 +509,7 @@ def main():
     with open(FARBEN, "w") as f:
         json.dump(farben, f, indent=1, ensure_ascii=False)
     print("Farben ->", os.path.relpath(FARBEN, G.HERE))
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = farben.get(b["slug"])
         if e:
             print("  %-22s %s" % (b["slug"], ", ".join("%s %s" % (k, v["rgb"]) for k, v in e["farben"].items())))
@@ -492,7 +517,7 @@ def main():
                                      for c in farben["_dachpalette"]))
     print("  Filamente: %d" % len(farben["_filamente"]))
     swatches(farben)
-    proben = [p for b in G.BUILDINGS if b["slug"] in farben
+    proben = [p for b in G.OBJEKTE if b["slug"] in farben
               for k, f in farben[b["slug"]]["farben"].items()
               for p in [dict(q, gebaeude=b["slug"], farbe=k) for q in f.get("proben", [])]]
     probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
@@ -525,7 +550,7 @@ def write_sources(proben):
 def swatches(farben):
     """Übersicht: Farben je Gebäude mit Filament-Nummer, Dachpalette (vorschau/farben.png)."""
     from preview import font, NAMES, OUT, BG
-    rows = [b["slug"] for b in G.BUILDINGS if b["slug"] in farben]
+    rows = [b["slug"] for b in G.OBJEKTE if b["slug"] in farben]
     cw = 118
     ncol = max(len(farben[s]["farben"]) for s in rows)
     W, rh = max(1100, 300 + cw * max(ncol, len(farben["_dachpalette"]))), 96
