@@ -57,6 +57,7 @@ Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 | `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese und Moritzbastei |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |
 | `komplett_*_objekte.3mf` | Sockelplatte und Gebäude als **getrennte Objekte** an der richtigen Position, **mehrfarbig vorbereitet**: jedes Gebäude hat sein Fassaden-Filament, die Dächer sind mit dem Dach-Filament vorbemalt (siehe [Mehrfarbig drucken](#mehrfarbig-drucken)) |
+| `komplett_*_objekte_3filamente.3mf`, `…_4filamente.3mf` | dasselbe mit nur 3 bzw. 4 Filamenten (nur Laserscan mit Extras, siehe [Mit nur 3 oder 4 Filamenten](#mit-nur-3-oder-4-filamenten)) |
 
 Die Platten tragen eine eingravierte Beschriftung (mit Quellenangabe) und einen Nordpfeil.
 
@@ -174,6 +175,45 @@ zusammenlegen), in PrusaSlicer braucht es ein Mehrfarb-Druckerprofil (MMU/XL).
 Wer weniger Filamente hat, ordnet einfach mehreren Nummern dasselbe Filament zu.
 Cura liest keine Farben aus 3MF.
 
+### Mit nur 3 oder 4 Filamenten
+
+Wer keine 15 Filamente hat (ein AMS fasst 4), nimmt die reduzierten Dateien
+`komplett_campus_mit_extras_objekte_3filamente.3mf` bzw. `…_4filamente.3mf`
+(Laserscan, beide Maßstäbe). Es sind dieselben Objekte, nur mit weniger Farben; die
+Filament-Nummern sind hier 1–3 bzw. 1–4.
+
+![Vergleich: alle Farben, 4 und 3 Filamente](vorschau/filamente_vergleich.png)
+
+| Nr. | Filament | Wo |
+|----|----------|----|
+| 1 | Beige `#e4e0d8` | Stein, helle Platten, Sockelplatte |
+| 2 | Blaugrau `#778f93` | Glas und Fenster (Maßwerkfenster und Rosette am Paulinum), Glasfassade des Uniriese, Dächer von Paulinum, Neuem Augusteum und Uniriese |
+| 3 | Graphit `#42494f` | Sockel, dunkle Bänder und Fensterbänder, dunkles Glas |
+| 4 | Rotbraun `#7d3937` (nur 4 Filamente) | Brüstungsbänder, rote Wandflächen und Dächer, Ziegel der Moritzbastei |
+
+Die Palette ist so gewählt, dass die **Kontraste an den Kanten zwischen Zonen** erhalten
+bleiben, also die hellen und dunklen Bänder (z. B. am Seminargebäude) und die Fenster,
+und nicht so, dass jeder Farbton stimmt. Dafür gelten drei Regeln (`PROFILE` und
+`PROFIL_*` in `farben.py`):
+
+- Jede Farbe wird der nächsten Profilfarbe zugeordnet (CIE-Lab).
+- Fenster und Glas sind immer Blaugrau. Nach dem Nächste-Farbe-Prinzip würden sie sonst
+  zu Beige und verschwinden im Giebel.
+- Die Dächer von Hörsaal-, Seminar- und Institutsgebäude und der Moritzbastei sind nie
+  Blaugrau: Das Blaugrau im Luftbild ist dort vor allem Schatten, die Dächer werden
+  Beige. Rote Dächer bleiben bei 4 Filamenten rotbraun.
+
+Was verloren geht: die weiße Blende um das Maßwerkfenster (Weiß und Beige sind eine
+Farbe), und bei 3 Filamenten verschmilzt das rotbraune Band mit dem Graphit des Sockels.
+Das Band ist bei 1:1500 nur etwa 0,5 mm hoch, für Bänder und Fenster lohnt eher 1:1000.
+Grob geschätzt (aus den bemalten Außenflächen, 0,2-mm-Lagen, 1:1500) sinkt die Zahl der
+Farbwechsel von etwa 2300 auf etwa 740 (3 Filamente) bzw. 820 (4 Filamente). Das bleibt
+viel Spülabfall und Druckzeit.
+
+Weitere Quellen und Varianten gibt es auf Anfrage mit
+`python3 generate.py --filamente 3 --filamente 4` (für alle gewählten Quellen und
+Varianten, jede Datei ca. 2–6 MB).
+
 ## Druckhinweise
 
 - Material: PLA, 0,4-mm-Düse, Schichthöhe 0,12–0,2 mm.
@@ -194,6 +234,7 @@ Cura liest keine Farben aus 3MF.
 pip install -r requirements.txt
 python3 generate.py                     # alle Quellen, 1:1000 und 1:1500
 python3 generate.py --quelle laserscan  # nur eine Quelle (mehrfach angebbar)
+python3 generate.py --filamente 3       # zusätzlich 3MF mit nur 3 (oder 4) Filamenten
 python3 generate.py --scale 750         # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch             # Quelldaten neu laden (LoD2 130 MB, Laserscan 240 MB)
 python3 farben.py                       # Farben neu messen (data/farben.json)

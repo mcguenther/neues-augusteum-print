@@ -37,6 +37,8 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
    - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
    - Farben: `vorschau/farben.png`, Messfelder `vorschau/farben_fotoproben.jpg`
+   - Profile mit 3/4 Filamenten: `vorschau/filamente_vergleich.png` (alle Farben | 4 | 3, je
+     Gesamtmodell, Seminargebäude-Bänder, Paulinum-Fenster), `vorschau/laserscan/1zu1500/komplett_campus_mit_extras_farbig_ost_<N>filamente.png`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -55,6 +57,11 @@ Farben: je Gebäude `data/fassaden/<slug>.json` (Farben mit Messfeldern in Fotos
 Fassaden-Zonen), Fotokatalog `data/fotos.json` (Panoramax/Wikimedia Commons; Commons
 drosselt geteilte IPs, `farben.py` wiederholt dann mit Wartezeit). `farben.py` misst
 alles und schreibt `data/farben.json` (macht `generate.py` automatisch bei Änderungen).
+Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
+Rotbraun) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Blaugrau) und `PROFIL_DACH_BLAU`
+(nur Paulinum, Neues Augusteum, Uniriese dürfen blaugraue Dächer haben, sonst Beige);
+`generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf` (ohne `--filamente` nur Laserscan mit Extras,
+mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am Profil das Vergleichsbild zeigen.
 Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
 (Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,

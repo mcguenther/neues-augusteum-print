@@ -115,6 +115,72 @@ def hexcol(rgb):
     return "#%02x%02x%02x" % tuple(int(round(v)) for v in rgb)
 
 
+# --------------------------------------------------------------------------
+# Profile für wenige Filamente (generate.py --filamente 3|4)
+# --------------------------------------------------------------------------
+# Die vollen 15 Filamente werden auf 3 bzw. 4 reduziert. Die Palette stammt aus der
+# Berechnung, welche Farben die Kontraste an Bändern und Fensterrändern am besten
+# erhalten (Beige = Stein/Platten/Platte, Blaugrau = Glas, Graphit = Sockel und dunkle
+# Bänder, Rotbraun = Brüstungsbänder, rote Dächer, Ziegel). Die Hex-Werte sind fest,
+# damit das Profil nicht von neu gemessenen Fassadenfarben abhängt.
+PROFILE = {
+    3: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit")],
+    4: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit"), ("#7d3937", "Rotbraun")],
+}
+PROFIL_HELL, PROFIL_GLAS = 0, 1   # Indizes in PROFILE: hellste Farbe, Glas-/Fensterfarbe
+# Fenster und Glas (Gebäude-Nr. + Farbname in data/fassaden/*.json) bleiben Blaugrau, auch
+# wenn eine helle Farbe näher läge – sonst verschwinden das Maßwerkfenster und die Rosette.
+PROFIL_FENSTER = ("01 fensterglas", "01 rosette_innen", "06 fassade")
+# Nur hier darf ein Dach Blaugrau sein. Bei den übrigen Gebäuden sind blaugraue Dachflächen im
+# Luftbild vor allem Schatten und werden hell (Beige).
+PROFIL_DACH_BLAU = ("01_paulinum", "02_neues_augusteum", "06_city_hochhaus")
+PROFIL_ROOF_NZ = 0.35   # wie fassaden.ROOF_NZ
+
+
+def profil_filamente(n):
+    """Filament-Liste des Profils im Format von data/farben.json (_filamente)."""
+    return [{"nr": i + 1, "rgb": c, "fuer": [name]} for i, (c, name) in enumerate(PROFILE[n])]
+
+
+def _lab(c):
+    v = rgb255(c) / 255
+    v = np.where(v <= 0.04045, v / 12.92, ((v + 0.055) / 1.055) ** 2.4)
+    xyz = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]) @ v
+    xyz /= np.array([0.95047, 1.0, 1.08883])
+    f = np.where(xyz > 216 / 24389, np.cbrt(xyz), (24389 / 27 * xyz + 16) / 116)
+    return np.array([116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])])
+
+
+def reduziere(slug, eintrag, mesh, hexes, n):
+    """Bildet die Farben eines Gebäudes (Hex je Dreieck) auf das Profil mit n Filamenten ab.
+
+    slug     Gebäude (None = Platte), eintrag dessen Eintrag in data/farben.json
+    mesh     Netz mit den Dreiecken zu hexes (für die Dachflächen)
+    Regeln: nächste Profilfarbe (CIE-Lab), Fenster/Glas immer Blaugrau (PROFIL_FENSTER),
+    Dächer außer bei PROFIL_DACH_BLAU nie Blaugrau (dann Beige).
+    """
+    pal = PROFILE[n]
+    labs = [_lab(c) for c, _ in pal]
+    name_of = {v["rgb"].lower(): k for k, v in eintrag["farben"].items()} if eintrag else {}
+    roof = mesh.face_normals[:, 2] > PROFIL_ROOF_NZ
+    cache = {}
+    out = np.empty(len(hexes), dtype=object)
+    for i, (h, r) in enumerate(zip(hexes, roof)):
+        t = cache.get((h, r))
+        if t is None:
+            use = "%s %s" % (slug[:2], name_of.get(h.lower(), "")) if slug else ""
+            if use in PROFIL_FENSTER:
+                t = PROFIL_GLAS
+            else:
+                lab = _lab(h)
+                t = int(np.argmin([np.linalg.norm(lab - l) for l in labs]))
+            if r and t == PROFIL_GLAS and slug not in PROFIL_DACH_BLAU:
+                t = PROFIL_HELL
+            cache[(h, r)] = t
+        out[i] = pal[t][0]
+    return out
+
+
 def fetch(url, path):
     """Lädt url nach path (Cache). Wikimedia drosselt geteilte IPs: mit Wartezeit wiederholen."""
     import time
