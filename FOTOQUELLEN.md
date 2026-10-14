@@ -52,8 +52,6 @@ den Wandflächen zugeordnet (`farbmessung.py`). Pose, Aufnahmezeit und Belichtun
 | [06_cityhochhaus_1](https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig_(1).jpg) | Fred Romero from Paris, France | CC BY 2.0 | 2015-08-03 | 06 fassade, 06 sockel |
 | [06_cityhochhaus_2](https://commons.wikimedia.org/wiki/File:Leipzig_-_City-Hochhaus_Leipzig.jpg) | Fred Romero from Paris, France | CC BY 2.0 | 2015-08-03 | 06 fassade, 06 sockel |
 | [03_hoersaal_5](https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-vNordWest-Kurt-Masur-Platz-IMG_3028-8x3B-360x180G-PanoS-12-04-2025.jpg) | Joachim Köhler | CC BY-SA 4.0 | 2025-04-12 | 03 rot |
-| [07_pano_se_ost](https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg) | Joachim Köhler | CC BY-SA 4.0 | 2025-03-28 | 07 stein |
-| [07_pano_se_sued](https://commons.wikimedia.org/wiki/File:Leipzig-Moritzbastei-und-City-Hochhaus-vS%C3%BCdOst-IMG_2292-8x3B-360x180G-PanoS-28-03-2025.jpg) | Joachim Köhler | CC BY-SA 4.0 | 2025-03-28 | 07 stein |
 | [hof_pano_koehler](https://commons.wikimedia.org/wiki/File:Leipzig-Uni-Campus-Neues-Augusteum-Innenhof-IMG_2406-8x3B-360x180G-PanoS-28-03-2025.jpg) | Joachim Köhler | CC BY-SA 4.0 | 2025-03-28 | 08 bank, 08 beet, 08 beet_rand, 08 pflaster, 08 podest |
 | [06_cityhochhaus_3](https://commons.wikimedia.org/wiki/File:City-Hochhaus_in_Leipzig.jpg) | Krzysztof Golik | CC BY-SA 4.0 | 2019-08-14 | 03 platten, 03 rot, 06 fassade |
 | [hof_beck_1](https://commons.wikimedia.org/wiki/File:Leipzig_Universit%C3%A4t_lub_2025-03-22_img01_Neues_Augusteum.jpg) | Lukas Beck | CC BY 4.0 | 2025-03-22 | 01 stein_glas, 05 dunkel, 05 rotbraun |

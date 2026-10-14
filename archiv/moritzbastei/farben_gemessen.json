@@ -1,0 +1,65 @@
+{
+ "name": "Moritzbastei",
+ "dach": "#aba6a2",
+ "basis": "ziegel",
+ "zonen": [
+  {
+   "name": "Außenwand Süd/Ost/Südwest (Stein)",
+   "farbe": "stein",
+   "seite": [
+    60,
+    255
+   ],
+   "z": [
+    0,
+    4.9
+   ]
+  },
+  {
+   "name": "Putzwand Nordseite (NNO)",
+   "farbe": "putz",
+   "seite": [
+    0,
+    50
+   ],
+   "z": [
+    0,
+    3.4
+   ],
+   "entlang": [
+    0.21,
+    0.67
+   ]
+  },
+  {
+   "name": "Ziegelband oben außen",
+   "farbe": "ziegel",
+   "seite": [
+    60,
+    255
+   ],
+   "z": [
+    4.9,
+    6.6
+   ]
+  }
+ ],
+ "farben": {
+  "ziegel": {
+   "rgb": "#8c5439",
+   "notiz": "Ziegel (rotbraun): Eingangsbau, Innenwände zum Hof, Brüstungsband oben",
+   "quelle": "Prüflauf: sonnige Ziegelflächen in den Moritzbastei-Fotos"
+  },
+  "stein": {
+   "rgb": "#928e89",
+   "notiz": "hellgraue Natursteinmauer (Außenwand Süd/Ost, teils mit Efeu)",
+   "quelle": "Foto (2 Messfelder)"
+  },
+  "putz": {
+   "rgb": "#d8d2c4",
+   "notiz": "weiß verputzter Anbau am Nordende",
+   "quelle": "Prüflauf: Putzanbau in den Moritzbastei-Fotos"
+  }
+ },
+ "fassade": "#8c5439"
+}

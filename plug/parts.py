@@ -83,8 +83,8 @@ KEY_CLR = 0.15        # Schieber in der Schwalbenschwanz-Nut
 # Gebäude (Laserscan 1:1500, B × T × H in mm, aus dem ersten Plan)
 BUILDINGS = [("Paulinum", 39.6, 24.6, 39.2), ("Neues Augusteum", 42.1, 51.9, 25.0),
              ("Hörsaalgebäude", 55.1, 90.7, 16.4), ("Seminargebäude", 26.3, 66.7, 18.8),
-             ("Institutsgebäude", 70.3, 29.9, 21.1), ("City-Hochhaus", 31.3, 30.4, 96.4),
-             ("Moritzbastei", 44.6, 43.0, 6.1)]
+             ("Institutsgebäude", 70.3, 29.9, 21.1), ("City-Hochhaus", 31.3, 30.4, 96.4)]
+# Moritzbastei (44,6 × 43,0 × 6,1 mm) vorerst zurückgestellt, siehe archiv/moritzbastei/README.md
 
 # --------------------------------------------------------------------------
 # Kräfte (Abschätzung; Kontaktkräfte sind für Kit-Teile nicht belegt)

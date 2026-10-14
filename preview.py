@@ -32,7 +32,7 @@ OUTLINE = (44, 50, 66)  # Linienfarbe bei transparenten README-Bildern
 NAMES = {
     "01": "Paulinum", "02": "Neues Augusteum", "03": "Hörsaalgebäude",
     "04": "Seminargebäude", "05": "Institutsgebäude", "06": "City-Hochhaus (Uniriese)",
-    "07": "Moritzbastei", "08": "Innenhof (Leibnizforum)",
+    "08": "Innenhof (Leibnizforum)",
 }
 
 
