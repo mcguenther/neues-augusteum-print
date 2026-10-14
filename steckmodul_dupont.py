@@ -60,10 +60,11 @@ CONTACT = 1.5         # S  Stift muss so tief in der Buchse stecken, bis die Fed
 PIN_SQ = 0.64         # B  Vierkant der Stifte
 HDR_W = NPIN * PITCH + 0.5   # M  Leistenstück, 4 Pins abgebrochen: Körper gemessen etwa 0,5 mm länger (Abbruchrest), Passprobe v4
 HDR_BODY = 2.54       # B  Kunststoffkörper (Würth WR-PHD: 2,54 ±0,15)
-HDR_UP = 7.0          # M  Steckseite über dem Körper: gemessen 7 ±0,5 (Datenblatt 6,0 ±0,2), Passprobe v4
+HDR_LEG = 7.0         # M  Winkelleiste: senkrechter Pin vom Ende bis zur Außenkante der Biegung, gemessen 7 ±0,5
+HDR_UP = HDR_LEG - 0.32 - 1.27   # A  Stiftspitze über der Körperoberkante, wenn die Biegung auf halber Körperhöhe liegt (= 5,41)
 HDR_TAIL = 3.0        # B  gerade Leiste: Lötende unter dem Körper (3,0 ±0,2)
-RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und Biegung: gemessen 1 ±0,5 (Datenblatt 1,5 ±0,2)
-RA_TAIL = 3.0         # B  Winkelleiste: Lötende ragt über die Körperseite hinaus (3,0 ±0,2)
+RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und senkrechtem Pin: gemessen 1 ±0,5. Der Körper sitzt NEBEN dem senkrechten Pin
+RA_TAIL = 3.0         # M  Winkelleiste: Pin hinter dem Körper (Lötende), gemessen 3 ±0,5; zeigt von den senkrechten Pins weg
 MPIN_UP = 6.0         # S  Male-Crimp-Pin: so weit ragt der Stift aus dem Gehäuse
 WIRE_D = 1.0          # S  Ader des Flachbandkabels (28 AWG, Isolation ≈ 0,9)
 LED_W, LED_L, LED_T = 10.0, 16.7, 2.2   # WS2812B-Streifenstück (60 LED/m): Breite, Länge, Dicke
@@ -84,7 +85,7 @@ CH_F = 0.8            # 45°-Fase unten am Fuß
 CH_P = 1.0            # 45°-Fase oben an der Mulde
 FOOT_R = 0.5          # Rundung der senkrechten Fußkanten (Muldenecken drucken nicht scharf)
 GUIDE = 3.0           # Fuß steckt so lang gerade in der Mulde, bevor eine Stiftspitze den Fuß erreicht
-CEIL = 1.2            # Muldenboden über dem Steckerteil (hält es gegen Zug); dicker als 0,8, weil die Stifte mit 7 mm sonst zu tief in die Buchse reichen
+CEIL = 0.8            # Muldenboden über dem Steckerteil (hält es gegen Zug)
 FUNNEL_T = 1.0        # Trichterplatte unter dem Gehäuse (= Schieber bei der Kassette)
 
 # Druck
@@ -193,10 +194,13 @@ def dims():
     sock_w, sock_d = pk_w + 2 * WALL, pk_d + 2 * WALL
     total = sock_d + GAP_L + LED_L + 0.3
     HY = -total / 2 + sock_d / 2
+    y_off = HDR_BODY / 2 + RA_BACK + PIN_SQ / 2          # Winkelleiste: senkrechte Pins stehen so weit hinter der Körpermitte
+    y_b = HY - y_off                                      # Mitte des Körpers (Dock A); Lötenden zeigen nach -y
     LY0 = HY + sock_d / 2 + GAP_L            # LED-Anfang (Pad-Ende)
     # Platte
     z_bb = z_hb - HDR_BODY                   # Unterkante Leistenkörper
-    z_bend = z_bb - RA_BACK                  # Winkelleiste: Biegung / Lötenden
+    z_bm = z_hb - HDR_BODY / 2               # Winkelleiste: Höhe der waagerechten Pins (Körpermitte)
+    z_bend = z_bb - 0.5                      # Dock A: Bezug für die Plattendicke (Lötbereich liegt im Kabelraum unter dem Körper)
     z_tailB = z_bb - HDR_TAIL                # gerade Leiste: Ende der Lötstifte
     z_mcb = z_hb - HSG_H                     # Dock C: Kabelseite des Gehäuses
     z_lt = layer_down(min(z_bend - 3.0, z_tailB - 3.5, z_mcb - 4.0))   # Deckel-Oberseite
@@ -207,7 +211,7 @@ def dims():
         pause_mm=pause_mm, pause_layer=int(round(pause_mm / LAYER)),
         led_top=z_s + LED_T, wire_top=z_ht + WIRE_D,
         pk_w=pk_w, pk_d=pk_d, sock_w=sock_w, sock_d=sock_d, HY=HY, LY0=LY0, LY1=LY0 + LED_L,
-        z_bb=z_bb, z_bend=z_bend, z_tailB=z_tailB, z_mcb=z_mcb, z_lt=z_lt, z_lb=z_lt - LID_T,
+        z_bb=z_bb, z_bm=z_bm, y_b=y_b, y_off=y_off, z_bend=z_bend, z_tailB=z_tailB, z_mcb=z_mcb, z_lt=z_lt, z_lb=z_lt - LID_T,
         pw=CUBE + 2 * CLR, plate_t=0 - (z_lt - LID_T),
         # Kassette: gleiche Höhen wie die Pause-Variante (Schieber = Trichterplatte)
         z_kt=z_s + LED_REC, z_kceil=z_pt + CEIL)
@@ -258,16 +262,18 @@ def header_part(variant):
     HY, z_hb, z_bb = d["HY"], d["z_hb"], d["z_bb"]
     if variant == "C":
         return union([housing_part(z_hb, flip=True), terminals_part(z_hb, male=True, flip=True)])
-    body = cbox(HDR_W, HDR_BODY, z_bb, z_hb, cy=HY)
     pins = []
+    if variant == "A":
+        yb, zm = d["y_b"], d["z_bm"]
+        body = cbox(HDR_W, HDR_BODY, z_bb, z_hb, cy=yb)
+        for x in pin_x():          # waagerechter Pin durch den Körper, 3 mm Lötende nach -y, hinter 1 mm Pin der Knick nach oben
+            pins.append(box(x - PIN_SQ / 2, x + PIN_SQ / 2, yb - HDR_BODY / 2 - RA_TAIL, HY + PIN_SQ / 2,
+                            zm - PIN_SQ / 2, zm + PIN_SQ / 2))
+            pins.append(cbox(PIN_SQ, PIN_SQ, zm - PIN_SQ / 2, d["z_tip"], cx=x, cy=HY))
+        return union([body] + pins)
+    body = cbox(HDR_W, HDR_BODY, z_bb, z_hb, cy=HY)
     for x in pin_x():
-        if variant == "A":
-            zb = d["z_bend"]
-            pins.append(cbox(PIN_SQ, PIN_SQ, zb - PIN_SQ / 2, d["z_tip"], cx=x, cy=HY))
-            pins.append(box(x - PIN_SQ / 2, x + PIN_SQ / 2, HY - PIN_SQ / 2, HY + HDR_BODY / 2 + RA_TAIL,
-                            zb - PIN_SQ / 2, zb + PIN_SQ / 2))
-        else:
-            pins.append(cbox(PIN_SQ, PIN_SQ, d["z_tailB"], d["z_tip"], cx=x, cy=HY))
+        pins.append(cbox(PIN_SQ, PIN_SQ, d["z_tailB"], d["z_tip"], cx=x, cy=HY))
     return union([body] + pins)
 
 
@@ -558,24 +564,41 @@ def tongue_bump(cx, d):
     return prism_y([(xw + 0.05, zd - b - 0.05), (xw - b, zd), (xw + 0.05, zd + b + 0.05)], -T["L"] / 2 + 1.0, T["L"] / 2 - 0.5)
 
 
+def dock_a_cuts(cx, d, T=lambda m: m):
+    """Winkelleiste: Tasche für den Körper (neben den senkrechten Pins), Schacht für Knick und senkrechte Pins,
+    Schlitz für die 3-mm-Lötenden nach -y. Alles von der Kabelraum-Seite (unten) offen, oben schließt der Muldenboden."""
+    HY, yb, zb, zh, zm = d["HY"], d["y_b"], d["z_bb"], d["z_hb"], d["z_bm"]
+    hw, hd = HDR_W / 2 + SNUG, HDR_BODY / 2 + SNUG
+    px = abs(pin_x()[0]) + PIN_SQ / 2 + 0.8
+    return [T(box(cx - hw, cx + hw, yb - hd, yb + hd, zb - 0.01, zh)),                                   # Körper
+            T(box(cx - px, cx + px, yb, HY + PIN_SQ / 2 + 0.8, zb - 0.01, zh)),                          # Schacht für Knick und Pins
+            T(box(cx - px, cx + px, yb - hd - RA_TAIL - 0.9, yb, zb - 0.01, zm + 0.7))]                  # Lötenden
+
+
 def dock_cuts(variant, cx, d):
     HY, F = d["HY"], d["F"]
     cuts = pocket_cuts(cx, d) + tongue_cuts(cx, d)
     for x in pin_x():                                         # Stiftlöcher im Muldenboden
         cuts.append(cyl(HOLE / 2, d["z_hb"] - 0.01, -F + 0.01, cx=cx + x, cy=HY, n=20))
     room_top = dock_room(variant, d)
-    if variant in ("A", "B"):
+    if variant == "A":
+        cuts += dock_a_cuts(cx, d)
+    elif variant == "B":
         cuts.append(cbox(HDR_W + 2 * SNUG, HDR_BODY + 2 * SNUG, d["z_bb"] - 0.01, d["z_hb"], cx=cx, cy=HY))
     else:
         cuts.append(cbox(HSG_W + 2 * SNUG, HSG_T + 2 * SNUG, d["z_mcb"] - 0.01, d["z_hb"], cx=cx, cy=HY))
-    cuts.append(box(cx - 9.0, cx + 9.0, HY - 5.0, HY + 9.0, d["z_lt"] - 0.01, room_top))          # Kabelraum
+    cuts.append(box(cx - 9.0, cx + 9.0, HY - 8.5, HY + 9.0, d["z_lt"] - 0.01, room_top))          # Kabelraum
     return cuts
 
 
 def dock_ribs(variant, cx, d):
     HY = d["HY"]
     ribs = []
-    if variant in ("A", "B"):
+    if variant == "A":      # Körper liegt neben den Pins: nur Rippen an den Stirnseiten, die Pins im Muldenboden halten ihn in y
+        for sx in (-1, 1):
+            ribs.append(cbox(2 * RIB + 0.2, 0.6, d["z_bb"], d["z_hb"], cx=cx + sx * (HDR_W / 2 + SNUG - RIB + 0.1), cy=d["y_b"]))
+        return ribs
+    if variant == "B":
         z0, z1, w, t = d["z_bb"], d["z_hb"], HDR_W, HDR_BODY
     else:
         z0, z1, w, t = d["z_mcb"] + 1.0, d["z_hb"] - 1.0, HSG_W, HSG_T
@@ -640,7 +663,8 @@ def lid():
         else:
             top, xi, xo = d["z_mcb"], HSG_W / 2 - 0.63, HSG_W / 2 + 0.8
         for sx in (-1, 1):
-            posts.append(box(cx + min(sx * xi, sx * xo), cx + max(sx * xi, sx * xo), d["HY"] - 1.0, d["HY"] + 1.0,
+            yc = d["y_b"] if v == "A" else d["HY"]
+            posts.append(box(cx + min(sx * xi, sx * xo), cx + max(sx * xi, sx * xo), yc - 1.0, yc + 1.0,
                              d["z_lt"] - 0.01, top))
     l = union([l] + posts)
     return diff(l, *[cyl(SCREW_CLR / 2, d["z_lb"] - 0.01, d["z_lt"] + 0.01, cx=x, cy=y) for x, y in screw_xy()])

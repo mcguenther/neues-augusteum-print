@@ -108,7 +108,7 @@ Kleines Probestück (22 × 36 mm Ausschnitt des Institutsgebäude-Hauptbalkens) 
 Deckel: `python3 steckmodul_probe.py` (rund 15 s) schreibt STL, `LIESMICH.txt` und `probedruck_kassette.zip` nach
 `stl/steckmodul_probe/` und Bilder nach `vorschau/steckmodul_probe/`. Es nutzt `steckmodul_institut.py`
 (`build_all(source=…)`); die Ausgabe nennt Kollisionen und waagerechte Decken (Brücken) je Teil.
-Die Passprobe (`passprobe()` in `steckmodul_probe.py`, `0_passprobe.stl`) hat eine Anleitung als Seite:
+Die Passprobe (`passprobe()` in `steckmodul_probe.py`) ist VERALTET (falsche Winkelleiste: der Körper sitzt neben den senkrechten Pins, siehe `stecker/probe/winkelpin.html`) und wird nicht mehr exportiert. Ihre Anleitung als Seite:
 `python3 stecker/probe/baue_passprobe.py` baut `stecker/probe/passprobe.html` aus `passprobe.template.html`.
 
 ## Prüfen vor dem Commit

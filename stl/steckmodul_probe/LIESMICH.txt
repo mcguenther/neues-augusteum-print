@@ -2,21 +2,21 @@ PROBEDRUCK KASSETTE (Plan B, Dupont-Teile) – Institutsgebäude-Ausschnitt
 =========================================================================
 
 Was ist das?
-  Ein kleines Probestück (22 × 36 mm, 12 mm sichtbare Höhe + 11 mm Fuß). Es ist ein Ausschnitt
+  Ein kleines Probestück (22 × 36 mm, 12 mm sichtbare Höhe + 10 mm Fuß). Es ist ein Ausschnitt
   des Hauptbalkens vom Institutsgebäude (1:1000) mit denselben Maßen für Fuß, Schacht, Nut, Kassette und Schieber.
   Damit prüfst du die Kassette mit Schieber, das Stecken in die Platte und das Licht durch die dünne Wand.
 
 Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
-  1_probestueck.stl   Gebäude mit Fuß: Fuß nach unten auf das Druckbett, Dach oben    (6.2 cm³)
+  1_probestueck.stl   Gebäude mit Fuß: Fuß nach unten auf das Druckbett, Dach oben    (6.1 cm³)
   2_kassette.stl      Kassette: steht aufrecht, Buchsentasche unten offen              (5.8 cm³)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                (0.6 cm³)
-  4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     (19.4 cm³)
+  4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     (17.0 cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              (3.3 cm³)
-  0_passprobe.stl     Passprobe v5 (flach): Taschen 0,15 bis 0,30 mm Spiel mit Fase für Buchse und Stiftleiste, Deckenlöcher 1,1 bis 1,4 mm; Schriftseite aufs Bett, Taschen offen nach oben (Anleitung: stecker/probe/passprobe.html)
+  Die Passprobe fehlt in diesem Satz: Sie wird für die Winkelleiste neu gebaut.
 
-  Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
+  Reihenfolge: zuerst 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 
-Material: alle fünf Teile zusammen 35 cm³ (bei 100 % Füllung etwa 44 g PLA,
+Material: alle fünf Teile zusammen 33 cm³ (bei 100 % Füllung etwa 41 g PLA,
   mit 15 % Füllung deutlich weniger). Nur das Dach des Probestücks ist eine Brücke (19,6 mm breit), alles andere ist ≤ 14 mm.
 
 Slicer-Einstellungen (Düse 0,4 mm)
@@ -29,26 +29,27 @@ Slicer-Einstellungen (Düse 0,4 mm)
   Kassette und Schieber nach dem Druck an den Kanten entgraten (Elefantenfuß), dann erst zusammenstecken.
 
 Was du zusätzlich brauchst
-  - Dupont-Gehäuse 1×4 mit 4 gecrimpten Adern (Buchse), 1 Stück Winkelstiftleiste mit 4 Pins aus dem Set
+  - Dupont-Gehäuse 1×4 mit 4 gecrimpten Adern (Buchse), 1 Stück Winkelstiftleiste mit 4 Pins aus dem Set (Körper nicht über 4 Pins hinaus abbrechen, Rest feilen)
   - ein Stück WS2812B-Streifen (60/m 10 mm oder 144/m 12 mm), optional zum Anlöten
   - 4 Blechschrauben M3 × 8 für den Deckel (oder den Deckel mit etwas Heißkleber fixieren)
 
 Ablauf
-  1. Passprobe (0) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
+  1. Teile mit den echten Kaufteilen anprobieren (Buchse in die Kassette, Leiste in die Platte). Passt etwas nicht: Maße im Generator ändern.
   2. Buchse in die Tasche der Kassette drücken (Steckseite zur offenen Unterseite), Adern in den Schlitz legen,
      Streifen auf die Ablage kleben und anlöten.
   3. Kassette von unten in den Schacht des Probestücks schieben. Schieber seitlich (durch die lange Wand, +x) in die Nut
      schieben, bis er anschlägt. Er schließt bündig mit der Wand ab.
-  4. Leiste von unten in die Platte schieben (Pins zeigen nach oben, Lötenden in den Kabelraum), Deckel anschrauben.
+  4. Winkelleiste von unten in die Platte schieben: die senkrechten Pins zeigen nach oben und durch die Löcher im Muldenboden, der
+     Körper liegt neben den Pins, die 3-mm-Lötenden zeigen von den Pins weg in den Kabelraum. Deckel anschrauben.
   5. Probestück in die Mulde stecken. Die abgeschrägte Ecke zeigt, wie herum es passt.
 
 Was du messen sollst
   - Schieber: gleitet er leicht, ohne zu klemmen, und schließt er bündig ab?
   - Kassette: sitzt sie ohne Spiel im Schacht? Anschlag oben erreicht?
   - Stecken: Kraft zum Einstecken (Ziel unter 10 N) und zum Herausziehen (Ziel 3 bis 8 N); hebt die Mini-Platte mit?
-  - Kontakt: LED leuchtet, DETECT-Pin liest LOW (Stifte stecken 4,2 mm in der Buchse; Kontaktpunkt ist geschätzt)
+  - Kontakt: LED leuchtet, DETECT-Pin liest LOW (Stifte stecken 3.6 mm in der Buchse; Kontaktpunkt ist geschätzt)
   - Licht: leuchtet die 0,4-mm-Wand gleichmäßig? (Fenster zeigen nach außen auf allen vier Seiten)
 
 Maße zum Nachschauen
   Kassette 15.7 × 29.3 mm, Ablage 13.0 × 21.0 mm, Schacht +0,2 mm je Seite,
-  Nut 45° mit 0,15 mm Spiel, Schieber 1,0 mm, Fuß 10.6 mm, Mulde 0,25 mm Spiel im Führungsband.
+  Nut 45° mit 0,15 mm Spiel, Schieber 1,0 mm, Fuß 9.6 mm, Mulde 0,25 mm Spiel im Führungsband.

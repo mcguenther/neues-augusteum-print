@@ -64,7 +64,7 @@ PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C = (round(v - PP_L / 2, 2) for v in (PP_Y_
 
 
 def passprobe():
-    """Flache Platte, y nach oben wie in der Draufsicht. Von der Taschenseite werden Buchse und Leiste eingesetzt.
+    """VERALTET (geht von der falschen Winkelleiste aus, wird neu gebaut). Flache Platte, y nach oben wie in der Draufsicht. Von der Taschenseite werden Buchse und Leiste eingesetzt.
     Reihe B: Buchsentaschen (durchgehend), Reihe L: Leistentaschen für den (abgebrochenen, 0,5 mm längeren) Körper mit Decke
     und vier Löchern, daneben der Lötendenraum. Spiel je Spalte 0,15 / 0,20 / 0,25 / 0,30 mm, Lochdurchmesser je Spalte
     1,1 / 1,2 / 1,3 / 1,4 mm, unten an den Taschen 0,5-mm-Fase, an den Löchern auf der Schriftseite 0,3-mm-Senkung.
@@ -149,14 +149,10 @@ def main():
         vols[fname] = tm.volume / 1000.0
         print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
             os.path.relpath(os.path.join(OUT, fname + ".stl"), HERE), *tm.extents, vols[fname], tm.is_watertight))
-    pp = passprobe()
-    tmp = to_tm(pp)
-    tmp.export(os.path.join(OUT, "0_passprobe.stl"))
-    print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
-        "stl/steckmodul_probe/0_passprobe.stl", *tmp.extents, tmp.volume / 1000.0, tmp.is_watertight))
-    old = os.path.join(OUT, "6_passprobe_optional.stl")
-    if os.path.exists(old):
-        os.remove(old)
+    # Die Passprobe (passprobe()) ist veraltet: Sie geht von der falschen Winkelleiste aus (Pins durch den Körper) und wird neu gebaut.
+    for old in ("6_passprobe_optional.stl", "0_passprobe.stl"):
+        if os.path.exists(os.path.join(OUT, old)):
+            os.remove(os.path.join(OUT, old))
 
     bad = 0
     print("\nKollisionsprüfung gesteckt (Überschneidungsvolumen):")
@@ -222,14 +218,6 @@ def previews(P, fl):
         items.append((tm, col[c]))
         x += w + 10
     im = preview.render(items, size=(1500, 700), azim=-30, elev=30); im.save(os.path.join(PREV, "druckteile.png"))
-    # Passprobe von oben (Schrift lesbar, Taschen öffnen sich nach unten)
-    import trimesh
-    pp = to_tm(passprobe())                            # Druckausrichtung: Schriftseite unten, Taschen offen nach oben
-    im = preview.render([(pp, "#b9bfc4")], size=(1500, 760), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_taschenseite.png"))
-    im = preview.render([(pp, "#b9bfc4")], size=(1500, 800), azim=-70, elev=50); im.save(os.path.join(PREV, "passprobe_schraeg.png"))
-    pp2 = pp.copy()                                    # wie ein Buch um die lange Kante umgedreht: Schriftseite oben
-    pp2.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
-    im = preview.render([(pp2, "#b9bfc4")], size=(1500, 760), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_schriftseite.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
@@ -249,9 +237,9 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                ({vols['3_schieber']:.1f} cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     ({vols['4_platte']:.1f} cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              ({vols['5_deckel']:.1f} cm³)
-  0_passprobe.stl     Passprobe v5 (flach): Taschen 0,15 bis 0,30 mm Spiel mit Fase für Buchse und Stiftleiste, Deckenlöcher 1,1 bis 1,4 mm; Schriftseite aufs Bett, Taschen offen nach oben (Anleitung: stecker/probe/passprobe.html)
+  Die Passprobe fehlt in diesem Satz: Sie wird für die Winkelleiste neu gebaut.
 
-  Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
+  Reihenfolge: zuerst 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 
 Material: alle fünf Teile zusammen {sum(v for v in vols.values()):.0f} cm³ (bei 100 % Füllung etwa {sum(v for v in vols.values())*1.24:.0f} g PLA,
   mit 15 % Füllung deutlich weniger). Nur das Dach des Probestücks ist eine Brücke (19,6 mm breit), alles andere ist ≤ 14 mm.
@@ -266,24 +254,25 @@ Slicer-Einstellungen (Düse 0,4 mm)
   Kassette und Schieber nach dem Druck an den Kanten entgraten (Elefantenfuß), dann erst zusammenstecken.
 
 Was du zusätzlich brauchst
-  - Dupont-Gehäuse 1×4 mit 4 gecrimpten Adern (Buchse), 1 Stück Winkelstiftleiste mit 4 Pins aus dem Set
+  - Dupont-Gehäuse 1×4 mit 4 gecrimpten Adern (Buchse), 1 Stück Winkelstiftleiste mit 4 Pins aus dem Set (Körper nicht über 4 Pins hinaus abbrechen, Rest feilen)
   - ein Stück WS2812B-Streifen (60/m 10 mm oder 144/m 12 mm), optional zum Anlöten
   - 4 Blechschrauben M3 × 8 für den Deckel (oder den Deckel mit etwas Heißkleber fixieren)
 
 Ablauf
-  1. Passprobe (0) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
+  1. Teile mit den echten Kaufteilen anprobieren (Buchse in die Kassette, Leiste in die Platte). Passt etwas nicht: Maße im Generator ändern.
   2. Buchse in die Tasche der Kassette drücken (Steckseite zur offenen Unterseite), Adern in den Schlitz legen,
      Streifen auf die Ablage kleben und anlöten.
   3. Kassette von unten in den Schacht des Probestücks schieben. Schieber seitlich (durch die lange Wand, +x) in die Nut
      schieben, bis er anschlägt. Er schließt bündig mit der Wand ab.
-  4. Leiste von unten in die Platte schieben (Pins zeigen nach oben, Lötenden in den Kabelraum), Deckel anschrauben.
+  4. Winkelleiste von unten in die Platte schieben: die senkrechten Pins zeigen nach oben und durch die Löcher im Muldenboden, der
+     Körper liegt neben den Pins, die 3-mm-Lötenden zeigen von den Pins weg in den Kabelraum. Deckel anschrauben.
   5. Probestück in die Mulde stecken. Die abgeschrägte Ecke zeigt, wie herum es passt.
 
 Was du messen sollst
   - Schieber: gleitet er leicht, ohne zu klemmen, und schließt er bündig ab?
   - Kassette: sitzt sie ohne Spiel im Schacht? Anschlag oben erreicht?
   - Stecken: Kraft zum Einstecken (Ziel unter 10 N) und zum Herausziehen (Ziel 3 bis 8 N); hebt die Mini-Platte mit?
-  - Kontakt: LED leuchtet, DETECT-Pin liest LOW (Stifte stecken 4,2 mm in der Buchse; Kontaktpunkt ist geschätzt)
+  - Kontakt: LED leuchtet, DETECT-Pin liest LOW (Stifte stecken {d['E']:.1f} mm in der Buchse; Kontaktpunkt ist geschätzt)
   - Licht: leuchtet die 0,4-mm-Wand gleichmäßig? (Fenster zeigen nach außen auf allen vier Seiten)
 
 Maße zum Nachschauen

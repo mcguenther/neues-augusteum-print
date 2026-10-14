@@ -332,8 +332,8 @@ def plate_and_lid(L, d, cs, F, bump=True, ring=None):
     cuts += [c.translate([0, PY, 0]) for c in sd.tongue_cuts(0.0, dict(pw=2 * xwall_p))]
     for x in sd.pin_x():                                                  # Dock A
         cuts.append(T(cyl(sd.HOLE / 2, d["z_hb"] - 0.01, -F + 0.01, cx=x, cy=HY, n=20)))
-    cuts.append(T(cbox(sd.HDR_W + 2 * sd.SNUG, sd.HDR_BODY + 2 * sd.SNUG, d["z_bb"] - 0.01, d["z_hb"], cy=HY)))
-    cuts.append(T(box(-9.0, 9.0, HY - 5.0, HY + 9.0, d["z_lt"] - 0.01, d["z_bb"])))
+    cuts += sd.dock_a_cuts(0.0, d, T)
+    cuts.append(T(box(-9.0, 9.0, HY - 8.5, HY + 9.0, d["z_lt"] - 0.01, d["z_bb"])))
     ppoly = shapely.Polygon(np.array(pcs.to_polygons()[0]))
     ymax = ppoly.bounds[3]
     cuts.append(box(PX - 4.0, PX + 4.0, PY, ymax + 0.01, d["z_lt"] - 0.01, d["z_lt"] + 4.0))     # Rinne zur Kante
@@ -348,7 +348,7 @@ def plate_and_lid(L, d, cs, F, bump=True, ring=None):
     # Deckel mit Stempeln unter den Stirnseiten der Leiste
     lid = ext(pcs, d["z_lb"], d["z_lt"])
     xi, xo = sd.HDR_W / 2 - 0.75, sd.HDR_W / 2 + 0.6
-    posts = [T(box(min(sx * xi, sx * xo), max(sx * xi, sx * xo), HY - 1.0, HY + 1.0, d["z_lt"] - 0.01, d["z_bb"]))
+    posts = [T(box(min(sx * xi, sx * xo), max(sx * xi, sx * xo), d["y_b"] - 1.0, d["y_b"] + 1.0, d["z_lt"] - 0.01, d["z_bb"]))
              for sx in (-1, 1)]
     lid = union([lid] + posts)
     lid = diff(lid, *[cyl(sd.SCREW_CLR / 2, d["z_lb"] - 0.01, d["z_lt"] + 0.01, cx=x, cy=y) for x, y in pts])
