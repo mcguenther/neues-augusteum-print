@@ -820,7 +820,8 @@ def refresh_colours():
     """data/farben.json neu messen, wenn Fassaden- oder Fotodateien neuer sind."""
     import glob
     import farben
-    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS]
+    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS] + \
+        ([farben.MESSUNG] if os.path.exists(farben.MESSUNG) else [])
     if not os.path.exists(farben.FARBEN) or max(map(os.path.getmtime, src)) > os.path.getmtime(farben.FARBEN):
         print("Fassadendaten geändert – Farben neu messen (farben.py)")
         farben.main()

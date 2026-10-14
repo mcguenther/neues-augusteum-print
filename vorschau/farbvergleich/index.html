@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farbvergleich Campus Augustusplatz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Bilder dürfen breiter laufen; „alt“ = Rostbraun, „neu“ = Glas-Petrol, Neutrale mit Blaustich wie Glas und Stein. */
+:root {
+  --bg: #eff3f4;
+  --surface: #ffffff;
+  --fg: #16202a;
+  --muted: #536571;
+  --line: #d1dade;
+  --neu: #14708a;
+  --neu-soft: #dcedf2;
+  --alt: #a24f2d;
+  --alt-soft: #f4e4dc;
+  --gut: #2c7a4b;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f161b; --surface: #172028; --fg: #e5ecef; --muted: #96a8b2; --line: #2b3943;
+    --neu: #5cc0d8; --neu-soft: #16323b; --alt: #e08a63; --alt-soft: #3a261d; --gut: #6fcf94;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f161b; --surface: #172028; --fg: #e5ecef; --muted: #96a8b2; --line: #2b3943;
+  --neu: #5cc0d8; --neu-soft: #16323b; --alt: #e08a63; --alt-soft: #3a261d; --gut: #6fcf94;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.55; }
+.seite { max-width: 72rem; margin-inline: auto; padding-inline: 1rem; padding-block: 2rem 4rem; display: grid; gap: 3.5rem; }
+.fotos > *, .zwei > *, .seite > *, .sektion > *, .kopf > *, .vergleich > *, .box > *, .befund > div, details.geb > * { min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.9rem); font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 500; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--neu); text-underline-offset: 0.18em; }
+code, .key { font-family: var(--font-mono); font-size: 0.82em; }
+.kopf { display: grid; gap: 1rem; }
+.kopf .unter { color: var(--muted); font-size: 1.15rem; max-width: 60ch; }
+.sektion { display: grid; gap: 1.25rem; }
+.sektion > .lead { color: var(--muted); }
+.befund { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
+.befund > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem 1.1rem; display: grid; gap: 0.4rem; align-content: start; }
+.befund h3 { font-size: 1rem; }
+.befund p { font-size: 0.97rem; color: var(--muted); }
+.marke { display: inline-block; font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.1rem 0.45rem; border-radius: 0.25rem; }
+.marke.alt { background: var(--alt-soft); color: var(--alt); }
+.marke.neu { background: var(--neu-soft); color: var(--neu); }
+/* Foto | alt | neu */
+.vergleich { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem; display: grid; gap: 0.75rem; }
+.vergleich header { display: grid; gap: 0.15rem; }
+.vergleich header p { color: var(--muted); font-size: 0.92rem; }
+.drei { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.drei figure { margin: 0; display: grid; gap: 0.25rem; }
+.drei img { width: 100%; height: auto; display: block; border-radius: 0.25rem; background: var(--line); }
+.drei figcaption { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.drei figure:nth-child(2) figcaption { color: var(--alt); }
+.drei figure:nth-child(3) figcaption { color: var(--neu); }
+.quelle { font-size: 0.85rem; color: var(--muted); }
+.fotos { display: grid; gap: 1rem; }
+@media (max-width: 40rem) { .drei { grid-template-columns: 1fr; } }
+/* Schieberegler */
+.cmp { display: grid; gap: 0.5rem; }
+.cmp .bild { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; overflow: hidden; --pos: 50%; }
+.cmp img { display: block; width: 100%; height: auto; }
+.cmp .oben { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.cmp .marker { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; background: var(--fg); opacity: 0.7; pointer-events: none; }
+.cmp .tag { position: absolute; top: 0.6rem; font-family: var(--font-mono); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 0.25rem; background: var(--surface); }
+.cmp .tag.l { left: 0.6rem; color: var(--alt); }
+.cmp .tag.r { right: 0.6rem; color: var(--neu); }
+.cmp input[type=range] { width: 100%; accent-color: var(--neu); }
+.cmp label { font-size: 0.85rem; color: var(--muted); }
+/* Tabellen */
+.tabelle { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+thead th { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+td.nowrap { white-space: nowrap; }
+tbody th { font-weight: 600; }
+.key { display: block; color: var(--muted); font-weight: 400; }
+.sw { display: inline-block; width: 1.9rem; height: 1.2rem; border-radius: 0.2rem; border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent); vertical-align: middle; margin-right: 0.5rem; }
+td code { vertical-align: middle; color: var(--muted); }
+tr.gleich td, tr.gleich th { opacity: 0.72; }
+tr.geaendert td:nth-child(4) { color: var(--neu); font-weight: 600; }
+tr.neu td:nth-child(4) { color: var(--neu); font-weight: 600; }
+td.bem { color: var(--muted); font-size: 0.88rem; }
+details.geb { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; }
+details.geb > summary { cursor: pointer; padding: 0.8rem 1rem; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: baseline; list-style: none; }
+details.geb > summary::-webkit-details-marker { display: none; }
+details.geb > summary:focus-visible { outline: 2px solid var(--neu); outline-offset: 2px; }
+.gn { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.gz { color: var(--muted); font-size: 0.9rem; }
+details.geb[open] > summary { border-bottom: 1px solid var(--line); }
+details.geb .tabelle { padding: 0.25rem 0.5rem 0.75rem; }
+/* Verfahren */
+.schritte { display: grid; gap: 1rem; counter-reset: s; padding: 0; margin: 0; list-style: none; }
+.schritte > li { counter-increment: s; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.25rem 1rem; align-items: start; }
+.schritte > li::before { content: counter(s); font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--neu-soft); color: var(--neu); display: grid; place-items: center; }
+.schritte .inhalt { display: grid; gap: 0.5rem; min-width: 0; }
+.schritte h3 { font-size: 1.12rem; font-weight: 700; }
+.schritte p { color: var(--muted); font-size: 0.99rem; }
+.schritte figure { margin: 0; display: grid; gap: 0.25rem; }
+.schritte img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.25rem; background: var(--surface); }
+.schritte figcaption { font-size: 0.82rem; color: var(--muted); }
+.bildreihe { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-start; }
+.bildreihe figure { flex: 1 1 14rem; min-width: 0; }
+.fassadenkarte { image-rendering: pixelated; }
+.zwei { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; align-items: start; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem 1.1rem; display: grid; gap: 0.5rem; align-content: start; }
+.box h3 { font-size: 1.02rem; font-weight: 700; }
+.box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; font-size: 0.97rem; }
+.box li { max-width: 62ch; }
+.stand { font-size: 0.9rem; color: var(--muted); }
+footer { color: var(--muted); font-size: 0.9rem; display: grid; gap: 0.4rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+footer code { color: var(--fg); }
+</style>
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}</style></head>
+<body>
+<main class="seite">
+
+<header class="kopf">
+  <span class="marke neu">Farbmessung · Stand 13.10.2026</span>
+  <h1>Farbvergleich Campus Augustusplatz</h1>
+  <p class="unter">Die Fassadenfarben des Druckmodells, alt gegen neu. Das Gebäudemodell wird in 13 sonnige Fotos projiziert, die Farben kommen von den Wänden selbst. Das Audimax ist jetzt weiß.</p>
+</header>
+
+<section class="sektion" aria-labelledby="befund">
+  <h2 id="befund">Was war falsch, was ist neu</h2>
+  <div class="befund">
+    <div><span class="marke alt">alt</span><h3>Zu dunkel, an der falschen Stelle gemessen</h3>
+      <p>Das Neue Augusteum war fast schwarzblau, obwohl seine Fassade aus hellem Spiegelglas und grauen bis anthrazitfarbenen Steinbändern besteht. Gemessen wurde mit handgesetzten Boxen, eine davon in einem Foto, auf dem die Ostfassade im Schatten liegt. Die Annahme „Pflaster ist Grau 150“ konnte das nicht ausgleichen.</p></div>
+    <div><span class="marke neu">neu</span><h3>Jedes Pixel kennt seine Wand</h3>
+      <p>Das 3D-Modell liegt deckungsgleich im Foto. Zu jedem Pixel ist bekannt, welche Wand, welche Höhe und ob die Sonne darauf stand. Gemessen wird nur an besonnten Wänden, über viele Fotos, mit Mittelwert statt Einzelfeld.</p></div>
+    <div><span class="marke neu">neu</span><h3>Audimax weiß, innen wie außen</h3>
+      <p>Die Hülle besteht laut Herstellerangabe aus Schaumglas mit dreilagiger weißer Beschichtung. Die Fotos stimmen damit überein. Wand und Dach des Audimax sind jetzt in einem Weiß gefärbt, vorher war das Dach hellgrau.</p></div>
+    <div><span class="marke neu">neu</span><h3>Fassaden mit Struktur statt einer Farbe</h3>
+      <p>Das Neue Augusteum bekommt 8 Farbflächen aus der Messung, vom hellen Südteil mit viel Glas bis zum grauen Mittelstück. Die Paulinum-Seiten sind nicht mehr dunkel, der helle Giebelstein blieb.</p></div>
+  </div>
+  <p class="stand">Neu gemessen sind Paulinum, Neues Augusteum, Institutsgebäude (Kopfbau) und City-Hochhaus. Hörsaalgebäude, Seminargebäude, Moritzbastei und Innenhof haben keine registrierbaren sonnigen Fotos und behalten ihre bisherigen Farben.</p>
+</section>
+
+<section class="sektion" aria-labelledby="gleich">
+  <h2 id="gleich">Dieselbe Kamera, drei Ansichten</h2>
+  <p class="lead">Links das Foto, daneben das Modell mit den alten und den neuen Farben, gerendert aus der Kameraposition des Fotos. Die Position wurde aus dem Foto bestimmt und per Überlagerung geprüft (Abschnitt Verfahren). Gerendert wird ohne Beleuchtung, damit Weiß als Weiß erscheint. Der Vergleich zeigt, ob die Farben zu den Fotos passen; er ist keine unabhängige Prüfung, denn aus denselben Fotos wurde gemessen.</p>
+  <div class="fotos">
+<article class="vergleich">
+  <header><h3>Leipzig - Augusteum &amp; Paulinum</h3><p>2015-08-03 10:40 · Sonne 44° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_25383321126_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_25383321126_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_25383321126_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">corno.fulgur75 · <a href="https://www.flickr.com/photos/129231073@N06/25383321126">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Augusteum (Universität Leipzig)</h3><p>2015-03-17 11:34 · Sonne 37° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_16905251612_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_16905251612_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_16905251612_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">domjisch · <a href="https://www.flickr.com/photos/46604778@N00/16905251612">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Leipzig - Neues Augusteum &amp; Paulinum</h3><p>2015-08-03 09:42 · Sonne 36° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_24782688903_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_24782688903_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_24782688903_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">corno.fulgur75 · <a href="https://www.flickr.com/photos/129231073@N06/24782688903">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Leipzig - Paulinum</h3><p>2015-08-03 19:15 · Sonne 14° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_25292032932_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_25292032932_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_25292032932_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">corno.fulgur75 · <a href="https://www.flickr.com/photos/129231073@N06/25292032932">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Leipzig - Paulinum</h3><p>2015-08-03 09:58 · Sonne 38° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_25409407395_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_25409407395_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_25409407395_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">corno.fulgur75 · <a href="https://www.flickr.com/photos/129231073@N06/25409407395">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Augusteum (Universität Leipzig)</h3><p>2015-03-17 11:34 · Sonne 37° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_16719063090_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_16719063090_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_16719063090_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">domjisch · <a href="https://www.flickr.com/photos/46604778@N00/16719063090">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>DSC03178</h3><p>2014-04-19 11:45 · Sonne 47° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_13957964694_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_13957964694_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_13957964694_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">Martin Ibert · <a href="https://www.flickr.com/photos/27147144@N00/13957964694">Quelle</a> · CC BY-SA 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Leipzig - Paulinum</h3><p>2015-08-03 09:44 · Sonne 36° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_25291096262_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_25291096262_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_25291096262_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">corno.fulgur75 · <a href="https://www.flickr.com/photos/129231073@N06/25291096262">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+<article class="vergleich">
+  <header><h3>Augustusplatz</h3><p>2013-08-22 10:16 · Sonne 36° über dem Horizont</p></header>
+  <div class="drei">
+    <figure><img src="fl_9656690560_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="fl_9656690560_alt.jpg" alt="Modell, alte Farben"><figcaption>Modell alt</figcaption></figure>
+    <figure><img src="fl_9656690560_neu.jpg" alt="Modell, neue Farben"><figcaption>Modell neu</figcaption></figure>
+  </div>
+  <p class="quelle">prayerslayer · <a href="https://www.flickr.com/photos/40787640@N03/9656690560">Quelle</a> · CC BY 2.0 · flickr</p>
+</article>
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtmodell vom Augustusplatz</h2>
+  <p class="lead">Maßstab 1:1500 mit Uniriese und Moritzbastei, Blick von Osten. Der Regler verschiebt die Grenze zwischen alt und neu.</p>
+  <div class="cmp" id="cmp1">
+    <div class="bild">
+      <img src="gesamt_neu.png" alt="Gesamtmodell, neue Farben" width="1100" height="870">
+      <div class="oben"><img src="gesamt_alt.png" alt="Gesamtmodell, alte Farben" width="1100" height="870"></div>
+      <div class="marker"></div><span class="tag l">alt</span><span class="tag r">neu</span>
+    </div>
+    <label for="r1">Grenze alt | neu</label>
+    <input type="range" id="r1" min="0" max="100" value="50" aria-label="Grenze zwischen alt und neu">
+  </div>
+  <div class="cmp" id="cmp2">
+    <div class="bild">
+      <img src="einzel_neu.png" alt="Einzelgebäude, neue Farben" width="2240" height="2180">
+      <div class="oben"><img src="einzel_alt.png" alt="Einzelgebäude, alte Farben" width="2240" height="2180"></div>
+      <div class="marker"></div><span class="tag l">alt</span><span class="tag r">neu</span>
+    </div>
+    <label for="r2">Grenze alt | neu, alle Einzelgebäude 1:1000 aus Südost und Nordwest</label>
+    <input type="range" id="r2" min="0" max="100" value="50" aria-label="Grenze zwischen alt und neu, Einzelgebäude">
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="farben">
+  <h2 id="farben">Farben je Gebäude</h2>
+  <p class="lead">Alle Farbflächen jedes Gebäudes mit altem und neuem Wert. „Neu gemessene Fläche“ ist eine Zone, die die Segmentierung der Fotodaten gefunden hat, sie liegt über den bisherigen Zonen. „Unverändert“ gilt für die Farbe der bisherigen Zone; wo die Fotos dort eine andere Fläche zeigen, liegt eine neue Fläche darüber. Wo kein Foto mit Sonne vorliegt, bleibt der alte Wert stehen. Die Druckprofile mit 3 und 4 Filamenten bilden die Farben wie bisher auf ihre Palette ab.</p>
+  <div class="fotos">
+<details class="geb" open><summary><span class="gn">Paulinum</span><span class="gz">6 neue Flächen aus Fotos</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">Giebelstein<span class="key">stein_hell</span></th><td><span class="sw alt" style="background:#cac5c2" title="#cac5c2"></span><code>#cac5c2</code></td><td><span class="sw neu" style="background:#cac5c2" title="#cac5c2"></span><code>#cac5c2</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">weißer Kalkstein<span class="key">weiss</span></th><td><span class="sw alt" style="background:#eee9e8" title="#eee9e8"></span><code>#eee9e8</code></td><td><span class="sw neu" style="background:#eee9e8" title="#eee9e8"></span><code>#eee9e8</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="geaendert"><th scope="row">Stein-Glas-Bänder<span class="key">stein_glas</span></th><td><span class="sw alt" style="background:#778f93" title="#778f93"></span><code>#778f93</code></td><td><span class="sw neu" style="background:#8c9497" title="#8c9497"></span><code>#8c9497</code></td><td>geändert</td><td class="bem">442 besonnte Zellen</td></tr>
+<tr class="gleich"><th scope="row">Glasstreifen<span class="key">glas</span></th><td><span class="sw alt" style="background:#34464c" title="#34464c"></span><code>#34464c</code></td><td><span class="sw neu" style="background:#34464c" title="#34464c"></span><code>#34464c</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Dachreiter (Zink)<span class="key">zink</span></th><td><span class="sw alt" style="background:#8c969f" title="#8c969f"></span><code>#8c969f</code></td><td><span class="sw neu" style="background:#8c969f" title="#8c969f"></span><code>#8c969f</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Maßwerkfenster<span class="key">fensterglas</span></th><td><span class="sw alt" style="background:#afd0d6" title="#afd0d6"></span><code>#afd0d6</code></td><td><span class="sw neu" style="background:#afd0d6" title="#afd0d6"></span><code>#afd0d6</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Rosette innen<span class="key">rosette_innen</span></th><td><span class="sw alt" style="background:#8f9088" title="#8f9088"></span><code>#8f9088</code></td><td><span class="sw neu" style="background:#8f9088" title="#8f9088"></span><code>#8f9088</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="neu"><th scope="row">Messfläche m1<span class="key">m1</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#81acc0" title="#81acc0"></span><code>#81acc0</code></td><td>neu gemessene Fläche</td><td class="bem">Süd-Seite, 4–42 m Höhe, 60–98 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m2<span class="key">m2</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#667682" title="#667682"></span><code>#667682</code></td><td>neu gemessene Fläche</td><td class="bem">Süd-Seite, 42–52 m Höhe, 60–98 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m3<span class="key">m3</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#727476" title="#727476"></span><code>#727476</code></td><td>neu gemessene Fläche</td><td class="bem">West-Seite, 16–42 m Höhe, 77–98 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m4<span class="key">m4</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#a09b96" title="#a09b96"></span><code>#a09b96</code></td><td>neu gemessene Fläche</td><td class="bem">West-Seite, 42–58 m Höhe, 77–98 % der Fassade</td></tr>
+</tbody></table></div></details>
+<details class="geb" open><summary><span class="gn">Neues Augusteum (mit Audimax)</span><span class="gz">8 neue Flächen aus Fotos</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="geaendert"><th scope="row">Glas mit Steinlamellen<span class="key">glas_stein</span></th><td><span class="sw alt" style="background:#405664" title="#405664"></span><code>#405664</code></td><td><span class="sw neu" style="background:#7e8b93" title="#7e8b93"></span><code>#7e8b93</code></td><td>geändert</td><td class="bem">1320 besonnte Zellen</td></tr>
+<tr class="gleich"><th scope="row">Lamellenband oben<span class="key">lamellen</span></th><td><span class="sw alt" style="background:#444850" title="#444850"></span><code>#444850</code></td><td><span class="sw neu" style="background:#444850" title="#444850"></span><code>#444850</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Sandsteinportal<span class="key">sandstein</span></th><td><span class="sw alt" style="background:#b39f7f" title="#b39f7f"></span><code>#b39f7f</code></td><td><span class="sw neu" style="background:#b39f7f" title="#b39f7f"></span><code>#b39f7f</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="geaendert"><th scope="row">Audimax (weiße Hülle)<span class="key">pavillon_weiss</span></th><td><span class="sw alt" style="background:#d4d4d2" title="#d4d4d2"></span><code>#d4d4d2</code></td><td><span class="sw neu" style="background:#f1efeb" title="#f1efeb"></span><code>#f1efeb</code></td><td>geändert</td><td class="bem">Material: weiße Triflex-Beschichtung (Herstellerangabe)</td></tr>
+<tr class="neu"><th scope="row">Messfläche m1<span class="key">m1</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#668196" title="#668196"></span><code>#668196</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 20–32 m Höhe, 0–42 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m2<span class="key">m2</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#c0bfc3" title="#c0bfc3"></span><code>#c0bfc3</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 0–8 m Höhe, 0–11 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m3<span class="key">m3</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#797a79" title="#797a79"></span><code>#797a79</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 0–8 m Höhe, 32–90 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m4<span class="key">m4</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#a9c0cb" title="#a9c0cb"></span><code>#a9c0cb</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 8–20 m Höhe, 32–42 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m5<span class="key">m5</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#bbb3af" title="#bbb3af"></span><code>#bbb3af</code></td><td>neu gemessene Fläche</td><td class="bem">West-Seite, 12–34 m Höhe, 24–37 % der Fassade</td></tr>
+</tbody></table></div></details>
+<details class="geb"><summary><span class="gn">Hörsaalgebäude / Mensa am Park</span><span class="gz">Fassade unverändert (keine neu messbaren Fotos)</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">helle Fassadenplatten<span class="key">platten</span></th><td><span class="sw alt" style="background:#f4ede7" title="#f4ede7"></span><code>#f4ede7</code></td><td><span class="sw neu" style="background:#f4ede7" title="#f4ede7"></span><code>#f4ede7</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Sockel<span class="key">sockel</span></th><td><span class="sw alt" style="background:#4a4a4f" title="#4a4a4f"></span><code>#4a4a4f</code></td><td><span class="sw neu" style="background:#4a4a4f" title="#4a4a4f"></span><code>#4a4a4f</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Glasstreifen<span class="key">glas</span></th><td><span class="sw alt" style="background:#5b7070" title="#5b7070"></span><code>#5b7070</code></td><td><span class="sw neu" style="background:#5b7070" title="#5b7070"></span><code>#5b7070</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">rote Verkleidung<span class="key">rot</span></th><td><span class="sw alt" style="background:#863138" title="#863138"></span><code>#863138</code></td><td><span class="sw neu" style="background:#863138" title="#863138"></span><code>#863138</code></td><td>unverändert</td><td class="bem"></td></tr>
+</tbody></table></div></details>
+<details class="geb"><summary><span class="gn">Seminargebäude</span><span class="gz">Fassade unverändert (keine neu messbaren Fotos)</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">weiße Wabenplatten<span class="key">wabenplatten</span></th><td><span class="sw alt" style="background:#eeebe7" title="#eeebe7"></span><code>#eeebe7</code></td><td><span class="sw neu" style="background:#eeebe7" title="#eeebe7"></span><code>#eeebe7</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">rotbraunes Band<span class="key">band_rotbraun</span></th><td><span class="sw alt" style="background:#723830" title="#723830"></span><code>#723830</code></td><td><span class="sw neu" style="background:#723830" title="#723830"></span><code>#723830</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Sockel<span class="key">sockel</span></th><td><span class="sw alt" style="background:#46464a" title="#46464a"></span><code>#46464a</code></td><td><span class="sw neu" style="background:#46464a" title="#46464a"></span><code>#46464a</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Glasstreifen<span class="key">glas</span></th><td><span class="sw alt" style="background:#46526a" title="#46526a"></span><code>#46526a</code></td><td><span class="sw neu" style="background:#46526a" title="#46526a"></span><code>#46526a</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Glasfassade Eingang<span class="key">glasfassade</span></th><td><span class="sw alt" style="background:#60769c" title="#60769c"></span><code>#60769c</code></td><td><span class="sw neu" style="background:#60769c" title="#60769c"></span><code>#60769c</code></td><td>unverändert</td><td class="bem"></td></tr>
+</tbody></table></div></details>
+<details class="geb"><summary><span class="gn">Institutsgebäude</span><span class="gz">3 neue Flächen aus Fotos</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">Naturstein (Lochfassade)<span class="key">naturstein</span></th><td><span class="sw alt" style="background:#c4beb6" title="#c4beb6"></span><code>#c4beb6</code></td><td><span class="sw neu" style="background:#c4beb6" title="#c4beb6"></span><code>#c4beb6</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">rotbraune Verkleidung<span class="key">rotbraun</span></th><td><span class="sw alt" style="background:#7e423d" title="#7e423d"></span><code>#7e423d</code></td><td><span class="sw neu" style="background:#7e423d" title="#7e423d"></span><code>#7e423d</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">dunkles Erdgeschoss<span class="key">dunkel</span></th><td><span class="sw alt" style="background:#36383a" title="#36383a"></span><code>#36383a</code></td><td><span class="sw neu" style="background:#36383a" title="#36383a"></span><code>#36383a</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Glasfront<span class="key">glasfront</span></th><td><span class="sw alt" style="background:#747879" title="#747879"></span><code>#747879</code></td><td><span class="sw neu" style="background:#747879" title="#747879"></span><code>#747879</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Kopfbau dunkel<span class="key">kopfbau_dunkel</span></th><td><span class="sw alt" style="background:#424b4f" title="#424b4f"></span><code>#424b4f</code></td><td><span class="sw neu" style="background:#424b4f" title="#424b4f"></span><code>#424b4f</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="neu"><th scope="row">Messfläche m1<span class="key">m1</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#979797" title="#979797"></span><code>#979797</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 6–20 m Höhe, 20–59 % der Fassade</td></tr>
+</tbody></table></div></details>
+<details class="geb" open><summary><span class="gn">City-Hochhaus „Uniriese“</span><span class="gz">2 neue Flächen aus Fotos</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="geaendert"><th scope="row">Granitplatten mit Fenstern<span class="key">fassade</span></th><td><span class="sw alt" style="background:#bfccd6" title="#bfccd6"></span><code>#bfccd6</code></td><td><span class="sw neu" style="background:#87a7b9" title="#87a7b9"></span><code>#87a7b9</code></td><td>geändert</td><td class="bem">791 besonnte Zellen</td></tr>
+<tr class="gleich"><th scope="row">Glasstreifen<span class="key">glas</span></th><td><span class="sw alt" style="background:#222f45" title="#222f45"></span><code>#222f45</code></td><td><span class="sw neu" style="background:#222f45" title="#222f45"></span><code>#222f45</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Sockel<span class="key">sockel</span></th><td><span class="sw alt" style="background:#24303e" title="#24303e"></span><code>#24303e</code></td><td><span class="sw neu" style="background:#24303e" title="#24303e"></span><code>#24303e</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="neu"><th scope="row">Messfläche m1<span class="key">m1</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#5f788c" title="#5f788c"></span><code>#5f788c</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 88–140 m Höhe, 0–74 % der Fassade</td></tr>
+<tr class="neu"><th scope="row">Messfläche m2<span class="key">m2</span></th><td>–<code></code></td><td><span class="sw neu" style="background:#9eabaf" title="#9eabaf"></span><code>#9eabaf</code></td><td>neu gemessene Fläche</td><td class="bem">Ost-Seite, 20–88 m Höhe, 0–74 % der Fassade</td></tr>
+</tbody></table></div></details>
+<details class="geb"><summary><span class="gn">Moritzbastei</span><span class="gz">Fassade unverändert (keine neu messbaren Fotos)</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">Ziegel<span class="key">ziegel</span></th><td><span class="sw alt" style="background:#8c5439" title="#8c5439"></span><code>#8c5439</code></td><td><span class="sw neu" style="background:#8c5439" title="#8c5439"></span><code>#8c5439</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Naturstein<span class="key">stein</span></th><td><span class="sw alt" style="background:#928e89" title="#928e89"></span><code>#928e89</code></td><td><span class="sw neu" style="background:#928e89" title="#928e89"></span><code>#928e89</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">weißer Putz<span class="key">putz</span></th><td><span class="sw alt" style="background:#d8d2c4" title="#d8d2c4"></span><code>#d8d2c4</code></td><td><span class="sw neu" style="background:#d8d2c4" title="#d8d2c4"></span><code>#d8d2c4</code></td><td>unverändert</td><td class="bem"></td></tr>
+</tbody></table></div></details>
+<details class="geb"><summary><span class="gn">Innenhof (Leibnizforum)</span><span class="gz">Fassade unverändert (keine neu messbaren Fotos)</span></summary>
+<div class="tabelle"><table><thead><tr><th>Fläche</th><th>alt</th><th>neu</th><th>Status</th><th>Hinweis</th></tr></thead><tbody>
+<tr class="gleich"><th scope="row">Messfläche pflaster<span class="key">pflaster</span></th><td><span class="sw alt" style="background:#b2b6b4" title="#b2b6b4"></span><code>#b2b6b4</code></td><td><span class="sw neu" style="background:#b2b6b4" title="#b2b6b4"></span><code>#b2b6b4</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche platz<span class="key">platz</span></th><td><span class="sw alt" style="background:#929697" title="#929697"></span><code>#929697</code></td><td><span class="sw neu" style="background:#929697" title="#929697"></span><code>#929697</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche denkmalplatz<span class="key">denkmalplatz</span></th><td><span class="sw alt" style="background:#d4d6d2" title="#d4d6d2"></span><code>#d4d6d2</code></td><td><span class="sw neu" style="background:#d4d6d2" title="#d4d6d2"></span><code>#d4d6d2</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche beet<span class="key">beet</span></th><td><span class="sw alt" style="background:#727066" title="#727066"></span><code>#727066</code></td><td><span class="sw neu" style="background:#727066" title="#727066"></span><code>#727066</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche beet_rand<span class="key">beet_rand</span></th><td><span class="sw alt" style="background:#26282a" title="#26282a"></span><code>#26282a</code></td><td><span class="sw neu" style="background:#26282a" title="#26282a"></span><code>#26282a</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche podest<span class="key">podest</span></th><td><span class="sw alt" style="background:#7b6658" title="#7b6658"></span><code>#7b6658</code></td><td><span class="sw neu" style="background:#7b6658" title="#7b6658"></span><code>#7b6658</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche bank<span class="key">bank</span></th><td><span class="sw alt" style="background:#796559" title="#796559"></span><code>#796559</code></td><td><span class="sw neu" style="background:#796559" title="#796559"></span><code>#796559</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Sockel<span class="key">sockel</span></th><td><span class="sw alt" style="background:#836764" title="#836764"></span><code>#836764</code></td><td><span class="sw neu" style="background:#836764" title="#836764"></span><code>#836764</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche bronze<span class="key">bronze</span></th><td><span class="sw alt" style="background:#202224" title="#202224"></span><code>#202224</code></td><td><span class="sw neu" style="background:#202224" title="#202224"></span><code>#202224</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche stamm<span class="key">stamm</span></th><td><span class="sw alt" style="background:#5a5148" title="#5a5148"></span><code>#5a5148</code></td><td><span class="sw neu" style="background:#5a5148" title="#5a5148"></span><code>#5a5148</code></td><td>unverändert</td><td class="bem"></td></tr>
+<tr class="gleich"><th scope="row">Messfläche krone<span class="key">krone</span></th><td><span class="sw alt" style="background:#89956d" title="#89956d"></span><code>#89956d</code></td><td><span class="sw neu" style="background:#89956d" title="#89956d"></span><code>#89956d</code></td><td>unverändert</td><td class="bem"></td></tr>
+</tbody></table></div></details>
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="verfahren">
+  <h2 id="verfahren">So wird gemessen</h2>
+  <p class="lead">Sieben Schritte, in dieser Reihenfolge. Alles läuft mit <code>python3 farbmessung.py messen</code> und ist wiederholbar, sobald ein weiteres Foto im Katalog steht.</p>
+  <ol class="schritte">
+    <li><div class="inhalt"><h3>Fotos sammeln, nur mit freier Lizenz</h3>
+      <p>Flickr (über Openverse, CC BY und CC BY-SA, 2048 Pixel), Panoramax (Straßenfotos, CC BY-SA), KartaView und die bisherigen Wikimedia-Commons-Fotos wurden gesichtet. Verwendet werden 13 Fotos (zwölf mit Sonne, eines bedeckt) aus verschiedenen Blickwinkeln auf Augusteum, Paulinum und Uniriese, alle mit Aufnahmezeit. Profi- und Magazinfotos sind urheberrechtlich geschützt und bleiben draußen, siehe Quellen.</p></div></li>
+    <li><div class="inhalt"><h3>Foto am Modell ausrichten</h3>
+      <p>Der Himmel wird im Foto erkannt, die Himmelslinie mit der Silhouette des Modells verglichen. Ein globaler Optimierer sucht Standort, Blickrichtung, Neigung und Brennweite. Jede Lösung wurde als Überlagerung angesehen; nicht passende Fotos fielen heraus (Hochformat-Nahaufnahmen, Aufnahmen aus dem Straßenraum).</p>
+      <div class="bildreihe">
+        <figure><img src="fl_25383321126_pose.jpg" alt="Überlagerung des Modells im Foto"><figcaption>Modell (Flächen und Kanten, je Gebäude eine Farbe) über dem Foto.</figcaption></figure>
+        <figure><img src="fl_25291096262_pose.jpg" alt="Überlagerung am Giebel"><figcaption>Paulinum-Giebel aus 20 m, vom Boden schräg nach oben.</figcaption></figure>
+      </div></div></li>
+    <li><div class="inhalt"><h3>Pixel den Wänden zuordnen</h3>
+      <p>Das Modell wird mit exaktem Tiefenpuffer ins Foto gerendert. Jedes Pixel bekommt Gebäude, Himmelsrichtung, Position entlang der Fassade und Höhe über dem Gelände, dasselbe Koordinatensystem wie die Zonen in <code>data/fassaden/*.json</code>. Himmel, Laub und Ränder werden ausgeblendet. Ergebnis ist eine abgewickelte Fassade aus 1-m-Zellen:</p>
+      <div class="bildreihe">
+        <figure><img class="fassadenkarte" src="fassade_augusteum_ost.png" alt="Abgewickelte Ostfassade des Neuen Augusteums"><figcaption>Neues Augusteum, Ostfassade, 68 × 31 m, besonnte Zellen (Konsens aller Fotos). Lücken: kein Foto, Laub, Stützen.</figcaption></figure>
+        <figure><img class="fassadenkarte" src="fassade_paulinum_ost.png" alt="Abgewickelter Paulinum-Giebel"><figcaption>Paulinum, Ostseite, 35 × 56 m. Hell: Giebelstein, blau: Glasstreifen und Dach.</figcaption></figure>
+      </div></div></li>
+    <li><div class="inhalt"><h3>Sonne und Schatten einrechnen</h3>
+      <p>Aus der Aufnahmezeit folgt der Sonnenstand. Eine Schattenkarte des Modells sagt, welche Zelle besonnt war. Besonnte Zellen werden auf einen Einfall von 45° umgerechnet, Zellen mit sehr anderer Einstrahlung zählen weniger. Beschattete Zellen werden nur benutzt, wo nichts Besonntes vorliegt, und ändern dann keine Farben. Die Belichtung der Kamera bleibt erhalten: Ein Abgleich am Platzbelag über das Luftbild 2024 ließ alle Fassaden bläulich werden und wurde verworfen.</p></div></li>
+    <li><div class="inhalt"><h3>Konsens über alle Fotos</h3>
+      <p>Je Zelle ein Wert aus allen besonnten Beobachtungen, gewichtet nach Pixelzahl und Blickwinkel. Dunklere Ausreißer fallen weg, denn Schatten, Laub und Personen können eine Wand nur abdunkeln. Ein Mittel im linearen Licht trifft den Gesamteindruck gestreifter Fassaden aus Stein und Glas, ein Median träfe nur einen der Streifen. Fotos, die stark von den übrigen abweichen, zählen weniger (Spalte Gewicht unten); umgerechnet wird nichts.</p></div></li>
+    <li><div class="inhalt"><h3>Flächen finden</h3>
+      <p>Jede Fassade wird in Rechtecke gleicher Farbe zerlegt (Guillotine-Schnitte auf 2-m-Blöcken, höchstens 9 Rechtecke). Ein Rechteck wird zur Zone, wenn es mindestens 30 besonnte Zellen hat, sich um mehr als 8 ΔE von der bisherigen Zone unterscheidet und in der Erdgeschosszone keinen Sprung über 28 ΔE macht, denn dort verdecken Bäume und Personen. Bögen, Rosette, Portal und Audimax bleiben als feste Zonen über der Messung.</p></div></li>
+    <li><div class="inhalt"><h3>Ins Modell zurück</h3>
+      <p>Das Ergebnis steht in <code>data/messung.json</code>. <code>farben.py</code> nimmt es anstelle der Handmessung, <code>generate.py</code> schneidet die Gebäude an den neuen Zonengrenzen und färbt sie ein. Alle Dateien sind dicht, die Zahl der Filamente bleibt bei 15.</p></div></li>
+  </ol>
+</section>
+
+<section class="sektion" aria-labelledby="pruefung">
+  <h2 id="pruefung">Stimmen die Fotos untereinander überein?</h2>
+  <p class="lead">Nur bedingt. Je Foto steht hier, wie weit seine besonnten 4-m-Blöcke im Mittel vom Mittel der anderen Fotos an derselben Wand abweichen (Helligkeit in Prozent, Farbabstand ΔE). Die Werte liegen bei einem Viertel bis zum Doppelten der Helligkeit. Ursachen sind Belichtung und Nachbearbeitung der Fotos, spiegelndes Glas und eine Ausrichtung, die um einige Meter danebenliegt. Deshalb sind die neuen Flächen grobe Anhaltswerte: Sie zeigen die Richtung (hell statt schwarz), nicht den letzten Farbton. Bei 4957 von 8202 Zellen liegt mindestens eine besonnte Messung vor.</p>
+  <div class="tabelle"><table>
+    <thead><tr><th>Foto</th><th>Urheber</th><th>Lizenz</th><th>Datum</th><th>Sonne</th><th>Zellen</th><th>Abweichung (Helligkeit · ΔE)</th><th>Gewicht</th></tr></thead>
+    <tbody>
+<tr><td><a href="https://www.flickr.com/photos/28577026@N02/52390789883">2022-09-03 09-07 Leipzig 020 Augustusplatz, Augusteum</a></td><td>Allie_Caulfield</td><td>CC BY 2.0</td><td class="nowrap">2022-09-03</td><td class="num">10°</td><td class="num">2576</td><td class="num">–</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/28577026@N02/52389705137">2022-09-03 09-07 Leipzig 106 Augustusplatz, Augusteum</a></td><td>Allie_Caulfield</td><td>CC BY 2.0</td><td class="nowrap">2022-09-04</td><td class="num">16°</td><td class="num">1158</td><td class="num">–</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/27147144@N00/13957964694">DSC03178</a></td><td>Martin Ibert</td><td>CC BY-SA 2.0</td><td class="nowrap">2014-04-19</td><td class="num">47°</td><td class="num">2152</td><td class="num">59 % · ΔE 23</td><td class="num">0.85</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/25383321126">Leipzig - Augusteum &amp; Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">44°</td><td class="num">1873</td><td class="num">43 % · ΔE 15</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/24782688903">Leipzig - Neues Augusteum &amp; Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">36°</td><td class="num">1157</td><td class="num">28 % · ΔE 10</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/25291096262">Leipzig - Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">36°</td><td class="num">1107</td><td class="num">40 % · ΔE 15</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/25292032932">Leipzig - Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">14°</td><td class="num">1736</td><td class="num">107 % · ΔE 22</td><td class="num">0.47</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/25292025232">Leipzig - Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">14°</td><td class="num">597</td><td class="num">52 % · ΔE 22</td><td class="num">0.97</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/129231073@N06/25409407395">Leipzig - Paulinum</a></td><td>corno.fulgur75</td><td>CC BY 2.0</td><td class="nowrap">2015-08-03</td><td class="num">38°</td><td class="num">1299</td><td class="num">–</td><td class="num">1.00</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/46604778@N00/16905251612">Augusteum (Universität Leipzig)</a></td><td>domjisch</td><td>CC BY 2.0</td><td class="nowrap">2015-03-17</td><td class="num">37°</td><td class="num">1804</td><td class="num">69 % · ΔE 23</td><td class="num">0.72</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/46604778@N00/16719063090">Augusteum (Universität Leipzig)</a></td><td>domjisch</td><td>CC BY 2.0</td><td class="nowrap">2015-03-17</td><td class="num">37°</td><td class="num">799</td><td class="num">161 % · ΔE 28</td><td class="num">0.31</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/40787640@N03/9656690560">Augustusplatz</a></td><td>prayerslayer</td><td>CC BY 2.0</td><td class="nowrap">2013-08-22</td><td class="num">36°</td><td class="num">5120</td><td class="num">89 % · ΔE 24</td><td class="num">0.56</td></tr>
+<tr><td><a href="https://www.flickr.com/photos/123851327@N06/14005411673">Uni Riese &amp; Universität Leipzig</a></td><td>Jackie_ffm</td><td>CC BY 2.0</td><td class="nowrap">2014-03-14</td><td class="num">bedeckt</td><td class="num">4660</td><td class="num">–</td><td class="num">1.00</td></tr>
+    </tbody></table></div>
+</section>
+
+<section class="sektion" aria-labelledby="quellen">
+  <h2 id="quellen">Quellen: was gefunden wurde und was nicht verwendet werden darf</h2>
+  <div class="zwei">
+    <div class="box"><h3>Freie Fotos, gesichtet</h3>
+      <ul>
+        <li><strong>Flickr über Openverse:</strong> 45 Fotos katalogisiert (CC BY 2.0, CC BY-SA 2.0), 2048 Pixel. Sonnige Aufnahmen von Fred Romero, Martin Ibert, domjisch und Allie Caulfield liefern die Messung.</li>
+        <li><strong>Panoramax:</strong> 66 Straßenfotos vom 27.3.2022 (CC BY-SA 4.0), Augustusplatz und Grimmaische Straße. Das Augusteum liegt darauf im Schatten, die Nahaufnahmen ließen sich nicht verlässlich ausrichten. Nicht für die Messung verwendet, nur zur Plausibilität.</li>
+        <li><strong>KartaView:</strong> 8 Aufnahmen geprüft, kaum nutzbar (Dashcam).</li>
+        <li><strong>Wikimedia Commons:</strong> die bisherigen Fotos. Die Suche nach weiteren scheiterte an der Drosselung der Commons-API.</li>
+      </ul></div>
+    <div class="box"><h3>Professionelle und offizielle Fotos</h3>
+      <ul>
+        <li>Alle gefundenen Profi-Fotos sind urheberrechtlich geschützt, zum Beispiel von Thomas Moeller (Heinze), PUNCTUM und Foamglas, Steffen Spitzner, Christian Richters, Martin Geisler und aus den Heften der Uni. Keines wurde geladen oder verwendet.</li>
+        <li>Der Fotoservice der Universität Leipzig und der Presseservice der Kustodie geben Bilder nur nach Anfrage, redaktionell und mit Credit frei. Die Anfrage läuft über die Pressestelle der Universität (laut Uni-Seite per Mail an presse@uni-leipzig.de, mit Verwendungszweck).</li>
+        <li>Architektur-Bildarchiv und Photo12 verkaufen Lizenzen (ab etwa 15 Euro je Bild).</li>
+        <li>Stadt Leipzig und GeoSN bieten keine freien Fassadenfotos. Das Stadtmodell mit Texturen ist kostenpflichtig und stammt aus Luftbildern von 2015.</li>
+      </ul></div>
+    <div class="box"><h3>Materialangaben aus Text, als Gegenprobe</h3>
+      <ul>
+        <li><strong>Audimax:</strong> weißes Foamglas mit dreilagiger weißer Triflex-Beschichtung, Dach und Wand nahtlos (<a href="https://www.foamglas.com/en/references/germany/auditorium-maximum">Foamglas</a>, <a href="https://www.heinze.de/architekturobjekt/auditorium-maximum-universitaet-leipzig/12660699/">Heinze</a>).</li>
+        <li><strong>Paulinum:</strong> Kirchheimer Muschelkalk und spanischer Kalkstein in hellen Tönen, Rahmen von Fenster und Rosette aus sehr hellem Stein, Seiten im Wechsel aus Stein und Glas (<a href="https://www.kustodie.uni-leipzig.de/en/your-visit-to-our-exhibitions/paulinum">Kustodie</a>, <a href="https://www.sib.sachsen.de/download/2018_03_SIB_Magazin.pdf">SIB-Magazin</a>).</li>
+        <li><strong>Neues Augusteum:</strong> Glas mit Siebdruck in Steinoptik und Natursteinbänder aus Serpentinit, Hofportal aus Cotta-Sandstein (<a href="https://www.stone-ideas.com/37576/natural-stone-glass-distinguishing-factors-leipzigs-new-university-complex/">Stone-Ideas</a>, <a href="https://www.db-bauzeitung.de/diskurs/endlich-in-osteuropa-angekommen/">db</a>).</li>
+        <li><strong>Mensa am Park / Seminargebäude:</strong> Weißbeton-Platten und weiß beschichtete DDR-Betonplatten, rostrote Akzente (Uni-Heft 2015).</li>
+        <li><strong>City-Hochhaus:</strong> graue bis hellgraue Granitplatten und Glas (Sanierung 1999 bis 2002).</li>
+      </ul></div>
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="grenzen">
+  <h2 id="grenzen">Grenzen</h2>
+  <div class="zwei">
+    <div class="box"><h3>Was die Messung nicht kann</h3>
+      <ul>
+        <li>Nur 13 Fotos sind am Modell ausgerichtet. Mehr Fotos aus anderen Richtungen verbessern das Ergebnis, vor allem an Nord- und Westseiten.</li>
+        <li>Die Beleuchtung ist ein einfaches Modell (Sonne plus gleichmäßiges Himmelslicht). Spiegelnde Glasflächen schwanken je nach Himmel.</li>
+        <li>Die Ausrichtung hat einige Dezimeter bis wenige Meter Fehler, besonders an komplexen Dächern. Kleine Details wie die weiße Einfassung des Paulinum-Fensters bleiben handgesetzt.</li>
+        <li>Fassaden im Schatten (etwa die Nordseiten) bleiben bei den bisherigen Werten.</li>
+      </ul></div>
+    <div class="box"><h3>Was noch offen ist</h3>
+      <ul>
+        <li>Hörsaalgebäude, Seminargebäude, Moritzbastei und Innenhof: sonnige Fotos mit Himmel fehlen in den freien Quellen. Mit eigenen Fotos oder einer Anfrage bei der Uni lässt sich das schließen.</li>
+        <li>Der Weißton des Audimax steht nur als Materialangabe fest (Triflex, weiß), nicht als gemessener Farbwert aus einem sonnigen Foto.</li>
+        <li>Die alten Wikimedia-Links (3840 Pixel) liefern nicht mehr, deshalb sind die alten Farben jetzt als feste Werte gespeichert.</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <p>Neu im Repo: <code>farbmessung.py</code> (Messung), <code>kamera.py</code>, <code>skyline.py</code>, <code>registrierung.py</code>, <code>szene.py</code>, <code>vergleich.py</code>, Katalog <code>data/messfotos.json</code>, Ergebnis <code>data/messung.json</code>, Bilder in <code>vorschau/farbvergleich/</code>.</p>
+  <p>Fotos: Urheber und Lizenz je Foto in der Tabelle oben und in <code>FOTOQUELLEN.md</code>. Das Luftbild 2024 und das 3D-Stadtmodell sind © Stadt Leipzig (dl-de/by-2-0), der Laserscan © GeoSN (dl-de/by-2-0).</p>
+</footer>
+
+</main>
+<script>
+(function () {
+  function bind(id, range) {
+    var box = document.getElementById(id);
+    var r = document.getElementById(range);
+    if (!box || !r) return;
+    var bild = box.querySelector('.bild');
+    function set() { bild.style.setProperty('--pos', r.value + '%'); }
+    r.addEventListener('input', set);
+    set();
+  }
+  bind('cmp1', 'r1');
+  bind('cmp2', 'r2');
+})();
+</script>
+</body></html>

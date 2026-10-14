@@ -1,0 +1,291 @@
+<title>Farbvergleich Campus Augustusplatz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Lesespalte, Bilder dürfen breiter laufen; „alt“ = Rostbraun, „neu“ = Glas-Petrol, Neutrale mit Blaustich wie Glas und Stein. */
+:root {
+  --bg: #eff3f4;
+  --surface: #ffffff;
+  --fg: #16202a;
+  --muted: #536571;
+  --line: #d1dade;
+  --neu: #14708a;
+  --neu-soft: #dcedf2;
+  --alt: #a24f2d;
+  --alt-soft: #f4e4dc;
+  --gut: #2c7a4b;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f161b; --surface: #172028; --fg: #e5ecef; --muted: #96a8b2; --line: #2b3943;
+    --neu: #5cc0d8; --neu-soft: #16323b; --alt: #e08a63; --alt-soft: #3a261d; --gut: #6fcf94;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f161b; --surface: #172028; --fg: #e5ecef; --muted: #96a8b2; --line: #2b3943;
+  --neu: #5cc0d8; --neu-soft: #16323b; --alt: #e08a63; --alt-soft: #3a261d; --gut: #6fcf94;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.55; }
+.seite { max-width: 72rem; margin-inline: auto; padding-inline: 1rem; padding-block: 2rem 4rem; display: grid; gap: 3.5rem; }
+.fotos > *, .zwei > *, .seite > *, .sektion > *, .kopf > *, .vergleich > *, .box > *, .befund > div, details.geb > * { min-width: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.9rem); font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 500; }
+p { margin: 0; max-width: 68ch; }
+a { color: var(--neu); text-underline-offset: 0.18em; }
+code, .key { font-family: var(--font-mono); font-size: 0.82em; }
+.kopf { display: grid; gap: 1rem; }
+.kopf .unter { color: var(--muted); font-size: 1.15rem; max-width: 60ch; }
+.sektion { display: grid; gap: 1.25rem; }
+.sektion > .lead { color: var(--muted); }
+.befund { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
+.befund > div { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem 1.1rem; display: grid; gap: 0.4rem; align-content: start; }
+.befund h3 { font-size: 1rem; }
+.befund p { font-size: 0.97rem; color: var(--muted); }
+.marke { display: inline-block; font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.1rem 0.45rem; border-radius: 0.25rem; }
+.marke.alt { background: var(--alt-soft); color: var(--alt); }
+.marke.neu { background: var(--neu-soft); color: var(--neu); }
+/* Foto | alt | neu */
+.vergleich { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem; display: grid; gap: 0.75rem; }
+.vergleich header { display: grid; gap: 0.15rem; }
+.vergleich header p { color: var(--muted); font-size: 0.92rem; }
+.drei { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.drei figure { margin: 0; display: grid; gap: 0.25rem; }
+.drei img { width: 100%; height: auto; display: block; border-radius: 0.25rem; background: var(--line); }
+.drei figcaption { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.drei figure:nth-child(2) figcaption { color: var(--alt); }
+.drei figure:nth-child(3) figcaption { color: var(--neu); }
+.quelle { font-size: 0.85rem; color: var(--muted); }
+.fotos { display: grid; gap: 1rem; }
+@media (max-width: 40rem) { .drei { grid-template-columns: 1fr; } }
+/* Schieberegler */
+.cmp { display: grid; gap: 0.5rem; }
+.cmp .bild { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; overflow: hidden; --pos: 50%; }
+.cmp img { display: block; width: 100%; height: auto; }
+.cmp .oben { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.cmp .marker { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; background: var(--fg); opacity: 0.7; pointer-events: none; }
+.cmp .tag { position: absolute; top: 0.6rem; font-family: var(--font-mono); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 0.25rem; background: var(--surface); }
+.cmp .tag.l { left: 0.6rem; color: var(--alt); }
+.cmp .tag.r { right: 0.6rem; color: var(--neu); }
+.cmp input[type=range] { width: 100%; accent-color: var(--neu); }
+.cmp label { font-size: 0.85rem; color: var(--muted); }
+/* Tabellen */
+.tabelle { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 0.45rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+thead th { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+td.nowrap { white-space: nowrap; }
+tbody th { font-weight: 600; }
+.key { display: block; color: var(--muted); font-weight: 400; }
+.sw { display: inline-block; width: 1.9rem; height: 1.2rem; border-radius: 0.2rem; border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent); vertical-align: middle; margin-right: 0.5rem; }
+td code { vertical-align: middle; color: var(--muted); }
+tr.gleich td, tr.gleich th { opacity: 0.72; }
+tr.geaendert td:nth-child(4) { color: var(--neu); font-weight: 600; }
+tr.neu td:nth-child(4) { color: var(--neu); font-weight: 600; }
+td.bem { color: var(--muted); font-size: 0.88rem; }
+details.geb { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; }
+details.geb > summary { cursor: pointer; padding: 0.8rem 1rem; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: baseline; list-style: none; }
+details.geb > summary::-webkit-details-marker { display: none; }
+details.geb > summary:focus-visible { outline: 2px solid var(--neu); outline-offset: 2px; }
+.gn { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.gz { color: var(--muted); font-size: 0.9rem; }
+details.geb[open] > summary { border-bottom: 1px solid var(--line); }
+details.geb .tabelle { padding: 0.25rem 0.5rem 0.75rem; }
+/* Verfahren */
+.schritte { display: grid; gap: 1rem; counter-reset: s; padding: 0; margin: 0; list-style: none; }
+.schritte > li { counter-increment: s; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.25rem 1rem; align-items: start; }
+.schritte > li::before { content: counter(s); font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--neu-soft); color: var(--neu); display: grid; place-items: center; }
+.schritte .inhalt { display: grid; gap: 0.5rem; min-width: 0; }
+.schritte h3 { font-size: 1.12rem; font-weight: 700; }
+.schritte p { color: var(--muted); font-size: 0.99rem; }
+.schritte figure { margin: 0; display: grid; gap: 0.25rem; }
+.schritte img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 0.25rem; background: var(--surface); }
+.schritte figcaption { font-size: 0.82rem; color: var(--muted); }
+.bildreihe { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-start; }
+.bildreihe figure { flex: 1 1 14rem; min-width: 0; }
+.fassadenkarte { image-rendering: pixelated; }
+.zwei { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; align-items: start; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem 1.1rem; display: grid; gap: 0.5rem; align-content: start; }
+.box h3 { font-size: 1.02rem; font-weight: 700; }
+.box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; font-size: 0.97rem; }
+.box li { max-width: 62ch; }
+.stand { font-size: 0.9rem; color: var(--muted); }
+footer { color: var(--muted); font-size: 0.9rem; display: grid; gap: 0.4rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+footer code { color: var(--fg); }
+</style>
+<!--BODY-->
+<main class="seite">
+
+<header class="kopf">
+  <span class="marke neu">Farbmessung · Stand 13.10.2026</span>
+  <h1>Farbvergleich Campus Augustusplatz</h1>
+  <p class="unter">Die Fassadenfarben des Druckmodells, alt gegen neu. Das Gebäudemodell wird in $n_fotos sonnige Fotos projiziert, die Farben kommen von den Wänden selbst. Das Audimax ist jetzt weiß.</p>
+</header>
+
+<section class="sektion" aria-labelledby="befund">
+  <h2 id="befund">Was war falsch, was ist neu</h2>
+  <div class="befund">
+    <div><span class="marke alt">alt</span><h3>Zu dunkel, an der falschen Stelle gemessen</h3>
+      <p>Das Neue Augusteum war fast schwarzblau, obwohl seine Fassade aus hellem Spiegelglas und grauen bis anthrazitfarbenen Steinbändern besteht. Gemessen wurde mit handgesetzten Boxen, eine davon in einem Foto, auf dem die Ostfassade im Schatten liegt. Die Annahme „Pflaster ist Grau 150“ konnte das nicht ausgleichen.</p></div>
+    <div><span class="marke neu">neu</span><h3>Jedes Pixel kennt seine Wand</h3>
+      <p>Das 3D-Modell liegt deckungsgleich im Foto. Zu jedem Pixel ist bekannt, welche Wand, welche Höhe und ob die Sonne darauf stand. Gemessen wird nur an besonnten Wänden, über viele Fotos, mit Mittelwert statt Einzelfeld.</p></div>
+    <div><span class="marke neu">neu</span><h3>Audimax weiß, innen wie außen</h3>
+      <p>Die Hülle besteht laut Herstellerangabe aus Schaumglas mit dreilagiger weißer Beschichtung. Die Fotos stimmen damit überein. Wand und Dach des Audimax sind jetzt in einem Weiß gefärbt, vorher war das Dach hellgrau.</p></div>
+    <div><span class="marke neu">neu</span><h3>Fassaden mit Struktur statt einer Farbe</h3>
+      <p>Das Neue Augusteum bekommt $n_aug_zonen Farbflächen aus der Messung, vom hellen Südteil mit viel Glas bis zum grauen Mittelstück. Die Paulinum-Seiten sind nicht mehr dunkel, der helle Giebelstein blieb.</p></div>
+  </div>
+  <p class="stand">Neu gemessen sind Paulinum, Neues Augusteum, Institutsgebäude (Kopfbau) und City-Hochhaus. Hörsaalgebäude, Seminargebäude, Moritzbastei und Innenhof haben keine registrierbaren sonnigen Fotos und behalten ihre bisherigen Farben.</p>
+</section>
+
+<section class="sektion" aria-labelledby="gleich">
+  <h2 id="gleich">Dieselbe Kamera, drei Ansichten</h2>
+  <p class="lead">Links das Foto, daneben das Modell mit den alten und den neuen Farben, gerendert aus der Kameraposition des Fotos. Die Position wurde aus dem Foto bestimmt und per Überlagerung geprüft (Abschnitt Verfahren). Gerendert wird ohne Beleuchtung, damit Weiß als Weiß erscheint. Der Vergleich zeigt, ob die Farben zu den Fotos passen; er ist keine unabhängige Prüfung, denn aus denselben Fotos wurde gemessen.</p>
+  <div class="fotos">
+$fotos_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtmodell vom Augustusplatz</h2>
+  <p class="lead">Maßstab 1:1500 mit Uniriese und Moritzbastei, Blick von Osten. Der Regler verschiebt die Grenze zwischen alt und neu.</p>
+  <div class="cmp" id="cmp1">
+    <div class="bild">
+      <img src="gesamt_neu.png" alt="Gesamtmodell, neue Farben" width="1100" height="870">
+      <div class="oben"><img src="gesamt_alt.png" alt="Gesamtmodell, alte Farben" width="1100" height="870"></div>
+      <div class="marker"></div><span class="tag l">alt</span><span class="tag r">neu</span>
+    </div>
+    <label for="r1">Grenze alt | neu</label>
+    <input type="range" id="r1" min="0" max="100" value="50" aria-label="Grenze zwischen alt und neu">
+  </div>
+  <div class="cmp" id="cmp2">
+    <div class="bild">
+      <img src="einzel_neu.png" alt="Einzelgebäude, neue Farben" width="2240" height="2180">
+      <div class="oben"><img src="einzel_alt.png" alt="Einzelgebäude, alte Farben" width="2240" height="2180"></div>
+      <div class="marker"></div><span class="tag l">alt</span><span class="tag r">neu</span>
+    </div>
+    <label for="r2">Grenze alt | neu, alle Einzelgebäude 1:1000 aus Südost und Nordwest</label>
+    <input type="range" id="r2" min="0" max="100" value="50" aria-label="Grenze zwischen alt und neu, Einzelgebäude">
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="farben">
+  <h2 id="farben">Farben je Gebäude</h2>
+  <p class="lead">Alle Farbflächen jedes Gebäudes mit altem und neuem Wert. „Neu gemessene Fläche“ ist eine Zone, die die Segmentierung der Fotodaten gefunden hat, sie liegt über den bisherigen Zonen. „Unverändert“ gilt für die Farbe der bisherigen Zone; wo die Fotos dort eine andere Fläche zeigen, liegt eine neue Fläche darüber. Wo kein Foto mit Sonne vorliegt, bleibt der alte Wert stehen. Die Druckprofile mit 3 und 4 Filamenten bilden die Farben wie bisher auf ihre Palette ab.</p>
+  <div class="fotos">
+$gebaeude_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="verfahren">
+  <h2 id="verfahren">So wird gemessen</h2>
+  <p class="lead">Sieben Schritte, in dieser Reihenfolge. Alles läuft mit <code>python3 farbmessung.py messen</code> und ist wiederholbar, sobald ein weiteres Foto im Katalog steht.</p>
+  <ol class="schritte">
+    <li><div class="inhalt"><h3>Fotos sammeln, nur mit freier Lizenz</h3>
+      <p>Flickr (über Openverse, CC BY und CC BY-SA, 2048 Pixel), Panoramax (Straßenfotos, CC BY-SA), KartaView und die bisherigen Wikimedia-Commons-Fotos wurden gesichtet. Verwendet werden $n_fotos Fotos (zwölf mit Sonne, eines bedeckt) aus verschiedenen Blickwinkeln auf Augusteum, Paulinum und Uniriese, alle mit Aufnahmezeit. Profi- und Magazinfotos sind urheberrechtlich geschützt und bleiben draußen, siehe Quellen.</p></div></li>
+    <li><div class="inhalt"><h3>Foto am Modell ausrichten</h3>
+      <p>Der Himmel wird im Foto erkannt, die Himmelslinie mit der Silhouette des Modells verglichen. Ein globaler Optimierer sucht Standort, Blickrichtung, Neigung und Brennweite. Jede Lösung wurde als Überlagerung angesehen; nicht passende Fotos fielen heraus (Hochformat-Nahaufnahmen, Aufnahmen aus dem Straßenraum).</p>
+      <div class="bildreihe">
+        <figure><img src="fl_25383321126_pose.jpg" alt="Überlagerung des Modells im Foto"><figcaption>Modell (Flächen und Kanten, je Gebäude eine Farbe) über dem Foto.</figcaption></figure>
+        <figure><img src="fl_25291096262_pose.jpg" alt="Überlagerung am Giebel"><figcaption>Paulinum-Giebel aus 20 m, vom Boden schräg nach oben.</figcaption></figure>
+      </div></div></li>
+    <li><div class="inhalt"><h3>Pixel den Wänden zuordnen</h3>
+      <p>Das Modell wird mit exaktem Tiefenpuffer ins Foto gerendert. Jedes Pixel bekommt Gebäude, Himmelsrichtung, Position entlang der Fassade und Höhe über dem Gelände, dasselbe Koordinatensystem wie die Zonen in <code>data/fassaden/*.json</code>. Himmel, Laub und Ränder werden ausgeblendet. Ergebnis ist eine abgewickelte Fassade aus 1-m-Zellen:</p>
+      <div class="bildreihe">
+        <figure><img class="fassadenkarte" src="fassade_augusteum_ost.png" alt="Abgewickelte Ostfassade des Neuen Augusteums"><figcaption>Neues Augusteum, Ostfassade, 68 × 31 m, besonnte Zellen (Konsens aller Fotos). Lücken: kein Foto, Laub, Stützen.</figcaption></figure>
+        <figure><img class="fassadenkarte" src="fassade_paulinum_ost.png" alt="Abgewickelter Paulinum-Giebel"><figcaption>Paulinum, Ostseite, 35 × 56 m. Hell: Giebelstein, blau: Glasstreifen und Dach.</figcaption></figure>
+      </div></div></li>
+    <li><div class="inhalt"><h3>Sonne und Schatten einrechnen</h3>
+      <p>Aus der Aufnahmezeit folgt der Sonnenstand. Eine Schattenkarte des Modells sagt, welche Zelle besonnt war. Besonnte Zellen werden auf einen Einfall von 45° umgerechnet, Zellen mit sehr anderer Einstrahlung zählen weniger. Beschattete Zellen werden nur benutzt, wo nichts Besonntes vorliegt, und ändern dann keine Farben. Die Belichtung der Kamera bleibt erhalten: Ein Abgleich am Platzbelag über das Luftbild 2024 ließ alle Fassaden bläulich werden und wurde verworfen.</p></div></li>
+    <li><div class="inhalt"><h3>Konsens über alle Fotos</h3>
+      <p>Je Zelle ein Wert aus allen besonnten Beobachtungen, gewichtet nach Pixelzahl und Blickwinkel. Dunklere Ausreißer fallen weg, denn Schatten, Laub und Personen können eine Wand nur abdunkeln. Ein Mittel im linearen Licht trifft den Gesamteindruck gestreifter Fassaden aus Stein und Glas, ein Median träfe nur einen der Streifen. Fotos, die stark von den übrigen abweichen, zählen weniger (Spalte Gewicht unten); umgerechnet wird nichts.</p></div></li>
+    <li><div class="inhalt"><h3>Flächen finden</h3>
+      <p>Jede Fassade wird in Rechtecke gleicher Farbe zerlegt (Guillotine-Schnitte auf 2-m-Blöcken, höchstens 9 Rechtecke). Ein Rechteck wird zur Zone, wenn es mindestens 30 besonnte Zellen hat, sich um mehr als 8 ΔE von der bisherigen Zone unterscheidet und in der Erdgeschosszone keinen Sprung über 28 ΔE macht, denn dort verdecken Bäume und Personen. Bögen, Rosette, Portal und Audimax bleiben als feste Zonen über der Messung.</p></div></li>
+    <li><div class="inhalt"><h3>Ins Modell zurück</h3>
+      <p>Das Ergebnis steht in <code>data/messung.json</code>. <code>farben.py</code> nimmt es anstelle der Handmessung, <code>generate.py</code> schneidet die Gebäude an den neuen Zonengrenzen und färbt sie ein. Alle Dateien sind dicht, die Zahl der Filamente bleibt bei 15.</p></div></li>
+  </ol>
+</section>
+
+<section class="sektion" aria-labelledby="pruefung">
+  <h2 id="pruefung">Stimmen die Fotos untereinander überein?</h2>
+  <p class="lead">Nur bedingt. Je Foto steht hier, wie weit seine besonnten 4-m-Blöcke im Mittel vom Mittel der anderen Fotos an derselben Wand abweichen (Helligkeit in Prozent, Farbabstand ΔE). Die Werte liegen bei einem Viertel bis zum Doppelten der Helligkeit. Ursachen sind Belichtung und Nachbearbeitung der Fotos, spiegelndes Glas und eine Ausrichtung, die um einige Meter danebenliegt. Deshalb sind die neuen Flächen grobe Anhaltswerte: Sie zeigen die Richtung (hell statt schwarz), nicht den letzten Farbton. Bei $n_licht von $n_zellen Zellen liegt mindestens eine besonnte Messung vor.</p>
+  <div class="tabelle"><table>
+    <thead><tr><th>Foto</th><th>Urheber</th><th>Lizenz</th><th>Datum</th><th>Sonne</th><th>Zellen</th><th>Abweichung (Helligkeit · ΔE)</th><th>Gewicht</th></tr></thead>
+    <tbody>
+$foto_tab
+    </tbody></table></div>
+</section>
+
+<section class="sektion" aria-labelledby="quellen">
+  <h2 id="quellen">Quellen: was gefunden wurde und was nicht verwendet werden darf</h2>
+  <div class="zwei">
+    <div class="box"><h3>Freie Fotos, gesichtet</h3>
+      <ul>
+        <li><strong>Flickr über Openverse:</strong> 45 Fotos katalogisiert (CC BY 2.0, CC BY-SA 2.0), 2048 Pixel. Sonnige Aufnahmen von Fred Romero, Martin Ibert, domjisch und Allie Caulfield liefern die Messung.</li>
+        <li><strong>Panoramax:</strong> 66 Straßenfotos vom 27.3.2022 (CC BY-SA 4.0), Augustusplatz und Grimmaische Straße. Das Augusteum liegt darauf im Schatten, die Nahaufnahmen ließen sich nicht verlässlich ausrichten. Nicht für die Messung verwendet, nur zur Plausibilität.</li>
+        <li><strong>KartaView:</strong> 8 Aufnahmen geprüft, kaum nutzbar (Dashcam).</li>
+        <li><strong>Wikimedia Commons:</strong> die bisherigen Fotos. Die Suche nach weiteren scheiterte an der Drosselung der Commons-API.</li>
+      </ul></div>
+    <div class="box"><h3>Professionelle und offizielle Fotos</h3>
+      <ul>
+        <li>Alle gefundenen Profi-Fotos sind urheberrechtlich geschützt, zum Beispiel von Thomas Moeller (Heinze), PUNCTUM und Foamglas, Steffen Spitzner, Christian Richters, Martin Geisler und aus den Heften der Uni. Keines wurde geladen oder verwendet.</li>
+        <li>Der Fotoservice der Universität Leipzig und der Presseservice der Kustodie geben Bilder nur nach Anfrage, redaktionell und mit Credit frei. Die Anfrage läuft über die Pressestelle der Universität (laut Uni-Seite per Mail an presse@uni-leipzig.de, mit Verwendungszweck).</li>
+        <li>Architektur-Bildarchiv und Photo12 verkaufen Lizenzen (ab etwa 15 Euro je Bild).</li>
+        <li>Stadt Leipzig und GeoSN bieten keine freien Fassadenfotos. Das Stadtmodell mit Texturen ist kostenpflichtig und stammt aus Luftbildern von 2015.</li>
+      </ul></div>
+    <div class="box"><h3>Materialangaben aus Text, als Gegenprobe</h3>
+      <ul>
+        <li><strong>Audimax:</strong> weißes Foamglas mit dreilagiger weißer Triflex-Beschichtung, Dach und Wand nahtlos (<a href="https://www.foamglas.com/en/references/germany/auditorium-maximum">Foamglas</a>, <a href="https://www.heinze.de/architekturobjekt/auditorium-maximum-universitaet-leipzig/12660699/">Heinze</a>).</li>
+        <li><strong>Paulinum:</strong> Kirchheimer Muschelkalk und spanischer Kalkstein in hellen Tönen, Rahmen von Fenster und Rosette aus sehr hellem Stein, Seiten im Wechsel aus Stein und Glas (<a href="https://www.kustodie.uni-leipzig.de/en/your-visit-to-our-exhibitions/paulinum">Kustodie</a>, <a href="https://www.sib.sachsen.de/download/2018_03_SIB_Magazin.pdf">SIB-Magazin</a>).</li>
+        <li><strong>Neues Augusteum:</strong> Glas mit Siebdruck in Steinoptik und Natursteinbänder aus Serpentinit, Hofportal aus Cotta-Sandstein (<a href="https://www.stone-ideas.com/37576/natural-stone-glass-distinguishing-factors-leipzigs-new-university-complex/">Stone-Ideas</a>, <a href="https://www.db-bauzeitung.de/diskurs/endlich-in-osteuropa-angekommen/">db</a>).</li>
+        <li><strong>Mensa am Park / Seminargebäude:</strong> Weißbeton-Platten und weiß beschichtete DDR-Betonplatten, rostrote Akzente (Uni-Heft 2015).</li>
+        <li><strong>City-Hochhaus:</strong> graue bis hellgraue Granitplatten und Glas (Sanierung 1999 bis 2002).</li>
+      </ul></div>
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="grenzen">
+  <h2 id="grenzen">Grenzen</h2>
+  <div class="zwei">
+    <div class="box"><h3>Was die Messung nicht kann</h3>
+      <ul>
+        <li>Nur $n_fotos Fotos sind am Modell ausgerichtet. Mehr Fotos aus anderen Richtungen verbessern das Ergebnis, vor allem an Nord- und Westseiten.</li>
+        <li>Die Beleuchtung ist ein einfaches Modell (Sonne plus gleichmäßiges Himmelslicht). Spiegelnde Glasflächen schwanken je nach Himmel.</li>
+        <li>Die Ausrichtung hat einige Dezimeter bis wenige Meter Fehler, besonders an komplexen Dächern. Kleine Details wie die weiße Einfassung des Paulinum-Fensters bleiben handgesetzt.</li>
+        <li>Fassaden im Schatten (etwa die Nordseiten) bleiben bei den bisherigen Werten.</li>
+      </ul></div>
+    <div class="box"><h3>Was noch offen ist</h3>
+      <ul>
+        <li>Hörsaalgebäude, Seminargebäude, Moritzbastei und Innenhof: sonnige Fotos mit Himmel fehlen in den freien Quellen. Mit eigenen Fotos oder einer Anfrage bei der Uni lässt sich das schließen.</li>
+        <li>Der Weißton des Audimax steht nur als Materialangabe fest (Triflex, weiß), nicht als gemessener Farbwert aus einem sonnigen Foto.</li>
+        <li>Die alten Wikimedia-Links (3840 Pixel) liefern nicht mehr, deshalb sind die alten Farben jetzt als feste Werte gespeichert.</li>
+      </ul></div>
+  </div>
+</section>
+
+<footer>
+  <p>Neu im Repo: <code>farbmessung.py</code> (Messung), <code>kamera.py</code>, <code>skyline.py</code>, <code>registrierung.py</code>, <code>szene.py</code>, <code>vergleich.py</code>, Katalog <code>data/messfotos.json</code>, Ergebnis <code>data/messung.json</code>, Bilder in <code>vorschau/farbvergleich/</code>.</p>
+  <p>Fotos: Urheber und Lizenz je Foto in der Tabelle oben und in <code>FOTOQUELLEN.md</code>. Das Luftbild 2024 und das 3D-Stadtmodell sind © Stadt Leipzig (dl-de/by-2-0), der Laserscan © GeoSN (dl-de/by-2-0).</p>
+</footer>
+
+</main>
+<script>
+(function () {
+  function bind(id, range) {
+    var box = document.getElementById(id);
+    var r = document.getElementById(range);
+    if (!box || !r) return;
+    var bild = box.querySelector('.bild');
+    function set() { bild.style.setProperty('--pos', r.value + '%'); }
+    r.addEventListener('input', set);
+    set();
+  }
+  bind('cmp1', 'r1');
+  bind('cmp2', 'r2');
+})();
+</script>

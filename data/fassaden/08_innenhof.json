@@ -11,7 +11,7 @@
      "flaeche": "terrasse"
     }
    ],
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_pano_koehler",
      "box": [
@@ -22,7 +22,9 @@
      ],
      "notiz": "Großformatige Platten (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#b2b6b4",
+   "quelle": "Foto (1 Messfeld) + Luftbild 2024 (2 Flächen)"
   },
   "platz": {
    "notiz": "dunklerer Plattenbelag des Platzes in der Mitte",
@@ -30,7 +32,9 @@
     {
      "flaeche": "platz"
     }
-   ]
+   ],
+   "hex": "#929697",
+   "quelle": "Luftbild 2024 (1 Fläche)"
   },
   "denkmalplatz": {
    "notiz": "helle Plattform um das Leibnizdenkmal",
@@ -39,7 +43,7 @@
      "flaeche": "denkmalplatz"
     }
    ],
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_leibniz_beck",
      "box": [
@@ -70,7 +74,9 @@
      ],
      "notiz": "Plattform ums Denkmal (Foto)"
     }
-   ]
+   ],
+   "hex": "#d4d6d2",
+   "quelle": "Foto (3 Messfelder) + Luftbild 2024 (1 Fläche)"
   },
   "beet": {
    "notiz": "Bepflanzung der Hochbeete (von oben)",
@@ -79,7 +85,7 @@
      "objekt": "beet"
     }
    ],
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_pano_koehler",
      "box": [
@@ -90,11 +96,13 @@
      ],
      "notiz": "Bepflanzung: silbrig-grüne Stauden (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#727066",
+   "quelle": "Foto (1 Messfeld) + Luftbild 2024 (1 Fläche)"
   },
   "beet_rand": {
    "notiz": "Wände der Hochbeete: dunkles Anthrazit (Längsseiten), helle Endblöcke nur an den Stirnseiten",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_pano_koehler",
      "box": [
@@ -115,31 +123,18 @@
      ],
      "notiz": "Längswand vorderes Beet, Schattenseite (ohne WB)"
     }
-   ]
+   ],
+   "hex": "#26282a",
+   "quelle": "Foto (2 Messfelder)"
   },
   "podest": {
    "notiz": "Sitzpodeste: Holzauflage (Luftbild bräunlich-grau, Foto rotbraun)",
-   "proben": [
-    {
-     "bild": "hof_pano_koehler",
-     "box": [
-      0.6,
-      0.41,
-      0.65,
-      0.43
-     ],
-     "notiz": "Holzbank mit Lehne auf dem Beet (Sonne, ohne WB)"
-    }
-   ],
    "luftbild": [
     {
      "objekt": "podest"
     }
-   ]
-  },
-  "bank": {
-   "notiz": "Einzelbänke: dunkler Block mit Holzauflage, von oben Holz",
-   "proben": [
+   ],
+   "proben_alt": [
     {
      "bild": "hof_pano_koehler",
      "box": [
@@ -151,15 +146,34 @@
      "notiz": "Holzbank mit Lehne auf dem Beet (Sonne, ohne WB)"
     }
    ],
+   "hex": "#7b6658",
+   "quelle": "Foto (1 Messfeld) + Luftbild 2024 (1 Fläche)"
+  },
+  "bank": {
+   "notiz": "Einzelbänke: dunkler Block mit Holzauflage, von oben Holz",
    "luftbild": [
     {
      "objekt": "bank"
     }
-   ]
+   ],
+   "proben_alt": [
+    {
+     "bild": "hof_pano_koehler",
+     "box": [
+      0.6,
+      0.41,
+      0.65,
+      0.43
+     ],
+     "notiz": "Holzbank mit Lehne auf dem Beet (Sonne, ohne WB)"
+    }
+   ],
+   "hex": "#796559",
+   "quelle": "Foto (1 Messfeld) + Luftbild 2024 (1 Fläche)"
   },
   "sockel": {
    "notiz": "gestufter Granitsockel, rötlich-grau",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_leibniz_beck",
      "box": [
@@ -190,11 +204,13 @@
      ],
      "notiz": "Granitsockel"
     }
-   ]
+   ],
+   "hex": "#836764",
+   "quelle": "Foto (3 Messfelder)"
   },
   "bronze": {
    "notiz": "Bronze mit dunkler Patina (Figur und Postament)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_leibniz_beck",
      "box": [
@@ -255,7 +271,9 @@
      ],
      "notiz": "Postament"
     }
-   ]
+   ],
+   "hex": "#202224",
+   "quelle": "Foto (6 Messfelder)"
   },
   "stamm": {
    "notiz": "Baumstamm, graubraun (geschätzt, im Modell nur ein 0,8-mm-Stiel)",
@@ -263,7 +281,7 @@
   },
   "krone": {
    "notiz": "Gleditschie belaubt (Sommer); im Luftbild kaum zu sehen (lichte, feine Krone)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "hof_degrowth_mahnke",
      "box": [
@@ -274,7 +292,9 @@
      ],
      "notiz": "Krone vor weißem Pavillon (bedeckt, ohne WB; Hintergrund hellt leicht auf)"
     }
-   ]
+   ],
+   "hex": "#89956d",
+   "quelle": "Foto (1 Messfeld)"
   }
  },
  "basis": "pflaster",
@@ -330,7 +350,36 @@
    "farbe": "krone"
   }
  ],
- "bilder": {
+ "weissabgleich": {
+  "hof_leibniz_beck": {
+   "box": [
+    0.72,
+    0.88,
+    0.94,
+    0.97
+   ],
+   "notiz": "graues Hofpflaster"
+  },
+  "hof_leibniz_chabe": {
+   "box": [
+    0.25,
+    0.96,
+    0.45,
+    0.99
+   ],
+   "notiz": "graues Hofpflaster"
+  },
+  "hof_leibniz_vincentz": {
+   "box": [
+    0.02,
+    0.8,
+    0.3,
+    0.84
+   ],
+   "notiz": "graues Hofpflaster"
+  }
+ },
+ "bilder_alt": {
   "hof_leibniz_beck": {
    "gebaeude": "08_innenhof",
    "titel": "File:Leipzig Universität lub 2025-03-22 img04 Leibniz-Denkmal.jpg",
@@ -387,35 +436,6 @@
    "urheber": "Eva Mahnke",
    "datum": "2014-09-06",
    "fassade": "Innenhof im Sommer, Gleditschie belaubt"
-  }
- },
- "weissabgleich": {
-  "hof_leibniz_beck": {
-   "box": [
-    0.72,
-    0.88,
-    0.94,
-    0.97
-   ],
-   "notiz": "graues Hofpflaster"
-  },
-  "hof_leibniz_chabe": {
-   "box": [
-    0.25,
-    0.96,
-    0.45,
-    0.99
-   ],
-   "notiz": "graues Hofpflaster"
-  },
-  "hof_leibniz_vincentz": {
-   "box": [
-    0.02,
-    0.8,
-    0.3,
-    0.84
-   ],
-   "notiz": "graues Hofpflaster"
   }
  }
 }

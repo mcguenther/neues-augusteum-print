@@ -2,7 +2,7 @@
  "farben": {
   "platten": {
    "notiz": "helle Fassadenplatten",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "03_hoersaal_1",
      "box": [
@@ -33,11 +33,13 @@
      ],
      "notiz": "Obergeschoss Mensa am Park: helle Fassadenplatten (Sonne)"
     }
-   ]
+   ],
+   "hex": "#f4ede7",
+   "quelle": "Foto (3 Messfelder)"
   },
   "sockel": {
    "notiz": "dunkler Naturstein (Sockel, EG)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "03_hoersaal_1",
      "box": [
@@ -68,11 +70,13 @@
      ],
      "notiz": "Sockel: dunkle Steinplatte (Schatten, ohne Weißabgleich)"
     }
-   ]
+   ],
+   "hex": "#4a4a4f",
+   "quelle": "Foto (3 Messfelder)"
   },
   "glas": {
    "notiz": "Fensterbänder/Glasflächen (dunkles, spiegelndes Glas)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "03_hoersaal_3",
      "box": [
@@ -113,11 +117,13 @@
      ],
      "notiz": "Mensa am Park: Glasgeschoss (Sonne, spiegelt Himmel)"
     }
-   ]
+   ],
+   "hex": "#5b7070",
+   "quelle": "Foto (4 Messfelder)"
   },
   "rot": {
    "notiz": "rote Verkleidung (Bänder, Paneele, Mensa-Stützen, Brücke)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "06_cityhochhaus_3",
      "box": [
@@ -168,7 +174,9 @@
      ],
      "notiz": "rote Verkleidung am Mensa-Eingang (Köhler-Panorama, stark tonemapped, nur als Aufhellung)"
     }
-   ]
+   ],
+   "hex": "#863138",
+   "quelle": "Foto (5 Messfelder)"
   }
  },
  "basis": "platten",

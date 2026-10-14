@@ -1,0 +1,2387 @@
+{
+ "_hinweis": "Ergebnis von farbmessung.py (python3 farbmessung.py messen). Farben als hex; farben.building_colours nimmt sie anstelle der Handmessung.",
+ "fotos": {
+  "fl_52390789883": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": null,
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": null,
+   "sonne": 10.4,
+   "zellen": 2576
+  },
+  "fl_52389705137": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": null,
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": null,
+   "sonne": 15.5,
+   "zellen": 1158
+  },
+  "fl_13957964694": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 171,
+    "rel_hell": 0.588,
+    "de": 22.8
+   },
+   "gewicht": 0.85,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 171,
+    "rel_hell": 0.564,
+    "de": 21.5
+   },
+   "sonne": 46.7,
+   "zellen": 2152
+  },
+  "fl_25383321126": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 150,
+    "rel_hell": 0.431,
+    "de": 14.8
+   },
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 150,
+    "rel_hell": 0.411,
+    "de": 14.2
+   },
+   "sonne": 44.1,
+   "zellen": 1873
+  },
+  "fl_24782688903": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 90,
+    "rel_hell": 0.283,
+    "de": 9.9
+   },
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 90,
+    "rel_hell": 0.243,
+    "de": 9.2
+   },
+   "sonne": 35.9,
+   "zellen": 1157
+  },
+  "fl_25291096262": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 95,
+    "rel_hell": 0.399,
+    "de": 15.3
+   },
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 95,
+    "rel_hell": 0.434,
+    "de": 16.4
+   },
+   "sonne": 36.2,
+   "zellen": 1107
+  },
+  "fl_25292032932": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 38,
+    "rel_hell": 1.071,
+    "de": 22.5
+   },
+   "gewicht": 0.47,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 38,
+    "rel_hell": 1.071,
+    "de": 22.5
+   },
+   "sonne": 13.5,
+   "zellen": 1736
+  },
+  "fl_25292025232": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 37,
+    "rel_hell": 0.515,
+    "de": 22.3
+   },
+   "gewicht": 0.97,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 37,
+    "rel_hell": 0.515,
+    "de": 22.3
+   },
+   "sonne": 13.7,
+   "zellen": 597
+  },
+  "fl_25409407395": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": null,
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": null,
+   "sonne": 38.2,
+   "zellen": 1299
+  },
+  "fl_16905251612": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 126,
+    "rel_hell": 0.69,
+    "de": 23.2
+   },
+   "gewicht": 0.72,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 126,
+    "rel_hell": 0.901,
+    "de": 25.3
+   },
+   "sonne": 36.8,
+   "zellen": 1804
+  },
+  "fl_16719063090": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 58,
+    "rel_hell": 1.607,
+    "de": 27.7
+   },
+   "gewicht": 0.31,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 58,
+    "rel_hell": 1.681,
+    "de": 28.7
+   },
+   "sonne": 36.9,
+   "zellen": 799
+  },
+  "fl_9656690560": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": {
+    "zellen": 149,
+    "rel_hell": 0.887,
+    "de": 24.1
+   },
+   "gewicht": 0.56,
+   "kreuzpruefung_gewichtet": {
+    "zellen": 149,
+    "rel_hell": 0.983,
+    "de": 25.4
+   },
+   "sonne": 36.3,
+   "zellen": 5120
+  },
+  "fl_14005411673": {
+   "gain": 1.0,
+   "herkunft": "Kamerabelichtung unverändert",
+   "kreuzpruefung": null,
+   "gewicht": 1.0,
+   "kreuzpruefung_gewichtet": null,
+   "sonne": -14.2,
+   "zellen": 4660
+  }
+ },
+ "gebaeude": {
+  "01_paulinum": {
+   "basis": "stein_glas",
+   "farben": {
+    "stein_hell": {
+     "hex": "#cac5c2",
+     "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
+     "alt": "#cac5c2",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 12): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "weiss": {
+     "hex": "#eee9e8",
+     "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
+     "alt": "#eee9e8",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 224)"
+    },
+    "stein_glas": {
+     "hex": "#8c9497",
+     "notiz": "Seiten/Westgiebel: graue Steinbänder mit senkrechten Glasstreifen (Gesamteindruck)",
+     "alt": "#778f93",
+     "quelle": "Fotos: 442 besonnte Zellen"
+    },
+    "glas": {
+     "hex": "#34464c",
+     "notiz": "Glasstreifen links vom Giebel (dunkles, spiegelndes Glas)",
+     "alt": "#34464c",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 9): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "zink": {
+     "hex": "#8c969f",
+     "notiz": "Dachreiter/Turmspitze: graues Zinkblech",
+     "alt": "#8c969f",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 12): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "fensterglas": {
+     "hex": "#afd0d6",
+     "notiz": "großes Maßwerkfenster im Spitzbogen: helles türkisblaues Glas mit weißem Maßwerk (Gesamteindruck)",
+     "alt": "#afd0d6",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 85)"
+    },
+    "rosette_innen": {
+     "hex": "#8f9088",
+     "notiz": "Rosette: Maßwerk mit türkisblauem Glas (innerhalb des weißen Rings)",
+     "alt": "#8f9088",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 10)"
+    },
+    "m1": {
+     "hex": "#81acc0",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 116 Messzellen"
+    },
+    "m2": {
+     "hex": "#667682",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 38 Messzellen"
+    },
+    "m3": {
+     "hex": "#727476",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 119 Messzellen"
+    },
+    "m4": {
+     "hex": "#a09b96",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 51 Messzellen"
+    }
+   },
+   "zonen": [
+    {
+     "name": "Glasstreifen SO, vor dem Giebel",
+     "farbe": "glas",
+     "seite": "O",
+     "entlang": [
+      0.0,
+      0.2
+     ],
+     "z": [
+      0,
+      36
+     ]
+    },
+    {
+     "name": "Ostgiebel Naturstein",
+     "farbe": "stein_hell",
+     "seite": "O",
+     "entlang": [
+      0.2,
+      0.72
+     ],
+     "z": [
+      0,
+      50
+     ]
+    },
+    {
+     "name": "Turm Ost",
+     "farbe": "zink",
+     "seite": "O",
+     "entlang": [
+      0.0,
+      0.24
+     ],
+     "z": [
+      36,
+      60
+     ]
+    },
+    {
+     "name": "Turm Nord",
+     "farbe": "zink",
+     "seite": "N",
+     "entlang": [
+      0.2,
+      0.4
+     ],
+     "z": [
+      36,
+      60
+     ]
+    },
+    {
+     "name": "Turm Süd",
+     "farbe": "zink",
+     "seite": "S",
+     "entlang": [
+      0.6,
+      0.82
+     ],
+     "z": [
+      34,
+      60
+     ]
+    },
+    {
+     "name": "Turm West",
+     "farbe": "zink",
+     "seite": "W",
+     "entlang": [
+      0.76,
+      1.0
+     ],
+     "z": [
+      30,
+      60
+     ]
+    },
+    {
+     "name": "Messung O z 4–30 m",
+     "farbe": "zink",
+     "seite": "O",
+     "z": [
+      4.0,
+      30.0
+     ],
+     "entlang": [
+      0.0,
+      0.226
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 30–56 m",
+     "farbe": "zink",
+     "seite": "O",
+     "z": [
+      30.0,
+      56.0
+     ],
+     "entlang": [
+      0.226,
+      1.0
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung S z 4–42 m",
+     "farbe": "m1",
+     "seite": "S",
+     "z": [
+      4.0,
+      42.0
+     ],
+     "entlang": [
+      0.5969,
+      0.9831
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung S z 42–52 m",
+     "farbe": "m2",
+     "seite": "S",
+     "z": [
+      42.0,
+      52.0
+     ],
+     "entlang": [
+      0.5969,
+      0.9831
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung W z 16–42 m",
+     "farbe": "m3",
+     "seite": "W",
+     "z": [
+      16.0,
+      42.0
+     ],
+     "entlang": [
+      0.7658,
+      0.9846
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung W z 42–58 m",
+     "farbe": "m4",
+     "seite": "W",
+     "z": [
+      42.0,
+      58.0
+     ],
+     "entlang": [
+      0.7658,
+      0.9846
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Spitzbogen-Blende (weißer Kalkstein)",
+     "farbe": "weiss",
+     "seite": "O",
+     "bogen": {
+      "entlang": 0.389,
+      "breite": 11.9,
+      "z0": 0,
+      "kaempfer": 17.5
+     },
+     "notiz": "Breite 11,9 m in 15,7 m Höhe, Scheitel 27,8 m: Kameramodell aus Foto pl_giebel_romero2 (Giebelkanten + LoD2-First)"
+    },
+    {
+     "name": "Maßwerkfenster",
+     "farbe": "fensterglas",
+     "seite": "O",
+     "bogen": {
+      "entlang": 0.389,
+      "breite": 6.7,
+      "z0": 7.0,
+      "kaempfer": 15.5
+     },
+     "notiz": "Breite 6,7 m, Scheitel 21,3 m (Kameramodell); Unterkante ~7 m aus Panoramax-Foto f1201d36"
+    },
+    {
+     "name": "Rosette (weißer Ring)",
+     "farbe": "weiss",
+     "seite": "O",
+     "kreis": {
+      "entlang": 0.389,
+      "z": 33.1,
+      "d": 5.5
+     },
+     "notiz": "Mitte 33,1 m über Gelände, Durchmesser 5,5 m: Kameramodell aus Foto pl_giebel_romero2"
+    },
+    {
+     "name": "Rosette (Maßwerk/Glas)",
+     "farbe": "rosette_innen",
+     "seite": "O",
+     "kreis": {
+      "entlang": 0.389,
+      "z": 33.1,
+      "d": 3.3
+     },
+     "stufen": 5
+    }
+   ],
+   "bericht": {
+    "farben": {
+     "stein_hell": {
+      "alt": "#cac5c2",
+      "neu": "#cac5c2",
+      "gemessen": false,
+      "zellen": 372,
+      "zellen_alle": 379
+     },
+     "weiss": {
+      "alt": "#eee9e8",
+      "neu": "#eee9e8",
+      "gemessen": false,
+      "zellen": 224,
+      "zellen_alle": 224
+     },
+     "stein_glas": {
+      "alt": "#778f93",
+      "neu": "#8c9497",
+      "gemessen": true,
+      "zellen": 442,
+      "zellen_alle": 1407
+     },
+     "glas": {
+      "alt": "#34464c",
+      "neu": "#34464c",
+      "gemessen": false,
+      "zellen": 201,
+      "zellen_alle": 201
+     },
+     "zink": {
+      "alt": "#8c969f",
+      "neu": "#8c969f",
+      "gemessen": false,
+      "zellen": 257,
+      "zellen_alle": 264
+     },
+     "fensterglas": {
+      "alt": "#afd0d6",
+      "neu": "#afd0d6",
+      "gemessen": false,
+      "zellen": 85,
+      "zellen_alle": 85
+     },
+     "rosette_innen": {
+      "alt": "#8f9088",
+      "neu": "#8f9088",
+      "gemessen": false,
+      "zellen": 10,
+      "zellen_alle": 10
+     }
+    },
+    "zonen": [
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       4.0
+      ],
+      "entlang": [
+       0.0,
+       1.0
+      ],
+      "rgb": "#828386",
+      "n": 102,
+      "licht": 0.98,
+      "fotos": 3.9,
+      "unter": "weiss",
+      "de": 37.9,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       4.0,
+       30.0
+      ],
+      "entlang": [
+       0.0,
+       0.226
+      ],
+      "rgb": "#9ea4ac",
+      "n": 185,
+      "licht": 1.0,
+      "fotos": 6.49,
+      "unter": "glas",
+      "de": 39.0,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       4.0,
+       30.0
+      ],
+      "entlang": [
+       0.226,
+       1.0
+      ],
+      "rgb": "#bfbebd",
+      "n": 488,
+      "licht": 0.94,
+      "fotos": 5.59,
+      "unter": "stein_hell",
+      "de": 3.5,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       30.0,
+       56.0
+      ],
+      "entlang": [
+       0.0,
+       0.226
+      ],
+      "rgb": "#98a1a4",
+      "n": 96,
+      "licht": 1.0,
+      "fotos": 3.2,
+      "unter": "zink",
+      "de": 5.0,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       30.0,
+       56.0
+      ],
+      "entlang": [
+       0.226,
+       1.0
+      ],
+      "rgb": "#7c8a94",
+      "n": 142,
+      "licht": 0.99,
+      "fotos": 5.19,
+      "unter": "stein_hell",
+      "de": 25.2,
+      "neu": true
+     },
+     {
+      "seite": "S",
+      "z": [
+       16.0,
+       52.0
+      ],
+      "entlang": [
+       0.0,
+       0.5969
+      ],
+      "rgb": "#c5f2f8",
+      "n": 578,
+      "licht": 0.0,
+      "fotos": 1.58,
+      "unter": "stein_glas",
+      "de": 34.2,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       4.0
+      ],
+      "entlang": [
+       0.5969,
+       0.9831
+      ],
+      "rgb": "#2c3a3c",
+      "n": 11,
+      "licht": 1.0,
+      "fotos": 1.0,
+      "unter": "stein_glas",
+      "de": 37.6,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       4.0,
+       42.0
+      ],
+      "entlang": [
+       0.5969,
+       0.9831
+      ],
+      "rgb": "#81acc0",
+      "n": 116,
+      "licht": 0.89,
+      "fotos": 1.09,
+      "unter": "stein_glas",
+      "de": 16.0,
+      "neu": true
+     },
+     {
+      "seite": "S",
+      "z": [
+       42.0,
+       52.0
+      ],
+      "entlang": [
+       0.5969,
+       0.9831
+      ],
+      "rgb": "#667682",
+      "n": 38,
+      "licht": 0.97,
+      "fotos": 1.11,
+      "unter": "zink",
+      "de": 13.1,
+      "neu": true
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.0,
+       0.5969
+      ],
+      "rgb": "#4f5d69",
+      "n": 12,
+      "licht": 0.0,
+      "fotos": 1.08,
+      "unter": "stein_glas",
+      "de": 22.9,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       8.0,
+       16.0
+      ],
+      "entlang": [
+       0.0,
+       0.5969
+      ],
+      "rgb": "#a7c7d8",
+      "n": 77,
+      "licht": 0.0,
+      "fotos": 1.19,
+      "unter": "stein_glas",
+      "de": 20.7,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       16.0,
+       58.0
+      ],
+      "entlang": [
+       0.0,
+       0.7658
+      ],
+      "rgb": "#979b9b",
+      "n": 298,
+      "licht": 0.97,
+      "fotos": 1.91,
+      "unter": "stein_glas",
+      "de": 3.6,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       16.0,
+       42.0
+      ],
+      "entlang": [
+       0.7658,
+       0.9846
+      ],
+      "rgb": "#727476",
+      "n": 119,
+      "licht": 0.99,
+      "fotos": 2.46,
+      "unter": "zink",
+      "de": 13.8,
+      "neu": true
+     },
+     {
+      "seite": "W",
+      "z": [
+       42.0,
+       58.0
+      ],
+      "entlang": [
+       0.7658,
+       0.9846
+      ],
+      "rgb": "#a09b96",
+      "n": 51,
+      "licht": 1.0,
+      "fotos": 2.16,
+      "unter": "zink",
+      "de": 10.2,
+      "neu": true
+     },
+     {
+      "seite": "W",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.0,
+       0.9846
+      ],
+      "rgb": "#596e87",
+      "n": 89,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "stein_glas",
+      "de": 20.5,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       8.0,
+       12.0
+      ],
+      "entlang": [
+       0.0,
+       0.9846
+      ],
+      "rgb": "#7393b6",
+      "n": 84,
+      "licht": 0.0,
+      "fotos": 1.52,
+      "unter": "stein_glas",
+      "de": 19.0,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       12.0,
+       16.0
+      ],
+      "entlang": [
+       0.0,
+       0.2188
+      ],
+      "rgb": "#9fa5bb",
+      "n": 32,
+      "licht": 0.0,
+      "fotos": 1.94,
+      "unter": "stein_glas",
+      "de": 12.7,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       12.0,
+       16.0
+      ],
+      "entlang": [
+       0.2188,
+       0.9846
+      ],
+      "rgb": "#aad1ec",
+      "n": 52,
+      "licht": 0.0,
+      "fotos": 2.0,
+      "unter": "stein_glas",
+      "de": 26.4,
+      "neu": false
+     }
+    ],
+    "seiten": {}
+   }
+  },
+  "02_neues_augusteum": {
+   "basis": "glas_stein",
+   "farben": {
+    "glas_stein": {
+     "hex": "#7e8b93",
+     "notiz": "Glas mit grauen/beigen Natursteinlamellen (Gesamteindruck, Ost und Hof)",
+     "alt": "#405664",
+     "quelle": "Fotos: 1320 besonnte Zellen"
+    },
+    "lamellen": {
+     "hex": "#444850",
+     "notiz": "oberstes Geschoss: dunkle senkrechte Lamellen (Metall/Stein)",
+     "alt": "#444850",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 14): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "sandstein": {
+     "hex": "#b39f7f",
+     "notiz": "Sandsteinportal des alten Augusteums (Innenhof)",
+     "alt": "#b39f7f",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    },
+    "pavillon_weiss": {
+     "hex": "#f1efeb",
+     "notiz": "weiße, nahtlose Außenhülle des Audimax (Dach und Wand, dreilagige weiße Triflex-Beschichtung, Herstellerangabe Foamglas/Heinze); in den Fotos hell/weiß",
+     "alt": "#f1efeb",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    },
+    "m1": {
+     "hex": "#668196",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 605 Messzellen"
+    },
+    "m2": {
+     "hex": "#c0bfc3",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 42 Messzellen"
+    },
+    "m3": {
+     "hex": "#797a79",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 307 Messzellen"
+    },
+    "m4": {
+     "hex": "#a9c0cb",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 250 Messzellen"
+    },
+    "m5": {
+     "hex": "#bbb3af",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 75 Messzellen"
+    }
+   },
+   "zonen": [
+    {
+     "name": "Lamellenband oben",
+     "farbe": "lamellen",
+     "z": [
+      27.5,
+      36
+     ]
+    },
+    {
+     "name": "Lamellenband oben Ost (Augustusplatz)",
+     "farbe": "lamellen",
+     "seite": "O",
+     "z": [
+      23,
+      40
+     ]
+    },
+    {
+     "name": "Messung O z 20–32 m",
+     "farbe": "m1",
+     "seite": "O",
+     "z": [
+      20.0,
+      32.0
+     ],
+     "entlang": [
+      0.0,
+      0.4212
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 8–32 m",
+     "farbe": "m1",
+     "seite": "O",
+     "z": [
+      8.0,
+      32.0
+     ],
+     "entlang": [
+      0.6581,
+      0.8951
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 0–8 m",
+     "farbe": "m2",
+     "seite": "O",
+     "z": [
+      0.0,
+      8.0
+     ],
+     "entlang": [
+      0.0,
+      0.1053
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 0–8 m",
+     "farbe": "lamellen",
+     "seite": "O",
+     "z": [
+      0.0,
+      8.0
+     ],
+     "entlang": [
+      0.1053,
+      0.3159
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 0–8 m",
+     "farbe": "m3",
+     "seite": "O",
+     "z": [
+      0.0,
+      8.0
+     ],
+     "entlang": [
+      0.3159,
+      0.8951
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 8–20 m",
+     "farbe": "m4",
+     "seite": "O",
+     "z": [
+      8.0,
+      20.0
+     ],
+     "entlang": [
+      0.3159,
+      0.4212
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 12–20 m",
+     "farbe": "m4",
+     "seite": "O",
+     "z": [
+      12.0,
+      20.0
+     ],
+     "entlang": [
+      0.0,
+      0.3159
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung W z 12–34 m",
+     "farbe": "m5",
+     "seite": "W",
+     "z": [
+      12.0,
+      34.0
+     ],
+     "entlang": [
+      0.238,
+      0.3702
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Weißer Pavillon Innenhof",
+     "farbe": "pavillon_weiss",
+     "seite": "W",
+     "z": [
+      0,
+      10.8
+     ],
+     "entlang": [
+      0.19,
+      0.57
+     ],
+     "fest": true
+    },
+    {
+     "name": "Sandsteinportal (Schinkel-Portal) Innenhof",
+     "farbe": "sandstein",
+     "seite": "W",
+     "z": [
+      0,
+      11
+     ],
+     "entlang": [
+      0.62,
+      0.82
+     ],
+     "fest": true
+    },
+    {
+     "name": "Audimax Dach (weiße Hülle, nur im Luftbild helle Dachflächen)",
+     "farbe": "pavillon_weiss",
+     "flaechen": "dach",
+     "nur_hell": true,
+     "seite": "W",
+     "entlang": [
+      0.19,
+      0.57
+     ],
+     "z": [
+      0,
+      12
+     ],
+     "fest": true
+    }
+   ],
+   "bericht": {
+    "farben": {
+     "glas_stein": {
+      "alt": "#405664",
+      "neu": "#7e8b93",
+      "gemessen": true,
+      "zellen": 1320,
+      "zellen_alle": 1534
+     },
+     "lamellen": {
+      "alt": "#444850",
+      "neu": "#444850",
+      "gemessen": false,
+      "zellen": 485,
+      "zellen_alle": 544
+     },
+     "sandstein": {
+      "alt": "#b39f7f",
+      "neu": "#b39f7f",
+      "gemessen": false,
+      "zellen": 0,
+      "zellen_alle": 0
+     },
+     "pavillon_weiss": {
+      "alt": "#f1efeb",
+      "neu": "#f1efeb",
+      "gemessen": false,
+      "zellen": 0,
+      "zellen_alle": 170
+     }
+    },
+    "zonen": [
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       32.0
+      ],
+      "entlang": [
+       0.0,
+       0.4212
+      ],
+      "rgb": "#698298",
+      "n": 295,
+      "licht": 0.96,
+      "fotos": 3.78,
+      "unter": "lamellen",
+      "de": 24.9,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       8.0,
+       32.0
+      ],
+      "entlang": [
+       0.4212,
+       0.6581
+      ],
+      "rgb": "#767a80",
+      "n": 365,
+      "licht": 0.94,
+      "fotos": 4.12,
+      "unter": "glas_stein",
+      "de": 6.8,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       8.0,
+       32.0
+      ],
+      "entlang": [
+       0.6581,
+       0.8951
+      ],
+      "rgb": "#638094",
+      "n": 310,
+      "licht": 1.0,
+      "fotos": 6.59,
+      "unter": "glas_stein",
+      "de": 9.9,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.0,
+       0.1053
+      ],
+      "rgb": "#c0bfc3",
+      "n": 42,
+      "licht": 0.98,
+      "fotos": 1.83,
+      "unter": "glas_stein",
+      "de": 21.3,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.1053,
+       0.3159
+      ],
+      "rgb": "#4d545a",
+      "n": 128,
+      "licht": 1.0,
+      "fotos": 3.77,
+      "unter": "glas_stein",
+      "de": 21.8,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.3159,
+       0.8951
+      ],
+      "rgb": "#797a79",
+      "n": 307,
+      "licht": 0.92,
+      "fotos": 4.06,
+      "unter": "glas_stein",
+      "de": 8.8,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       8.0,
+       20.0
+      ],
+      "entlang": [
+       0.3159,
+       0.4212
+      ],
+      "rgb": "#b2c7d2",
+      "n": 95,
+      "licht": 0.95,
+      "fotos": 3.63,
+      "unter": "glas_stein",
+      "de": 22.1,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       8.0,
+       12.0
+      ],
+      "entlang": [
+       0.0,
+       0.3159
+      ],
+      "rgb": "#748998",
+      "n": 72,
+      "licht": 0.92,
+      "fotos": 2.56,
+      "unter": "glas_stein",
+      "de": 4.9,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       12.0,
+       20.0
+      ],
+      "entlang": [
+       0.0,
+       0.3159
+      ],
+      "rgb": "#a4bbc6",
+      "n": 155,
+      "licht": 0.95,
+      "fotos": 2.88,
+      "unter": "glas_stein",
+      "de": 17.8,
+      "neu": true
+     },
+     {
+      "seite": "S",
+      "z": [
+       4.0,
+       18.0
+      ],
+      "entlang": [
+       0.0,
+       0.7675
+      ],
+      "rgb": "#6980b7",
+      "n": 8,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 27.4,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       4.0,
+       14.0
+      ],
+      "entlang": [
+       0.7675,
+       0.8314
+      ],
+      "rgb": "#425176",
+      "n": 27,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 28.8,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       14.0,
+       18.0
+      ],
+      "entlang": [
+       0.7675,
+       0.8314
+      ],
+      "rgb": "#6484b8",
+      "n": 6,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 25.5,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       4.0
+      ],
+      "entlang": [
+       0.0,
+       0.7675
+      ],
+      "rgb": "#495881",
+      "n": 4,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 27.9,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       4.0
+      ],
+      "entlang": [
+       0.7675,
+       0.8314
+      ],
+      "rgb": "#2d354f",
+      "n": 12,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 36.7,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       10.0
+      ],
+      "entlang": [
+       0.8314,
+       0.9274
+      ],
+      "rgb": "#95b9f6",
+      "n": 13,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 33.9,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       10.0,
+       18.0
+      ],
+      "entlang": [
+       0.8314,
+       0.9274
+      ],
+      "rgb": "#cbe6ff",
+      "n": 1,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "glas_stein",
+      "de": 34.4,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       0.0,
+       12.0
+      ],
+      "entlang": [
+       0.1058,
+       0.5553
+      ],
+      "rgb": "#f6f8fa",
+      "n": 205,
+      "licht": 0.0,
+      "fotos": 1.29,
+      "unter": "pavillon_weiss",
+      "de": 4.5,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.0,
+       0.1058
+      ],
+      "rgb": "#586f76",
+      "n": 23,
+      "licht": 0.0,
+      "fotos": 1.26,
+      "unter": "glas_stein",
+      "de": 12.4,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       8.0,
+       12.0
+      ],
+      "entlang": [
+       0.0,
+       0.1058
+      ],
+      "rgb": "#c6dbe6",
+      "n": 16,
+      "licht": 0.0,
+      "fotos": 1.56,
+      "unter": "glas_stein",
+      "de": 29.3,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       12.0,
+       34.0
+      ],
+      "entlang": [
+       0.238,
+       0.3702
+      ],
+      "rgb": "#bbb3af",
+      "n": 75,
+      "licht": 0.93,
+      "fotos": 1.4,
+      "unter": "lamellen",
+      "de": 43.9,
+      "neu": true
+     },
+     {
+      "seite": "W",
+      "z": [
+       12.0,
+       34.0
+      ],
+      "entlang": [
+       0.3702,
+       0.5553
+      ],
+      "rgb": "#90a8cf",
+      "n": 45,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "lamellen",
+      "de": 41.6,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       12.0,
+       28.0
+      ],
+      "entlang": [
+       0.0,
+       0.238
+      ],
+      "rgb": "#a09d9d",
+      "n": 20,
+      "licht": 1.0,
+      "fotos": 1.35,
+      "unter": "glas_stein",
+      "de": 10.8,
+      "neu": false
+     },
+     {
+      "seite": "W",
+      "z": [
+       28.0,
+       34.0
+      ],
+      "entlang": [
+       0.0,
+       0.238
+      ],
+      "rgb": "#84797a",
+      "n": 24,
+      "licht": 1.0,
+      "fotos": 2.5,
+      "unter": "lamellen",
+      "de": 22.5,
+      "neu": false
+     }
+    ],
+    "seiten": {}
+   }
+  },
+  "05_institutsgebaeude": {
+   "basis": "naturstein",
+   "farben": {
+    "naturstein": {
+     "hex": "#c4beb6",
+     "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
+     "alt": "#c4beb6",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 8)"
+    },
+    "rotbraun": {
+     "hex": "#7e423d",
+     "notiz": "rotbraune Verkleidung: Brücke über dem Durchgang und Band über dem Erdgeschoss; Hofseite rote Obergeschosse",
+     "alt": "#7e423d",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    },
+    "dunkel": {
+     "hex": "#36383a",
+     "notiz": "Erdgeschoss: dunkle Schaufensterfronten/Natursteinsockel",
+     "alt": "#36383a",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    },
+    "glasfront": {
+     "hex": "#747879",
+     "notiz": "Westteil Nordfassade: spiegelnde Glasfront im 1. und 2. OG",
+     "alt": "#747879",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    },
+    "kopfbau_dunkel": {
+     "hex": "#424b4f",
+     "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
+     "alt": "#424b4f",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 21): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "m1": {
+     "hex": "#979797",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 185 Messzellen"
+    }
+   },
+   "zonen": [
+    {
+     "name": "Erdgeschoss N dunkel",
+     "farbe": "dunkel",
+     "seite": "N",
+     "z": [
+      0,
+      5.7
+     ],
+     "entlang": [
+      0.0,
+      1.0
+     ]
+    },
+    {
+     "name": "Glasfront West 1.-2. OG",
+     "farbe": "glasfront",
+     "seite": "N",
+     "z": [
+      5.7,
+      13.1
+     ],
+     "entlang": [
+      0.615,
+      1.0
+     ]
+    },
+    {
+     "name": "Rotes Band über EG (Durchgang bis Westteil)",
+     "farbe": "rotbraun",
+     "seite": "N",
+     "z": [
+      5.7,
+      7.5
+     ],
+     "entlang": [
+      0.358,
+      0.615
+     ]
+    },
+    {
+     "name": "Brücke über Durchgang",
+     "farbe": "rotbraun",
+     "seite": "N",
+     "z": [
+      8.6,
+      11.4
+     ],
+     "entlang": [
+      0.292,
+      0.358
+     ]
+    },
+    {
+     "name": "Kopfbau Nord",
+     "farbe": "kopfbau_dunkel",
+     "seite": "N",
+     "entlang": [
+      0.0,
+      0.14
+     ]
+    },
+    {
+     "name": "Kopfbau Ost",
+     "farbe": "kopfbau_dunkel",
+     "seite": "O",
+     "entlang": [
+      0.04,
+      0.53
+     ]
+    },
+    {
+     "name": "Kopfbau Süd",
+     "farbe": "kopfbau_dunkel",
+     "seite": "S",
+     "entlang": [
+      0.9,
+      1.0
+     ]
+    },
+    {
+     "name": "Hof: dunkler Sockel + Glasband",
+     "farbe": "dunkel",
+     "seite": "S",
+     "z": [
+      0,
+      10.8
+     ],
+     "entlang": [
+      0.347,
+      0.9
+     ]
+    },
+    {
+     "name": "Hof: rote Obergeschosse",
+     "farbe": "rotbraun",
+     "seite": "S",
+     "z": [
+      10.8,
+      24.2
+     ],
+     "entlang": [
+      0.347,
+      0.824
+     ]
+    },
+    {
+     "name": "Messung O z 6–20 m",
+     "farbe": "m1",
+     "seite": "O",
+     "z": [
+      6.0,
+      20.0
+     ],
+     "entlang": [
+      0.1956,
+      0.5869
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 0–6 m",
+     "farbe": "dunkel",
+     "seite": "O",
+     "z": [
+      0.0,
+      6.0
+     ],
+     "entlang": [
+      0.2935,
+      0.5869
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 20–32 m",
+     "farbe": "glasfront",
+     "seite": "O",
+     "z": [
+      20.0,
+      32.0
+     ],
+     "entlang": [
+      0.2935,
+      0.3913
+     ],
+     "quelle": "farbmessung"
+    }
+   ],
+   "bericht": {
+    "farben": {
+     "naturstein": {
+      "alt": "#c4beb6",
+      "neu": "#c4beb6",
+      "gemessen": false,
+      "zellen": 8,
+      "zellen_alle": 8
+     },
+     "rotbraun": {
+      "alt": "#7e423d",
+      "neu": "#7e423d",
+      "gemessen": false,
+      "zellen": 0,
+      "zellen_alle": 92
+     },
+     "dunkel": {
+      "alt": "#36383a",
+      "neu": "#36383a",
+      "gemessen": false,
+      "zellen": 0,
+      "zellen_alle": 35
+     },
+     "glasfront": {
+      "alt": "#747879",
+      "neu": "#747879",
+      "gemessen": false,
+      "zellen": 0,
+      "zellen_alle": 0
+     },
+     "kopfbau_dunkel": {
+      "alt": "#424b4f",
+      "neu": "#424b4f",
+      "gemessen": false,
+      "zellen": 386,
+      "zellen_alle": 523
+     }
+    },
+    "zonen": [
+     {
+      "seite": "O",
+      "z": [
+       6.0,
+       20.0
+      ],
+      "entlang": [
+       0.1956,
+       0.5869
+      ],
+      "rgb": "#979797",
+      "n": 185,
+      "licht": 0.75,
+      "fotos": 1.86,
+      "unter": "kopfbau_dunkel",
+      "de": 31.6,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       6.0
+      ],
+      "entlang": [
+       0.0,
+       0.2935
+      ],
+      "rgb": "#8f97a6",
+      "n": 45,
+      "licht": 0.0,
+      "fotos": 1.38,
+      "unter": "kopfbau_dunkel",
+      "de": 31.6,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       6.0
+      ],
+      "entlang": [
+       0.2935,
+       0.5869
+      ],
+      "rgb": "#3c3a3b",
+      "n": 60,
+      "licht": 0.85,
+      "fotos": 1.45,
+      "unter": "kopfbau_dunkel",
+      "de": 8.3,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       6.0,
+       14.0
+      ],
+      "entlang": [
+       0.0,
+       0.1956
+      ],
+      "rgb": "#b1ced8",
+      "n": 18,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "kopfbau_dunkel",
+      "de": 50.3,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       14.0,
+       20.0
+      ],
+      "entlang": [
+       0.0,
+       0.1956
+      ],
+      "rgb": "#3a3f42",
+      "n": 26,
+      "licht": 0.85,
+      "fotos": 1.92,
+      "unter": "kopfbau_dunkel",
+      "de": 5.4,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       32.0
+      ],
+      "entlang": [
+       0.0,
+       0.0978
+      ],
+      "rgb": "#99a6b0",
+      "n": 19,
+      "licht": 0.32,
+      "fotos": 1.11,
+      "unter": "kopfbau_dunkel",
+      "de": 36.4,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       32.0
+      ],
+      "entlang": [
+       0.0978,
+       0.2935
+      ],
+      "rgb": "#393b41",
+      "n": 85,
+      "licht": 1.0,
+      "fotos": 2.76,
+      "unter": "kopfbau_dunkel",
+      "de": 6.8,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       32.0
+      ],
+      "entlang": [
+       0.2935,
+       0.3913
+      ],
+      "rgb": "#807f7c",
+      "n": 40,
+      "licht": 1.0,
+      "fotos": 3.08,
+      "unter": "kopfbau_dunkel",
+      "de": 22.8,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       32.0
+      ],
+      "entlang": [
+       0.3913,
+       0.5869
+      ],
+      "rgb": "#4e5557",
+      "n": 53,
+      "licht": 0.96,
+      "fotos": 2.55,
+      "unter": "kopfbau_dunkel",
+      "de": 4.5,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       12.0,
+       18.0
+      ],
+      "entlang": [
+       0.0,
+       0.7101
+      ],
+      "rgb": "#a3575e",
+      "n": 39,
+      "licht": 0.0,
+      "fotos": 1.18,
+      "unter": "rotbraun",
+      "de": 13.4,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       18.0,
+       24.0
+      ],
+      "entlang": [
+       0.0,
+       0.6525
+      ],
+      "rgb": "#b76b74",
+      "n": 9,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "rotbraun",
+      "de": 20.5,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       18.0,
+       24.0
+      ],
+      "entlang": [
+       0.6525,
+       0.7101
+      ],
+      "rgb": "#cf676f",
+      "n": 36,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "rotbraun",
+      "de": 26.6,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       12.0
+      ],
+      "entlang": [
+       0.6717,
+       0.7101
+      ],
+      "rgb": "#31383a",
+      "n": 8,
+      "licht": 0.0,
+      "fotos": 1.25,
+      "unter": "dunkel",
+      "de": 2.3,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.6333,
+       0.6717
+      ],
+      "rgb": "#353946",
+      "n": 13,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "dunkel",
+      "de": 7.3,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       8.0,
+       12.0
+      ],
+      "entlang": [
+       0.6333,
+       0.6717
+      ],
+      "rgb": "#4d5769",
+      "n": 15,
+      "licht": 0.0,
+      "fotos": 1.27,
+      "unter": "dunkel",
+      "de": 16.9,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       12.0
+      ],
+      "entlang": [
+       0.0,
+       0.5949
+      ],
+      "rgb": "#ffffff",
+      "n": 1,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "dunkel",
+      "de": 76.6,
+      "neu": false
+     },
+     {
+      "seite": "S",
+      "z": [
+       0.0,
+       12.0
+      ],
+      "entlang": [
+       0.5949,
+       0.6333
+      ],
+      "rgb": "#aeb8df",
+      "n": 6,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "dunkel",
+      "de": 55.5,
+      "neu": false
+     }
+    ],
+    "seiten": {}
+   }
+  },
+  "06_city_hochhaus": {
+   "basis": "fassade",
+   "farben": {
+    "fassade": {
+     "hex": "#87a7b9",
+     "notiz": "helle graue Natursteinplatten mit Fensterreihen (Lochfassade, Gesamteindruck)",
+     "alt": "#bfccd6",
+     "quelle": "Fotos: 791 besonnte Zellen"
+    },
+    "glas": {
+     "hex": "#222f45",
+     "notiz": "dunkles Glas, fast schwarz-navy (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
+     "alt": "#222f45",
+     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 16): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    },
+    "sockel": {
+     "hex": "#24303e",
+     "notiz": "dunkler Sockelbau/Eingangsbereich",
+     "alt": "#24303e",
+     "quelle": "unverändert (zu wenige besonnte Messzellen: 16)"
+    },
+    "m1": {
+     "hex": "#5f788c",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 143 Messzellen"
+    },
+    "m2": {
+     "hex": "#9eabaf",
+     "notiz": "aus Fotos gemessene Fläche (automatisch)",
+     "quelle": "Fotos: 265 Messzellen"
+    }
+   },
+   "zonen": [
+    {
+     "name": "Sockelbau Ost/Nord (Annahme)",
+     "farbe": "sockel",
+     "seite": [
+      330,
+      130
+     ],
+     "z": [
+      0,
+      7
+     ]
+    },
+    {
+     "name": "Glasfront Südwest",
+     "farbe": "glas",
+     "seite": [
+      190,
+      250
+     ],
+     "z": [
+      0,
+      119
+     ]
+    },
+    {
+     "name": "Glasfront Westseite Mitte/Süd",
+     "farbe": "glas",
+     "seite": [
+      276,
+      310
+     ],
+     "z": [
+      0,
+      119
+     ]
+    },
+    {
+     "name": "Glasband Ostspitze",
+     "farbe": "glas",
+     "seite": [
+      85,
+      130
+     ],
+     "z": [
+      7,
+      150
+     ]
+    },
+    {
+     "name": "Messung O z 88–140 m",
+     "farbe": "m1",
+     "seite": "O",
+     "z": [
+      88.0,
+      140.0
+     ],
+     "entlang": [
+      0.0,
+      0.7354
+     ],
+     "quelle": "farbmessung"
+    },
+    {
+     "name": "Messung O z 20–88 m",
+     "farbe": "m2",
+     "seite": "O",
+     "z": [
+      20.0,
+      88.0
+     ],
+     "entlang": [
+      0.0,
+      0.7354
+     ],
+     "quelle": "farbmessung"
+    }
+   ],
+   "bericht": {
+    "farben": {
+     "fassade": {
+      "alt": "#bfccd6",
+      "neu": "#87a7b9",
+      "gemessen": true,
+      "zellen": 791,
+      "zellen_alle": 2265
+     },
+     "glas": {
+      "alt": "#222f45",
+      "neu": "#222f45",
+      "gemessen": false,
+      "zellen": 360,
+      "zellen_alle": 361
+     },
+     "sockel": {
+      "alt": "#24303e",
+      "neu": "#24303e",
+      "gemessen": false,
+      "zellen": 16,
+      "zellen_alle": 75
+     }
+    },
+    "zonen": [
+     {
+      "seite": "N",
+      "z": [
+       46.0,
+       134.0
+      ],
+      "entlang": [
+       0.0,
+       0.32
+      ],
+      "rgb": "#cfedfa",
+      "n": 807,
+      "licht": 0.0,
+      "fotos": 1.17,
+      "unter": "fassade",
+      "de": 25.5,
+      "neu": false
+     },
+     {
+      "seite": "N",
+      "z": [
+       0.0,
+       20.0
+      ],
+      "entlang": [
+       0.0,
+       0.32
+      ],
+      "rgb": "#59606a",
+      "n": 167,
+      "licht": 0.0,
+      "fotos": 1.24,
+      "unter": "fassade",
+      "de": 27.6,
+      "neu": false
+     },
+     {
+      "seite": "N",
+      "z": [
+       20.0,
+       46.0
+      ],
+      "entlang": [
+       0.0,
+       0.2286
+      ],
+      "rgb": "#94b3c4",
+      "n": 229,
+      "licht": 0.0,
+      "fotos": 1.47,
+      "unter": "fassade",
+      "de": 4.6,
+      "neu": false
+     },
+     {
+      "seite": "N",
+      "z": [
+       20.0,
+       46.0
+      ],
+      "entlang": [
+       0.2286,
+       0.32
+      ],
+      "rgb": "#4a5872",
+      "n": 78,
+      "licht": 0.0,
+      "fotos": 1.0,
+      "unter": "fassade",
+      "de": 30.9,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       88.0,
+       140.0
+      ],
+      "entlang": [
+       0.0,
+       0.7354
+      ],
+      "rgb": "#5f788c",
+      "n": 143,
+      "licht": 0.97,
+      "fotos": 1.0,
+      "unter": "glas",
+      "de": 30.6,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       8.0
+      ],
+      "entlang": [
+       0.7354,
+       1.0
+      ],
+      "rgb": "#ecf3f3",
+      "n": 31,
+      "licht": 0.52,
+      "fotos": 1.35,
+      "unter": "sockel",
+      "de": 76.7,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       0.0,
+       20.0
+      ],
+      "entlang": [
+       0.0,
+       0.7354
+      ],
+      "rgb": "#505a64",
+      "n": 40,
+      "licht": 0.33,
+      "fotos": 1.02,
+      "unter": "fassade",
+      "de": 30.0,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       20.0,
+       88.0
+      ],
+      "entlang": [
+       0.0,
+       0.7354
+      ],
+      "rgb": "#9eabaf",
+      "n": 265,
+      "licht": 0.78,
+      "fotos": 1.0,
+      "unter": "glas",
+      "de": 51.6,
+      "neu": true
+     },
+     {
+      "seite": "O",
+      "z": [
+       8.0,
+       44.0
+      ],
+      "entlang": [
+       0.7354,
+       1.0
+      ],
+      "rgb": "#7a95a2",
+      "n": 291,
+      "licht": 0.68,
+      "fotos": 1.28,
+      "unter": "fassade",
+      "de": 7.1,
+      "neu": false
+     },
+     {
+      "seite": "O",
+      "z": [
+       44.0,
+       140.0
+      ],
+      "entlang": [
+       0.7354,
+       1.0
+      ],
+      "rgb": "#8eafc2",
+      "n": 650,
+      "licht": 0.91,
+      "fotos": 1.12,
+      "unter": "fassade",
+      "de": 3.0,
+      "neu": false
+     }
+    ],
+    "seiten": {}
+   }
+  }
+ }
+}

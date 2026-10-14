@@ -2,7 +2,7 @@
  "farben": {
   "naturstein": {
    "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
      "box": [
@@ -43,11 +43,13 @@
      ],
      "notiz": "Nordfassade, drittes Foto"
     }
-   ]
+   ],
+   "hex": "#c4beb6",
+   "quelle": "Foto (4 Messfelder)"
   },
   "rotbraun": {
    "notiz": "rotbraune Verkleidung: Brücke über dem Durchgang und Band über dem Erdgeschoss; Hofseite rote Obergeschosse",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
      "box": [
@@ -98,11 +100,13 @@
      ],
      "notiz": "Innenhof: rote Obergeschosse der Südfassade (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#7e423d",
+   "quelle": "Foto (5 Messfelder)"
   },
   "dunkel": {
    "notiz": "Erdgeschoss: dunkle Schaufensterfronten/Natursteinsockel",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "00e4adee-a436-499a-bda1-4d828b1d3750",
      "box": [
@@ -143,11 +147,13 @@
      ],
      "notiz": "Innenhof: dunkler Sockel der Südfassade (ohne WB)"
     }
-   ]
+   ],
+   "hex": "#36383a",
+   "quelle": "Foto (4 Messfelder)"
   },
   "glasfront": {
    "notiz": "Westteil Nordfassade: spiegelnde Glasfront im 1. und 2. OG",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "gr_dguendel_2",
      "box": [
@@ -168,11 +174,13 @@
      ],
      "notiz": "Glasfront (zweites Feld)"
     }
-   ]
+   ],
+   "hex": "#747879",
+   "quelle": "Foto (2 Messfelder)"
   },
   "kopfbau_dunkel": {
    "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
      "box": [
@@ -203,7 +211,9 @@
      ],
      "notiz": "Kopfbau von Süden (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#424b4f",
+   "quelle": "Foto (3 Messfelder)"
   }
  },
  "basis": "naturstein",
@@ -314,7 +324,27 @@
    ]
   }
  ],
- "bilder": {
+ "weissabgleich": {
+  "e939ff76-25c6-469a-8746-a8f5fbff1ff1": {
+   "box": [
+    0.05,
+    0.85,
+    0.45,
+    0.95
+   ],
+   "notiz": "Pflaster Grimmaische Straße"
+  },
+  "6ffae1bc-11a8-4756-b78a-cb61b502ca01": {
+   "box": [
+    0.05,
+    0.85,
+    0.45,
+    0.95
+   ],
+   "notiz": "Pflaster Grimmaische Straße"
+  }
+ },
+ "bilder_alt": {
   "gr_dguendel_2": {
    "titel": "File:Leipzig, auf der Grimmaischen Straße, Bild 2.jpg",
    "seite": "https://commons.wikimedia.org/wiki/File:Leipzig,_auf_der_Grimmaischen_Stra%C3%9Fe,_Bild_2.jpg",
@@ -338,26 +368,6 @@
    "lizenz": "CC BY 4.0",
    "urheber": "Lukas Beck",
    "datum": "2025-03-22"
-  }
- },
- "weissabgleich": {
-  "e939ff76-25c6-469a-8746-a8f5fbff1ff1": {
-   "box": [
-    0.05,
-    0.85,
-    0.45,
-    0.95
-   ],
-   "notiz": "Pflaster Grimmaische Straße"
-  },
-  "6ffae1bc-11a8-4756-b78a-cb61b502ca01": {
-   "box": [
-    0.05,
-    0.85,
-    0.45,
-    0.95
-   ],
-   "notiz": "Pflaster Grimmaische Straße"
   }
  }
 }
