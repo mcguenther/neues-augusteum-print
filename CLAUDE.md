@@ -125,6 +125,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | 3D-Seiten `plug/views/dupont/view.html` bzw. `plug/build/institute/view.html` aus Vorlage und `data.json` |
 | `python3 -m plug.fit_test.build_page` | Anleitungsseite der Passprobe `plug/fit_test/page.html` |
 | `python3 -m plug.roadmap.build` | Fahrplan der Testdrucke (Abhängigkeiten, Zeitplan, Karten) `plug/roadmap/page.html` |
+| `python3 -m plug.feedback.build` | Testbogen zu den Serien (Schritte, Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page.html` |
 | `python3 -m plug.series` (ca. 6 min) | Passungsserien mit Spielgravur für Nachtdrucke: `stl/steckmodul_night1/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night1/` |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
