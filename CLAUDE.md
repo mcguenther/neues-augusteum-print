@@ -94,6 +94,14 @@ Deckel, Würfel (Pause/Kassette), Kassette, Schieber, Pausenprobe, Montagelehre 
 Generator; Zahlen in Plan und Seite kommen aus `dims()`, `forces()` und `building_table()`.
 Hilfsfunktionen werden aus `steckmodul.py` importiert, dort also nichts umbenennen.
 
+## Institutsgebäude mit Kassette
+
+Echtes Gebäude für die Kassetten-Variante des Dupont-Plans: `stecker/institut/PLAN.md`.
+`python3 steckmodul_institut.py` (rund 45 s) erzeugt Gebäude mit Fuß, Kassette, Schieber, Platte und Deckel nach
+`stl/steckmodul_institut/`, Bilder nach `vorschau/steckmodul_institut/` und `stecker/institut/daten.json`;
+`python3 stecker/institut/baue_ansicht.py` baut `stecker/institut/ansicht.html`. Die Ausgabe muss `dicht=True` und
+„keine Kollisionen“ zeigen. Der Generator importiert Kaufteile und Hilfsfunktionen aus `steckmodul_dupont.py`.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.
