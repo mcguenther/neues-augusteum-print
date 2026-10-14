@@ -36,57 +36,63 @@ def probe_source():
 
 
 # --------------------------------------------------------------------------
-# Passprobe (Version 3): alle Taschen öffnen sich zur Druckbettseite, bestückt wird von unten wie in Kassette und Platte
+# Passprobe (Version 4): flache Platte, vier Spiele je Reihe, Stiftlöcher von oben statt am Druckbett
 # --------------------------------------------------------------------------
-PP_W, PP_L, PP_H = 66.0, 44.0, 9.0           # Block
-PP_CL = (0.0, 0.1, 0.2)                      # Spiel je Seite (Spalten)
-PP_X = (-21.0, 0.0, 21.0)                    # Mitten der drei Spalten
-PP_Y_H, PP_Y_L, PP_Y_B = -16.0, 0.0, 14.0    # Reihen (y im Bauteil): Stiftlöcher, Leiste, Buchse
-PP_HOLES = (0.9, 1.0, 1.1, 1.2, 1.3)         # Lochdurchmesser
-PP_HOLE_X = (-24.0, -12.0, 0.0, 12.0, 24.0)
-PP_B_DEPTH = 7.0                             # Buchsentasche (halbe Gehäusehöhe), darüber Decke mit Aderschlitz
+PP_CL = (0.2, 0.3, 0.4, 0.5)                 # Spiel je Seite (Spalten). Version 3 (0,0 bis 0,2) war überall zu eng.
+PP_PITCH = 12.9                              # Spaltenabstand
+PP_X = tuple((i - 1.5) * PP_PITCH for i in range(4))
+PP_H = 5.4                                   # Plattendicke: 0,8 Decke + 2,54 Körper + 2,06 Raum unter dem Körper
+PP_HOLES = (1.0, 1.2, 1.4, 1.6)              # Lochdurchmesser der Blindlöcher (je Spalte eins)
+PP_HOLE_DEPTH = 3.5                          # Blindlöcher von oben, beginnen mitten im Teil (keine erste Schicht, kein Quetschrand)
+PP_LHOLE = 1.3                               # Löcher in der Leistendecke (alle Spalten gleich)
 PP_FLOOR = sd.CEIL                           # Decke über dem Leistenkörper (wie der Muldenboden in der Platte)
-PP_ROOM = (7.2, 6.5)                         # Raum unter der Leiste: halbe Breite x, halbe Tiefe y (Lötenden nach beiden Seiten)
-PP_ROOM_H = PP_H - PP_FLOOR - sd.HDR_BODY    # Höhe des Raums bis zur Unterkante des Körpers
-PP_SLOT = (2 * abs(sd.pin_x()[0]) + sd.WIRE_D + 0.3, sd.WIRE_D + 0.3)    # Aderschlitz wie in der Kassette
-PP_LABEL_Y = dict(B=PP_Y_B + 5.4, L=9.6, H=PP_Y_H + 4.4)
+PP_TAIL = sd.HDR_BODY / 2 + sd.RA_TAIL + 0.4          # Lötenden ragen so weit aus der Mitte nach +y
+PP_SLOT_X = 2 * (abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8) / 2     # halbe Breite des Lötendenraums
+PP_SLOT_H = PP_H - PP_FLOOR - sd.HDR_BODY - sd.RA_BACK + sd.PIN_SQ / 2 + 0.4   # Höhe des Lötendenraums
+PP_WALL = 1.5
+_hb = (sd.HSG_T + 2 * max(PP_CL)) / 2        # halbe Tiefe der größten Tasche
+_hl = (sd.HDR_BODY + 2 * max(PP_CL)) / 2
+PP_Y_H = 2.6                                 # (Maße ab Unterkante der Platte, unten in y-Richtung)
+PP_Y_LAB_H = PP_Y_H + 0.8 + 0.9 + 1.1
+PP_Y_L = PP_Y_LAB_H + 1.1 + 1.3 + _hl
+PP_Y_B = PP_Y_L + PP_TAIL + PP_WALL + _hb
+PP_Y_LAB_C = PP_Y_B + _hb + 1.0 + 1.3
+PP_L = round(PP_Y_LAB_C + 1.3 + 1.4, 1)
+PP_W = round(3 * PP_PITCH + 2 * (sd.HSG_W / 2 + max(PP_CL) + PP_WALL), 1)
+PP_Y_H, PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C = (round(v - PP_L / 2, 2) for v in
+                                                    (PP_Y_H, PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C))
 
 
 def passprobe():
-    """Wie im Gebäude: Eingesetzt wird von unten (Druckbettseite), die Stifte zeigen nach oben.
-    Reihe Buchse: Taschen mit 0,0 / 0,1 / 0,2 mm Spiel, 7 mm tief, Decke mit Aderschlitz.
-    Reihe Leiste: Raum für die Lötenden, darüber die Tasche für den Körper (2,54 mm) und eine 0,8-mm-Decke mit vier
-    Stiftlöchern (Ø HOLE) wie der Muldenboden. Reihe Stiftlöcher: 0,9 bis 1,3 mm.
-    Schrift auf der Einsetzseite, lesbar, wenn man den Block wie ein Buch um die lange Kante umdreht."""
+    """Flache Platte, y nach oben wie in der Draufsicht. Von unten (Druckbettseite) werden Buchse und Leiste eingesetzt.
+    Reihe B: Buchsentaschen (durchgehend) mit 0,2 / 0,3 / 0,4 / 0,5 mm Spiel je Seite.
+    Reihe L: Leistentaschen mit gleichem Spiel, 0,8-mm-Decke mit vier Löchern Ø PP_LHOLE, daneben der Lötendenraum.
+    Reihe H: Blindlöcher 1,0 / 1,2 / 1,4 / 1,6 mm von oben (sie liegen nicht auf dem Druckbett und können nicht zuquellen).
+    Schrift auf der Oberseite: Spiel je Spalte ganz oben, Lochdurchmesser unter der Leistenreihe."""
     from steckmodul import box, cbox, cyl, diff
     import manifold3d as m3d
     blk = box(-PP_W / 2, PP_W / 2, -PP_L / 2, PP_L / 2, 0, PP_H)
     cuts = []
+    zb = PP_H - PP_FLOOR                              # Oberkante der Leistentasche
     for c, x in zip(PP_CL, PP_X):
-        # Buchse
-        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, -0.01, PP_B_DEPTH, cx=x, cy=PP_Y_B))
-        cuts.append(cbox(PP_SLOT[0], PP_SLOT[1], PP_B_DEPTH - 0.01, PP_H + 0.01, cx=x, cy=PP_Y_B))
-        # Leiste: Raum, Körpertasche, Decke mit Löchern
-        cuts.append(box(x - PP_ROOM[0], x + PP_ROOM[0], PP_Y_L - PP_ROOM[1], PP_Y_L + PP_ROOM[1], -0.01, PP_ROOM_H))
-        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, PP_ROOM_H - 0.01, PP_H - PP_FLOOR, cx=x, cy=PP_Y_L))
+        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, -0.01, PP_H + 0.01, cx=x, cy=PP_Y_B))
+        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, -0.01, zb, cx=x, cy=PP_Y_L))
+        cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, PP_Y_L, PP_Y_L + PP_TAIL, -0.01, PP_SLOT_H))
         for px_ in sd.pin_x():
-            cuts.append(cyl(sd.HOLE / 2, PP_H - PP_FLOOR - 0.01, PP_H + 0.01, cx=x + px_, cy=PP_Y_L, n=24))
-    for hd, x in zip(PP_HOLES, PP_HOLE_X):
-        cuts.append(cyl(hd / 2, -0.01, PP_H + 0.01, cx=x, cy=PP_Y_H, n=32))
+            cuts.append(cyl(PP_LHOLE / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=PP_Y_L, n=24))
+    for hd, x in zip(PP_HOLES, PP_X):
+        cuts.append(cyl(hd / 2, PP_H - PP_HOLE_DEPTH, PP_H + 0.01, cx=x, cy=PP_Y_H, n=32))
     try:
         import generate
 
-        def label(text, x, y, size=3.0):
+        def label(text, x, y, size=2.6):
             cs = generate.text_cross_section(text, size, 0.0, -size / 2, anchor="center")
-            if cs is not None:      # an y gespiegelt: lesbar, wenn man den Block um die lange Kante (x-Achse) umdreht
-                cs = cs.scale((1.0, -1.0)).translate((x, y))
-                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, -0.2]))
-        for c, x in zip(PP_CL, PP_X):
-            t = ("%.1f" % c).replace(".", ",")
-            label("B " + t, x, PP_LABEL_Y["B"])
-            label("L " + t, x, PP_LABEL_Y["L"])
-        for hd, x in zip(PP_HOLES, PP_HOLE_X):
-            label(("%.1f" % hd).replace(".", ","), x, PP_LABEL_Y["H"], 2.6)
+            if cs is not None:
+                cs = cs.translate((x, y))
+                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
+        for c, hd, x in zip(PP_CL, PP_HOLES, PP_X):
+            label(("%.1f" % c).replace(".", ","), x, PP_Y_LAB_C)
+            label(("%.1f" % hd).replace(".", ","), x, PP_Y_LAB_H)
     except Exception as e:
         print("  (Beschriftung übersprungen: %s)" % e)
     return diff(blk, *cuts)
@@ -207,11 +213,13 @@ def previews(P, fl):
         items.append((tm, col[c]))
         x += w + 10
     im = preview.render(items, size=(1500, 700), azim=-30, elev=30); im.save(os.path.join(PREV, "druckteile.png"))
-    # Passprobe von der Einsetzseite (um die lange Kante umgedreht, Schrift lesbar)
+    # Passprobe von oben (Schrift lesbar, Taschen öffnen sich nach unten)
     import trimesh
     pp = to_tm(passprobe())
-    pp.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
-    im = preview.render([(pp, "#b9bfc4")], size=(1300, 880), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_einsetzseite.png"))
+    im = preview.render([(pp, "#b9bfc4")], size=(1500, 760), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_oben.png"))
+    pp2 = pp.copy()
+    pp2.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
+    im = preview.render([(pp2, "#b9bfc4")], size=(1500, 760), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_einsetzseite.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
@@ -231,7 +239,7 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                ({vols['3_schieber']:.1f} cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     ({vols['4_platte']:.1f} cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              ({vols['5_deckel']:.1f} cm³)
-  0_passprobe.stl     Passprobe: Taschen für Buchse und Stiftleiste, Stiftlöcher; wird von unten bestückt wie Kassette und Platte (Anleitung: stecker/probe/passprobe.html)
+  0_passprobe.stl     Passprobe (flach, 5 cm³): Taschen 0,2 bis 0,5 mm Spiel für Buchse und Stiftleiste, Blindlöcher von oben; Taschenseite aufs Bett (Anleitung: stecker/probe/passprobe.html)
 
   Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 
