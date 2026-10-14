@@ -1,0 +1,56 @@
+PROBEDRUCK KASSETTE (Plan B, Dupont-Teile) – Institutsgebäude-Ausschnitt
+=========================================================================
+
+Was ist das?
+  Ein kleines Probestück (22 × 36 mm, 12 mm sichtbare Höhe + 9.8 mm Fuß). Es ist ein Ausschnitt
+  des Hauptbalkens vom Institutsgebäude (1:1000) mit denselben Maßen für Fuß, Schacht, Nut, Kassette und Schieber.
+  Damit prüfst du die Kassette mit Schieber, das Stecken in die Platte und das Licht durch die dünne Wand.
+
+Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
+  1_probestueck.stl   Gebäude mit Fuß: Fuß nach unten auf das Druckbett, Dach oben    (6.1 cm³)
+  2_kassette.stl      Kassette: steht aufrecht, Buchsentasche unten offen              (5.8 cm³)
+  3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                (0.6 cm³)
+  4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     (16.2 cm³)
+  5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              (3.3 cm³)
+  0_passprobe.stl     Passprobe Winkelleiste (flach, 1.8 cm³): drei Felder mit Stufenhöhe für Körperhöhe 2,0 / 1,8 / 1,6 mm; Schriftseite aufs Bett
+                      (Anleitung: plug/fit_test/page.html). Nicht Teil des Probestücks, sondern vorher zu drucken.
+
+  Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
+
+Material: alle fünf Teile zusammen 32 cm³ (bei 100 % Füllung etwa 40 g PLA,
+  mit 15 % Füllung deutlich weniger). Nur das Dach des Probestücks ist eine Brücke (19,6 mm breit), alles andere ist ≤ 14 mm.
+
+Slicer-Einstellungen (Düse 0,4 mm)
+  Schichthöhe 0,2 mm, PLA oder PETG, Wände 3 Linien (= 1,2 mm), Füllung 15 %, Brückenerkennung an.
+  Die Lichtfenster sind nur 0,4 mm dick (eine einzige Linie). Der Slicer muss dünne Wände drucken: Beim neuen
+  Wandgenerator „Arachne“ (PrusaSlicer 2.6 und neuer, Bambu Studio, Cura) geht das von selbst, sonst die Option
+  „Dünne Wände erkennen“ bzw. „Lücken zwischen Wänden füllen“ einschalten. Im Slicer-Vorschaubild prüfen, ob die Fenster da sind.
+  Keine Stützen. Falls ein Slicer die Brücke im Dach (19,6 mm breit) bemängelt: das ist eine Brücke, keine Stütze nötig.
+  Schieber: ohne Rand/Brim drucken, langsam (erste Schicht 20 mm/s), er ist nur 1 mm dick und kann sich verziehen.
+  Kassette und Schieber nach dem Druck an den Kanten entgraten (Elefantenfuß), dann erst zusammenstecken.
+
+Was du zusätzlich brauchst
+  - Dupont-Gehäuse 1×4 mit 4 gecrimpten Adern (Buchse), 1 Stück Winkelstiftleiste mit 4 Pins aus dem Set (Körper nicht über 4 Pins hinaus abbrechen, Rest feilen)
+  - ein Stück WS2812B-Streifen (60/m 10 mm oder 144/m 12 mm), optional zum Anlöten
+  - 4 Blechschrauben M3 × 8 für den Deckel (oder den Deckel mit etwas Heißkleber fixieren)
+
+Ablauf
+  1. Teile mit den echten Kaufteilen anprobieren (Buchse in die Kassette, Leiste in die Platte). Passt etwas nicht: Maße im Generator ändern.
+  2. Buchse in die Tasche der Kassette drücken (Steckseite zur offenen Unterseite), Adern in den Schlitz legen,
+     Streifen auf die Ablage kleben und anlöten.
+  3. Kassette von unten in den Schacht des Probestücks schieben. Schieber seitlich (durch die lange Wand, +x) in die Nut
+     schieben, bis er anschlägt. Er schließt bündig mit der Wand ab.
+  4. Winkelleiste von unten in die Platte schieben: die senkrechten Pins zeigen nach oben und durch die Löcher im Muldenboden, der
+     Körper liegt neben den Pins, die 3-mm-Lötenden zeigen von den Pins weg in den Kabelraum. Deckel anschrauben.
+  5. Probestück in die Mulde stecken. Die abgeschrägte Ecke zeigt, wie herum es passt.
+
+Was du messen sollst
+  - Schieber: gleitet er leicht, ohne zu klemmen, und schließt er bündig ab?
+  - Kassette: sitzt sie ohne Spiel im Schacht? Anschlag oben erreicht?
+  - Stecken: Kraft zum Einstecken (Ziel unter 10 N) und zum Herausziehen (Ziel 3 bis 8 N); hebt die Mini-Platte mit?
+  - Kontakt: LED leuchtet, DETECT-Pin liest LOW (Stifte stecken 3.9 mm in der Buchse; Kontaktpunkt ist geschätzt)
+  - Licht: leuchtet die 0,4-mm-Wand gleichmäßig? (Fenster zeigen nach außen auf allen vier Seiten)
+
+Maße zum Nachschauen
+  Kassette 15.7 × 29.3 mm, Ablage 13.0 × 21.0 mm, Schacht +0,2 mm je Seite,
+  Nut 45° mit 0,15 mm Spiel, Schieber 1,0 mm, Fuß 9.8 mm, Mulde 0,25 mm Spiel im Führungsband.

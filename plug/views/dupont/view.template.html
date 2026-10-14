@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: schmale Textspalte, 3D-Ansichten in voller Breite; Maße immer in Monospace.
-   Gleiches System wie stecker/ansicht.html (JST-Plan), dazu eine Farbe für die Druckpause. */
+   Gleiches System wie plug/archive/jst/view.template.html (JST-Plan), dazu eine Farbe für die Druckpause. */
 :root {
   --bg: #f3f4f1;
   --panel: #ffffff;
@@ -231,7 +231,7 @@ details[open] > summary { margin-bottom: 8px; }
      </div>
     </div>
   </div>
-  <p class="small muted">Ziehen dreht, Mausrad oder zwei Finger zoomen. Platte, Deckel, Gebäude, Kassette und Schieber sind die Druckdateien aus <code>steckmodul_dupont.py</code>. Stiftleiste, Buchse mit Kontakten, Adern und LED sind Platzhalter mit den Maßen der Kaufteile. Der Querschnitt geht durch Pin 2 (DIN).</p>
+  <p class="small muted">Ziehen dreht, Mausrad oder zwei Finger zoomen. Platte, Deckel, Gebäude, Kassette und Schieber sind die Druckdateien aus <code>plug/dupont.py</code>. Stiftleiste, Buchse mit Kontakten, Adern und LED sind Platzhalter mit den Maßen der Kaufteile. Der Querschnitt geht durch Pin 2 (DIN).</p>
 </section>
 
 <!-- ============================ DRUCK ============================ -->
@@ -474,7 +474,7 @@ details[open] > summary { margin-bottom: 8px; }
 <!-- ============================ ANNAHMEN ============================ -->
 <section aria-labelledby="h-ann">
   <h2 id="h-ann">Offene Annahmen</h2>
-  <p>Diese Werte sind geschätzt oder hängen vom Kit ab. Sie stehen als Parameter oben in <code>steckmodul_dupont.py</code>; nachmessen, eintragen, neu erzeugen.</p>
+  <p>Diese Werte sind geschätzt oder hängen vom Kit ab. Sie stehen als Parameter in <code>plug/parts.py</code>; nachmessen, eintragen, mit <code>python3 -m plug.build_all</code> neu erzeugen.</p>
   <ul class="tight">
     <li>Gehäusemaße des Kits und die Eintrittsöffnung der Kammern (≈ 1,0 mm).</li>
     <li>Stiftlängen der Leisten (6,0 oben, 3,0 unten) und bei der Winkelleiste die Lage der Biegung (1,5 mm hinter dem Körper).</li>
@@ -489,7 +489,7 @@ details[open] > summary { margin-bottom: 8px; }
 </section>
 
 <footer class="small muted" style="max-width:72ch">
-  Maße der Stiftleisten aus den Würth-Zeichnungen WR-PHD 61300411121 und 61300411021, Gehäuse und Crimpkontakte aus den Maßzeichnungen bei Pololu (Produkte 1903, 1930, 1931). Kräfte sind Schätzungen. Dateien: <code>steckmodul_dupont.py</code>, <code>stl/steckmodul_dupont/</code>, <code>stecker/dupont/PLAN.md</code>, Vorschaubilder in <code>vorschau/steckmodul_dupont/</code>.
+  Maße der Stiftleisten aus den Würth-Zeichnungen WR-PHD 61300411121 und 61300411021, Gehäuse und Crimpkontakte aus den Maßzeichnungen bei Pololu (Produkte 1903, 1930, 1931). Kräfte sind Schätzungen. Dateien: <code>plug/dupont.py</code>, <code>plug/parts.py</code>, <code>stl/steckmodul_dupont/</code>, <code>plug/PLAN.md</code>, Vorschaubilder in <code>vorschau/steckmodul_dupont/</code>.
 </footer>
 
 </div>
