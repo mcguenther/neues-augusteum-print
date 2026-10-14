@@ -102,6 +102,13 @@ Echtes Gebäude für die Kassetten-Variante des Dupont-Plans: `stecker/institut/
 `python3 stecker/institut/baue_ansicht.py` baut `stecker/institut/ansicht.html`. Die Ausgabe muss `dicht=True` und
 „keine Kollisionen“ zeigen. Der Generator importiert Kaufteile und Hilfsfunktionen aus `steckmodul_dupont.py`.
 
+## Probedruck Kassette
+
+Kleines Probestück (22 × 36 mm Ausschnitt des Institutsgebäude-Hauptbalkens) mit Kassette, Schieber, Mini-Platte und
+Deckel: `python3 steckmodul_probe.py` (rund 15 s) schreibt STL, `LIESMICH.txt` und `probedruck_kassette.zip` nach
+`stl/steckmodul_probe/` und Bilder nach `vorschau/steckmodul_probe/`. Es nutzt `steckmodul_institut.py`
+(`build_all(source=…)`); die Ausgabe nennt Kollisionen und waagerechte Decken (Brücken) je Teil.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.

@@ -96,10 +96,14 @@ def rounded(cs):
 # --------------------------------------------------------------------------
 # Lage der Einheit, Maße
 # --------------------------------------------------------------------------
-def layout(fp):
-    """Pin-Reihe (PX, PY): Mitte des Hauptbalkens auf halber Länge. Wand-x der langen Wand bei PY."""
+def layout(fp, center_cassette=False):
+    """Pin-Reihe (PX, PY): Mitte des Hauptbalkens auf halber Länge. Wand-x der langen Wand bei PY.
+    center_cassette: PY so wählen, dass die Kassette (nicht die Pin-Reihe) in der Mitte liegt (kleine Probestücke)."""
     x0, y0, x1, y1 = fp.bounds
     py = (y0 + y1) / 2
+    if center_cassette:
+        dd = dims()
+        py = (y0 + y1) / 2 + dd["HY"] - (dd["cass_y0"] + dd["cass_y1"]) / 2
     from shapely.geometry import LineString
     seg = fp.intersection(LineString([(x0 - 1, py), (x1 + 1, py)]))
     xa, xb = seg.bounds[0], seg.bounds[2]
@@ -148,19 +152,20 @@ def pocket_cuts(cs, F):
     return out
 
 
-def chamber(solid, z0, H):
+def chamber(solid, z0, H, slope=0.0):
     """Lichtkammer: je Höhe der um die Wandstärke geschrumpfte Querschnitt des Gebäudes in 1,2 mm
     höherer Lage, damit Wand und Dach überall mindestens 1,2 mm dick bleiben."""
     slabs, z = [], z0
+    zs = H - sd.ROOF - slope                      # ab hier läuft die Decke in 45° nach innen (slope > 0)
     while z < H - sd.ROOF - 0.2:
-        cs = solid.slice(z + sd.ROOF + 0.1).offset(-sd.SHELL, m3d.JoinType.Round)
+        cs = solid.slice(z + sd.ROOF + 0.1).offset(-sd.SHELL - max(0.0, z + 0.1 - zs), m3d.JoinType.Round)
         if cs.area() > 1.0:
             slabs.append(ext(cs, z, z + LAYER + 0.01))
         z += LAYER
     return union(slabs)
 
 
-def light_windows(fp):
+def light_windows(fp, rows=None, win_h=None):
     """Fenster als auf WIN_T abgedünnte Wandstellen entlang der geraden Wände."""
     cs_fp = hcs(fp)
     ring = cs_fp.offset(-WIN_T, m3d.JoinType.Round) - cs_fp.offset(-sd.SHELL - 0.01, m3d.JoinType.Round)
@@ -182,7 +187,9 @@ def light_windows(fp):
             rects.append(m3d.CrossSection([[tuple(p) for p in corners]]))
     mask = m3d.CrossSection.batch_boolean(rects, m3d.OpType.Add)
     cutcs = ring ^ mask
-    return [ext(cutcs, z0, z0 + WIN_H) for z0 in WIN_ROWS]
+    rows = WIN_ROWS if rows is None else rows
+    h = WIN_H if win_h is None else win_h
+    return [ext(cutcs, z0, z0 + h) for z0 in rows]
 
 
 # --------------------------------------------------------------------------
@@ -235,9 +242,10 @@ def tf(L):
     return lambda m: m.translate([L["PX"], L["PY"] - d["HY"], 0])
 
 
-def build_all():
-    solid, fp, info = load_building()
-    L = layout(fp)
+def build_all(source=None, win_rows=None, win_h=None, screw_ring=None, center_cassette=False, roof_slope=0.0):
+    """source = (solid, fp, info) aus load_building() oder probe_source(); Standard: Institutsgebäude."""
+    solid, fp, info = load_building() if source is None else source
+    L = layout(fp, center_cassette)
     d = dims()
     T = tf(L)
     F, HY = d["F"], d["HY"]
@@ -249,7 +257,7 @@ def build_all():
     body = union([solid, foot])
     zc = d["z_kt"] + 1.2
     H = solid.bounding_box()[5]
-    ch = chamber(solid, zc, H)
+    ch = chamber(solid, zc, H, roof_slope)
     x0, x1, y0, y1 = cass_outline(d)
     c = sd.KASS_CLR
     groove = sd.prism_x(slider_prof(d, 0.0, 0.01), d["x_in"], xout_local + 6.0)
@@ -263,7 +271,7 @@ def build_all():
     xw = L["xwall"]
     cuts.append(sd.prism_y([(xw + 0.01, zd - w - 0.1), (xw - w + 0.05, zd), (xw + 0.01, zd + w + 0.1)],
                            L["PY"] - 8.0, L["PY"] + 8.0))
-    cuts += light_windows(fp)
+    cuts += light_windows(fp, win_rows, win_h)
     building = diff(body, *cuts)
 
     # ---- Kassette, Schieber, Kaufteile ----
@@ -277,8 +285,8 @@ def build_all():
     header = T(sd.header_part("A"))
 
     # ---- Platte, Deckel ----
-    plate, lid, screws = plate_and_lid(L, d, cs, F)
-    plate_nb = plate_and_lid(L, d, cs, F, bump=False)[0]
+    plate, lid, screws = plate_and_lid(L, d, cs, F, ring=screw_ring)
+    plate_nb = plate_and_lid(L, d, cs, F, bump=False, ring=screw_ring)[0]
     return dict(L=L, d=d, solid=solid, fp=fp, building=building, kass=kass, key=sl, housing=housing, terms=terms,
                 wires=wires, leds=leds, header=header, plate=plate, plate_nb=plate_nb, lid=lid, screws=screws, info=info,
                 H=H, chamber=ch)
@@ -294,9 +302,12 @@ def led_part(d, s):
     return union([strip] + chips + pads)
 
 
-def screw_points(plate_poly, pocket_poly):
+def screw_points(plate_poly, pocket_poly, ring=None):
     x0, y0, x1, y1 = plate_poly.bounds
-    ok = plate_poly.buffer(-3.5).difference(pocket_poly.buffer(3.5))
+    if ring:      # Ring um den Fußumriss (innen, außen), z. B. für kleine Platten
+        ok = pocket_poly.buffer(ring[1]).difference(pocket_poly.buffer(ring[0]))
+    else:
+        ok = plate_poly.buffer(-3.5).difference(pocket_poly.buffer(3.5))
     out = []
     for cx, cy in ((x0, y0), (x0, y1), (x1, y0), (x1, y1)):
         best, bd = None, 1e9
@@ -310,7 +321,7 @@ def screw_points(plate_poly, pocket_poly):
     return out
 
 
-def plate_and_lid(L, d, cs, F, bump=True):
+def plate_and_lid(L, d, cs, F, bump=True, ring=None):
     PX, PY, HY = L["PX"], L["PY"], d["HY"]
     off = sd.CLR + sd.RELIEF + MARGIN
     pcs = rounded(cs).offset(off, m3d.JoinType.Round)
@@ -326,7 +337,7 @@ def plate_and_lid(L, d, cs, F, bump=True):
     ppoly = shapely.Polygon(np.array(pcs.to_polygons()[0]))
     ymax = ppoly.bounds[3]
     cuts.append(box(PX - 4.0, PX + 4.0, PY, ymax + 0.01, d["z_lt"] - 0.01, d["z_lt"] + 4.0))     # Rinne zur Kante
-    pts = screw_points(ppoly, shapely.Polygon(np.array(rounded(cs).to_polygons()[0])))
+    pts = screw_points(ppoly, shapely.Polygon(np.array(rounded(cs).to_polygons()[0])), ring)
     for x, y in pts:
         cuts.append(cyl(sd.SCREW_PILOT / 2, d["z_lt"] - 0.01, d["z_lt"] + 9.0, cx=x, cy=y))
     p = diff(blk, *cuts)
