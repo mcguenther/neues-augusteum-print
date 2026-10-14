@@ -1945,6 +1945,847 @@
    },
    "pose_kosten": 0.049,
    "geprueft": true
+  },
+  "cm_89035e08": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG/1920px-Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Wilhelm Thomas Fiege",
+   "zeit": "2014-04-26T14:05:30",
+   "gebaeude": [
+    "08",
+    "02",
+    "03"
+   ],
+   "titel": "Schinkeltor, Neues Augusteum, Universität Leipzig, 2014",
+   "licht": "sonnig mit Quellwolken, Fassaden im Innenhof besonnt (Schlagschatten am Boden); Uhrzeit 14:05; Sonne Azimut 202°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -135,
+     -95,
+     10,
+     55
+    ],
+    "yaw_bereich": [
+     55,
+     110
+    ],
+    "pitch": [
+     -2,
+     12
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     3.6,
+     4.9
+    ]
+   }
+  },
+  "cm_a432dae5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/NSG_Leipzig.JPG/1920px-NSG_Leipzig.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:NSG_Leipzig.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:12:00",
+   "gebaeude": [
+    "04",
+    "03",
+    "06"
+   ],
+   "titel": "NSG Leipzig",
+   "licht": "klarer blauer Himmel, Schneereste am Boden; Westfassade des Seminargebäudes besonnt; Uhrzeit 15:12; Sonne Azimut 227°, Höhe 23° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -205,
+     -150,
+     60,
+     230
+    ],
+    "yaw_bereich": [
+     145,
+     205
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "fl_5355563189": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/5001/5355563189_54c33e3da7_k.jpg",
+   "seite": "https://www.flickr.com/photos/58026969@N05/5355563189",
+   "lizenz": "CC BY 2.0",
+   "urheber": "David~",
+   "zeit": "2009-05-24T15:02:16",
+   "gebaeude": [
+    "04",
+    "06"
+   ],
+   "titel": "Neues Seminargebäude",
+   "licht": "sonnig mit Schleierwolken, Westfassade besonnt; Uhrzeit 15:02; Sonne Azimut 227°, Höhe 52° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -205,
+     -145,
+     50,
+     220
+    ],
+    "yaw_bereich": [
+     140,
+     205
+    ],
+    "pitch": [
+     -3,
+     25
+    ],
+    "hfov": [
+     45,
+     90
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_867bcac5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Leipzig_Uni_Campus_Neu_Nordseite.JPG/1920px-Leipzig_Uni_Campus_Neu_Nordseite.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Uni_Campus_Neu_Nordseite.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:12:00",
+   "gebaeude": [
+    "05"
+   ],
+   "titel": "Leipzig Uni Campus Neu Nordseite",
+   "licht": "klarer blauer Himmel, Schneereste; Fassade im Bild sonnenbeschienen; Uhrzeit 15:12; Sonne Azimut 227°, Höhe 23° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -260,
+     -20,
+     95,
+     200
+    ],
+    "yaw_bereich": [
+     20,
+     160
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_1e4df457": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:16:41",
+   "gebaeude": [
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz - Paulinum 01 ies",
+   "licht": "wolkenlos tiefblau, Ostfassaden voll besonnt; Uhrzeit 10:16; Sonne Azimut 113°, Höhe 45° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -25,
+     15,
+     15,
+     55
+    ],
+    "yaw_bereich": [
+     -60,
+     20
+    ],
+    "pitch": [
+     20,
+     60
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_438c2e7f": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg/1920px-Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Dguendel",
+   "zeit": "2018-03-24T11:29:29",
+   "gebaeude": [
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig, Paulinum und die Häuser Goethestraße 1 und 2",
+   "licht": "klarer blauer Himmel, Fassade (Ostseite) besonnt; Uhrzeit 11:29; Sonne Azimut 165°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     10,
+     -30,
+     25
+    ],
+    "yaw_bereich": [
+     -30,
+     50
+    ],
+    "pitch": [
+     -2,
+     15
+    ],
+    "hfov": [
+     13,
+     18
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_7688a7cf": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Mensa_am_Park.JPG/1920px-Mensa_am_Park.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mensa_am_Park.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:14:00",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Mensa am Park",
+   "licht": "wolkenloser blauer Himmel (März), Südfassade der Mensa besonnt; Uhrzeit 15:14; Sonne Azimut 227°, Höhe 22° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -160,
+     -110,
+     -175,
+     -125
+    ],
+    "yaw_bereich": [
+     10,
+     70
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     40,
+     50
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_e1e5fb60": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:46:37",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Leipzig - Universitätsstraße + Mensa am Park + City-Hochhaus 01 ies",
+   "licht": "tiefblauer Himmel, Mensa-Fassade besonnt; Uhrzeit 10:46; Sonne Azimut 121°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -205,
+     -110,
+     -195,
+     -110
+    ],
+    "yaw_bereich": [
+     10,
+     80
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_3b7d7aa5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:49:08",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Mensa am Park + City-Hochhaus 02 ies",
+   "licht": "blauer Himmel, Lamellenfassade und Hochhaus besonnt; Uhrzeit 10:49; Sonne Azimut 122°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -200,
+     -100,
+     -170,
+     -70
+    ],
+    "yaw_bereich": [
+     20,
+     110
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     30,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_d97072a8": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:40:18",
+   "gebaeude": [
+    "07",
+    "03"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Moritzbastei 02 ies",
+   "licht": "wolkenlos tiefblau, Mauer besonnt (Schlagschatten am Boden); Uhrzeit 10:40; Sonne Azimut 119°, Höhe 49° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     45,
+     -205,
+     -110
+    ],
+    "yaw_bereich": [
+     235,
+     305
+    ],
+    "pitch": [
+     -5,
+     10
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_73eef6bc": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T12:55:16",
+   "gebaeude": [
+    "06",
+    "07"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Lennéanlage + Moritzbastei + City-Hochhaus 01 ies",
+   "licht": "blauer Himmel, Hochhaus besonnt (Südseite), Mauer im Schatten; Uhrzeit 12:55; Sonne Azimut 171°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Süd)",
+   "prior": {
+    "bereich": [
+     -195,
+     -95,
+     -240,
+     -150
+    ],
+    "yaw_bereich": [
+     5,
+     65
+    ],
+    "pitch": [
+     8,
+     38
+    ],
+    "hfov": [
+     48,
+     58
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_2c42c9b4": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:03:16",
+   "gebaeude": [
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 01 ies",
+   "licht": "wolkenlos tiefblau, Ostgiebel voll besonnt; Uhrzeit 10:03; Sonne Azimut 109°, Höhe 43° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     20,
+     110,
+     -10,
+     70
+    ],
+    "yaw_bereich": [
+     260,
+     310
+    ],
+    "pitch": [
+     -2,
+     15
+    ],
+    "hfov": [
+     30,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_32166237": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:24:17",
+   "gebaeude": [
+    "02",
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 04 ies",
+   "licht": "blauer Himmel mit Schleierwolken, Ostfront besonnt; Uhrzeit 10:24; Sonne Azimut 115°, Höhe 46° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     140,
+     -30,
+     60
+    ],
+    "yaw_bereich": [
+     255,
+     300
+    ],
+    "pitch": [
+     -3,
+     12
+    ],
+    "hfov": [
+     58,
+     72
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_f3cf5ae4": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:28:11",
+   "gebaeude": [
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 05 ies",
+   "licht": "tiefblauer Himmel, Ostfassade streifend besonnt; Uhrzeit 10:28; Sonne Azimut 116°, Höhe 47° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -35,
+     30,
+     -100,
+     -10
+    ],
+    "yaw_bereich": [
+     -45,
+     30
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     33,
+     42
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_37fb5ce2": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:15:30",
+   "gebaeude": [
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Paulinum 01 ies.jpg",
+   "licht": "tiefblauer Himmel, Giebel besonnt; Uhrzeit 10:15; Sonne Azimut 112°, Höhe 45° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -5,
+     70,
+     -20,
+     45
+    ],
+    "yaw_bereich": [
+     285,
+     345
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     33,
+     42
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_719477f3": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg/1920px-Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Dguendel",
+   "zeit": "2018-03-24T11:29:02",
+   "gebaeude": [
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig, die Universitätskirche (Paulinum)",
+   "licht": "sonnig, blauer Himmel mit Wolken; Ostfassade im Streiflicht; Uhrzeit 11:29; Sonne Azimut 164°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     10,
+     -30,
+     25
+    ],
+    "yaw_bereich": [
+     -40,
+     20
+    ],
+    "pitch": [
+     -2,
+     20
+    ],
+    "hfov": [
+     25,
+     33
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_9812eb34": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:03:34",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - Augustusplatz + City-Hochhaus 01 ies",
+   "licht": "wolkenlos tiefblau, Ostseite des Hochhauses voll besonnt; Uhrzeit 10:03; Sonne Azimut 109°, Höhe 43° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     20,
+     110,
+     -100,
+     -30
+    ],
+    "yaw_bereich": [
+     235,
+     285
+    ],
+    "pitch": [
+     3,
+     22
+    ],
+    "hfov": [
+     24,
+     30
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_c00e0207": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:08:14",
+   "gebaeude": [
+    "06",
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig - Augustusplatz + City-Hochhaus 02 ies",
+   "licht": "wolkenlos blau, Ostseite des Hochhauses besonnt; Uhrzeit 10:08; Sonne Azimut 111°, Höhe 44° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     110,
+     -90,
+     -20
+    ],
+    "yaw_bereich": [
+     250,
+     295
+    ],
+    "pitch": [
+     -2,
+     14
+    ],
+    "hfov": [
+     48,
+     58
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "cm_4d3eca4c": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:04:47",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - Augustusplatz + Radisson Blu + Europahaus + Neues Gewandhaus + City-Hochhaus 01 ies.jpg",
+   "licht": "blauer Himmel mit Schleierwolken, Ostseite des Hochhauses besonnt; Uhrzeit 10:04; Sonne Azimut 110°, Höhe 44° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     20,
+     150,
+     -10,
+     110
+    ],
+    "yaw_bereich": [
+     170,
+     250
+    ],
+    "pitch": [
+     -5,
+     12
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "fl_25041852629": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1613/25041852629_db6f380a58_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25041852629",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "zeit": "2015-08-03T10:00:43",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - City-Hochhaus Leipzig",
+   "licht": "morgens, blauer Himmel; Ostfassade besonnt; Uhrzeit 10:00; Sonne Azimut 112°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -50,
+     40,
+     -110,
+     -10
+    ],
+    "yaw_bereich": [
+     220,
+     300
+    ],
+    "pitch": [
+     20,
+     55
+    ],
+    "hfov": [
+     55,
+     95
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "fl_15722085221": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/8640/15722085221_18100d3ed4_k.jpg",
+   "seite": "https://www.flickr.com/photos/129110760@N03/15722085221",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Gokhan Kutlu",
+   "zeit": "2013-07-07T12:54:09",
+   "gebaeude": [
+    "01",
+    "02"
+   ],
+   "titel": "Uni Leipzig",
+   "licht": "blauer Himmel, mittags; Uhrzeit 12:54; Sonne Azimut 170°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     130,
+     0,
+     85
+    ],
+    "yaw_bereich": [
+     255,
+     295
+    ],
+    "pitch": [
+     0,
+     20
+    ],
+    "hfov": [
+     15,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
+  },
+  "fl_48025156148": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/65535/48025156148_9998da7ac3_k.jpg",
+   "seite": "https://www.flickr.com/photos/10345599@N03/48025156148",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Francisco Anzola",
+   "zeit": "2019-06-07T12:54:26",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Mensa am Park",
+   "licht": "klar, tiefe Sonne von links (warmes Licht), Fassade besonnt; Uhrzeit 12:54; Sonne Azimut 173°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Süd)",
+   "prior": {
+    "bereich": [
+     -235,
+     -140,
+     -200,
+     -100
+    ],
+    "yaw_bereich": [
+     20,
+     90
+    ],
+    "pitch": [
+     -3,
+     20
+    ],
+    "hfov": [
+     50,
+     90
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   }
   }
  }
 }
