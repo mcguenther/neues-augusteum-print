@@ -7,8 +7,7 @@ und die Rückmeldungen des Nutzers aus dem Chat. Was sich daraus nicht belegen l
 
 Stand: nach dem Umbau auf die Entscheidungen der Passprobe-Runde 4 (Körperhöhe 2,0, Loch 1,4, Spiel Leiste 0,1,
 `STEP_CLR` 0,1, Stufe für das Lötende). Generatoren, Plan-Zahlen, `LIESMICH.txt` und Seiten sind auf diesen Stand
-gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Das Probestück ist gedruckt, ein
-Auswertungsergebnis liegt noch nicht vor (unbelegt); Passprobe v6 ist nicht gedruckt. Die Dateien liegen seit der
+gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Das Probestück ist gedruckt (Ergebnis: Abschnitt 4); Passprobe v6 ist nicht gedruckt. Die Dateien liegen seit der
 Umstrukturierung im Paket `plug/` (Abschnitt 5).
 
 ## Festgelegte Maße (merken)
@@ -81,7 +80,7 @@ Gedruckt wird mit 0,4-mm-Düse, 0,2 mm Schichthöhe, PLA.
 | 4 (Code v5/v6-Vorstufe, 4,5 cm³) | `0_passprobe.stl` | `HDR_T` 2,0, Spiel 0,15 / 0,10 / 0,05 (Spalten), Löcher 1,5 / 1,3 mm (Zeilen), Beschriftung 3,4 mm fett, 0,6 tief | Rückmeldung des Nutzers: Tiefe der Körpertasche stimmt nicht, Körper fällt zu tief, das Lötende liegt nicht flach auf seiner Stufe. Körperhöhe 2,54 ist falsch, es sind etwa 2,0 | Entscheidung für v6 (nächste Zeile) |
 | 5 (v6, gebaut, 1,8 cm³, nicht gedruckt) | `0_passprobe.stl`, 40,5 × 16,1 × 4,0 mm | drei Varianten der Stufenhöhe: Körperhöhe 2,0 (Hauptwert), 1,8 und 1,6 als Test; Loch 1,4 mm; Spiel 0,1 mm | Ergebnis steht aus | Stufe = Pin-Oberseite; Abstand Decke bis Stufe = h/2 − 0,32 (Pin liegt mittig, Vierkant 0,64) |
 
-Die Druckprobe des Probestücks (Abschnitt 4) ist bisher nicht ausgewertet; ein Ergebnis dazu ist unbelegt.
+Das Probestück (Abschnitt 4) ist gedruckt. Ergebnis laut Nutzer: Es wackelt überall etwas, mit 2,0 mm für die Winkelleiste passt es.
 
 ### 3.2 Konstanten: Sollwert, Code, Herkunft
 
@@ -163,7 +162,9 @@ WS2812B-Streifenstück (60/m 10 mm oder 144/m 12 mm), 4 Blechschrauben M3 × 8 o
 Zu messen: Schieber (gleitet, bündig), Kassette (ohne Spiel, Anschlag), Stecken (Einstecken unter 10 N,
 Herausziehen 3 bis 8 N, hebt die Mini-Platte mit?), Kontakt (LED leuchtet, DETECT-Pin liest LOW; Stifte
 stecken 3,9 mm in der Buchse, Kontaktpunkt geschätzt), Licht (gleichmäßig auf allen vier Seiten).
-Ergebnisse des Drucks: unbelegt.
+Ergebnis des Drucks (Nutzer, im Chat): Das Probestück ist gedruckt und passt mit der Körperhöhe 2,0 mm der Winkelleiste. Überall
+wackelt etwas; das wird mit einem Tropfen Heißkleber gelöst und gilt als akzeptiert. Zu den einzelnen Messpunkten (Schieber,
+Kassette, Einsteck- und Haltekraft, Kontakt, Licht) liegen keine getrennten Angaben vor; sie wurden nicht als Problem gemeldet.
 
 ## 5. Ablage im Repo (nach der Umstrukturierung)
 
@@ -261,7 +262,8 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 
 1. Körper der Winkelleiste: bleibt bei 2,0 mm. Etwas Wackeln gibt es immer; ein Tropfen Heißkleber in der Tasche hilft und
    ist gewollt. Passprobe v6 (Stufe 2,0 / 1,8 / 1,6) ist nur noch eine Bestätigung der Stufenhöhe.
-2. Probestück (Dateien 1 bis 5) ist gedruckt. Ergebnisse der Messliste (Abschnitt 4) liegen nicht vor und sind hier einzutragen.
+2. Probestück (Dateien 1 bis 5) ist gedruckt und passt, es wackelt überall etwas (Heißkleber). Erledigt; Einzelwerte (Kräfte, Kontakt)
+   werden bei Bedarf später gemessen.
 3. Dock B (gerade Leiste) rechnet mit den aktuellen Werten (`HDR_BODY` 2,0) mit; das ist reines Durchreichen der Konstanten aus
    `plug/parts.py`. Ob die gerade Leiste aus dem Kit wirklich 2,0 hat, ist unbelegt.
 4. Seiten (Artifacts) nach jedem Umbau neu veröffentlichen (Links in 5.4).
