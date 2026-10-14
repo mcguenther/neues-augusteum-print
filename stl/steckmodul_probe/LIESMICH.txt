@@ -12,9 +12,9 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                (0.6 cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     (19.1 cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              (3.3 cm³)
-  6_passprobe_optional.stl  Taschen für Buchse und Stiftleiste mit 0,0 / 0,1 / 0,2 mm Spiel
+  0_passprobe.stl     Passprobe: Taschen für Buchse und Stiftleiste, Stiftlöcher (Anleitung: stecker/probe/passprobe.html)
 
-  Reihenfolge: zuerst 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
+  Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 
 Material: alle fünf Teile zusammen 35 cm³ (bei 100 % Füllung etwa 43 g PLA,
   mit 15 % Füllung deutlich weniger). Nur das Dach des Probestücks ist eine Brücke (19,6 mm breit), alles andere ist ≤ 14 mm.
@@ -34,7 +34,7 @@ Was du zusätzlich brauchst
   - 4 Blechschrauben M3 × 8 für den Deckel (oder den Deckel mit etwas Heißkleber fixieren)
 
 Ablauf
-  1. Passprobe (6) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
+  1. Passprobe (0) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
   2. Buchse in die Tasche der Kassette drücken (Steckseite zur offenen Unterseite), Adern in den Schlitz legen,
      Streifen auf die Ablage kleben und anlöten.
   3. Kassette von unten in den Schacht des Probestücks schieben. Schieber seitlich (durch die lange Wand, +x) in die Nut

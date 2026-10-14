@@ -35,6 +35,50 @@ def probe_source():
     return I.ext(I.hcs(poly), 0, PROBE_H), poly, dict(probe=True)
 
 
+# --------------------------------------------------------------------------
+# Passprobe (Version 2): Taschen für Buchse und Stiftleiste, Stiftlöcher, beschriftet
+# --------------------------------------------------------------------------
+PP_W, PP_L, PP_H = 66.0, 38.0, 9.0          # Block
+PP_CL = (0.0, 0.1, 0.2)                      # Spiel je Seite (Spalten)
+PP_X = (-21.0, 0.0, 21.0)                    # Mitten der drei Spalten
+PP_Y_B, PP_Y_L, PP_Y_H = -11.0, 0.0, 13.0    # Reihen: Buchse, Leistenkörper, Stiftlöcher
+PP_HOLES = (0.9, 1.0, 1.1, 1.2, 1.3)         # Lochdurchmesser
+PP_HOLE_X = (-24.0, -12.0, 0.0, 12.0, 24.0)
+PP_BUCHSE_Z = 2.0                            # Boden der Buchsentasche (Tasche 7 mm tief)
+PP_TRENCH = (-4.4, 4.4, -0.6, 4.9, 3.0)      # Schlitz für Pins unter der Leiste: x0, x1, y0, y1, Boden-z
+
+
+def passprobe():
+    """Reihe 1: Buchse (Dupont-Gehäuse 1×4) in Taschen mit 0,0 / 0,1 / 0,2 mm Spiel je Seite.
+    Reihe 2: Kunststoffkörper der Stiftleiste, Pins nach oben; darunter Schlitz für gerade und abgewinkelte Pins.
+    Reihe 3: Stiftlöcher 0,9 bis 1,3 mm. Beschriftung im Teil."""
+    from steckmodul import box, cbox, cyl, diff
+    import manifold3d as m3d
+    blk = box(-PP_W / 2, PP_W / 2, -PP_L / 2, PP_L / 2, 0, PP_H)
+    cuts = []
+    for c, x in zip(PP_CL, PP_X):
+        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, PP_BUCHSE_Z, PP_H + 0.01, cx=x, cy=PP_Y_B))
+        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, PP_H - sd.HDR_BODY, PP_H + 0.01, cx=x, cy=PP_Y_L))
+        x0, x1, y0, y1, zb = PP_TRENCH
+        cuts.append(box(x + x0, x + x1, PP_Y_L + y0, PP_Y_L + y1, zb, PP_H - sd.HDR_BODY + 0.01))
+    for hd, x in zip(PP_HOLES, PP_HOLE_X):
+        cuts.append(cyl(hd / 2, -0.01, PP_H + 0.01, cx=x, cy=PP_Y_H, n=32))
+    try:
+        import generate
+        def label(text, x, y, size=3.0):
+            cs = generate.text_cross_section(text, size, x, y - size / 2, anchor="center")
+            if cs is not None:
+                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
+        for c, x in zip(PP_CL, PP_X):
+            label("B %s" % ("%.1f" % c).replace(".", ","), x, PP_Y_B - 5.6)
+            label("L %s" % ("%.1f" % c).replace(".", ","), x, PP_Y_L - 5.0)
+        for hd, x in zip(PP_HOLES, PP_HOLE_X):
+            label("%s" % ("%.1f" % hd).replace(".", ","), x, PP_Y_H - 4.4, 2.6)
+    except Exception as e:
+        print("  (Beschriftung übersprungen: %s)" % e)
+    return diff(blk, *cuts)
+
+
 def overhangs(man, name, min_area=4.0):
     """Nach unten zeigende Flächen über dem Bett: flach (Brücken) und steil (> 45°, brauchen Stützen)."""
     tm = to_tm(man)
@@ -77,7 +121,14 @@ def main():
         vols[fname] = tm.volume / 1000.0
         print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
             os.path.relpath(os.path.join(OUT, fname + ".stl"), HERE), *tm.extents, vols[fname], tm.is_watertight))
-    shutil.copy(os.path.join(HERE, "stl", "steckmodul_dupont", "passprobe.stl"), os.path.join(OUT, "6_passprobe_optional.stl"))
+    pp = passprobe()
+    tmp = to_tm(pp)
+    tmp.export(os.path.join(OUT, "0_passprobe.stl"))
+    print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
+        "stl/steckmodul_probe/0_passprobe.stl", *tmp.extents, tmp.volume / 1000.0, tmp.is_watertight))
+    old = os.path.join(OUT, "6_passprobe_optional.stl")
+    if os.path.exists(old):
+        os.remove(old)
 
     bad = 0
     print("\nKollisionsprüfung gesteckt (Überschneidungsvolumen):")
@@ -162,9 +213,9 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                ({vols['3_schieber']:.1f} cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     ({vols['4_platte']:.1f} cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              ({vols['5_deckel']:.1f} cm³)
-  6_passprobe_optional.stl  Taschen für Buchse und Stiftleiste mit 0,0 / 0,1 / 0,2 mm Spiel
+  0_passprobe.stl     Passprobe: Taschen für Buchse und Stiftleiste, Stiftlöcher (Anleitung: stecker/probe/passprobe.html)
 
-  Reihenfolge: zuerst 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
+  Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 
 Material: alle fünf Teile zusammen {sum(v for v in vols.values()):.0f} cm³ (bei 100 % Füllung etwa {sum(v for v in vols.values())*1.24:.0f} g PLA,
   mit 15 % Füllung deutlich weniger). Nur das Dach des Probestücks ist eine Brücke (19,6 mm breit), alles andere ist ≤ 14 mm.
@@ -184,7 +235,7 @@ Was du zusätzlich brauchst
   - 4 Blechschrauben M3 × 8 für den Deckel (oder den Deckel mit etwas Heißkleber fixieren)
 
 Ablauf
-  1. Passprobe (6) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
+  1. Passprobe (0) mit den echten Teilen prüfen. Falls Buchse oder Leiste nicht passen: Maße im Generator ändern.
   2. Buchse in die Tasche der Kassette drücken (Steckseite zur offenen Unterseite), Adern in den Schlitz legen,
      Streifen auf die Ablage kleben und anlöten.
   3. Kassette von unten in den Schacht des Probestücks schieben. Schieber seitlich (durch die lange Wand, +x) in die Nut
