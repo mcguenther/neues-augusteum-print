@@ -59,10 +59,10 @@ TERM_OFF = 0.5        # S  Kontaktkasten beginnt so weit hinter der Steckseite
 CONTACT = 1.5         # S  Stift muss so tief in der Buchse stecken, bis die Feder anliegt
 PIN_SQ = 0.64         # B  Vierkant der Stifte
 HDR_W = NPIN * PITCH + 0.5   # M  Leistenstück, 4 Pins abgebrochen: Körper gemessen etwa 0,5 mm länger (Abbruchrest), Passprobe v4
-HDR_BODY = 2.54       # B  Kunststoffkörper (Würth WR-PHD: 2,54 ±0,15)
+HDR_BODY = 2.0        # M  Winkelleiste: Körperhöhe (Taschentiefe-Richtung) gemessen 2,0 (frühere Annahme 2,54 war falsch; Passprobe v5: Körper fiel zu tief)
 HDR_LEG = 7.0         # M  Winkelleiste: senkrechter Pin vom Ende bis zur Außenkante der Biegung, gemessen 7 ±0,5
 HDR_T = 2.0           # M  Winkelleiste: Körperdicke in Pin-Richtung, gemessen 2 (Passprobe v4: mit 2,54 wackelte der Körper)
-HDR_UP = HDR_LEG - 0.32 - 1.27   # A  Stiftspitze über der Körperoberkante, wenn die Biegung auf halber Körperhöhe liegt (= 5,41)
+HDR_UP = HDR_LEG - PIN_SQ / 2 - HDR_BODY / 2   # A  Stiftspitze über der Körperoberkante, wenn die Biegung auf halber Körperhöhe liegt (= 5,68)
 HDR_TAIL = 3.0        # B  gerade Leiste: Lötende unter dem Körper (3,0 ±0,2)
 RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und senkrechtem Pin: gemessen 1 ±0,5. Der Körper sitzt NEBEN dem senkrechten Pin
 RA_TAIL = 3.0         # M  Winkelleiste: Pin hinter dem Körper (Lötende), gemessen 3 ±0,5; zeigt von den senkrechten Pins weg
@@ -78,9 +78,10 @@ CLR = 0.25            # Spiel je Seite: Fuß in der Mulde (Führungsband)
 RELIEF = 0.30         # zusätzliches Spiel unter dem Führungsband (gegen Klemmen)
 BAND = 5.0            # Höhe des engen Führungsbands unter der Muldenfase
 SNUG = 0.22           # Spiel je Seite: Gehäuse in der Tasche (Passprobe v4: Gehäuse 0,25 sitzt gut, darf etwas kleiner)
-SNUG_HDR = 0.15       # Spiel je Seite: Winkelleistenkörper in der Tasche (vorläufig; Passprobe v5 testet 0,15 / 0,10 / 0,05)
+SNUG_HDR = 0.1        # M  Spiel je Seite: Winkelleistenkörper in der Tasche, x und y (Entscheidung nach Passprobe v5)
+STEP_CLR = 0.1        # M  Luft zwischen Stufe (Decke des Lötendenschlitzes) und Pin-Oberseite im Dock A der Platte (Passprobe: 0)
 RIB = 0.12            # Übermaß der Crush-Rippen
-HOLE = 1.25           # Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91. Passprobe v4: 1,2 mit 0,3-Senkung geht ohne Kraft
+HOLE = 1.4            # M  Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91. Entscheidung nach Passprobe v5 (v4: 1,2 ging ohne Kraft, Winkelpins etwas schief)
 FUNNEL_D = 2.4        # Trichteröffnung unten
 WALL = 1.2
 CH_F = 0.8            # 45°-Fase unten am Fuß
@@ -566,15 +567,22 @@ def tongue_bump(cx, d):
     return prism_y([(xw + 0.05, zd - b - 0.05), (xw - b, zd), (xw + 0.05, zd + b + 0.05)], -T["L"] / 2 + 1.0, T["L"] / 2 - 0.5)
 
 
+def step_z(z_hb, h=None, clr=None):
+    """Höhe der Stufe (Decke des Lötendenschlitzes): Pin-Oberseite bei Körper (Höhe h) an der Decke z_hb, plus Luft."""
+    h = HDR_BODY if h is None else h
+    return z_hb - h / 2 + PIN_SQ / 2 + (STEP_CLR if clr is None else clr)
+
+
 def dock_a_cuts(cx, d, T=lambda m: m):
     """Winkelleiste: Tasche für den Körper (neben den senkrechten Pins), Schacht für Knick und senkrechte Pins,
     Schlitz für die 3-mm-Lötenden nach -y. Alles von der Kabelraum-Seite (unten) offen, oben schließt der Muldenboden."""
-    HY, yb, zb, zh, zm = d["HY"], d["y_b"], d["z_bb"], d["z_hb"], d["z_bm"]
+    HY, yb, zb, zh = d["HY"], d["y_b"], d["z_bb"], d["z_hb"]
+    zs = step_z(zh)                                    # Stufe: Lötende liegt flach darunter
     hw, hd = HDR_W / 2 + SNUG_HDR, HDR_T / 2 + SNUG_HDR
     px = abs(pin_x()[0]) + PIN_SQ / 2 + 0.8
     return [T(box(cx - hw, cx + hw, yb - hd, yb + hd, zb - 0.01, zh)),                                   # Körper
             T(box(cx - px, cx + px, yb, HY + PIN_SQ / 2 + 0.8, zb - 0.01, zh)),                          # Schacht für Knick und Pins
-            T(box(cx - px, cx + px, yb - hd - RA_TAIL - 0.9, yb, zb - 0.01, zm + 0.7))]                  # Lötenden
+            T(box(cx - px, cx + px, yb - hd - RA_TAIL - 0.9, yb, zb - 0.01, zs))]                       # Lötenden (Decke = Stufe)
 
 
 def dock_cuts(variant, cx, d):

@@ -91,97 +91,122 @@ svg .badge circle { stroke: none; } svg .badge.a circle { fill: var(--c-a); } sv
 svg .badge text { fill: #fff; font-weight: 600; font-size: 12px; }
 svg .lead { stroke: var(--muted); stroke-width: 1; fill: none; }
 svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+svg .dot { fill: var(--c-a); }
+svg .eng.big { font-size: 15px; font-weight: 600; fill: var(--fg); }
+svg .lab.a { fill: var(--c-a); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
 
 <div class="wrap">
 
 <header style="display:flex;flex-direction:column;gap:12px">
-  <span class="kicker">Probedruck Kassette · Teil 0 · Version 5</span>
+  <span class="kicker">Probedruck Kassette · Teil 0 · Version 6</span>
   <h1>Passprobe Winkelleiste</h1>
-  <p class="lead">Kleine zweite Runde. Bei der ersten gingen alle vier Pins in allen Spalten durch die Löcher, aber der Körper wackelte in seiner Tasche, und die Pins kamen schief heraus. Jetzt ist die Tasche nur noch 2,0 mm dick (statt 2,54), das Spiel wird kleiner, und die Löcher gibt es in zwei Größen.</p>
+  <p class="lead">Bei Version 5 fiel der Körper in seiner Tasche zu tief, und das Lötende lag nicht flach auf seiner Stufe, sondern kippte nach oben. Der Körper ist nur 2,0 mm hoch (nicht 2,54). Diese Probe fragt nur noch eines: <b>Auf welcher Höhe muss die Stufe liegen, damit das Lötende flach aufliegt?</b> Alles andere ist festgelegt.</p>
 </header>
 
-<!-- ============================ DAS TEIL ============================ -->
+<!-- ============================ WAS VARIIERT ============================ -->
 <section aria-labelledby="h1">
-  <h2 id="h1"><span class="n">1</span>Das Teil</h2>
-  <p>Die Platte ist 40,6 × 35,0 × 4,5 mm groß und wiegt etwa 4 cm³ PLA. Sie hat <b>drei Spalten</b> mit unterschiedlichem Spiel der Körpertasche (0,15 / 0,10 / 0,05 mm je Seite, die Zahl steht unten) und <b>zwei Zeilen</b> mit unterschiedlicher Lochgröße (1,5 und 1,3 mm, die Zahl steht über der Zeile). Die Lage der Pins ist wie vorher das Soll: Pin-Mitte 2,32 mm hinter der Körpermitte. Du druckst mit der <b>Schriftseite auf dem Bett</b>, die Taschen sind dann nach oben offen. Die Zeichnung zeigt die Schriftseite, so siehst du sie, wenn du die gedruckte Platte wie ein Buch um die lange Kante umdrehst.</p>
-  <div class="fig"><svg viewBox="0 0 513 445" role="img" aria-label="Draufsicht der Passprobe mit Körpertaschen und Pinlöchern in zwei Zeilen und drei Spalten" width="513" height="445"><rect x="46.0" y="20.0" width="446.6" height="385.0" rx="3" class="blk"/><rect x="66.02000000000001" y="267.5" width="120.56" height="25.299999999999997" class="pocket b ghost"/><rect x="72.07000000000001" y="242.31" width="108.46" height="25.189999999999994" class="trench"/><rect x="72.07000000000001" y="292.8" width="108.46" height="42.900000000000006" class="trench"/><circle cx="84.39000000000001" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="84.39000000000001" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="112.33000000000001" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="112.33000000000001" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="140.27" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="140.27" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="168.21" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="168.21" cy="254.63000000000002" r="8.2" class="hole b"/><rect x="209.57000000000002" y="268.05" width="119.46" height="24.200000000000003" class="pocket b ghost"/><rect x="215.07000000000002" y="242.31" width="108.46" height="25.739999999999995" class="trench"/><rect x="215.07000000000002" y="292.25" width="108.46" height="43.45000000000001" class="trench"/><circle cx="227.39000000000001" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="227.39000000000001" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="255.33" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="255.33" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="283.27" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="283.27" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="311.21" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="311.21" cy="254.63000000000002" r="8.2" class="hole b"/><rect x="353.12" y="268.6" width="118.36" height="23.1" class="pocket b ghost"/><rect x="358.07" y="242.31" width="108.46" height="26.289999999999996" class="trench"/><rect x="358.07" y="291.7" width="108.46" height="44.00000000000001" class="trench"/><circle cx="370.39000000000004" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="370.39000000000004" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="398.33000000000004" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="398.33000000000004" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="426.27" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="426.27" cy="254.63000000000002" r="8.2" class="hole b"/><circle cx="454.21" cy="254.63000000000002" r="11.6" class="csink"/><circle cx="454.21" cy="254.63000000000002" r="8.2" class="hole b"/><text x="126.30000000000001" y="216.61" text-anchor="middle" class="eng">1,5</text><text x="269.3" y="216.61" text-anchor="middle" class="eng">1,5</text><text x="412.29999999999995" y="216.61" text-anchor="middle" class="eng">1,5</text><g class="badge b"><circle cx="22.0" cy="280.15" r="11"/><text x="22.0" y="284.15" text-anchor="middle">1</text></g><path d="M34.0 280.15H52.0" class="lead"/><rect x="66.02000000000001" y="109.21" width="120.56" height="25.299999999999997" class="pocket b ghost"/><rect x="72.07000000000001" y="84.02000000000001" width="108.46" height="25.189999999999994" class="trench"/><rect x="72.07000000000001" y="134.51" width="108.46" height="42.900000000000006" class="trench"/><circle cx="84.39000000000001" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="84.39000000000001" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="112.33000000000001" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="112.33000000000001" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="140.27" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="140.27" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="168.21" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="168.21" cy="96.33999999999999" r="7.2" class="hole b"/><rect x="209.57000000000002" y="109.76" width="119.46" height="24.200000000000003" class="pocket b ghost"/><rect x="215.07000000000002" y="84.02000000000001" width="108.46" height="25.739999999999995" class="trench"/><rect x="215.07000000000002" y="133.95999999999998" width="108.46" height="43.45000000000001" class="trench"/><circle cx="227.39000000000001" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="227.39000000000001" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="255.33" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="255.33" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="283.27" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="283.27" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="311.21" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="311.21" cy="96.33999999999999" r="7.2" class="hole b"/><rect x="353.12" y="110.30999999999999" width="118.36" height="23.1" class="pocket b ghost"/><rect x="358.07" y="84.02000000000001" width="108.46" height="26.289999999999996" class="trench"/><rect x="358.07" y="133.40999999999997" width="108.46" height="44.00000000000001" class="trench"/><circle cx="370.39000000000004" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="370.39000000000004" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="398.33000000000004" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="398.33000000000004" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="426.27" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="426.27" cy="96.33999999999999" r="7.2" class="hole b"/><circle cx="454.21" cy="96.33999999999999" r="10.4" class="csink"/><circle cx="454.21" cy="96.33999999999999" r="7.2" class="hole b"/><text x="126.30000000000001" y="58.31999999999999" text-anchor="middle" class="eng">1,3</text><text x="269.3" y="58.31999999999999" text-anchor="middle" class="eng">1,3</text><text x="412.29999999999995" y="58.31999999999999" text-anchor="middle" class="eng">1,3</text><g class="badge b"><circle cx="22.0" cy="121.86" r="11"/><text x="22.0" y="125.86" text-anchor="middle">2</text></g><path d="M34.0 121.86H52.0" class="lead"/><text x="126.30000000000001" y="374.9" text-anchor="middle" class="eng">0,15</text><text x="269.3" y="374.9" text-anchor="middle" class="eng">0,10</text><text x="412.29999999999995" y="374.9" text-anchor="middle" class="eng">0,05</text><path class="dim" d="M46.0 419.0v8M492.6 419.0v8M46.0 423.0H492.6"/><text x="269.3" y="439.0" text-anchor="middle">40,6 × 35,0 mm · Dicke 4,5 mm</text></svg></div>
+  <h2 id="h1"><span class="n">1</span>Was variiert, was ist fest</h2>
+  <div class="cols">
+    <div class="card"><h3>Variiert: die Höhe der Stufe</h3>
+      <p>Drei Felder, links nach rechts 2,0 / 1,8 / 1,6. Die Zahl ist die <b>angenommene Körperhöhe h</b>. Der Körper liegt mit seiner Oberseite an der Decke der Tasche, die Pin-Mitte liegt h/2 darunter. Die Stufe liegt dort, wo die Oberseite des Pins ist:</p>
+      <p class="num">Stufe = Decke − h/2 + 0,64/2</p></div>
+    <div class="card"><h3>Fest in allen Feldern</h3>
+      <p>Spiel 0,1 mm je Seite (Tasche 10,86 × 2,20 mm), Löcher 1,4 mm mit 0,3 mm Senkung, Pinlage Soll (Pin-Mitte 2,32 mm hinter der Körpermitte), Muldenboden 0,8 mm, Platte 4,0 mm dick.</p></div>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="num">Feld (Körperhöhe h)</th><th class="num">Pin-Mitte unter der Decke</th><th class="num">Abstand Decke bis Stufe</th></tr></thead>
+    <tbody><tr><td class="num"><b>2,0</b></td><td class="num">1,00</td><td class="num"><b>0,68</b></td></tr><tr><td class="num"><b>1,8</b></td><td class="num">0,90</td><td class="num"><b>0,58</b></td></tr><tr><td class="num"><b>1,6</b></td><td class="num">0,80</td><td class="num"><b>0,48</b></td></tr></tbody>
+  </table>
+  </div>
+  <p class="small muted">Alle Maße in mm. Der Abstand Decke bis Stufe ist h/2 − 0,64/2: 0,68 / 0,58 / 0,48. Im echten Dock der Platte kommt noch 0,1 mm Luft über dem Pin dazu, in der Probe nicht.</p>
+</section>
+
+<!-- ============================ DAS TEIL ============================ -->
+<section aria-labelledby="h2">
+  <h2 id="h2"><span class="n">2</span>Das Teil</h2>
+  <p>Die Platte ist 40,5 × 16,1 × 4,0 mm groß (rund 2 cm³ PLA). Die Zeichnung zeigt die <b>Schriftseite</b>, so siehst du sie, wenn du die gedruckte Platte wie ein Buch um die lange Kante umdrehst.</p>
+  <div class="fig"><svg viewBox="0 0 615 279" role="img" aria-label="Draufsicht der Passprobe: drei Felder mit Körpertasche, Lötendenschlitz und vier Pinlöchern, beschriftet mit der angenommenen Körperhöhe" width="615" height="279"><rect x="24.0" y="14.0" width="567.0" height="225.40000000000003" rx="3" class="blk"/><rect x="49.480000000000004" y="65.80000000000001" width="152.04" height="30.800000000000004" class="pocket b ghost"/><rect x="56.480000000000004" y="33.04000000000002" width="138.04" height="32.75999999999999" class="trench"/><rect x="56.480000000000004" y="96.60000000000001" width="138.04" height="54.6" class="trench"/><circle cx="72.16000000000003" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="72.16000000000003" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="107.72" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="107.72" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="143.28" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="143.28" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="178.84" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="178.84" cy="48.720000000000006" r="9.8" class="hole b"/><text x="125.5" y="202.0" text-anchor="middle" class="eng big">2,0</text><rect x="231.48000000000002" y="65.80000000000001" width="152.04" height="30.800000000000004" class="pocket b ghost"/><rect x="238.48000000000002" y="33.04000000000002" width="138.04" height="32.75999999999999" class="trench"/><rect x="238.48000000000002" y="96.60000000000001" width="138.04" height="54.6" class="trench"/><circle cx="254.16000000000003" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="254.16000000000003" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="289.72" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="289.72" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="325.28" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="325.28" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="360.84" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="360.84" cy="48.720000000000006" r="9.8" class="hole b"/><text x="307.5" y="202.0" text-anchor="middle" class="eng big">1,8</text><rect x="413.48" y="65.80000000000001" width="152.04" height="30.800000000000004" class="pocket b ghost"/><rect x="420.48" y="33.04000000000002" width="138.04" height="32.75999999999999" class="trench"/><rect x="420.48" y="96.60000000000001" width="138.04" height="54.6" class="trench"/><circle cx="436.15999999999997" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="436.15999999999997" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="471.72" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="471.72" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="507.28" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="507.28" cy="48.720000000000006" r="9.8" class="hole b"/><circle cx="542.84" cy="48.720000000000006" r="14.0" class="csink"/><circle cx="542.84" cy="48.720000000000006" r="9.8" class="hole b"/><text x="489.5" y="202.0" text-anchor="middle" class="eng big">1,6</text><text x="125.5" y="85.20000000000002" text-anchor="middle" class="mut">Körpertasche</text><text x="125.5" y="124.4" text-anchor="middle" class="mut">Lötendenschlitz</text><text x="70.75999999999999" y="27.04000000000002" class="mut">Löcher</text><path class="dim" d="M24.0 253.40000000000003v8M591.0 253.40000000000003v8M24.0 257.40000000000003H591.0"/><text x="307.5" y="275.40000000000003" text-anchor="middle">40,5 × 16,1 mm · Dicke 4,0 mm</text></svg></div>
   <ul style="margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px;max-width:72ch">
-    <li>Jedes Feld hat eine <b>Tasche für den Körper</b> (gestrichelt, 10,66 lang, 2,0 dick, 2,54 hoch, mit 45°-Fase 0,5 mm am Rand), davor einen <b>Schacht</b> für Knick und senkrechte Pins und dahinter einen <b>Schlitz</b> für die 3-mm-Lötenden.</li>
-    <li>Oben liegt der 0,8 mm dicke Muldenboden mit vier Löchern und 45°-Senkung von 0,3 mm gegen den Elefantenfuß am Bett.</li>
+    <li>Jedes Feld hat eine <b>Tasche für den Körper</b> (gestrichelt, 10,86 × 2,20 mm, 45°-Fase 0,5 mm am Rand, von der Taschenseite offen), davor einen <b>Schacht</b> für Knick und senkrechte Pins und dahinter den <b>Lötendenschlitz</b>. Dessen Decke ist die Stufe, und nur sie ist in den drei Feldern verschieden hoch.</li>
+    <li>Darüber liegt der 0,8 mm dicke Muldenboden mit vier Löchern und 0,3 mm Senkung gegen den Elefantenfuß am Bett.</li>
   </ul>
-  <div class="fig"><svg viewBox="0 0 779 457" role="img" aria-label="Schnitt durch ein Feld der Passprobe: Körper in der Tasche, Pins durch den Muldenboden, Lötenden im Schlitz" width="779" height="457"><rect x="20.0" y="196.0" width="428.74000000000007" height="117.0" class="blk"/><rect x="252.70000000000002" y="216.79999999999998" width="57.2" height="96.2" class="cut"/><rect x="281.3" y="216.79999999999998" width="89.43999999999998" height="96.2" class="cut"/><rect x="150.0" y="231.62" width="131.3" height="81.38" class="cut"/><rect x="322.12" y="196.0" width="39.0" height="20.8" class="cut"/><path d="M314.32 196.0L368.92 196.0L361.12 203.79999999999998L322.12 203.79999999999998Z" class="cut"/><path d="M252.70000000000002 300.0L239.70000000000002 313.0L252.70000000000002 313.0Z" class="cut"/><path d="M309.90000000000003 300.0L322.90000000000003 313.0L309.90000000000003 313.0Z" class="cut"/><rect x="255.3" y="216.79999999999998" width="52.0" height="66.04" class="part b"/><path class="pinfill" d="M177.3 241.5H349.94000000000005V76.14000000000001H333.3V258.14H177.3Z"/><path d="M203.3 370.2V322.2" class="arrow"/><path d="M198.3 328.2L203.3 318.2L208.3 328.2" class="arrow"/><text x="191.3" y="354.59999999999997" text-anchor="end" class="mut">von unten einsetzen</text><text x="216.3" y="207.62" text-anchor="middle" class="mut">Lötende 3</text><text x="341.62" y="66.14000000000001" text-anchor="middle" class="lab b">senkrechte Pins</text><path class="dim" d="M307.3 342.0v10M333.3 342.0v10M307.3 347.0H333.3"/><text x="320.3" y="362.0" text-anchor="middle" class="">1,0</text><text x="333.3" y="381.0" text-anchor="start" class="mut">Pin-Mitte 2,32 hinter der Körpermitte</text><path class="dim" d="M467.74000000000007 313.0h10M467.74000000000007 196.0h10M472.74000000000007 313.0V196.0"/><text x="481.74000000000007" y="258.5" text-anchor="start" class="">Dicke 4,5</text><path class="dim" d="M577.74 282.84000000000003h10M577.74 216.79999999999998h10M582.74 282.84000000000003V216.79999999999998"/><text x="591.74" y="253.82" text-anchor="start" class="">Körper 2,54</text><path class="dim" d="M577.74 216.79999999999998h10M577.74 196.0h10M582.74 216.79999999999998V196.0"/><text x="591.74" y="210.39999999999998" text-anchor="start" class="">Decke 0,8</text><path class="dim" d="M687.74 258.14h10M687.74 76.14000000000001h10M692.74 258.14V76.14000000000001"/><text x="701.74" y="171.14" text-anchor="start" class="">Pin 7</text></svg></div>
-  <p class="small muted">Schnitt durch ein Feld, die Teile sind so eingezeichnet, wie sie sitzen sollen. In der Zeichnung ist die Schriftseite oben, beim Druck liegt sie unten.</p>
+  <div class="fig"><svg viewBox="0 0 771 524" role="img" aria-label="Schnitt durch das Feld 2,0: Körper an der Decke der Tasche, Pin in Körpermitte, Lötende liegt flach unter der Stufe, senkrechte Pins gehen durch die Löcher" width="771" height="524"><rect x="20.0" y="238.0" width="451.2" height="120.0" class="blk"/><rect x="269.0" y="262.0" width="66.0" height="96.0" class="cut"/><rect x="302.0" y="262.0" width="103.19999999999999" height="96.0" class="cut"/><rect x="152.0" y="282.4" width="150.0" height="75.6" class="cut"/><rect x="350.59999999999997" y="238.0" width="42.0" height="24.0" class="cut"/><path d="M341.6 238.0L401.59999999999997 238.0L392.6 246.99999999999997L350.59999999999997 246.99999999999997Z" class="cut"/><path d="M269.0 343.0L254.00000000000003 358.0L269.0 358.0Z" class="cut"/><path d="M335.0 343.0L350.0 358.0L335.0 358.0Z" class="cut"/><rect x="272.0" y="262.0" width="60.0" height="60.0" class="part b"/><path class="pinfill" d="M182.0 282.4H381.2V91.59999999999997H362.0V301.59999999999997H182.0Z"/><path d="M200.0 430.0V371.0" class="arrow"/><path d="M195.0 377.0L200.0 367.0L205.0 377.0" class="arrow"/><text x="188.0" y="408.99999999999994" text-anchor="end" class="mut">von unten einsetzen</text><text x="227.0" y="331.0" text-anchor="middle" class="mut">Lötende 3 mm</text><text x="371.6" y="81.59999999999997" text-anchor="middle" class="lab b">senkrechte Pins</text><circle cx="167.0" cy="282.4" r="3.5" class="dot"/><path class="lead" d="M167.0 282.4V228.0"/><text x="167.0" y="222.0" text-anchor="middle" class="lab a">Stufe</text><path class="dim" d="M133.0 262.0h10M133.0 282.4h10M138.0 262.0V282.4"/><text x="130.0" y="276.2" text-anchor="end" class="lab a">0,68</text><path class="dim" d="M165.0 282.4h10M165.0 301.59999999999997h10M170.0 282.4V301.59999999999997"/><text x="162.0" y="295.99999999999994" text-anchor="end" class="">0,64</text><path class="dim" d="M332.0 383.0v10M362.0 383.0v10M332.0 388.0H362.0"/><text x="347.0" y="403.0" text-anchor="middle" class="">1,0</text><text x="368.0" y="392.0" text-anchor="start" class="mut">Pin-Mitte 2,32 hinter der Körpermitte</text><path class="dim" d="M490.2 358.0h10M490.2 238.0h10M495.2 358.0V238.0"/><text x="504.2" y="302.0" text-anchor="start" class="">Dicke 4,0</text><path class="dim" d="M590.2 321.99999999999994h10M590.2 262.0h10M595.2 321.99999999999994V262.0"/><text x="604.2" y="296.0" text-anchor="start" class="">Körper 2,0</text><path class="dim" d="M590.2 262.0h10M590.2 238.0h10M595.2 262.0V238.0"/><text x="604.2" y="254.0" text-anchor="start" class="">Decke 0,8</text><path class="dim" d="M690.2 301.59999999999997h10M690.2 91.59999999999997h10M695.2 301.59999999999997V91.59999999999997"/><text x="704.2" y="200.59999999999997" text-anchor="start" class="">Pin 7</text></svg></div>
+  <p class="small muted">Schnitt durch das Feld 2,0 mit eingesetzter Leiste: Der Körper (2,0 mm hoch) liegt an der Decke, der Pin (0,64 mm) sitzt in der Mitte des Körpers, und das Lötende liegt flach unter der Stufe. In der Zeichnung ist die Schriftseite oben, beim Druck liegt sie unten.</p>
 </section>
 
 <!-- ============================ DRUCKEN ============================ -->
-<section aria-labelledby="h2">
-  <h2 id="h2"><span class="n">2</span>Drucken</h2>
+<section aria-labelledby="h3">
+  <h2 id="h3"><span class="n">3</span>Drucken</h2>
   <div class="cols">
-    <div class="card"><h3>Lage</h3><p>Flach, die <b>Schriftseite liegt auf dem Bett</b>, die Taschen zeigen nach oben. Keine Stützen, kein Rand. Die Schrift ist von unten eingraviert und im Slicer gespiegelt, das ist richtig so.</p></div>
-    <div class="card"><h3>Einstellungen</h3><p>Wie bei der letzten Probe: 0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände, Füllung 10 bis 15 %.</p></div>
-    <div class="card"><h3>Erste Schicht</h3><p>Nicht zu stark andrücken. Nach dem Druck nichts nacharbeiten.</p></div>
+    <div class="card"><h3>Lage</h3><p>Flach, die <b>Schriftseite liegt auf dem Bett</b>, die Taschen zeigen nach oben. Keine Stützen, kein Rand. Die Schrift ist von unten eingraviert, das ist richtig so.</p></div>
+    <div class="card"><h3>Einstellungen</h3><p>Wie bei der letzten Probe: 0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände, Füllung 10 bis 15 %. Datei: <code>stl/steckmodul_probe/0_passprobe.stl</code>.</p></div>
+    <div class="card"><h3>Nach dem Druck</h3><p>Nichts nacharbeiten. Die Stufen sind nur 0,1 mm verschieden, also keine Kanten feilen.</p></div>
   </div>
 </section>
 
 <!-- ============================ MESSEN ============================ -->
-<section aria-labelledby="h3">
-  <h2 id="h3"><span class="n">3</span>Leiste messen</h2>
-  <p>Wenn du magst, miss die Dicke des Körpers (in Pin-Richtung) und die Körperlänge noch einmal genau mit der Schieblehre. Mit 2,0 mm Dicke rechnet die Tasche. Ist der Körper dicker, passt er in die enge Spalte nicht.</p>
+<section aria-labelledby="h4">
+  <h2 id="h4"><span class="n">4</span>Leiste messen</h2>
+  <p>Miss die Winkelleiste mit der Schieblehre und trage die Werte ein. Am wichtigsten ist die <b>Körperhöhe</b>: Sie entscheidet, welches Feld passt. Gemessen wird der Körper senkrecht zur Pin-Ebene, also der Abstand von der Seite mit den Pins zur anderen Körperseite.</p>
   <div class="scroll">
   <table>
-    <thead><tr><th>Teil</th><th>Maß</th><th class="num">Soll mm</th><th>Gemessen mm</th><th class="num">Abweichung</th><th>Konstante</th></tr></thead>
-    <tbody><tr><td>Winkelleiste, 4 Pins</td><td>Körper, Länge (abgebrochen)</td><td class="num">10,66</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-0" data-nom="10.66" data-k="HDR_W" data-name="Körper, Länge (abgebrochen)" aria-label="Winkelleiste, 4 Pins, Körper, Länge (abgebrochen), gemessen in mm"></td><td class="num dev" id="d-0">–</td><td><code>HDR_W</code></td></tr><tr><td>Winkelleiste, 4 Pins</td><td>Körper, Höhe (quer zur Pin-Reihe)</td><td class="num">2,54</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-1" data-nom="2.54" data-k="HDR_BODY" data-name="Körper, Höhe (quer zur Pin-Reihe)" aria-label="Winkelleiste, 4 Pins, Körper, Höhe (quer zur Pin-Reihe), gemessen in mm"></td><td class="num dev" id="d-1">–</td><td><code>HDR_BODY</code></td></tr><tr><td>Winkelleiste, 4 Pins</td><td>Körper, Dicke in Pin-Richtung</td><td class="num">2,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-2" data-nom="2.0" data-k="HDR_T" data-name="Körper, Dicke in Pin-Richtung" aria-label="Winkelleiste, 4 Pins, Körper, Dicke in Pin-Richtung, gemessen in mm"></td><td class="num dev" id="d-2">–</td><td><code>HDR_T</code></td></tr><tr><td>Winkelleiste, 4 Pins</td><td>Stiftvierkant</td><td class="num">0,64</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-3" data-nom="0.64" data-k="PIN_SQ" data-name="Stiftvierkant" aria-label="Winkelleiste, 4 Pins, Stiftvierkant, gemessen in mm"></td><td class="num dev" id="d-3">–</td><td><code>PIN_SQ</code></td></tr><tr><td>Winkelleiste, 4 Pins</td><td>Körperkante bis Innenkante des senkrechten Pins</td><td class="num">1,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-4" data-nom="1.0" data-k="RA_BACK" data-name="Körperkante bis Innenkante des senkrechten Pins" aria-label="Winkelleiste, 4 Pins, Körperkante bis Innenkante des senkrechten Pins, gemessen in mm"></td><td class="num dev" id="d-4">–</td><td><code>RA_BACK</code></td></tr></tbody>
+    <thead><tr><th>Maß</th><th class="num">Soll mm</th><th>Gemessen mm</th><th class="num">Abweichung</th><th>Konstante</th></tr></thead>
+    <tbody><tr><td>Körper, Höhe (Richtung der Taschentiefe)</td><td class="num">2,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-0" data-nom="2.0" data-k="HDR_BODY" data-name="Körper, Höhe (Richtung der Taschentiefe)" aria-label="Körper, Höhe (Richtung der Taschentiefe), gemessen in mm"></td><td class="num dev" id="d-0">–</td><td><code>HDR_BODY</code></td></tr><tr><td>Körper, Dicke in Pin-Richtung</td><td class="num">2,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-1" data-nom="2.0" data-k="HDR_T" data-name="Körper, Dicke in Pin-Richtung" aria-label="Körper, Dicke in Pin-Richtung, gemessen in mm"></td><td class="num dev" id="d-1">–</td><td><code>HDR_T</code></td></tr><tr><td>Körper, Länge (4 Pins, abgebrochen)</td><td class="num">10,66</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-2" data-nom="10.66" data-k="HDR_W" data-name="Körper, Länge (4 Pins, abgebrochen)" aria-label="Körper, Länge (4 Pins, abgebrochen), gemessen in mm"></td><td class="num dev" id="d-2">–</td><td><code>HDR_W</code></td></tr><tr><td>Abstand Körperkante bis Innenkante des senkrechten Pins</td><td class="num">1,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-3" data-nom="1.0" data-k="RA_BACK" data-name="Abstand Körperkante bis Innenkante des senkrechten Pins" aria-label="Abstand Körperkante bis Innenkante des senkrechten Pins, gemessen in mm"></td><td class="num dev" id="d-3">–</td><td><code>RA_BACK</code></td></tr><tr><td>Stiftvierkant</td><td class="num">0,64</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-4" data-nom="0.64" data-k="PIN_SQ" data-name="Stiftvierkant" aria-label="Stiftvierkant, gemessen in mm"></td><td class="num dev" id="d-4">–</td><td><code>PIN_SQ</code></td></tr><tr><td>Lötende vor dem Körper</td><td class="num">3,00</td><td><input class="meas" type="text" inputmode="decimal" autocomplete="off" id="m-5" data-nom="3.0" data-k="RA_TAIL" data-name="Lötende vor dem Körper" aria-label="Lötende vor dem Körper, gemessen in mm"></td><td class="num dev" id="d-5">–</td><td><code>RA_TAIL</code></td></tr></tbody>
   </table>
   </div>
 </section>
 
 <!-- ============================ EINSETZEN ============================ -->
-<section aria-labelledby="h4">
-  <h2 id="h4"><span class="n">4</span>Was wo hineinkommt</h2>
+<section aria-labelledby="h5">
+  <h2 id="h5"><span class="n">5</span>Einsetzen und prüfen</h2>
   <ol class="steps">
-    <li><b>Körper in die Tasche</b>
-      Setze die Winkelleiste <b>von der Taschenseite</b> (der Seite ohne Schrift) ein. Die senkrechten Pins zeigen voraus, der Körper liegt hinter den Pins, die Lötenden zeigen in den Schlitz. Halte die Platte in der Hand oder über eine Tischkante, sonst stoßen die Pins auf den Tisch. Probiere von der weiten Spalte (0,15) bis zur engen (0,05) in beiden Zeilen.</li>
+    <li><b>Leiste von der Taschenseite einsetzen</b>
+      Nimm die Seite <b>ohne Schrift</b>. Der Körper kommt in die Tasche, die senkrechten Pins stecken durch die Löcher, das Lötende zeigt in den Schlitz. Die Pins stehen dann auf der Schriftseite heraus. Lege die Platte dazu über eine Tischkante oder halte sie in der Hand, damit die Pins nicht auf dem Tisch stehen. Schiebe den Körper bis zur Decke.</li>
+    <li><b>Lötende prüfen, in jedem der drei Felder</b>
+      Schau von der Seite in den Schlitz (Taschenseite, mit Licht). <b>Liegt das Lötende flach auf der Stufe?</b> Dann ist die Stufe richtig. Kippt es nach oben, ist die Stufe zu hoch. Hängt es durch, ist die Stufe zu tief und der Körper sitzt tiefer als angenommen.</li>
+    <li><b>Pins prüfen</b>
+      Kommen die vier senkrechten Pins <b>gerade und senkrecht</b> aus den Löchern? Halte ein Lineal oder einen Winkel daran. Geht alles ohne Kraft?</li>
     <li><b>Sitz prüfen</b>
-      Wackelt der Körper? Wie schief stehen die Pins oben? Halte ein Lineal an die Pins. Die gesuchte Spalte ist die engste, in die der Körper noch <b>mit leichtem Daumendruck</b> hineingeht.</li>
-    <li><b>Pins und Löcher</b>
-      Gehen alle vier Pins in beiden Zeilen ohne Kraft durch? In welcher Zeile stehen die Pins gerader? Die kleinere Lochgröße (1,3 mm) zentriert die Pins besser, wenn sie passt.</li>
+      Sitzt der Körper fest, wackelt er, oder klemmt er? Nimm als Ergebnis das Feld, in dem das Lötende flach aufliegt und die Pins am geradesten stehen.</li>
   </ol>
 </section>
 
 <!-- ============================ AUSWERTEN ============================ -->
-<section aria-labelledby="h5">
-  <h2 id="h5"><span class="n">5</span>Auswerten</h2>
+<section aria-labelledby="h6">
+  <h2 id="h6"><span class="n">6</span>Auswerten</h2>
   <div class="scroll">
   <table>
-    <thead><tr><th>Beobachtung</th><th>Wert im Generator</th></tr></thead>
+    <thead><tr><th>Beobachtung</th><th>Folge im Generator</th></tr></thead>
     <tbody>
-      <tr><td>Der Körper geht mit leichtem Druck hinein, nichts wackelt, die Pins stehen gerade.</td><td>Das Spiel dieser Spalte wird <code>SNUG_HDR</code> (jetzt <span class="num">0,15 mm</span>). Die Taschendicke ist <code>HDR_T</code> (2,0 mm).</td></tr>
-      <tr><td>Er klemmt schon in der weiten Spalte.</td><td>Die Dicke ist größer als 2,0 mm: Miss sie und schick sie mir.</td></tr>
-      <tr><td>Er wackelt noch in der engsten Spalte.</td><td>Die Rippen an den Stirnseiten halten ihn zusätzlich, oder die Tasche wird in y noch enger. Schick mir die Beobachtung.</td></tr>
-      <tr><td>Auch die kleinere Lochgröße geht ohne Kraft.</td><td><code>HOLE</code> kann auf diesen Wert (jetzt <span class="num">1,25 mm</span>), die Pins stehen dann gerader.</td></tr>
+      <tr><td>Lötende liegt flach im Feld 2,0.</td><td><code>HDR_BODY</code> bleibt 2,0 mm. Die Stufe im Dock A liegt 0,68 mm unter der Decke (plus <code>STEP_CLR</code> 0,1 mm Luft).</td></tr>
+      <tr><td>Lötende liegt flach im Feld 1,8 (oder 1,6).</td><td>Die Körperhöhe ist kleiner als gemessen. <code>HDR_BODY</code> wird auf diesen Wert gesetzt, Stufe 0,58 (bzw. 0,48) mm unter der Decke.</td></tr>
+      <tr><td>In keinem Feld liegt es flach.</td><td>Schreib mir, in welchem Feld es am nächsten kommt und in welche Richtung es abweicht (kippt oder hängt). Dann wird die Reihe verschoben.</td></tr>
+      <tr><td>Pins stehen schief oder gehen nur mit Kraft.</td><td>Lage oder Lochgröße (<code>HOLE</code> 1,4 mm) ändern.</td></tr>
+      <tr><td>Körper wackelt oder klemmt.</td><td><code>SNUG_HDR</code> (jetzt 0,1 mm je Seite) anpassen.</td></tr>
     </tbody>
   </table>
   </div>
 </section>
 
 <!-- ============================ ERGEBNIS ============================ -->
-<section aria-labelledby="h6">
-  <h2 id="h6"><span class="n">6</span>Ergebnis an mich zurückgeben</h2>
-  <p>Trage ein, was du gefunden hast, und kopiere den Text. Er enthält auch deine gemessenen Maße aus Schritt 3.</p>
+<section aria-labelledby="h7">
+  <h2 id="h7"><span class="n">7</span>Ergebnis an mich zurückgeben</h2>
+  <p>Trage ein, was du gefunden hast, und kopiere den Text. Er enthält auch deine gemessenen Maße aus Schritt 4.</p>
   <div class="form">
-    <label for="r-b">Engste Spalte, in die der Körper mit leichtem Druck passt (Spiel)
-      <select id="r-b"><option value="">noch nicht geprüft</option><option>0,15</option><option>0,10</option><option>0,05</option><option>keine passt</option></select></label>
-    <label for="r-w">Sitz des Körpers in dieser Spalte
-      <select id="r-w"><option value="">noch nicht geprüft</option><option>sitzt fest, Pins gerade</option><option>wackelt noch, Pins etwas schief</option><option>wackelt, Pins schief</option><option>klemmt zu stark</option></select></label>
-    <label for="r-z">Löcher, durch die alle vier Pins ohne Kraft gehen
-      <select id="r-z"><option value="">noch nicht geprüft</option><option>beide Zeilen (1,5 und 1,3)</option><option>nur 1,5</option><option>keine</option></select></label>
-    <label for="r-g">Bei welcher Lochgröße stehen die Pins gerader?
-      <select id="r-g"><option value="">nicht beurteilt</option><option>1,5</option><option>1,3</option><option>kein Unterschied</option></select></label>
+    <label for="r-v">Gewählte Variante (Körperhöhe)
+      <select id="r-v"><option value="">noch nicht geprüft</option><option>2,0</option><option>1,8</option><option>1,6</option><option>keine</option></select></label>
+    <label for="r-s">Sitz des Körpers
+      <select id="r-s"><option value="">noch nicht geprüft</option><option>fest</option><option>wackelt</option><option>klemmt</option></select></label>
+    <label for="r-l">Lötende
+      <select id="r-l"><option value="">noch nicht geprüft</option><option>liegt flach</option><option>kippt hoch</option><option>hängt durch</option></select></label>
+    <label for="r-p">Senkrechte Pins
+      <select id="r-p"><option value="">noch nicht geprüft</option><option>gerade, ohne Kraft</option><option>etwas schief</option><option>schief oder nur mit Kraft</option></select></label>
   </div>
   <label for="r-n" style="font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:4px">Bemerkungen
-    <textarea id="r-n" placeholder="zum Beispiel: in der engsten Spalte schiebe ich den Körper nur mit Zange hinein"></textarea></label>
+    <textarea id="r-n" placeholder="zum Beispiel: im Feld 1,8 liegt das Lötende flach, in den anderen kippt es"></textarea></label>
   <div class="row"><button id="copy" type="button">Text kopieren</button><span class="small muted" id="copied" role="status"></span></div>
   <textarea id="out" readonly aria-label="Zusammenfassung zum Kopieren"></textarea>
 </section>
@@ -205,19 +230,19 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
     el.className = 'num dev ' + (Math.abs(d) <= 0.15 ? 'ok' : 'warn');
   }
   function summary() {
-    const lines = ['Passprobe Winkelleiste (Version 5), Ergebnis:'];
+    const lines = ['Passprobe Winkelleiste (Version 6), Ergebnis:'];
     const v = (id, empty) => $(id).value || empty;
-    lines.push('- Engste Spalte, in die der Körper passt: ' + ($('r-b').value ? ($('r-b').value === 'keine passt' ? 'keine passt' : 'Spiel ' + $('r-b').value + ' mm') : 'nicht geprüft'));
-    lines.push('- Sitz des Körpers dort: ' + v('r-w', 'nicht geprüft'));
-    lines.push('- Löcher ohne Kraft: ' + v('r-z', 'nicht geprüft'));
-    lines.push('- Pins gerader bei Lochgröße: ' + v('r-g', 'nicht beurteilt'));
+    lines.push('- Gewählte Variante (Körperhöhe): ' + ($('r-v').value ? ($('r-v').value === 'keine' ? 'keine' : $('r-v').value + ' mm') : 'nicht geprüft'));
+    lines.push('- Sitz des Körpers: ' + v('r-s', 'nicht geprüft'));
+    lines.push('- Lötende: ' + v('r-l', 'nicht geprüft'));
+    lines.push('- Senkrechte Pins: ' + v('r-p', 'nicht geprüft'));
     const m = inputs.filter((i) => i.value !== '').map((i) => i.dataset.k + ' (' + i.dataset.name + ') = ' + i.value.replace('.', ',') + ' mm');
     lines.push('- Gemessen: ' + (m.length ? m.join('; ') : 'nichts eingetragen'));
     if ($('r-n').value.trim()) lines.push('- Bemerkung: ' + $('r-n').value.trim());
     $('out').value = lines.join('\n');
   }
   inputs.forEach((i) => i.addEventListener('input', () => { dev(i); summary(); }));
-  ['r-b', 'r-w', 'r-z', 'r-g'].forEach((id) => $(id).addEventListener('change', summary));
+  ['r-v', 'r-s', 'r-l', 'r-p'].forEach((id) => $(id).addEventListener('change', summary));
   $('r-n').addEventListener('input', summary);
   $('copy').addEventListener('click', () => {
     summary();

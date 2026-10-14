@@ -5,9 +5,10 @@ weitergearbeitet werden kann. Sie ist von Hand geschrieben (kein Generator über
 Git-Verlauf, Generatoren im Wurzelverzeichnis, die Pläne unter `stecker/`, `stl/steckmodul_probe/LIESMICH.txt`
 und die Rückmeldungen des Nutzers aus dem Chat. Was sich daraus nicht belegen lässt, steht als „unbelegt“.
 
-Stand der Auswertung: Der Generator `steckmodul_dupont.py` enthielt beim Schreiben noch die Werte vor der
-Passprobe v6 (siehe Abschnitt 3, Abweichungen). Ein anderer Agent ändert ihn parallel. Maßgeblich sind die
-Werte der Sollspalte.
+Stand: nach dem Umbau auf die Entscheidungen der Passprobe-Runde 4 (Körperhöhe 2,0, Loch 1,4, Spiel Leiste 0,1,
+`STEP_CLR` 0,1, Stufe für das Lötende). Generatoren, Plan-Zahlen, `LIESMICH.txt` und Seiten sind auf diesen Stand
+gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Passprobe v6 und Probestück
+sind noch nicht gedruckt.
 
 ## 1. Ziel
 
@@ -64,7 +65,7 @@ Gedruckt wird mit 0,4-mm-Düse, 0,2 mm Schichthöhe, PLA.
 | Foto und Maße | Winkelleiste | senkrechter Pin 7 mm (±0,5) bis Außenkante der Biegung, 1 mm gerader Pin, Körper etwa 2 mm, 3 mm Pin dahinter, Pin 0,64 | Körper sitzt neben den senkrechten Pins | Dock A umgebaut (Abschnitt 2), `HDR_LEG` 7,0, `RA_BACK` 1,0, `RA_TAIL` 3,0 |
 | 3 (Code: v5) | 4 cm³ | 3 Spalten Pinlage (−0,4 / 0 / +0,4) mal 2 Zeilen Spiel (0,2 / 0,3) | Körper passt mit 0,2 mm Spiel, alle vier Pins gehen in allen drei Spalten durch, Lötenden passen frei im Schlitz, aber der Körper wackelt: Tasche in y 2,54 + 0,4 breit bei Körperdicke etwa 2,0, Pins kommen schief heraus | `HDR_T` = 2,0 (Körperdicke in Pin-Richtung), Pinlage bleibt bei Soll |
 | 4 (aktueller Code, 4,5 cm³) | `0_passprobe.stl` | `HDR_T` 2,0, Spiel 0,15 / 0,10 / 0,05 (Spalten), Löcher 1,5 / 1,3 mm (Zeilen), Beschriftung 3,4 mm fett, 0,6 tief | Rückmeldung des Nutzers: Tiefe der Körpertasche stimmt nicht, Körper fällt zu tief, das Lötende liegt nicht flach auf seiner Stufe. Körperhöhe 2,54 ist falsch, es sind etwa 2,0 | Entscheidung für v6 (nächste Zeile) |
-| 5 (v6, in Arbeit) | von einem anderen Agenten gebaut, unbelegt im Repo | drei Varianten der Stufenhöhe: Körperhöhe 2,0 (Hauptwert), 1,8 und 1,6 als Test; Loch 1,4 mm; Spiel 0,1 mm | Ergebnis steht aus | Stufe = Pin-Oberseite; Abstand Decke bis Stufe = h/2 − 0,32 (Pin liegt mittig, Vierkant 0,64) |
+| 5 (v6, gebaut, 1,8 cm³, nicht gedruckt) | `0_passprobe.stl`, 40,5 × 16,1 × 4,0 mm | drei Varianten der Stufenhöhe: Körperhöhe 2,0 (Hauptwert), 1,8 und 1,6 als Test; Loch 1,4 mm; Spiel 0,1 mm | Ergebnis steht aus | Stufe = Pin-Oberseite; Abstand Decke bis Stufe = h/2 − 0,32 (Pin liegt mittig, Vierkant 0,64) |
 
 Die Druckprobe des Probestücks (Abschnitt 4) ist bisher nicht ausgewertet; ein Ergebnis dazu ist unbelegt.
 
@@ -98,30 +99,22 @@ E = Entscheidung aus dem Chat.
 | `STEP_CLR` | 0,1 | fehlt | E | Luft zwischen Stufe und Pin im echten Dock A (neu mit v6) |
 | `CLR` | 0,25 | 0,25 | Plan | Spiel je Seite Fuß in der Mulde (Führungsband) |
 | `RELIEF` | 0,30 | 0,30 | Plan | zusätzliches Spiel unter dem Führungsband |
-| Fußhöhe `F` | abgeleitet | `layer_up(g1 + GUIDE + CH_F + CH_P)` | A | etwa 9,6 mm vor der Änderung; ändert sich mit `HDR_BODY` (g1 wird in `dims()` berechnet, Zahl nach Neuberechnung unbelegt) |
+| Fußhöhe `F` | abgeleitet | `layer_up(g1 + GUIDE + CH_F + CH_P)` | A | 9,8 mm nach dem Umbau (vorher 9,6); E 3,88 mm, g1 4,88, Plattendicke 30,6 mm (Dupont) |
 
-### 3.3 Abweichungen zwischen Code und Sollwerten
+### 3.3 Abweichungen zwischen Code und Sollwerten (geschlossen)
 
-1. `HDR_BODY`: Code 2,54, Soll 2,0. Er wird in `steckmodul_dupont.py` an mehreren Stellen verwendet
-   (Tasche `z_bb`, `z_bm`, gerade Leiste in Zeile 276, Deckelstempel, Zeile 685) und in
-   `steckmodul_probe.py` für die Plattendicke `PP_H` der Passprobe.
-2. `HOLE`: Code 1,25, Soll 1,4. Der Kommentar nennt noch Runde 2 („1,2 mit 0,3-Senkung“).
-3. `SNUG_HDR`: Code 0,15 mit Kommentar „vorläufig; Passprobe v5 testet 0,15 / 0,10 / 0,05“, Soll 0,1.
-4. `STEP_CLR`: im Code nicht vorhanden.
-5. `HDR_UP` rechnet mit festem 1,27 statt `HDR_BODY / 2`. Bei `HDR_BODY` = 2,0 und Biegung auf halber Höhe
-   gäbe das 7,0 − 0,32 − 1,0 = 5,68; der Wert wird nach der Änderung zu prüfen sein (ob die Biegungslage so
-   modelliert wird, ist unbelegt). Dasselbe gilt für `HDR_BODY` in `dock_a_cuts` (`z_bm`).
-6. Die Konstante `HDR_BODY` hat zwei Bedeutungen: Höhe der Winkelleiste (Dock A) und Dicke der geraden Leiste
-   (Docks B, Zeile 276, Pin-Richtung dort 2,54). Bei einer Änderung auf 2,0 ist B/C mit zu prüfen (unbelegt).
-7. Weitere Unstimmigkeiten ohne Bezug zu den Soll-Werten: `stl/steckmodul_probe/LIESMICH.txt` nennt oben
-   „10 mm Fuß“ und unten „Fuß 9.6 mm“; die Texte sind vom Generator geschrieben (`write_readme`). Der Plan
-   `stecker/dupont/PLAN.md` nennt in Zeile 315 noch „0,1-Tasche“ und „1,1-Loch“ der ersten Planung.
+In der ersten Fassung dieser Datei standen noch die Werte vor Runde 4 im Code. Umgesetzt: `HDR_BODY` 2,0, `HOLE` 1,4,
+`SNUG_HDR` 0,1, neu `STEP_CLR` 0,1 und die Funktion `step_z()` für die Stufe des Lötendenschlitzes. `HDR_UP` ist jetzt
+`HDR_LEG - PIN_SQ/2 - HDR_BODY/2` = 5,68 statt mit festem 1,27 gerechnet. Offen bleibt:
 
-Nach dem Parallelumbau sind Soll und Code wieder abzugleichen (Abschnitt 7).
+1. `HDR_BODY` hat zwei Bedeutungen: Höhe der Winkelleiste (Dock A) und Dicke der geraden Leiste (Dock B). Dock B und C
+   rechnen jetzt ebenfalls mit 2,0 und kollidieren nicht; ob die gerade Leiste aus dem Kit tatsächlich 2,0 hat, ist
+   unbelegt. Sonst braucht Dock B eine eigene Konstante.
+2. Das Rundenschema ist uneinheitlich: Code und Commits sagen v4/v5/v6, der Chat Runde 2/3/4/5; Tabelle in 3.2 ordnet zu.
 
 ## 4. Das Probestück
 
-Was: Ausschnitt (22 × 36 mm, 12 mm sichtbare Höhe plus 9,6 mm Fuß) des Hauptbalkens des Institutsgebäudes
+Was: Ausschnitt (22 × 36 mm, 12 mm sichtbare Höhe plus 9,8 mm Fuß) des Hauptbalkens des Institutsgebäudes
 im Maßstab 1:1000, mit denselben Maßen für Fuß, Schacht, Nut, Kassette und Schieber wie das Gebäude. Es
 prüft Schieber, Kassette, das Stecken in die Platte und das Licht durch die 0,4-mm-Wand. Die Passprobe ist
 getrennt davon (sie prüft nur die Winkelleiste) und liegt als `0_passprobe.stl` im selben Ordner.
@@ -266,21 +259,16 @@ die Zeilen `HERE`, `OUT`, `DOC`, `PREV` in den vier Generatoren und `sys.path.in
 ## 7. Offene Punkte und nächste Schritte
 
 1. Passprobe v6 drucken und auswerten (drei Stufenhöhen 2,0 / 1,8 / 1,6, Loch 1,4, Spiel 0,1). Prüfen: liegt
-   das Lötende flach auf der Stufe, sitzt der Körper ohne Wackeln, kommen die Pins gerade heraus?
-2. Danach Konstanten in `steckmodul_dupont.py` festschreiben (`HDR_BODY`, `HOLE`, `SNUG_HDR`, `STEP_CLR`) und
-   Abweichungen aus Abschnitt 3.3 schließen, besonders `HDR_UP` mit festem 1,27 und die Doppelrolle von `HDR_BODY`.
-3. Nach der Änderung `steckmodul_dupont.py`, `steckmodul_institut.py`, `steckmodul_probe.py` neu laufen lassen
-   (jeweils `dicht=True` und „keine Kollisionen“), dann die `baue_*`-Skripte. Die Fußhöhe `F` ändert sich
-   dadurch; `LIESMICH.txt` und Pläne prüfen (Zahlen 9,6 / 10 mm).
-4. Probestück (Dateien 1 bis 5) drucken und die Messliste aus Abschnitt 4 abarbeiten; Ergebnisse hier eintragen.
-5. `stecker/dupont/PLAN.md` und die Passprobe-Seite an die neuen Werte anpassen (Zeile 3 nennt noch „Passprobe v4“,
-   Zeile 315 die ersten Planwerte), Artifacts neu veröffentlichen.
-6. `LIESMICH.txt`-Text im Generator (`write_readme` in `steckmodul_probe.py`) korrigieren: Hinweis „Passprobe fehlt
-   in diesem Satz“ und „10 mm Fuß“ gegenüber 9,6 mm.
-7. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; die Eintritts-
+   das Lötende flach auf der Stufe, sitzt der Körper ohne Wackeln, kommen die Pins gerade heraus? Danach `HDR_BODY`
+   und `STEP_CLR` festschreiben.
+2. Probestück (Dateien 1 bis 5) drucken und die Messliste aus Abschnitt 4 abarbeiten; Ergebnisse hier eintragen.
+3. `HDR_BODY` für Dock B trennen, falls die gerade Leiste anders ist. Plan-Dokumente (`stecker/dupont/PLAN.md`,
+   `stecker/institut/PLAN.md`) enthalten weitere Zahlen von Hand; nach jedem Umbau gegen `daten.json` prüfen.
+4. Artifacts (Seiten) nach jedem Umbau neu veröffentlichen (die Links stehen in Abschnitt 5).
+5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; die Eintritts-
    und Steckkräfte der Federzunge sind rechnerisch abgeschätzt, nicht gemessen (Zielwerte: Einstecken unter 10 N,
    Herausziehen 3 bis 8 N).
-8. Entscheidung vor dem Merge: Umstrukturierung nach Abschnitt 6 (mindestens Schritte 1, 2, 8) und ob große
+6. Entscheidung vor dem Merge: Umstrukturierung nach Abschnitt 6 (mindestens Schritte 1, 2, 8) und ob große
    generierte Dateien im Hauptzweig bleiben sollen. Ohne Entscheidung bleibt das Layout unverändert.
-9. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen Prüfausgabe lesen, Vorschaubilder im
+7. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen Prüfausgabe lesen, Vorschaubilder im
    Chat zeigen, Commits mit dem Trailer.
