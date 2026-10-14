@@ -73,10 +73,12 @@ Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
 Farben: je Gebäude `data/fassaden/<slug>.json` (handgesetzte Zonen + Rückfallfarben als `hex`;
 die alten Messfelder stehen als `proben_alt`). Die Fassadenfarben von Paulinum, Neuem Augusteum,
-Institutsgebäude und City-Hochhaus kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
+Institutsgebäude, City-Hochhaus, Hörsaal- und Seminargebäude kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
 (liest `data/messfotos.json`, schreibt `data/messung.json`). Neue Fotos aufnehmen und ausrichten:
-`registrierung.py suche <id>` (Pose per Himmelslinie), Überlagerung ansehen (`kamera.ueberlagerung`),
-bei Passung `"geprueft": true` im Katalog setzen. Wikimedia drosselt geteilte IPs (die Commons-API
+`registrierung.py suche [--seeds=3] <id>` (Pose per Himmelslinie plus Kantenabgleich), Überlagerung ansehen
+(`registrierung.py pruefen <id>`, vollständig ansehen, nicht nur im Kontaktbogen), bei Passung `"geprueft": true` im
+Katalog setzen, sonst `"verworfen": "<Grund>"`. Fotos aus einer Recherche (Flickr/Commons über Openverse) übernimmt
+`werkzeuge/farbmessung/katalog_recherche.py <katalog.json> <nr> …`. Panoramax lieferte nur beschattete Fassaden. Wikimedia drosselt geteilte IPs (die Commons-API
 liefert 429; Seiten und `thumb.wikimedia.org` mit ≤ Originalbreite gehen). `farben.py` setzt
 `data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).
 Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
@@ -87,7 +89,10 @@ mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am
 Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
 (Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Fotos der Messung).
 Alt/neu aus der Foto-Kamera: `werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json>`, dann
-`werkzeuge/farbmessung/bericht.py <alte farben.json>` (HTML nach `vorschau/farbvergleich/`).
+`werkzeuge/farbmessung/bericht.py <alte farben.json>` (HTML nach `vorschau/farbvergleich/`, Runde 1).
+Runde 2 (vorher/nachher mit interaktivem 3D-Modell, three.js über CDN): `vergleich_bilder.py <alte farben.json> <ordner>
+--fotos id,id,…`, dann `bericht_runde2.py <alte farben.json>` (liest daneben `messung.json` und `vorschau_laserscan/` des
+alten Stands; Texte in `bericht_runde2_texte.json`; HTML nach `vorschau/farbvergleich_runde2/`).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
 `vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
 

@@ -43,6 +43,8 @@ ZUSATZ_CSS = """
 .zahl .wert .pfeil { color: var(--muted); font-weight: 400; padding-inline: 0.25rem; }
 .zahl .wert .neu { color: var(--neu); }
 .zahl .note { font-size: 0.85rem; color: var(--muted); }
+.seite { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.cmp .tag { top: auto; bottom: 0.6rem; }
 .neumarke { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; background: var(--neu-soft); color: var(--neu); padding: 0.05rem 0.35rem; border-radius: 0.25rem; margin-left: 0.4rem; }
 .befund ul { margin: 0; padding-left: 1.1rem; font-size: 0.93rem; color: var(--muted); display: grid; gap: 0.2rem; }
 """
@@ -161,9 +163,9 @@ def foto_karten(kat, messung, ids):
         out.append('''<article class="vergleich">
   <header><h3>%s</h3><p>%s · %s · %s</p></header>
   <div class="drei">
-    <figure><img src="%s_foto.jpg" alt="Foto" loading="lazy"><figcaption>Foto</figcaption></figure>
-    <figure><img src="%s_alt.jpg" alt="Modell, Farben vorher" loading="lazy"><figcaption>Modell vorher</figcaption></figure>
-    <figure><img src="%s_neu.jpg" alt="Modell, Farben nachher" loading="lazy"><figcaption>Modell nachher</figcaption></figure>
+    <figure><img src="%s_foto.jpg" alt="Foto"><figcaption>Foto</figcaption></figure>
+    <figure><img src="%s_alt.jpg" alt="Modell, Farben vorher"><figcaption>Modell vorher</figcaption></figure>
+    <figure><img src="%s_neu.jpg" alt="Modell, Farben nachher"><figcaption>Modell nachher</figcaption></figure>
   </div>
   <p class="quelle">%s · %s · <a href="%s">Quelle</a> · Überlagerung der Ausrichtung: <a href="%s_pose.jpg">Bild</a></p>
 </article>''' % (html.escape(e.get("titel") or fid), html.escape(zeit), html.escape(sonne), html.escape(gebs), fid, fid, fid,

@@ -36,7 +36,7 @@
   controls.enableDamping = false;
   controls.maxPolarAngle = Math.PI * 0.49;
   controls.minDistance = 25;
-  controls.maxDistance = 1100;
+  controls.maxDistance = 1600;
   controls.screenSpacePanning = true;
 
   function szene() {
@@ -114,7 +114,7 @@
     }));
   }
 
-  var modus = 'teilen', anteil = 0.5, bereit = false;
+  var modus = 'teilen', anteil = 0.37, bereit = false;
 
   function groesse() {
     var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -158,19 +158,21 @@
   /* Ansichten: Ziel [Ost, Nord, Höhe] in lokalen Metern, yaw = Kompasskurs der Blickrichtung (0 = Nord, 90 = Ost),
      elev = Höhenwinkel der Kamera über dem Ziel, dist = Abstand in m */
   var ANSICHTEN = {
-    platz: { ziel: [-75, 10, 45], yaw: 270, elev: 14, dist: 440 },
-    sued: { ziel: [-90, 10, 45], yaw: 0, elev: 18, dist: 470 },
-    nord: { ziel: [-90, 10, 45], yaw: 180, elev: 18, dist: 470 },
-    west: { ziel: [-90, 10, 45], yaw: 90, elev: 18, dist: 470 },
+    platz: { ziel: [-75, 10, 45], yaw: 270, elev: 14, dist: 380 },
+    sued: { ziel: [-90, 10, 45], yaw: 0, elev: 18, dist: 410 },
+    nord: { ziel: [-90, 10, 45], yaw: 180, elev: 18, dist: 410 },
+    west: { ziel: [-90, 10, 45], yaw: 90, elev: 18, dist: 410 },
     oben: { ziel: [-90, 10, 0], yaw: 270, elev: 80, dist: 560 },
-    uniriese: { ziel: [-65, -60, 70], yaw: 270, elev: 8, dist: 270 }
+    uniriese: { ziel: [-65, -60, 68], yaw: 270, elev: 8, dist: 340 }
   };
   function ansicht(name) {
     var a = ANSICHTEN[name], y = a.yaw * Math.PI / 180, e = a.elev * Math.PI / 180;
     var t = new THREE.Vector3(a.ziel[0], a.ziel[2], -a.ziel[1]);      // three.js: x Ost, y hoch, z = -Nord
+    groesse();
+    var dist = a.dist * (camera.aspect < 1.4 ? 1.4 / camera.aspect : 1);   // Hochformat (Handy): weiter weg
     controls.target.copy(t);
-    camera.position.set(t.x - Math.sin(y) * Math.cos(e) * a.dist, t.y + Math.sin(e) * a.dist,
-                        t.z + Math.cos(y) * Math.cos(e) * a.dist);
+    camera.position.set(t.x - Math.sin(y) * Math.cos(e) * dist, t.y + Math.sin(e) * dist,
+                        t.z + Math.cos(y) * Math.cos(e) * dist);
     camera.lookAt(t);
     controls.update();
     neuZeichnen();
