@@ -1,0 +1,688 @@
+<title>Leuchtgebäude Steckdock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: schmale Textspalte, darüber die 3D-Ansicht in voller Breite; Maße immer in Monospace */
+:root {
+  --bg: #f3f4f1;
+  --panel: #ffffff;
+  --fg: #1b2220;
+  --muted: #5a6560;
+  --line: #d6dbd6;
+  --accent: #a85f00;        /* LED-Bernstein, für Text */
+  --accent-fill: #f0a21a;   /* LED-Bernstein, für Flächen */
+  --on-accent: #1b1300;
+  --ok: #2f7d4f;
+  --warn: #b5471f;
+  --canvas: #e7eae5;
+  --edge: #1b2220;
+  --c-plate: #8fa3b8;
+  --c-module: #e3862a;
+  --c-cube: #ece5d2;
+  --c-header: #2d3236;
+  --c-housing: #f4f1e8;
+  --c-led: #fff3c4;
+  --c-pcb: #3f8f5e;
+  --c-wire: #c8423b;
+  --c-screw: #9aa0a6;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300; --ok: #5cc287; --warn: #ff8d62;
+    --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-module: #d9781a; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #d9d5c8;
+    --c-led: #fff0b0; --c-pcb: #2f7a4d; --c-wire: #e0564d; --c-screw: #b3b9be;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300; --ok: #5cc287; --warn: #ff8d62;
+  --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-module: #d9781a; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #d9d5c8;
+  --c-led: #fff0b0; --c-pcb: #2f7a4d; --c-wire: #e0564d; --c-screw: #b3b9be;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-inline: 16px; padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 62ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cols { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cols > * { min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.card h3 .tag { font-family: var(--mono); font-size: 0.8rem; background: var(--accent-fill); color: var(--on-accent); padding: 0.1em 0.5em; border-radius: 3px; margin-right: 0.5em; }
+.card p { font-size: 0.95rem; }
+.muted { color: var(--muted); }
+.small { font-size: 0.88rem; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.ok { color: var(--ok); } .warn { color: var(--warn); }
+ul.tight { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; max-width: 68ch; }
+
+/* Viewer */
+.viewer { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.stage { position: relative; background: var(--canvas); min-width: 0; aspect-ratio: 2 / 1; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+.hud { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--muted); }
+.chip.on { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.side { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px 28px; border-top: 1px solid var(--line); min-width: 0; align-items: start; }
+.side > * { min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.readout { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 0.9rem; }
+.readout dt { color: var(--muted); } .readout dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.phase { min-height: 5.4em; font-size: 0.93rem; }
+.phase b { display: block; margin-bottom: 2px; }
+.ctrl { display: flex; flex-direction: column; gap: 6px; }
+.ctrl > label, .ctrl > .lab { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+input[type=range] { width: 100%; accent-color: var(--accent-fill); }
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { cursor: pointer; font-family: var(--mono); font-size: 0.85rem; padding: 5px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.seg input:focus-visible + label, button:focus-visible, input[type=range]:focus-visible, .chk input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; font-size: 0.9rem; cursor: pointer; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+button.primary { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.chk { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; }
+.chk input { accent-color: var(--accent-fill); width: 16px; height: 16px; }
+.desc { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 700px) { .stage { aspect-ratio: 4 / 3.4; } }
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--fg); }
+svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+svg .lbl { fill: var(--fg); }
+svg .mut { fill: var(--muted); }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; max-width: 100%; height: auto; }
+.steps { counter-reset: s; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; max-width: 72ch; }
+.steps li { counter-increment: s; padding-left: 2.4em; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05em; width: 1.7em; height: 1.7em; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: 0.8rem; display: grid; place-items: center; }
+.note { border-left: 3px solid var(--accent-fill); padding: 4px 0 4px 14px; max-width: 70ch; }
+.badge { font-family: var(--mono); font-size: 0.72rem; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Campus Augustusplatz · Beleuchtung</span>
+  <h1>Leuchtgebäude Steckdock</h1>
+  <p class="lead">Jedes Gebäude bekommt eine WS2812B-LED und leuchtet von innen, sobald es in die Grundplatte gesteckt wird. Hier ist der Steckmechanismus mit Maßen, Animation und Prototyp.</p>
+</header>
+
+<!-- ============================ 3D ============================ -->
+<section id="viewer-sec" aria-labelledby="h-view">
+  <h2 id="h-view">So greift es ineinander</h2>
+  <div class="viewer">
+    <div class="stage" id="stage">
+      <canvas id="cv" aria-label="3D-Ansicht des Steckmechanismus, mit Maus oder Finger drehbar"></canvas>
+      <div class="hud" id="hud"></div>
+    </div>
+    <div class="side">
+     <div class="col">
+      <div class="ctrl">
+        <label for="s">Gebäude einstecken</label>
+        <input type="range" id="s" min="0" max="1000" value="810">
+        <div class="row">
+          <button class="primary" id="play" type="button">Abspielen</button>
+          <button id="reset" type="button">Zurück</button>
+        </div>
+      </div>
+      <div class="phase" id="phase" aria-live="polite"></div>
+      <dl class="readout">
+        <dt>Hub über Sitz</dt><dd id="r-g">–</dd>
+        <dt id="l-peg">Zapfen im Schacht</dt><dd id="r-peg">–</dd>
+        <dt>Buchse in Hülse</dt><dd id="r-eng">–</dd>
+        <dt>Detect-Pin / LED</dt><dd id="r-led">–</dd>
+      </dl>
+     </div>
+     <div class="col">
+      <div class="ctrl">
+        <span class="lab" id="l-mode">Führung</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-mode">
+          <input type="radio" name="mode" id="mode0" value="peg" checked><label for="mode0">Zapfen im Schacht</label>
+          <input type="radio" name="mode" id="mode1" value="foot"><label for="mode1">Gebäude mit Fuß</label>
+        </div>
+        <span class="desc" id="d-mode"></span>
+      </div>
+      <div class="ctrl">
+        <span class="lab" id="l-dock">Dock in der Platte</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-dock">
+          <input type="radio" name="dock" id="dock0" value="0" checked><label for="dock0">A</label>
+          <input type="radio" name="dock" id="dock1" value="1"><label for="dock1">B</label>
+          <input type="radio" name="dock" id="dock2" value="2"><label for="dock2">C</label>
+        </div>
+        <span class="desc" id="d-dock"></span>
+      </div>
+      <div class="ctrl">
+        <span class="lab" id="l-mod">Steckmodul</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-mod">
+          <input type="radio" name="mod" id="mod0" value="A" checked><label for="mod0">A</label>
+          <input type="radio" name="mod" id="mod1" value="B"><label for="mod1">B</label>
+          <input type="radio" name="mod" id="mod2" value="C"><label for="mod2">C</label>
+        </div>
+        <span class="desc" id="d-mod"></span>
+      </div>
+     </div>
+     <div class="col">
+      <div class="ctrl">
+        <label for="ex">Explosion</label>
+        <input type="range" id="ex" min="0" max="100" value="0">
+      </div>
+      <div class="ctrl">
+        <span class="lab">Darstellung</span>
+        <label class="chk"><input type="checkbox" id="cut" checked> Halbschnitt</label>
+        <label class="chk"><input type="checkbox" id="showcube" checked> Würfel zeigen</label>
+        <div class="row" style="margin-top:4px">
+          <button type="button" data-view="front">Schnitt</button>
+          <button type="button" data-view="iso">Schräg</button>
+          <button type="button" data-view="top">Oben</button>
+        </div>
+      </div>
+     </div>
+    </div>
+  </div>
+  <p class="small muted">Ziehen dreht, Mausrad oder zwei Finger zoomen. Der Schieberegler geht von „Gebäude schwebt über der Platte“ (links) bis „gesteckt“ (rechts). Alle Teile sind die echten Druckdateien aus <code>steckmodul.py</code>, nur Header, Buchse, Kabel, LED und Platine sind Platzhalter für Kaufteile.</p>
+</section>
+
+<!-- ============================ PRINZIP ============================ -->
+<section aria-labelledby="h-prinzip">
+  <h2 id="h-prinzip">Das Prinzip</h2>
+  <p>Die Aussparung allein führt das Gebäude nicht tief genug. Sie ist nur 1 mm tief und würde bei 8 mm Steckweg erst nach dem Kontakt greifen. Darum führt ein <b>Zapfen im Schacht</b>: Unter dem Gebäude sitzt ein Steckmodul, dessen Zapfen mindestens <span class="num">3,0 mm</span> im Schacht der Platte steckt, bevor die Kontakte sich berühren. Danach gleitet die Buchse in die Hülse des Headers. Eine zweite Möglichkeit ist ein Fuß am Gebäude, siehe <a href="#h-fuss">Variante: Gebäude mit Fuß</a>. Oben und in der Maßkette lässt sich zwischen beiden umschalten.</p>
+  <div class="cols">
+    <div class="card"><h3>Gebäude</h3><p>Bleibt hohl und bekommt unten ein genormtes Loch. Der Stecker ragt <b>nicht</b> nach unten heraus, die Gebäudeunterseite bleibt flach und liegt in der Aussparung wie bisher.</p></div>
+    <div class="card"><h3>Steckmodul</h3><p>Ein gedrucktes Standardteil für alle Gebäude. Es trägt die Buchse (fertiges XH-Kabel) im Zapfen und die LED im Kopf. Es rastet von unten in den Gebäudeboden.</p></div>
+    <div class="card"><h3>Grundplatte</h3><p>Der Header steht im Schacht nach oben, geschützt von den Schachtwänden. Darunter liegt ein Kabelraum mit Rinne zur Plattenkante.</p></div>
+  </div>
+  <div class="seg" role="radiogroup" aria-label="Variante der Maßkette" style="align-self:flex-start">
+    <input type="radio" name="mode2" id="m2a" value="peg" checked><label for="m2a">Zapfen im Schacht</label>
+    <input type="radio" name="mode2" id="m2b" value="foot"><label for="m2b">Gebäude mit Fuß</label>
+  </div>
+  <div class="fig scroll"><svg id="massketten" role="img" aria-label="Maßkette im Moment des ersten Kontakts" width="900" height="470" viewBox="0 0 900 470"></svg></div>
+  <p class="small muted" id="chain-cap"></p>
+</section>
+
+<!-- ============================ FUSS ============================ -->
+<section aria-labelledby="h-fuss">
+  <h2 id="h-fuss">Variante: Gebäude mit Fuß</h2>
+  <p>Statt eines Zapfens im Schacht kann das Gebäude selbst nach unten verlängert werden, um genau den Teil, der in der Mulde verschwindet. Der Fuß ist die Grundfläche des Gebäudes, <span class="num">8,45 mm</span> nach unten extrudiert. Die Mulde in der Platte ist so tief wie der Fuß. Der sichtbare Teil des Gebäudes behält seine echte Höhe und beginnt bündig an der Plattenoberseite, statt 1 mm darunter.</p>
+  <p>Der Header steht auf dem Muldenboden, der Schacht entfällt. Das Steckmodul bleibt unverändert. Es sitzt in einem Tunnel durch den Fuß und hängt mit dem Zapfen darin. Beim ersten Kontakt steckt der Fuß <span class="num">3,5 mm</span> in der Mulde.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>Zapfen im Schacht</th><th>Gebäude mit Fuß</th></tr></thead>
+    <tbody>
+      <tr><td>Führung vor dem Kontakt</td><td>3,0 mm, nur am Zapfen</td><td>3,5 mm, am ganzen Umriss</td></tr>
+      <tr><td>Halt gegen Kippen</td><td>gering, die Aussparung ist 1 mm tief</td><td class="ok">hoch, die Mulde ist 8,45 mm tief</td></tr>
+      <tr><td>Plattenstärke</td><td>17,45 mm</td><td>16,45 mm</td></tr>
+      <tr><td>Plattenaufbau</td><td>Aussparung plus Schacht je Dock</td><td class="ok">nur eine tiefe Aussparung, wie bisher aus dem Umriss erzeugt</td></tr>
+      <tr><td>Gebäude</td><td>Boden flach, sitzt 1 mm versenkt</td><td>+ 8,45 mm Fuß, sitzt bündig auf der Platte</td></tr>
+      <tr><td>Material</td><td>nur das Modul</td><td class="warn">Grundfläche × 8,45 mm je Gebäude, im Slicer mit wenig Infill</td></tr>
+      <tr><td>Toleranzkette beim Stecken</td><td class="ok">kurz: Modul, Zapfen, Schacht</td><td class="warn">länger: Modul, Nische im Fuß, Fuß, Mulde, Header</td></tr>
+      <tr><td>Komplexe Gebäudeumrisse</td><td class="ok">Aussparung nur 1 mm tief, kaum Klemmgefahr</td><td class="warn">tiefe Mulde kann an Ecken klemmen: 0,3 mm Spiel und 1 mm Einführfase</td></tr>
+      <tr><td>Schmale Gebäude</td><td class="ok">Modul liegt frei im Boden</td><td class="warn">Wand neben dem Tunnel nur 2,95 mm (beim 30-mm-Würfel), Modul längs legen</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><b>Empfehlung:</b> Der Fuß ist robuster gegen Kippen und macht die Platte einfacher. Die Nische im Fuß muss dafür enger sitzen (<span class="num">0,1 mm</span> statt 0,2 mm), sonst addieren sich die Spiele. Beides ist im Prototyp enthalten (<code>wuerfel_fuss.stl</code>, <code>dock_platte_fuss_ABC.stl</code>), dieselben Module passen in beide. Danach entscheidet der Test mit dem echten Stecker.</p>
+</section>
+
+<!-- ============================ HALTEN ============================ -->
+<section aria-labelledby="h-halt">
+  <h2 id="h-halt">Wie die Stecker halten</h2>
+  <p>Der JST-XH-Header und die Buchse haben keine Flansche zum Einschnappen. Deshalb gibt es je Seite drei Wege, und der Prototyp enthält alle, damit du sie am echten Teil vergleichen kannst. Die Kräfte unterscheiden sich: Beim Stecken drückt das Gebäude den Header nach unten und die Buchse nach oben, beim Ziehen umgekehrt.</p>
+  <h3>Header in der Platte</h3>
+  <div class="cols">
+    <div class="card"><h3><span class="tag">A</span>Presssitz</h3><p>Der Header sitzt <span class="num">2 mm</span> tief in einer Tasche mit Crush-Rippen (<span class="num">0,15 mm</span> Übermaß). Tasche und Schachtboden tragen den Steckdruck, die Rippen halten gegen den Zug. Keine Zusatzteile.</p><p class="muted small">Risiko: Reibung in PLA lässt mit der Zeit nach. Testen: Auszugskraft des Headers.</p></div>
+    <div class="card"><h3><span class="tag">B</span>Platinen-Sandwich</h3><p>Der Header ist auf ein Stück Lochraster (<span class="num">22 × 11 mm</span>) gelötet. Die Platine wird von unten mit zwei M2-Schrauben an den Schachtboden gezogen, der Header ragt durch ein Fenster. Das hält Zug und Druck formschlüssig.</p><p class="muted small">Risiko: mehr Arbeit, XH-Raster 2,5 mm sitzt knapp im 2,54-Raster.</p></div>
+    <div class="card"><h3><span class="tag">C</span>Heißkleber</h3><p>Die Tasche ist locker (<span class="num">0,3 mm</span> Spiel). Durch zwei Fenster zum Kabelraum läuft Heißkleber von unten um den Header. Die Stifte gehen durch den Boden.</p><p class="muted small">Risiko: nicht mehr lösbar. Dafür die toleranteste Variante.</p></div>
+  </div>
+  <h3>Buchse im Modul</h3>
+  <div class="cols">
+    <div class="card"><h3><span class="tag">A</span>Presssitz</h3><p>Die Tasche für die Buchse hat je Längsseite zwei Rippen. Oben endet sie an einem Anschlag, der den Steckdruck aufnimmt.</p><p class="muted small">Nur etwa <span class="num">2,8 mm</span> der Buchse stehen über der Hülse, also wenig Reibfläche.</p></div>
+    <div class="card"><h3><span class="tag">B</span>Kabel-Zugentlastung</h3><p>Zwei Querstifte im Kabelkanal zwingen die Adern in eine S-Form. Die Reibung am Stift nimmt die Zugkraft auf, die Crimps der Buchse halten nach JST-Angabe mehr, als das Stecken je braucht.</p><p class="muted small">Die Tasche ist hier locker, die Buchse wird nur über das Kabel gehalten.</p></div>
+    <div class="card"><h3><span class="tag">C</span>Heißkleber</h3><p>Zwei seitliche Fenster führen in die Tasche. Ein Tropfen Kleber verbindet Buchse und Modul. Das ist die sichere Rückfallebene.</p><p class="muted small">Nicht mehr lösbar, die Buchse ist dann Teil des Moduls.</p></div>
+  </div>
+  <p class="note"><b>Offen bis zur Messung:</b> Das Datenblatt nennt für die XHP-Buchse eine Tiefe von <span class="num">4,1 mm</span> im Körper und <span class="num">5,7 mm</span> mit Stufe. Wenn die Stufe nach unten zeigt, kann die Tasche sie als Anschlag nutzen. Das wäre die beste Haltung, braucht aber ein zweiteiliges Modul, in das die Buchse von oben fällt. Das entscheidet sich am echten Teil mit der Schieblehre.</p>
+</section>
+
+<!-- ============================ GEBÄUDE ============================ -->
+<section aria-labelledby="h-geb">
+  <h2 id="h-geb">Was sich an den Gebäuden ändert</h2>
+  <ul class="tight">
+    <li><b>Hohl drucken.</b> Das Volumen wird um <span class="num">1,2 mm</span> nach innen versetzt. Der Hohlraum ist die Lichtkammer, der Boden bleibt <span class="num">2,4 mm</span> dick.</li>
+    <li><b>Modulloch im Boden.</b> Ein Loch von <span class="num">21 × 14,3 mm</span> mit einer <span class="num">1,2 mm</span> tiefen Nische für den Kragen (<span class="num">24,1 × 17,4 mm</span>), immer an derselben Stelle und in Richtung der längeren Gebäudeachse. Eine abgeschrägte Ecke kodiert die Drehung.</li>
+    <li><b>Dach schließt die Kammer.</b> Das Modul muss deshalb vor dem Einsetzen fertig verkabelt sein, die LED wird vorher aufs Modul geklebt.</li>
+    <li><b>Wände als Lichtfenster.</b> An Fensterstellen auf <span class="num">0,4 bis 0,8 mm</span> abdünnen, übrige Wände bleiben bei <span class="num">1,2 mm</span>. Der Würfel enthält dafür Teststellen.</li>
+    <li><b>Brücken.</b> Das flache Innendach überspannt bis etwa <span class="num">30 mm</span>. Breitere Kammern bekommen Rippen oder ein Dach mit 45°-Abschrägung.</li>
+  </ul>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Gebäude (Laserscan 1:1500)</th><th class="num">B × T × H mm</th><th>Modul passt?</th></tr></thead>
+    <tbody>
+      <tr><td>Paulinum</td><td class="num">39,6 × 24,6 × 39,2</td><td class="ok">ja</td></tr>
+      <tr><td>Neues Augusteum</td><td class="num">42,1 × 51,9 × 25,0</td><td class="ok">ja</td></tr>
+      <tr><td>Hörsaalgebäude</td><td class="num">55,1 × 90,7 × 16,4</td><td class="warn">knapp: Kammer nur etwa 8 mm hoch</td></tr>
+      <tr><td>Seminargebäude</td><td class="num">26,3 × 66,7 × 18,8</td><td class="ok">ja, Modul längs legen (Breite 17,4 mm)</td></tr>
+      <tr><td>Institutsgebäude</td><td class="num">70,3 × 29,9 × 21,1</td><td class="ok">ja</td></tr>
+      <tr><td>City-Hochhaus</td><td class="num">31,3 × 30,4 × 96,4</td><td class="ok">ja, aber eine LED unten reicht für 96 mm nicht: Stab mit 3 bis 5 LEDs</td></tr>
+      <tr><td>Moritzbastei</td><td class="num">44,6 × 43,0 × 6,1</td><td class="warn">nein, zu flach für eine Kammer</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small muted">Bei 1:1000 sind alle Gebäude <span class="num">1,5×</span> höher, dann passen auch Hörsaalgebäude und Seminargebäude bequem. Der Prototyp ist unabhängig vom Maßstab.</p>
+</section>
+
+<!-- ============================ ELEKTRIK ============================ -->
+<section aria-labelledby="h-el">
+  <h2 id="h-el">Elektrik: vier Pins</h2>
+  <div class="cols">
+    <div class="fig"><svg id="pins" role="img" aria-label="Pinbelegung des 4-poligen XH-Steckers" width="360" height="190" viewBox="0 0 360 190"></svg></div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <p><b>Detect.</b> Pin 4 liegt im Modul auf GND. In der Platte hängt er mit Pull-up an einem Controller-Eingang. LOW heißt „Gebäude steckt“. Die Daten der LED werden erst eine kurze Zeit nach dem Erkennen freigegeben.</p>
+      <p><b>Ein Datenkanal je Dock.</b> Ohne DOUT am Stecker braucht es keine Bypass-Schaltung für leere Docks. Ein ESP32 hat genug Ausgänge für sieben Docks.</p>
+      <p><b>Pegel.</b> Das ältere WS2812B-Datenblatt verlangt <span class="num">0,7 × VDD = 3,5 V</span>. Ein 3,3-V-Controller liegt darunter. Ein 74AHCT125 am Ausgang und etwa <span class="num">330 Ω</span> in Reihe sind billige Absicherung.</p>
+      <p><b>Strom.</b> Eine LED zieht bis <span class="num">60 mA</span> bei Vollweiß, gedimmt auf 20 % etwa <span class="num">12 mA</span>. Sieben LEDs bleiben unter <span class="num">0,5 A</span>.</p>
+    </div>
+  </div>
+  <p class="note"><b>Hot-Plug:</b> Alle Pins sind gleich lang, GND hat also keinen Vorsprung. Wer im laufenden Betrieb steckt, sollte die Datenleitung des Docks bis zum Detect-Signal auf LOW halten, damit kein Strom über die Daten zurückfließt.</p>
+</section>
+
+<!-- ============================ DRUCK ============================ -->
+<section aria-labelledby="h-druck">
+  <h2 id="h-druck">Druck und Passungen</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Teil</th><th>Lage beim Druck</th><th class="num">Maße mm</th><th>Grund</th></tr></thead>
+    <tbody>
+      <tr><td>Dock-Platte</td><td>Unterseite auf dem Bett</td><td class="num">114,5 × 42,5 × 17,4</td><td>Schacht und Taschen sind nach oben offen, der Kabelraum nach unten. Keine Stützen.</td></tr>
+      <tr><td>Steckmodul A/B/C</td><td>auf dem Kopf: LED-Fläche auf dem Bett, Zapfen nach oben</td><td class="num">23,7 × 17,0 × 12,95</td><td>Glatte LED-Fläche, offene Hülse oben, Schnappnasen ohne Stützen. Die STL liegt schon so.</td></tr>
+      <tr><td>Würfel</td><td>Boden auf dem Bett</td><td class="num">30 × 30 × 24</td><td>Prüft das 28-mm-Dach als Brücke.</td></tr>
+      <tr><td>Fuß-Variante: Platte, Würfel</td><td>wie oben, Fuß auf dem Bett</td><td class="num">114,5 × 42,5 × 16,5 · 30 × 30 × 32,4</td><td>Tiefe Mulde statt Schacht, Würfel mit 8,45 mm Fuß und Tunnel für das Modul.</td></tr>
+      <tr><td>Passprobe</td><td>flach</td><td class="num">60 × 24 × 8</td><td>Je drei Taschen für Buchse und Header mit 0,0, 0,1 und 0,2 mm Spiel. Zuerst drucken.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Passung</th><th class="num">mm je Seite</th><th>Wo</th></tr></thead>
+    <tbody>
+      <tr><td><code>SLIDE</code></td><td class="num">0,20</td><td>Zapfen im Schacht (bestimmt die Ausrichtung beim Stecken)</td></tr>
+      <tr><td><code>CLR</code></td><td class="num">0,30</td><td>Header-Hülse in der Zapfenkammer</td></tr>
+      <tr><td><code>SNUG</code></td><td class="num">0,10</td><td>Buchse in der Tasche</td></tr>
+      <tr><td><code>RIB</code></td><td class="num">0,15</td><td>Übermaß der Crush-Rippen</td></tr>
+      <tr><td><code>WALL</code></td><td class="num">1,2</td><td>Wand an tragenden Stellen (3 Perimeter bei 0,4er Düse)</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small muted">Alle Werte stehen oben in <code>steckmodul.py</code>. Nach der Passprobe ändern und neu erzeugen. Die Schnappnasen sind für PETG ausgelegt, bei PLA brechen sie eher.</p>
+</section>
+
+<!-- ============================ PROTOTYP ============================ -->
+<section aria-labelledby="h-proto">
+  <h2 id="h-proto">Prototyp und Testplan</h2>
+  <p>Eine Mini-Platte mit drei Docks (A, B, C), drei Modulen und ein Würfel mit Lichtfenstern. Zusammen etwa 20 g Filament. Module und Docks sind frei kombinierbar, so entstehen neun Paarungen. Optional gibt es dieselbe Platte und denselben Würfel mit Fuß, siehe oben.</p>
+  <ol class="steps">
+    <li><b>Passprobe drucken.</b> Echte Buchse und echten Header in die Taschen stecken und das passende Spiel wählen. Messen, ob die Buchse wirklich 10,7 mm breit und 5,7 mm tief ist und wo die Stufe sitzt.</li>
+    <li><b>Platte drucken, Header einbauen.</b> A pressen, B auf Lochraster löten und verschrauben, C kleben. Mit einer Federwaage die Auszugskraft messen. Ziel: mindestens <span class="num">15 N</span>.</li>
+    <li><b>Module drucken, Buchse einbauen.</b> A pressen, B Kabel durch die Stifte fädeln, C kleben. Wieder Auszugskraft messen, gleiches Ziel.</li>
+    <li><b>LED auf das Modul kleben, Adern anlöten, Modul in den Würfel rasten.</b> Prüfen, ob die Schnappnasen halten und ob die Nische bündig abschließt.</li>
+    <li><b>Stecken.</b> Einstecken soll unter <span class="num">10 N</span> bleiben, Ziehen soll zwischen <span class="num">4 und 15 N</span> liegen. Die leichte Platte darf dabei nicht mit hochkommen. Das Ziehen mit der anderen Hand an der Platte gegenhalten.</li>
+    <li><b>Funktion.</b> LED leuchtet, Detect liest LOW, zwanzig Steckzyklen, danach nochmal die Auszugskraft.</li>
+    <li><b>Kodierung.</b> Würfel um 180° gedreht aufsetzen: Er darf nicht in die Aussparung fallen.</li>
+    <li><b>Licht.</b> Welche Fensterdicke (0,4 oder 0,8 mm) leuchtet im Filament deiner Wahl sichtbar und gleichmäßig?</li>
+  </ol>
+  <div class="cols">
+    <div class="card"><h3>Einkaufsliste</h3><ul class="tight small"><li>3 × JST XH Header B4B-XH-A, 4-polig, stehend</li><li>3 × XHP-4 Buchse mit Kabel (fertig vercrimpt)</li><li>WS2812B-Streifen, 60 LEDs/m, 10 mm breit, ohne Silikonschlauch</li><li>Lochraster-Rest (2,54 mm) und 2 × M2 × 6</li><li>Heißkleber, Federwaage</li></ul></div>
+    <div class="card"><h3>Annahmen vor dem Druck prüfen</h3><ul class="tight small"><li>Hülsenwand und Innenmaß des Headers (hier 11 × 4,4 mm angenommen)</li><li>Lage der Buchsenstufe (4,1 zu 5,7 mm)</li><li>Rastnasen der Buchse: stören sie in der Tasche?</li><li>Pad-Lage und Breite des eigenen LED-Streifens (10 oder 12 mm)</li></ul></div>
+    <div class="card"><h3>Alternative: Pogo-Pins</h3><p class="small">Federstifte in der Platte gegen flache Pads im Gebäude vertragen deutlich mehr Versatz als ein Stift-in-Buchse-Stecker. Bekannte Beispiele nutzen Magnet-Pogo für Leuchtfiguren und Würfel. Falls sich die XH-Lösung als zu sperrig oder zu schwergängig zeigt, ist das der nächste Kandidat. Ein Magnet gibt dazu Haltekraft und Verpolschutz.</p></div>
+  </div>
+</section>
+
+<footer class="small muted" style="max-width:70ch">
+  Maße des Steckverbinders aus dem JST-Katalog (eXH), teils aus Zeichnungen gelesen oder abgeleitet. Die Steck- und Haltekräfte nennt JST nicht, die Zielwerte oben sind Schätzungen. Dateien: <code>steckmodul.py</code>, <code>stl/steckmodul/</code>, <code>stecker/PLAN.md</code>.
+</footer>
+
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const DATA = JSON.parse($('data').textContent);
+  const D = DATA.dims, XS = DATA.xs, PRM = DATA.params;
+  const fmt = (v, n = 2) => v.toFixed(n).replace('.', ',');
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  /* ---------- Beschreibungen ---------- */
+  const DOCK_TXT = {
+    0: 'A: Header pressgepasst in Tasche mit Crush-Rippen',
+    1: 'B: Header auf Platine, von unten mit 2 Schrauben verschraubt',
+    2: 'C: Header in lockerer Tasche, von unten verklebt'
+  };
+  const MOD_TXT = {
+    A: 'A: Buchse pressgepasst, Rippen in der Tasche',
+    B: 'B: Kabel-Zugentlastung, zwei Querstifte im Kanal',
+    C: 'C: Buchse mit Heißkleber durch seitliche Fenster'
+  };
+
+  /* ---------- Maßkette (SVG) ---------- */
+  function drawChain(mode) {
+    const foot = mode === 'foot';
+    const svg = $('massketten');
+    const S = 14, X0 = 330, ZT = 11.4, Y0 = 8;        // px je mm, Mittelachse, z der Oberkante, oberer Rand
+    const px = (x) => X0 + x * S, py = (z) => Y0 + (ZT - z) * S;
+    const g = D.E;                                    // Hub im Moment des ersten Kontakts
+    const R = (x0, x1, z0, z1, fill, extra = '') =>
+      `<rect x="${px(x0)}" y="${py(z1)}" width="${(x1 - x0) * S}" height="${(z1 - z0) * S}" style="fill:${fill}" ${extra}/>`;
+    let s = '';
+    const pw = 24;                                    // gezeigte halbe Plattenbreite
+    const top = foot ? 0 : D.plate_top;
+    s += R(-pw, pw, D.plate_bottom, top, 'var(--c-plate)');
+    if (foot) {
+      s += R(-15.25, 15.25, -D.D, .01, 'var(--panel)');                                // tiefe Mulde
+    } else {
+      s += R(-15.25, 15.25, 0, D.plate_top + .01, 'var(--panel)');                     // Aussparung
+      s += R(-D.shaft_w / 2, D.shaft_w / 2, -D.D, .01, 'var(--panel)');                // Schacht
+    }
+    s += R(-13, 13, D.plate_bottom, -D.D - 3 + .01, 'var(--panel)');                   // Kabelraum
+    // Header
+    const hw = PRM.HDR_W;
+    s += R(-hw / 2, hw / 2, D.seat, D.hood_top, 'var(--c-header)');
+    s += R(-(PRM.HSG_W + .3) / 2, (PRM.HSG_W + .3) / 2, D.seat + 1, D.hood_top + .01, 'var(--panel)');
+    for (let i = 0; i < 4; i++) { const x = (i - 1.5) * 2.5; s += R(x - .32, x + .32, D.seat - 3.4, D.hood_top - 1.6, 'var(--c-header)'); }
+    // Modul (um g angehoben)
+    const mz = (z) => z + g;
+    const cavTop = D.hood_top + .4;
+    s += R(-D.peg_w / 2, D.peg_w / 2, mz(-D.P), mz(.01), 'var(--c-module)');
+    s += R(-D.cav_w / 2, D.cav_w / 2, mz(-D.P) - .01, mz(cavTop), 'var(--panel)');
+    s += R(-D.collar_w / 2, D.collar_w / 2, mz(0), mz(PRM.COLLAR_T), 'var(--c-module)');
+    s += R(-D.head_w / 2, D.head_w / 2, mz(PRM.COLLAR_T), mz(5.0), 'var(--c-module)');
+    s += R(-(PRM.HSG_W + .2) / 2, (PRM.HSG_W + .2) / 2, mz(cavTop - .01), mz(D.rear), 'var(--panel)');
+    // Buchse
+    s += R(-PRM.HSG_W / 2, PRM.HSG_W / 2, mz(D.face), mz(D.hood_top), 'var(--c-housing)', 'stroke="var(--edge)" stroke-width="0.6"');
+    s += R(-PRM.HSG_W / 2, PRM.HSG_W / 2, mz(D.hood_top), mz(D.rear), 'var(--c-housing)', 'stroke="var(--edge)" stroke-width="0.6"');
+    // Gebäudeboden, bei Fuß mit Tunnel
+    s += R(-15, -D.head_w / 2 - .15, mz(0), mz(PRM.FLOOR), 'var(--c-cube)');
+    s += R(D.head_w / 2 + .15, 15, mz(0), mz(PRM.FLOOR), 'var(--c-cube)');
+    if (foot) {
+      const tw = (D.collar_w + 0.4) / 2;
+      s += R(-15, -tw, mz(-D.D), mz(0), 'var(--c-cube)', 'stroke="var(--edge)" stroke-width="0.6"');
+      s += R(tw, 15, mz(-D.D), mz(0), 'var(--c-cube)', 'stroke="var(--edge)" stroke-width="0.6"');
+      s += R(-tw, -D.collar_w / 2, mz(-0.0), mz(PRM.COLLAR_T + .05), 'var(--c-cube)');
+      s += R(D.collar_w / 2, tw, mz(-0.0), mz(PRM.COLLAR_T + .05), 'var(--c-cube)');
+    }
+    // Führungsband
+    const gl = foot ? D.D - g : D.guide;
+    const gx = foot ? px(15.25) + 4 : px(D.shaft_w / 2) + 4;
+    const gz0 = foot ? 0 : 0;
+    s += `<rect x="${gx}" y="${py(gz0)}" width="6" height="${gl * S}" style="fill:var(--accent-fill)"/>`;
+    // Maßlinien rechts
+    const dim = (z0, z1, xo, label, bold) => {
+      const y0 = py(z0), y1 = py(z1);
+      return `<g><path class="dim" d="M${xo - 5} ${y0}h10M${xo - 5} ${y1}h10M${xo} ${y0}V${y1}"/>` +
+        `<text x="${xo + 9}" y="${(y0 + y1) / 2 + 4}" class="lbl" ${bold ? 'style="font-weight:600"' : ''}>${label}</text></g>`;
+    };
+    const xr = px(pw) + 10;
+    const gxl = foot ? px(15.25) : px(D.shaft_w / 2);
+    s += dim(0, -gl, gxl + 7, '', true).replace(/<text.*<\/text>/, '');
+    s += `<text x="${gxl + 20}" y="${py(-gl / 2) + 4}" class="lbl" style="font-weight:600">Führung ${fmt(gl, 1)} mm</text>`;
+    s += dim(D.face, D.face + g, px(-hw / 2) - 14, '', false).replace(/<text.*<\/text>/, '');
+    s += `<text x="${px(-hw / 2) - 24}" y="${py(D.face + g / 2) + 4}" class="lbl" text-anchor="end">Restweg bis Anschlag ${fmt(D.E, 2)}</text>`;
+    s += `<text x="${px(-D.collar_w / 2) - 8}" y="${py(mz(0.6)) + 4}" class="mut" text-anchor="end">Gebäudeboden</text>`;
+    s += dim(top, D.plate_bottom, xr, 'Platte ' + fmt(top - D.plate_bottom, 2), false);
+    s += dim(0, -D.D, xr + 112, '', false).replace(/<text.*<\/text>/, '');
+    s += `<text x="${xr + 121}" y="${py(-D.D / 2) + 4}" class="lbl">${foot ? 'Fuß ' : 'Schacht '}${fmt(D.D, 2)}</text>`;
+    s += dim(-D.D - 3, -D.D - 3 - 5, px(-pw) - 6, '', false).replace(/<text.*<\/text>/, '');
+    s += `<text x="${px(-pw) - 12}" y="${py(-D.D - 5.5) + 4}" class="lbl" text-anchor="end">Kabelraum 5</text>`;
+    s += `<text x="${px(0)}" y="${py(mz(5.0)) - 10}" class="lbl" text-anchor="middle" style="font-weight:600">Steckmodul</text>`;
+    s += `<text x="${px(-pw) + 8}" y="${py(top) + 18}" class="mut" style="fill:#fff;mix-blend-mode:difference">Platte</text>`;
+    s += `<text x="${px(0)}" y="${py(D.seat - 3.4) + 22}" class="mut" text-anchor="middle">Header B4B-XH-A</text>`;
+    svg.innerHTML = s;
+    $('chain-cap').innerHTML = 'Schnitt durch die Steckachse im Moment des ersten Kontakts. Die Buchse hat noch <span class="num">' + fmt(D.E, 2) + ' mm</span> bis zum Anschlag, ' + (foot ? 'der Fuß steckt dann <span class="num">' + fmt(D.D - D.E, 1) + ' mm</span> in der Mulde.' : 'der Zapfen steckt dann <span class="num">' + fmt(D.guide, 1) + ' mm</span> im Schacht.') + ' Alle Maße kommen aus <code>dims()</code> in <code>steckmodul.py</code>.';
+  }
+  drawChain('peg');
+
+  /* ---------- Pinbelegung (SVG) ---------- */
+  (function drawPins() {
+    const rows = [['1', 'GND', 'schwarz'], ['2', 'DIN', 'grün'], ['3', '+5 V', 'rot'], ['4', 'DETECT', 'gelb · im Modul an GND']];
+    let s = '<rect x="10" y="12" width="150" height="166" rx="6" style="fill:var(--c-header)"/>';
+    rows.forEach((r, i) => {
+      const y = 36 + i * 38;
+      s += `<circle cx="42" cy="${y}" r="9" style="fill:var(--accent-fill)"/><text x="42" y="${y + 4}" text-anchor="middle" style="fill:var(--on-accent);font-weight:600">${r[0]}</text>`;
+      s += `<path d="M52 ${y}H178" class="dim"/>`;
+      s += `<text x="188" y="${y - 2}" class="lbl" style="font-weight:600">${r[1]}</text><text x="188" y="${y + 12}" class="mut">${r[2]}</text>`;
+    });
+    $('pins').innerHTML = s;
+  })();
+
+  /* ---------- 3D ---------- */
+  const stage = $('stage'), cv = $('cv'), hud = $('hud');
+  if (!window.THREE) { stage.innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden.</p>'; return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: false }); }
+  catch (e) { stage.innerHTML = '<p style="padding:24px">WebGL ist in diesem Browser nicht verfügbar.</p>'; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 1, 800);
+  camera.up.set(0, 0, 1);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.75));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.85); sun.position.set(-40, -60, 90); scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(60, 80, 30); scene.add(fill);
+  const glow = new THREE.PointLight(0xffc766, 0, 90, 1.5); scene.add(glow);
+
+  const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+  const toGeo = (e) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(b64(e.v)), 3));
+    g.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(e.i)), 1));
+    g.computeVertexNormals();
+    return g;
+  };
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35 });
+  const mats = {};
+  const mk = (key, token, extra) => { mats[key] = Object.assign(new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: 0.04, flatShading: true, side: THREE.DoubleSide }), extra || {}); mats[key].userData.token = token; return mats[key]; };
+  mk('plate', '--c-plate'); mk('module', '--c-module'); mk('cube', '--c-cube'); mk('header', '--c-header', { metalness: 0.2 });
+  mk('housing', '--c-housing'); mk('led', '--c-led'); mk('pcb', '--c-pcb'); mk('wire', '--c-wire'); mk('screw', '--c-screw', { metalness: 0.5 });
+
+  function entry(enc, mat) {
+    const out = {};
+    for (const k of ['full', 'cut']) {
+      const g = toGeo(enc[k]);
+      const m = new THREE.Mesh(g, mat);
+      m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 28), edgeMat));
+      out[k] = m;
+    }
+    return out;
+  }
+  const items = [];          // {k:{full,cut}, group, name}
+  const stat = new THREE.Group(), mover = new THREE.Group();
+  scene.add(stat, mover);
+  function add(parent, name, enc, mat, x) {
+    const e = entry(enc, mat);
+    const holder = new THREE.Group();
+    holder.add(e.full, e.cut);
+    if (x) holder.position.x = x;
+    parent.add(holder);
+    const it = { name, e, holder };
+    items.push(it);
+    return it;
+  }
+  const P = DATA.parts;
+  const plate = add(stat, 'plate', P.plate, mats.plate); plate.mode = 'peg';
+  const plateF = add(stat, 'plate', P.plate_foot, mats.plate); plateF.mode = 'foot';
+  const headers = XS.map((x) => add(stat, 'header', P.header, mats.header, x));
+  const pcb = add(stat, 'pcb', P.pcb, mats.pcb, XS[1]);
+  const screws = add(stat, 'screws', P.screws, mats.screw, XS[1]);
+  const mods = {}; for (const v of ['A', 'B', 'C']) mods[v] = add(mover, 'module', P.module[v], mats.module);
+  const cube = add(mover, 'cube', P.cube, mats.cube); cube.mode = 'peg';
+  const cubeF = add(mover, 'cube', P.cube_foot, mats.cube); cubeF.mode = 'foot';
+  const housing = add(mover, 'housing', P.housing, mats.housing);
+  const led = add(mover, 'led', P.led, mats.led);
+  const wires = add(mover, 'wires', P.wires, mats.wire);
+
+  /* ---------- Zustand ---------- */
+  const G0 = 26;                                   // Starthöhe über dem Sitz (mm)
+  const st = { s: 1 - D.E / 26, mode: 'peg', dock: 0, mod: 'A', ex: 0, cut: true, cube: true, play: false, dir: 1, hold: 0 };
+  const view = { az: 118, el: 24, dist: 125, tx: 0, tz: 4 };
+  const VIEWS = { front: { az: 90, el: 6, dist: 85 }, iso: { az: 118, el: 24, dist: 120 }, top: { az: 90, el: 82, dist: 110 } };
+  let dirty = true;
+
+  const phases = [
+    ['Aufsetzen', null],
+    ['Führung', null],
+    ['Stecken', 'Die Buchse gleitet in die Hülse des Headers. Der Steckdruck läuft über den Boden unter dem Header und das Modul ins Gebäude.'],
+    ['Gesteckt', 'Das Gebäude sitzt auf der Platte, die Kontakte sitzen. Detect meldet das Gebäude, die LED leuchtet.']
+  ];
+  const PH_TXT = {
+    peg: ['Das Gebäude schwebt über seinem Dock. Die Zapfenspitze sucht die Schachtöffnung, die Einführfase fängt bis zu 1 mm Versatz ab.',
+          'Der Zapfen steckt im Schacht und führt das Modul mit ' + fmt(D.guide, 1) + ' mm Länge. Header und Buchse haben noch keinen Kontakt.'],
+    foot: ['Das Gebäude schwebt über seinem Dock. Die Unterkante des Fußes ist abgeschrägt und sucht die Mulde, die Einführfase fängt bis zu 1 mm Versatz ab.',
+           'Der Fuß steckt in der Mulde und führt das ganze Gebäude am Umriss, hier ' + fmt(D.D - D.E, 1) + ' mm lang. Header und Buchse haben noch keinen Kontakt.']
+  };
+  const MODE_TXT = {
+    peg: 'Das Gebäude liegt 1 mm tief in der Aussparung. Ein Zapfen am Modul führt im Schacht.',
+    foot: 'Der Fuß verlängert das Gebäude nach unten und taucht in eine 8,45 mm tiefe Mulde. Kein Schacht nötig.'
+  };
+  const topPhase = () => st.mode === 'foot' ? D.D : D.P;
+  function phaseOf(g) { return g > topPhase() ? 0 : (g >= D.E - 0.001 ? 1 : (g > 0.001 ? 2 : 3)); }
+
+  function pose() {
+    const g = G0 * (1 - st.s);
+    const e = st.ex;
+    mover.position.set(XS[st.dock], 0, g + 22 * e);
+    // Explosion: Teile weichen entlang z aus
+    mods[st.mod].holder.position.z = 0;
+    cube.holder.position.z = 34 * e; cubeF.holder.position.z = 34 * e;
+    led.holder.position.z = 15 * e;
+    housing.holder.position.z = -14 * e;
+    wires.holder.visible = e < 0.02;
+    pcb.holder.position.z = -8 * e;
+    screws.holder.position.z = -15 * e;
+    for (const v in mods) mods[v].holder.visible = v === st.mod;
+    for (const it of items) for (const k of ['full', 'cut']) it.e[k].visible = (k === 'cut') === st.cut;
+    for (const it of items) if (it.mode) it.holder.visible = it.mode === st.mode;
+    cube.holder.visible = st.cube && st.mode === 'peg'; cubeF.holder.visible = st.cube && st.mode === 'foot';
+    const on = g < 0.05;
+    mats.led.emissive = new THREE.Color(on ? 0xffc766 : 0x000000);
+    mats.led.emissiveIntensity = on ? 1.0 : 0;
+    mats.cube.emissive = new THREE.Color(on ? 0x6b4a10 : 0x000000);
+    glow.position.set(XS[st.dock], st.cut ? -2 : 0, g + 22 * e + 8);
+    glow.intensity = on ? 1.4 : 0;
+    // Anzeigen
+    const foot = st.mode === 'foot';
+    const gl = foot ? D.D : D.P;
+    const pegIn = Math.max(0, Math.min(gl, gl - g));
+    const eng = Math.max(0, Math.min(D.E, D.E - g));
+    $('r-g').textContent = fmt(g, 1) + ' mm';
+    $('l-peg').textContent = foot ? 'Fuß in der Mulde' : 'Zapfen im Schacht';
+    $('r-peg').textContent = fmt(pegIn, 2) + ' von ' + fmt(gl, 2);
+    $('r-eng').textContent = fmt(eng, 2) + ' von ' + fmt(D.E, 2);
+    $('r-led').textContent = on ? 'LOW · LED an' : 'HIGH · aus';
+    const ph = phaseOf(g);
+    const txt = ph === 0 ? PH_TXT[st.mode][0] : ph === 1 ? PH_TXT[st.mode][1] : phases[ph][1];
+    $('phase').innerHTML = '<b>' + phases[ph][0] + '</b>' + txt;
+    $('d-mode').textContent = MODE_TXT[st.mode];
+    hud.innerHTML = phases.map((p, i) => '<span class="chip' + (i === ph ? ' on' : '') + '">' + p[0] + '</span>').join('');
+    $('d-dock').textContent = DOCK_TXT[st.dock];
+    $('d-mod').textContent = MOD_TXT[st.mod];
+    dirty = true;
+  }
+
+  /* ---------- Kamera ---------- */
+  function cam() {
+    const a = view.az * Math.PI / 180, e = view.el * Math.PI / 180;
+    const tx = XS[st.dock], tz = view.tz + 16 * st.ex;
+    camera.position.set(tx + view.dist * Math.cos(e) * Math.cos(a), view.dist * Math.cos(e) * Math.sin(a), tz + view.dist * Math.sin(e));
+    camera.lookAt(tx, 0, tz);
+  }
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
+  }
+  new ResizeObserver(resize).observe(stage);
+
+  function theme() {
+    for (const k in mats) mats[k].color.set(css(mats[k].userData.token));
+    renderer.setClearColor(css('--canvas'));
+    edgeMat.color.set(css('--edge'));
+    dirty = true;
+  }
+  theme();
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+
+  /* ---------- Bedienung ---------- */
+  const ptrs = new Map(); let pinch = 0;
+  cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; });
+  cv.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+  cv.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+  cv.addEventListener('pointermove', (e) => {
+    const p = ptrs.get(e.pointerId); if (!p) return;
+    if (ptrs.size === 1) {
+      view.az -= (e.clientX - p[0]) * 0.4; view.el = Math.max(-5, Math.min(89, view.el + (e.clientY - p[1]) * 0.3));
+    }
+    p[0] = e.clientX; p[1] = e.clientY;
+    if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (pinch) view.dist = Math.max(40, Math.min(300, view.dist * pinch / d)); pinch = d;
+    }
+    dirty = true;
+  });
+  cv.addEventListener('wheel', (e) => { e.preventDefault(); view.dist = Math.max(40, Math.min(300, view.dist * (1 + e.deltaY * 0.001))); dirty = true; }, { passive: false });
+  document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => { Object.assign(view, VIEWS[b.dataset.view]); dirty = true; }));
+  $('s').addEventListener('input', (e) => { st.s = e.target.value / 1000; st.play = false; $('play').textContent = 'Abspielen'; pose(); });
+  $('ex').addEventListener('input', (e) => { st.ex = e.target.value / 100; pose(); });
+  $('cut').addEventListener('change', (e) => { st.cut = e.target.checked; pose(); });
+  $('showcube').addEventListener('change', (e) => { st.cube = e.target.checked; pose(); });
+  function setMode(m) {
+    st.mode = m;
+    document.querySelectorAll('input[name=mode],input[name=mode2]').forEach((r) => { r.checked = r.value === m; });
+    drawChain(m); pose();
+  }
+  document.querySelectorAll('input[name=mode],input[name=mode2]').forEach((r) => r.addEventListener('change', () => setMode(r.value)));
+  document.querySelectorAll('input[name=dock]').forEach((r) => r.addEventListener('change', () => { st.dock = +r.value; pose(); }));
+  document.querySelectorAll('input[name=mod]').forEach((r) => r.addEventListener('change', () => { st.mod = r.value; pose(); }));
+  $('play').addEventListener('click', () => {
+    st.play = !st.play; $('play').textContent = st.play ? 'Anhalten' : 'Abspielen';
+    if (st.play) { if (st.s >= 0.999) st.s = 0; st.dir = 1; st.hold = 0; }
+  });
+  $('reset').addEventListener('click', () => { st.play = false; $('play').textContent = 'Abspielen'; st.s = 0; $('s').value = 0; pose(); });
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (st.play) {
+      if (st.hold > 0) st.hold -= dt;
+      else {
+        st.s += st.dir * dt / 5.0;
+        if (st.s >= 1) { st.s = 1; st.dir = -1; st.hold = 1.6; }
+        if (st.s <= 0) { st.s = 0; st.dir = 1; st.hold = 0.8; }
+      }
+      $('s').value = Math.round(st.s * 1000); pose();
+    }
+    if (dirty) { cam(); renderer.render(scene, camera); dirty = false; }
+    requestAnimationFrame(frame);
+  }
+  resize(); pose(); requestAnimationFrame(frame);
+})();
+</script>

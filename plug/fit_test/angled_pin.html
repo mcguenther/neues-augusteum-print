@@ -1,0 +1,117 @@
+<title>Winkelpin Maße</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine schmale Spalte, Zeichnung im Maßstab 1:1 pro Millimeter mit Maßlinien, darunter die Tabelle. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --pin: #b8802a; --body: #3c4348; --dim: #1b2220;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --pin: #e0a850; --body: #8b979f; --dim: #e5eae7; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --pin: #e0a850; --body: #8b979f; --dim: #e5eae7; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; }
+.wrap { max-width: 640px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: clamp(1.6rem, 4vw + 1rem, 2.2rem); line-height: 1.1; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+p { margin: 0; max-width: 62ch; }
+.muted { color: var(--muted); } .small { font-size: 0.88rem; }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; max-width: 100%; height: auto; }
+svg text { font-family: var(--mono); font-size: 12px; fill: var(--fg); }
+svg .mut { fill: var(--muted); }
+svg .pin { fill: var(--pin); stroke: var(--fg); stroke-opacity: 0.35; stroke-width: 0.8; }
+svg .body { fill: var(--body); }
+svg .dim { stroke: var(--dim); stroke-width: 1; fill: none; }
+svg .ref { stroke: var(--muted); stroke-width: 0.8; stroke-dasharray: 3 3; fill: none; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.note { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; max-width: 62ch; }
+code { font-family: var(--mono); font-size: 0.88em; }
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:8px">
+  <span class="kicker">Dupont-Set · Winkelleiste</span>
+  <h1>Winkelpin Maße</h1>
+  <p class="muted">Ein einzelner Pin der Winkelleiste von der Seite, wie auf deinem Foto. Maßstab 1 mm = 44 px.</p>
+</header>
+
+<div class="fig" id="fig"></div>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Strecke</th><th class="num">mm</th><th>Hinweis</th></tr></thead>
+  <tbody>
+    <tr><td>Senkrechter Pin, vom Ende bis zur Außenkante der Biegung</td><td class="num">7</td><td>gemessen, ±0,5</td></tr>
+    <tr><td>Gerader Pin zwischen Biegung und Körper</td><td class="num">1</td><td>gemessen, ±0,5</td></tr>
+    <tr><td>Kunststoffkörper (in Pin-Richtung)</td><td class="num">2</td><td>gemessen, ±0,5. Datenblatt 2,54, im Bild 2,54 gezeichnet</td></tr>
+    <tr><td>Pin hinter dem Körper bis zum Ende</td><td class="num">3</td><td>gemessen, ±0,5</td></tr>
+    <tr><td>Pin-Vierkant</td><td class="num">0,64</td><td>Datenblatt</td></tr>
+    <tr><td>Körper, Länge über 4 Pins (abgebrochen)</td><td class="num">≈ 10,66</td><td>gemessen, 0,5 länger als 10,16 wegen des Abbruchrests</td></tr>
+    <tr><td>Mitte des senkrechten Pins neben der Körperkante</td><td class="num">1,32</td><td>abgeleitet: 1 + 0,64 ÷ 2</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="note">Der senkrechte Pin steht <b>neben</b> dem Körper, nicht darunter oder darüber. Der Körper sitzt auf dem waagerechten Stück. Das ändert die Taschen in Platte und Passprobe.</p>
+</div>
+
+<script>
+(function () {
+  // Seitenansicht: x nach rechts, z nach oben, Ursprung = Spitze des waagerechten Stücks, Mitte des Pins.
+  const S = 44, P = 0.64, STUB = 3, BODY = 2.54, GAP = 1, LEG = 7, BH = 2.54;
+  const x0 = 56, ztop = 70;                       // Pixel-Ursprung (Pinmitte links)
+  const X = (mm) => x0 + mm * S;
+  const Zc = (mm) => ztop + 36 + mm * S;          // mm nach unten
+  const xb0 = STUB, xb1 = STUB + BODY, xl0 = xb1 + GAP, xl1 = xl0 + P;
+  const zTop = -P / 2, zEnd = zTop + LEG;
+  const W = X(xl1) + 120, H = Zc(zEnd) + 56;
+  const f = (v) => String(v).replace('.', ',');
+  const dimH = (xa, xb, y, label, above) => {
+    const ty = above ? y - 7 : y + 17;
+    return `<path class="dim" d="M${X(xa)} ${y - 5}v10M${X(xb)} ${y - 5}v10M${X(xa)} ${y}H${X(xb)}"/>` +
+           `<text x="${(X(xa) + X(xb)) / 2}" y="${ty}" text-anchor="middle">${label}</text>`;
+  };
+  const s = [];
+  s.push(`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Seitenansicht eines Winkelpins mit Maßen: 3 mm Pin, 2 mm Körper, 1 mm Pin, Biegung, 7 mm senkrechter Pin">`);
+  // Körper
+  s.push(`<rect class="body" x="${X(xb0)}" y="${Zc(-BH / 2)}" width="${BODY * S}" height="${BH * S}" rx="1"/>`);
+  // Pin: waagerecht, Biegung, senkrecht
+  s.push(`<path class="pin" d="M${X(0)} ${Zc(-P / 2)}H${X(xl1)}V${Zc(zEnd)}H${X(xl0)}V${Zc(P / 2)}H${X(0)}Z"/>`);
+  // Hilfslinien: Außenkante Biegung, Körperkanten
+  s.push(`<path class="ref" d="M${X(xl1) + 6} ${Zc(zTop)}H${X(xl1) + 70}M${X(xl1) + 6} ${Zc(zEnd)}H${X(xl1) + 70}"/>`);
+  // Maße oben
+  const y1 = Zc(-BH / 2) - 22;
+  s.push(dimH(0, STUB, y1, '3', true));
+  s.push(dimH(xb0, xb1, y1, '2 (2,54)', true));
+  s.push(dimH(xb1, xl0, y1, '1', true));
+  s.push(`<path class="ref" d="M${X(xl0)} ${y1}V${Zc(P / 2)}M${X(xl1)} ${y1}V${Zc(zTop)}"/>`);
+  s.push(`<text x="${X(xl0) + (xl1 - xl0) * S / 2}" y="${y1 - 7}" text-anchor="start" class="mut" dx="14">0,64</text>`);
+  s.push(`<path class="dim" d="M${X(xl0)} ${y1 - 4}v8M${X(xl1)} ${y1 - 4}v8M${X(xl0)} ${y1}H${X(xl1)}"/>`);
+  // Maß senkrecht
+  const xv = X(xl1) + 56;
+  s.push(`<path class="dim" d="M${xv - 5} ${Zc(zTop)}h10M${xv - 5} ${Zc(zEnd)}h10M${xv} ${Zc(zTop)}V${Zc(zEnd)}"/>`);
+  s.push(`<text x="${xv + 10}" y="${(Zc(zTop) + Zc(zEnd)) / 2 + 4}">7</text>`);
+  // Beschriftung der Teile
+  s.push(`<text class="mut" x="${X(xb0) + BODY * S / 2}" y="${Zc(BH / 2) + 17}" text-anchor="middle">Körper</text>`);
+  s.push(`<text class="mut" x="${X(xl1) - 52}" y="${Zc(zEnd) - 12}" text-anchor="end">Pin zum Stecken</text>`);
+  s.push('</svg>');
+  document.getElementById('fig').innerHTML = s.join('');
+})();
+</script>

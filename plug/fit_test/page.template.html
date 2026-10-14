@@ -1,0 +1,255 @@
+<title>Passprobe Winkelleiste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Spalte, Grafiken in voller Breite, Maße in Monospace. Gleiches System wie die Steckmechanismus-Seiten. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300; --ok: #2f7d4f; --warn: #b5471f;
+  --c-blk: #cdd4da; --c-pocket: #f6f7f5; --c-trench: #dfe4e8; --c-a: #d9781a; --c-b: #3b6ea0; --c-c: #2f8a58;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62;
+    --c-blk: #3a4651; --c-pocket: #0f1311; --c-trench: #222b32; --c-a: #f0953a; --c-b: #6fa8dc; --c-c: #5cc287;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62;
+  --c-blk: #3a4651; --c-pocket: #0f1311; --c-trench: #222b32; --c-a: #f0953a; --c-b: #6fa8dc; --c-c: #5cc287;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-inline: 16px; padding-block: 24px 64px; }
+.wrap { max-width: 980px; margin-inline: auto; display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.8rem, 4vw + 1rem, 2.7rem); font-weight: 700; }
+h2 { font-size: 1.4rem; font-weight: 650; display: flex; gap: 10px; align-items: baseline; }
+h2 .n { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.12rem; color: var(--muted); max-width: 62ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+section { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.muted { color: var(--muted); } .small { font-size: 0.88rem; }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; max-width: 100%; height: auto; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.ok { color: var(--ok); } .warn { color: var(--warn); }
+input.meas { width: 5.5em; font: inherit; font-family: var(--mono); padding: 4px 6px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg); color: var(--fg); }
+input.meas:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.steps { counter-reset: s; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; max-width: 74ch; }
+.steps li { counter-increment: s; padding-left: 2.6em; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05em; width: 1.8em; height: 1.8em; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: 0.82rem; display: grid; place-items: center; }
+.steps li > b:first-child { display: block; }
+.tag { display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; color: #fff; font-family: var(--mono); font-size: 0.82em; font-weight: 600; margin-right: 0.35em; }
+.tag.a { background: var(--c-a); } .tag.b { background: var(--c-b); } .tag.c { background: var(--c-c); }
+.note { border-left: 3px solid var(--accent-fill); padding: 4px 0 4px 14px; max-width: 72ch; }
+.cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.card h3 { font-size: 1rem; } .card p { font-size: 0.93rem; }
+.form { display: grid; gap: 12px 16px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); align-items: end; }
+.form label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+select, textarea { font: inherit; font-size: 0.95rem; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--fg); text-transform: none; letter-spacing: 0; font-weight: 400; }
+textarea { width: 100%; font-family: var(--mono); font-size: 0.85rem; min-height: 6.5em; }
+button { font: inherit; font-size: 0.92rem; cursor: pointer; padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; background: var(--accent-fill); color: var(--on-accent); font-weight: 600; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+/* SVG */
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--fg); }
+svg .mut { fill: var(--muted); }
+svg .eng { fill: var(--muted); font-weight: 500; font-size: 10px; }
+svg .lab { font-weight: 600; font-size: 12px; }
+svg .lab.a { fill: var(--c-a); } svg .lab.b { fill: var(--c-b); } svg .lab.c { fill: var(--c-c); }
+svg .blk { fill: var(--c-blk); stroke: var(--fg); stroke-opacity: 0.35; stroke-width: 1; }
+svg .pocket { stroke-width: 2; }
+svg .slot { fill: var(--bg); stroke: var(--c-a); stroke-width: 1; }
+svg .hole.b { stroke: var(--c-b); stroke-width: 1.5; }
+svg .arrow { stroke: var(--accent); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+svg .pocket { fill: var(--c-pocket); }
+svg .csink { fill: none; stroke: var(--muted); stroke-width: 0.8; stroke-dasharray: 2 2; }
+svg .pocket.ghost { fill: none; stroke-dasharray: 4 3; stroke-width: 1.2; }
+svg .pocket.a { stroke: var(--c-a); } svg .pocket.b { stroke: var(--c-b); }
+svg .trench { fill: var(--c-trench); stroke: var(--c-b); stroke-width: 1; stroke-dasharray: 3 2; }
+svg .hole { fill: var(--c-pocket); stroke: var(--c-c); stroke-width: 2; }
+svg .pin { fill: var(--c-b); }
+svg .cut { fill: var(--c-pocket); }
+svg .part { fill-opacity: 0.85; stroke: var(--fg); stroke-width: 0.8; }
+svg .part.a { fill: var(--c-a); } svg .part.b { fill: var(--c-b); }
+svg .pinfill { fill: var(--fg); }
+svg .badge circle { stroke: none; } svg .badge.a circle { fill: var(--c-a); } svg .badge.b circle { fill: var(--c-b); } svg .badge.c circle { fill: var(--c-c); }
+svg .badge text { fill: #fff; font-weight: 600; font-size: 12px; }
+svg .lead { stroke: var(--muted); stroke-width: 1; fill: none; }
+svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+svg .dot { fill: var(--c-a); }
+svg .eng.big { font-size: 15px; font-weight: 600; fill: var(--fg); }
+svg .lab.a { fill: var(--c-a); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Probedruck Kassette · Teil 0 · Version 6</span>
+  <h1>Passprobe Winkelleiste</h1>
+  <p class="lead">Bei Version 5 fiel der Körper in seiner Tasche zu tief, und das Lötende lag nicht flach auf seiner Stufe, sondern kippte nach oben. Der Körper ist nur /*HDRB*/ mm hoch (nicht 2,54). Diese Probe fragt nur noch eines: <b>Auf welcher Höhe muss die Stufe liegen, damit das Lötende flach aufliegt?</b> Alles andere ist festgelegt.</p>
+</header>
+
+<!-- ============================ WAS VARIIERT ============================ -->
+<section aria-labelledby="h1">
+  <h2 id="h1"><span class="n">1</span>Was variiert, was ist fest</h2>
+  <div class="cols">
+    <div class="card"><h3>Variiert: die Höhe der Stufe</h3>
+      <p>Drei Felder, links nach rechts /*V1*/ / /*V2*/ / /*V3*/. Die Zahl ist die <b>angenommene Körperhöhe h</b>. Der Körper liegt mit seiner Oberseite an der Decke der Tasche, die Pin-Mitte liegt h/2 darunter. Die Stufe liegt dort, wo die Oberseite des Pins ist:</p>
+      <p class="num">Stufe = Decke − h/2 + /*PIN*//2</p></div>
+    <div class="card"><h3>Fest in allen Feldern</h3>
+      <p>Spiel /*CLR*/ mm je Seite (Tasche /*POCKW*/ × /*POCKT*/ mm), Löcher /*HOLE*/ mm mit /*HCH*/ mm Senkung, Pinlage Soll (Pin-Mitte /*YOFF*/ mm hinter der Körpermitte), Muldenboden /*CEIL*/ mm, Platte /*PH*/ mm dick.</p></div>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="num">Feld (Körperhöhe h)</th><th class="num">Pin-Mitte unter der Decke</th><th class="num">Abstand Decke bis Stufe</th></tr></thead>
+    <tbody>/*VARROWS*/</tbody>
+  </table>
+  </div>
+  <p class="small muted">Alle Maße in mm. Der Abstand Decke bis Stufe ist h/2 − /*PIN*//2: /*D1*/ / /*D2*/ / /*D3*/. Im echten Dock der Platte kommt noch /*STEPCLR*/ mm Luft über dem Pin dazu, in der Probe nicht.</p>
+</section>
+
+<!-- ============================ DAS TEIL ============================ -->
+<section aria-labelledby="h2">
+  <h2 id="h2"><span class="n">2</span>Das Teil</h2>
+  <p>Die Platte ist /*PW*/ × /*PL*/ × /*PH*/ mm groß (rund 2 cm³ PLA). Die Zeichnung zeigt die <b>Schriftseite</b>, so siehst du sie, wenn du die gedruckte Platte wie ein Buch um die lange Kante umdrehst.</p>
+  <div class="fig">/*TOP*/</div>
+  <ul style="margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px;max-width:72ch">
+    <li>Jedes Feld hat eine <b>Tasche für den Körper</b> (gestrichelt, /*POCKW*/ × /*POCKT*/ mm, 45°-Fase /*CH*/ mm am Rand, von der Taschenseite offen), davor einen <b>Schacht</b> für Knick und senkrechte Pins und dahinter den <b>Lötendenschlitz</b>. Dessen Decke ist die Stufe, und nur sie ist in den drei Feldern verschieden hoch.</li>
+    <li>Darüber liegt der /*CEIL*/ mm dicke Muldenboden mit vier Löchern und /*HCH*/ mm Senkung gegen den Elefantenfuß am Bett.</li>
+  </ul>
+  <div class="fig">/*SECTION*/</div>
+  <p class="small muted">Schnitt durch das Feld /*V1*/ mit eingesetzter Leiste: Der Körper (/*HDRB*/ mm hoch) liegt an der Decke, der Pin (/*PIN*/ mm) sitzt in der Mitte des Körpers, und das Lötende liegt flach unter der Stufe. In der Zeichnung ist die Schriftseite oben, beim Druck liegt sie unten.</p>
+</section>
+
+<!-- ============================ DRUCKEN ============================ -->
+<section aria-labelledby="h3">
+  <h2 id="h3"><span class="n">3</span>Drucken</h2>
+  <div class="cols">
+    <div class="card"><h3>Lage</h3><p>Flach, die <b>Schriftseite liegt auf dem Bett</b>, die Taschen zeigen nach oben. Keine Stützen, kein Rand. Die Schrift ist von unten eingraviert, das ist richtig so.</p></div>
+    <div class="card"><h3>Einstellungen</h3><p>Wie bei der letzten Probe: 0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände, Füllung 10 bis 15 %. Datei: <code>stl/steckmodul_probe/0_passprobe.stl</code>.</p></div>
+    <div class="card"><h3>Nach dem Druck</h3><p>Nichts nacharbeiten. Die Stufen sind nur 0,1 mm verschieden, also keine Kanten feilen.</p></div>
+  </div>
+</section>
+
+<!-- ============================ MESSEN ============================ -->
+<section aria-labelledby="h4">
+  <h2 id="h4"><span class="n">4</span>Leiste messen</h2>
+  <p>Miss die Winkelleiste mit der Schieblehre und trage die Werte ein. Am wichtigsten ist die <b>Körperhöhe</b>: Sie entscheidet, welches Feld passt. Gemessen wird der Körper senkrecht zur Pin-Ebene, also der Abstand von der Seite mit den Pins zur anderen Körperseite.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Maß</th><th class="num">Soll mm</th><th>Gemessen mm</th><th class="num">Abweichung</th><th>Konstante</th></tr></thead>
+    <tbody>/*ROWS*/</tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============================ EINSETZEN ============================ -->
+<section aria-labelledby="h5">
+  <h2 id="h5"><span class="n">5</span>Einsetzen und prüfen</h2>
+  <ol class="steps">
+    <li><b>Leiste von der Taschenseite einsetzen</b>
+      Nimm die Seite <b>ohne Schrift</b>. Der Körper kommt in die Tasche, die senkrechten Pins stecken durch die Löcher, das Lötende zeigt in den Schlitz. Die Pins stehen dann auf der Schriftseite heraus. Lege die Platte dazu über eine Tischkante oder halte sie in der Hand, damit die Pins nicht auf dem Tisch stehen. Schiebe den Körper bis zur Decke.</li>
+    <li><b>Lötende prüfen, in jedem der drei Felder</b>
+      Schau von der Seite in den Schlitz (Taschenseite, mit Licht). <b>Liegt das Lötende flach auf der Stufe?</b> Dann ist die Stufe richtig. Kippt es nach oben, ist die Stufe zu hoch. Hängt es durch, ist die Stufe zu tief und der Körper sitzt tiefer als angenommen.</li>
+    <li><b>Pins prüfen</b>
+      Kommen die vier senkrechten Pins <b>gerade und senkrecht</b> aus den Löchern? Halte ein Lineal oder einen Winkel daran. Geht alles ohne Kraft?</li>
+    <li><b>Sitz prüfen</b>
+      Sitzt der Körper fest, wackelt er, oder klemmt er? Nimm als Ergebnis das Feld, in dem das Lötende flach aufliegt und die Pins am geradesten stehen.</li>
+  </ol>
+</section>
+
+<!-- ============================ AUSWERTEN ============================ -->
+<section aria-labelledby="h6">
+  <h2 id="h6"><span class="n">6</span>Auswerten</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Beobachtung</th><th>Folge im Generator</th></tr></thead>
+    <tbody>
+      <tr><td>Lötende liegt flach im Feld /*V1*/.</td><td><code>HDR_BODY</code> bleibt /*V1*/ mm. Die Stufe im Dock A liegt /*D1*/ mm unter der Decke (plus <code>STEP_CLR</code> /*STEPCLR*/ mm Luft).</td></tr>
+      <tr><td>Lötende liegt flach im Feld /*V2*/ (oder /*V3*/).</td><td>Die Körperhöhe ist kleiner als gemessen. <code>HDR_BODY</code> wird auf diesen Wert gesetzt, Stufe /*D2*/ (bzw. /*D3*/) mm unter der Decke.</td></tr>
+      <tr><td>In keinem Feld liegt es flach.</td><td>Schreib mir, in welchem Feld es am nächsten kommt und in welche Richtung es abweicht (kippt oder hängt). Dann wird die Reihe verschoben.</td></tr>
+      <tr><td>Pins stehen schief oder gehen nur mit Kraft.</td><td>Lage oder Lochgröße (<code>HOLE</code> /*HOLE*/ mm) ändern.</td></tr>
+      <tr><td>Körper wackelt oder klemmt.</td><td><code>SNUG_HDR</code> (jetzt /*CLR*/ mm je Seite) anpassen.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============================ ERGEBNIS ============================ -->
+<section aria-labelledby="h7">
+  <h2 id="h7"><span class="n">7</span>Ergebnis an mich zurückgeben</h2>
+  <p>Trage ein, was du gefunden hast, und kopiere den Text. Er enthält auch deine gemessenen Maße aus Schritt 4.</p>
+  <div class="form">
+    <label for="r-v">Gewählte Variante (Körperhöhe)
+      <select id="r-v"><option value="">noch nicht geprüft</option>/*VAROPTS*/<option>keine</option></select></label>
+    <label for="r-s">Sitz des Körpers
+      <select id="r-s"><option value="">noch nicht geprüft</option><option>fest</option><option>wackelt</option><option>klemmt</option></select></label>
+    <label for="r-l">Lötende
+      <select id="r-l"><option value="">noch nicht geprüft</option><option>liegt flach</option><option>kippt hoch</option><option>hängt durch</option></select></label>
+    <label for="r-p">Senkrechte Pins
+      <select id="r-p"><option value="">noch nicht geprüft</option><option>gerade, ohne Kraft</option><option>etwas schief</option><option>schief oder nur mit Kraft</option></select></label>
+  </div>
+  <label for="r-n" style="font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:4px">Bemerkungen
+    <textarea id="r-n" placeholder="zum Beispiel: im Feld 1,8 liegt das Lötende flach, in den anderen kippt es"></textarea></label>
+  <div class="row"><button id="copy" type="button">Text kopieren</button><span class="small muted" id="copied" role="status"></span></div>
+  <textarea id="out" readonly aria-label="Zusammenfassung zum Kopieren"></textarea>
+</section>
+
+<footer class="small muted" style="max-width:72ch">
+  Datei: <code>stl/steckmodul_probe/0_passprobe.stl</code>, erzeugt von <code>plug/fit_test/generator.py</code>. Maße der Leiste: <a href="https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g">Winkelpin Maße</a>.
+</footer>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const fmt = (v) => (+v).toFixed(2).replace('.', ',').replace('-', '−');
+  const inputs = [...document.querySelectorAll('input.meas')];
+  function dev(inp) {
+    const nom = +inp.dataset.nom, el = $('d-' + inp.id.slice(2));
+    if (inp.value === '') { el.textContent = '–'; el.className = 'num dev'; return; }
+    const d = +inp.value.replace(',', '.') - nom;
+    el.textContent = (d >= 0 ? '+' : '') + fmt(d);
+    el.className = 'num dev ' + (Math.abs(d) <= 0.15 ? 'ok' : 'warn');
+  }
+  function summary() {
+    const lines = ['Passprobe Winkelleiste (Version 6), Ergebnis:'];
+    const v = (id, empty) => $(id).value || empty;
+    lines.push('- Gewählte Variante (Körperhöhe): ' + ($('r-v').value ? ($('r-v').value === 'keine' ? 'keine' : $('r-v').value + ' mm') : 'nicht geprüft'));
+    lines.push('- Sitz des Körpers: ' + v('r-s', 'nicht geprüft'));
+    lines.push('- Lötende: ' + v('r-l', 'nicht geprüft'));
+    lines.push('- Senkrechte Pins: ' + v('r-p', 'nicht geprüft'));
+    const m = inputs.filter((i) => i.value !== '').map((i) => i.dataset.k + ' (' + i.dataset.name + ') = ' + i.value.replace('.', ',') + ' mm');
+    lines.push('- Gemessen: ' + (m.length ? m.join('; ') : 'nichts eingetragen'));
+    if ($('r-n').value.trim()) lines.push('- Bemerkung: ' + $('r-n').value.trim());
+    $('out').value = lines.join('\n');
+  }
+  inputs.forEach((i) => i.addEventListener('input', () => { dev(i); summary(); }));
+  ['r-v', 'r-s', 'r-l', 'r-p'].forEach((id) => $(id).addEventListener('change', summary));
+  $('r-n').addEventListener('input', summary);
+  $('copy').addEventListener('click', () => {
+    summary();
+    const t = $('out').value, done = () => { $('copied').textContent = 'Kopiert.'; };
+    const fallback = () => { $('out').focus(); $('out').select(); $('copied').textContent = 'Text ist markiert, bitte mit Strg+C kopieren.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, fallback); else fallback();
+  });
+  summary();
+})();
+</script>

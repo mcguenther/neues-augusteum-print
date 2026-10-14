@@ -1,0 +1,513 @@
+<title>Institutsgebäude mit Kassette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: schmale Textspalte, 3D-Ansicht in voller Breite; Maße immer in Monospace.
+   Gleiches System wie die beiden anderen Steckmechanismus-Seiten (JST-Plan, Dupont-Plan). */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --warn: #b5471f; --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-lid: #6f819a; --c-cube: #ece5d2; --c-header: #2d3236; --c-housing: #f4f1e8;
+  --c-term: #caa13a; --c-led: #fff3c4; --c-wire: #c8423b; --c-kass: #e3862a; --c-key: #5fb36d;
+  --seat: #d6ecd9; --strip-a: #f0a21a; --strip-b: #3b8bb5;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-lid: #485a70; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #d9d5c8;
+    --c-term: #d9b04a; --c-led: #fff0b0; --c-wire: #e0564d; --c-kass: #d9781a; --c-key: #4fa05f;
+    --seat: #213a2a; --strip-b: #5aaedb;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-lid: #485a70; --c-cube: #cfc7b0; --c-header: #8a9299; --c-housing: #d9d5c8;
+  --c-term: #d9b04a; --c-led: #fff0b0; --c-wire: #e0564d; --c-kass: #d9781a; --c-key: #4fa05f;
+  --seat: #213a2a; --strip-b: #5aaedb;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-inline: 16px; padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cols { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cols > * { min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.card p { font-size: 0.95rem; }
+.muted { color: var(--muted); } .small { font-size: 0.88rem; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.ok { color: var(--ok); } .warn { color: var(--warn); }
+ul.tight { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; max-width: 70ch; }
+.note { border-left: 3px solid var(--accent-fill); padding: 4px 0 4px 14px; max-width: 72ch; }
+.steps { counter-reset: s; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; max-width: 74ch; }
+.steps li { counter-increment: s; padding-left: 2.6em; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0.05em; width: 1.8em; height: 1.8em; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: 0.82rem; display: grid; place-items: center; }
+.steps b { display: block; }
+
+/* Viewer */
+.viewer { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.stage { position: relative; background: var(--canvas); min-width: 0; aspect-ratio: 2 / 1; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+.hud { position: absolute; left: 12px; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 88%, transparent); color: var(--muted); }
+.chip.on { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.side { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px 28px; border-top: 1px solid var(--line); align-items: start; }
+.side > * { min-width: 0; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.readout { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 0.9rem; margin: 0; }
+.readout dt { color: var(--muted); } .readout dd { margin: 0; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.phase { min-height: 6.4em; font-size: 0.93rem; }
+.phase b { display: block; margin-bottom: 2px; }
+.ctrl { display: flex; flex-direction: column; gap: 6px; }
+.ctrl > label, .ctrl > .lab { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+input[type=range] { width: 100%; accent-color: var(--accent-fill); }
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { cursor: pointer; font-family: var(--mono); font-size: 0.85rem; padding: 5px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 500; }
+.seg input:focus-visible + label, button:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; font-size: 0.9rem; cursor: pointer; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+button.primary { background: var(--accent-fill); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; }
+.desc { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 700px) { .stage { aspect-ratio: 4 / 3.6; } }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; max-width: 100%; height: auto; }
+svg text { font-family: var(--mono); font-size: 11px; fill: var(--fg); }
+svg .mut { fill: var(--muted); }
+svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Campus Augustusplatz · Beleuchtung · Plan B mit Kassette</span>
+  <h1>Institutsgebäude mit Kassette</h1>
+  <p class="lead">Das echte Institutsgebäude im Maßstab 1:<span data-v="scale" data-f="0"></span> mit Fuß, Lichtkammer und Lichtfenstern. Buchse, Adern und LED sitzen auf einer Kassette, die von unten in den Fuß geschoben und von einem Schieber durch die lange Wand gehalten wird. Dazu eine Platte mit Dock A.</p>
+</header>
+
+<!-- ============================ 3D ============================ -->
+<section aria-labelledby="h-view">
+  <h2 id="h-view">Zusammenbau und Stecken</h2>
+  <div class="viewer">
+    <div class="stage" id="stage">
+      <canvas id="cv" aria-label="3D-Ansicht des Institutsgebäudes mit Kassette, mit Maus oder Finger drehbar"></canvas>
+      <div class="hud" id="hud"></div>
+    </div>
+    <div class="side">
+      <div class="col">
+        <div class="ctrl">
+          <span class="lab" id="l-mode">Ansicht</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-mode">
+            <input type="radio" name="mode" id="mode0" value="assemble" checked><label for="mode0">Zusammenbau</label>
+            <input type="radio" name="mode" id="mode1" value="plug"><label for="mode1">In die Platte stecken</label>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label for="s" id="l-s">Zusammenbau</label>
+          <input type="range" id="s" min="0" max="1000" value="300">
+          <div class="row">
+            <button class="primary" id="play" type="button">Abspielen</button>
+            <button id="reset" type="button">Zurück</button>
+          </div>
+        </div>
+        <div class="phase" id="phase" aria-live="polite"></div>
+      </div>
+      <div class="col">
+        <dl class="readout" id="readout"></dl>
+        <div class="ctrl">
+          <span class="lab" id="l-strip">LED-Streifen auf der Ablage</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-strip">
+            <input type="radio" name="strip" id="strip0" value="60" checked><label for="strip0">60/m · 10 mm</label>
+            <input type="radio" name="strip" id="strip1" value="144"><label for="strip1">144/m · 12 mm</label>
+          </div>
+          <span class="desc" id="d-strip"></span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="ctrl">
+          <span class="lab" id="l-cut">Schnitt</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-cut">
+            <input type="radio" name="cut" id="cut0" value="none"><label for="cut0">Ganz</label>
+            <input type="radio" name="cut" id="cut1" value="x" checked><label for="cut1">Längs durch Pin 2</label>
+            <input type="radio" name="cut" id="cut2" value="y"><label for="cut2">Quer durch die Pin-Reihe</label>
+          </div>
+        </div>
+        <div class="ctrl" id="c-ex">
+          <label for="ex">Explosion</label>
+          <input type="range" id="ex" min="0" max="100" value="0">
+        </div>
+        <div class="ctrl">
+          <span class="lab">Blickrichtung</span>
+          <div class="row">
+            <button type="button" data-view="side">Seitlich</button>
+            <button type="button" data-view="iso">Schräg</button>
+            <button type="button" data-view="under">Von unten</button>
+            <button type="button" data-view="top">Oben</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="small muted">Ziehen dreht, Mausrad oder zwei Finger zoomen. Gebäude, Fuß, Kassette, Schieber, Platte und Deckel sind die echten Druckdateien aus <code>plug/institute.py</code>. Stiftleiste, Buchse, Kontakte, Adern und LED-Streifen sind Platzhalter mit den Maßen der Kaufteile.</p>
+</section>
+
+<!-- ============================ ABLAUF ============================ -->
+<section aria-labelledby="h-ablauf">
+  <h2 id="h-ablauf">So kommt die Kassette ins Gebäude</h2>
+  <p>Die Lichtkammer ist nach dem Druck geschlossen. Deshalb sitzt alles, was ins Gebäude muss, auf einer Kassette, die von unten in einen Schacht im Fuß passt. Der Schieber kommt von der Seite, weil unter dem Fuß keine Hand und kein Werkzeug Platz hat.</p>
+  <ol class="steps">
+    <li><b>Einheit vorbereiten.</b> Das Dupont-Gehäuse 1×4 mit den vier gecrimpten Adern in die Tasche der Kassette drücken. Das Streifenstück auf die Ablage kleben, Adern an GND, DIN und +5 V löten und die DETECT-Ader in der Querrinne zum GND-Pad legen. Danach liegt alles auf einem einzigen Teil und lässt sich auf dem Tisch prüfen.</li>
+    <li><b>Kassette von unten in den Schacht schieben.</b> Die Kassette (<span class="num"><span data-v="cass_w" data-f="1"></span> × <span data-v="cass_len" data-f="1"></span> mm</span>) steckt mit <span class="num">0,2 mm</span> Spiel je Seite im Schacht, bis ihre Oberseite am Kammerboden anliegt. Die LED ragt durch die Bodenöffnung in die Lichtkammer, die Steckseite der Buchse schaut nach unten.</li>
+    <li><b>Schieber durch die lange Wand einschieben.</b> Der Schieber (<span class="num"><span data-v="slider_w" data-f="1"></span> × <span data-v="slider_l" data-f="1"></span> × <span data-v="funnel_t" data-f="1"></span> mm</span>) gleitet <span class="num"><span data-v="slider_run" data-f="0"></span> mm</span> weit in eine Schwalbenschwanz-Nut im Fuß, bis er am Ende der Nut anschlägt. Er deckt den Schacht von unten ab, hält die Kassette und liefert die Trichter, die die Stifte der Leiste auf die Öffnungen der Buchse führen. Mit der Fase am Fuß schließt seine Kante bündig mit der Wand ab.</li>
+    <li><b>Gebäude in die Mulde stecken.</b> Solange das Gebäude in der Mulde steckt, sperrt die Muldenwand den Schieber, er kann nicht herausrutschen.</li>
+  </ol>
+  <p class="note"><b>Reparatur:</b> Gebäude aus der Platte ziehen, Schieber seitlich herausziehen, Kassette nach unten herausnehmen. Dann lässt sich der Streifen tauschen oder die Buchse neu crimpen. Nichts ist geklebt oder überdruckt.</p>
+</section>
+
+<!-- ============================ ABLAGE ============================ -->
+<section aria-labelledby="h-ablage">
+  <h2 id="h-ablage">Großzügige Ablage für den LED-Streifen</h2>
+  <p>Die Ablage auf der Kassette ist <span class="num"><span data-v="seat_w" data-f="1"></span> × <span data-v="seat_l" data-f="1"></span> mm</span> groß. Vorher passte nur ein Streifenstück mit genau <span class="num">10 × 16,7 mm</span> (Ablage <span class="num">10,3 × 17,0 mm</span>). Jetzt passen Streifen bis <span class="num">12 mm</span> Breite und bis zu <span class="num"><span data-v="seat_l" data-f="0"></span> mm</span> Länge, die Position darin ist frei. Das Din-Ende mit den Pads zeigt zur Buchse, damit die Adern kurz bleiben.</p>
+  <div class="fig"><svg id="seat" role="img" aria-label="Draufsicht auf die Kassette mit Ablage, links ein Streifen mit 60 LED/m, rechts mit 144 LED/m, im Maßstab" width="820" height="450" viewBox="0 0 820 450"></svg></div>
+  <div class="legend">
+    <span><i style="background:var(--c-kass)"></i>Kassette</span>
+    <span><i style="background:var(--seat);border:1px solid var(--line)"></i>Ablage, 0,4 mm tief</span>
+    <span><i style="background:var(--strip-a)"></i>Streifen 60 LED/m</span>
+    <span><i style="background:var(--strip-b)"></i>Streifen 144 LED/m</span>
+    <span><i style="background:var(--c-term)"></i>Lötpads</span>
+  </div>
+  <p class="small muted">Die Bodenöffnung im Gebäude ist <span class="num">0,15 mm</span> je Seite größer als die Ablage, damit der bestückte Streifen mit der Kassette nach oben durchpasst. Ein Streifen mit 3 LEDs bei 144/m ist <span class="num">20,8 mm</span> lang und passt gerade noch. Größere Maße stehen als <code>SEAT_W</code> und <code>SEAT_L</code> oben im Generator.</p>
+</section>
+
+<!-- ============================ GEBÄUDE ============================ -->
+<section aria-labelledby="h-geb">
+  <h2 id="h-geb">Das Institutsgebäude</h2>
+  <div class="cols">
+    <div class="card"><h3>Aus dem Laserscan</h3><p>Grundriss, Dachlandschaft und Aufbauten stammen aus den bestehenden Modellen. Das Gebäude ist so gedreht, dass die lange gerade Wand bei +x liegt und die Längsachse in y.</p>
+      <p class="small muted"><span class="num"><span data-v="W" data-f="1"></span> × <span data-v="T" data-f="1"></span> × <span data-v="H" data-f="1"></span> mm</span> ohne Fuß, <span class="num"><span data-v="F" data-f="1"></span> mm</span> Fuß darunter</p></div>
+    <div class="card"><h3>Fuß mit Fase</h3><p>Der Fuß ist der Grundriss, nach unten verlängert. Unten ist er mit <span class="num"><span data-v="ch_f" data-f="1"></span> mm</span> gefast, in Schichtstufen von 0,2 mm, damit der Slicer die Fase exakt druckt. Die Mulde hat oben <span class="num"><span data-v="ch_p" data-f="1"></span> mm</span> Fase.</p>
+      <p class="small muted">Eine Kodier-Ecke braucht es hier nicht, der Grundriss passt nur in einer Richtung.</p></div>
+    <div class="card"><h3>Lichtkammer</h3><p>Wand und Dach sind überall mindestens <span class="num"><span data-v="shell" data-f="1"></span> mm</span> dick. Die Kammer folgt den Dachhöhen. Auf der Außenwand sitzen zwei Reihen Lichtfenster, abgedünnt auf <span class="num"><span data-v="win_t" data-f="1"></span> mm</span>.</p>
+      <p class="small muted">Die Kammer beginnt <span class="num"><span data-v="z_floor" data-f="1"></span> mm</span> über der Plattenoberseite.</p></div>
+  </div>
+  <div class="note">
+    <p><b>Maßstab 1:1000 statt 1:1500.</b> Der Hauptbalken des Gebäudes ist bei 1:1000 <span class="num"><span data-v="bar" data-f="1"></span> mm</span> breit, bei 1:1500 nur <span class="num"><span data-v="bar15" data-f="1"></span> mm</span>. Die Kassette ist <span class="num"><span data-v="cass_w" data-f="1"></span> mm</span> breit und braucht mit Spiel und zwei Wänden von mindestens 2 mm etwa <span class="num"><span data-v="need_bar" data-f="1"></span> mm</span>. Bei 1:1000 bleiben <span class="num"><span data-v="wall_beside" data-f="1"></span> mm</span> Wand neben dem Schacht, bei 1:1500 wäre es <span class="num"><span data-v="wall15" data-f="1"></span> mm</span>, also zu wenig. Für 1:1500 müsste die Kassette schmaler werden, etwa mit nur einem 5-mm-Streifen.</p>
+  </div>
+</section>
+
+<!-- ============================ PLATTE ============================ -->
+<section aria-labelledby="h-platte">
+  <h2 id="h-platte">Platte mit Dock A</h2>
+  <p>Die Mulde folgt dem Fußumriss mit <span class="num"><span data-v="clr" data-f="2"></span> mm</span> Spiel im Führungsband und <span class="num"><span data-v="clr_relief" data-f="2"></span> mm</span> darunter. Im Muldenboden sitzt die abgewinkelte Stiftleiste (4 Pins, Lötenden waagrecht im Kabelraum), von unten eingeschoben und vom Muldenboden gegen Zug gehalten. Ein Stempel im Deckel drückt von unten gegen die Stirnseiten. Eine Federzunge in der langen Muldenwand rastet in die Nut am Fuß. Die Platte ist <span class="num"><span data-v="plate_t" data-f="1"></span> mm</span> dick mit Deckel und bei diesem Gebäude <span class="num"><span data-v="plate_w" data-f="1"></span> × <span data-v="plate_l" data-f="1"></span> mm</span> groß.</p>
+</section>
+
+<!-- ============================ DRUCK ============================ -->
+<section aria-labelledby="h-druck">
+  <h2 id="h-druck">Druckdateien und Prüfung</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Datei</th><th class="num">Maße mm</th><th>Lage beim Druck</th></tr></thead>
+    <tbody id="ftab"></tbody>
+  </table>
+  </div>
+  <ul class="tight">
+    <li>Alle Teile liegen in Druckausrichtung. Die Kassette steht aufrecht, der Schieber liegt flach. Das Dach der Kammer überbrückt im breiten Flügel bis etwa 30 mm, der Schacht im Fuß rund 16 mm. Das druckt ohne Stützen, wenn die Brückenerkennung des Slicers an ist. Wenn das Dach durchhängt, erlaube dort Stützen in der Kammer.</li>
+    <li>Alle STL sind dicht. Die Kollisionsprüfung findet im gesteckten Zustand und an <span class="num">8</span> Hubhöhen beim Stecken keine Überschneidungen (Crush-Rippen und Federnase ausgenommen).</li>
+    <li>Der Schieber ist nur <span class="num"><span data-v="funnel_t" data-f="1"></span> mm</span> dick und <span class="num"><span data-v="slider_l" data-f="0"></span> mm</span> lang. Er kann sich beim Drucken verziehen. Zuerst Kassette und Schieber allein drucken und im Fuß eines Probestücks prüfen.</li>
+    <li>Die Federzunge und die Haltekräfte aus dem Dupont-Plan gelten hier unverändert, sind aber für diese Wand nicht neu gerechnet.</li>
+  </ul>
+</section>
+
+<footer class="small muted" style="max-width:72ch">
+  Plan: <code>plug/PLAN.md</code>, Generator: <code>plug/institute.py</code>, Dateien in <code>stl/steckmodul_institut/</code> und <code>plug/build/institute/</code> (Gebäude, nicht eingecheckt). Kaufteilmaße und Kräfte sind wie im Dupont-Plan teils geschätzt.
+</footer>
+
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const DATA = JSON.parse($('data').textContent);
+  const D = DATA.dims, L = DATA.layout, P = DATA.params, B = DATA.building, PT = DATA.parts;
+  const fmt = (v, n = 2) => (+v).toFixed(n).replace('.', ',').replace('-', '−');
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Zahlen einsetzen ---------- */
+  const SZ = DATA.sizes;
+  const C = {
+    scale: DATA.scale, cass_w: D.cass_w, cass_len: D.cass_len, seat_w: P.SEAT_W, seat_l: P.SEAT_L, F: D.F,
+    W: B.W, T: B.T, H: B.H, bar: B.bar, bar15: B.bar_1500, wall_beside: B.wall_beside, wall15: B.wall_beside_1500,
+    need_bar: B.need_bar, ch_f: P.CH_F, ch_p: P.CH_P, shell: P.SHELL, win_t: P.WIN_T, clr: P.CLR,
+    clr_relief: P.CLR + P.RELIEF, plate_t: D.plate_t, funnel_t: P.FUNNEL_T, z_floor: D.z_kt + 1.2,
+    slider_w: SZ.schieber[0], slider_l: SZ.schieber[1], slider_run: B.slider_len,
+    plate_w: SZ.platte[0], plate_l: SZ.platte[1]
+  };
+  document.querySelectorAll('[data-v]').forEach((el) => {
+    const v = C[el.dataset.v];
+    el.textContent = v === undefined ? '?' : fmt(v, el.dataset.f !== undefined ? +el.dataset.f : 2);
+  });
+  const NAMES = { gebaeude: ['Gebäude mit Fuß', 'Fuß auf dem Bett, Dach oben'], kassette: ['Kassette', 'aufrecht, Steckseite der Buchse unten'],
+    schieber: ['Schieber', 'flach'], platte: ['Platte', 'Unterseite auf dem Bett'], deckel: ['Deckel', 'Stempel nach oben'] };
+  $('ftab').innerHTML = Object.keys(NAMES).map((k) => '<tr><td>' + NAMES[k][0] + ' <code>' + k + '.stl</code></td><td class="num">' +
+    SZ[k].map((v) => fmt(v, 1)).join(' × ') + '</td><td>' + NAMES[k][1] + '</td></tr>').join('');
+
+  /* ---------- Ablage von oben (SVG), zwei Streifen im selben Maßstab ---------- */
+  (function () {
+    const S = 12, Y0 = 400;
+    const py = (y) => Y0 - (y - D.cass_y0) * S;
+    const line = 'stroke="var(--edge)" stroke-width="0.8"';
+    const fig = (X0, strip, color, title, dims) => {
+      const px = (x) => X0 + x * S;
+      const R = (x0, x1, y0, y1, fill, extra = '') => `<rect x="${px(x0)}" y="${py(y1)}" width="${(x1 - x0) * S}" height="${(y1 - y0) * S}" style="fill:${fill}" ${extra}/>`;
+      let s = '';
+      s += R(-D.cass_w / 2, D.cass_w / 2, D.cass_y0, D.cass_y1, 'var(--c-kass)', line);
+      s += R(-D.pk_w / 2, D.pk_w / 2, D.HY - D.pk_d / 2, D.HY + D.pk_d / 2, 'var(--panel)', line);
+      s += R(D.seat_x0, D.seat_x1, D.seat_y0, D.seat_y1, 'var(--seat)', line);
+      s += R(-strip.W / 2, strip.W / 2, D.LY0, D.LY0 + strip.L, color, line);
+      for (const c of strip.chips) s += R(-2.5, 2.5, D.LY0 + c - 2.5, D.LY0 + c + 2.5, 'var(--c-led)', line);
+      for (let i = 0; i < 3; i++) s += `<circle cx="${px((i - 1) * 3.5)}" cy="${py(D.LY0 + 1.0)}" r="2.6" style="fill:var(--c-term);stroke:var(--edge);stroke-width:0.6"/>`;
+      s += `<text x="${px(0)}" y="${py(D.cass_y1) - 34}" text-anchor="middle" style="font-weight:600">${title}</text>`;
+      s += `<text x="${px(0)}" y="${py(D.HY) + 4}" text-anchor="middle" class="mut">Buchse</text>`;
+      if (dims) {
+        const dimh = (x0, x1, y, label) => `<path class="dim" d="M${px(x0)} ${y - 5}v10M${px(x1)} ${y - 5}v10M${px(x0)} ${y}H${px(x1)}"/><text x="${px((x0 + x1) / 2)}" y="${y - 8}" text-anchor="middle">${label}</text>`;
+        const dimv = (y0, y1, x, label) => `<path class="dim" d="M${x - 5} ${py(y0)}h10M${x - 5} ${py(y1)}h10M${x} ${py(y0)}V${py(y1)}"/><text x="${x - 9}" y="${(py(y0) + py(y1)) / 2 + 4}" text-anchor="end">${label}</text>`;
+        s += dimh(D.seat_x0, D.seat_x1, py(D.cass_y1) - 14, fmt(D.seat_w, 1) + ' mm');
+        s += dimv(D.seat_y0, D.seat_y1, px(-D.cass_w / 2) - 14, 'Ablage ' + fmt(D.seat_l, 1));
+        s += dimv(D.cass_y0, D.cass_y1, px(-D.cass_w / 2) - 120, 'Kassette ' + fmt(D.cass_len, 1));
+        s += dimh(-D.cass_w / 2, D.cass_w / 2, py(D.cass_y0) + 22, fmt(D.cass_w, 1) + ' mm');
+      }
+      return s;
+    };
+    const st60 = DATA.strips['60'], st144 = DATA.strips['144'];
+    $('seat').innerHTML = fig(300, st60, 'var(--strip-a)', '60 LED/m, 10 × 16,7 mm', true) + fig(600, st144, 'var(--strip-b)', '144 LED/m, 12 × 13,9 mm', false);
+  })();
+
+  /* ---------- 3D ---------- */
+  const stage = $('stage'), cv = $('cv');
+  if (!window.THREE) { stage.innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Die Tabellen und Grafiken gelten trotzdem.</p>'; return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true }); }
+  catch (e) { stage.innerHTML = '<p style="padding:24px">WebGL ist in diesem Browser nicht verfügbar.</p>'; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 2, 1, 1500);
+  camera.up.set(0, 0, 1);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.8));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(80, -60, 120); scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.4); fill.position.set(-80, 90, 40); scene.add(fill);
+  const glow = new THREE.PointLight(0xffc766, 0, 90, 1.4); scene.add(glow);
+
+  const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+  const TOKENS = { plate: '--c-plate', lid: '--c-lid', building: '--c-cube', header: '--c-header', housing: '--c-housing', terms: '--c-term',
+    led: '--c-led', wires: '--c-wire', kass: '--c-kass', key: '--c-key' };
+  const mats = {};
+  for (const k in TOKENS) mats[k] = new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: k === 'header' || k === 'terms' ? 0.25 : 0.04, flatShading: true, side: THREE.DoubleSide });
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32 });
+
+  const stat = new THREE.Group(), mover = new THREE.Group(), unit = new THREE.Group();
+  scene.add(stat); scene.add(mover); mover.add(unit);
+  const items = {};
+  function part(name, mat, parent) {
+    const enc = PT[name], h = new THREE.Group();
+    const ms = ['full', 'cutx', 'cuty'].map((k) => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(b64(enc[k].v)), 3));
+      g.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(enc[k].i)), 1));
+      g.computeVertexNormals();
+      const m = new THREE.Mesh(g, mats[mat]);
+      if (name !== 'building') m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 28), edgeMat));
+      h.add(m);
+      return m;
+    });
+    (parent || scene).add(h);
+    items[name] = { h, ms };
+    return items[name];
+  }
+  part('plate', 'plate', stat); part('lid', 'lid', stat); part('header', 'header', stat);
+  part('building', 'building', mover); part('key', 'key', mover);
+  part('kass', 'kass', unit); part('housing', 'housing', unit); part('terms', 'terms', unit); part('wires', 'wires', unit);
+  part('led60', 'led', unit); part('led144', 'led', unit);
+
+  /* ---------- Zustand ---------- */
+  const G0 = 26, UNIT_Z = -30, KEY_X = 38;
+  const st = { mode: 'assemble', sa: 0.3, sp: 1 - D.g1 / G0, strip: '60', cut: 'x', ex: 0, play: false, dir: 1, hold: 0 };
+  const view = { az: -50, el: -30, dist: 240 };
+  const CX = L.PX, CY = L.PY;
+  const VIEWS = {
+    side: () => (st.cut === 'y' ? { az: -90, el: 6, dist: 230 } : st.cut === 'x' ? { az: 0, el: 6, dist: 260 } : { az: -60, el: 8, dist: 260 }),
+    iso: () => ({ az: -58, el: 24, dist: 250 }), under: () => ({ az: -52, el: -34, dist: 250 }), top: () => ({ az: -90, el: 84, dist: 250 })
+  };
+  const ease = (t) => t * t * (3 - 2 * t);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  const AP = [
+    ['Vorbereiten', 'Buchse, Adern und LED-Streifen liegen fertig auf der Kassette. Der Schieber liegt daneben.'],
+    ['Kassette hoch', 'Die Kassette gleitet von unten in den Schacht im Fuß. Die LED geht durch die Bodenöffnung in die Lichtkammer.'],
+    ['Schieber ein', 'Der Schieber gleitet durch die lange Wand in die Schwalbenschwanz-Nut, deckt den Schacht ab und hält die Kassette.'],
+    ['Fertig', 'Das Gebäude ist bestückt. Von unten sind nur die vier Trichter für die Stifte zu sehen.']
+  ];
+  const PH = ['Aufsetzen', 'Fase fängt', 'Führung', 'Stecken', 'Gesteckt'];
+  const PTXT = [
+    () => 'Das Gebäude schwebt über seiner Mulde. Sein Grundriss passt nur in einer Richtung.',
+    () => 'Die ' + fmt(P.CH_F, 1) + '-mm-Fase am Fuß gleitet an der ' + fmt(P.CH_P, 1) + '-mm-Fase der Mulde ab und fängt bis ' + fmt(P.CH_F + P.CH_P + P.CLR, 1) + ' mm Versatz.',
+    (g) => 'Der Fuß gleitet gerade im Führungsband, jetzt ' + fmt(Math.max(0, D.F - g - P.CH_F - P.CH_P), 1) + ' mm tief. Die Stifte haben das Gebäude noch nicht berührt.',
+    (g) => g > D.contact_lift ? 'Die Stiftspitzen sind in den Trichtern des Schiebers und werden auf die Öffnungen der Buchse ausgerichtet.'
+      : 'Die Kontaktfedern liegen an den Stiften an. DETECT wird LOW, der Controller gibt die Datenleitung frei.',
+    () => 'Der Fuß sitzt auf dem Muldenboden. Die Federzunge rastet in die Nut am Fuß, die Muldenwand sperrt den Schieber.'
+  ];
+  const phaseA = (a) => (a < 0.12 ? 0 : a < 0.5 ? 1 : a < 0.92 ? 2 : 3);
+  const phaseP = (g) => (g > D.F + 0.001 ? 0 : g > D.F - P.CH_F - P.CH_P + 0.001 ? 1 : g > D.g1 + 0.001 ? 2 : g > 0.02 ? 3 : 4);
+
+  const cur = () => (st.mode === 'assemble' ? st.sa : st.sp);
+
+  function pose() {
+    const asm = st.mode === 'assemble';
+    const a = st.sa, e = asm ? 0 : st.ex;
+    const g = asm ? 0 : G0 * (1 - st.sp);
+    // Teile ein- und ausblenden
+    for (const k of ['plate', 'lid', 'header']) items[k].h.visible = !asm;
+    items.led60.h.visible = st.strip === '60'; items.led144.h.visible = st.strip === '144';
+    const idx = { none: 0, x: 1, y: 2 }[st.cut];
+    for (const k in items) items[k].ms.forEach((m, i) => { m.visible = i === idx; });
+    // Lage
+    let uz = 0, kx = 0;
+    if (asm) {
+      uz = UNIT_Z * (1 - ease(clamp((a - 0.12) / 0.38, 0, 1)));
+      kx = KEY_X * (1 - ease(clamp((a - 0.5) / 0.42, 0, 1)));
+    } else { uz = -26 * e; kx = 36 * e; }
+    mover.position.set(0, 0, g + 40 * e);
+    unit.position.z = uz; items.key.h.position.x = kx;
+    items.lid.h.position.z = -14 * e;
+    items.wires.h.visible = e < 0.02 || asm;
+    const on = !asm && g <= D.contact_lift + 0.001 && e < 0.02;
+    mats.led.emissive = new THREE.Color(on ? 0xffc766 : 0x000000);
+    mats.building.emissive = new THREE.Color(on ? 0x3a2808 : 0x000000);
+    glow.intensity = on ? 1.5 : 0; glow.position.set(CX, CY, g + 16);
+    // Anzeigen
+    let ph;
+    if (asm) {
+      ph = phaseA(a);
+      $('phase').innerHTML = '<b>' + (ph + 1) + ' von 4: ' + AP[ph][0] + '</b>' + AP[ph][1];
+      $('hud').innerHTML = AP.map((p, i) => '<span class="chip' + (i === ph ? ' on' : '') + '">' + (i + 1) + ' ' + p[0] + '</span>').join('');
+      $('readout').innerHTML = row('Kassette bis Anschlag', fmt(-uz, 1) + ' mm') + row('Schieber bis Anschlag', fmt(kx, 1) + ' mm') +
+        row('Streifen', st.strip === '60' ? '10 × 16,7 mm' : '12 × 13,9 mm') + row('Ablage', fmt(P.SEAT_W, 1) + ' × ' + fmt(P.SEAT_L, 1) + ' mm');
+    } else {
+      ph = phaseP(g);
+      $('phase').innerHTML = '<b>' + PH[ph] + '</b>' + PTXT[ph](g);
+      $('hud').innerHTML = PH.map((p, i) => '<span class="chip' + (i === ph ? ' on' : '') + '">' + p + '</span>').join('');
+      const footIn = clamp(D.F - g - P.CH_F - P.CH_P, 0, D.F - P.CH_F - P.CH_P);
+      $('readout').innerHTML = row('Hub über dem Sitz', fmt(g, 1) + ' mm') + row('Fuß gerade in der Mulde', fmt(footIn, 1) + ' mm') +
+        row('Stift in der Buchse', fmt(clamp(D.E - g, 0, D.E), 1) + ' von ' + fmt(D.E, 1) + ' mm') + row('DETECT / LED', g <= D.contact_lift ? 'LOW · LED an' : 'HIGH · aus');
+    }
+    $('c-ex').style.display = asm ? 'none' : '';
+    $('d-strip').textContent = st.strip === '60' ? 'Passt mit Reserve in die Ablage (' + fmt(P.SEAT_W - 10, 1) + ' mm Breite, ' + fmt(P.SEAT_L - 16.7, 1) + ' mm Länge übrig).'
+      : 'Passt mit Reserve in die Ablage (' + fmt(P.SEAT_W - 12, 1) + ' mm Breite, ' + fmt(P.SEAT_L - 13.9, 1) + ' mm Länge übrig).';
+    dirty = true;
+  }
+  const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
+
+  /* ---------- Kamera und Bedienung ---------- */
+  let dirty = true;
+  function cam() {
+    const a = view.az * Math.PI / 180, e = view.el * Math.PI / 180;
+    const tz = st.mode === 'plug' ? -2 + 12 * st.ex : 2;
+    const t = [CX, CY, tz];
+    const r = view.dist * (1 + 0.5 * st.ex);
+    camera.position.set(t[0] + r * Math.cos(e) * Math.cos(a), t[1] + r * Math.cos(e) * Math.sin(a), t[2] + r * Math.sin(e));
+    camera.lookAt(t[0], t[1], t[2]);
+  }
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
+  }
+  new ResizeObserver(resize).observe(stage);
+  function theme() {
+    for (const k in mats) mats[k].color.set(css(TOKENS[k]));
+    renderer.setClearColor(css('--canvas')); edgeMat.color.set(css('--edge')); dirty = true;
+  }
+  theme();
+  new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+
+  const ptrs = new Map(); let pinch = 0;
+  cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; });
+  cv.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+  cv.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+  cv.addEventListener('pointermove', (e) => {
+    const p = ptrs.get(e.pointerId); if (!p) return;
+    if (ptrs.size === 1) { view.az -= (e.clientX - p[0]) * 0.4; view.el = clamp(view.el + (e.clientY - p[1]) * 0.3, -88, 89); }
+    p[0] = e.clientX; p[1] = e.clientY;
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) view.dist = clamp(view.dist * pinch / d, 40, 500); pinch = d; }
+    dirty = true;
+  });
+  cv.addEventListener('wheel', (e) => { e.preventDefault(); view.dist = clamp(view.dist * (1 + e.deltaY * 0.001), 40, 500); dirty = true; }, { passive: false });
+  document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => { Object.assign(view, VIEWS[b.dataset.view]()); dirty = true; }));
+
+  const setPlay = (on) => { st.play = on; $('play').textContent = on ? 'Anhalten' : 'Abspielen'; };
+  $('s').addEventListener('input', (e) => { const v = e.target.value / 1000; if (st.mode === 'assemble') st.sa = v; else st.sp = v; setPlay(false); pose(); });
+  $('ex').addEventListener('input', (e) => { st.ex = e.target.value / 100; pose(); });
+  document.querySelectorAll('input[name=cut]').forEach((r) => r.addEventListener('change', () => { st.cut = r.value; Object.assign(view, VIEWS.side()); pose(); }));
+  document.querySelectorAll('input[name=strip]').forEach((r) => r.addEventListener('change', () => { st.strip = r.value; pose(); }));
+  document.querySelectorAll('input[name=mode]').forEach((r) => r.addEventListener('change', () => {
+    st.mode = r.value; setPlay(false);
+    $('l-s').textContent = st.mode === 'assemble' ? 'Zusammenbau' : 'Gebäude einstecken';
+    $('s').value = Math.round(cur() * 1000);
+    Object.assign(view, st.mode === 'assemble' ? VIEWS.under() : VIEWS.side());
+    pose();
+  }));
+  $('play').addEventListener('click', () => {
+    setPlay(!st.play);
+    if (st.play) { st.dir = 1; st.hold = 0; if (cur() >= 0.999) { if (st.mode === 'assemble') st.sa = 0; else st.sp = 0; } }
+  });
+  $('reset').addEventListener('click', () => { setPlay(false); if (st.mode === 'assemble') st.sa = 0; else st.sp = 0; $('s').value = 0; pose(); });
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (st.play) {
+      let v = cur();
+      if (st.hold > 0) st.hold -= dt;
+      else {
+        v += st.dir * dt / (st.mode === 'assemble' ? 7 : 5);
+        if (v >= 1) { v = 1; st.dir = -1; st.hold = 1.6; }
+        if (v <= 0) { v = 0; st.dir = 1; st.hold = 0.8; }
+      }
+      if (st.mode === 'assemble') st.sa = v; else st.sp = v;
+      $('s').value = Math.round(v * 1000); pose();
+    }
+    if (dirty) { cam(); renderer.render(scene, camera); dirty = false; }
+    requestAnimationFrame(frame);
+  }
+  Object.assign(view, VIEWS.under());
+  resize(); pose(); requestAnimationFrame(frame);
+})();
+</script>
