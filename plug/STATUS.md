@@ -1,14 +1,15 @@
-# Steckmechanismus für LED-Gebäude: Stand und Fahrplan
+# Steckmechanismus für LED-Gebäude: Stand und Fahrplan (`plug/STATUS.md`)
 
 Diese Datei fasst den Zweig `claude/led-stecker-mechanismus-319vgb` zusammen, damit in neuen Sessions
 weitergearbeitet werden kann. Sie ist von Hand geschrieben (kein Generator überschreibt sie). Quellen:
-Git-Verlauf, Generatoren im Wurzelverzeichnis, die Pläne unter `stecker/`, `stl/steckmodul_probe/LIESMICH.txt`
+Git-Verlauf, die Generatoren und Pläne im Paket `plug/`, `stl/steckmodul_probe/README.txt`
 und die Rückmeldungen des Nutzers aus dem Chat. Was sich daraus nicht belegen lässt, steht als „unbelegt“.
 
 Stand: nach dem Umbau auf die Entscheidungen der Passprobe-Runde 4 (Körperhöhe 2,0, Loch 1,4, Spiel Leiste 0,1,
 `STEP_CLR` 0,1, Stufe für das Lötende). Generatoren, Plan-Zahlen, `LIESMICH.txt` und Seiten sind auf diesen Stand
-gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Passprobe v6 und Probestück
-sind noch nicht gedruckt.
+gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Das Probestück ist gedruckt, ein
+Auswertungsergebnis liegt noch nicht vor (unbelegt); Passprobe v6 ist nicht gedruckt. Die Dateien liegen seit der
+Umstrukturierung im Paket `plug/` (Abschnitt 5).
 
 ## Festgelegte Maße (merken)
 
@@ -32,7 +33,10 @@ Hauptzweig mergen will.
 
 ## 2. Chronologie und Entscheidungen
 
-Reihenfolge nach `git log` (älteste zuerst). Hashes sind die Anfangsstellen der Commits.
+Reihenfolge nach `git log` (älteste zuerst). Hashes sind die Anfangsstellen der Commits. Die Dateinamen in dieser
+Tabelle sind die damaligen; seit der Umstrukturierung (Abschnitt 6) liegt alles unter `plug/` (`steckmodul_dupont.py` ist
+`plug/dupont.py`, `steckmodul_institut.py` ist `plug/institute.py`, `steckmodul_probe.py` ist `plug/sample.py`, der JST-Teil
+von `steckmodul.py` ist `plug/archive/jst/jst.py`, `stecker/` ist `plug/`).
 
 | Schritt | Commit | Was gebaut wurde | Warum / Entscheidung |
 |---|---|---|---|
@@ -81,7 +85,7 @@ Die Druckprobe des Probestücks (Abschnitt 4) ist bisher nicht ausgewertet; ein 
 
 ### 3.2 Konstanten: Sollwert, Code, Herkunft
 
-Spalte „Code“ zeigt den Wert in `steckmodul_dupont.py` nach dem Umbau auf Runde 4.
+Spalte „Code“ zeigt den Wert in `plug/parts.py` (früher oben in `steckmodul_dupont.py`) nach dem Umbau auf Runde 4.
 Die Quellenbuchstaben stammen aus dem Generator: B belegt (Zeichnung), M gemessen, A abgeleitet, S geschätzt;
 E = Entscheidung aus dem Chat.
 
@@ -129,7 +133,7 @@ im Maßstab 1:1000, mit denselben Maßen für Fuß, Schacht, Nut, Kassette und S
 prüft Schieber, Kassette, das Stecken in die Platte und das Licht durch die 0,4-mm-Wand. Die Passprobe ist
 getrennt davon (sie prüft nur die Winkelleiste) und liegt als `0_passprobe.stl` im selben Ordner.
 
-Erzeugen: `python3 steckmodul_probe.py` (rund 15 s). Es schreibt STL, `LIESMICH.txt` und
+Erzeugen: `python3 -m plug.sample` (rund 15 s). Es schreibt STL, `README.txt` und
 `probedruck_kassette.zip` nach `stl/steckmodul_probe/` und Bilder nach `vorschau/steckmodul_probe/`. Die
 Ausgabe nennt `dicht=True` je Teil, die Kollisionsprüfung (muss „keine Kollisionen“ zeigen) sowie
 Überhänge und waagerechte Decken je Teil.
@@ -145,7 +149,7 @@ Ausgabe nennt `dicht=True` je Teil, die Kollisionsprüfung (muss „keine Kollis
 
 Alle fünf Teile des Probestücks zusammen 32 cm³ (bei 100 % Füllung etwa 40 g PLA).
 
-Druckreihenfolge laut `LIESMICH.txt`: zuerst die Passprobe 0, dann 3 und 2 (klein), dann 1, dann 4 und 5.
+Druckreihenfolge laut `README.txt`: zuerst die Passprobe 0, dann 3 und 2 (klein), dann 1, dann 4 und 5.
 
 Slicer-Einstellungen: Düse 0,4 mm, Schichthöhe 0,2 mm, PLA oder PETG, Wände 3 Linien (1,2 mm), Füllung 15 %,
 Brückenerkennung an, keine Stützen. Die Lichtfenster sind nur 0,4 mm dick (eine Linie); der Slicer muss
@@ -161,122 +165,108 @@ Herausziehen 3 bis 8 N, hebt die Mini-Platte mit?), Kontakt (LED leuchtet, DETEC
 stecken 3,9 mm in der Buchse, Kontaktpunkt geschätzt), Licht (gleichmäßig auf allen vier Seiten).
 Ergebnisse des Drucks: unbelegt.
 
-## 5. Ablage im Repo
+## 5. Ablage im Repo (nach der Umstrukturierung)
+
+Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen). Ausgaben bleiben in `stl/steckmodul_*` und
+`vorschau/steckmodul_*` (Schritt 6 der Vorschlagsliste wurde nicht gemacht).
 
 ### 5.1 Übersicht
 
 | Pfad | Art | Inhalt |
 |---|---|---|
-| `steckmodul.py` (579 Zeilen) | Generator, handgeschrieben | JST-XH-Variante (veraltet) und gemeinsame Werkzeuge `box, cbox, cyl, union, diff, frustum, to_tm, encode` |
-| `steckmodul_dupont.py` (1094) | Generator | Plan B: Kaufteile, Passungen, Platte, Würfel, Kassette, Schieber, Proben, `daten.json` |
-| `steckmodul_institut.py` (554) | Generator | Institutsgebäude mit Fuß, Kassette, Schieber, Platte, Deckel; `build_all()` |
-| `steckmodul_probe.py` (309) | Generator | Probestück plus aktuelle Passprobe |
-| `stecker/PLAN.md` (87), `ansicht.template.html`, `baue_ansicht.py` | handgeschrieben | JST-Plan, Vorlage und Bauskript der Ansicht |
-| `stecker/daten.json` (328 kB), `ansicht.html` (376 kB) | generiert | aus `steckmodul.py` und Bauskript |
-| `stecker/dupont/` | PLAN.md (344 Zeilen), `ansicht.template.html`, `baue_ansicht.py` handgeschrieben; `daten.json` (352 kB), `ansicht.html` (420 kB) generiert | Dupont-Plan |
-| `stecker/institut/` | PLAN.md (34), Vorlage, Bauskript handgeschrieben; `daten.json` (5,1 MB), `ansicht.html` (5,1 MB) generiert | Institutsgebäude |
-| `stecker/probe/` | `baue_passprobe.py`, `passprobe.template.html`, `winkelpin.html` handgeschrieben; `passprobe.html` (32 kB) generiert | Passprobe-Anleitung, Winkelpin-Maßseite |
-| `stl/steckmodul/` (244 kB) | generiert | JST-Variante: Dock-Platten, Module A/B/C, Würfel, `passprobe.stl` |
-| `stl/steckmodul_dupont/` (392 kB) | generiert | Platte ABC, Deckel, Würfel (Pause, Kassette), Kassette, Schieber, Pausenprobe, Montagelehre, `passprobe.stl` |
-| `stl/steckmodul_institut/` (4,9 MB) | generiert | `gebaeude.stl` (4,87 MB), Kassette, Schieber, Platte, Deckel |
-| `stl/steckmodul_probe/` (888 kB) | generiert | `0_` bis `5_`-STL, `LIESMICH.txt`, `probedruck_kassette.zip` (147 kB) |
-| `vorschau/steckmodul*/` (je 0,5 bis 0,8 MB) | generiert | Vorschau-PNG je Generator, 27 PNG im Git |
+| `plug/parts.py` | Konstanten | Kaufteil-Maße und Passungen, einzige Quelle; Quelle je Wert B/M/A/S/E |
+| `plug/geom.py` | Werkzeuge | `box, cbox, cyl, union, diff, frustum, ext, keyed, prism_x/y, vol_int, xcut, ycut, to_tm, encode` |
+| `plug/dupont.py` | Generator | Plan B: Platte mit Docks A/B/C, Deckel, Würfel, Kassette, Schieber, Proben; wird als `sd` importiert |
+| `plug/institute.py` | Generator | Institutsgebäude mit Fuß, Kassette, Schieber, Platte, Deckel |
+| `plug/sample.py` | Generator | Probestück (22 × 36 mm), `README.txt`, ZIP; ruft die Passprobe auf |
+| `plug/fit_test/` | Passprobe | `generator.py` (Geometrie), `build_page.py`, `page.template.html`, `page.html`, `angled_pin.html` (Maße der Winkelleiste) |
+| `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
+| `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
+| `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
+| `plug/PLAN.md`, `plug/STATUS.md` | handgeschrieben | Plan (Dupont, Institut, JST-Archiv) und diese Datei |
+| `plug/archive/jst/` | archiviert | JST-Variante: `jst.py`, `PLAN.md`, `view.template.html`, `build_view.py`, `view.html`, `data.json`, `stl/`, `preview/` (nicht gepflegt) |
+| `stl/steckmodul_dupont/`, `stl/steckmodul_institut/`, `stl/steckmodul_probe/` | Ausgabe, eingecheckt | STL, `README.txt` und ZIP des Probestücks (`gebaeude.stl` des Instituts nicht) |
+| `vorschau/steckmodul_dupont/`, `_institut/`, `_probe/` | Ausgabe, eingecheckt | Vorschaubilder |
 
-Im Git sind 49 Dateien unter `stecker/` und `stl/steckmodul*` plus 27 PNG unter `vorschau/steckmodul*` erfasst.
-Alles ist eingecheckt, auch die generierten Dateien. Bemerkung: Die Datei `.gitignore` erwähnt den Zweig nicht
-(per grep geprüft: keine Treffer für `steckmodul` oder `stecker`).
+Alte Passproben wurden entfernt (`stl/steckmodul_dupont/passprobe.stl`, `passprobe()` in `plug/dupont.py` und im JST-Code); die
+aktuelle ist `plug/fit_test/generator.py` mit `0_passprobe.stl` im Ordner des Probestücks. `plug/archive/jst/stl/passprobe.stl`
+ist Altlast im Archiv.
 
-### 5.2 Abhängigkeiten (aus den Importen)
+### 5.2 Abhängigkeiten
 
 ```
-steckmodul.py            (keine Projekt-Importe; Werkzeuge: box, cbox, cyl, union, diff, frustum, to_tm, encode)
+plug/parts.py        (nur Zahlen)
+plug/geom.py         (Werkzeuge)
    ^
-steckmodul_dupont.py     importiert aus steckmodul: box, cbox, cyl, union, diff, frustum, to_tm, encode
+plug/dupont.py       importiert parts (alles) und geom; wird von den anderen als `sd` importiert
    ^
-steckmodul_institut.py   importiert steckmodul_dupont as sd; aus steckmodul: box, cbox, cyl, union, diff, to_tm, encode
+plug/institute.py    importiert dupont as sd, geom
    ^
-steckmodul_probe.py      importiert steckmodul_dupont as sd, steckmodul_institut as I, aus steckmodul: to_tm (und box, cbox, cyl, diff lokal)
+plug/fit_test/generator.py   importiert dupont as sd, geom
+plug/sample.py       importiert dupont as sd, institute as I, fit_test.generator, geom
    ^
-stecker/probe/baue_passprobe.py   importiert steckmodul_dupont und steckmodul_probe (sys.path auf die Repo-Wurzel)
+plug/fit_test/build_page.py   importiert dupont, fit_test.generator
+plug/views/build_views.py     liest nur Vorlage und data.json
+plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 ```
 
-Die `baue_ansicht.py` unter `stecker/`, `stecker/dupont/` und `stecker/institut/` importieren keine Generatoren;
-sie lesen nur `ansicht.template.html` und `daten.json` aus dem eigenen Ordner und schreiben `ansicht.html`.
-Die Generatoren nutzen zum Rendern der Vorschaubilder das Projektmodul `preview` (Wurzel). Die Importe laufen
-über das Arbeitsverzeichnis (flaches Layout im Wurzelverzeichnis), nicht über ein Paket. Ein Import von
-`steckmodul.py` aus `steckmodul_dupont.py` bedeutet: dort nichts umbenennen (Hinweis aus CLAUDE.md).
+`import preview` (Repo-Wurzel) funktioniert, weil immer aus dem Wurzelverzeichnis gestartet wird.
 
 ### 5.3 Wer überschreibt was
 
 | Befehl | Überschreibt |
 |---|---|
-| `python3 steckmodul.py` | `stl/steckmodul/*`, `vorschau/steckmodul/*`, `stecker/daten.json` |
-| `python3 stecker/baue_ansicht.py` | `stecker/ansicht.html` |
-| `python3 steckmodul_dupont.py` | `stl/steckmodul_dupont/*`, `vorschau/steckmodul_dupont/*`, `stecker/dupont/daten.json` |
-| `python3 stecker/dupont/baue_ansicht.py` | `stecker/dupont/ansicht.html` |
-| `python3 steckmodul_institut.py` (rund 45 s) | `stl/steckmodul_institut/*`, `vorschau/steckmodul_institut/*`, `stecker/institut/daten.json` |
-| `python3 stecker/institut/baue_ansicht.py` | `stecker/institut/ansicht.html` |
-| `python3 steckmodul_probe.py` (rund 15 s) | `stl/steckmodul_probe/*` (inkl. `LIESMICH.txt`, ZIP; ein altes `6_passprobe_optional.stl` wird gelöscht), `vorschau/steckmodul_probe/*` |
-| `python3 stecker/probe/baue_passprobe.py` | `stecker/probe/passprobe.html` |
+| `python3 -m plug.dupont` | `stl/steckmodul_dupont/*`, `vorschau/steckmodul_dupont/*`, `plug/views/dupont/data.json` |
+| `python3 -m plug.institute` | `stl/steckmodul_institut/*`, `vorschau/steckmodul_institut/*`, `plug/build/institute/{gebaeude.stl,data.json}` |
+| `python3 -m plug.sample` | `stl/steckmodul_probe/*` (inkl. `README.txt`, ZIP), `vorschau/steckmodul_probe/*` |
+| `python3 -m plug.views.build_views` | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
+| `python3 -m plug.fit_test.build_page` | `plug/fit_test/page.html` |
+| `python3 -m plug.build_all` | alles obige nacheinander |
 
-Nicht überschrieben (Handarbeit): alle `PLAN.md`, alle `ansicht.template.html`, `passprobe.template.html`,
-`winkelpin.html`, `STAND.md`. Folge: Jede Konstantenänderung in `steckmodul_dupont.py` verändert zuerst
-`steckmodul_dupont.py`-Ausgaben, die abhängigen Generatoren (Institut, Probe) und danach die HTML-Seiten
-müssen einzeln neu gebaut werden; ein Skript dafür gibt es nicht. Die `stl/steckmodul_dupont/passprobe.stl`
-und `stl/steckmodul/passprobe.stl` stammen von älteren Passproben, die aktuelle liegt als
-`stl/steckmodul_probe/0_passprobe.stl`.
+Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html`, `angled_pin.html`.
 
 ### 5.4 Veröffentlichungen (Artifacts, privat)
 
-| Seite | Link |
-|---|---|
-| JST-Plan | https://claude.ai/artifact/Fd9vyn5hzE1rdPCqa7BwQX |
-| Dupont-Plan | https://claude.ai/artifact/HUoXswtTaEGpmn4ikCrLah |
-| Institutsgebäude | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
-| Passprobe | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
-| Winkelpin Maße | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
+| Seite | Quelle im Repo | Link |
+|---|---|---|
+| JST-Plan | `plug/archive/jst/view.html` | https://claude.ai/artifact/Fd9vyn5hzE1rdPCqa7BwQX |
+| Dupont-Plan | `plug/views/dupont/view.html` | https://claude.ai/artifact/HUoXswtTaEGpmn4ikCrLah |
+| Institutsgebäude | `plug/build/institute/view.html` | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
+| Passprobe | `plug/fit_test/page.html` | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
+| Winkelpin Maße | `plug/fit_test/angled_pin.html` | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
 
-Nach v6 sind Passprobe, Dupont-Plan und Institutsgebäude neu veröffentlicht; die Seite des JST-Plans stammt vom
-alten Stand und ist nicht betroffen.
+Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
-## 6. Vorschlag zur Umstrukturierung (nur Vorschlag, nichts umgebaut)
+## 6. Umstrukturierung: erledigt und offen
 
-| Nr. | Schritt | Aufwand | Risiko | Zu ändern |
-|---|---|---|---|---|
-| 1 | Check-Skript `stecker/pruefe.py`: führt die Generatoren aus (oder liest deren Ausgabe) und bricht ab, wenn eine STL nicht `dicht=True` ist oder die Kollisionsprüfung nicht „keine Kollisionen“ meldet; optional pytest-Tests dafür | klein (halber Tag) | gering, ändert nichts am Bestand | CLAUDE.md „Prüfen vor dem Commit“ ergänzen |
-| 2 | Hilfsskript „alles neu erzeugen“ (`stecker/alles.py` oder `make`): Reihenfolge dupont, institut, probe, danach alle `baue_*`-Skripte | klein | gering | CLAUDE.md-Abschnitte verweisen darauf |
-| 3 | Gemeinsame Datei für Kaufteile und Passungen (z. B. `stecker/teile.py`): Abschnitt „Kaufteile“ und „Passungen“ aus `steckmodul_dupont.py` herausziehen, einzige Quelle für Konstanten, Generatoren und Seiten | mittel | mittel: `steckmodul_dupont.py` wird auch als Modul `sd` importiert (`sd.HDR_BODY` usw. in Institut, Probe, `baue_passprobe.py`); Zugriffe müssen erhalten bleiben (z. B. Re-Export in `steckmodul_dupont.py`) | Importe in `steckmodul_institut.py`, `steckmodul_probe.py`, `baue_passprobe.py` |
-| 4 | JST-Variante (`steckmodul.py`) stilllegen: gemeinsame Werkzeuge (`box, cbox, cyl, ...`) nach `stecker/geom.py` auslagern, JST-Code, `stecker/PLAN.md`, `stecker/ansicht*`, `stecker/daten.json`, `stl/steckmodul/`, `vorschau/steckmodul/` nach `stecker/archiv/` verschieben oder löschen (Git behält den Verlauf) | mittel | mittel: Dupont, Institut und Probe importieren die Werkzeuge aus `steckmodul`; Artifact-Link zum JST-Plan bleibt bestehen | Importe `from steckmodul import ...` in drei Generatoren, CLAUDE.md-Abschnitt „Steckmechanismus (LED-Gebäude)“ |
-| 5 | Generatoren ins Paket `stecker/` verschieben (`stecker/dupont.py`, `institut.py`, `probe.py`), Aufruf `python3 -m stecker.probe`; `HERE`-Pfade und `OUT`, `DOC`, `PREV` anpassen | mittel bis groß | mittel: relative Pfade (`HERE`) in allen Generatoren, `sys.path.insert` in `baue_passprobe.py`, Pfade in Vorlagen und Kommentaren | CLAUDE.md (alle Befehle), Plan-Dokumente, Docstrings, Pfade in `LIESMICH.txt`-Generator |
-| 6 | Ausgabeordner trennen: `stl/steckmodul_*` und `vorschau/steckmodul_*` unter `stecker/ausgabe/<teil>/` bündeln (oder bei `stl/` und `vorschau/` bleiben, weil `generate.py` und `readme.py` dort lesen) | klein, wenn nur umbenannt | gering bis mittel: `preview.py` und `readme.py` behandeln `vorschau/` und `stl/` als Hauptbereich (Zusammenspiel unbelegt, nicht geprüft) | CLAUDE.md-Bildpfade |
-| 7 | Große generierte Dateien (`stecker/institut/daten.json` 5,1 MB, `ansicht.html` 5,1 MB, `gebaeude.stl` 4,9 MB) nicht mehr einchecken oder in `stecker/build/` legen und in `.gitignore` aufnehmen; Seiten werden per „alles neu erzeugen“ und Artifact veröffentlicht | klein | mittel: Der Nutzer will Ansichten ohne Installation öffnen; CLAUDE.md verlangt sonst Committen der Vorschauen (nur `vorschau/`, nicht `stecker/`) | `.gitignore`, CLAUDE.md, Hinweis in den Plänen |
-| 8 | Drei Pläne zusammenführen: `stecker/PLAN.md` (JST, 87 Zeilen), `stecker/dupont/PLAN.md` (344), `stecker/institut/PLAN.md` (34) zu einem `stecker/PLAN.md` mit Kapiteln; JST-Teil als „verworfen“ am Ende; `STAND.md` bleibt als Einstieg | mittel | gering | Links in Plänen, `baue_ansicht.py`-Docstrings, CLAUDE.md |
-| 9 | Veraltete Passproben entfernen (`stl/steckmodul/passprobe.stl`, `stl/steckmodul_dupont/passprobe.stl`, alte `passprobe()` in `steckmodul.py` und `steckmodul_dupont.py`) | klein | gering, aber zuerst prüfen, ob `passprobe()` in `steckmodul_dupont.py` noch aufgerufen wird (unbelegt) | CLAUDE.md-Zeile zur Passprobe |
+Entscheidung des Nutzers: Schritte 1, 2, 3, 4, 5, 7, 8, 9 umsetzen; Schritt 6 nicht.
 
-Empfohlene Reihenfolge: 1 und 2 zuerst (sichern den Stand, schaffen Wiederholbarkeit), danach 9 (Aufräumen
-ohne Strukturänderung), 3 (eine Konstantenquelle, löst die Abweichungen aus Abschnitt 3.3 dauerhaft), 8
-(Pläne), 4, dann 7. Schritte 5 und 6 nur, wenn der Zweig nach dem Merge dauerhaft weiterwächst; sie bringen
-die meisten Pfadänderungen. Vor dem Merge genügt realistisch: Schritte 1, 2, 8 und der Abgleich aus 3.3.
+| Nr. | Schritt | Stand |
+|---|---|---|
+| 1 | Check-Skript | erledigt: `python3 -m plug.check` |
+| 2 | „alles neu erzeugen“ | erledigt: `python3 -m plug.build_all` |
+| 3 | gemeinsame Konstantendatei | erledigt: `plug/parts.py`, `plug/dupont.py` importiert sie vollständig |
+| 4 | JST stilllegen | erledigt: `plug/archive/jst/`, Werkzeuge in `plug/geom.py` |
+| 5 | Paket statt Wurzel-Skripte | erledigt: `python3 -m plug.<modul>` |
+| 6 | Ausgabeordner umbenennen | nicht gemacht; `stl/` und `vorschau/` bleiben, STL-Dateinamen sind noch deutsch |
+| 7 | große generierte Dateien nicht einchecken | erledigt: `plug/build/` in `.gitignore` (Institutsgebäude: STL, Daten, Seite) |
+| 8 | Pläne zusammenführen | erledigt: `plug/PLAN.md` |
+| 9 | alte Passproben entfernen | erledigt |
 
-Anzupassen sind bei jeder Verschiebung: die Abschnitte „Steckmechanismus (LED-Gebäude)“, „… mit Dupont-Teilen
-(Plan B)“, „Institutsgebäude mit Kassette“ und „Probedruck Kassette“ in `CLAUDE.md` (Befehle, Pfade der
-STL, Vorschaubilder und `daten.json`), die Docstrings am Dateianfang der Generatoren und der `baue_*`-Skripte,
-die Zeilen `HERE`, `OUT`, `DOC`, `PREV` in den vier Generatoren und `sys.path.insert` in
-`stecker/probe/baue_passprobe.py`.
+Namenskonvention (Entscheidung): neue Dateien und Ordner englisch, soweit sinnvoll (`README.txt` statt `LIESMICH.txt`); Texte deutsch.
+Wenn später doch umbenannt werden soll: STL-Dateinamen (`gebaeude`, `kassette`, `schieber`, `platte`, `deckel`, `1_probestueck`)
+und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; die Seiten und `README.txt` nennen die Namen.
 
 ## 7. Offene Punkte und nächste Schritte
 
-1. Passprobe v6 drucken und auswerten (drei Stufenhöhen 2,0 / 1,8 / 1,6, Loch 1,4, Spiel 0,1). Prüfen: liegt
-   das Lötende flach auf der Stufe, sitzt der Körper ohne Wackeln, kommen die Pins gerade heraus? Danach `HDR_BODY`
-   und `STEP_CLR` festschreiben.
-2. Probestück (Dateien 1 bis 5) drucken und die Messliste aus Abschnitt 4 abarbeiten; Ergebnisse hier eintragen.
-3. `HDR_BODY` für Dock B trennen, falls die gerade Leiste anders ist. Plan-Dokumente (`stecker/dupont/PLAN.md`,
-   `stecker/institut/PLAN.md`) enthalten weitere Zahlen von Hand; nach jedem Umbau gegen `daten.json` prüfen.
-4. Artifacts (Seiten) nach jedem Umbau neu veröffentlichen (die Links stehen in Abschnitt 5).
-5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; die Eintritts-
-   und Steckkräfte der Federzunge sind rechnerisch abgeschätzt, nicht gemessen (Zielwerte: Einstecken unter 10 N,
-   Herausziehen 3 bis 8 N).
-6. Entscheidung vor dem Merge: Umstrukturierung nach Abschnitt 6 (mindestens Schritte 1, 2, 8) und ob große
-   generierte Dateien im Hauptzweig bleiben sollen. Ohne Entscheidung bleibt das Layout unverändert.
-7. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen Prüfausgabe lesen, Vorschaubilder im
-   Chat zeigen, Commits mit dem Trailer.
+1. Körper der Winkelleiste: bleibt bei 2,0 mm. Etwas Wackeln gibt es immer; ein Tropfen Heißkleber in der Tasche hilft und
+   ist gewollt. Passprobe v6 (Stufe 2,0 / 1,8 / 1,6) ist nur noch eine Bestätigung der Stufenhöhe.
+2. Probestück (Dateien 1 bis 5) ist gedruckt. Ergebnisse der Messliste (Abschnitt 4) liegen nicht vor und sind hier einzutragen.
+3. Dock B (gerade Leiste) rechnet mit den aktuellen Werten (`HDR_BODY` 2,0) mit; das ist reines Durchreichen der Konstanten aus
+   `plug/parts.py`. Ob die gerade Leiste aus dem Kit wirklich 2,0 hat, ist unbelegt.
+4. Seiten (Artifacts) nach jedem Umbau neu veröffentlichen (Links in 5.4).
+5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; Federzunge und Kräfte sind
+   berechnet, nicht gemessen (Zielwerte: Einstecken unter 10 N, Herausziehen 3 bis 8 N). Der Nutzer will das später testen.
+6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
+7. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
+   Commits mit dem Trailer.

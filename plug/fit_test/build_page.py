@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Baut stecker/probe/passprobe.html: Anleitung zur Passprobe mit Grafik im Maßstab.
-Maße kommen aus steckmodul_probe.py (Passprobe) und steckmodul_dupont.py (Kaufteile)."""
+"""Baut plug/fit_test/page.html aus page.template.html: Anleitung zur Passprobe mit Grafik im Maßstab.
+Maße kommen aus plug/fit_test/generator.py (Passprobe) und plug/dupont.py bzw. plug/parts.py (Kaufteile).
+
+Aufruf (aus dem Repo-Wurzelverzeichnis):
+    python3 -m plug.fit_test.build_page
+"""
 import os
-import sys
+
+from plug import dupont as sd
+from plug.fit_test import generator as pr
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(HERE, "..", ".."))
-import steckmodul_dupont as sd          # noqa: E402
-import steckmodul_probe as pr           # noqa: E402
+REPO = os.path.dirname(os.path.dirname(HERE))
 
 
 def g(v):
@@ -123,7 +127,7 @@ def section_view():
     return "".join(s)
 
 
-TEMPLATE = open(os.path.join(HERE, "passprobe.template.html"), encoding="utf-8").read()
+TEMPLATE = open(os.path.join(HERE, "page.template.html"), encoding="utf-8").read()
 
 
 def main():
@@ -152,9 +156,9 @@ def main():
             .replace("/*HDRT*/", f(sd.HDR_T, 1)).replace("/*HDRW*/", f(sd.HDR_W)).replace("/*HDRB*/", f(sd.HDR_BODY, 1)).replace("/*PIN*/", f(sd.PIN_SQ))
             .replace("/*PW*/", f(pr.PP_W, 1)).replace("/*PL*/", f(pr.PP_L, 1)).replace("/*PH*/", f(pr.PP_H, 1)).replace("/*RABACK*/", f(sd.RA_BACK, 1))
             .replace("/*STEPCLR*/", f(sd.STEP_CLR, 1)))
-    out = os.path.join(HERE, "passprobe.html")
+    out = os.path.join(HERE, "page.html")
     open(out, "w", encoding="utf-8").write(html)
-    print("%s  %.0f kB" % (os.path.relpath(out, os.path.join(HERE, "..", "..")), len(html.encode()) / 1024))
+    print("%s  %.0f kB" % (os.path.relpath(out, REPO), len(html.encode()) / 1024))
 
 
 if __name__ == "__main__":

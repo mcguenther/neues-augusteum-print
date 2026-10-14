@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Institutsgebäude mit Kassette (Dupont-Plan B, Rückfallebene) und Dock A in der Platte.
 
-Baut auf steckmodul_dupont.py auf (Kaufteile, Höhenkette, Kassette, Schieber-Idee), nutzt aber
+Baut auf plug/dupont.py auf (Kaufteile, Höhenkette, Kassette, Schieber-Idee), nutzt aber
 den echten Grundriss des Institutsgebäudes (Laserscan, siehe generate.py):
 
   * Gebäude: sichtbarer Körper aus dem Laserscan + Fuß (Grundriss nach unten verlängert, unten
@@ -18,9 +18,10 @@ Koordinaten wie im Dupont-Plan: z = 0 ist die Plattenoberseite = Unterkante des 
 Das Gebäude ist so gedreht, dass seine lange gerade Wand bei +x liegt und die Längsachse in y.
 Die Pin-Reihe läuft entlang x bei (PX, PY).
 
-Aufruf:
-    python3 steckmodul_institut.py      # STL, Prüfbericht, Vorschau, stecker/institut/daten.json
-    python3 stecker/institut/baue_ansicht.py
+Aufruf (aus dem Repo-Wurzelverzeichnis):
+    python3 -m plug.institute           # STL, Prüfbericht, Vorschau; das große Gebäude (gebaeude.stl) und
+                                        # data.json kommen nach plug/build/institute/ (gitignoriert)
+    python3 -m plug.views.build_views institute   # -> plug/build/institute/view.html
 """
 import json
 import math
@@ -33,12 +34,12 @@ from shapely import affinity
 from shapely.geometry import Point
 from shapely.geometry.polygon import orient
 
-import steckmodul_dupont as sd
-from steckmodul import box, cbox, cyl, union, diff, to_tm, encode
+from plug import dupont as sd
+from plug.geom import box, cbox, cyl, union, diff, to_tm, encode, ext, to_bed
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))     # Repo-Wurzel
 OUT = os.path.join(HERE, "stl", "steckmodul_institut")
-DOC = os.path.join(HERE, "stecker", "institut")
+BUILD = os.path.join(HERE, "plug", "build", "institute")      # große erzeugte Dateien, gitignoriert
 PREV = os.path.join(HERE, "vorschau", "steckmodul_institut")
 
 SCALE = 1000                    # Maßstab 1:1000 (bei 1:1500 ist der Hauptbalken nur etwa 15 mm breit)
@@ -83,10 +84,6 @@ def load_building():
 def hcs(poly):
     import generate
     return generate.cross_section(poly)
-
-
-def ext(cs, z0, z1):
-    return m3d.Manifold.extrude(cs, z1 - z0).translate([0, 0, z0])
 
 
 def rounded(cs):
@@ -413,11 +410,6 @@ def insertion_checks(P):
 # --------------------------------------------------------------------------
 # Ausgabe
 # --------------------------------------------------------------------------
-def to_bed(man):
-    b = man.bounding_box()
-    return man.translate([0, 0, -b[2]])
-
-
 def files(P):
     L, d = P["L"], P["d"]
     key = to_bed(P["key"])
@@ -483,9 +475,15 @@ def previews(P):
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
+def out_path(name):
+    """Ausgabepfad einer Druckdatei: das Gebäude (4,7 MB) liegt gitignoriert in plug/build/institute/,
+    die kleinen Teile (Kassette, Schieber, Platte, Deckel) in stl/steckmodul_institut/."""
+    return os.path.join(BUILD if name == "gebaeude" else OUT, name + ".stl")
+
+
 def build():
     os.makedirs(OUT, exist_ok=True)
-    os.makedirs(DOC, exist_ok=True)
+    os.makedirs(BUILD, exist_ok=True)
     P = build_all()
     L, d = P["L"], P["d"]
     print("Institutsgebäude 1:%d: Grundriss %.1f × %.1f mm, Hauptbalken %.1f mm breit, Höhe %.1f mm (ohne Fuß)" % (
@@ -495,9 +493,10 @@ def build():
     fl = files(P)
     for name, man in fl.items():
         tm = to_tm(man)
-        tm.export(os.path.join(OUT, name + ".stl"))
+        path = out_path(name)
+        tm.export(path)
         print("  %-48s %6.1f × %6.1f × %6.1f mm  dicht=%s" % (
-            os.path.relpath(os.path.join(OUT, name + ".stl"), HERE), *tm.extents, tm.is_watertight))
+            os.path.relpath(path, HERE), *tm.extents, tm.is_watertight))
     bad = 0
     print("\nKollisionsprüfung gesteckt (Überschneidungsvolumen):")
     for name, v, ok, note in checks(P):
@@ -542,7 +541,8 @@ def write_data(P, fl, ins, checks_rows):
         sizes={n: [round(float(v), 1) for v in to_tm(m).extents] for n, m in fl.items()},
         insertion=[dict(label=l, g=round(g, 2), plate=round(vp, 2), header=round(vh, 2)) for l, g, vp, vh in ins],
         checks=[dict(name=n, v=round(float(v), 2), ok=bool(ok), note=note) for n, v, ok, note in checks_rows])
-    path = os.path.join(DOC, "daten.json")
+    os.makedirs(BUILD, exist_ok=True)
+    path = os.path.join(BUILD, "data.json")
     with open(path, "w") as f:
         json.dump(data, f, separators=(",", ":"))
     print("\n%s: %.0f kB" % (os.path.relpath(path, HERE), os.path.getsize(path) / 1024))

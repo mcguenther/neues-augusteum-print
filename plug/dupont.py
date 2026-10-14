@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Steckmechanismus mit 2,54-mm-Dupont-Teilen: Prototyp (Plan: stecker/dupont/PLAN.md).
+"""Steckmechanismus mit 2,54-mm-Dupont-Teilen: Prototyp (Plan: plug/PLAN.md).
 
 Konzept:
   * Grundplatte: tiefe Mulde je Gebäude (Fuß taucht ein). Unter dem Muldenboden steht ein
@@ -21,10 +21,12 @@ Alle Maße in mm. Koordinaten im gesteckten Zustand: z = 0 ist die Plattenoberse
 sichtbaren Gebäudes, +z nach oben, x entlang der Pin-Reihe, y quer. Die Mulde ist um (0, 0) zentriert,
 die Pin-Reihe liegt bei y = HY.
 
-Aufruf:
-    python3 steckmodul_dupont.py   # STL nach stl/steckmodul_dupont/, Prüfbericht, Vorschau,
-                                   # stecker/dupont/daten.json
-    python3 stecker/dupont/baue_ansicht.py   # -> stecker/dupont/ansicht.html
+Kaufteile und Passungen (reine Zahlen) stehen in plug/parts.py, Geometriewerkzeuge in plug/geom.py.
+
+Aufruf (aus dem Repo-Wurzelverzeichnis):
+    python3 -m plug.dupont   # STL nach stl/steckmodul_dupont/, Prüfbericht, Vorschau,
+                             # plug/views/dupont/data.json
+    python3 -m plug.views.build_views dupont   # -> plug/views/dupont/view.html
 """
 import json
 import math
@@ -33,92 +35,14 @@ import os
 import manifold3d as m3d
 import numpy as np
 
-from steckmodul import box, cbox, cyl, union, diff, frustum, to_tm, encode   # gemeinsame Werkzeuge
+from plug.geom import (box, cbox, cyl, union, diff, frustum, to_tm, encode, keyed_cs, ext, keyed, ccw,   # noqa: F401
+                       prism_x, prism_y, capsule, vol_int, to_bed, xcut, ycut)        # gemeinsame Werkzeuge
+from plug.parts import *   # noqa: F401,F403  Kaufteile, Passungen, Druckmaße (reine Zahlen)
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))     # Repo-Wurzel
 OUT = os.path.join(HERE, "stl", "steckmodul_dupont")
-DOC = os.path.join(HERE, "stecker", "dupont")
+DATA = os.path.join(HERE, "plug", "views", "dupont", "data.json")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_dupont")
-
-# --------------------------------------------------------------------------
-# Kaufteile. Quelle je Wert: B = belegt (Zeichnung), M = gemessen am eigenen Teil, A = abgeleitet, S = geschätzt.
-# Mit der Schieblehre nachmessen und hier eintragen (Passprobe: stl/steckmodul_dupont/passprobe.stl).
-# --------------------------------------------------------------------------
-PITCH = 2.54          # B  Raster
-NPIN = 4
-HSG_W = 10.16         # B  Gehäuse 1×4: Breite n·2,54 (Pololu-Zeichnung, ±0,3)
-HSG_T = 2.54          # B  Gehäuse: Dicke
-HSG_H = 14.00         # B  Gehäuse: Höhe 14,00 ±0,25
-HSG_TOL = 0.25        # B  Plus-Toleranz der Höhe (Tasche wird so viel höher)
-HSG_HOLE = 1.0        # S  Eintrittsöffnung je Kammer in der Steckseite
-HSG_LATCH = 8.3       # B  Rastzungen-Zone ab Kabelseite (Pololu: 8,30)
-TERM_L = 11.7         # B  Female-Crimp-Pin Länge (Pololu-Zeichnung)
-TERM_BOX = 1.6        # B  Kontaktkasten 1,6 × 1,6
-TERM_BOX_L = 4.5      # B  Kontaktkasten Länge
-TERM_OFF = 0.5        # S  Kontaktkasten beginnt so weit hinter der Steckseite
-CONTACT = 1.5         # S  Stift muss so tief in der Buchse stecken, bis die Feder anliegt
-PIN_SQ = 0.64         # B  Vierkant der Stifte
-HDR_W = NPIN * PITCH + 0.5   # M  Leistenstück, 4 Pins abgebrochen: Körper gemessen etwa 0,5 mm länger (Abbruchrest), Passprobe v4
-HDR_BODY = 2.0        # M  Winkelleiste: Körperhöhe (Taschentiefe-Richtung) gemessen 2,0 (frühere Annahme 2,54 war falsch; Passprobe v5: Körper fiel zu tief)
-HDR_LEG = 7.0         # M  Winkelleiste: senkrechter Pin vom Ende bis zur Außenkante der Biegung, gemessen 7 ±0,5
-HDR_T = 2.0           # M  Winkelleiste: Körperdicke in Pin-Richtung, gemessen 2 (Passprobe v4: mit 2,54 wackelte der Körper)
-HDR_UP = HDR_LEG - PIN_SQ / 2 - HDR_BODY / 2   # A  Stiftspitze über der Körperoberkante, wenn die Biegung auf halber Körperhöhe liegt (= 5,68)
-HDR_TAIL = 3.0        # B  gerade Leiste: Lötende unter dem Körper (3,0 ±0,2)
-RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und senkrechtem Pin: gemessen 1 ±0,5. Der Körper sitzt NEBEN dem senkrechten Pin
-RA_TAIL = 3.0         # M  Winkelleiste: Pin hinter dem Körper (Lötende), gemessen 3 ±0,5; zeigt von den senkrechten Pins weg
-MPIN_UP = 6.0         # S  Male-Crimp-Pin: so weit ragt der Stift aus dem Gehäuse
-WIRE_D = 1.0          # S  Ader des Flachbandkabels (28 AWG, Isolation ≈ 0,9)
-LED_W, LED_L, LED_T = 10.0, 16.7, 2.2   # WS2812B-Streifenstück (60 LED/m): Breite, Länge, Dicke
-LED_FPC = 0.3         # S  Streifen ohne Chip (Folie + Klebeband)
-PADS = ("GND", "DIN", "5V")  # Lötpads von −x nach +x, Din-Ende zum Gehäuse, Chip oben (am Streifen prüfen!)
-PAD_X = 3.5           # S  Abstand der äußeren Pads von der Streifenmitte
-
-# Passungen (FDM, 0,4er Düse)
-CLR = 0.25            # Spiel je Seite: Fuß in der Mulde (Führungsband)
-RELIEF = 0.30         # zusätzliches Spiel unter dem Führungsband (gegen Klemmen)
-BAND = 5.0            # Höhe des engen Führungsbands unter der Muldenfase
-SNUG = 0.22           # Spiel je Seite: Gehäuse in der Tasche (Passprobe v4: Gehäuse 0,25 sitzt gut, darf etwas kleiner)
-SNUG_HDR = 0.1        # M  Spiel je Seite: Winkelleistenkörper in der Tasche, x und y (Entscheidung nach Passprobe v5)
-STEP_CLR = 0.1        # M  Luft zwischen Stufe (Decke des Lötendenschlitzes) und Pin-Oberseite im Dock A der Platte (Passprobe: 0)
-RIB = 0.12            # Übermaß der Crush-Rippen
-HOLE = 1.4            # M  Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91. Entscheidung nach Passprobe v5 (v4: 1,2 ging ohne Kraft, Winkelpins etwas schief)
-FUNNEL_D = 2.4        # Trichteröffnung unten
-WALL = 1.2
-CH_F = 0.8            # 45°-Fase unten am Fuß
-CH_P = 1.0            # 45°-Fase oben an der Mulde
-FOOT_R = 0.5          # Rundung der senkrechten Fußkanten (Muldenecken drucken nicht scharf)
-GUIDE = 3.0           # Fuß steckt so lang gerade in der Mulde, bevor eine Stiftspitze den Fuß erreicht
-CEIL = 0.8            # Muldenboden über dem Steckerteil (hält es gegen Zug)
-FUNNEL_T = 1.0        # Trichterplatte unter dem Gehäuse (= Schieber bei der Kassette)
-
-# Druck
-LAYER = 0.2           # Schichthöhe, auch erste Schicht
-WIRE_GAP = 0.2        # Luft über den Adern bis zur ersten Schicht nach der Pause
-LED_GAP = 0.2         # Luft über dem LED-Chip bis zur Pausenebene
-RIEGEL_T = 1.2        # Riegel über Gehäuse und Adern
-LED_REC = 0.4         # LED liegt so tief in einer Mulde im Kammerboden
-GROOVE = (1.2, 1.2)   # Querrinne für die DETECT-Brücke (Breite, Tiefe)
-GAP_L = 1.6           # Abstand Sockel – LED (Platz für die Querrinne)
-
-# Würfel / Platte
-CUBE = 30.0
-CUBE_H = 24.0         # sichtbare Höhe
-SHELL = 1.2
-ROOF = 1.2
-KEY = 3.0             # Kodier-Ecke (−x, −y)
-DOCK_PITCH = 36.0
-VARIANTS = ("A", "B", "C")
-LID_T = 2.0
-SCREW_PILOT, SCREW_CLR = 2.5, 3.2      # M3-Blechschraube / Gewindeformer
-TONGUE = dict(L=10.0, t=1.2, z0=-5.0, z1=-1.2, gap=0.6, bump=0.5)   # Federzunge in der Muldenwand
-KASS_CLR = 0.2        # Kassette im Fußschacht
-KEY_CLR = 0.15        # Schieber in der Schwalbenschwanz-Nut
-
-# Gebäude (Laserscan 1:1500, B × T × H in mm, aus dem ersten Plan)
-BUILDINGS = [("Paulinum", 39.6, 24.6, 39.2), ("Neues Augusteum", 42.1, 51.9, 25.0),
-             ("Hörsaalgebäude", 55.1, 90.7, 16.4), ("Seminargebäude", 26.3, 66.7, 18.8),
-             ("Institutsgebäude", 70.3, 29.9, 21.1), ("City-Hochhaus", 31.3, 30.4, 96.4),
-             ("Moritzbastei", 44.6, 43.0, 6.1)]
 
 
 def layer_up(v):
@@ -127,43 +51,6 @@ def layer_up(v):
 
 def layer_down(v):
     return math.floor(v / LAYER + 1e-6) * LAYER
-
-
-def keyed_cs(w, d, key):
-    pts = [(-w / 2 + key, -d / 2), (w / 2, -d / 2), (w / 2, d / 2), (-w / 2, d / 2), (-w / 2, -d / 2 + key)]
-    return m3d.CrossSection([pts])
-
-
-def ext(cs, z0, z1):
-    return m3d.Manifold.extrude(cs, z1 - z0).translate([0, 0, z0])
-
-
-def keyed(w, d, z0, z1, key, cx=0.0, cy=0.0):
-    return ext(keyed_cs(w, d, key), z0, z1).translate([cx, cy, 0])
-
-
-def ccw(pts):
-    a = sum(x0 * y1 - x1 * y0 for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1]))
-    return pts if a > 0 else pts[::-1]
-
-
-def prism_x(pts, x0, x1):
-    """Profil in (y, z), entlang x extrudiert."""
-    return m3d.Manifold.extrude(m3d.CrossSection([ccw(pts)]), x1 - x0).rotate([90, 0, 90]).translate([x0, 0, 0])
-
-
-def prism_y(pts, y0, y1):
-    """Profil in (x, z), entlang y extrudiert."""
-    return m3d.Manifold.extrude(m3d.CrossSection([ccw(pts)]), y1 - y0).rotate([90, 0, 0]).translate([0, y1, 0])
-
-
-def capsule(a, b, r, n=10):
-    s = m3d.Manifold.sphere(r, n)
-    return m3d.Manifold.batch_hull([s.translate(list(a)), s.translate(list(b))])
-
-
-def vol_int(a, b):
-    return (a ^ b).volume()
 
 
 # --------------------------------------------------------------------------
@@ -681,25 +568,6 @@ def lid():
 
 
 # --------------------------------------------------------------------------
-# Passprobe
-# --------------------------------------------------------------------------
-def passprobe():
-    """Gehäusetaschen (0,0/0,1/0,2 Spiel), Leistentaschen, Stiftlöcher 1,0/1,1/1,2, Trichter."""
-    blk = box(-31, 31, -14, 14, 0, 9)
-    cuts = []
-    for i, c in enumerate((0.0, 0.1, 0.2)):
-        x = -20 + i * 20
-        cuts.append(cbox(HSG_W + 2 * c, HSG_T + 2 * c, 2.0, 9.01, cx=x, cy=-8))
-        cuts.append(cbox(HDR_W + 2 * c, HDR_BODY + 2 * c, 9 - HDR_BODY, 9.01, cx=x, cy=0))
-        for j, hd in enumerate((1.0, 1.1, 1.2)):                 # Lochreihe, durchgehend
-            cuts.append(cyl(hd / 2, -0.01, 9.01, cx=x - 5 + j * 5, cy=8, n=24))
-        # Kerbe als Spielmarke: 0, 1 oder 2 Striche
-        for k in range(i):
-            cuts.append(cbox(0.6, 3.0, 8.4, 9.01, cx=x + 7 + k * 1.2, cy=-12.4))
-    return diff(blk, *cuts)
-
-
-# --------------------------------------------------------------------------
 # Prüfungen
 # --------------------------------------------------------------------------
 def checks(parts):
@@ -781,10 +649,6 @@ def insertion_checks(parts):
 # --------------------------------------------------------------------------
 # Kräfte (Abschätzung; Kontaktkräfte sind für Kit-Teile nicht belegt)
 # --------------------------------------------------------------------------
-E_PLA = 3500.0        # N/mm², Biegemodul PLA (PETG ≈ 2000)
-MU = 0.3              # Reibwert PLA/PLA
-PIN_PULL = (0.3, 1.0)   # S  Haltekraft je Stift in einer Dupont-Buchse, N
-PIN_PUSH = (1.0, 2.0)   # S  Steckkraft je Stift, N
 
 
 def forces():
@@ -839,11 +703,6 @@ def half(man, y):
     return man - box(-500, 500, y, 500, -500, 500)
 
 
-def to_bed(man):
-    b = man.bounding_box()
-    return man.translate([0, 0, -b[2]])
-
-
 def print_parts(parts):
     """Druckausrichtung: Platte und Würfel wie gesteckt (Unterseite auf dem Bett), Deckel mit Stempeln
     nach oben, Kassette aufrecht, Schieber flach."""
@@ -851,8 +710,7 @@ def print_parts(parts):
         platte_ABC=to_bed(parts["plate"]), deckel=to_bed(parts["lid"]),
         wuerfel_pause=to_bed(parts["cube"]), wuerfel_kassette=to_bed(parts["cube_k"]),
         kassette=to_bed(parts["kass"]), schieber=to_bed(parts["key"]),
-        pausenprobe=to_bed(unit_block(True)), montagelehre=to_bed(unit_block(False)),
-        passprobe=to_bed(passprobe()))
+        pausenprobe=to_bed(unit_block(True)), montagelehre=to_bed(unit_block(False)))
 
 
 def build_parts():
@@ -866,16 +724,6 @@ def build_parts():
         housing_only=housing_part(d["z_face"]), terms=terminals_part(d["z_face"]),
         wires=wires_part(), led=led_part(), cube_k=cube_kassette(), kass=kass, key=schieber(),
         wires_k=kass_wires_part())
-
-
-def xcut(man, xc):
-    """Querschnitt: alles mit x > xc weg (Blick von +x)."""
-    return man - box(xc, 500, -500, 500, -500, 500)
-
-
-def ycut(man, yc):
-    """Längsschnitt durch die Pin-Reihe: alles mit y < yc weg (Blick von −y)."""
-    return man - box(-500, 500, -500, yc, -500, 500)
 
 
 def previews(parts):
@@ -990,8 +838,7 @@ def previews(parts):
     layout = [("platte_ABC", (0, 0), col["plate"]), ("deckel", (0, 62), col["lid"]),
               ("wuerfel_pause", (-45, -62), col["cube"]), ("wuerfel_kassette", (-8, -62), col["cube"]),
               ("kassette", (24, -62), col["kass"]), ("schieber", (52, -62), col["key"]),
-              ("pausenprobe", (78, -62), col["probe"]), ("montagelehre", (100, -62), col["probe"]),
-              ("passprobe", (0, 112), col["probe"])]
+              ("pausenprobe", (78, -62), col["probe"]), ("montagelehre", (100, -62), col["probe"])]
     items = []
     for n, (x, y), c in layout:
         m = pp[n]
@@ -999,13 +846,12 @@ def previews(parts):
         items.append((to_tm(m.translate([x - (b[0] + b[3]) / 2, y - (b[1] + b[4]) / 2, 0])), c))
     save(R(items, (1400, 1100), -60, 40), "druckteile.png",
          "Druckteile in Druckausrichtung (keine Stützen)",
-         "Platte, Deckel, Würfel Pause, Würfel Kassette, Kassette, Schieber, Pausenprobe, Montagelehre, Passprobe")
+         "Platte, Deckel, Würfel Pause, Würfel Kassette, Kassette, Schieber, Pausenprobe, Montagelehre")
     print("Vorschau: %s (8 Bilder)" % os.path.relpath(PREV, HERE))
 
 
 def build():
     os.makedirs(OUT, exist_ok=True)
-    os.makedirs(DOC, exist_ok=True)
     d = dims()
     parts = build_parts()
 
@@ -1091,10 +937,9 @@ def build():
             cube=pair(parts["cube"]), cube_k=pair(parts["cube_k"]), kass=pair(parts["kass"]),
             key=pair(parts["key"]), housing=pair(parts["housing_only"]), terms=pair(parts["terms"]),
             wires=pair(parts["wires"]), wires_k=pair(parts["wires_k"]), led=pair(parts["led"])))
-    with open(os.path.join(DOC, "daten.json"), "w") as f:
+    with open(DATA, "w") as f:
         json.dump(data, f, separators=(",", ":"))
-    print("\n%s: %.0f kB" % (os.path.relpath(os.path.join(DOC, "daten.json"), HERE),
-                            os.path.getsize(os.path.join(DOC, "daten.json")) / 1024))
+    print("\n%s: %.0f kB" % (os.path.relpath(DATA, HERE), os.path.getsize(DATA) / 1024))
     return parts
 
 

@@ -72,50 +72,36 @@ Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäu
 erscheinen automatisch in der Galerie. Nach Änderungen die README mit
 Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
-## Steckmechanismus (LED-Gebäude)
+## Steckmechanismus (LED-Gebäude), Paket `plug/`
 
-Plan und Prototyp für beleuchtete Gebäude (WS2812B, JST-XH-Stecker): `stecker/PLAN.md`.
-`python3 steckmodul.py` erzeugt Dock-Platte, Steckmodule, Würfel und Passprobe nach
-`stl/steckmodul/`, Vorschaubilder nach `vorschau/steckmodul/` und `stecker/daten.json`;
-`python3 stecker/baue_ansicht.py` setzt daraus `stecker/ansicht.html` (3D-Ansicht mit
-Animation) zusammen. Die Ausgabe muss `dicht=True` und „keine Kollisionen“ zeigen. Die
-Steckermaße stehen oben in `steckmodul.py` und sind teils aus Zeichnungen abgeleitet.
+Gebäude mit WS2812B-LED werden in eine Grundplatte gesteckt (Plan B mit dem Dupont-Set). Alles dazu liegt im Paket `plug/`.
+Einstieg: `plug/STATUS.md` (Stand, Chronologie, Konstanten mit Herkunft, Passprobe-Runden, Offenes, Repo-Ablage) und
+`plug/PLAN.md` (Plan B Dupont, Institutsgebäude mit Kassette, JST-Variante als Archiv).
 
-## Steckmechanismus mit Dupont-Teilen (Plan B)
+Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „keine Kollisionen“ zeigen):
 
-Alternative aus dem vorhandenen 2,54-mm-Dupont-Set: `stecker/dupont/PLAN.md`. Gebäude haben
-immer einen Fuß; die Buchse sitzt im Fuß und wird in einer Druckpause eingelegt (Rückfallebene:
-Kassette von unten mit Schieber). `python3 steckmodul_dupont.py` erzeugt Platte mit Docks A/B/C,
-Deckel, Würfel (Pause/Kassette), Kassette, Schieber, Pausenprobe, Montagelehre und Passprobe nach
-`stl/steckmodul_dupont/`, Bilder nach `vorschau/steckmodul_dupont/` und
-`stecker/dupont/daten.json`; die Ausgabe nennt die Pausenhöhe und muss `dicht=True` und
-„keine Kollisionen“ zeigen. `python3 stecker/dupont/baue_ansicht.py` baut
-`stecker/dupont/ansicht.html`. Kaufteil-Maße (belegt/geschätzt markiert) stehen oben im
-Generator; Zahlen in Plan und Seite kommen aus `dims()`, `forces()` und `building_table()`.
-Hilfsfunktionen werden aus `steckmodul.py` importiert, dort also nichts umbenennen.
+| Befehl | Erzeugt |
+|---|---|
+| `python3 -m plug.dupont` (ca. 20 s) | Platte mit Docks A/B/C, Deckel, Würfel, Kassette, Schieber, Proben nach `stl/steckmodul_dupont/`, Bilder nach `vorschau/steckmodul_dupont/`, `plug/views/dupont/data.json` |
+| `python3 -m plug.institute` (ca. 45 s) | Institutsgebäude mit Fuß, Kassette, Schieber, Platte, Deckel; kleine Teile nach `stl/steckmodul_institut/`, große Dateien (`gebaeude.stl`, `data.json`, `view.html`) nach `plug/build/institute/` (gitignored) |
+| `python3 -m plug.sample` (ca. 15 s) | Probestück 22 × 36 mm mit Kassette, Schieber, Mini-Platte, Deckel, dazu die Passprobe `0_passprobe.stl`, `README.txt` und `probedruck_kassette.zip` nach `stl/steckmodul_probe/`, Bilder nach `vorschau/steckmodul_probe/` |
+| `python3 -m plug.views.build_views [dupont\|institute\|all]` | 3D-Seiten `plug/views/dupont/view.html` bzw. `plug/build/institute/view.html` aus Vorlage und `data.json` |
+| `python3 -m plug.fit_test.build_page` | Anleitungsseite der Passprobe `plug/fit_test/page.html` |
+| `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
+| `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 
-## Institutsgebäude mit Kassette
+Aufbau: `plug/parts.py` ist die einzige Quelle für Kaufteil-Maße und Passungen (Quelle B belegt, M gemessen, A abgeleitet,
+S geschätzt, E Entscheidung); `plug/geom.py` enthält die Geometriewerkzeuge; `plug/dupont.py` wird von den anderen Modulen
+als `sd` importiert (dort nichts umbenennen); `plug/fit_test/generator.py` ist die Passprobe-Geometrie. Die JST-Variante
+liegt archiviert unter `plug/archive/jst/` (nicht gepflegt).
 
-Echtes Gebäude für die Kassetten-Variante des Dupont-Plans: `stecker/institut/PLAN.md`.
-`python3 steckmodul_institut.py` (rund 45 s) erzeugt Gebäude mit Fuß, Kassette, Schieber, Platte und Deckel nach
-`stl/steckmodul_institut/`, Bilder nach `vorschau/steckmodul_institut/` und `stecker/institut/daten.json`;
-`python3 stecker/institut/baue_ansicht.py` baut `stecker/institut/ansicht.html`. Die Ausgabe muss `dicht=True` und
-„keine Kollisionen“ zeigen. Der Generator importiert Kaufteile und Hilfsfunktionen aus `steckmodul_dupont.py`.
+Festgelegte Maße der Winkelleiste (nicht ändern ohne neue Messung): Körper **2,0 mm** hoch (`HDR_BODY`) und dick (`HDR_T`),
+nicht 2,54; er sitzt neben den senkrechten Pins, siehe `plug/fit_test/angled_pin.html`. Nach jeder Konstantenänderung
+`python3 -m plug.build_all` laufen lassen, Seiten (Artifacts) neu veröffentlichen und `plug/STATUS.md` nachziehen.
 
-## Festgelegte Maße der Winkelleiste (nicht ändern ohne neue Messung)
-
-Der Körper der Winkelleiste ist **2,0 mm** (Höhe `HDR_BODY` und Dicke `HDR_T`), nicht 2,54. Das gilt für Passprobe,
-Platte, Probestück, Institutsgebäude und alle Docks. Weitere Maße, Herkunft und Stand: `stecker/STAND.md`.
-
-## Probedruck Kassette
-
-Kleines Probestück (22 × 36 mm Ausschnitt des Institutsgebäude-Hauptbalkens) mit Kassette, Schieber, Mini-Platte und
-Deckel: `python3 steckmodul_probe.py` (rund 15 s) schreibt STL, `LIESMICH.txt` und `probedruck_kassette.zip` nach
-`stl/steckmodul_probe/` und Bilder nach `vorschau/steckmodul_probe/`. Es nutzt `steckmodul_institut.py`
-(`build_all(source=…)`); die Ausgabe nennt Kollisionen und waagerechte Decken (Brücken) je Teil.
-Die Passprobe (`passprobe()` in `steckmodul_probe.py`, `0_passprobe.stl`, 4 cm³) prüft nur die Winkelleiste (Körper neben den senkrechten Pins,
-siehe `stecker/probe/winkelpin.html`): zwei Zeilen Taschenspiel, drei Spalten Pinlage. Anleitung als Seite:
-`python3 stecker/probe/baue_passprobe.py` baut `stecker/probe/passprobe.html` aus `passprobe.template.html`.
+Namenskonvention: neue Dateien und Ordner bekommen englische Namen, soweit sinnvoll (README statt LIESMICH, `build_*`,
+`view`, `check`); Seitentexte, Kommentare und Chat bleiben deutsch. Die Ausgabeordner `stl/steckmodul_*` und
+`vorschau/steckmodul_*` und die STL-Dateinamen sind noch deutsch (Umbenennen ist ein offener Schritt, siehe STATUS).
 
 ## Prüfen vor dem Commit
 
