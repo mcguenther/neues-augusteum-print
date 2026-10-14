@@ -36,44 +36,52 @@ def probe_source():
 
 
 # --------------------------------------------------------------------------
-# Passprobe (Version 5): wie v4, aber Winkelleiste mit gemessenen Maßen (Körper 0,5 mm länger, Biegung 1 mm unter dem Körper),
-# Lötendenraum bis zum Körper hoch, Decke 1,2 mm, Spiel 0,15 bis 0,30, ohne Blindlochreihe
+# Passprobe (Version 6): Winkelleiste nach Foto. Der Körper sitzt NEBEN den senkrechten Pins (Pin-Mitte 2,59 mm hinter der
+# Körpermitte), die Lötenden ragen nach hinten (-y). Gemessen wird: Spiel der Körpertasche (zwei Zeilen) und die Lage der
+# Pins zum Körper (drei Spalten, Löcher um -0,4 / 0 / +0,4 mm verschoben, weil die Messung nur ±0,5 mm genau ist).
 # --------------------------------------------------------------------------
-PP_CL = (0.15, 0.20, 0.25, 0.30)             # Spiel je Seite (Spalten). v4: Buchse 0,25 sitzt gut und darf kleiner werden.
+PP_ROWS = (0.20, 0.30)                       # Spiel je Seite der Körpertasche, je Zeile
+PP_OFF = (-0.4, 0.0, 0.4)                    # Verschiebung der Pinlöcher gegenüber dem Soll (+ = weg vom Körper), je Spalte
+PP_HOLE = 1.5                                # Lochdurchmesser (alle gleich, damit nur die Lage getestet wird)
 PP_PITCH = 13.4                              # Spaltenabstand
-PP_X = tuple((i - 1.5) * PP_PITCH for i in range(4))
-PP_FLOOR = sd.CEIL                           # Decke über dem Leistenkörper (wie der Muldenboden in der Platte)
-PP_UNDER = 2.3                               # Raum unter dem Körper (Biegung der Stifte 1 mm + Pin + Luft)
+PP_X = tuple((i - 1) * PP_PITCH for i in range(3))
+PP_FLOOR = sd.CEIL                           # Decke über dem Körper (wie der Muldenboden in der Platte)
+PP_UNDER = 1.2                               # Platz unter dem Körper
 PP_H = round(PP_FLOOR + sd.HDR_BODY + PP_UNDER, 1)    # Plattendicke
-PP_HOLES = (1.1, 1.2, 1.3, 1.4)              # Durchmesser der vier Deckenlöcher je Spalte
+PP_YOFF = sd.HDR_BODY / 2 + sd.RA_BACK + sd.PIN_SQ / 2   # Pin-Mitte hinter der Körpermitte (Soll)
 PP_HCH = 0.3                                 # Senkung (45°) an den Löchern auf der Schriftseite = Bettseite beim Druck
-PP_CH = 0.5                                  # Einlauffase (45°) am Taschenrand: führt die Teile, druckbar ohne Stützen
-PP_TAIL = sd.HDR_BODY / 2 + sd.RA_TAIL + 0.9           # Lötenden ragen so weit aus der Mitte nach +y (Maß ±0,5)
-PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite des Lötendenraums
-PP_SLOT_H = PP_H - PP_FLOOR - sd.HDR_BODY              # Lötendenraum reicht bis unter den Körper
+PP_CH = 0.5                                  # Einlauffase (45°) am Taschenrand
+PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite von Schacht und Lötendenschlitz
 PP_WALL = 1.8
-_hb = (sd.HSG_T + 2 * max(PP_CL)) / 2        # halbe Tiefe der größten Tasche
-_hl = (sd.HDR_BODY + 2 * max(PP_CL)) / 2
-PP_Y_LAB_H = 1.4 + 1.3                       # (Maße ab Unterkante der Platte, in y-Richtung)
-PP_Y_L = PP_Y_LAB_H + 1.3 + 1.3 + _hl
-PP_Y_B = PP_Y_L + PP_TAIL + PP_WALL + _hb
-PP_Y_LAB_C = PP_Y_B + _hb + 1.0 + 1.3
-PP_L = round(PP_Y_LAB_C + 1.3 + 1.4, 1)
-PP_W = round(3 * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_CL) + PP_WALL), 1)
-PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C = (round(v - PP_L / 2, 2) for v in (PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C))
+_hd = sd.HDR_BODY / 2 + max(PP_ROWS)         # größte halbe Taschentiefe
+PP_BACK = _hd + sd.RA_TAIL + 0.9             # Lötendenschlitz reicht so weit hinter die Körpermitte (-y)
+PP_FWD = PP_YOFF + max(PP_OFF) + sd.PIN_SQ / 2 + 0.8   # Schacht reicht so weit vor die Körpermitte (+y)
+_y, PP_YB, PP_LAB = 1.4 + 1.3, [], []
+PP_LAB_OFF = _y                              # Spaltenbeschriftung (Verschiebung) ganz unten
+_y += 1.3 + 1.3
+for _c in PP_ROWS:
+    PP_YB.append(_y + PP_BACK)
+    _y += PP_BACK + PP_FWD + 1.0 + 1.3
+    PP_LAB.append(_y)                        # Zeilenbeschriftung (Spiel) über der Zeile
+    _y += 1.3 + 1.3
+PP_L = round(_y - 1.3 + 1.4, 1)
+PP_W = round((len(PP_X) - 1) * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_ROWS) + PP_WALL), 1)
+PP_LAB_OFF = round(PP_LAB_OFF - PP_L / 2, 2)
+PP_YB = [round(v - PP_L / 2, 2) for v in PP_YB]
+PP_LAB = [round(v - PP_L / 2, 2) for v in PP_LAB]
 
 
 def passprobe():
-    """VERALTET (geht von der falschen Winkelleiste aus, wird neu gebaut). Flache Platte, y nach oben wie in der Draufsicht. Von der Taschenseite werden Buchse und Leiste eingesetzt.
-    Reihe B: Buchsentaschen (durchgehend), Reihe L: Leistentaschen für den (abgebrochenen, 0,5 mm längeren) Körper mit Decke
-    und vier Löchern, daneben der Lötendenraum. Spiel je Spalte 0,15 / 0,20 / 0,25 / 0,30 mm, Lochdurchmesser je Spalte
-    1,1 / 1,2 / 1,3 / 1,4 mm, unten an den Taschen 0,5-mm-Fase, an den Löchern auf der Schriftseite 0,3-mm-Senkung.
+    """Flache Platte, y nach oben wie in der Draufsicht. Zwei Zeilen (Spiel der Körpertasche 0,2 / 0,3 mm), drei Spalten
+    (Pinlöcher um -0,4 / 0 / +0,4 mm verschoben). Je Feld: Tasche für den Körper (2,54 mm hoch, von der Taschenseite offen),
+    Schacht für Knick und senkrechte Pins, Schlitz für die 3-mm-Lötenden nach -y, darüber der Muldenboden mit vier Löchern.
     Rückgabe in Druckausrichtung: Schriftseite auf dem Bett (um die x-Achse umgedreht), Taschen offen nach oben, keine Brücken."""
     from steckmodul import box, cbox, cyl, diff
     import manifold3d as m3d
     blk = box(-PP_W / 2, PP_W / 2, -PP_L / 2, PP_L / 2, 0, PP_H)
     cuts = []
-    zb = PP_H - PP_FLOOR                              # Oberkante der Leistentasche
+    zb = PP_H - PP_FLOOR                              # Oberkante der Körpertasche = Unterseite des Muldenbodens
+    zm = zb - sd.HDR_BODY / 2                         # Höhe der waagerechten Pins
 
     def chamfer(w, d, cx, cy):                        # Trichter am Taschenrand, unten (z=0) um PP_CH weiter
         cs = m3d.CrossSection.square((w + 2 * PP_CH, d + 2 * PP_CH), center=True)
@@ -82,15 +90,16 @@ def passprobe():
 
     def cone(hd, cx, cy):                             # Senkung am Loch, an der Schriftseite z = PP_H um PP_HCH weiter
         return m3d.Manifold.cylinder(PP_HCH + 0.01, hd / 2, hd / 2 + PP_HCH + 0.01, 32).translate([cx, cy, PP_H - PP_HCH])
-    for c, hd, x in zip(PP_CL, PP_HOLES, PP_X):
-        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, -0.01, PP_H + 0.01, cx=x, cy=PP_Y_B))
-        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, -0.01, zb, cx=x, cy=PP_Y_L))
-        cuts.append(chamfer(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, x, PP_Y_B))
-        cuts.append(chamfer(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, x, PP_Y_L))
-        cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, PP_Y_L, PP_Y_L + PP_TAIL, -0.01, PP_SLOT_H + 0.01))
-        for px_ in sd.pin_x():
-            cuts.append(cyl(hd / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=PP_Y_L, n=32))
-            cuts.append(cone(hd, x + px_, PP_Y_L))
+    for c, yb in zip(PP_ROWS, PP_YB):
+        hw, hd = sd.HDR_W / 2 + c, sd.HDR_BODY / 2 + c
+        for off, x in zip(PP_OFF, PP_X):
+            cuts.append(box(x - hw, x + hw, yb - hd, yb + hd, -0.01, zb))                                  # Körper
+            cuts.append(chamfer(2 * hw, 2 * hd, x, yb))
+            cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, yb, yb + PP_FWD, -0.01, zb))                    # Schacht (Knick, Pins)
+            cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, yb - PP_BACK, yb, -0.01, zm + 0.7))              # Lötenden
+            for px_ in sd.pin_x():
+                cuts.append(cyl(PP_HOLE / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=yb + PP_YOFF + off, n=32))
+                cuts.append(cone(PP_HOLE, x + px_, yb + PP_YOFF + off))
     try:
         import generate
 
@@ -99,9 +108,11 @@ def passprobe():
             if cs is not None:
                 cs = cs.translate((x, y))
                 cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
-        for c, hd, x in zip(PP_CL, PP_HOLES, PP_X):
-            label(("%g" % c).replace(".", ","), x, PP_Y_LAB_C)
-            label(("%.1f" % hd).replace(".", ","), x, PP_Y_LAB_H)
+        for off, x in zip(PP_OFF, PP_X):
+            label(("%+g" % off if off else "0").replace(".", ","), x, PP_LAB_OFF)
+        for c, ly in zip(PP_ROWS, PP_LAB):
+            for x in PP_X:
+                label(("%g" % c).replace(".", ","), x, ly)
     except Exception as e:
         print("  (Beschriftung übersprungen: %s)" % e)
     return diff(blk, *cuts).rotate([180.0, 0.0, 0.0]).translate([0.0, 0.0, PP_H])    # Druckausrichtung
@@ -149,10 +160,16 @@ def main():
         vols[fname] = tm.volume / 1000.0
         print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
             os.path.relpath(os.path.join(OUT, fname + ".stl"), HERE), *tm.extents, vols[fname], tm.is_watertight))
-    # Die Passprobe (passprobe()) ist veraltet: Sie geht von der falschen Winkelleiste aus (Pins durch den Körper) und wird neu gebaut.
-    for old in ("6_passprobe_optional.stl", "0_passprobe.stl"):
-        if os.path.exists(os.path.join(OUT, old)):
-            os.remove(os.path.join(OUT, old))
+    tmp = to_tm(passprobe())
+    tmp.export(os.path.join(OUT, "0_passprobe.stl"))
+    print("  %-44s %6.1f × %6.1f × %6.1f mm  %5.1f cm³  dicht=%s" % (
+        "stl/steckmodul_probe/0_passprobe.stl", *tmp.extents, tmp.volume / 1000.0, tmp.is_watertight))
+    pp_ov = overhangs(passprobe(), "0_passprobe")
+    print("  Passprobe: Überhänge flacher als 45°: %.1f mm², waagerechte Decken: %s" % (
+        pp_ov["steep_area"], "; ".join("z=%.1f: %.0f mm²" % f[:2] for f in pp_ov["flat"]) or "keine"))
+    old = os.path.join(OUT, "6_passprobe_optional.stl")
+    if os.path.exists(old):
+        os.remove(old)
 
     bad = 0
     print("\nKollisionsprüfung gesteckt (Überschneidungsvolumen):")
@@ -186,6 +203,7 @@ def main():
 
 def previews(P, fl):
     import preview
+    import trimesh
     L, d = P["L"], P["d"]
     col = dict(building="#ece5d2", plate="#8fa3b8", lid="#6f819a", kass="#e3862a", key="#6bbf78", housing="#f4f1e8",
                terms="#caa13a", wires="#c8423b", header="#2d3236", led="#ffe9a0")
@@ -218,6 +236,11 @@ def previews(P, fl):
         items.append((tm, col[c]))
         x += w + 10
     im = preview.render(items, size=(1500, 700), azim=-30, elev=30); im.save(os.path.join(PREV, "druckteile.png"))
+    pp = to_tm(passprobe())                            # Druckausrichtung: Schriftseite unten, Taschen offen nach oben
+    im = preview.render([(pp, "#b9bfc4")], size=(1500, 900), azim=-70, elev=50); im.save(os.path.join(PREV, "passprobe_schraeg.png"))
+    pp2 = pp.copy()                                    # wie ein Buch um die lange Kante umgedreht: Schriftseite oben
+    pp2.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
+    im = preview.render([(pp2, "#b9bfc4")], size=(1500, 900), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_schriftseite.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
