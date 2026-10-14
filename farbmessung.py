@@ -680,7 +680,9 @@ def neue_spezifikation(slug, sc, kons, min_zellen=30, abw_min=9.0, min_leaf=20, 
         ml = m & (kons["n_licht"] > 0)
         rgb, n = lin_hex(old_rgb), int(ml.sum())
         neu, grund = False, "zu wenige besonnte Messzellen: %d" % n
-        if k not in fest_keys and n >= min_zellen:
+        if f.get("beibehalten"):             # von Hand festgehalten: der Wert der Handmessung bleibt (Grund steht in der Spezifikation)
+            grund = "von Hand beibehalten: %s" % f["beibehalten"]
+        elif k not in fest_keys and n >= min_zellen:
             w = np.minimum(kons["n_foto"][ml], 3) + np.minimum(kons["n_licht"][ml], 3)
             mean = (kons["rgb"][ml] * w[:, None]).sum(0) / w.sum()
             # Nur umfärben, wenn die Zone einheitlich ist: Median-ΔE der Zellen zum Mittel ≤ 9 (sonst enthält die
@@ -695,6 +697,7 @@ def neue_spezifikation(slug, sc, kons, min_zellen=30, abw_min=9.0, min_leaf=20, 
                          quelle=("Fotos: %d besonnte Zellen" % n) if neu else "unverändert (%s)" % grund)
         bericht["farben"][k] = dict(alt=old_rgb, neu=hexrgb(rgb), gemessen=neu, zellen=n, zellen_alle=int(m.sum()))
     # neue Zonen aus der Segmentierung
+    halten = {k for k, f in spec["farben"].items() if f.get("beibehalten")}
     cand = []
     for s_ in range(4):
         for z in segmentiere(kons, sc, b, s_, **seg_kw):
@@ -709,6 +712,10 @@ def neue_spezifikation(slug, sc, kons, min_zellen=30, abw_min=9.0, min_leaf=20, 
         uk = max(set(under), key=under.count) if under else spec["basis"]
         d = de(z["rgb"], cur[uk])
         ok = z["n"] >= min_leaf and z["anteil_licht"] >= 0.5 and d >= abw_min and z["fotos"] >= min_fotos
+        # Von Hand beibehaltene Farbe (z. B. weiße Platten): Flächen, die sich davon nur mäßig unterscheiden, sind Mittel über
+        # Platten und Fenster und würden die Fassade doch wieder grauer machen. Nur starke Abweichungen (Glasband, Sockel) gelten.
+        if ok and uk in halten and d < HALTEN_MIN_DE:
+            ok = False
         # Erdgeschosszone (bis 8 m): Bäume, Personen, Fahrzeuge und Spiegelungen verdecken die Wand häufig. Große
         # Farbsprünge dort gelten als Verdeckung, nicht als Material.
         if ok and z["z"][1] <= EG_HOEHE and d > EG_MAX_DE:
@@ -778,6 +785,7 @@ def gewichte_nach_uebereinstimmung(kp, soll=0.5, minimum=0.25):
     return {f: float(np.clip(soll / max(v["rel_hell"], 1e-3), minimum, 1.0)) for f, v in kp.items()}
 
 
+HALTEN_MIN_DE = 25.0                 # ΔE, ab der eine Fläche über einer beibehaltenen Farbe als eigenes Material gilt
 EG_HOEHE, EG_MAX_DE = 8.5, 28.0   # Erdgeschosszone: Höhe (m) und größter zulässiger Farbsprung (ΔE)
 
 

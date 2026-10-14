@@ -2,9 +2,10 @@
 """Bilder für den Farbvergleich alt/neu: Foto | Modell alt | Modell neu aus derselben Kameraposition,
 Überlagerungen der Registrierung und abgewickelte Fassadenkarten.
 
-    python3 werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json> [ausgabeordner]
+    python3 werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json> [ausgabeordner] [--fotos id,id,...]
 
-Standard-Ausgabe: vorschau/farbvergleich/. Die „neuen“ Farben sind data/farben.json.
+Standard-Ausgabe: vorschau/farbvergleich/. Die „neuen“ Farben sind data/farben.json. Mit --fotos entstehen nur die
+Foto-Gegenüberstellungen dieser Katalog-IDs (kein README-Bild, keine Fassadenkarten).
 """
 import json
 import os
@@ -27,14 +28,14 @@ FOTOS = ["fl_25383321126", "fl_13957964694", "fl_16905251612", "fl_16719063090",
 BREITE = 720
 
 
-def main(alt_pfad, out):
+def main(alt_pfad, out, fotos=None):
     os.makedirs(out, exist_ok=True)
     alt = json.load(open(alt_pfad))
     neu = json.load(open(os.path.join(G.HERE, "data", "farben.json")))
     ma, mn = V.farbmodell(alt), V.farbmodell(neu)
     kat = R.lade_katalog()["fotos"]
     sc_laser = szene.laden("laserscan")
-    for fid in FOTOS:
+    for fid in fotos or FOTOS:
         e = kat[fid]
         img = R.foto_bild(fid, e)
         kam = K.Kamera.aus_dict(e["pose"], *img.size)
@@ -46,6 +47,8 @@ def main(alt_pfad, out):
         ov = K.ueberlagerung(img, kam, sc_laser)
         ov.resize((BREITE, int(img.height * s)), Image.LANCZOS).save(os.path.join(out, "%s_pose.jpg" % fid), quality=85)
         print("  ", fid)
+    if fotos:
+        return
     # Bild für die README: Foto | alt | neu des ersten Fotos
     ims = [Image.open(os.path.join(out, "%s_%s.jpg" % (FOTOS[0], n))).convert("RGB") for n in ("foto", "alt", "neu")]
     h = min(i.height for i in ims)
@@ -69,4 +72,10 @@ def main(alt_pfad, out):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else os.path.join(G.HERE, "vorschau", "farbvergleich"))
+    args = sys.argv[1:]
+    liste = None
+    if "--fotos" in args:
+        i = args.index("--fotos")
+        liste = args[i + 1].split(",")
+        del args[i:i + 2]
+    main(args[0], args[1] if len(args) > 1 else os.path.join(G.HERE, "vorschau", "farbvergleich"), liste)

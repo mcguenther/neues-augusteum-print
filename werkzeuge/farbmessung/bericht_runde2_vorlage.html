@@ -1,0 +1,126 @@
+<title>Farbvergleich Runde 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+$css
+</style>
+<!--BODY-->
+<main class="seite">
+
+<header class="kopf">
+  <span class="marke neu">Farbmessung · Runde 2 · Stand $stand</span>
+  <h1>Farbvergleich Runde 2: $n_neu Fotos mehr</h1>
+  <p class="unter">Die Fassadenfarben des Druckmodells aus $n_fotos statt $n_alt Fotos, vorher gegen nachher. Das Gebäudemodell wird in jedes Foto projiziert, die Farben kommen von den Wänden selbst. $kopf_satz</p>
+</header>
+
+<section class="sektion" aria-labelledby="zahlen">
+  <h2 id="zahlen">Auf einen Blick</h2>
+  <div class="zahlen">
+$zahlen_html
+  </div>
+  <p class="stand">„Vorher“ ist der Stand nach Runde 1 (13 Fotos, im Repo zusammengeführt), „nachher“ der Stand mit allen $n_fotos Fotos. Die Fotos der ersten Runde sind unverändert dabei.</p>
+</section>
+
+<section class="sektion" aria-labelledby="befund">
+  <h2 id="befund">Was hat sich geändert</h2>
+  <div class="befund">
+$befunde_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="modell3d">
+  <h2 id="modell3d">Das 3D-Modell, vorher und nachher</h2>
+  <p class="lead">Dasselbe Laserscan-Modell wie im Druck, farbig mit den gemessenen Farben (nicht auf die 15 Filamente gerundet). Der Regler teilt die Ansicht: links die Farben nach Runde 1, rechts die neuen. „Änderung“ färbt jede Fläche nach dem Farbabstand zwischen vorher und nachher (ΔE). Zum Drehen ziehen, zum Zoomen scrollen.</p>
+$viewer_html
+</section>
+
+<section class="sektion" aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtmodell vom Augustusplatz</h2>
+  <p class="lead">Maßstab 1:1500 mit Uniriese und Moritzbastei, Blick von Osten, in den Druckfarben (15 Filamente). Der Regler verschiebt die Grenze zwischen vorher und nachher.</p>
+  <div class="cmp" id="cmp1">
+    <div class="bild">
+      <img src="gesamt_nachher.png" alt="Gesamtmodell, neue Farben" width="$gesamt_w" height="$gesamt_h">
+      <div class="oben"><img src="gesamt_vorher.png" alt="Gesamtmodell, Farben nach Runde 1" width="$gesamt_w" height="$gesamt_h"></div>
+      <div class="marker"></div><span class="tag l">vorher</span><span class="tag r">nachher</span>
+    </div>
+    <label for="r1">Grenze vorher | nachher</label>
+    <input type="range" id="r1" min="0" max="100" value="50" aria-label="Grenze zwischen vorher und nachher">
+  </div>
+  <div class="cmp" id="cmp2">
+    <div class="bild">
+      <img src="einzel_nachher.png" alt="Einzelgebäude, neue Farben" width="$einzel_w" height="$einzel_h">
+      <div class="oben"><img src="einzel_vorher.png" alt="Einzelgebäude, Farben nach Runde 1" width="$einzel_w" height="$einzel_h"></div>
+      <div class="marker"></div><span class="tag l">vorher</span><span class="tag r">nachher</span>
+    </div>
+    <label for="r2">Grenze vorher | nachher, alle Einzelgebäude 1:1000 aus Südost und Nordwest</label>
+    <input type="range" id="r2" min="0" max="100" value="50" aria-label="Grenze zwischen vorher und nachher, Einzelgebäude">
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="gleich">
+  <h2 id="gleich">Die neuen Fotos, dieselbe Kamera, drei Ansichten</h2>
+  <p class="lead">Links das Foto, daneben das Modell mit den Farben vorher und nachher, gerendert aus der Kameraposition des Fotos (ohne Beleuchtung, damit Weiß als Weiß erscheint). Das ist ein Plausibilitätsvergleich, keine unabhängige Prüfung: Aus denselben Fotos wurde gemessen. $fotos_hinweis</p>
+  <div class="fotos">
+$fotos_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="farben">
+  <h2 id="farben">Farben je Gebäude</h2>
+  <p class="lead">Alle Farbflächen jedes Gebäudes mit dem Wert vorher und nachher. „Neu gemessene Fläche“ ist eine Zone, die die Segmentierung der Fotodaten gefunden hat. „Unverändert“ gilt für die Farbe der bisherigen Zone. Wo kein besonntes Foto vorliegt, bleibt der alte Wert stehen.</p>
+  <div class="fotos">
+$gebaeude_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="pruefung">
+  <h2 id="pruefung">Alle $n_fotos Fotos und wie gut sie zusammenpassen</h2>
+  <p class="lead">$pruefung_text</p>
+  <div class="tabelle"><table>
+    <thead><tr><th>Foto</th><th>Urheber</th><th>Lizenz</th><th>Datum</th><th>Sonne</th><th>Zellen</th><th>Abweichung (Helligkeit · ΔE)</th><th>Gewicht</th></tr></thead>
+    <tbody>
+$foto_tab
+    </tbody></table></div>
+</section>
+
+<section class="sektion" aria-labelledby="quellen">
+  <h2 id="quellen">Woher die neuen Fotos stammen, und was nicht geklappt hat</h2>
+  <div class="zwei">
+$quellen_html
+  </div>
+</section>
+
+<section class="sektion" aria-labelledby="grenzen">
+  <h2 id="grenzen">Grenzen</h2>
+  <div class="zwei">
+$grenzen_html
+  </div>
+</section>
+
+<footer>
+  <p>Wiederholen: Fotos aufnehmen mit <code>werkzeuge/farbmessung/katalog_recherche.py</code>, Pose suchen mit <code>python3 registrierung.py suche --seeds=3</code>, Überlagerung ansehen und <code>"geprueft": true</code> setzen, dann <code>python3 farbmessung.py messen</code>. Bericht: <code>werkzeuge/farbmessung/bericht_runde2.py</code>, Modell für den Betrachter: <code>modell_export.py</code>.</p>
+  <p>Fotos: Urheber und Lizenz je Foto in der Tabelle oben und in <code>FOTOQUELLEN.md</code>. Das Luftbild 2024 und das 3D-Stadtmodell sind © Stadt Leipzig (dl-de/by-2-0), der Laserscan © GeoSN (dl-de/by-2-0).</p>
+</footer>
+
+</main>
+<script type="application/json" id="modelldaten">$modell_json</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+$viewer_js
+</script>
+<script>
+(function () {
+  function bind(id, range) {
+    var box = document.getElementById(id);
+    var r = document.getElementById(range);
+    if (!box || !r) return;
+    var bild = box.querySelector('.bild');
+    function set() { bild.style.setProperty('--pos', r.value + '%'); }
+    r.addEventListener('input', set);
+    set();
+  }
+  bind('cmp1', 'r1');
+  bind('cmp2', 'r2');
+})();
+</script>

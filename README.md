@@ -222,8 +222,8 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
   die Rosette am Paulinum, und Spitzbögen `bogen`, die als feine Treppe angenähert werden) sind
   von Hand gesetzt, ebenso die Rückfallfarben (`hex`, aus der früheren Handmessung an Fotos).
   Format und Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
-  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude und City-Hochhaus kommen aus der
-  **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
+  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude und City-Hochhaus (beim
+  Seminargebäude einzelne Zonen) kommen aus der **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
   lizenzierte Fotos projiziert (Katalog `data/messfotos.json`: Flickr/Openverse und andere, Pose
   über die Himmelslinie bestimmt, `registrierung.py`, `skyline.py`, `kamera.py`). Jedes Pixel gehört
   so zu einer Wandzelle (1 m × 1 m, dieselben Koordinaten wie die Zonen). Aus der Aufnahmezeit
@@ -231,7 +231,9 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
   Konsens, eine Guillotine-Zerlegung findet Flächen gleicher Farbe, die als neue Zonen über den
   handgesetzten liegen (`fest`-Zonen wie Bögen, Portal und das weiße Audimax bleiben oben).
   Wo kein besonntes Foto vorliegt, bleibt die bisherige Farbe. Gegenüberstellung alt/neu aus
-  derselben Kamera wie im Foto: [`vorschau/farbvergleich/index.html`](vorschau/farbvergleich/index.html).
+  derselben Kamera wie im Foto: [`vorschau/farbvergleich/index.html`](vorschau/farbvergleich/index.html)
+  (Runde 1, 13 Fotos); Runde 2 mit 23 Fotos und 3D-Modell vorher/nachher:
+  [`vorschau/farbvergleich_runde2/index.html`](vorschau/farbvergleich_runde2/index.html).
 - **Dächer**: [Luftbild 2024 der Stadt Leipzig](https://opendata.leipzig.de/dataset/luftbild-2024-20-cm-bodenauflosung-stadt-leipzig)
   (20 cm, dl-de/by-2-0). Daraus werden wenige typische Dachfarben bestimmt
   (Dachpalette, k-means); jede Dachfläche bekommt die Klasse, die das Luftbild an
@@ -247,9 +249,11 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
 
 Die Farben sind Anhaltswerte: Die Fotos stimmen untereinander nur grob überein (Belichtung,
 spiegelndes Glas, Ausrichtung auf einige Meter), die Messung zeigt die Richtung (hell statt
-schwarz, Audimax weiß), nicht den letzten Farbton. Hörsaal- und Seminargebäude, Moritzbastei
-und Innenhof haben keine registrierbaren sonnigen Fotos und behalten die Werte der früheren
-Handmessung. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
+schwarz, Audimax weiß), nicht den letzten Farbton. Moritzbastei und Innenhof haben keine
+registrierbaren sonnigen Fotos und behalten die Werte der früheren Handmessung. Das Hörsaalgebäude
+bleibt unverändert. Die weißen Platten von Hörsaal-, Seminar- und Institutsgebäude behalten ebenfalls den
+hellen Wert der Handmessung (`beibehalten` in den Fassadendateien), weil das Mittel über Platten und
+Fenster zu grau wurde. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
 ±0,5–1 m, Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
 
 ## Mehrfarbig drucken
