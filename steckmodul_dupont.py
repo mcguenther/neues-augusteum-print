@@ -41,7 +41,7 @@ DOC = os.path.join(HERE, "stecker", "dupont")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_dupont")
 
 # --------------------------------------------------------------------------
-# Kaufteile. Quelle je Wert: B = belegt (Zeichnung), A = abgeleitet, S = geschätzt.
+# Kaufteile. Quelle je Wert: B = belegt (Zeichnung), M = gemessen am eigenen Teil, A = abgeleitet, S = geschätzt.
 # Mit der Schieblehre nachmessen und hier eintragen (Passprobe: stl/steckmodul_dupont/passprobe.stl).
 # --------------------------------------------------------------------------
 PITCH = 2.54          # B  Raster
@@ -58,11 +58,11 @@ TERM_BOX_L = 4.5      # B  Kontaktkasten Länge
 TERM_OFF = 0.5        # S  Kontaktkasten beginnt so weit hinter der Steckseite
 CONTACT = 1.5         # S  Stift muss so tief in der Buchse stecken, bis die Feder anliegt
 PIN_SQ = 0.64         # B  Vierkant der Stifte
-HDR_W = NPIN * PITCH  # B  Leistenstück, 4 Pins abgebrochen
+HDR_W = NPIN * PITCH + 0.5   # M  Leistenstück, 4 Pins abgebrochen: Körper gemessen etwa 0,5 mm länger (Abbruchrest), Passprobe v4
 HDR_BODY = 2.54       # B  Kunststoffkörper (Würth WR-PHD: 2,54 ±0,15)
-HDR_UP = 6.0          # B  Steckseite über dem Körper (6,0 ±0,2)
+HDR_UP = 7.0          # M  Steckseite über dem Körper: gemessen 7 ±0,5 (Datenblatt 6,0 ±0,2), Passprobe v4
 HDR_TAIL = 3.0        # B  gerade Leiste: Lötende unter dem Körper (3,0 ±0,2)
-RA_BACK = 1.5         # B  Winkelleiste: Biegung hinter dem Körper (1,5 ±0,2)
+RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und Biegung: gemessen 1 ±0,5 (Datenblatt 1,5 ±0,2)
 RA_TAIL = 3.0         # B  Winkelleiste: Lötende ragt über die Körperseite hinaus (3,0 ±0,2)
 MPIN_UP = 6.0         # S  Male-Crimp-Pin: so weit ragt der Stift aus dem Gehäuse
 WIRE_D = 1.0          # S  Ader des Flachbandkabels (28 AWG, Isolation ≈ 0,9)
@@ -75,16 +75,16 @@ PAD_X = 3.5           # S  Abstand der äußeren Pads von der Streifenmitte
 CLR = 0.25            # Spiel je Seite: Fuß in der Mulde (Führungsband)
 RELIEF = 0.30         # zusätzliches Spiel unter dem Führungsband (gegen Klemmen)
 BAND = 5.0            # Höhe des engen Führungsbands unter der Muldenfase
-SNUG = 0.10           # Spiel je Seite: Gehäuse/Leiste in der Tasche
-RIB = 0.15            # Übermaß der Crush-Rippen
-HOLE = 1.1            # Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91
+SNUG = 0.22           # Spiel je Seite: Gehäuse/Leiste in der Tasche (Passprobe v4: Gehäuse 0,25 sitzt gut, darf etwas kleiner)
+RIB = 0.12            # Übermaß der Crush-Rippen
+HOLE = 1.25           # Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91. Passprobe v4: 1,2 mit 0,3-Senkung geht ohne Kraft
 FUNNEL_D = 2.4        # Trichteröffnung unten
 WALL = 1.2
 CH_F = 0.8            # 45°-Fase unten am Fuß
 CH_P = 1.0            # 45°-Fase oben an der Mulde
 FOOT_R = 0.5          # Rundung der senkrechten Fußkanten (Muldenecken drucken nicht scharf)
 GUIDE = 3.0           # Fuß steckt so lang gerade in der Mulde, bevor eine Stiftspitze den Fuß erreicht
-CEIL = 0.8            # Muldenboden über dem Steckerteil (hält es gegen Zug)
+CEIL = 1.2            # Muldenboden über dem Steckerteil (hält es gegen Zug); dicker als 0,8, weil die Stifte mit 7 mm sonst zu tief in die Buchse reichen
 FUNNEL_T = 1.0        # Trichterplatte unter dem Gehäuse (= Schieber bei der Kassette)
 
 # Druck

@@ -36,40 +36,38 @@ def probe_source():
 
 
 # --------------------------------------------------------------------------
-# Passprobe (Version 4): flache Platte, vier Spiele je Reihe, Stiftlöcher von oben statt am Druckbett
+# Passprobe (Version 5): wie v4, aber Winkelleiste mit gemessenen Maßen (Körper 0,5 mm länger, Biegung 1 mm unter dem Körper),
+# Lötendenraum bis zum Körper hoch, Decke 1,2 mm, Spiel 0,15 bis 0,30, ohne Blindlochreihe
 # --------------------------------------------------------------------------
-PP_CL = (0.25, 0.275, 0.30, 0.33)            # Spiel je Seite (Spalten). Version 3: 0,2 ging bei der Buchse nur mit viel Kraft, 0,0/0,1 gar nicht.
+PP_CL = (0.15, 0.20, 0.25, 0.30)             # Spiel je Seite (Spalten). v4: Buchse 0,25 sitzt gut und darf kleiner werden.
 PP_PITCH = 13.4                              # Spaltenabstand
 PP_X = tuple((i - 1.5) * PP_PITCH for i in range(4))
-PP_H = 5.4                                   # Plattendicke: 0,8 Decke + 2,54 Körper + 2,06 Raum unter dem Körper
-PP_HOLES = (1.2, 1.4, 1.6, 1.8)              # Lochdurchmesser je Spalte: Blindloch und die vier Löcher in der Leistendecke
-PP_HOLE_DEPTH = 3.5                          # Blindlöcher von der Schriftseite
-PP_HCH = 0.3                                 # Senkung (45°) an den Löchern auf der Schriftseite = Bettseite beim Druck
 PP_FLOOR = sd.CEIL                           # Decke über dem Leistenkörper (wie der Muldenboden in der Platte)
-PP_TAIL = sd.HDR_BODY / 2 + sd.RA_TAIL + 0.4          # Lötenden ragen so weit aus der Mitte nach +y
-PP_SLOT_X = 2 * (abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8) / 2     # halbe Breite des Lötendenraums
-PP_SLOT_H = PP_H - PP_FLOOR - sd.HDR_BODY - sd.RA_BACK + sd.PIN_SQ / 2 + 0.4   # Höhe des Lötendenraums
-PP_CH = 0.5                                  # Einlauffase (45°) am Taschenrand auf der Bettseite: gegen Elefantenfuß, druckbar ohne Stützen
+PP_UNDER = 2.3                               # Raum unter dem Körper (Biegung der Stifte 1 mm + Pin + Luft)
+PP_H = round(PP_FLOOR + sd.HDR_BODY + PP_UNDER, 1)    # Plattendicke
+PP_HOLES = (1.1, 1.2, 1.3, 1.4)              # Durchmesser der vier Deckenlöcher je Spalte
+PP_HCH = 0.3                                 # Senkung (45°) an den Löchern auf der Schriftseite = Bettseite beim Druck
+PP_CH = 0.5                                  # Einlauffase (45°) am Taschenrand: führt die Teile, druckbar ohne Stützen
+PP_TAIL = sd.HDR_BODY / 2 + sd.RA_TAIL + 0.9           # Lötenden ragen so weit aus der Mitte nach +y (Maß ±0,5)
+PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite des Lötendenraums
+PP_SLOT_H = PP_H - PP_FLOOR - sd.HDR_BODY              # Lötendenraum reicht bis unter den Körper
 PP_WALL = 1.8
 _hb = (sd.HSG_T + 2 * max(PP_CL)) / 2        # halbe Tiefe der größten Tasche
 _hl = (sd.HDR_BODY + 2 * max(PP_CL)) / 2
-PP_Y_H = 2.6                                 # (Maße ab Unterkante der Platte, unten in y-Richtung)
-PP_Y_LAB_H = PP_Y_H + 0.8 + 0.9 + 1.1
-PP_Y_L = PP_Y_LAB_H + 1.1 + 1.3 + _hl
+PP_Y_LAB_H = 1.4 + 1.3                       # (Maße ab Unterkante der Platte, in y-Richtung)
+PP_Y_L = PP_Y_LAB_H + 1.3 + 1.3 + _hl
 PP_Y_B = PP_Y_L + PP_TAIL + PP_WALL + _hb
 PP_Y_LAB_C = PP_Y_B + _hb + 1.0 + 1.3
 PP_L = round(PP_Y_LAB_C + 1.3 + 1.4, 1)
-PP_W = round(3 * PP_PITCH + 2 * (sd.HSG_W / 2 + max(PP_CL) + PP_WALL), 1)
-PP_Y_H, PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C = (round(v - PP_L / 2, 2) for v in
-                                                    (PP_Y_H, PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C))
+PP_W = round(3 * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_CL) + PP_WALL), 1)
+PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C = (round(v - PP_L / 2, 2) for v in (PP_Y_LAB_H, PP_Y_L, PP_Y_B, PP_Y_LAB_C))
 
 
 def passprobe():
-    """Flache Platte, y nach oben wie in der Draufsicht. Von unten (Druckbettseite) werden Buchse und Leiste eingesetzt.
-    Reihe B: Buchsentaschen (durchgehend) mit 0,25 / 0,275 / 0,30 / 0,33 mm Spiel je Seite, unten 0,5-mm-Fase.
-    Reihe L: Leistentaschen mit gleichem Spiel, 0,8-mm-Decke mit vier Löchern (Ø wie das Blindloch der Spalte), daneben der Lötendenraum.
-    Reihe H: Blindlöcher 1,2 / 1,4 / 1,6 / 1,8 mm von oben (sie liegen nicht auf dem Druckbett und können nicht zuquellen).
-    Schrift und Lochsenkungen auf der Schriftseite: Spiel je Spalte ganz oben, Lochdurchmesser unter der Leistenreihe.
+    """Flache Platte, y nach oben wie in der Draufsicht. Von der Taschenseite werden Buchse und Leiste eingesetzt.
+    Reihe B: Buchsentaschen (durchgehend), Reihe L: Leistentaschen für den (abgebrochenen, 0,5 mm längeren) Körper mit Decke
+    und vier Löchern, daneben der Lötendenraum. Spiel je Spalte 0,15 / 0,20 / 0,25 / 0,30 mm, Lochdurchmesser je Spalte
+    1,1 / 1,2 / 1,3 / 1,4 mm, unten an den Taschen 0,5-mm-Fase, an den Löchern auf der Schriftseite 0,3-mm-Senkung.
     Rückgabe in Druckausrichtung: Schriftseite auf dem Bett (um die x-Achse umgedreht), Taschen offen nach oben, keine Brücken."""
     from steckmodul import box, cbox, cyl, diff
     import manifold3d as m3d
@@ -81,6 +79,7 @@ def passprobe():
         cs = m3d.CrossSection.square((w + 2 * PP_CH, d + 2 * PP_CH), center=True)
         f = m3d.Manifold.extrude(cs, PP_CH + 0.01, scale_top=(w / (w + 2 * PP_CH), d / (d + 2 * PP_CH)))
         return f.translate([cx, cy, -0.01])
+
     def cone(hd, cx, cy):                             # Senkung am Loch, an der Schriftseite z = PP_H um PP_HCH weiter
         return m3d.Manifold.cylinder(PP_HCH + 0.01, hd / 2, hd / 2 + PP_HCH + 0.01, 32).translate([cx, cy, PP_H - PP_HCH])
     for c, hd, x in zip(PP_CL, PP_HOLES, PP_X):
@@ -88,13 +87,10 @@ def passprobe():
         cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, -0.01, zb, cx=x, cy=PP_Y_L))
         cuts.append(chamfer(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, x, PP_Y_B))
         cuts.append(chamfer(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, x, PP_Y_L))
-        cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, PP_Y_L, PP_Y_L + PP_TAIL, -0.01, PP_SLOT_H))
+        cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, PP_Y_L, PP_Y_L + PP_TAIL, -0.01, PP_SLOT_H + 0.01))
         for px_ in sd.pin_x():
             cuts.append(cyl(hd / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=PP_Y_L, n=32))
             cuts.append(cone(hd, x + px_, PP_Y_L))
-    for hd, x in zip(PP_HOLES, PP_X):
-        cuts.append(cyl(hd / 2, PP_H - PP_HOLE_DEPTH, PP_H + 0.01, cx=x, cy=PP_Y_H, n=32))
-        cuts.append(cone(hd, x, PP_Y_H))
     try:
         import generate
 
@@ -253,7 +249,7 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                ({vols['3_schieber']:.1f} cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     ({vols['4_platte']:.1f} cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              ({vols['5_deckel']:.1f} cm³)
-  0_passprobe.stl     Passprobe (flach, 5 cm³): Taschen 0,25 bis 0,33 mm Spiel mit Fase für Buchse und Stiftleiste, Blindlöcher von oben; Schriftseite aufs Bett, Taschen offen nach oben (Anleitung: stecker/probe/passprobe.html)
+  0_passprobe.stl     Passprobe v5 (flach): Taschen 0,15 bis 0,30 mm Spiel mit Fase für Buchse und Stiftleiste, Deckenlöcher 1,1 bis 1,4 mm; Schriftseite aufs Bett, Taschen offen nach oben (Anleitung: stecker/probe/passprobe.html)
 
   Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 

@@ -97,40 +97,39 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
 <div class="wrap">
 
 <header style="display:flex;flex-direction:column;gap:12px">
-  <span class="kicker">Probedruck Kassette · Teil 0 · Version 2</span>
+  <span class="kicker">Probedruck Kassette · Teil 0 · Version 3</span>
   <h1>Passprobe: was wo hineinkommt</h1>
-  <p class="lead">Eine flache Platte mit Taschen für deine Dupont-Buchse und die Stiftleiste und mit Löchern für einzelne Pins. Damit findest du heraus, welches Spiel und welche Lochgröße für deine Teile stimmen, bevor du Kassette und Probestück druckst. Gegenüber der ersten Probe ist sie rund viermal leichter, hat Fasen und braucht keine Stützen.</p>
+  <p class="lead">Eine flache Platte mit Taschen für deine Dupont-Buchse und die Winkel-Stiftleiste. Die Buchse ist nach der letzten Probe fast fertig (0,25 mm Spiel sitzt gut). Jetzt geht es um die Leiste: Ihr abgebrochener Körper ist etwa 0,5 mm länger, und die Stifte unter dem Körper brauchen mehr Platz. Dazu die kleinste Lochgröße für die Pins.</p>
 </header>
 
 <!-- ============================ DAS TEIL ============================ -->
 <section aria-labelledby="h1">
   <h2 id="h1"><span class="n">1</span>Das Teil</h2>
-  <p>Die Platte ist /*PW*/ × /*PL*/ × /*PH*/ mm groß und wiegt nur etwa 5 cm³ PLA (die erste Probe hatte 22 cm³). Es gibt vier Spalten. Oben auf jeder Spalte steht das Spiel je Seite (/*CL*/ mm), unter der Leistenreihe der Lochdurchmesser (/*HOLES*/ mm). Du druckst sie mit der <b>Schriftseite auf dem Bett</b>. Die Taschen sind dann nach oben offen, ohne Brücken und ohne Stützen. Die Zeichnung zeigt die Schriftseite, so siehst du sie, wenn du die gedruckte Platte wie ein Buch um die lange Kante umdrehst.</p>
+  <p>Die Platte ist /*PW*/ × /*PL*/ × /*PH*/ mm groß und wiegt etwa 5 cm³ PLA. Es gibt vier Spalten. Oben auf jeder Spalte steht das Spiel je Seite (/*CL*/ mm), unten der Lochdurchmesser (/*HOLES*/ mm). Du druckst sie mit der <b>Schriftseite auf dem Bett</b>. Die Taschen sind dann nach oben offen, ohne Brücken und ohne Stützen. Die Zeichnung zeigt die Schriftseite, so siehst du sie, wenn du die gedruckte Platte wie ein Buch um die lange Kante umdrehst.</p>
   <div class="fig">/*TOP*/</div>
   <ul style="margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px;max-width:72ch">
-    <li><span class="tag a">A</span><b>Buchse</b> (oben in der Ansicht): vier Taschen, die ganz durch die Platte gehen. Man sieht sie als Fenster. Der Taschenrand hat auf der Einsetzseite eine <b>45°-Fase von /*CH*/ mm</b>, die die Teile führt.</li>
-    <li><span class="tag b">B</span><b>Stiftleiste</b> (Mitte): vier Taschen für den Kunststoffkörper, 2,54 mm hoch, mit Fase. Auf der Schriftseite liegt darüber eine 0,8 mm dünne Decke mit vier Löchern für die Pins. Der <b>Lochdurchmesser ist je Spalte verschieden</b> (/*HOLES*/ mm, wie beim Blindloch der Spalte). Daneben ein flacher Raum für die Lötenden der Winkelleiste.</li>
-    <li><span class="tag c">C</span><b>Blindlöcher</b> (unten in der Ansicht): vier einzelne Löcher, 3,5 mm tief, mit /*HOLES*/ mm. Alle Löcher auf der Schriftseite haben eine <b>45°-Senkung von /*HCH*/ mm</b>. Sie fängt den Elefantenfuß am Bett ab, denn dort liegen die Lochränder in der ersten Schicht und würden sonst zuquellen.</li>
+    <li><span class="tag a">A</span><b>Buchse</b> (oben in der Ansicht): vier Taschen, die ganz durch die Platte gehen, mit 0,15 bis 0,30 mm Spiel. Der Rand hat auf der Einsetzseite eine <b>45°-Fase von /*CH*/ mm</b>.</li>
+    <li><span class="tag b">B</span><b>Stiftleiste</b> (unten in der Ansicht): vier Taschen für den Körper, mit Fase. Das Maß ist der gemessene Körper von /*HDRW*/ mm Länge plus Spiel. Auf der Schriftseite liegt darüber eine /*CEIL*/ mm dicke Decke mit vier Löchern für die Pins, mit <b>45°-Senkung von /*HCH*/ mm</b> gegen den Elefantenfuß am Bett. Daneben ein Raum für die Lötenden. Er reicht jetzt bis unter den Körper, damit die Biegung der Stifte (1 mm unter dem Körper) frei liegt.</li>
   </ul>
   <div class="fig">/*SECTION*/</div>
-  <p class="small muted">Schnitt, die drei Reihen nebeneinander gezeichnet (Spalte 2). Die Dreiecke unten an den Taschen sind die Fasen, die Teile sind so eingezeichnet, wie sie sitzen sollen. In der Zeichnung ist die Schriftseite oben, beim Druck liegt sie unten.</p>
+  <p class="small muted">Schnitt, beide Reihen nebeneinander gezeichnet (Spalte 2). Die Dreiecke an den Taschen sind die Fasen, die Teile sind so eingezeichnet, wie sie sitzen sollen. In der Zeichnung ist die Schriftseite oben, beim Druck liegt sie unten. Die Stifte gehen senkrecht durch den Körper, 1 mm darunter biegen sie ab, das Lötende zeigt zur Seite.</p>
 </section>
 
 <!-- ============================ DRUCKEN ============================ -->
 <section aria-labelledby="h2">
   <h2 id="h2"><span class="n">2</span>Drucken</h2>
   <div class="cols">
-    <div class="card"><h3>Lage</h3><p>Flach, die <b>Schriftseite liegt auf dem Bett</b>, die Taschen zeigen nach oben. Keine Stützen, kein Rand. Alle Überhänge sind höchstens 45°. Die Schrift ist von unten eingraviert und im Slicer gespiegelt, wenn du von oben schaust, das ist richtig so.</p></div>
-    <div class="card"><h3>Einstellungen</h3><p>0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände, Füllung 10 bis 15 %, PLA oder PETG. Bei diesem Teil gibt es kaum Innenraum, die Füllung spielt keine Rolle.</p></div>
-    <div class="card"><h3>Erste Schicht</h3><p>Nicht zu stark andrücken, sonst quillt der Rand der ersten Schichten in die Löcher. Die Senkung gleicht das aus. Notiere dir, falls du etwas dagegen eingestellt hast (zum Beispiel Elefantenfuß-Kompensation).</p></div>
+    <div class="card"><h3>Lage</h3><p>Flach, die <b>Schriftseite liegt auf dem Bett</b>, die Taschen zeigen nach oben. Keine Stützen, kein Rand. Alle Überhänge sind höchstens 45°. Die Schrift ist von unten eingraviert, im Slicer von oben gesehen ist sie gespiegelt, das ist richtig so.</p></div>
+    <div class="card"><h3>Einstellungen</h3><p>0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände, Füllung 10 bis 15 %, PLA oder PETG. Dieselben Einstellungen wie bei der letzten Probe, damit die Ergebnisse vergleichbar bleiben.</p></div>
+    <div class="card"><h3>Erste Schicht</h3><p>Nicht zu stark andrücken, sonst quillt der Rand der ersten Schichten in die Löcher. Die Senkung gleicht das aus.</p></div>
   </div>
-  <p class="note">Die Taschen nach dem Druck <b>nicht nacharbeiten</b>, auch wenn sie zu eng wirken. Das Ergebnis der Probe ist ja gerade, wie dein Drucker und dein Filament die Maße treffen. Zum Prüfen das Teil vollständig abkühlen lassen.</p>
+  <p class="note">Die Taschen nach dem Druck <b>nicht nacharbeiten</b>, auch wenn sie zu eng wirken. Zum Prüfen das Teil vollständig abkühlen lassen.</p>
 </section>
 
 <!-- ============================ MESSEN ============================ -->
 <section aria-labelledby="h3">
   <h2 id="h3"><span class="n">3</span>Teile messen</h2>
-  <p>Miss deine Teile mit der Schieblehre und trage die Werte ein. Weicht ein Maß um mehr als 0,15 mm vom Sollwert ab, gehört der gemessene Wert in die Konstante ganz rechts, oben in <code>steckmodul_dupont.py</code>. Die Sollwerte sind Datenblattwerte und teils abgeleitet, deine Teile können abweichen.</p>
+  <p>Miss deine Teile mit der Schieblehre und trage die Werte ein. Die Sollwerte sind aus deinen Angaben und dem Datenblatt. Weicht ein Maß um mehr als 0,15 mm ab, gehört der gemessene Wert in die Konstante ganz rechts, oben in <code>steckmodul_dupont.py</code>. Miss die Leiste am besten dort, wo die Stifte den Körper verlassen. Die Länge des Körpers ist am wichtigsten, weil sie von der Abbruchstelle abhängt. Du kannst die Abbruchstelle mit einer Feile glätten, dann wird der Körper wieder 10,16 mm lang.</p>
   <div class="scroll">
   <table>
     <thead><tr><th>Teil</th><th>Maß</th><th class="num">Soll mm</th><th>Gemessen mm</th><th class="num">Abweichung</th><th>Konstante</th></tr></thead>
@@ -144,11 +143,11 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   <h2 id="h4"><span class="n">4</span>Was wo hineinkommt</h2>
   <ol class="steps">
     <li><b><span class="tag a">A</span>Buchse in die vier Taschen der Reihe A</b>
-      Das Dupont-Gehäuse 1×4 wird <b>von der Taschenseite</b> (der Seite ohne Schrift) eingeschoben, mit der <b>Kabelseite zuerst</b>. Die Platte ist nur 5,4 mm dick, das Gehäuse 14 mm hoch. Es ragt also auf der Schriftseite heraus, das ist gewollt. Probiere von eng nach weit: Geht es überhaupt hinein, mit wie viel Kraft, und wie weit? Hält es, wenn du die Platte umdrehst und leicht klopfst?</li>
+      Das Dupont-Gehäuse 1×4 wird <b>von der Taschenseite</b> (der Seite ohne Schrift) eingeschoben, mit der <b>Kabelseite zuerst</b>. Probiere von eng nach weit: Geht es mit leichtem Daumendruck hinein? Hält es, wenn du die Platte umdrehst und leicht klopfst? Das ist nur noch eine Bestätigung, ob 0,15 oder 0,20 auch gehen.</li>
     <li><b><span class="tag b">B</span>Stiftleiste in die vier Taschen der Reihe B</b>
-      Ein Stück mit 4 Pins abbrechen (zwischen Pin 4 und Pin 5 mit der Flachzange über die Kante biegen). Die Leiste <b>von der Taschenseite</b> einschieben, die langen Pins zeigen voraus und gehen durch die vier Löcher in der Decke. Halte die Platte dafür in der Hand oder lege sie mit der Schriftseite über eine Tischkante, sonst stoßen die Pins auf den Tisch. Der Körper rutscht in die Tasche, bis er an der Decke anliegt. <b>Alle vier Pins müssen gleichzeitig durch die Löcher gehen.</b> Die Lötenden liegen im Raum daneben. Bei der Winkelleiste zeigen sie zur Seite, die Platte hat den Raum nur an einer Seite der Tasche: Dreh die Leiste, falls sie nicht hineingeht, und notiere es. Frage dich wie bei der Buchse: Hineingegangen? Wie viel Druck? Sitzt der Körper fest?</li>
-    <li><b><span class="tag c">C</span>Einen Pin in die Blindlöcher stecken</b>
-      Ziehe einen einzelnen Pin aus einer Leiste oder nimm einen losen Male-Crimp-Pin. Prüfe alle vier Löcher von der Schriftseite. Der Pin hat 0,64 mm Seitenlänge und damit 0,91 mm Diagonale. Prüfe auch, ob alle vier Pins der Leiste in einer Spalte gleichzeitig durch die Deckenlöcher gehen. Das zeigt, ab welchem Durchmesser der Pinabstand keine Rolle mehr spielt. Ein Loch mit 1,0 mm wäre also nur auf dem Papier groß genug, im Druck wird es meist enger. Deshalb fangen die Blindlöcher erst bei 1,2 mm an.</li>
+      Die Leiste <b>von der Taschenseite</b> einschieben, die langen Pins zeigen voraus, die Lötenden zeigen zur Seite des Raums (in der Zeichnung nach oben, zur Buchsenreihe hin). Die Pins gehen durch die vier Löcher in der Decke, der Körper rutscht in die Tasche, bis er an der Decke anliegt. Halte die Platte dafür in der Hand oder lege sie mit der Schriftseite über eine Tischkante, sonst stoßen die Pins auf den Tisch. Prüfe nacheinander: Geht der Körper in die Tasche? Gehen <b>alle vier Pins gleichzeitig</b> durch die Löcher? Passen die Lötenden in den Raum? Sitzt der Körper fest oder wackelt er?</li>
+    <li><b>Einzelnen Pin prüfen</b>
+      Steck einen einzelnen Pin oder die Leiste ohne Körper in ein Deckenloch. Das zeigt, ab welchem Durchmesser ein Pin ohne Kraft durchgeht, auch wenn die Leiste wegen des Körpers noch nicht in die Tasche passt.</li>
     <li><b>Zusätzlich, ohne Probe:</b>
       Stecke die Buchse von Hand auf einen Pin der Leiste und fühle die Kraft. Wenn schon das schwer geht, wird das Stecken im Gebäude auch schwer.</li>
   </ol>
@@ -161,12 +160,11 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   <table>
     <thead><tr><th>Beobachtung</th><th>Wert im Generator</th></tr></thead>
     <tbody>
-      <tr><td>Buchse oder Leistenkörper gehen <b>mit leichtem Daumendruck</b> hinein und bleiben beim Klopfen sitzen. Bei der Leiste müssen dabei alle vier Pins durch die Löcher gehen. Nimm die erste Spalte, bei der das gilt.</td><td>Spiel dieser Spalte wird <code>SNUG</code> (jetzt <span class="num">/*SNUG*/ mm</span>). Zusätzlich die Crush-Rippen <code>RIB</code> (jetzt <span class="num">/*RIB*/ mm</span>) anpassen, damit es fest genug sitzt.</td></tr>
-      <tr><td>Alle Taschen sind zu eng, auch <code>/*CLX*/</code>.</td><td>Etwas stimmt grundsätzlich nicht (Teile größer als angenommen oder Drucker stark übermaßig). Maße aus Schritt 3 eintragen und mir schicken.</td></tr>
-      <tr><td>Schon <code>/*CLN*/</code> passt locker oder fällt heraus.</td><td><code>SNUG</code> auf 0,2 und <code>RIB</code> auf 0,2 oder 0,25, damit die Rippen den Halt liefern.</td></tr>
-      <tr><td>Buchse und Leiste brauchen unterschiedliches Spiel.</td><td>Beide Werte notieren. Dann trenne ich <code>SNUG</code> in zwei Konstanten.</td></tr>
-      <tr><td>Ein Pin geht <b>ohne Kraft</b> durch ein Blindloch. Nimm das kleinste solche Loch.</td><td>Dieser Durchmesser wird <code>HOLE</code> (jetzt <span class="num">/*HOLE*/ mm</span>).</td></tr>
-      <tr><td>Die Leiste passt in die Tasche, aber die vier Pins treffen die Löcher in der Decke nicht, ein einzelner Pin geht aber durch ein Blindloch gleicher Größe.</td><td>Der Pinabstand deiner Leiste weicht ab. Miss den Abstand über alle vier Pins und schick ihn mir. Dann vergrößere ich die Löcher in der Decke oder verschiebe sie.</td></tr>
+      <tr><td>Buchse oder Leistenkörper gehen <b>mit leichtem Daumendruck</b> hinein und bleiben beim Klopfen sitzen. Nimm die erste Spalte, bei der das gilt.</td><td>Spiel dieser Spalte wird <code>SNUG</code> (jetzt <span class="num">/*SNUG*/ mm</span>). Dazu die Crush-Rippen <code>RIB</code> (jetzt <span class="num">/*RIB*/ mm</span>) anpassen, damit es fest genug sitzt.</td></tr>
+      <tr><td>Die Leiste geht erst in einer weiteren Spalte hinein als die Buchse.</td><td>Beide Werte notieren. Dann trenne ich <code>SNUG</code> in zwei Konstanten.</td></tr>
+      <tr><td>Der Körper geht hinein, aber die Lötenden stoßen an.</td><td>Miss den Abstand der Biegung vom Körper und die Länge der Lötenden und schick sie mir. Der Raum im Generator wird entsprechend größer.</td></tr>
+      <tr><td>Alle vier Pins gehen <b>ohne Kraft</b> durch die Deckenlöcher. Nimm die erste Spalte, bei der das gilt.</td><td>Dieser Durchmesser wird <code>HOLE</code> (jetzt <span class="num">/*HOLE*/ mm</span>). Die Senkung bleibt.</td></tr>
+      <tr><td>Ein einzelner Pin geht durch, alle vier gleichzeitig aber nicht.</td><td>Der Pinabstand deiner Leiste weicht ab (Pins schief). Miss den Abstand über alle vier Pins und schick ihn mir.</td></tr>
     </tbody>
   </table>
   </div>
@@ -177,23 +175,23 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   <h2 id="h6"><span class="n">6</span>Ergebnis an mich zurückgeben</h2>
   <p>Trage ein, was du gefunden hast, und kopiere den Text. Er enthält auch deine gemessenen Maße aus Schritt 3.</p>
   <div class="form">
-    <label for="r-b">Buchse: erste Spalte mit leichtem Druck
+    <label for="r-b">Buchse: kleinstes Spiel, das mit leichtem Druck passt
       <select id="r-b"><option value="">noch nicht geprüft</option>/*OPTS*/<option>keine passt</option></select></label>
-    <label for="r-l">Leiste: erste Spalte mit leichtem Druck
+    <label for="r-l">Leiste: kleinstes Spiel, bei dem der Körper mit leichtem Druck passt
       <select id="r-l"><option value="">noch nicht geprüft</option>/*OPTS*/<option>keine passt</option></select></label>
-    <label for="r-h">Kleinstes Blindloch, in das ein Pin ohne Kraft geht
-      <select id="r-h"><option value="">noch nicht geprüft</option>/*HOPTS*/<option>keins</option></select></label>
-    <label for="r-d">Leistenpins durch die Deckenlöcher: erste Spalte, in der alle vier ohne Kraft durchgehen
+    <label for="r-d">Alle vier Pins gehen ohne Kraft durch: erste Spalte, Lochdurchmesser
       <select id="r-d"><option value="">noch nicht geprüft</option>/*HOPTS*/<option>keine</option></select></label>
+    <label for="r-s">Lötenden im Raum
+      <select id="r-s"><option value="">noch nicht geprüft</option><option>passen frei</option><option>stoßen an</option></select></label>
   </div>
   <label for="r-n" style="font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:4px">Bemerkungen
-    <textarea id="r-n" placeholder="zum Beispiel: Buchse klemmt bei 0,25, fällt bei 0,33 heraus; Leiste ist eine Winkelleiste"></textarea></label>
+    <textarea id="r-n" placeholder="zum Beispiel: Leiste klemmt in Spalte 0,15, sitzt bei 0,25 fest; Körper ist 10,6 mm lang"></textarea></label>
   <div class="row"><button id="copy" type="button">Text kopieren</button><span class="small muted" id="copied" role="status"></span></div>
   <textarea id="out" readonly aria-label="Zusammenfassung zum Kopieren"></textarea>
 </section>
 
 <footer class="small muted" style="max-width:72ch">
-  Datei: <code>stl/steckmodul_probe/0_passprobe.stl</code>, erzeugt von <code>steckmodul_probe.py</code>. Maße der Kaufteile aus <code>steckmodul_dupont.py</code>, belegt oder geschätzt wie dort vermerkt.
+  Datei: <code>stl/steckmodul_probe/0_passprobe.stl</code>, erzeugt von <code>steckmodul_probe.py</code>. Maße der Kaufteile aus <code>steckmodul_dupont.py</code>, belegt, gemessen oder geschätzt wie dort vermerkt.
 </footer>
 
 </div>
@@ -212,18 +210,18 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   }
   function summary() {
     const lines = ['Passprobe, Ergebnis:'];
-    const b = $('r-b').value, l = $('r-l').value, h = $('r-h').value, dd = $('r-d').value;
+    const b = $('r-b').value, l = $('r-l').value, dd = $('r-d').value, sl = $('r-s').value;
     lines.push('- Buchse: ' + (b ? (b === 'keine passt' ? b : 'Spiel ' + b + ' mm') : 'nicht geprüft'));
-    lines.push('- Stiftleiste: ' + (l ? (l === 'keine passt' ? l : 'Spiel ' + l + ' mm') : 'nicht geprüft'));
-    lines.push('- Leistenpins durch die Deckenlöcher: ' + (dd || 'nicht geprüft'));
-    lines.push('- Loch für den Pin: ' + (h ? (h === 'keins' ? 'keins' : h + ' mm') : 'nicht geprüft'));
+    lines.push('- Stiftleiste, Körper: ' + (l ? (l === 'keine passt' ? l : 'Spiel ' + l + ' mm') : 'nicht geprüft'));
+    lines.push('- Alle vier Pins ohne Kraft durch die Deckenlöcher: ' + (dd ? (dd === 'keine' ? 'keine Spalte' : 'ab ' + dd + ' mm') : 'nicht geprüft'));
+    lines.push('- Lötenden im Raum: ' + (sl || 'nicht geprüft'));
     const m = inputs.filter((i) => i.value !== '').map((i) => i.dataset.k + ' = ' + i.value.replace('.', ',') + ' mm');
     lines.push('- Gemessen: ' + (m.length ? m.join(', ') : 'nichts eingetragen'));
     if ($('r-n').value.trim()) lines.push('- Bemerkung: ' + $('r-n').value.trim());
     $('out').value = lines.join('\n');
   }
   inputs.forEach((i) => i.addEventListener('input', () => { dev(i); summary(); }));
-  ['r-b', 'r-l', 'r-h', 'r-d'].forEach((id) => $(id).addEventListener('change', summary));
+  ['r-b', 'r-l', 'r-d', 'r-s'].forEach((id) => $(id).addEventListener('change', summary));
   $('r-n').addEventListener('input', summary);
   $('copy').addEventListener('click', () => {
     summary();

@@ -1,5 +1,11 @@
 # Steckmechanismus mit Dupont-Teilen (Plan B)
 
+> **Stand nach der Passprobe (v4):** Gemessen am eigenen Kit: Buchse sitzt mit 0,25 mm Spiel je Seite gut (`SNUG` 0,22), der Körper der
+> abgebrochenen Leiste ist etwa 0,5 mm länger (`HDR_W` 10,66), die Stifte stehen 7 ±0,5 mm über dem Körper (`HDR_UP` 7,0), die Biegung liegt
+> 1 ±0,5 mm unter dem Körper (`RA_BACK` 1,0), die Lötenden ragen 3 mm heraus. Pinlöcher gehen ab 1,2 mm ohne Kraft (`HOLE` 1,25).
+> Weil die Stifte so 1 mm länger sind, ist der Muldenboden 1,2 mm dick (`CEIL`), sonst würden sie am Ende des Kontaktkastens anstoßen.
+> Maßkette und Pinlöcher unten sind angepasst. Alle weiteren Zahlen liefert der Generator (`daten.json`, Ansichtsseite).
+
 Alternative zum JST-XH-Plan (`stecker/PLAN.md`): gleicher Zweck (Gebäude mit WS2812B-LED leuchtet,
 sobald es in der Grundplatte steckt), aber gebaut aus dem vorhandenen 2,54-mm-Dupont-Set
 (Preciva 1550 Teile). Gebäude haben immer einen Fuß, der in eine tiefe Mulde taucht.
@@ -58,8 +64,8 @@ No-Name, die Teile können um einige Zehntel abweichen. Alle Werte stehen oben i
 ## 2. Welche Stiftleiste, wie in der Platte?
 
 Alle drei Docks stehen im Prototyp nebeneinander (`platte_ABC.stl`). Der Steckerteil wird jeweils
-**von unten** in eine Tasche unter dem Muldenboden geschoben. Der 0,8 mm dicke Muldenboden hat
-vier Löcher mit 1,1 mm (Stiftdiagonale 0,91) und hält den Körper gegen Zug. Gegen den Steckdruck
+**von unten** in eine Tasche unter dem Muldenboden geschoben. Der 1,2 mm dicke Muldenboden hat
+vier Löcher mit 1,25 mm (Stiftdiagonale 0,91) und hält den Körper gegen Zug. Gegen den Steckdruck
 drückt ein Stempel des Deckels auf die Stirnenden des Körpers. Crush-Rippen (0,15 mm) halten das
 Teil, bis der Deckel zu ist.
 
@@ -98,12 +104,12 @@ Reihenfolge spiegelt der Generator die Belegung). Prüfregel vor dem ersten Stec
 
 | Größe | Wert | Rechnung |
 |---|---|---|
-| Stift über Muldenboden | 5,20 | 6,0 − 0,8 Muldenboden |
-| Fußhöhe = Muldentiefe F | **10,00** | 5,2 + 3,0 Führung + 0,8 Fußfase + 1,0 Muldenfase, auf Schichten gerundet |
+| Stift über Muldenboden | 5,80 | 7,0 − 1,2 Muldenboden |
+| Fußhöhe = Muldentiefe F | **10,60** | 5,8 + 3,0 Führung + 0,8 Fußfase + 1,0 Muldenfase, auf Schichten gerundet |
 | Trichterplatte | 1,00 | unter der Buchse, Trichter 2,4 → 1,1 mm |
-| Steckseite der Buchse | −9,00 | −F + 1,0 |
-| Einstecktiefe E | **4,20** | Stiftspitze −4,8 minus −9,0 |
-| Kabelseite der Buchse | 5,00 (Tasche bis 5,25) | −9,0 + 14,0 (+0,25 Toleranz) |
+| Steckseite der Buchse | −9,60 | −F + 1,0 |
+| Einstecktiefe E | **4,80** | Stiftspitze −4,8 minus −9,6 |
+| Kabelseite der Buchse | 4,40 (Tasche bis 4,65) | −9,6 + 14,0 (+0,25 Toleranz) |
 | Pausenebene | **6,60** | 5,25 + 1,0 Ader + 0,2 Luft, auf Schicht gerundet |
 | LED-Unterseite / Chip oben | 4,20 / 6,40 | Pausenebene − 0,2 − 2,2 |
 | Kammerboden | 4,60 | LED liegt 0,4 tief |
@@ -247,7 +253,7 @@ dem Gebäudeumriss; Dachflächen ab 45° drucken ohne Stützen, flachere Dächer
 | | Zug nach unten beim Ziehen | Trichterplatte unter der Steckseite | > 50 N (A) |
 | | seitlich, Klappern | Crush-Rippen an Stirnseiten und glatter Seite (0,15 mm). Die Seite mit den Rastfenstern bleibt frei, sonst drücken die Rippen die Rastzungen ein und die Kontakte rutschen heraus. | – |
 | Adern | Zug an der LED | Riegel klemmt die Adern auf der Buchse (Zugentlastung) | – |
-| Leiste in der Platte | Zug nach oben | Muldenboden 0,8 mm, Stifte durch 1,1-mm-Löcher | > 30 N (A) |
+| Leiste in der Platte | Zug nach oben | Muldenboden 1,2 mm, Stifte durch 1,25-mm-Löcher | > 30 N (A) |
 | | Druck nach unten | Stempel im Deckel unter den Körperenden | > 50 N (A) |
 | Gebäude | Herausziehen | Kontaktreibung 1,2 bis 4,0 N (S, 0,3 bis 1,0 N je Kontakt) + Federzunge 2,7 N axial (A) | **3,9 bis 6,7 N**, Ziel 3 bis 8 N |
 | | Stecken | 4,0 bis 8,0 N (S) + 2,7 N | 6,7 bis 10,7 N, Ziel < 15 N |
@@ -309,7 +315,7 @@ gepolter Stecker) oder wenn die Dupont-Kontakte im Test unter 3 N halten oder au
 | 1 | Passprobe, Maße nachmessen | Buchse sitzt in der 0,1-Tasche mit leichtem Druck, Leiste ebenso; Stift durch 1,1-Loch ohne Klemmen | Keine Tasche passt: Maße oben im Generator eintragen |
 | 2 | Kontakt bei 4,2 mm | Leiste mit 1,8-mm-Distanzstück in eine Buchse stecken: Durchgang stabil beim Wackeln | Aussetzer: `CEIL`/`FUNNEL_T` auf 0,6 senken (E = 4,6); bleibt es unsicher: JST-Plan |
 | 3 | Pausenprobe | Düse streift nichts, Buchse wackelt nicht, Ader hält 5 N | Streift: `WIRE_GAP` 0,4; Buchse lose: `RIB` 0,2 |
-| 4 | Platte mit Docks A, B, C, Deckel | Steckerteil hält 30 N Zug und 30 N Druck | Hält nicht: Muldenboden 1,2 mm, Stempel breiter |
+| 4 | Platte mit Docks A, B, C, Deckel | Steckerteil hält 30 N Zug und 30 N Druck | Hält nicht: Muldenboden 1,6 mm, Stempel breiter |
 | 5 | Würfel mit Pause, stecken | Stecken < 15 N, Ziehen 3–8 N, LED an, DETECT LOW | Ziehen < 3 N: Nase 0,6 mm oder Magnete; > 8 N: Nase 0,4 mm |
 | 6 | Kodierung | Gedrehter Würfel fällt nicht in die Mulde | – |
 | 7 | 50 Steckzyklen | Ziehkraft fällt um weniger als 30 %, kein Aussetzer | Aussetzer: Kontakte vergoldet kaufen oder JST |
