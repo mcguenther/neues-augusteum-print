@@ -56,7 +56,7 @@ MAX_FILAMENTE = 15      # Grenze PrusaSlicer (Bambu/Orca: 32)
 def used_colours(farben):
     """Alle verwendeten Farben mit Verwendungszweck: [(hex, text)]."""
     out = [(PLATTE, "Platte")]
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = farben.get(b["slug"])
         if not e:
             continue
@@ -113,6 +113,72 @@ def rgb255(c):
 
 def hexcol(rgb):
     return "#%02x%02x%02x" % tuple(int(round(v)) for v in rgb)
+
+
+# --------------------------------------------------------------------------
+# Profile für wenige Filamente (generate.py --filamente 3|4)
+# --------------------------------------------------------------------------
+# Die vollen 15 Filamente werden auf 3 bzw. 4 reduziert. Die Palette stammt aus der
+# Berechnung, welche Farben die Kontraste an Bändern und Fensterrändern am besten
+# erhalten (Beige = Stein/Platten/Platte, Blaugrau = Glas, Graphit = Sockel und dunkle
+# Bänder, Rotbraun = Brüstungsbänder, rote Dächer, Ziegel). Die Hex-Werte sind fest,
+# damit das Profil nicht von neu gemessenen Fassadenfarben abhängt.
+PROFILE = {
+    3: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit")],
+    4: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit"), ("#7d3937", "Rotbraun")],
+}
+PROFIL_HELL, PROFIL_GLAS = 0, 1   # Indizes in PROFILE: hellste Farbe, Glas-/Fensterfarbe
+# Fenster und Glas (Gebäude-Nr. + Farbname in data/fassaden/*.json) bleiben Blaugrau, auch
+# wenn eine helle Farbe näher läge – sonst verschwinden das Maßwerkfenster und die Rosette.
+PROFIL_FENSTER = ("01 fensterglas", "01 rosette_innen", "06 fassade")
+# Nur hier darf ein Dach Blaugrau sein. Bei den übrigen Gebäuden sind blaugraue Dachflächen im
+# Luftbild vor allem Schatten und werden hell (Beige).
+PROFIL_DACH_BLAU = ("01_paulinum", "02_neues_augusteum", "06_city_hochhaus")
+PROFIL_ROOF_NZ = 0.35   # wie fassaden.ROOF_NZ
+
+
+def profil_filamente(n):
+    """Filament-Liste des Profils im Format von data/farben.json (_filamente)."""
+    return [{"nr": i + 1, "rgb": c, "fuer": [name]} for i, (c, name) in enumerate(PROFILE[n])]
+
+
+def _lab(c):
+    v = rgb255(c) / 255
+    v = np.where(v <= 0.04045, v / 12.92, ((v + 0.055) / 1.055) ** 2.4)
+    xyz = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]]) @ v
+    xyz /= np.array([0.95047, 1.0, 1.08883])
+    f = np.where(xyz > 216 / 24389, np.cbrt(xyz), (24389 / 27 * xyz + 16) / 116)
+    return np.array([116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])])
+
+
+def reduziere(slug, eintrag, mesh, hexes, n):
+    """Bildet die Farben eines Gebäudes (Hex je Dreieck) auf das Profil mit n Filamenten ab.
+
+    slug     Gebäude (None = Platte), eintrag dessen Eintrag in data/farben.json
+    mesh     Netz mit den Dreiecken zu hexes (für die Dachflächen)
+    Regeln: nächste Profilfarbe (CIE-Lab), Fenster/Glas immer Blaugrau (PROFIL_FENSTER),
+    Dächer außer bei PROFIL_DACH_BLAU nie Blaugrau (dann Beige).
+    """
+    pal = PROFILE[n]
+    labs = [_lab(c) for c, _ in pal]
+    name_of = {v["rgb"].lower(): k for k, v in eintrag["farben"].items()} if eintrag else {}
+    roof = mesh.face_normals[:, 2] > PROFIL_ROOF_NZ
+    cache = {}
+    out = np.empty(len(hexes), dtype=object)
+    for i, (h, r) in enumerate(zip(hexes, roof)):
+        t = cache.get((h, r))
+        if t is None:
+            use = "%s %s" % (slug[:2], name_of.get(h.lower(), "")) if slug else ""
+            if use in PROFIL_FENSTER:
+                t = PROFIL_GLAS
+            else:
+                lab = _lab(h)
+                t = int(np.argmin([np.linalg.norm(lab - l) for l in labs]))
+            if r and t == PROFIL_GLAS and slug not in PROFIL_DACH_BLAU:
+                t = PROFIL_HELL
+            cache[(h, r)] = t
+        out[i] = pal[t][0]
+    return out
 
 
 def fetch(url, path):
@@ -199,6 +265,25 @@ def dop_sampler():
         r = np.clip(((y1 - uy) / WMTS_RES).astype(int), 0, H - 1)
         return img[r, c]
     return sample
+
+
+def dop_probe(p):
+    """Farbe einer Fläche im Luftbild: Median der beleuchteten Pixel (ohne die dunkelsten 35 %,
+    also weitgehend ohne Schlagschatten). p = {"polygon": [[x, y], ...]} lokal in m oder eine
+    benannte Fläche des Innenhofs ({"objekt": "beet"}, {"flaeche": "rand"}, siehe innenhof.py)."""
+    import innenhof
+    poly = innenhof.probe_polygon(p)
+    img, (x0, y0, x1, y1) = load_dop()
+    to_utm = lambda a: np.column_stack(lod2.local_to_utm(a[:, 0], a[:, 1]))
+    poly = shapely.transform(poly, to_utm)
+    minx, miny, maxx, maxy = poly.bounds
+    c0, c1 = int((minx - x0) / WMTS_RES), int((maxx - x0) / WMTS_RES) + 1
+    r0, r1 = int((y1 - maxy) / WMTS_RES), int((y1 - miny) / WMTS_RES) + 1
+    X, Y = np.meshgrid(x0 + (np.arange(c0, c1) + 0.5) * WMTS_RES, y1 - (np.arange(r0, r1) + 0.5) * WMTS_RES)
+    px = img[r0:r1, c0:c1][shapely.contains_xy(poly, X, Y)].astype(float)
+    lum = px @ [0.299, 0.587, 0.114]
+    lit = px[lum >= np.percentile(lum, 35)]
+    return dict(p, rgb=hexcol(np.median(lit, axis=0)), pixel=int(len(px)))
 
 
 def roof_colours(img, bounds, cells):
@@ -299,12 +384,25 @@ def measure_probe(p, katalog):
     return dict(p, rgb=hexcol(rgb), roh=hexcol(roh), **meta)
 
 
+MESSUNG = os.path.join(G.HERE, "data", "messung.json")
+
+
+def messung(slug):
+    """Eintrag des Gebäudes aus data/messung.json (farbmessung.py) oder None."""
+    if not os.path.exists(MESSUNG):
+        return None
+    return json.load(open(MESSUNG)).get("gebaeude", {}).get(slug)
+
+
 def building_colours(slug):
     """Gemessene Farben, Basis und Zonen eines Gebäudes aus data/fassaden/<slug>.json."""
     import fassaden
     spec = fassaden.load_spec(slug)
     if spec is None:
         return None
+    m = messung(slug)
+    if m:       # Ergebnis der Fotoprojektion (farbmessung.py): Farben und Zonen ersetzen die Handwerte
+        spec = dict(spec, farben=m["farben"], zonen=m["zonen"])
     katalog = fotos(spec)
     out = dict(basis=spec["basis"], zonen=spec.get("zonen", []), farben={})
     for k, f in spec["farben"].items():
@@ -312,9 +410,15 @@ def building_colours(slug):
             out["farben"][k] = dict(rgb=f["hex"].lower(), notiz=f.get("notiz", ""), quelle=f.get("quelle", "fest"))
             continue
         proben = [measure_probe(p, katalog) for p in f.get("proben", [])]
-        rgb = hexcol(np.median([rgb255(p["rgb"]) for p in proben], axis=0))
-        out["farben"][k] = dict(rgb=rgb, notiz=f.get("notiz", ""), quelle="Foto (%d Messfeld%s)"
-                                % (len(proben), "er" if len(proben) > 1 else ""), proben=proben)
+        luft = [dop_probe(p) for p in f.get("luftbild", [])]
+        rgb = hexcol(np.median([rgb255(p["rgb"]) for p in proben + luft], axis=0))
+        quelle = []
+        if proben:
+            quelle.append("Foto (%d Messfeld%s)" % (len(proben), "er" if len(proben) > 1 else ""))
+        if luft:
+            quelle.append("Luftbild 2024 (%d Fläche%s)" % (len(luft), "n" if len(luft) > 1 else ""))
+        out["farben"][k] = dict(rgb=rgb, notiz=f.get("notiz", ""), quelle=" + ".join(quelle), proben=proben,
+                                luftbild=luft)
     return out
 
 
@@ -405,11 +509,11 @@ def main():
         "fassade": "Straßenfotos (Panoramax, Wikimedia Commons; Lizenzen je Messfeld), Messfelder und Zonen in "
                    "data/fassaden/<slug>.json, Fotokatalog data/fotos.json"}}
     farben["_dachpalette"] = roof_palette(img, bounds, cells)
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = building_colours(b["slug"])
         if e is None:
             continue
-        e = dict(name=b["name"], dach=dach[b["slug"]]["rgb"], **e)
+        e = dict(name=b["name"], dach=dach[b["slug"]]["rgb"] if b["slug"] in dach else None, **e)
         e["fassade"] = e["farben"][e["basis"]]["rgb"]
         farben[b["slug"]] = e
     farben["_filamente"] = [dict(nr=i + 1, rgb=c, fuer=u) for i, (c, u) in enumerate(filamente(farben))]
@@ -418,7 +522,7 @@ def main():
     with open(FARBEN, "w") as f:
         json.dump(farben, f, indent=1, ensure_ascii=False)
     print("Farben ->", os.path.relpath(FARBEN, G.HERE))
-    for b in G.BUILDINGS:
+    for b in G.OBJEKTE:
         e = farben.get(b["slug"])
         if e:
             print("  %-22s %s" % (b["slug"], ", ".join("%s %s" % (k, v["rgb"]) for k, v in e["farben"].items())))
@@ -426,40 +530,69 @@ def main():
                                      for c in farben["_dachpalette"]))
     print("  Filamente: %d" % len(farben["_filamente"]))
     swatches(farben)
-    proben = [p for b in G.BUILDINGS if b["slug"] in farben
+    proben = [p for b in G.OBJEKTE if b["slug"] in farben
               for k, f in farben[b["slug"]]["farben"].items()
               for p in [dict(q, gebaeude=b["slug"], farbe=k) for q in f.get("proben", [])]]
-    probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
-    write_sources(proben)
+    if proben:
+        probe_sheet(proben, os.path.join(G.HERE, "vorschau", "farben_fotoproben.jpg"))
+    write_sources()
 
 
 QUELLEN_MD = os.path.join(G.HERE, "FOTOQUELLEN.md")
 
 
-def write_sources(proben):
-    """FOTOQUELLEN.md: alle verwendeten Fotos mit Urheber, Lizenz und Verwendung."""
-    fotos = {}
-    for p in proben:
-        f = fotos.setdefault(p["bild"], dict(p, verwendung=set()))
-        f["verwendung"].add("%s %s" % (p["gebaeude"][:2], p["farbe"]))
+def write_sources(_proben=None):
+    """FOTOQUELLEN.md: alle verwendeten Fotos mit Urheber, Lizenz und Verwendung.
+
+    1. Fotoprojektion (farbmessung.py, data/messung.json): die Fotos, aus denen die Fassadenfarben
+       neu bestimmt wurden (Katalog data/messfotos.json).
+    2. Handmessung (Altbestand): Fotos, aus denen die übrigen, unverändert übernommenen Farben stammen
+       (data/fassaden/*.json, Feld proben_alt)."""
+    import fassaden
     lines = ["# Fotoquellen der Fassadenfarben", "",
-             "Automatisch erzeugt von `farben.py`. In diesen Fotos wurden die Fassadenfarben gemessen",
-             "(Messfelder siehe `vorschau/farben_fotoproben.jpg` und `vorschau/fassaden/*_fotos.jpg`).",
-             "Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz des jeweiligen Fotos",
-             "(CC BY-SA: Weitergabe unter gleichen Bedingungen).", "",
-             "| Foto | Urheber | Lizenz | Datum | verwendet für |", "|---|---|---|---|---|"]
-    for pid, f in sorted(fotos.items(), key=lambda kv: (kv[1]["urheber"], kv[0])):
-        lines.append("| [%s](%s) | %s | %s | %s | %s |" % (pid, f["url"], f["urheber"], f["lizenz"], f["datum"],
-                                                       ", ".join(sorted(f["verwendung"]))))
+             "Automatisch erzeugt von `farben.py`. Die Vorschaubilder mit Fotoausschnitten stehen unter der Lizenz",
+             "des jeweiligen Fotos (CC BY / CC BY-SA: Namensnennung, bei BY-SA Weitergabe unter gleichen Bedingungen).", ""]
+    mess = json.load(open(MESSUNG)) if os.path.exists(MESSUNG) else None
+    n1 = 0
+    if mess:
+        kat = json.load(open(os.path.join(G.HERE, "data", "messfotos.json")))["fotos"]
+        lines += ["## Fotoprojektion (Farbmessung am 3D-Modell)", "",
+                  "Das Modell wurde in jedes dieser Fotos projiziert (`kamera.py`, `registrierung.py`), die Pixel sind so",
+                  "den Wandflächen zugeordnet (`farbmessung.py`). Pose, Aufnahmezeit und Belichtung je Foto: `data/messfotos.json`,",
+                  "`data/messung.json`.", "",
+                  "| Foto | Urheber | Lizenz | Datum | Quelle |", "|---|---|---|---|---|"]
+        for fid, info in mess["fotos"].items():
+            e = kat[fid]
+            lines.append("| [%s](%s) | %s | %s | %s | %s |" % (fid, e["seite"], e["urheber"], e["lizenz"], (e.get("zeit") or e.get("datum", ""))[:10],
+                                                                e["quelle"]))
+            n1 += 1
+        lines.append("")
+    alt = {}
+    for b in G.OBJEKTE:
+        spec = fassaden.load_spec(b["slug"])
+        if not spec:
+            continue
+        katalog = {**json.load(open(FOTOS))["bilder"], **spec.get("bilder_alt", spec.get("bilder", {}))}
+        for k, fa in spec["farben"].items():
+            for p in fa.get("proben_alt", fa.get("proben", [])):
+                e = katalog.get(p["bild"])
+                if e and "seite" in e:
+                    alt.setdefault(p["bild"], dict(e, verwendung=set()))["verwendung"].add("%s %s" % (b["slug"][:2], k))
+    if alt:
+        lines += ["## Handmessung (Altbestand, für nicht neu gemessene Farben übernommen)", "",
+                  "| Foto | Urheber | Lizenz | Datum | verwendet für |", "|---|---|---|---|---|"]
+        for pid, e in sorted(alt.items(), key=lambda kv: (kv[1]["urheber"], kv[0])):
+            lines.append("| [%s](%s) | %s | %s | %s | %s |" % (pid, e["seite"], e["urheber"], e["lizenz"], e.get("datum", ""),
+                                                           ", ".join(sorted(e["verwendung"]))))
     with open(QUELLEN_MD, "w") as fh:
         fh.write("\n".join(lines) + "\n")
-    print("  Quellen:", os.path.relpath(QUELLEN_MD, G.HERE), "(%d Fotos)" % len(fotos))
+    print("  Quellen:", os.path.relpath(QUELLEN_MD, G.HERE), "(%d Fotos Projektion, %d Altbestand)" % (n1, len(alt)))
 
 
 def swatches(farben):
     """Übersicht: Farben je Gebäude mit Filament-Nummer, Dachpalette (vorschau/farben.png)."""
     from preview import font, NAMES, OUT, BG
-    rows = [b["slug"] for b in G.BUILDINGS if b["slug"] in farben]
+    rows = [b["slug"] for b in G.OBJEKTE if b["slug"] in farben]
     cw = 118
     ncol = max(len(farben[s]["farben"]) for s in rows)
     W, rh = max(1100, 300 + cw * max(ncol, len(farben["_dachpalette"]))), 96

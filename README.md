@@ -71,6 +71,7 @@ denselben Bildmaßstab; bei 1:1500 sind alle Maße ⅔ so groß.
 <tr><td valign="middle"><b>05 Institutsgebäude</b><br><sub>Wirtschaftswiss. Fakultät, Grimmaische Str. 12</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_osm.png" alt="Institutsgebäude, OpenStreetMap" width="202"><br><sub>105 × 48 × 18 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_lod2.png" alt="Institutsgebäude, LoD2 Stadt Leipzig" width="202"><br><sub>106 × 45 × 31 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_laserscan.png" alt="Institutsgebäude, Laserscan GeoSN" width="201"><br><sub>105 × 45 × 32 mm</sub></td></tr>
 <tr><td valign="middle"><b>06 City-Hochhaus</b> <sup>Extra</sup><br><sub>„Uniriese“</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_osm.png" alt="City-Hochhaus, OpenStreetMap" width="83"><br><sub>48 × 45 × 155 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_lod2.png" alt="City-Hochhaus, LoD2 Stadt Leipzig" width="83"><br><sub>47 × 46 × 142 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_laserscan.png" alt="City-Hochhaus, Laserscan GeoSN" width="83"><br><sub>47 × 46 × 145 mm</sub></td></tr>
 <tr><td valign="middle"><b>07 Moritzbastei</b> <sup>Extra</sup><br><sub>historische Bastion</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_osm.png" alt="Moritzbastei, OpenStreetMap" width="202"><br><sub>67 × 65 × 4 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_lod2.png" alt="Moritzbastei, LoD2 Stadt Leipzig" width="202"><br><sub>67 × 64 × 6 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_laserscan.png" alt="Moritzbastei, Laserscan GeoSN" width="202"><br><sub>67 × 64 × 9 mm</sub></td></tr>
+<tr><td valign="middle"><b>08 Innenhof</b><br><sub>Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_osm.png" alt="Innenhof, OpenStreetMap" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_lod2.png" alt="Innenhof, LoD2 Stadt Leipzig" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_laserscan.png" alt="Innenhof, Laserscan GeoSN" width="202"><br><sub>54 × 95 × 15 mm</sub></td></tr>
 </table>
 <!-- /AUTO:gebaeude -->
 
@@ -82,6 +83,44 @@ eingetragen; LoD2/Laserscan enden an der Dachkrone (142–145 m).
 Paulinum und Neues Augusteum bilden in echt einen zusammenhängenden Baukörper;
 hier sind sie getrennt, passen aber Kante an Kante zusammen. Bei LoD2/Laserscan
 verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
+
+## Innenhof (Leibnizforum)
+
+Der Innenhof zwischen Paulinum/Neuem Augusteum, Seminar-, Hörsaal- und
+Institutsgebäude ist ein eigenes Druckteil `08_innenhof` (gehört zum Campus):
+
+<p align="center"><img src="vorschau/readme/08_laserscan.png" alt="Innenhof (Leibnizforum), Laserscan, 1:1000"></p>
+
+Die Höhen sind dieselben für alle drei Quellen; nur der Rand des Hofteils folgt den
+Gebäudegrundrissen der jeweiligen Quelle (Maße 1:1000 ca. 54 × 95 × 15 mm, mit Bäumen).
+
+- **Höhenlage**: Der Hof liegt 2,3 m über dem Straßenniveau, auf dem die Gebäude
+  stehen (Laserscan: Hof 116,8 m, Gebäudesockel im LoD2 114,5 m ü. NHN; zur
+  Grimmaischen Straße führen 19 Stufen hinab). Das Teil ist deshalb ein Podest; vor
+  Hörsaal- und Seminargebäude liegt eine Terrasse 0,7 m höher (Treppe in den Hof).
+- **Objekte** (im Laserscan GeoSN 2023 gemessen, `werkzeuge/innenhof_messen.py` →
+  `data/innenhof.json`): 6 Hochbeete (6,3 × 3,3 m, 0,5 m hoch), 4 Sitzpodeste
+  (3,3 × 3,3 m, 0,5 m), 9 Einzelbänke, das **Leibnizdenkmal** (Granitsockel,
+  Bronze-Postament, stehende Figur; Spitze 6,1 m über dem Hof) und die drei
+  **Gleditschien** vor dem Augusteum (9–11 m hoch, Krone als Doppelkegel mit
+  45°-Unterseite, damit sie ohne Stützen druckbar ist).
+- **Vereinfachung**: Kleine Objekte werden auf 0,8 mm Breite und 0,4 mm Höhe
+  gebracht; Laternen und Poller fehlen. Die Hofgrenze ist die Fläche auf Hofniveau
+  innerhalb der OSM-Fußgängerfläche; die Passagen zur Universitätsstraße und zum
+  Augustusplatz gehören nicht dazu.
+- **Einsetzen**: Die Hofplatte ist 1 mm tiefer als die Oberkante der Platte und
+  steckt in der Grundplatte in einer eigenen Aussparung; im Komplettmodell ist sie
+  in die Sockelplatte eingelassen. Bäume über den Gebäudekanten sind am Hofrand
+  abgeschnitten, damit die Gebäude daneben passen.
+- **Farben**: Pflaster, Platz, Beete, Podeste und Bänke von oben im Luftbild 2024
+  gemessen; Denkmal (Bronze fast schwarz, Granit rötlich-grau, helles Mosaik um den
+  Sockel), Beetwände, Holzauflagen und Baumkronen in Fotos (Wikimedia Commons,
+  u. a. ein 360°-Panorama aus dem Hof). Weil höchstens 15 Filamente erlaubt sind,
+  teilen sich Hof und Gebäude Filamente: Beete und Podeste bekommen dasselbe
+  Holzbraun, und zwei blaugraue Töne an Paulinum und Augusteum fallen mit
+  benachbarten Grautönen zusammen, damit die Baumkronen grün bleiben.
+- Das **Schinkeltor** ist heute der Westeingang des Neuen Augusteums und gehört
+  deshalb zur Augusteum-Fassade (Sandstein-Zone), nicht zum Hofteil.
 
 ## Grundplatte zum Einsetzen
 
@@ -114,11 +153,12 @@ Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 
 | Datei | Inhalt |
 |-------|--------|
-| `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert |
+| `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert (dazu `08_innenhof.stl`) |
 | `komplett_campus*.stl` | Alle Campusgebäude auf einer 2 mm Sockelplatte, in einem Stück |
 | `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese und Moritzbastei |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |
 | `komplett_*_objekte.3mf` | Sockelplatte und Gebäude als **getrennte Objekte** an der richtigen Position, **mehrfarbig vorbereitet**: jedes Gebäude hat sein Fassaden-Filament, die Dächer sind mit dem Dach-Filament vorbemalt (siehe [Mehrfarbig drucken](#mehrfarbig-drucken)) |
+| `komplett_*_objekte_3filamente.3mf`, `…_4filamente.3mf` | dasselbe mit nur 3 bzw. 4 Filamenten (nur Laserscan mit Extras, siehe [Mit nur 3 oder 4 Filamenten](#mit-nur-3-oder-4-filamenten)) |
 
 Die Platten tragen eine eingravierte Beschriftung (mit Quellenangabe) und einen Nordpfeil.
 
@@ -177,37 +217,44 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
 
 ![Farbig vom Augustusplatz](vorschau/vergleich_farbig_ost.png)
 
-- **Fassaden** (`data/fassaden/<gebäude>.json`): benannte Farben, jede gemessen als
-  Median über Bildausschnitte aus offen lizenzierten **Straßenfotos**
-  (Fotokatalog `data/fotos.json`: Panoramax, Wikimedia Commons inkl. einer
-  360°-Fahrt durch die Universitätsstraße, die `farben.py` selbst in normale
-  Ansichten umrechnet), mit Weißabgleich am grauen Pflaster in derselben
-  Beleuchtung. Dazu die **Zonen**: Höhe über Gelände, Fassadenseite
-  (Himmelsrichtung) und Abschnitt entlang der Fassade; außerdem runde Flächen
-  (`kreis`, z. B. die Rosette am Paulinum) und Spitzbögen (`bogen`, z. B. Blende
-  und Maßwerkfenster des Paulinum-Giebels), die als feine Treppe angenähert
-  werden. Lage und Größe solcher Elemente lassen sich aus einem Foto mit einem
-  Kameramodell bestimmen (Giebelkontur aus LoD2 + Foto,
-  `werkzeuge/rosette_kamera.py`). Wo die Fotos eine Fläche nur im Schatten oder
-  mit Spiegelungen zeigen, steht statt der Messung eine feste Farbe (`hex`) mit
-  Begründung (`quelle`). Format und
-  Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in
-  `vorschau/fassaden/`.
+- **Fassaden** (`data/fassaden/<gebäude>.json`, `data/messung.json`): Die **Zonen** (Höhe über
+  Gelände, Fassadenseite, Abschnitt entlang der Fassade; außerdem runde Flächen `kreis`, z. B.
+  die Rosette am Paulinum, und Spitzbögen `bogen`, die als feine Treppe angenähert werden) sind
+  von Hand gesetzt, ebenso die Rückfallfarben (`hex`, aus der früheren Handmessung an Fotos).
+  Format und Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
+  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude und City-Hochhaus (beim
+  Seminargebäude einzelne Zonen) kommen aus der **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
+  lizenzierte Fotos projiziert (Katalog `data/messfotos.json`: Flickr/Openverse und andere, Pose
+  über die Himmelslinie bestimmt, `registrierung.py`, `skyline.py`, `kamera.py`). Jedes Pixel gehört
+  so zu einer Wandzelle (1 m × 1 m, dieselben Koordinaten wie die Zonen). Aus der Aufnahmezeit
+  folgt der Sonnenstand, nur besonnte Zellen zählen (`farbmessung.py`). Über alle Fotos entsteht ein
+  Konsens, eine Guillotine-Zerlegung findet Flächen gleicher Farbe, die als neue Zonen über den
+  handgesetzten liegen (`fest`-Zonen wie Bögen, Portal und das weiße Audimax bleiben oben).
+  Wo kein besonntes Foto vorliegt, bleibt die bisherige Farbe. Gegenüberstellung alt/neu aus
+  derselben Kamera wie im Foto: [`vorschau/farbvergleich/index.html`](vorschau/farbvergleich/index.html)
+  (Runde 1, 13 Fotos); Runde 2 mit 23 Fotos und 3D-Modell vorher/nachher:
+  [`vorschau/farbvergleich_runde2/index.html`](vorschau/farbvergleich_runde2/index.html).
 - **Dächer**: [Luftbild 2024 der Stadt Leipzig](https://opendata.leipzig.de/dataset/luftbild-2024-20-cm-bodenauflosung-stadt-leipzig)
   (20 cm, dl-de/by-2-0). Daraus werden wenige typische Dachfarben bestimmt
   (Dachpalette, k-means); jede Dachfläche bekommt die Klasse, die das Luftbild an
   ihr zeigt (rote Dächer, helle und dunkle Flachdächer, Glas).
-- `python3 farben.py` misst alles neu und schreibt `data/farben.json`;
-  `generate.py` macht das automatisch, wenn sich Fassaden- oder Fotodaten geändert
-  haben.
+- `python3 farbmessung.py messen` misst die Fassadenfarben aus den registrierten Fotos neu
+  (`data/messung.json`; Fotos hinzufügen und ausrichten: `registrierung.py`);
+  `python3 farben.py` setzt daraus `data/farben.json` zusammen. `generate.py` macht Letzteres
+  automatisch, wenn sich Fassaden- oder Messdaten geändert haben.
 
 ![Farben](vorschau/farben.png)
 
-![Messfelder](vorschau/farben_fotoproben.jpg)
+![Foto, altes Modell, neues Modell aus derselben Kamera](vorschau/farbvergleich/vergleich_romero.jpg)
 
-Die Farben sind Anhaltswerte (Fotos im Schatten, Glas spiegelt); die Lage der
-Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa ±0,5–1 m,
-Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
+Die Farben sind Anhaltswerte: Die Fotos stimmen untereinander nur grob überein (Belichtung,
+spiegelndes Glas, Ausrichtung auf einige Meter), die Messung zeigt die Richtung (hell statt
+schwarz, Audimax weiß), nicht den letzten Farbton. Moritzbastei und Innenhof haben keine
+registrierbaren sonnigen Fotos und behalten die Werte der früheren Handmessung. Das Hörsaalgebäude
+bleibt unverändert. Die weißen Platten von Hörsaal-, Seminar- und Institutsgebäude behalten ebenfalls den
+hellen Wert der Handmessung (`beibehalten` in den Fassadendateien), weil das Mittel über Platten und
+Fenster zu grau wurde. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
+±0,5–1 m, Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
 
 ## Mehrfarbig drucken
 
@@ -236,6 +283,45 @@ zusammenlegen), in PrusaSlicer braucht es ein Mehrfarb-Druckerprofil (MMU/XL).
 Wer weniger Filamente hat, ordnet einfach mehreren Nummern dasselbe Filament zu.
 Cura liest keine Farben aus 3MF.
 
+### Mit nur 3 oder 4 Filamenten
+
+Wer keine 15 Filamente hat (ein AMS fasst 4), nimmt die reduzierten Dateien
+`komplett_campus_mit_extras_objekte_3filamente.3mf` bzw. `…_4filamente.3mf`
+(Laserscan, beide Maßstäbe). Es sind dieselben Objekte, nur mit weniger Farben; die
+Filament-Nummern sind hier 1–3 bzw. 1–4.
+
+![Vergleich: alle Farben, 4 und 3 Filamente](vorschau/filamente_vergleich.png)
+
+| Nr. | Filament | Wo |
+|----|----------|----|
+| 1 | Beige `#e4e0d8` | Stein, helle Platten, Sockelplatte |
+| 2 | Blaugrau `#778f93` | Glas und Fenster (Maßwerkfenster und Rosette am Paulinum), Glasfassade des Uniriese, Dächer von Paulinum, Neuem Augusteum und Uniriese |
+| 3 | Graphit `#42494f` | Sockel, dunkle Bänder und Fensterbänder, dunkles Glas |
+| 4 | Rotbraun `#7d3937` (nur 4 Filamente) | Brüstungsbänder, rote Wandflächen und Dächer, Ziegel der Moritzbastei |
+
+Die Palette ist so gewählt, dass die **Kontraste an den Kanten zwischen Zonen** erhalten
+bleiben, also die hellen und dunklen Bänder (z. B. am Seminargebäude) und die Fenster,
+und nicht so, dass jeder Farbton stimmt. Dafür gelten drei Regeln (`PROFILE` und
+`PROFIL_*` in `farben.py`):
+
+- Jede Farbe wird der nächsten Profilfarbe zugeordnet (CIE-Lab).
+- Fenster und Glas sind immer Blaugrau. Nach dem Nächste-Farbe-Prinzip würden sie sonst
+  zu Beige und verschwinden im Giebel.
+- Die Dächer von Hörsaal-, Seminar- und Institutsgebäude und der Moritzbastei sind nie
+  Blaugrau: Das Blaugrau im Luftbild ist dort vor allem Schatten, die Dächer werden
+  Beige. Rote Dächer bleiben bei 4 Filamenten rotbraun.
+
+Was verloren geht: die weiße Blende um das Maßwerkfenster (Weiß und Beige sind eine
+Farbe), und bei 3 Filamenten verschmilzt das rotbraune Band mit dem Graphit des Sockels.
+Das Band ist bei 1:1500 nur etwa 0,5 mm hoch, für Bänder und Fenster lohnt eher 1:1000.
+Grob geschätzt (aus den bemalten Außenflächen, 0,2-mm-Lagen, 1:1500) sinkt die Zahl der
+Farbwechsel von etwa 2300 auf etwa 740 (3 Filamente) bzw. 820 (4 Filamente). Das bleibt
+viel Spülabfall und Druckzeit.
+
+Weitere Quellen und Varianten gibt es auf Anfrage mit
+`python3 generate.py --filamente 3 --filamente 4` (für alle gewählten Quellen und
+Varianten, jede Datei ca. 2–6 MB).
+
 ## Druckhinweise
 
 - Material: PLA, 0,4-mm-Düse, Schichthöhe 0,12–0,2 mm.
@@ -256,10 +342,12 @@ Cura liest keine Farben aus 3MF.
 pip install -r requirements.txt
 python3 generate.py                     # alle Quellen, 1:1000 und 1:1500
 python3 generate.py --quelle laserscan  # nur eine Quelle (mehrfach angebbar)
+python3 generate.py --filamente 3       # zusätzlich 3MF mit nur 3 (oder 4) Filamenten
 python3 generate.py --scale 750         # anderer Maßstab (mehrfach angebbar)
 python3 generate.py --fetch             # Quelldaten neu laden (LoD2 130 MB, Laserscan 240 MB)
 python3 farben.py                       # Farben neu messen (data/farben.json)
 python3 fassaden.py 03_hoersaalgebaeude # Prüfansicht der Fassaden-Zonen eines Gebäudes
+python3 werkzeuge/innenhof_messen.py    # Innenhof-Objekte im Laserscan neu messen
 python3 preview.py                      # nur Vorschau- und README-Bilder neu rendern
 python3 readme.py                       # nur die automatischen Blöcke der README aktualisieren
 python3 preview.py datei.stl --azim -90 --elev 40   # eigene Ansicht einer Datei
@@ -286,9 +374,10 @@ Plattendicke, Bettgröße) stehen oben in `generate.py`, die Laserscan-Parameter
   Bodenordnung, [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
 - Laserscandaten: © Landesamt für Geobasisinformation Sachsen (GeoSN),
   [dl-de/by-2-0](https://www.govdata.de/dl-de/by-2-0).
-- Straßenfotos für die Fassadenfarben: Panoramax und Wikimedia Commons, Urheber,
-  Lizenz (CC0, CC BY, CC BY-SA) und Link je Foto in [`FOTOQUELLEN.md`](FOTOQUELLEN.md).
-  Die Vorschaubilder mit Fotoausschnitten (`vorschau/farben_fotoproben.jpg`,
-  `vorschau/fassaden/*_fotos.jpg`) stehen unter der Lizenz des jeweiligen Fotos.
+- Fotos für die Fassadenfarben: Flickr (über Openverse), Panoramax und Wikimedia Commons,
+  Urheber, Lizenz (CC0, CC BY, CC BY-SA) und Link je Foto in [`FOTOQUELLEN.md`](FOTOQUELLEN.md).
+  Die Vorschaubilder mit Fotoausschnitten (`vorschau/farbvergleich/`, `vorschau/fassaden/*_fotos.jpg`)
+  stehen unter der Lizenz des jeweiligen Fotos. Urheberrechtlich geschützte Profi-Fotos werden
+  nicht verwendet.
 
 Die erzeugten Modelle sind abgeleitete Werke; bei Weitergabe bitte die Quellen nennen.

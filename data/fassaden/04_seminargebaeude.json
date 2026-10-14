@@ -3,7 +3,8 @@
   "wabenplatten": {
    "notiz": "weiße Wabenplatten",
    "hex": "#eeebe7",
-   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+   "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)",
+   "beibehalten": "Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2)"
   },
   "band_rotbraun": {
    "notiz": "rotbraunes Brüstungsband über dem Sockel",
@@ -22,7 +23,7 @@
   },
   "glasfassade": {
    "notiz": "Glasbau am Eingang (Pfosten-Riegel-Fassade, blau spiegelnd)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "04_seminar_3",
      "box": [
@@ -43,7 +44,9 @@
      ],
      "notiz": "Glasbau, oberer Teil (Foto 4)"
     }
-   ]
+   ],
+   "hex": "#60769c",
+   "quelle": "Foto (2 Messfelder)"
   }
  },
  "basis": "wabenplatten",
@@ -173,7 +176,7 @@
    ]
   }
  ],
- "bilder": {
+ "bilder_alt": {
   "04_seminar_4": {
    "gebaeude": "04_seminargebaeude",
    "titel": "File:Mapillary (osmplus org) 2025-10-02 09H41M26S000 (801079682620035 at UXjkI5V2TNfplbYdaSq18H).jpg",

@@ -19,6 +19,22 @@ falls etwas fehlt:
 pip install -r requirements.txt
 ```
 
+## Laufzeit / Schnelllauf
+
+Ein voller `python3 generate.py` brauchte früher ~24 min, fast alles davon im
+Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: ~5 min auf
+4 Kernen (alle Optimierungen ergeben dasselbe Ergebnis; Details und Messung:
+`werkzeuge/performance/`).
+
+- **Zum Testen/Iterieren: `python3 generate.py --fast`** – gleiche Daten, aber Laser-Raster
+  0,6 statt 0,3 m, Vorschau ohne Kantenglättung, nur Maßstab 1:1500, keine
+  README-/Fassaden-/Vergleichsbilder (~1,5 min). Schreibt nach `stl-fast/` und
+  `vorschau-fast/` (nicht eingecheckt, fasst `stl/` und `vorschau/` nicht an). Mit
+  `--quelle laserscan` / `--scale 1000` weiter eingrenzbar. Für Bilder im Chat reicht das.
+- Vor dem Commit der echten Ausgaben (`stl/`, `vorschau/`, README) den vollen Lauf ohne `--fast`.
+- `--jobs N` begrenzt die Prozesse (Standard: alle Kerne, `--jobs 1` seriell); am Ende
+  druckt `generate.py` die Laufzeit je Phase.
+
 ## Vorschaubilder im Chat – immer
 
 Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
@@ -37,7 +53,10 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
      `vorschau/vergleich_farbig_ost.png`
    - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
    - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
-   - Farben: `vorschau/farben.png`, Messfelder `vorschau/farben_fotoproben.jpg`
+   - Farben: `vorschau/farben.png`, Gegenüberstellung Foto | alt | neu `vorschau/farbvergleich/index.html`
+     (und die Bilder darin)
+   - Profile mit 3/4 Filamenten: `vorschau/filamente_vergleich.png` (alle Farben | 4 | 3, je
+     Gesamtmodell, Seminargebäude-Bänder, Paulinum-Fenster), `vorschau/laserscan/1zu1500/komplett_campus_mit_extras_farbig_ost_<N>filamente.png`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -52,12 +71,30 @@ Die gerenderten Bilder in `vorschau/` werden mit committet.
 `generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
 Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
-Farben: je Gebäude `data/fassaden/<slug>.json` (Farben mit Messfeldern in Fotos +
-Fassaden-Zonen), Fotokatalog `data/fotos.json` (Panoramax/Wikimedia Commons; Commons
-drosselt geteilte IPs, `farben.py` wiederholt dann mit Wartezeit). `farben.py` misst
-alles und schreibt `data/farben.json` (macht `generate.py` automatisch bei Änderungen).
+Farben: je Gebäude `data/fassaden/<slug>.json` (handgesetzte Zonen + Rückfallfarben als `hex`;
+die alten Messfelder stehen als `proben_alt`). Die Fassadenfarben von Paulinum, Neuem Augusteum,
+Institutsgebäude und City-Hochhaus (Seminargebäude: nur einzelne Zonen) kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
+(liest `data/messfotos.json`, schreibt `data/messung.json`). Neue Fotos aufnehmen und ausrichten:
+`registrierung.py suche [--seeds=3] <id>` (Pose per Himmelslinie plus Kantenabgleich), Überlagerung ansehen
+(`registrierung.py pruefen <id>`, vollständig ansehen, nicht nur im Kontaktbogen), bei Passung `"geprueft": true` im
+Katalog setzen, sonst `"verworfen": "<Grund>"`. Eine gemessene Farbe lässt sich in `data/fassaden/<slug>.json` mit
+`"beibehalten": "<Grund>"` auf dem Wert der Handmessung festhalten (so bleiben die weißen Platten von Hörsaal-, Seminar- und
+Institutsgebäude hell, das Mittel über Platten und Fenster wurde zu grau); Flächen darüber gelten nur ab ΔE 25 (`HALTEN_MIN_DE`). Fotos aus einer Recherche (Flickr/Commons über Openverse) übernimmt
+`werkzeuge/farbmessung/katalog_recherche.py <katalog.json> <nr> …`. Panoramax lieferte nur beschattete Fassaden. Wikimedia drosselt geteilte IPs (die Commons-API
+liefert 429; Seiten und `thumb.wikimedia.org` mit ≤ Originalbreite gehen). `farben.py` setzt
+`data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).
+Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
+Rotbraun) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Blaugrau) und `PROFIL_DACH_BLAU`
+(nur Paulinum, Neues Augusteum, Uniriese dürfen blaugraue Dächer haben, sonst Beige);
+`generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf` (ohne `--filamente` nur Laserscan mit Extras,
+mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am Profil das Vergleichsbild zeigen.
 Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
-(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Messfelder).
+(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Fotos der Messung).
+Alt/neu aus der Foto-Kamera: `werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json>`, dann
+`werkzeuge/farbmessung/bericht.py <alte farben.json>` (HTML nach `vorschau/farbvergleich/`, Runde 1).
+Runde 2 (vorher/nachher mit interaktivem 3D-Modell, three.js über CDN): `vergleich_bilder.py <alte farben.json> <ordner>
+--fotos id,id,…`, dann `bericht_runde2.py <alte farben.json>` (liest daneben `messung.json` und `vorschau_laserscan/` des
+alten Stands; Texte in `bericht_runde2_texte.json`; HTML nach `vorschau/farbvergleich_runde2/`).
 Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
 `vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
 

@@ -9,3 +9,4 @@ matplotlib
 pillow
 pyproj
 laspy[lazrs]
+opencv-python-headless

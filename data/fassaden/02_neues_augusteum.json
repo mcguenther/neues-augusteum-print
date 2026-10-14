@@ -2,7 +2,7 @@
  "farben": {
   "glas_stein": {
    "notiz": "Glas mit grauen/beigen Natursteinlamellen (Gesamteindruck, Ost und Hof)",
-   "proben": [
+   "proben_alt": [
     {
      "bild": "ef4999dc-bec6-41c9-9c24-76fc35108365",
      "box": [
@@ -33,7 +33,9 @@
      ],
      "notiz": "Ostfassade von Süden: Lamellen (Sonne, ohne WB)"
     }
-   ]
+   ],
+   "hex": "#405664",
+   "quelle": "Foto (3 Messfelder)"
   },
   "lamellen": {
    "notiz": "oberstes Geschoss: dunkle senkrechte Lamellen (Metall/Stein)",
@@ -46,9 +48,9 @@
    "quelle": "geschätzt nach Fotos (Sandstein im Foto teils im Schatten, Messfelder nicht verwertbar)"
   },
   "pavillon_weiss": {
-   "notiz": "weißer Pavillon (Vorhalle) im Innenhof vor dem Portal",
-   "hex": "#d4d4d2",
-   "quelle": "hof_beck_2 (Lukas Beck, CC BY 4.0): Wand im Schatten #acadaf…#b7b7b7, besonnter Scheitel #cfd2d3 (ohne WB) – hell gesetzt"
+   "notiz": "weiße, nahtlose Außenhülle des Audimax (Dach und Wand, dreilagige weiße Triflex-Beschichtung, Herstellerangabe Foamglas/Heinze); in den Fotos hell/weiß",
+   "hex": "#f1efeb",
+   "quelle": "Materialangabe (Hersteller) + Sichtprüfung in Fotos"
   }
  },
  "basis": "glas_stein",
@@ -81,7 +83,8 @@
    "entlang": [
     0.19,
     0.57
-   ]
+   ],
+   "fest": true
   },
   {
    "name": "Sandsteinportal (Schinkel-Portal) Innenhof",
@@ -94,10 +97,27 @@
    "entlang": [
     0.62,
     0.82
-   ]
+   ],
+   "fest": true
+  },
+  {
+   "name": "Audimax Dach (weiße Hülle, nur im Luftbild helle Dachflächen)",
+   "farbe": "pavillon_weiss",
+   "flaechen": "dach",
+   "nur_hell": true,
+   "seite": "W",
+   "entlang": [
+    0.19,
+    0.57
+   ],
+   "z": [
+    0,
+    12
+   ],
+   "fest": true
   }
  ],
- "bilder": {
+ "bilder_alt": {
   "pl_hof_derbrauni": {
    "titel": "File:Exterior of Paulinum.jpg",
    "seite": "https://commons.wikimedia.org/wiki/File:Exterior_of_Paulinum.jpg",

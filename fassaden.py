@@ -23,6 +23,9 @@ Zonen-Felder (alle optional außer farbe):
   entlang  [t0, t1] Anteil entlang der Fassade dieser Seite, von links nach rechts
            gesehen von außen (0 = linkes Ende, 1 = rechtes Ende der Seite); nur mit seite
   flaechen "wand" (Standard), "dach" oder "alle"
+  nur_hell true (nur mit flaechen "dach"): nur Dachdreiecke, die das Luftbild hell zeigt, bekommen die Farbe
+           (Rest der Zone behält die Luftbildfarbe)
+  fest     true: Zone liegt in farbmessung.py über den automatisch gemessenen Zonen (Bögen, Portal, Audimax)
   kreis    {"entlang": Mitte (Anteil), "z": Mitte (m), "d": Durchmesser (m)} statt z/entlang:
            runde Fläche (z. B. Rosette), angenähert durch "stufen" (Standard 7) Streifen; nur mit seite
   bogen    {"entlang": Mitte, "breite": Spannweite (m), "z0": Unterkante (m), "kaempfer": Kämpferhöhe (m)}:
@@ -34,7 +37,7 @@ der Dachpalette, die das Luftbild dort zeigt.
 
 Prüfen:  python3 fassaden.py 03_hoersaalgebaeude [--quelle lod2] [--out ordner]
   rendert das Gebäude von allen Seiten mit Raster (Höhe in m, entlang-Anteil) und
-  daneben die Fotos mit den Messfeldern dieses Gebäudes.
+  daneben die Fotos, aus denen die Farben dieses Gebäudes gemessen wurden (farbmessung.py).
 """
 import argparse
 import json
@@ -198,7 +201,7 @@ def zone_keys(mesh, spec, extents):
                 ax, t0, t1 = ext
                 t = (c[:, :2] @ ax - t0) / max(t1 - t0, 1e-9)
                 sel &= (t >= zo["entlang"][0]) & (t < zo["entlang"][1])
-        keys[sel] = zo["farbe"]
+        keys[sel] = "@" + zo["farbe"] if zo.get("nur_hell") else zo["farbe"]
     return keys
 
 
@@ -215,25 +218,41 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
     m = trimesh.Trimesh((tm.vertices - off) / s, tm.faces.copy(), process=False)
     zones = expand_zones(m, farben.get("zonen", [])) if farben else []
     dicht = m.is_watertight
-    for n, o in zone_planes(m, zones):
-        # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
-        for d in (0.0, 0.003, -0.003, 0.01, -0.01):
-            m2 = split_plane(m, n, np.asarray(o, float) + d * np.asarray(n, float))
-            if not dicht or m2.is_watertight:
-                m = m2
-                break
+    planes = zone_planes(m, zones)
+    # Schnellweg: alle Schnitte ohne Zwischenprüfung; die Dichtheitsprüfung kostet mehr als
+    # der Schnitt. Ist das Ergebnis dicht, wäre es auch jeder Zwischenstand gewesen.
+    m_fast = m
+    for n, o in planes:
+        m_fast = split_plane(m_fast, n, o)
+    if not dicht or m_fast.is_watertight:
+        m = m_fast
+    else:
+        for n, o in planes:
+            # Ebenen, die genau durch Engstellen des Netzes laufen, minimal verschieben
+            for d in (0.0, 0.003, -0.003, 0.01, -0.01):
+                m2 = split_plane(m, n, np.asarray(o, float) + d * np.asarray(n, float))
+                if m2.is_watertight:
+                    m = m2
+                    break
     extents = {}
     for zo in zones:
         if "seite" in zo and "entlang" in zo:
             extents[json.dumps(zo["seite"])] = side_extent(m, zo["seite"])
     if farben:
         keys = zone_keys(m, dict(farben, zonen=zones), extents)
-        hexes = np.array([farben["farben"][k]["rgb"] if k else None for k in keys], dtype=object)
+        hexes = np.array([farben["farben"][k]["rgb"] if k and not k.startswith("@") else None for k in keys], dtype=object)
     else:
+        keys = np.array([None] * len(m.faces), dtype=object)
         hexes = np.array([None] * len(m.faces), dtype=object)
     roof = np.array([h is None for h in hexes])
     if roof.any():
         hexes[roof] = roof_class(m.triangles[roof][:, :, :2])
+        # Zonen mit "nur_hell": nur die im Luftbild hellen Dachflächen der Zone bekommen die Zonenfarbe
+        # (z. B. die weiße Audimax-Hülle, die als Dach im selben Bereich liegt wie dunkle Dächer)
+        for i in np.nonzero(roof & np.array([bool(k) and k.startswith("@") for k in keys]))[0]:
+            c = np.array([int(hexes[i][j:j + 2], 16) for j in (1, 3, 5)])
+            if c @ [0.299, 0.587, 0.114] > 165:
+                hexes[i] = farben["farben"][keys[i][1:]]["rgb"]
     out = trimesh.Trimesh(m.vertices * s + off, m.faces, process=False)
     return out, hexes
 
@@ -300,9 +319,9 @@ def check(slug, quelle="lod2", out=None):
         y += max(t.height for t in tiles[i:i + 2])
     p1 = os.path.join(out, "%s_zonen.png" % slug)
     sheet.save(p1, optimize=True)
-    p2 = os.path.join(out, "%s_fotos.jpg" % slug)
-    F.probe_sheet(F.building_probes(slug), p2)
-    print("  Vorschau:", os.path.relpath(p1, G.HERE), "+", os.path.relpath(p2, G.HERE))
+    import farbmessung
+    p2 = farbmessung.foto_blatt(slug, os.path.join(out, "%s_fotos.jpg" % slug))
+    print("  Vorschau:", os.path.relpath(p1, G.HERE), "+", os.path.relpath(p2, G.HERE) if p2 else "(keine Fotos)")
     return p1, p2
 
 

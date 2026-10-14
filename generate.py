@@ -11,6 +11,8 @@ Aufruf:
     python3 generate.py --quelle lod2   # nur eine Quelle (mehrfach angebbar)
     python3 generate.py --scale 750     # beliebiger Maßstab
     python3 generate.py --fetch         # Quelldaten vorher neu herunterladen
+    python3 generate.py --filamente 3   # zusätzlich 3MF mit nur 3 (oder 4) Filamenten, siehe farben.PROFILE
+                                        # (ohne die Option: nur Laserscan mit Extras, je 3 und 4 Filamente)
 
 Danach werden automatisch Vorschaubilder nach vorschau/ gerendert (preview.py).
 """
@@ -57,6 +59,11 @@ BUILDINGS = [
          name="Moritzbastei",
          title="Moritzbastei", note="historische Bastion"),
 ]
+
+# Innenhof (Leibnizforum) als eigenes Druckteil, siehe innenhof.py
+HOF = dict(slug="08_innenhof", group="campus", name="Innenhof (Leibnizforum)",
+           title="Innenhof", note="Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen")
+OBJEKTE = BUILDINGS + [HOF]  # alles, was gedruckt und eingefärbt wird
 
 LEVEL_HEIGHT = 3.5        # m pro Geschoss, falls keine Höhe in OSM
 ROOF_LEVEL_HEIGHT = 3.0   # m pro Dachgeschoss, falls keine Dachhöhe in OSM
@@ -459,8 +466,12 @@ def build_scale(quelle, scale, outdir):
     os.makedirs(outdir, exist_ok=True)
     print("\nQuelle %s, Maßstab 1:%d -> %s" % (quelle, scale, os.path.relpath(outdir, HERE)))
 
+    import innenhof
     models = source_models(quelle, s)
-    buildings = [b for b in BUILDINGS if b["slug"] in models]
+    models[HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()])
+    colour_cache = {}  # campus ist Teilmenge von campus_mit_extras: Gebäude nur einmal zerschneiden/färben
+    render_jobs = []
+    buildings = [b for b in OBJEKTE if b["slug"] in models]
     solids = {k: v[0] for k, v in models.items()}
     footprints = {k: v[1] for k, v in models.items()}
 
@@ -504,26 +515,70 @@ def build_scale(quelle, scale, outdir):
 
         # 4) 3MF: Platte + jedes Gebäude als eigenes Objekt an korrekter Position,
         #    mit Fassaden-/Dachfarbe als Material je Dreieck (data/farben.json)
+        #    Der Innenhof ist in die Sockelplatte eingelassen (seine Platte füllt die Vertiefung).
+        if HOF in sel:
+            base = base - extrude(footprints[HOF["slug"]], BASE_THICKNESS - POCKET_DEPTH, BASE_THICKNESS + 1)
         objs = [("Sockelplatte", to_trimesh(base.translate(shift)), None)]
         for b in sel:
             objs.append((b["name"], to_trimesh(solids[b["slug"]].translate([0, 0, BASE_THICKNESS]).translate(shift)),
                          b["slug"]))
-        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s)
+        coloured = colourise(objs, (shift[0], shift[1], BASE_THICKNESS), s, colour_cache)
         path = os.path.join(outdir, "komplett_%s_objekte.3mf" % variant)
         export_3mf(coloured, path)
         print("  %s (%d Objekte, farbig)" % (os.path.relpath(path, HERE), len(objs)))
         if RENDER_COLOUR:
-            render_coloured(coloured, quelle, scale, variant)
+            render_jobs += colour_render_jobs(coloured, quelle, scale, variant)
+        profile = profile_for(quelle, variant)
+        for n in profile:  # Variante mit nur 3 oder 4 Filamenten (farben.PROFILE)
+            reduced = reduce_colours(coloured, objs, n)
+            path_n = os.path.join(outdir, "komplett_%s_objekte_%dfilamente.3mf" % (variant, n))
+            export_3mf(reduced, path_n, profil=n)
+            print("  %s (%d Objekte, %d Filamente)" % (os.path.relpath(path_n, HERE), len(objs), n))
+            if RENDER_COLOUR:
+                render_jobs += colour_render_jobs(reduced, quelle, scale, variant, profil=n)
+        if RENDER_COLOUR and profile and not FAST and (quelle, scale, variant) == VERGLEICH_FILAMENTE:
+            render_jobs.append((render_profile_vergleich, (coloured, objs, profile)))
 
-    return models
+    infos = ["  %-22s %s" % (slug, ", ".join("%s=%s" % kv for kv in info.items() if kv[0] != "attrs"))
+             for slug, (_, _, info) in models.items()]
+    return infos, render_jobs
 
 
 ROOF_NZ = 0.35  # Dreiecke mit steilerer Normale als ~70° zählen als Dach
 
+# Profile mit 3 und 4 Filamenten (farben.PROFILE): ohne --filamente nur für diese Kombination
+# (Dateigröße: je Profil ~6 MB); mit --filamente N für alle gewählten Quellen und Varianten.
+FILAMENTE_STANDARD = (3, 4)
+FILAMENTE_QUELLE, FILAMENTE_VARIANTE = "laserscan", "campus_mit_extras"
+VERGLEICH_FILAMENTE = ("laserscan", 1500, "campus_mit_extras")   # Quelle des Bildes filamente_vergleich.png
+FILAMENTE = None  # gesetzt in main (--filamente)
+FAST = False      # gesetzt in main (--fast)
 
-def colour_table():
+
+def profile_for(quelle, variant):
+    if FILAMENTE:
+        return sorted(FILAMENTE)
+    return list(FILAMENTE_STANDARD) if (quelle, variant) == (FILAMENTE_QUELLE, FILAMENTE_VARIANTE) else []
+
+
+def colour_table(profil=None):
+    """(data/farben.json, Plattenfarbe); mit profil=3|4 mit der Filament-Palette des Profils."""
     import farben
-    return farben.load_farben() or {}, farben.PLATTE
+    f = farben.load_farben() or {}
+    if profil:
+        f = dict(f, _filamente=farben.profil_filamente(profil))
+    return f, farben.PLATTE
+
+
+def reduce_colours(coloured, objs, profil):
+    """Bildet die Farben der gefärbten Objekte auf das Profil mit 3 oder 4 Filamenten ab.
+
+    coloured: Ergebnis von colourise(objs, ...), objs: dieselbe Liste [(name, Netz, slug)].
+    """
+    import farben as F
+    farben, _ = colour_table()
+    return [(name, mesh, F.reduziere(slug, farben.get(slug) if slug else None, mesh, hexes, profil))
+            for (name, mesh, hexes), (_, _, slug) in zip(coloured, objs)]
 
 
 def paint_code(n):
@@ -535,10 +590,12 @@ def paint_code(n):
 _ROOF_CLASS = None
 
 
-def colourise(objs, offset, s):
+def colourise(objs, offset, s, cache=None):
     """Zerschneidet und färbt die Objekte nach den Fassaden-Zonen (fassaden.py).
 
     Liefert [(name, Netz, Hex-Farbe je Dreieck)]; ohne data/farben.json einfarbig.
+    cache: {slug: (Netz relativ zu offset, Farben)} – dasselbe Gebäude in mehreren Varianten
+    (verschiedener offset) wird nur einmal zerschnitten.
     """
     global _ROOF_CLASS
     import fassaden
@@ -552,14 +609,25 @@ def colourise(objs, offset, s):
         if _ROOF_CLASS is None:
             import farben as F
             _ROOF_CLASS = F.roof_classifier(farben)
+        if slug == HOF["slug"]:
+            import innenhof
+            out.append((name, tm, innenhof.colour_mesh(tm, (offset, s), e)))
+            continue
+        off = np.asarray(offset, float)
+        if cache is not None and slug in cache:
+            rel, hexes = cache[slug]
+            out.append((name, trimesh.Trimesh(rel.vertices + off, rel.faces, process=False), hexes))
+            continue
         mesh, hexes = fassaden.colour_mesh(tm, slug, (offset, s), e, _ROOF_CLASS)
         if not mesh.is_watertight:
             print("  Warnung: %s nach dem Zerschneiden nicht dicht" % name)
+        if cache is not None:
+            cache[slug] = (trimesh.Trimesh(mesh.vertices - off, mesh.faces, process=False), hexes)
         out.append((name, mesh, hexes))
     return out
 
 
-def export_3mf(objs, path):
+def export_3mf(objs, path, profil=None):
     """3MF mit Farben für Slicer und Betrachter. objs: [(name, Netz, Hex je Dreieck)].
 
     - Jedes Objekt bekommt sein häufigstes Wand-Filament als Objekt-Extruder
@@ -577,9 +645,10 @@ def export_3mf(objs, path):
     from xml.sax.saxutils import escape as esc
     import farben as F
     escape = lambda t: esc(t, {'"': "&quot;"})
-    farben, plate = colour_table()
+    farben, plate = colour_table(profil)
     pal = [f["rgb"] for f in farben["_filamente"]] if farben else [plate]
-    mats = ["F%d %s" % (i + 1, c) for i, c in enumerate(pal)]
+    names = [f["fuer"][0] for f in farben["_filamente"]] if profil else [None] * len(pal)
+    mats = ["F%d %s" % (i + 1, n or c) for i, (c, n) in enumerate(zip(pal, names))]
     nr_of = {}
     objects, items, bambu, prusa = [], [], [], []
     for oid, (name, tm, hexes) in enumerate(objs, start=2):
@@ -632,42 +701,127 @@ def export_3mf(objs, path):
         z.writestr("Metadata/Slic3r_PE_model.config", xml % "".join(prusa))
 
 
-def render_coloured(objs, quelle, scale, variant):
-    """Farbige Vorschau in den Filamentfarben – so, wie es gedruckt wird."""
+def _render_job(meshes, kw, title, subtitle, path):
+    """Ein Bild rendern (läuft in einem Worker); speichert, wenn path gesetzt ist."""
+    import preview
+    out = preview.caption(preview.render(meshes, **kw), title, subtitle)
+    if path:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        out.save(path, optimize=True)
+        print("  Vorschau:", os.path.relpath(path, HERE))
+    return out
+
+
+def colour_render_jobs(objs, quelle, scale, variant, profil=None):
+    """Aufgaben (func, args) für die farbigen Vorschauen in den Filamentfarben – so, wie es
+    gedruckt wird. Bei „extras“ folgen die Kacheln des Einzelgebäude-Blatts; ihre Bilder und
+    der Zielpfad stehen in sheet_jobs, siehe finish_colour_sheets.
+
+    profil=3|4: reduzierte Palette (nur die beiden Gesamtansichten, Dateinamen mit Endung _Nfilamente).
+    """
     import farben as F
     import preview
-    farben, plate = colour_table()
+    farben, plate = colour_table(profil)
     pal = [preview.rgb(f["rgb"]) for f in farben["_filamente"]] if farben else [preview.rgb(plate)]
     meshes = []
     for name, tm, hexes in objs:
         nrs = {h: (F.filament_nr(farben, h) if farben else 1) for h in set(hexes)}
         meshes.append((tm, np.array([pal[nrs[h] - 1] for h in hexes])))
     label = "1:%d, %s" % (scale, preview.QUELLEN_NAMEN.get(quelle, quelle))
+    endung = "_%dfilamente" % profil if profil else ""
+    sub = ("auf %d Filamente reduziert (%s) · Dächer: Luftbild 2024 © Stadt Leipzig"
+           % (profil, ", ".join(f["fuer"][0] for f in farben["_filamente"])) if profil else
+           "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
+           % len(pal))
+    jobs = []
     for suffix, azim, elev, blick in (("", -30, 32, "von Südosten"), ("_ost", 25, 28, "vom Augustusplatz (Osten)")):
-        im = preview.render(meshes, size=(1100, 800), azim=azim, elev=elev, light_from_view=True)
-        out = preview.caption(im, "Farbig %s%s  (%s)" % (
-            blick, ", mit Extras" if "extras" in variant else "", label),
-            "%d Filamente · Fassaden-Zonen aus Straßenfotos, Dachflächen aus dem Luftbild 2024 © Stadt Leipzig"
-            % len(pal))
-        path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s.png" % (variant, suffix))
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        out.save(path, optimize=True)
-        print("  Vorschau:", os.path.relpath(path, HERE))
-    if "extras" in variant:  # Einzelgebäude farbig, je von zwei Seiten
+        path = os.path.join(preview.OUT, quelle, "1zu%d" % scale, "komplett_%s_farbig%s%s.png" % (variant, suffix, endung))
+        jobs.append((_render_job, (meshes, dict(size=(1100, 800), azim=azim, elev=elev, light_from_view=True),
+                                   "Farbig %s%s  (%s)" % (blick, ", mit Extras" if "extras" in variant else "", label),
+                                   sub, path)))
+    if "extras" in variant and not profil:  # Einzelgebäude farbig, je von zwei Seiten
         tiles = []
         for (name, tm, _), (m, cols) in zip(objs[1:], meshes[1:]):
             for azim in (-35, 145):
-                im = preview.render([(m, cols)], size=(560, 460), azim=azim, elev=25, light_from_view=True)
-                tiles.append(preview.caption(im, name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten")))
-        preview.contact_sheet(tiles, os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
-                              "Einzelgebäude farbig (%s)" % label, cols=4, cell=(560, 530))
+                tiles.append((_render_job, ([(m, cols)], dict(size=(560, 460), azim=azim, elev=25,
+                                                              light_from_view=True),
+                                            name[:40], "Blick von %s" % ("Südosten" if azim < 0 else "Nordwesten"), None)))
+        sheet = (os.path.join(preview.OUT, quelle, "einzelgebaeude_farbig_1zu%d.png" % scale),
+                 "Einzelgebäude farbig (%s)" % label, len(tiles))
+        jobs += tiles
+        jobs.append(("sheet", sheet))
+    return jobs
+
+
+def run_render_jobs(jobs):
+    """Führt alle Render-Aufgaben parallel aus und setzt die Kachelblätter zusammen."""
+    import parallel
+    import preview
+    real = [j for j in jobs if j[0] != "sheet"]
+    images = iter(parallel.starmap(_call, real))
+    done = []
+    for f, a in jobs:
+        if f == "sheet":
+            path, title, n = a
+            preview.contact_sheet(done[-n:], path, title, cols=4, cell=(560, 530))
+        else:
+            done.append(next(images))
+
+
+def _call(f, a):
+    return f(*a)
+
+
+def render_profile_vergleich(coloured, objs, profile):
+    """vorschau/filamente_vergleich.png: volle Farben und die Profile nebeneinander, jeweils
+    Gesamtmodell vom Augustusplatz, Seminargebäude (Bänder) und Paulinum-Giebel (Fenster)."""
+    import farben as F
+    import preview
+    from PIL import Image, ImageDraw
+    slugs = [slug for _, _, slug in objs]
+    ZEILEN = [("Alle Farben (15 Filamente)", None)] + [("%d Filamente" % n, n) for n in sorted(profile, reverse=True)]
+    SPALTEN = [(None, 25, 28, 1000), ("04_seminargebaeude", 145, 25, 560), ("01_paulinum", -8, 12, 560)]
+    H = 520
+    sheet = Image.new("RGB", (sum(c[3] for c in SPALTEN), len(ZEILEN) * (H + 48)), preview.BG)
+    d = ImageDraw.Draw(sheet)
+    for zi, (titel, n) in enumerate(ZEILEN):
+        y = zi * (H + 48)
+        d.text((14, y + 8), titel, fill=(30, 30, 30), font=preview.font(22, True))
+        farben, _ = colour_table(n)
+        pal = {f["rgb"]: preview.rgb(f["rgb"]) for f in farben["_filamente"]}
+        objs_n = coloured if n is None else reduce_colours(coloured, objs, n)
+        if n:
+            x = 360
+            for c, name in F.PROFILE[n]:
+                d.rounded_rectangle((x, y + 8, x + 26, y + 34), 5, fill=c, outline=(60, 60, 60), width=2)
+                d.text((x + 34, y + 11), "%s %s" % (name, c), fill=(40, 40, 40), font=preview.font(15))
+                x += 200
+        x = 0
+        for slug, azim, elev, w in SPALTEN:
+            sel = []
+            for (name, tm, hexes), s_ in zip(objs_n, slugs):
+                if slug and s_ != slug:
+                    continue
+                if n is None:
+                    nr = {h: F.filament_nr(farben, h) for h in set(hexes)}
+                    cols = np.array([preview.rgb(farben["_filamente"][nr[h] - 1]["rgb"]) for h in hexes])
+                else:
+                    cols = np.array([pal[h] for h in hexes])
+                sel.append((tm, cols))
+            im = preview.render(sel, size=(w, H), azim=azim, elev=elev, light_from_view=True)
+            sheet.paste(im, (x, y + 44))
+            x += w
+    path = os.path.join(preview.OUT, "filamente_vergleich.png")
+    sheet.save(path, optimize=True)
+    print("  Vorschau:", os.path.relpath(path, HERE))
 
 
 def refresh_colours():
     """data/farben.json neu messen, wenn Fassaden- oder Fotodateien neuer sind."""
     import glob
     import farben
-    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS]
+    src = glob.glob(os.path.join(HERE, "data", "fassaden", "*.json")) + [farben.FOTOS] + \
+        ([farben.MESSUNG] if os.path.exists(farben.MESSUNG) else [])
     if not os.path.exists(farben.FARBEN) or max(map(os.path.getmtime, src)) > os.path.getmtime(farben.FARBEN):
         print("Fassadendaten geändert – Farben neu messen (farben.py)")
         farben.main()
@@ -675,6 +829,7 @@ def refresh_colours():
 
 QUELLEN = ["osm", "lod2", "laserscan"]
 RENDER_COLOUR = True
+FAST_RASTER = 0.6  # m, Laserscan-Höhenraster im Schnelllauf (Standard 0.3)
 
 
 def main():
@@ -683,12 +838,33 @@ def main():
                     help="Maßstab 1:N (mehrfach möglich, Standard: 1000 und 1500)")
     ap.add_argument("--quelle", action="append", choices=QUELLEN,
                     help="Datenquelle (mehrfach möglich, Standard: alle)")
+    ap.add_argument("--filamente", type=int, action="append", choices=[3, 4],
+                    help="zusätzlich 3MF mit nur 3 oder 4 Filamenten für alle gewählten Quellen/Varianten "
+                         "(mehrfach möglich; ohne Angabe nur Laserscan mit Extras)")
     ap.add_argument("--fetch", action="store_true", help="Quelldaten neu herunterladen")
     ap.add_argument("--out", default=os.path.join(HERE, "stl"))
     ap.add_argument("--no-preview", action="store_true", help="keine Vorschaubilder rendern")
+    ap.add_argument("--fast", action="store_true",
+                    help="Schnelllauf zum Testen: gleiche Daten, aber Laser-Raster 2x gröber, Vorschau ohne "
+                         "Kantenglättung, nur Maßstab 1:1500 (außer --scale), keine README-/Fassaden-/Vergleichsbilder; "
+                         "schreibt nach stl-fast/ und vorschau-fast/ (nicht eingecheckt)")
+    ap.add_argument("--jobs", type=int, default=None, help="parallele Prozesse (Standard: alle Kerne, 1 = seriell)")
     args = ap.parse_args()
-    global RENDER_COLOUR
+    global RENDER_COLOUR, FILAMENTE, FAST
     RENDER_COLOUR = not args.no_preview
+    FILAMENTE = args.filamente
+    FAST = args.fast
+    import parallel
+    import preview
+    if args.jobs:
+        parallel.JOBS = args.jobs
+    if args.fast:
+        import laserscan
+        laserscan.RASTER = FAST_RASTER
+        preview.SS = 1
+        preview.OUT = os.path.join(HERE, "vorschau-fast")
+        if args.out == os.path.join(HERE, "stl"):
+            args.out = os.path.join(HERE, "stl-fast")
     quellen = args.quelle or QUELLEN
     if args.fetch or not os.path.exists(OSM_FILE):
         fetch_osm()
@@ -698,21 +874,29 @@ def main():
     if args.fetch and "laserscan" in quellen:
         import laserscan
         laserscan.fetch()
-    refresh_colours()
+    with parallel.phase("Farben messen (nur bei Änderung)"):
+        refresh_colours()
+    scales = args.scale or ([1500] if args.fast else [1000, 1500])
+    tasks = [(q, sc, os.path.join(args.out, q, "1zu%d" % sc)) for q in quellen for sc in scales]
+    with parallel.phase("Modelle bauen, färben, exportieren"):
+        results = parallel.starmap(build_scale, tasks)
+    render_jobs = []
     for q in quellen:
-        for sc in args.scale or [1000, 1500]:
-            models = build_scale(q, sc, os.path.join(args.out, q, "1zu%d" % sc))
-        for slug, (_, _, info) in models.items():
-            print("  %-22s %s" % (slug, ", ".join("%s=%s" % kv for kv in info.items()
-                                                    if kv[0] != "attrs")))
+        idx = [i for i, t in enumerate(tasks) if t[0] == q]
+        print("\nQuelle %s:" % q)
+        print("\n".join(results[idx[-1]][0]))
+    for _, jobs in results:
+        render_jobs += jobs
+    with parallel.phase("Farbvorschauen (3D-Rendering)"):
+        run_render_jobs(render_jobs)
     if not args.no_preview:
-        import preview
-        preview.default_previews(args.out)
-        import fassaden
-        print("\nFassaden-Prüfansichten")
-        for b in BUILDINGS:
-            if fassaden.load_spec(b["slug"]):
-                fassaden.check(b["slug"])
+        preview.default_previews(args.out, fast=args.fast)
+        if not args.fast:
+            import fassaden
+            print("\nFassaden-Prüfansichten")
+            with parallel.phase("Fassaden-Prüfansichten"):
+                parallel.starmap(fassaden.check, [(b["slug"],) for b in BUILDINGS if fassaden.load_spec(b["slug"])])
+    parallel.report()
 
 
 if __name__ == "__main__":

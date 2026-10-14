@@ -1,0 +1,3081 @@
+{
+ "_hinweis": "Fotos für die Farbmessung (farbmessung.py). Bilder werden nicht eingecheckt (data/cache/fotos/); 'url' lädt sie neu. Pose = Kamera im lokalen Modellsystem (registrierung.py).",
+ "fotos": {
+  "pmx_ca4a292a": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/ca/4a/29/2a/a604-4fca-8c73-8d71cfb2519a/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=ca4a292a-a604-4fca-8c73-8d71cfb2519a",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:10+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -27.4,
+     39.4
+    ],
+    "unsicher": 12,
+    "yaw": 340,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -15.597,
+     48.891,
+     1.488
+    ],
+    "yaw": -9.294,
+    "pitch": -6.915,
+    "roll": 2.401,
+    "hfov": 70.351
+   },
+   "pose_kosten": 0.0167
+  },
+  "pmx_7e65dce8": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/7e/65/dc/e8/9fb1-4895-b5ba-ae7887a01e63/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=7e65dce8-9fb1-4895-b5ba-ae7887a01e63",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:16+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -27.3,
+     51.1
+    ],
+    "unsicher": 12,
+    "yaw": 349,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -19.71,
+     57.817,
+     1.946
+    ],
+    "yaw": 3.666,
+    "pitch": -1.053,
+    "roll": 2.578,
+    "hfov": 70.356
+   },
+   "pose_kosten": 0.001
+  },
+  "pmx_6619ecdf": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/66/19/ec/df/cc09-40e3-8c31-761e4b9b3d4c/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=6619ecdf-cc09-40e3-8c31-761e4b9b3d4c",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:21+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -27.8,
+     55.7
+    ],
+    "unsicher": 12,
+    "yaw": 63,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -27.658,
+     59.013,
+     1.535
+    ],
+    "yaw": 55.165,
+    "pitch": 0.813,
+    "roll": 0.432,
+    "hfov": 71.406
+   },
+   "pose_kosten": 0.0
+  },
+  "pmx_8c6c3139": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/8c/6c/31/39/d07f-46c7-b67f-743e8b14c2b8/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=8c6c3139-d07f-46c7-b67f-743e8b14c2b8",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:25+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -21.4,
+     60.9
+    ],
+    "unsicher": 12,
+    "yaw": 355,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -24.397,
+     59.092,
+     1.522
+    ],
+    "yaw": 9.934,
+    "pitch": -5.761,
+    "roll": 2.091,
+    "hfov": 65.995
+   },
+   "pose_kosten": 0.0117
+  },
+  "pmx_7fa2342c": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/7f/a2/34/2c/f1cd-443a-a3ef-b7cf669af287/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=7fa2342c-f1cd-443a-a3ef-b7cf669af287",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:30+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -17.1,
+     68.8
+    ],
+    "unsicher": 12,
+    "yaw": 358,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -24.728,
+     64.239,
+     1.587
+    ],
+    "yaw": 10.661,
+    "pitch": 6.102,
+    "roll": 0.259,
+    "hfov": 62.334
+   },
+   "pose_kosten": 0.0064
+  },
+  "pmx_094db77f": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/09/4d/b7/7f/735b-42a3-b5cb-70ae8d24f8bf/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=094db77f-735b-42a3-b5cb-70ae8d24f8bf",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:35+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -10.2,
+     73.6
+    ],
+    "unsicher": 12,
+    "yaw": 13,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -2.202,
+     83.055,
+     1.955
+    ],
+    "yaw": 7.918,
+    "pitch": 6.652,
+    "roll": 0.231,
+    "hfov": 71.971
+   },
+   "pose_kosten": 1.0
+  },
+  "pmx_703382bd": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/70/33/82/bd/7a36-43e7-b330-2cc18815edb9/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=703382bd-7a36-43e7-b330-2cc18815edb9",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:40+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -5.2,
+     76.7
+    ],
+    "unsicher": 12,
+    "yaw": 352,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -9.299,
+     68.788,
+     1.219
+    ],
+    "yaw": -22.93,
+    "pitch": 4.036,
+    "roll": 2.821,
+    "hfov": 68.489
+   },
+   "pose_kosten": 0.0212
+  },
+  "pmx_ebcc3d18": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/eb/cc/3d/18/37b1-4853-bcdf-841c91782304/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=ebcc3d18-37b1-4853-bcdf-841c91782304",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:34:45+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -4.1,
+     81.0
+    ],
+    "unsicher": 12,
+    "yaw": 357,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     3.898,
+     90.455,
+     1.955
+    ],
+    "yaw": -8.082,
+    "pitch": 6.652,
+    "roll": 0.231,
+    "hfov": 71.971
+   },
+   "pose_kosten": 1.0
+  },
+  "pmx_c1e6b5b0": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/c1/e6/b5/b0/375d-4b9e-a223-e31cd8f27c57/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=c1e6b5b0-375d-4b9e-a223-e31cd8f27c57",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:32+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -23.1,
+     15.9
+    ],
+    "unsicher": 12,
+    "yaw": 9,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -32.52,
+     13.948,
+     1.829
+    ],
+    "yaw": 23.565,
+    "pitch": -2.089,
+    "roll": 1.969,
+    "hfov": 69.963
+   },
+   "pose_kosten": 0.01
+  },
+  "pmx_297b0dfe": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/29/7b/0d/fe/5abd-44d1-b6be-258b1e73a288/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=297b0dfe-5abd-44d1-b6be-258b1e73a288",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:39+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -19.8,
+     19.9
+    ],
+    "unsicher": 12,
+    "yaw": 16,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -10.728,
+     14.584,
+     1.498
+    ],
+    "yaw": 1.38,
+    "pitch": -1.076,
+    "roll": -0.081,
+    "hfov": 71.004
+   },
+   "pose_kosten": 0.0397
+  },
+  "pmx_20d3c868": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/20/d3/c8/68/dd95-40da-86f6-85ee075eae72/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=20d3c868-dd95-40da-86f6-85ee075eae72",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:43+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -18.4,
+     23.2
+    ],
+    "unsicher": 12,
+    "yaw": 28,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -28.412,
+     11.243,
+     1.841
+    ],
+    "yaw": 32.704,
+    "pitch": -0.1,
+    "roll": 0.573,
+    "hfov": 68.75
+   },
+   "pose_kosten": 0.0132
+  },
+  "pmx_34efebe8": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/34/ef/eb/e8/8b5f-4195-aef0-614afc80d5c4/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=34efebe8-8b5f-4195-aef0-614afc80d5c4",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:44+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -16.3,
+     24.3
+    ],
+    "unsicher": 12,
+    "yaw": 29,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -12.759,
+     18.608,
+     1.355
+    ],
+    "yaw": 14.629,
+    "pitch": 9.084,
+    "roll": 2.685,
+    "hfov": 64.696
+   },
+   "pose_kosten": 0.0538
+  },
+  "pmx_011f41ef": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/01/1f/41/ef/f646-43fa-aa1e-c509de8cccf5/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=011f41ef-f646-43fa-aa1e-c509de8cccf5",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:48+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -14.6,
+     25.9
+    ],
+    "unsicher": 12,
+    "yaw": 69,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -6.602,
+     35.355,
+     1.955
+    ],
+    "yaw": 63.918,
+    "pitch": 6.652,
+    "roll": 0.231,
+    "hfov": 71.971
+   },
+   "pose_kosten": 1.0
+  },
+  "pmx_c6158965": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/c6/15/89/65/9f55-4f9a-9607-5d92af0eb882/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=c6158965-9f55-4f9a-9607-5d92af0eb882",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:51+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -12.5,
+     23.9
+    ],
+    "unsicher": 12,
+    "yaw": 109,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -4.502,
+     33.355,
+     1.955
+    ],
+    "yaw": 103.918,
+    "pitch": 6.652,
+    "roll": 0.231,
+    "hfov": 71.971
+   },
+   "pose_kosten": 1.0
+  },
+  "pmx_e4bab73b": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/e4/ba/b7/3b/679e-4cfa-8207-903b068d624c/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=e4bab73b-679e-4cfa-8207-903b068d624c",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:54+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -12.0,
+     22.1
+    ],
+    "unsicher": 12,
+    "yaw": 89,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -4.002,
+     31.555,
+     1.955
+    ],
+    "yaw": 83.918,
+    "pitch": 6.652,
+    "roll": 0.231,
+    "hfov": 71.971
+   },
+   "pose_kosten": 1.0
+  },
+  "pmx_f1ed61be": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/f1/ed/61/be/d090-4760-8c4b-53f3833aba69/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=f1ed61be-d090-4760-8c4b-53f3833aba69",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T15:32:59+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -6.8,
+     18.9
+    ],
+    "unsicher": 12,
+    "yaw": 24,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -11.409,
+     24.71,
+     1.845
+    ],
+    "yaw": 13.122,
+    "pitch": 14.898,
+    "roll": -1.056,
+    "hfov": 69.203
+   },
+   "pose_kosten": 0.0459
+  },
+  "pmx_529f90fc": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/52/9f/90/fc/194f-4d99-82b7-bc2748febfbf/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=529f90fc-194f-4d99-82b7-bc2748febfbf",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:11+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -70.7,
+     166.9
+    ],
+    "unsicher": 12,
+    "yaw": 181,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -68.437,
+     160.923,
+     1.9
+    ],
+    "yaw": -178.981,
+    "pitch": -6.164,
+    "roll": 1.658,
+    "hfov": 62.099
+   },
+   "pose_kosten": 0.025
+  },
+  "pmx_97c00959": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/97/c0/09/59/b769-4421-b26c-ae14dcb187e1/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=97c00959-b769-4421-b26c-ae14dcb187e1",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:23+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -78.6,
+     158.4
+    ],
+    "unsicher": 12,
+    "yaw": 186,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -90.591,
+     167.071,
+     1.536
+    ],
+    "yaw": -174.314,
+    "pitch": -7.245,
+    "roll": -1.854,
+    "hfov": 60.174
+   },
+   "pose_kosten": 0.0185
+  },
+  "pmx_5957eb23": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/59/57/eb/23/6495-45d6-bed7-2d92d1b6e6c9/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=5957eb23-6495-45d6-bed7-2d92d1b6e6c9",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:33+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -70.6,
+     151.0
+    ],
+    "unsicher": 12,
+    "yaw": 185,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -67.231,
+     162.865,
+     1.454
+    ],
+    "yaw": -169.542,
+    "pitch": -6.731,
+    "roll": 1.914,
+    "hfov": 61.534
+   },
+   "pose_kosten": 0.0188
+  },
+  "pmx_dab0680a": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/da/b0/68/0a/5503-497d-822e-a7a48a6c5d9e/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=dab0680a-5503-497d-822e-a7a48a6c5d9e",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:41+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -71.4,
+     137.1
+    ],
+    "unsicher": 12,
+    "yaw": 190,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -64.678,
+     148.913,
+     1.963
+    ],
+    "yaw": 177.025,
+    "pitch": -1.913,
+    "roll": 0.812,
+    "hfov": 71.963
+   },
+   "pose_kosten": 0.0142
+  },
+  "pmx_63a06fa7": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/63/a0/6f/a7/c479-4793-be78-2385872c3d7c/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=63a06fa7-c479-4793-be78-2385872c3d7c",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:50+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -73.6,
+     125.6
+    ],
+    "unsicher": 12,
+    "yaw": 184,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -83.214,
+     136.537,
+     1.954
+    ],
+    "yaw": 171.174,
+    "pitch": 9.09,
+    "roll": -0.205,
+    "hfov": 64.755
+   },
+   "pose_kosten": 0.0292
+  },
+  "pmx_371c6259": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/37/1c/62/59/38a2-4d95-b1c4-3b1035d50d99/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=371c6259-38a2-4d95-b1c4-3b1035d50d99",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:56+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -74.3,
+     118.8
+    ],
+    "unsicher": 12,
+    "yaw": 180,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -72.302,
+     109.998,
+     1.9
+    ],
+    "yaw": -165.312,
+    "pitch": -7.096,
+    "roll": -1.969,
+    "hfov": 71.785
+   },
+   "pose_kosten": 0.0314
+  },
+  "pmx_832a3ab5": {
+   "quelle": "panoramax",
+   "url": "https://panoramax.openstreetmap.fr/derivates/83/2a/3a/b5/af81-4a60-a6c7-0c8e7c3d0808/sd.jpg",
+   "seite": "https://api.panoramax.xyz/#focus=pic&pic=832a3ab5-af81-4a60-a6c7-0c8e7c3d0808",
+   "lizenz": "CC BY-SA 4.0",
+   "urheber": "Robot8A",
+   "zeit": "2022-03-27T14:09:59+02:00",
+   "kamera": "iPhone XR",
+   "prior": {
+    "pos": [
+     -73.6,
+     114.8
+    ],
+    "unsicher": 12,
+    "yaw": 183,
+    "yaw_unsicher": 15,
+    "hfov": [
+     60,
+     74
+    ],
+    "pitch": [
+     -8,
+     15
+    ],
+    "z": [
+     1.2,
+     2.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -78.075,
+     113.247,
+     1.721
+    ],
+    "yaw": -179.86,
+    "pitch": -1.703,
+    "roll": -0.347,
+    "hfov": 68.825
+   },
+   "pose_kosten": 0.0271
+  },
+  "fl_52390789883": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/65535/52390789883_7e7ab0f27c_k.jpg",
+   "seite": "https://www.flickr.com/photos/28577026@N02/52390789883",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Allie_Caulfield",
+   "zeit": "2022-09-03T18:37:37",
+   "gebaeude": [
+    "02",
+    "01",
+    "05"
+   ],
+   "titel": "2022-09-03 09-07 Leipzig 020 Augustusplatz, Augusteum",
+   "licht": "Abendlicht 18:37, hell bewölkt, Fassade teils im Schatten",
+   "prior": {
+    "bereich": [
+     0,
+     90,
+     -80,
+     20
+    ],
+    "yaw_bereich": [
+     280,
+     345
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     45,
+     95
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     3.41,
+     -41.483,
+     2.244
+    ],
+    "yaw": -31.047,
+    "pitch": 14.99,
+    "roll": -1.602,
+    "hfov": 63.05
+   },
+   "pose_kosten": 0.0105,
+   "geprueft": true
+  },
+  "fl_52389705137": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/65535/52389705137_f5edb1f822_k.jpg",
+   "seite": "https://www.flickr.com/photos/28577026@N02/52389705137",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Allie_Caulfield",
+   "zeit": "2022-09-04T18:02:45",
+   "gebaeude": [
+    "01",
+    "02"
+   ],
+   "titel": "2022-09-03 09-07 Leipzig 106 Augustusplatz, Augusteum",
+   "licht": "Abendsonne 18:02, klarer Himmel, Giebel sonnig",
+   "prior": {
+    "bereich": [
+     -5,
+     30,
+     35,
+     75
+    ],
+    "yaw_bereich": [
+     255,
+     300
+    ],
+    "pitch": [
+     5,
+     30
+    ],
+    "hfov": [
+     40,
+     80
+    ],
+    "z": [
+     1.3,
+     2.2
+    ]
+   },
+   "pose": {
+    "pos": [
+     -0.954,
+     56.574,
+     2.007
+    ],
+    "yaw": -94.078,
+    "pitch": 24.513,
+    "roll": -1.164,
+    "hfov": 56.716
+   },
+   "pose_kosten": 0.0292,
+   "geprueft": true
+  },
+  "fl_13957964694": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/7171/13957964694_af0b9622f9_k.jpg",
+   "seite": "https://www.flickr.com/photos/27147144@N00/13957964694",
+   "lizenz": "CC BY-SA 2.0",
+   "urheber": "Martin Ibert",
+   "zeit": "2014-04-19T11:45:32",
+   "gebaeude": [
+    "02",
+    "01",
+    "05"
+   ],
+   "titel": "DSC03178",
+   "licht": "Vormittag 11:45, sonnig, leichter Dunst; Sonne schräg von rechts",
+   "prior": {
+    "bereich": [
+     10,
+     110,
+     -10,
+     80
+    ],
+    "yaw_bereich": [
+     250,
+     295
+    ],
+    "pitch": [
+     -3,
+     12
+    ],
+    "hfov": [
+     45,
+     90
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     84.458,
+     -6.034,
+     3.262
+    ],
+    "yaw": -68.045,
+    "pitch": 10.636,
+    "roll": -0.481,
+    "hfov": 54.49
+   },
+   "pose_kosten": 0.0129,
+   "geprueft": true
+  },
+  "fl_25383321126": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1636/25383321126_387932aa0a_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25383321126",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T10:40:31",
+   "gebaeude": [
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Leipzig - Augusteum & Paulinum",
+   "licht": "Morgensonne 10:40, blauer Himmel mit Schleierwolken, Fassade sonnig",
+   "prior": {
+    "bereich": [
+     30,
+     120,
+     -10,
+     70
+    ],
+    "yaw_bereich": [
+     255,
+     305
+    ],
+    "pitch": [
+     -3,
+     25
+    ],
+    "hfov": [
+     30,
+     70
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     72.6,
+     20.81,
+     2.6
+    ],
+    "yaw": -73.01,
+    "pitch": 17.87,
+    "roll": -2.46,
+    "hfov": 49.07
+   },
+   "pose_kosten": 0.029,
+   "geprueft": true
+  },
+  "fl_25409596525": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1500/25409596525_aba34621d8_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25409596525",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T11:58:13",
+   "gebaeude": [
+    "06",
+    "01",
+    "02"
+   ],
+   "titel": "Leipzig - Augustusplatz",
+   "licht": "Mittag 11:58, sonnig, klarer Himmel",
+   "prior": {
+    "bereich": [
+     60,
+     210,
+     -60,
+     40
+    ],
+    "yaw_bereich": [
+     255,
+     305
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     35,
+     85
+    ],
+    "z": [
+     1.3,
+     2.5
+    ],
+    "min_abdeckung": 0.3
+   },
+   "pose": {
+    "pos": [
+     205.784,
+     -18.166,
+     1.396
+    ],
+    "yaw": -55.205,
+    "pitch": 14.872,
+    "roll": -2.918,
+    "hfov": 72.284
+   },
+   "pose_kosten": 0.0281,
+   "verworfen": "Registrierung nicht tragfähig (Uniriese, kaum Modellfläche im Bild)"
+  },
+  "fl_25409509815": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1614/25409509815_510b38b35a_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25409509815",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T10:43:48",
+   "gebaeude": [
+    "06"
+   ],
+   "titel": "Leipzig - City-Hochhaus Leipzig",
+   "licht": "Vormittag 10:43, leicht bewölkt",
+   "prior": {
+    "bereich": [
+     40,
+     210,
+     -120,
+     20
+    ],
+    "yaw_bereich": [
+     235,
+     295
+    ],
+    "pitch": [
+     -3,
+     20
+    ],
+    "hfov": [
+     30,
+     75
+    ],
+    "z": [
+     1.3,
+     2.5
+    ],
+    "min_abdeckung": 0.1
+   },
+   "pose": {
+    "pos": [
+     65.517,
+     -119.396,
+     1.363
+    ],
+    "yaw": -124.877,
+    "pitch": 12.304,
+    "roll": 1.417,
+    "hfov": 72.436
+   },
+   "pose_kosten": 0.0095,
+   "verworfen": "Registrierung nicht tragfähig (Uniriese, kaum Modellfläche im Bild)"
+  },
+  "fl_24782688903": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1570/24782688903_1ea736a6ed_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/24782688903",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T09:42:08",
+   "gebaeude": [
+    "01",
+    "02"
+   ],
+   "titel": "Leipzig - Neues Augusteum & Paulinum",
+   "licht": "Morgensonne 09:42, tiefblauer Himmel, sonnig",
+   "prior": {
+    "bereich": [
+     -10,
+     40,
+     35,
+     95
+    ],
+    "yaw_bereich": [
+     240,
+     300
+    ],
+    "pitch": [
+     10,
+     45
+    ],
+    "hfov": [
+     40,
+     95
+    ],
+    "z": [
+     1.3,
+     2.5
+    ],
+    "min_abdeckung": 0.6
+   },
+   "pose": {
+    "pos": [
+     5.53,
+     47.197,
+     1.459
+    ],
+    "yaw": -85.482,
+    "pitch": 33.207,
+    "roll": 1.334,
+    "hfov": 59.194
+   },
+   "pose_kosten": 0.0111,
+   "geprueft": true
+  },
+  "fl_25291096262": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1552/25291096262_78adbdf210_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25291096262",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T09:44:34",
+   "gebaeude": [
+    "01"
+   ],
+   "titel": "Leipzig - Paulinum",
+   "licht": "Morgensonne 09:44, tiefblauer Himmel",
+   "prior": {
+    "bereich": [
+     -10,
+     30,
+     50,
+     95
+    ],
+    "yaw_bereich": [
+     245,
+     295
+    ],
+    "pitch": [
+     20,
+     55
+    ],
+    "hfov": [
+     40,
+     95
+    ],
+    "z": [
+     1.3,
+     2.5
+    ],
+    "min_abdeckung": 0.6
+   },
+   "pose": {
+    "pos": [
+     -9.973,
+     53.412,
+     1.744
+    ],
+    "yaw": -82.845,
+    "pitch": 36.955,
+    "roll": -2.979,
+    "hfov": 81.932
+   },
+   "pose_kosten": 0.027,
+   "geprueft": true
+  },
+  "fl_25317354581": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1628/25317354581_d2f09e4f3e_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25317354581",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T19:16:12",
+   "gebaeude": [
+    "08",
+    "02"
+   ],
+   "titel": "Leipzig - Neues Augusteum",
+   "licht": "warmes Abendlicht 19:16, klarer Himmel",
+   "prior": {
+    "bereich": [
+     -135,
+     -95,
+     0,
+     50
+    ],
+    "yaw_bereich": [
+     60,
+     120
+    ],
+    "pitch": [
+     -5,
+     20
+    ],
+    "hfov": [
+     45,
+     90
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -129.42,
+     0.758,
+     3.393
+    ],
+    "yaw": 78.618,
+    "pitch": -1.23,
+    "roll": 2.368,
+    "hfov": 89.911
+   },
+   "pose_kosten": 0.0242
+  },
+  "fl_25292032932": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1653/25292032932_4fb71e5c64_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25292032932",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T19:15:23",
+   "gebaeude": [
+    "01",
+    "08",
+    "02"
+   ],
+   "titel": "Leipzig - Paulinum",
+   "licht": "warmes Abendlicht 19:15",
+   "prior": {
+    "bereich": [
+     -140,
+     -90,
+     -10,
+     60
+    ],
+    "yaw_bereich": [
+     20,
+     110
+    ],
+    "pitch": [
+     0,
+     30
+    ],
+    "hfov": [
+     40,
+     90
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -109.297,
+     36.578,
+     2.682
+    ],
+    "yaw": 61.181,
+    "pitch": 25.653,
+    "roll": 2.571,
+    "hfov": 62.748
+   },
+   "pose_kosten": 0.0051,
+   "geprueft": true
+  },
+  "fl_25292025232": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1713/25292025232_a40a5289ca_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25292025232",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T19:13:58",
+   "gebaeude": [
+    "01"
+   ],
+   "titel": "Leipzig - Paulinum",
+   "licht": "Abendsonne 19:13, Schatten im unteren Drittel",
+   "prior": {
+    "bereich": [
+     -140,
+     -90,
+     0,
+     60
+    ],
+    "yaw_bereich": [
+     30,
+     110
+    ],
+    "pitch": [
+     10,
+     45
+    ],
+    "hfov": [
+     40,
+     100
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -101.3,
+     59.983,
+     1.683
+    ],
+    "yaw": 77.999,
+    "pitch": 43.161,
+    "roll": 2.997,
+    "hfov": 53.995
+   },
+   "pose_kosten": 0.0379,
+   "geprueft": true
+  },
+  "fl_25409407395": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1564/25409407395_41cac76861_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25409407395",
+   "lizenz": "CC BY 2.0",
+   "urheber": "corno.fulgur75",
+   "zeit": "2015-08-03T09:58:22",
+   "gebaeude": [
+    "01",
+    "08",
+    "02"
+   ],
+   "titel": "Leipzig - Paulinum",
+   "licht": "Morgenlicht 09:58, blauer Himmel",
+   "prior": {
+    "bereich": [
+     -140,
+     -90,
+     -10,
+     60
+    ],
+    "yaw_bereich": [
+     20,
+     110
+    ],
+    "pitch": [
+     0,
+     30
+    ],
+    "hfov": [
+     40,
+     90
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -106.89,
+     15.483,
+     3.347
+    ],
+    "yaw": 47.961,
+    "pitch": 26.286,
+    "roll": -0.946,
+    "hfov": 63.64
+   },
+   "pose_kosten": 0.0028,
+   "geprueft": true
+  },
+  "fl_16905251612": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/7636/16905251612_3cbfa8d805_k.jpg",
+   "seite": "https://www.flickr.com/photos/46604778@N00/16905251612",
+   "lizenz": "CC BY 2.0",
+   "urheber": "domjisch",
+   "zeit": "2015-03-17T11:34:14",
+   "gebaeude": [
+    "02"
+   ],
+   "titel": "Augusteum (Universität Leipzig)",
+   "licht": "sonnig 11:34, blauer Himmel, Sonne schräg von vorn-links",
+   "prior": {
+    "bereich": [
+     -5,
+     30,
+     -45,
+     -5
+    ],
+    "yaw_bereich": [
+     290,
+     345
+    ],
+    "pitch": [
+     3,
+     15
+    ],
+    "hfov": [
+     55,
+     95
+    ],
+    "z": [
+     1.2,
+     2.2
+    ],
+    "min_abdeckung": 0.5
+   },
+   "pose": {
+    "pos": [
+     6.097,
+     -5.853,
+     2.198
+    ],
+    "yaw": -58.945,
+    "pitch": 13.645,
+    "roll": 1.849,
+    "hfov": 55.938
+   },
+   "pose_kosten": 0.0506,
+   "geprueft": true
+  },
+  "fl_16719063090": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/7636/16719063090_0678527a20_k.jpg",
+   "seite": "https://www.flickr.com/photos/46604778@N00/16719063090",
+   "lizenz": "CC BY 2.0",
+   "urheber": "domjisch",
+   "zeit": "2015-03-17T11:34:53",
+   "gebaeude": [
+    "02"
+   ],
+   "titel": "Augusteum (Universität Leipzig)",
+   "licht": "sonnig 11:34, blauer Himmel",
+   "prior": {
+    "bereich": [
+     -15,
+     50,
+     -5,
+     50
+    ],
+    "yaw_bereich": [
+     240,
+     300
+    ],
+    "pitch": [
+     0,
+     30
+    ],
+    "hfov": [
+     40,
+     100
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -9.396,
+     -3.12,
+     1.654
+    ],
+    "yaw": -83.134,
+    "pitch": 27.814,
+    "roll": 1.391,
+    "hfov": 45.542
+   },
+   "pose_kosten": 0.0036,
+   "geprueft": true
+  },
+  "fl_16718826528": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/8688/16718826528_8640124c9e_k.jpg",
+   "seite": "https://www.flickr.com/photos/46604778@N00/16718826528",
+   "lizenz": "CC BY 2.0",
+   "urheber": "domjisch",
+   "zeit": "2015-03-17T11:34:19",
+   "gebaeude": [
+    "01",
+    "02"
+   ],
+   "titel": "Augusteum (Universität Leipzig)",
+   "licht": "sonnig 11:34, tiefblauer Himmel",
+   "prior": {
+    "bereich": [
+     -5,
+     25,
+     30,
+     70
+    ],
+    "yaw_bereich": [
+     265,
+     305
+    ],
+    "pitch": [
+     8,
+     25
+    ],
+    "hfov": [
+     60,
+     100
+    ],
+    "z": [
+     1.3,
+     2.5
+    ],
+    "min_abdeckung": 0.5
+   },
+   "pose": {
+    "pos": [
+     -4.601,
+     43.889,
+     2.493
+    ],
+    "yaw": -74.558,
+    "pitch": 10.03,
+    "roll": -1.741,
+    "hfov": 99.6
+   },
+   "pose_kosten": 0.0144,
+   "verworfen": "Pose vertikal inkonsistent (Gebäudesockel im Modell zu hoch)"
+  },
+  "fl_16880594506": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/8699/16880594506_047eb95b05_k.jpg",
+   "seite": "https://www.flickr.com/photos/46604778@N00/16880594506",
+   "lizenz": "CC BY 2.0",
+   "urheber": "domjisch",
+   "zeit": "2015-03-17T11:35:22",
+   "gebaeude": [
+    "02"
+   ],
+   "titel": "Augusteum (Universität Leipzig)",
+   "licht": "sonnig 11:35, blauer Himmel",
+   "prior": {
+    "bereich": [
+     -15,
+     10,
+     -75,
+     -45
+    ],
+    "yaw_bereich": [
+     325,
+     365
+    ],
+    "pitch": [
+     6,
+     18
+    ],
+    "hfov": [
+     55,
+     95
+    ],
+    "z": [
+     1.2,
+     2.2
+    ],
+    "min_abdeckung": 0.5
+   },
+   "pose": {
+    "pos": [
+     -11.757,
+     -68.804,
+     1.322
+    ],
+    "yaw": -7.637,
+    "pitch": 6.088,
+    "roll": -0.266,
+    "hfov": 69.546
+   },
+   "pose_kosten": 0.0205,
+   "verworfen": "Pose vertikal inkonsistent (Gebäudesockel im Modell zu hoch)"
+  },
+  "fl_8128089447": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/8195/8128089447_6631334149_k.jpg",
+   "seite": "https://www.flickr.com/photos/49253583@N02/8128089447",
+   "lizenz": "CC BY 2.0",
+   "urheber": "michimaya",
+   "zeit": "2012-10-03T14:49:51",
+   "gebaeude": [
+    "06"
+   ],
+   "titel": "Uniriese",
+   "licht": "sonnig 14:49, klarer tiefblauer Himmel",
+   "prior": {
+    "bereich": [
+     -110,
+     -20,
+     -130,
+     -60
+    ],
+    "yaw_bereich": [
+     0,
+     360
+    ],
+    "pitch": [
+     20,
+     55
+    ],
+    "hfov": [
+     40,
+     100
+    ],
+    "z": [
+     1.2,
+     2.5
+    ],
+    "min_abdeckung": 0.15
+   },
+   "pose": {
+    "pos": [
+     -87.839,
+     -115.598,
+     1.91
+    ],
+    "yaw": 162.432,
+    "pitch": 38.719,
+    "roll": 0.348,
+    "hfov": 74.81
+   },
+   "pose_kosten": 0.0031,
+   "verworfen": "Registrierung nicht tragfähig (Uniriese, kaum Modellfläche im Bild)"
+  },
+  "fl_9656690560": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/7393/9656690560_6797451fde_k.jpg",
+   "seite": "https://www.flickr.com/photos/40787640@N03/9656690560",
+   "lizenz": "CC BY 2.0",
+   "urheber": "prayerslayer",
+   "zeit": "2013-08-22T10:16:00",
+   "gebaeude": [
+    "06",
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Augustusplatz",
+   "licht": "sonnig 10:16, klarer Himmel, Sommer",
+   "prior": {
+    "bereich": [
+     40,
+     220,
+     -100,
+     60
+    ],
+    "yaw_bereich": [
+     235,
+     305
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     35,
+     85
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     205.59,
+     54.878,
+     2.29
+    ],
+    "yaw": -87.362,
+    "pitch": 13.202,
+    "roll": -2.867,
+    "hfov": 66.509
+   },
+   "pose_kosten": 0.03,
+   "geprueft": true
+  },
+  "fl_14005411673": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/7036/14005411673_a976992009_b.jpg",
+   "seite": "https://www.flickr.com/photos/123851327@N06/14005411673",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Jackie_ffm",
+   "zeit": "2014-03-14T19:41:23",
+   "gebaeude": [
+    "06",
+    "02",
+    "01"
+   ],
+   "titel": "Uni Riese & Universität Leipzig",
+   "licht": "bedeckt-hell, gleichmäßig (Zeitstempel 19:41 vermutlich falsch)",
+   "prior": {
+    "bereich": [
+     30,
+     160,
+     -40,
+     60
+    ],
+    "yaw_bereich": [
+     245,
+     300
+    ],
+    "pitch": [
+     -3,
+     12
+    ],
+    "hfov": [
+     45,
+     95
+    ],
+    "z": [
+     1.2,
+     3.5
+    ]
+   },
+   "bedeckt": true,
+   "pose": {
+    "pos": [
+     116.006,
+     54.634,
+     1.677
+    ],
+    "yaw": -97.697,
+    "pitch": 7.674,
+    "roll": -2.941,
+    "hfov": 67.426
+   },
+   "pose_kosten": 0.049,
+   "geprueft": true
+  },
+  "cm_89035e08": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG/1920px-Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Wilhelm Thomas Fiege",
+   "zeit": "2014-04-26T14:05:30",
+   "gebaeude": [
+    "08",
+    "02",
+    "03"
+   ],
+   "titel": "Schinkeltor, Neues Augusteum, Universität Leipzig, 2014",
+   "licht": "sonnig mit Quellwolken, Fassaden im Innenhof besonnt (Schlagschatten am Boden); Uhrzeit 14:05; Sonne Azimut 202°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -135,
+     -95,
+     10,
+     55
+    ],
+    "yaw_bereich": [
+     55,
+     110
+    ],
+    "pitch": [
+     -2,
+     12
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     3.6,
+     4.9
+    ]
+   },
+   "pose": {
+    "pos": [
+     -121.224,
+     17.83,
+     3.659
+    ],
+    "yaw": 103.75,
+    "pitch": 6.423,
+    "roll": -0.338,
+    "hfov": 61.062
+   },
+   "pose_kosten": 0.0017,
+   "geprueft": true
+  },
+  "cm_a432dae5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/NSG_Leipzig.JPG/1920px-NSG_Leipzig.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:NSG_Leipzig.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:12:00",
+   "gebaeude": [
+    "04",
+    "03",
+    "06"
+   ],
+   "titel": "NSG Leipzig",
+   "licht": "klarer blauer Himmel, Schneereste am Boden; Westfassade des Seminargebäudes besonnt; Uhrzeit 15:12; Sonne Azimut 227°, Höhe 23° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -205,
+     -150,
+     60,
+     230
+    ],
+    "yaw_bereich": [
+     145,
+     205
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -165.299,
+     138.186,
+     1.541
+    ],
+    "yaw": 163.983,
+    "pitch": 10.119,
+    "roll": -2.997,
+    "hfov": 69.361
+   },
+   "pose_kosten": 0.0195,
+   "geprueft": true
+  },
+  "fl_5355563189": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/5001/5355563189_54c33e3da7_k.jpg",
+   "seite": "https://www.flickr.com/photos/58026969@N05/5355563189",
+   "lizenz": "CC BY 2.0",
+   "urheber": "David~",
+   "zeit": "2009-05-24T15:02:16",
+   "gebaeude": [
+    "04",
+    "06"
+   ],
+   "titel": "Neues Seminargebäude",
+   "licht": "sonnig mit Schleierwolken, Westfassade besonnt; Uhrzeit 15:02; Sonne Azimut 227°, Höhe 52° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -185,
+     -150,
+     60,
+     170
+    ],
+    "yaw_bereich": [
+     145,
+     185
+    ],
+    "pitch": [
+     -3,
+     12
+    ],
+    "hfov": [
+     40,
+     66
+    ],
+    "z": [
+     1.3,
+     2.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -157.96,
+     161.227,
+     1.311
+    ],
+    "yaw": 169.781,
+    "pitch": -2.861,
+    "roll": -1.852,
+    "hfov": 61.407
+   },
+   "pose_kosten": 0.0172,
+   "verworfen": "Gebäudegrenzen liegen um ein Gebäude daneben"
+  },
+  "cm_867bcac5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Leipzig_Uni_Campus_Neu_Nordseite.JPG/1920px-Leipzig_Uni_Campus_Neu_Nordseite.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_Uni_Campus_Neu_Nordseite.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:12:00",
+   "gebaeude": [
+    "05"
+   ],
+   "titel": "Leipzig Uni Campus Neu Nordseite",
+   "licht": "klarer blauer Himmel, Schneereste; Fassade im Bild sonnenbeschienen; Uhrzeit 15:12; Sonne Azimut 227°, Höhe 23° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -260,
+     -20,
+     95,
+     200
+    ],
+    "yaw_bereich": [
+     20,
+     160
+    ],
+    "pitch": [
+     -3,
+     15
+    ],
+    "hfov": [
+     58,
+     70
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -143.424,
+     139.625,
+     2.207
+    ],
+    "yaw": 133.466,
+    "pitch": 10.233,
+    "roll": -2.979,
+    "hfov": 58.32
+   },
+   "pose_kosten": 0.0369,
+   "geprueft": true
+  },
+  "cm_1e4df457": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:16:41",
+   "gebaeude": [
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz - Paulinum 01 ies",
+   "licht": "wolkenlos tiefblau, Ostfassaden voll besonnt; Uhrzeit 10:16; Sonne Azimut 113°, Höhe 45° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -25,
+     15,
+     15,
+     55
+    ],
+    "yaw_bereich": [
+     -60,
+     20
+    ],
+    "pitch": [
+     20,
+     60
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -24.627,
+     43.191,
+     2.977
+    ],
+    "yaw": 15.766,
+    "pitch": 59.951,
+    "roll": -2.701,
+    "hfov": 76.708
+   },
+   "pose_kosten": 0.0186,
+   "geprueft": true
+  },
+  "cm_438c2e7f": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg/1920px-Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig%2C_Paulinum_und_die_H%C3%A4user_Goethestra%C3%9Fe_1_und_2.jpg",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Dguendel",
+   "zeit": "2018-03-24T11:29:29",
+   "gebaeude": [
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig, Paulinum und die Häuser Goethestraße 1 und 2",
+   "licht": "klarer blauer Himmel, Fassade (Ostseite) besonnt; Uhrzeit 11:29; Sonne Azimut 165°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     10,
+     -30,
+     25
+    ],
+    "yaw_bereich": [
+     -30,
+     50
+    ],
+    "pitch": [
+     -2,
+     15
+    ],
+    "hfov": [
+     13,
+     18
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -9.575,
+     23.061,
+     2.94
+    ],
+    "yaw": -17.046,
+    "pitch": 14.961,
+    "roll": 2.9,
+    "hfov": 17.978
+   },
+   "pose_kosten": 0.0395,
+   "verworfen": "Modellflächen passen nicht zur Fassade"
+  },
+  "cm_7688a7cf": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Mensa_am_Park.JPG/1920px-Mensa_am_Park.JPG",
+   "seite": "https://commons.wikimedia.org/wiki/File:Mensa_am_Park.JPG",
+   "lizenz": "CC BY 3.0",
+   "urheber": "JesterWr",
+   "zeit": "2010-03-07T15:14:00",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Mensa am Park",
+   "licht": "wolkenloser blauer Himmel (März), Südfassade der Mensa besonnt; Uhrzeit 15:14; Sonne Azimut 227°, Höhe 22° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
+   "prior": {
+    "bereich": [
+     -160,
+     -110,
+     -175,
+     -125
+    ],
+    "yaw_bereich": [
+     10,
+     70
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     40,
+     50
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -136.88,
+     -167.398,
+     2.86
+    ],
+    "yaw": 22.542,
+    "pitch": 22.506,
+    "roll": 0.119,
+    "hfov": 48.436
+   },
+   "pose_kosten": 0.0128,
+   "geprueft": true
+  },
+  "cm_e1e5fb60": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_%2B_Mensa_am_Park_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:46:37",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Leipzig - Universitätsstraße + Mensa am Park + City-Hochhaus 01 ies",
+   "licht": "tiefblauer Himmel, Mensa-Fassade besonnt; Uhrzeit 10:46; Sonne Azimut 121°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -175,
+     -125,
+     -200,
+     -150
+    ],
+    "yaw_bereich": [
+     5,
+     40
+    ],
+    "pitch": [
+     0,
+     12
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.3,
+     2.5
+    ]
+   },
+   "pose": {
+    "pos": [
+     -129.602,
+     -172.938,
+     2.154
+    ],
+    "yaw": 7.021,
+    "pitch": 11.859,
+    "roll": -1.854,
+    "hfov": 76.32
+   },
+   "pose_kosten": 0.0416,
+   "verworfen": "Pose um etwa 70 px verschoben (Mensa und Uniriese)"
+  },
+  "cm_3b7d7aa5": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Mensa_am_Park_%2B_City-Hochhaus_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:49:08",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Mensa am Park + City-Hochhaus 02 ies",
+   "licht": "blauer Himmel, Lamellenfassade und Hochhaus besonnt; Uhrzeit 10:49; Sonne Azimut 122°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -200,
+     -100,
+     -170,
+     -70
+    ],
+    "yaw_bereich": [
+     20,
+     110
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     30,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -131.69,
+     -130.929,
+     2.374
+    ],
+    "yaw": 54.087,
+    "pitch": 18.022,
+    "roll": 2.872,
+    "hfov": 38.443
+   },
+   "pose_kosten": 0.0182,
+   "verworfen": "Teleaufnahme, Pose passt nicht"
+  },
+  "cm_d97072a8": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Moritzbastei_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:40:18",
+   "gebaeude": [
+    "07",
+    "03"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Moritzbastei 02 ies",
+   "licht": "wolkenlos tiefblau, Mauer besonnt (Schlagschatten am Boden); Uhrzeit 10:40; Sonne Azimut 119°, Höhe 49° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     45,
+     -205,
+     -110
+    ],
+    "yaw_bereich": [
+     235,
+     305
+    ],
+    "pitch": [
+     -5,
+     10
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -0.154,
+     -110.123,
+     2.836
+    ],
+    "yaw": -103.371,
+    "pitch": -4.05,
+    "roll": -0.001,
+    "hfov": 79.426
+   },
+   "pose_kosten": 0.033,
+   "verworfen": "Nur das Dach der Bastion ist abgedeckt, Pose ungenau, verputzte Wand"
+  },
+  "cm_73eef6bc": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Universit%C3%A4tsstra%C3%9Fe_-_Lenn%C3%A9anlage_%2B_Moritzbastei_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T12:55:16",
+   "gebaeude": [
+    "06",
+    "07"
+   ],
+   "titel": "Leipzig - Universitätsstraße - Lennéanlage + Moritzbastei + City-Hochhaus 01 ies",
+   "licht": "blauer Himmel, Hochhaus besonnt (Südseite), Mauer im Schatten; Uhrzeit 12:55; Sonne Azimut 171°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Süd)",
+   "prior": {
+    "bereich": [
+     -195,
+     -95,
+     -240,
+     -150
+    ],
+    "yaw_bereich": [
+     5,
+     65
+    ],
+    "pitch": [
+     8,
+     38
+    ],
+    "hfov": [
+     48,
+     58
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -100.862,
+     -156.827,
+     2.142
+    ],
+    "yaw": 41.882,
+    "pitch": 24.713,
+    "roll": -2.587,
+    "hfov": 48.09
+   },
+   "pose_kosten": 0.0148,
+   "verworfen": "Pose passt nicht"
+  },
+  "cm_2c42c9b4": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:03:16",
+   "gebaeude": [
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 01 ies",
+   "licht": "wolkenlos tiefblau, Ostgiebel voll besonnt; Uhrzeit 10:03; Sonne Azimut 109°, Höhe 43° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     20,
+     110,
+     -10,
+     70
+    ],
+    "yaw_bereich": [
+     260,
+     310
+    ],
+    "pitch": [
+     -2,
+     15
+    ],
+    "hfov": [
+     30,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     98.776,
+     67.792,
+     1.458
+    ],
+    "yaw": -90.095,
+    "pitch": 9.785,
+    "roll": -0.789,
+    "hfov": 44.947
+   },
+   "pose_kosten": 0.0448,
+   "geprueft": true
+  },
+  "cm_32166237": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:24:17",
+   "gebaeude": [
+    "02",
+    "01",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 04 ies",
+   "licht": "blauer Himmel mit Schleierwolken, Ostfront besonnt; Uhrzeit 10:24; Sonne Azimut 115°, Höhe 46° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     140,
+     -30,
+     60
+    ],
+    "yaw_bereich": [
+     255,
+     300
+    ],
+    "pitch": [
+     -3,
+     12
+    ],
+    "hfov": [
+     58,
+     72
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     89.582,
+     1.16,
+     3.974
+    ],
+    "yaw": -69.942,
+    "pitch": 7.779,
+    "roll": 0.222,
+    "hfov": 58.263
+   },
+   "pose_kosten": 0.0205,
+   "geprueft": true
+  },
+  "cm_f3cf5ae4": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:28:11",
+   "gebaeude": [
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig - Augustusplatz + Neues Augusteum + Paulinum 05 ies",
+   "licht": "tiefblauer Himmel, Ostfassade streifend besonnt; Uhrzeit 10:28; Sonne Azimut 116°, Höhe 47° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -35,
+     30,
+     -100,
+     -10
+    ],
+    "yaw_bereich": [
+     -45,
+     30
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     33,
+     42
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -4.76,
+     -24.879,
+     2.993
+    ],
+    "yaw": -21.917,
+    "pitch": 11.657,
+    "roll": 2.984,
+    "hfov": 33.075
+   },
+   "pose_kosten": 0.0272,
+   "geprueft": true
+  },
+  "cm_37fb5ce2": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Paulinum_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:15:30",
+   "gebaeude": [
+    "01",
+    "02",
+    "05"
+   ],
+   "titel": "Leipzig - Augustusplatz + Paulinum 01 ies.jpg",
+   "licht": "tiefblauer Himmel, Giebel besonnt; Uhrzeit 10:15; Sonne Azimut 112°, Höhe 45° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -5,
+     70,
+     -20,
+     45
+    ],
+    "yaw_bereich": [
+     285,
+     345
+    ],
+    "pitch": [
+     0,
+     25
+    ],
+    "hfov": [
+     33,
+     42
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     7.49,
+     -19.978,
+     1.504
+    ],
+    "yaw": -74.96,
+    "pitch": 5.619,
+    "roll": -0.966,
+    "hfov": 41.952
+   },
+   "pose_kosten": 0.0559,
+   "verworfen": "Pose passt nicht"
+  },
+  "cm_719477f3": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg/1920px-Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg",
+   "lizenz": "CC BY 4.0",
+   "urheber": "Dguendel",
+   "zeit": "2018-03-24T11:29:02",
+   "gebaeude": [
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig, die Universitätskirche (Paulinum)",
+   "licht": "sonnig, blauer Himmel mit Wolken; Ostfassade im Streiflicht; Uhrzeit 11:29; Sonne Azimut 164°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -40,
+     10,
+     -30,
+     25
+    ],
+    "yaw_bereich": [
+     -40,
+     20
+    ],
+    "pitch": [
+     -2,
+     20
+    ],
+    "hfov": [
+     25,
+     33
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -7.631,
+     -16.189,
+     2.711
+    ],
+    "yaw": -27.843,
+    "pitch": 18.153,
+    "roll": 2.924,
+    "hfov": 30.325
+   },
+   "pose_kosten": 0.0227,
+   "geprueft": true
+  },
+  "cm_9812eb34": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:03:34",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - Augustusplatz + City-Hochhaus 01 ies",
+   "licht": "wolkenlos tiefblau, Ostseite des Hochhauses voll besonnt; Uhrzeit 10:03; Sonne Azimut 109°, Höhe 43° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     55,
+     115,
+     -112,
+     -78
+    ],
+    "yaw_bereich": [
+     272,
+     298
+    ],
+    "pitch": [
+     2,
+     16
+    ],
+    "hfov": [
+     20,
+     32
+    ],
+    "z": [
+     1.2,
+     2.2
+    ],
+    "roll": [
+     -2,
+     2
+    ]
+   },
+   "pose": {
+    "pos": [
+     114.517,
+     -91.996,
+     2.181
+    ],
+    "yaw": -62.026,
+    "pitch": 14.254,
+    "roll": -1.73,
+    "hfov": 20.846
+   },
+   "pose_kosten": 0.0682,
+   "verworfen": "Pose passt nicht (Uniriese liegt außerhalb des Modellausschnitts)"
+  },
+  "cm_c00e0207": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_City-Hochhaus_02_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:08:14",
+   "gebaeude": [
+    "06",
+    "02",
+    "01"
+   ],
+   "titel": "Leipzig - Augustusplatz + City-Hochhaus 02 ies",
+   "licht": "wolkenlos blau, Ostseite des Hochhauses besonnt; Uhrzeit 10:08; Sonne Azimut 111°, Höhe 44° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     110,
+     -90,
+     -20
+    ],
+    "yaw_bereich": [
+     250,
+     295
+    ],
+    "pitch": [
+     -2,
+     14
+    ],
+    "hfov": [
+     48,
+     58
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     50.574,
+     -61.197,
+     1.513
+    ],
+    "yaw": -86.685,
+    "pitch": -1.878,
+    "roll": -0.422,
+    "hfov": 50.2
+   },
+   "pose_kosten": 0.0566,
+   "verworfen": "Pose passt nicht"
+  },
+  "cm_4d3eca4c": {
+   "quelle": "commons",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg/1920px-Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg",
+   "seite": "https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg",
+   "lizenz": "CC BY-SA 3.0",
+   "urheber": "Frank Vincentz",
+   "zeit": "2015-07-07T10:04:47",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - Augustusplatz + Radisson Blu + Europahaus + Neues Gewandhaus + City-Hochhaus 01 ies.jpg",
+   "licht": "blauer Himmel mit Schleierwolken, Ostseite des Hochhauses besonnt; Uhrzeit 10:04; Sonne Azimut 110°, Höhe 44° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     20,
+     150,
+     -10,
+     110
+    ],
+    "yaw_bereich": [
+     170,
+     250
+    ],
+    "pitch": [
+     -5,
+     12
+    ],
+    "hfov": [
+     66,
+     80
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     149.828,
+     105.275,
+     1.669
+    ],
+    "yaw": -152.787,
+    "pitch": 10.067,
+    "roll": 2.784,
+    "hfov": 72.268
+   },
+   "pose_kosten": 0.0282,
+   "geprueft": true
+  },
+  "fl_25041852629": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/1613/25041852629_db6f380a58_k.jpg",
+   "seite": "https://www.flickr.com/photos/129231073@N06/25041852629",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Fred Romero",
+   "zeit": "2015-08-03T10:00:43",
+   "gebaeude": [
+    "06",
+    "02"
+   ],
+   "titel": "Leipzig - City-Hochhaus Leipzig",
+   "licht": "morgens, blauer Himmel; Ostfassade besonnt; Uhrzeit 10:00; Sonne Azimut 112°, Höhe 39° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     -50,
+     40,
+     -110,
+     -10
+    ],
+    "yaw_bereich": [
+     220,
+     300
+    ],
+    "pitch": [
+     20,
+     55
+    ],
+    "hfov": [
+     55,
+     95
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -6.523,
+     -110.238,
+     4.658
+    ],
+    "yaw": -91.35,
+    "pitch": 47.278,
+    "roll": 5.927,
+    "hfov": 55.688
+   },
+   "pose_kosten": 0.0668,
+   "verworfen": "Pose passt nicht"
+  },
+  "fl_15722085221": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/8640/15722085221_18100d3ed4_k.jpg",
+   "seite": "https://www.flickr.com/photos/129110760@N03/15722085221",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Gokhan Kutlu",
+   "zeit": "2013-07-07T12:54:09",
+   "gebaeude": [
+    "01",
+    "02"
+   ],
+   "titel": "Uni Leipzig",
+   "licht": "blauer Himmel, mittags; Uhrzeit 12:54; Sonne Azimut 170°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
+   "prior": {
+    "bereich": [
+     30,
+     130,
+     0,
+     85
+    ],
+    "yaw_bereich": [
+     255,
+     295
+    ],
+    "pitch": [
+     0,
+     20
+    ],
+    "hfov": [
+     15,
+     40
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     129.386,
+     81.636,
+     1.906
+    ],
+    "yaw": -80.047,
+    "pitch": 3.72,
+    "roll": -1.632,
+    "hfov": 15.202
+   },
+   "pose_kosten": 0.0201,
+   "verworfen": "Pose passt nicht (Laub verdeckt den Giebel)"
+  },
+  "fl_48025156148": {
+   "quelle": "flickr",
+   "url": "https://live.staticflickr.com/65535/48025156148_9998da7ac3_k.jpg",
+   "seite": "https://www.flickr.com/photos/10345599@N03/48025156148",
+   "lizenz": "CC BY 2.0",
+   "urheber": "Francisco Anzola",
+   "zeit": "2019-06-07T12:54:26",
+   "gebaeude": [
+    "03",
+    "06"
+   ],
+   "titel": "Mensa am Park",
+   "licht": "klar, tiefe Sonne von links (warmes Licht), Fassade besonnt; Uhrzeit 12:54; Sonne Azimut 173°, Höhe 61° (rechnerisch direkt beschienene Fassadenseiten: Süd)",
+   "prior": {
+    "bereich": [
+     -235,
+     -140,
+     -200,
+     -100
+    ],
+    "yaw_bereich": [
+     20,
+     90
+    ],
+    "pitch": [
+     -3,
+     20
+    ],
+    "hfov": [
+     50,
+     90
+    ],
+    "z": [
+     1.5,
+     3.0
+    ]
+   },
+   "pose": {
+    "pos": [
+     -184.477,
+     -113.346,
+     1.513
+    ],
+    "yaw": 41.218,
+    "pitch": 6.65,
+    "roll": -5.648,
+    "hfov": 69.249
+   },
+   "pose_kosten": 0.0582,
+   "verworfen": "Pose passt nicht, Aufnahmezeit unplausibel"
+  }
+ }
+}

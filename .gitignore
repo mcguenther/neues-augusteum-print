@@ -1,5 +1,7 @@
 __pycache__/
 *.pyc
 data/cache/
+stl-fast/
+vorschau-fast/
 # große erzeugte Dateien (Institutsgebäude): lokal mit python3 -m plug.build_all erzeugen
 plug/build/
