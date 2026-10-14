@@ -54,14 +54,38 @@ def de(x, n=2):
     return ("%.*f" % (n, x)).replace(".", ",")
 
 
-def label(text, x, y, size, z_top, depth=0.5):
-    """Gravur (fett, +0,12 mm), lesbar von oben, Oberkante der Fläche bei z_top."""
+MARK_BOLD = 0.28      # Verbreiterung der Schrift je Seite (fett)
+CHAMF = 0.3           # Fase (45°) an jedem Pin-Loch, auf beiden Seiten
+
+
+def mark_cs(text, rank, size):
+    """2D-Marke: Text (fett, DejaVu Bold + MARK_BOLD) mittig bei x = 0, darunter `rank` Punkte (1 Punkt = engste bzw. dünnste Variante)."""
     import generate
     cs = generate.text_cross_section(text, size, 0.0, -size / 2, anchor="center")
-    if cs is None:
-        return None
-    cs = cs.offset(0.12, m3d.JoinType.Round).translate((x, y))
-    return m3d.Manifold.extrude(cs, depth + 0.01).translate([0, 0, z_top - depth])
+    cs = cs.offset(MARK_BOLD, m3d.JoinType.Round)
+    r = size * 0.17
+    y = -size * 0.72 - 1.1 - r
+    dots = [m3d.CrossSection.circle(r, 24).translate(((i - (rank - 1) / 2.0) * 3.0 * r, y)) for i in range(rank)]
+    return m3d.CrossSection.batch_boolean([cs] + dots, m3d.OpType.Add)
+
+
+def engrave_top(cs, x, y, z_top, depth):
+    """Gravur in eine waagerechte Fläche (Oberkante bei z_top), lesbar von oben."""
+    return m3d.Manifold.extrude(cs.translate((x, y)), depth + 0.01).translate([0, 0, z_top - depth])
+
+
+def engrave_side(cs, x, z, y_face, depth):
+    """Gravur in eine senkrechte Fläche bei y = y_face (Außenseite zeigt nach −y), lesbar von −y: Text läuft in +x, oben ist +z."""
+    m = m3d.Manifold.extrude(cs, depth + 0.01).rotate([90, 0, 0])          # (x, v, e) -> (x, -e, v)
+    return m.translate([x, y_face + depth, z])
+
+
+def pin_hole(x, y, z0, z1, d=None):
+    """Durchgangsloch für einen Pin mit 45°-Fase CHAMF an beiden Enden (z0 = unten, z1 = oben)."""
+    d = sd.HOLE if d is None else d
+    return [cyl(d / 2, z0 - 0.01, z1 + 0.01, cx=x, cy=y, n=32),
+            m3d.Manifold.cylinder(CHAMF + 0.01, d / 2 + CHAMF + 0.01, d / 2, 32).translate([x, y, z0 - 0.01]),
+            m3d.Manifold.cylinder(CHAMF + 0.01, d / 2, d / 2 + CHAMF + 0.01, 32).translate([x, y, z1 - CHAMF])]
 
 
 def rect_cs(w, d, r=sd.FOOT_R):
@@ -73,18 +97,17 @@ def rect_cs(w, d, r=sd.FOOT_R):
 # Teile (Konstruktionslage = Probestück-Koordinaten, Kassette mittig bei y = 0; to_bed legt sie aufs Bett)
 # --------------------------------------------------------------------------
 def contact_spacers():
-    """K: drei Plättchen 14 × 10 mm mit vier Löchern im 2,54-Raster, bettseitig mit 0,3-mm-Senkung (Elefantenfuß)."""
-    W, D, gap = 14.0, 10.0, 3.0
+    """K: drei Plättchen 14,5 × 14 mm mit vier Löchern im 2,54-Raster, beidseitig mit Fase 0,3 mm; Gravur K + Dicke, Rangpunkte."""
+    W, D, gap = 14.5, 14.0, 3.0
     parts = []
     for i, t in enumerate(K_T):
         cx = (i - 1) * (W + gap)
         m = box(cx - W / 2, cx + W / 2, -D / 2, D / 2, 0, t)
         cuts = []
         for px in sd.pin_x():
-            cuts.append(cyl(sd.HOLE / 2, -0.01, t + 0.01, cx=cx + px, cy=1.8, n=32))
-            cuts.append(m3d.Manifold.cylinder(0.31, sd.HOLE / 2 + 0.3, sd.HOLE / 2, 32).translate([cx + px, 1.8, -0.01]))
-        lab = label(de(t, 1), cx, -2.7, 3.0, t, depth=min(0.6, t - 0.7))
-        parts.append(diff(m, *(cuts + [lab])))
+            cuts += pin_hole(cx + px, 4.6, 0.0, t)
+        cuts.append(engrave_top(mark_cs("K " + de(t, 1), i + 1, 4.0), cx, -0.4, t, depth=min(0.7, t - 0.6)))
+        parts.append(diff(m, *cuts))
     return union(parts)
 
 
@@ -95,9 +118,13 @@ def slider(c, P):
     yc = (d["cass_y0"] + d["cass_y1"]) / 2
     xout = L["xwall"]
     k = prism_x(I.slider_prof(d, c), d["x_in"], xout).translate([0, -yc, 0])
-    k = diff(k, *[h.translate([0, -yc, 0]) for h in sd.funnel_holes(-F, d["HY"])])
+    k = diff(k, *[h.translate([0, -yc, 0]) for h in sd.funnel_holes(-F, d["HY"])])      # unten Trichter 2,4 → 1,4
+    ypin = d["HY"] - yc
+    k = diff(k, *[m3d.Manifold.cylinder(CHAMF + 0.01, sd.HOLE / 2, sd.HOLE / 2 + CHAMF + 0.01, 32).translate([px, ypin, -F + T - CHAMF])
+                  for px in sd.pin_x()])                                                  # oben Fase 0,3
     k = diff(k, cbox(1.0, 6.0, -F - 0.01, -F + 0.5, cx=xout - 0.2, cy=0.0))
-    return diff(k, label(de(c), 3.0, 9.0, 3.0, -F + T, depth=0.4))
+    rank = N_CLR.index(c) + 1
+    return diff(k, engrave_top(mark_cs("N " + de(c), rank, 4.6), (d["x_in"] + xout) / 2, 9.5, -F + T, depth=0.4))
 
 
 def sliders(P):
@@ -117,8 +144,8 @@ def slab(c, P):
     y0, y1 = d["cass_y0"] - yc, d["cass_y1"] - yc
     shaft = box(x0 - c, x1 + c, y0 - c, y1 + c, -F - 0.01, -F + SLAB_H + 0.01)
     groove = prism_x(I.slider_prof(d, 0.0, 0.01), d["x_in"], L["xwall"] + 6.0).translate([0, -yc, 0])
-    ycen = (y1 + c + hy) / 2
-    lab = label(de(c), 0.0, ycen, 2.4, -F + SLAB_H, depth=0.5)
+    rank = S_CLR.index(c) + 1 if c in S_CLR else 1
+    lab = engrave_side(mark_cs("S " + de(c), rank, 4.8), 0.0, -F + 6.6, -hy, depth=0.6)
     return diff(m, shaft, groove, lab)
 
 
@@ -131,13 +158,13 @@ def slabs(P, cache):
 
 
 def sleeves():
-    """R: vier Buchsenhülsen (beidseitig offen, 14,25 mm hoch wie die Tasche der Kassette) auf einer 0,8-mm-Platte mit Gravur."""
+    """R: vier Buchsenhülsen (beidseitig offen, 14,25 mm hoch wie die Tasche der Kassette) auf einer 1-mm-Platte mit Gravur."""
     H = sd.HSG_H + sd.HSG_TOL
     pw = [sd.HSG_W + 2 * s for s in R_SNUG]
     pd = [sd.HSG_T + 2 * s for s in R_SNUG]
     ow = [w + 2 * sd.WALL for w in pw]
     od = [dd + 2 * sd.WALL for dd in pd]
-    gap = 3.0
+    gap = 5.0
     total = sum(ow) + gap * (len(ow) - 1)
     x = -total / 2
     centers = []
@@ -145,13 +172,13 @@ def sleeves():
         centers.append(x + w / 2)
         x += w + gap
     odm = max(od)
-    plate = box(-total / 2 - 2.0, total / 2 + 2.0, -odm / 2 - 8.0, odm / 2 + 2.0, 0, 0.8)
+    plate = box(-total / 2 - 2.0, total / 2 + 2.0, -odm / 2 - 12.0, odm / 2 + 2.0, 0, 1.0)
     solid = [plate]
     cuts = []
     for cx, w, dd, o_w, o_d, s in zip(centers, pw, pd, ow, od, R_SNUG):
         solid.append(cbox(o_w, o_d, 0, H, cx=cx))
         cuts.append(cbox(w, dd, -0.01, H + 0.01, cx=cx))
-        cuts.append(label(de(s), cx, -odm / 2 - 4.6, 3.4, 0.8, depth=0.4))
+        cuts.append(engrave_top(mark_cs("R " + de(s), R_SNUG.index(s) + 1, 4.2), cx, -odm / 2 - 5.0, 1.0, depth=0.5))
     return diff(union(solid), *cuts), centers
 
 
@@ -169,8 +196,8 @@ def mulde_rings(P):
             outer = I.rounded(cs).offset(c + sd.RELIEF + RING_MARGIN, m3d.JoinType.Round)
             blk = ext(outer, -F - RING_FLOOR, 0.0)
             cuts = I.pocket_cuts(cs, F)
-            ytop = poly.bounds[3] + c + 1.2 + (RING_MARGIN + sd.RELIEF - 1.2 + 0.0) / 2.0
-            lab = label(de(c), 0.0, ytop, 2.4, 0.0, depth=0.5)
+            yface = outer.bounds()[1]                                  # äußere −y-Fläche des Rings
+            lab = engrave_side(mark_cs("F " + de(c), FM_CLR.index(c) + 1, 4.6), 2.5, -F - RING_FLOOR + 7.0, yface, depth=0.7)
             rings.append(diff(blk, *(cuts + [lab])))
     finally:
         sd.CLR = old
@@ -293,7 +320,7 @@ def main():
         print("  Zeit %-8s ≈ %.1f h" % (prof, mins / 60.0))
 
     tiers = {}
-    for tname, keys in (("core", ("K_contact_spacers", "N_sliders", "S_floor_slabs", "C_cassette", "R_sleeves")),
+    for tname, keys in (("core", ("K_contact_spacers", "N_sliders", "S_floor_slabs", "C_cassette")),
                         ("core_d", ("K_contact_spacers", "N_sliders", "S_floor_slabs", "C_cassette", "R_sleeves", "D_fitprobe_v6")),
                         ("all", tuple(info))):
         tiers[tname] = dict(g=sum(info[k]["g"] for k in keys), **{
@@ -345,6 +372,19 @@ def previews(P, parts, info, pos):
                (to_tm(cutx(P["terms"])), "#caa13a")]
     im = preview.render(k_parts, size=(1500, 900), azim=0, elev=0)
     im.save(os.path.join(PREV, "kontakt_stapel.png"))
+    # Beschriftung und Löcher aus der Nähe: Oberseite (K, N, R, D) bzw. Außenseite (S, FM), zu einem Bogen zusammengesetzt
+    from PIL import Image
+    views = [("K_contact_spacers", -90, 80), ("N_sliders", -90, 80), ("R_sleeves", -90, 80), ("D_fitprobe_v6", -90, 80),
+             ("S_floor_slabs", -90, 6), ("FM_mulde_rings", -90, 6)]
+    tiles = []
+    for name, az, el in views:
+        tmv = to_tm(parts[name])
+        tiles.append(preview.render([(tmv, "#d9d2bf")], size=(1100, 420 if el > 40 else 330), azim=az, elev=el))
+    sheet = Image.new("RGB", (1100, sum(t.size[1] for t in tiles)), "white")
+    yy = 0
+    for t_ in tiles:
+        sheet.paste(t_, (0, yy)); yy += t_.size[1]
+    sheet.save(os.path.join(PREV, "beschriftung.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
@@ -362,6 +402,13 @@ Warum Serien?
     WEIT = weiteste Variante, die noch nicht merklich wackelt
   Liegt der Wert dazwischen, wird er der neue Sollwert. Die Probestück-Werte stehen in jeder Zeile als Vergleich.
 
+Beschriftung: Serienbuchstabe + Spiel in mm, dazu Punkte als Rang (1 Punkt = engste bzw. dünnste Variante, mehr Punkte = mehr Spiel).
+  Die Schrift ist fett und 0,4 bis 0,8 mm tief graviert. Bei S und FM steht sie an der langen Außenseite (−y, zum Betrachter),
+  bei N, K, R auf der Oberseite, bei D (Passprobe) unten auf dem Bett mit einem Zeichen je Feld (Dreieck 2,0 / Quadrat 1,8 / Kreis 1,6).
+
+Alle Löcher für Pins (K-Plättchen, Schieber N, Passprobe D) haben auf beiden Seiten eine 45°-Fase von 0,3 mm
+  (am Schieber unten der Trichter 2,4 → 1,4, oben 0,3), damit sie an der Oberfläche nicht durch Anschmelzen zuwachsen.
+
 Alle Serien sind voneinander unabhängig (jede Fuge hat genau eine Serie), also alle in einem Druck.
 Nach Gefühl geprüft wird alles außer K; K misst Durchgang.
 
@@ -370,15 +417,15 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen, keine Brims an Sch
   N_sliders.stl           4 Schieber, Spiel 0,05 / 0,10 / 0,15 / 0,20   ≈ {de(g['N_sliders'],1)} g   (Probestück: 0,15)
   S_floor_slabs.stl       4 Boden-Platten, Schachtspiel 0,05 / 0,10 / 0,15 / 0,20   ≈ {de(g['S_floor_slabs'],1)} g   (Probestück: 0,20)
   C_cassette.stl          Kassette wie im Probestück (Lehre für S, zum Bestücken)   ≈ {de(g['C_cassette'],1)} g
-  R_sleeves.stl           4 Buchsenhülsen, Spiel 0,08 / 0,12 / 0,16 / 0,20, ohne Rippen   ≈ {de(g['R_sleeves'],1)} g   (Kassette: 0,22 mit Rippen)
+  R_sleeves.stl           4 Buchsenhülsen, Spiel 0,08 / 0,12 / 0,16 / 0,20, ohne Rippen   ≈ {de(g['R_sleeves'],1)} g   OPTIONAL: Passprobe Runde 2 testete 0,25 bis 0,33 (0,25 sitzt sehr gut), das hier ist nur der Bereich darunter
   FM_mulde_rings.stl      3 Mulden-Ringe, Spiel 0,10 / 0,15 / 0,20   ≈ {de(g['FM_mulde_rings'],1)} g   (Probestück: 0,25)   OPTIONAL, schwerstes Teil
-  D_fitprobe_v6.stl       Passprobe Winkelleiste, unverändert aus stl/steckmodul_probe/   ≈ {de(g['D_fitprobe_v6'],1)} g   OPTIONAL
+  D_fitprobe_v6.stl       Passprobe Winkelleiste (wie stl/steckmodul_probe/0_passprobe.stl, jetzt mit Fase auf beiden Seiten und größerer Schrift)   ≈ {de(g['D_fitprobe_v6'],1)} g   OPTIONAL: nie gedruckt, aber Runden 1 bis 4 und das Probestück (passt mit 2,0) liegen vor, nur Bestätigung der Stufe
 
 Ausbaustufen (Material und Druckzeit sind Schätzungen; die Zeit im Slicer hat Vorrang)
-  Kern     K + N + S + C + R           ≈ {de(tiers['core']['g'],0)} g    ≈ {de(tiers['core']['normal'],1)} h normaler Drucker, ≈ {de(tiers['core']['schnell'],1)} h schneller Drucker
-  + D      Passprobe dazu              ≈ {de(tiers['core_d']['g'],0)} g    ≈ {de(tiers['core_d']['normal'],1)} h / {de(tiers['core_d']['schnell'],1)} h
+  Kern     K + N + S + C               ≈ {de(tiers['core']['g'],0)} g    ≈ {de(tiers['core']['normal'],1)} h normaler Drucker, ≈ {de(tiers['core']['schnell'],1)} h schneller Drucker
+  + R + D  beide schon teilweise getestet ≈ {de(tiers['core_d']['g'],0)} g    ≈ {de(tiers['core_d']['normal'],1)} h / {de(tiers['core_d']['schnell'],1)} h
   alles    zusätzlich FM (Mulden-Ringe) ≈ {de(tiers['all']['g'],0)} g    ≈ {de(tiers['all']['normal'],1)} h / {de(tiers['all']['schnell'],1)} h
-  Zeigt der Slicer für alles mehr als etwa 7 Stunden, FM weglassen (größtes Teil, 20 g) und in einer zweiten Nacht drucken.
+  Reicht die Zeit nicht: zuerst FM streichen (größtes Teil, 20 g), dann R und D. Der Kern K + N + S + C ist das Wichtige.
   Platzbedarf aller Teile etwa {need[0]:.0f} × {need[1]:.0f} mm (Anordnungsvorschlag: vorschau/steckmodul_night1/anordnung.png).
 
 Zuordnung der Ergebnisse zu den Konstanten in plug/parts.py
@@ -436,7 +483,7 @@ Bekannte Risiken beim Druck (bitte vor dem Start im Slicer-Vorschaubild ansehen)
     (bis 34 mm Spannweite quer). Das ist eine Brücke und kann durchhängen. Das wird so mitgetestet; hängt sie spürbar durch, ist
     das ein Ergebnis für das Gebäude.
   * Der Schacht ist 0,05 mm Spiel vermutlich zu eng. Er ist als Grenzwert gedacht; klemmt er, ist das die untere Grenze der Serie.
-  * Die Gravur ist 0,4 bis 0,6 mm tief. Die Plättchen K haben bettseitig eine Senkung 0,3 mm an den Löchern (Elefantenfuß).
+  * Die Gravur ist 0,4 bis 0,8 mm tief und fett, bei den 1 mm dicken Schiebern nur 0,4 mm. Löcher: Fase 0,3 mm auf beiden Seiten.
   * Wenn K scheitert (nur bei 1,2 hält): Schieberdicke (FUNNEL_T) ändert sich, die Schieber N werden dann neu gebraucht.
     Das Risiko dafür sind etwa {de(g['N_sliders'],0)} g.
 """

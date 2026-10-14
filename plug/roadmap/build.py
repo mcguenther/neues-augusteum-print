@@ -65,12 +65,13 @@ def hm(m):
     return "%d:%02d" % (m // 60, m % 60)
 
 
-CORE = ("K", "N", "S", "C", "R", "D")       # erste Nachtplatte (Kern)
+CORE = ("K", "N", "S", "C")                 # erste Nachtplatte (Kern)
+EXTRA = ("R", "D", "FM")                      # optional: R und D sind teilweise schon getestet, FM ist das schwerste Teil
 T_START = 30.0                                # Slicen, Anordnen, Starten
 T_CORE1 = T_START + job(CORE)
-T_ALL1 = T_CORE1 + minutes("FM")              # optional: Mulden-Ringe dazu
+T_ALL1 = T_CORE1 + sum(minutes(k) for k in EXTRA)
 G_CORE = sum(PARTS[k]["g"] for k in CORE)
-G_ALL = G_CORE + PARTS["FM"]["g"]
+G_ALL = G_CORE + sum(PARTS[k]["g"] for k in EXTRA)
 
 
 def total(keys, prof="normal"):
@@ -289,10 +290,10 @@ def time_svg():
         if label and xb - xa > 18:
             o.append('<text x="%.1f" y="%d" class="bl%s" text-anchor="middle">%s</text>' % ((xa + xb) / 2, y0 + 24, " sm" if small else "", label))
 
-    blk(t(T_START), t(T_CORE1), PY0, "b-print night", "Kern: K · N · S · C · R · D")
+    blk(t(T_START), t(T_CORE1), PY0, "b-print night", "Kern: K · N · S · C")
     o.append('<rect x="%.1f" y="%d" width="%.1f" height="%d" rx="4" class="b-opt"/>' % (t(T_CORE1), PY0, t(T_ALL1) - t(T_CORE1), PH))
     o.append('<rect x="%.1f" y="%d" width="%.1f" height="%d" rx="4" class="b-hat"/>' % (t(T_CORE1), PY0, t(T_ALL1) - t(T_CORE1), PH))
-    o.append('<text x="%.1f" y="%d" class="bl sm" text-anchor="start">optional + FM</text>' % (t(T_ALL1) + 8, PY0 + 24))
+    o.append('<text x="%.1f" y="%d" class="bl sm" text-anchor="start">optional: R · D · FM</text>' % (t(T_ALL1) + 8, PY0 + 24))
     o.append('<text x="%.1f" y="%d" class="note" text-anchor="start">Kern ≈ %s g, fertig gegen %s</text>' % (t(T_START), PY0 + PH + 15, de(G_CORE, 0), hm(T_CORE1)))
     o.append('<text x="%.1f" y="%d" class="note" text-anchor="end">mit FM ≈ %s g, fertig gegen %s</text>' % (t(540), PY0 + PH + 15, de(G_ALL, 0), hm(T_ALL1)))
     blk(t(0), t(T_START + 30), DY0, "b-you", "Start", True)
@@ -344,7 +345,7 @@ def build_cards():
              q="Passen die echten Kaufteile in die Kassette, ohne dass etwas klemmt oder wackelt? Ganz ohne Gebäude. Die gedruckte Kassette ist zugleich die Lehre für S.",
              rows=[
                  ("Teile", "<code>C_cassette.stl</code> (wie im Probestück, %s cm³, steht aufrecht, Buchsentasche unten offen). "
-                           "Dazu <code>R_sleeves.stl</code>: vier Buchsenhülsen mit Spiel 0,08 / 0,12 / 0,16 / 0,20 ohne Rippen." % de(5.8)),
+                           "Optional dazu <code>R_sleeves.stl</code>: vier Buchsenhülsen 0,08 / 0,12 / 0,16 / 0,20 ohne Rippen. Passprobe Runde 2 hat 0,25 bis 0,33 schon geprüft (0,25 „sitzt sehr gut“), die Hülsen decken nur den Bereich darunter ab." % de(5.8)),
                  ("Ablauf", "Wie später im Bau: Buchse mit der Steckseite zur offenen Unterseite eindrücken, Adern in den Aderschlitz und über die +y-Wand zur LED, "
                             "Streifen in die Ablage %s × %s, DETECT-Brücke in die Querrinne." % (de(I.SEAT_W), de(I.SEAT_L))),
                  ("Fühlen", "Buchse in jede Hülse: ENG und WEIT notieren, mit zwei bis drei Buchsen (Gehäusebreite ±0,3). In der Kassette: Einpresskraft von Hand? "
@@ -366,7 +367,7 @@ def build_cards():
              ],
              meta=["%s g" % de(PARTS["N"]["g"]), "≈ %d min" % round(minutes("N")), "STL vorhanden"], waits="K (Schieberdicke)",
              known="Mit 0,15 im Probestück mitgedruckt, ohne Einzelwerte. Die Decke über der Nut ist im Probestück eine Brücke (20 × 34 mm, 209 mm²), die README nannte nur das Dach als Brücke."),
-        dict(id="D", dom="plate", title="Podest + Deckel", stage="Stufe 2", when="Nacht",
+        dict(id="D", dom="plate", title="Podest + Deckel", stage="Stufe 2", when="Nacht 1, optional",
              q="Dein Gedanke stimmt: Platte und Deckel sehen nur die Winkelleiste, nicht das Gebäude. Sind sie für sich prüfbar?",
              rows=[
                  ("Teile", "<code>0_passprobe.stl</code> (Passprobe v6, vorhanden, nicht gedruckt): Stufenhöhe für Körperhöhe 2,0 / 1,8 / 1,6. "
@@ -455,8 +456,8 @@ def main():
         "{{G_ALL}}": de(G_ALL, 0),
         "{{H_CORE}}": de(job(CORE) / 60.0),
         "{{H_CORE_FAST}}": de(job(CORE, "schnell") / 60.0),
-        "{{H_ALL}}": de((job(CORE) + minutes("FM")) / 60.0),
-        "{{H_ALL_FAST}}": de((job(CORE, "schnell") + minutes("FM", "schnell")) / 60.0),
+        "{{H_ALL}}": de((job(CORE) + sum(minutes(k) for k in EXTRA)) / 60.0),
+        "{{H_ALL_FAST}}": de((job(CORE, "schnell") + sum(minutes(k, "schnell") for k in EXTRA)) / 60.0),
         "{{CORE_END}}": hm(T_CORE1),
         "{{E}}": de(d["E"], 2),
         "{{F}}": de(d["F"]),

@@ -182,7 +182,7 @@ td:first-child { white-space: nowrap; }
     <li><b>Spalte unter 0,5 mm lassen sich nicht messen.</b> Darum tragen die Testteile ihr Spiel als Gravur, und die Hand ist das Messgerät: je Serie die engste Variante, die ohne Gewalt passt, und die weiteste, die nicht merklich wackelt. Das Probestück war laut STATUS schon einmal ganz gedruckt („wackelt überall“), aber ohne Zahlen. Bauteile (Buchse, Streifen, Pins) lassen sich messen und werden vorher gemessen.</li>
     <li><b>Ein Gate: Kontakt-Tiefe K.</b> Sie ändert nur Höhen (Fußhöhe {{F}} mm, Schieberdicke), nie eine seitliche Passung. Sie kostet etwa 1 g und 10 Minuten und kommt vor alles, was eine Höhe festschreibt (N, V1, V2).</li>
     <li><b>Die Lücke vor den Pins:</b> S und N einzeln, dann V1 (Kassette und Schieber im Gebäude, ohne Pins), erst danach V2 mit Platte und Stiften.</li>
-    <li><b>Eine Nacht reicht für alle unabhängigen Serien.</b> Der Kern (K, N, S, C, R, D) braucht etwa {{G_CORE}} g und {{H_CORE}} h (schneller Drucker {{H_CORE_FAST}} h), mit den Mulden-Ringen (FM) etwa {{G_ALL}} g und {{H_ALL}} h. Gedruckt wird in die Breite (je Fuge vier Spielwerte), nicht in die Tiefe (V1 und V2 mit ungeprüften Fugen).</li>
+    <li><b>Eine Nacht reicht für alle unabhängigen Serien.</b> Der Kern (K, N, S, C) braucht etwa {{G_CORE}} g und {{H_CORE}} h (schneller Drucker {{H_CORE_FAST}} h), mit den optionalen Teilen R, D und FM etwa {{G_ALL}} g und {{H_ALL}} h. Gedruckt wird in die Breite (je Fuge vier Spielwerte), nicht in die Tiefe (V1 und V2 mit ungeprüften Fugen).</li>
   </ol>
 </section>
 
@@ -219,7 +219,7 @@ td:first-child { white-space: nowrap; }
   <p>Alle unabhängigen Serien kommen in einen Druck. Jede Serie trägt ihre Spielwerte als Gravur, damit morgen für jede Fuge ein Wert feststeht statt nur „passt“ oder „passt nicht“. Die STL liegen in <code>stl/steckmodul_night1/</code> (<code>python3 -m plug.series</code>), die Anleitung zu den Teilen in der <code>README.txt</code> dort.</p>
   <figure>
     <div class="fig">{{FIG_TIME}}</div>
-    <figcaption>Kern der Nachtplatte (K, N, S, C, R, D): etwa {{G_CORE}} g, {{H_CORE}} h, fertig gegen {{CORE_END}}. Die Mulden-Ringe (FM) sind das schwerste Teil und optional. Zeigt der Slicer für alles mehr als etwa 7 Stunden, FM in eine zweite Nacht schieben.</figcaption>
+    <figcaption>Kern der Nachtplatte (K, N, S, C): etwa {{G_CORE}} g, {{H_CORE}} h, fertig gegen {{CORE_END}}. R und D sind schon teilweise getestet (Passprobe Runde 1 bis 4) und nur Zugabe, die Mulden-Ringe (FM) sind das schwerste Teil. Zeigt der Slicer mehr Zeit, als du hast, zuerst FM streichen, dann R und D.</figcaption>
   </figure>
 </section>
 

@@ -8,24 +8,31 @@ Warum Serien?
     WEIT = weiteste Variante, die noch nicht merklich wackelt
   Liegt der Wert dazwischen, wird er der neue Sollwert. Die Probestück-Werte stehen in jeder Zeile als Vergleich.
 
+Beschriftung: Serienbuchstabe + Spiel in mm, dazu Punkte als Rang (1 Punkt = engste bzw. dünnste Variante, mehr Punkte = mehr Spiel).
+  Die Schrift ist fett und 0,4 bis 0,8 mm tief graviert. Bei S und FM steht sie an der langen Außenseite (−y, zum Betrachter),
+  bei N, K, R auf der Oberseite, bei D (Passprobe) unten auf dem Bett mit einem Zeichen je Feld (Dreieck 2,0 / Quadrat 1,8 / Kreis 1,6).
+
+Alle Löcher für Pins (K-Plättchen, Schieber N, Passprobe D) haben auf beiden Seiten eine 45°-Fase von 0,3 mm
+  (am Schieber unten der Trichter 2,4 → 1,4, oben 0,3), damit sie an der Oberfläche nicht durch Anschmelzen zuwachsen.
+
 Alle Serien sind voneinander unabhängig (jede Fuge hat genau eine Serie), also alle in einem Druck.
 Nach Gefühl geprüft wird alles außer K; K misst Durchgang.
 
 Dateien (alle in Druckausrichtung, einfarbig, keine Stützen, keine Brims an Schieber und Plättchen)
-  K_contact_spacers.stl   3 Plättchen 1,2 / 1,8 / 2,4 mm   ≈ 1,0 g
-  N_sliders.stl           4 Schieber, Spiel 0,05 / 0,10 / 0,15 / 0,20   ≈ 4,0 g   (Probestück: 0,15)
-  S_floor_slabs.stl       4 Boden-Platten, Schachtspiel 0,05 / 0,10 / 0,15 / 0,20   ≈ 11,9 g   (Probestück: 0,20)
+  K_contact_spacers.stl   3 Plättchen 1,2 / 1,8 / 2,4 mm   ≈ 1,4 g
+  N_sliders.stl           4 Schieber, Spiel 0,05 / 0,10 / 0,15 / 0,20   ≈ 3,9 g   (Probestück: 0,15)
+  S_floor_slabs.stl       4 Boden-Platten, Schachtspiel 0,05 / 0,10 / 0,15 / 0,20   ≈ 12,0 g   (Probestück: 0,20)
   C_cassette.stl          Kassette wie im Probestück (Lehre für S, zum Bestücken)   ≈ 3,6 g
-  R_sleeves.stl           4 Buchsenhülsen, Spiel 0,08 / 0,12 / 0,16 / 0,20, ohne Rippen   ≈ 4,0 g   (Kassette: 0,22 mit Rippen)
+  R_sleeves.stl           4 Buchsenhülsen, Spiel 0,08 / 0,12 / 0,16 / 0,20, ohne Rippen   ≈ 4,7 g   OPTIONAL: Passprobe Runde 2 testete 0,25 bis 0,33 (0,25 sitzt sehr gut), das hier ist nur der Bereich darunter
   FM_mulde_rings.stl      3 Mulden-Ringe, Spiel 0,10 / 0,15 / 0,20   ≈ 19,7 g   (Probestück: 0,25)   OPTIONAL, schwerstes Teil
-  D_fitprobe_v6.stl       Passprobe Winkelleiste, unverändert aus stl/steckmodul_probe/   ≈ 2,1 g   OPTIONAL
+  D_fitprobe_v6.stl       Passprobe Winkelleiste (wie stl/steckmodul_probe/0_passprobe.stl, jetzt mit Fase auf beiden Seiten und größerer Schrift)   ≈ 2,2 g   OPTIONAL: nie gedruckt, aber Runden 1 bis 4 und das Probestück (passt mit 2,0) liegen vor, nur Bestätigung der Stufe
 
 Ausbaustufen (Material und Druckzeit sind Schätzungen; die Zeit im Slicer hat Vorrang)
-  Kern     K + N + S + C + R           ≈ 24 g    ≈ 3,1 h normaler Drucker, ≈ 1,1 h schneller Drucker
-  + D      Passprobe dazu              ≈ 26 g    ≈ 3,4 h / 1,2 h
-  alles    zusätzlich FM (Mulden-Ringe) ≈ 46 g    ≈ 5,6 h / 2,1 h
-  Zeigt der Slicer für alles mehr als etwa 7 Stunden, FM weglassen (größtes Teil, 20 g) und in einer zweiten Nacht drucken.
-  Platzbedarf aller Teile etwa 211 × 105 mm (Anordnungsvorschlag: vorschau/steckmodul_night1/anordnung.png).
+  Kern     K + N + S + C               ≈ 21 g    ≈ 2,6 h normaler Drucker, ≈ 1,0 h schneller Drucker
+  + R + D  beide schon teilweise getestet ≈ 28 g    ≈ 3,5 h / 1,3 h
+  alles    zusätzlich FM (Mulden-Ringe) ≈ 47 g    ≈ 5,7 h / 2,1 h
+  Reicht die Zeit nicht: zuerst FM streichen (größtes Teil, 20 g), dann R und D. Der Kern K + N + S + C ist das Wichtige.
+  Platzbedarf aller Teile etwa 211 × 106 mm (Anordnungsvorschlag: vorschau/steckmodul_night1/anordnung.png).
 
 Zuordnung der Ergebnisse zu den Konstanten in plug/parts.py
   Serie N → KEY_CLR      Serie S → KASS_CLR      Serie R → SNUG (Rippen RIB danach getrennt)
@@ -39,7 +46,7 @@ Slicer-Einstellungen: dieselben wie für die späteren echten Teile, sonst gelte
   Schieber und Plättchen ohne Rand, erste Schicht langsam (Schieber sind nur 1 mm dick und können sich verziehen).
   Die Boden-Platten haben über der Nut eine Brücke (siehe unten): Brückenerkennung nicht abschalten.
   Anordnung: die sieben STL einzeln importieren und vom Slicer anordnen lassen (Schicht für Schicht, nicht Objekt für Objekt).
-  Der Vorschlag in anordnung.png braucht 211 × 105 mm.
+  Der Vorschlag in anordnung.png braucht 211 × 106 mm.
   Lösen sich die Boden-Platten (S) vom Bett (kleine Auflagefläche, nur die Ränder um die Nut), einen Brim von 3 mm nur außen ergänzen.
 
 Was gibt es dazu zu prüfen?
@@ -82,6 +89,6 @@ Bekannte Risiken beim Druck (bitte vor dem Start im Slicer-Vorschaubild ansehen)
     (bis 34 mm Spannweite quer). Das ist eine Brücke und kann durchhängen. Das wird so mitgetestet; hängt sie spürbar durch, ist
     das ein Ergebnis für das Gebäude.
   * Der Schacht ist 0,05 mm Spiel vermutlich zu eng. Er ist als Grenzwert gedacht; klemmt er, ist das die untere Grenze der Serie.
-  * Die Gravur ist 0,4 bis 0,6 mm tief. Die Plättchen K haben bettseitig eine Senkung 0,3 mm an den Löchern (Elefantenfuß).
+  * Die Gravur ist 0,4 bis 0,8 mm tief und fett, bei den 1 mm dicken Schiebern nur 0,4 mm. Löcher: Fase 0,3 mm auf beiden Seiten.
   * Wenn K scheitert (nur bei 1,2 hält): Schieberdicke (FUNNEL_T) ändert sich, die Schieber N werden dann neu gebraucht.
     Das Risiko dafür sind etwa 4 g.
