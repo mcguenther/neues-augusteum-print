@@ -102,6 +102,11 @@ Echtes Gebäude für die Kassetten-Variante des Dupont-Plans: `stecker/institut/
 `python3 stecker/institut/baue_ansicht.py` baut `stecker/institut/ansicht.html`. Die Ausgabe muss `dicht=True` und
 „keine Kollisionen“ zeigen. Der Generator importiert Kaufteile und Hilfsfunktionen aus `steckmodul_dupont.py`.
 
+## Festgelegte Maße der Winkelleiste (nicht ändern ohne neue Messung)
+
+Der Körper der Winkelleiste ist **2,0 mm** (Höhe `HDR_BODY` und Dicke `HDR_T`), nicht 2,54. Das gilt für Passprobe,
+Platte, Probestück, Institutsgebäude und alle Docks. Weitere Maße, Herkunft und Stand: `stecker/STAND.md`.
+
 ## Probedruck Kassette
 
 Kleines Probestück (22 × 36 mm Ausschnitt des Institutsgebäude-Hauptbalkens) mit Kassette, Schieber, Mini-Platte und

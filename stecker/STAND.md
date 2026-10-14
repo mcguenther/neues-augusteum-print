@@ -10,6 +10,16 @@ Stand: nach dem Umbau auf die Entscheidungen der Passprobe-Runde 4 (Körperhöhe
 gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Passprobe v6 und Probestück
 sind noch nicht gedruckt.
 
+## Festgelegte Maße (merken)
+
+- **Körper der Winkelleiste: 2,0 mm** in beiden Richtungen, `HDR_T` (Dicke in Pin-Richtung) und `HDR_BODY` (Höhe quer zur
+  Pin-Reihe). Das gilt für die Passprobe und für alle anderen Teile (Platte Dock A, Probestück, Institutsgebäude, Dock B/C).
+  Der Datenblattwert 2,54 mm ist falsch für das Kit des Nutzers; `HDR_UP` und die Stufe des Lötendenschlitzes folgen daraus.
+- Körperlänge 10,66 mm (abgebrochen), Pin-Vierkant 0,64, senkrechter Pin 7 mm, 1 mm gerader Pin bis zum Knick, 3 mm Lötende.
+- Spiel Leistenkörper 0,1 mm je Seite, Spiel Buchse 0,22 mm, Pinlöcher 1,4 mm mit 0,3-mm-Senkung, Muldenboden 0,8 mm,
+  Fase 0,5 mm an den Taschenrändern, `STEP_CLR` 0,1 mm.
+- Passprobe v6 prüft nur noch, auf welcher Höhe die Stufe liegen muss (Körperhöhe 2,0 / 1,8 / 1,6).
+
 ## 1. Ziel
 
 Die Gebäude des Campusmodells sollen mit je einer WS2812B-LED von innen beleuchtet werden. Jedes Gebäude hat
@@ -39,7 +49,7 @@ Wichtige Konstruktionsentscheidungen aus dem Chat und den Commits:
   Körper der Winkelleiste neben den senkrechten Pins; der waagerechte Pin geht durch den Körper. Die frühere
   Modellierung (senkrechter Pin durch den Körper, Knick darunter) war falsch. Folge: Umbau von Dock A
   (`dock_a_cuts`, `header_part` A, Lötendenschlitz, Schacht, Deckelstempel), Muldenboden wieder 0,8 mm,
-  Fußhöhe von 10,6 auf 9,6 mm, `HDR_UP` abgeleitet (5,41 mm).
+  Fußhöhe von 10,6 auf 9,6 mm, `HDR_UP` abgeleitet (5,41 mm, mit Körperhöhe 2,0 danach 5,68 mm).
 - Löcher nie auf die erste Schicht (Passprobe Runde 1): Elefantenfuß verschließt sie. Die Passprobe wurde
   danach so gedreht, dass die Schrift (mit Senkung an den Löchern) auf dem Bett liegt und die Taschen nach oben
   offen sind.
@@ -64,14 +74,14 @@ Gedruckt wird mit 0,4-mm-Düse, 0,2 mm Schichthöhe, PLA.
 | 2 (Code: v4) | 5,3 cm³ | Spiel 0,25 / 0,275 / 0,30 / 0,33, Fase 0,5 mm an den Taschenrändern, Pinlöcher 1,2 bis 1,8 mm | Buchse mit 0,25 mm sitzt sehr gut (darf minimal kleiner); Pins gehen ab 1,2 mm ohne Kraft durch, ein einzelnes tiefes Loch erst ab 1,4 mm. Leistenkörper durch ungenaues Abbrechen etwa 0,5 mm länger | `SNUG` 0,10 auf 0,22, `HOLE` 1,1 auf 1,25, `HDR_W` 10,16 auf 10,66 |
 | Foto und Maße | Winkelleiste | senkrechter Pin 7 mm (±0,5) bis Außenkante der Biegung, 1 mm gerader Pin, Körper etwa 2 mm, 3 mm Pin dahinter, Pin 0,64 | Körper sitzt neben den senkrechten Pins | Dock A umgebaut (Abschnitt 2), `HDR_LEG` 7,0, `RA_BACK` 1,0, `RA_TAIL` 3,0 |
 | 3 (Code: v5) | 4 cm³ | 3 Spalten Pinlage (−0,4 / 0 / +0,4) mal 2 Zeilen Spiel (0,2 / 0,3) | Körper passt mit 0,2 mm Spiel, alle vier Pins gehen in allen drei Spalten durch, Lötenden passen frei im Schlitz, aber der Körper wackelt: Tasche in y 2,54 + 0,4 breit bei Körperdicke etwa 2,0, Pins kommen schief heraus | `HDR_T` = 2,0 (Körperdicke in Pin-Richtung), Pinlage bleibt bei Soll |
-| 4 (aktueller Code, 4,5 cm³) | `0_passprobe.stl` | `HDR_T` 2,0, Spiel 0,15 / 0,10 / 0,05 (Spalten), Löcher 1,5 / 1,3 mm (Zeilen), Beschriftung 3,4 mm fett, 0,6 tief | Rückmeldung des Nutzers: Tiefe der Körpertasche stimmt nicht, Körper fällt zu tief, das Lötende liegt nicht flach auf seiner Stufe. Körperhöhe 2,54 ist falsch, es sind etwa 2,0 | Entscheidung für v6 (nächste Zeile) |
+| 4 (Code v5/v6-Vorstufe, 4,5 cm³) | `0_passprobe.stl` | `HDR_T` 2,0, Spiel 0,15 / 0,10 / 0,05 (Spalten), Löcher 1,5 / 1,3 mm (Zeilen), Beschriftung 3,4 mm fett, 0,6 tief | Rückmeldung des Nutzers: Tiefe der Körpertasche stimmt nicht, Körper fällt zu tief, das Lötende liegt nicht flach auf seiner Stufe. Körperhöhe 2,54 ist falsch, es sind etwa 2,0 | Entscheidung für v6 (nächste Zeile) |
 | 5 (v6, gebaut, 1,8 cm³, nicht gedruckt) | `0_passprobe.stl`, 40,5 × 16,1 × 4,0 mm | drei Varianten der Stufenhöhe: Körperhöhe 2,0 (Hauptwert), 1,8 und 1,6 als Test; Loch 1,4 mm; Spiel 0,1 mm | Ergebnis steht aus | Stufe = Pin-Oberseite; Abstand Decke bis Stufe = h/2 − 0,32 (Pin liegt mittig, Vierkant 0,64) |
 
 Die Druckprobe des Probestücks (Abschnitt 4) ist bisher nicht ausgewertet; ein Ergebnis dazu ist unbelegt.
 
 ### 3.2 Konstanten: Sollwert, Code, Herkunft
 
-Spalte „Code“ zeigt den Wert in `steckmodul_dupont.py` beim Schreiben (Stand `a58143d` plus Arbeitskopie).
+Spalte „Code“ zeigt den Wert in `steckmodul_dupont.py` nach dem Umbau auf Runde 4.
 Die Quellenbuchstaben stammen aus dem Generator: B belegt (Zeichnung), M gemessen, A abgeleitet, S geschätzt;
 E = Entscheidung aus dem Chat.
 
@@ -83,20 +93,20 @@ E = Entscheidung aus dem Chat.
 | `HSG_H` | 14,0 | 14,00 | B | Höhe 14,00 ±0,25 (`HSG_TOL` 0,25 macht die Tasche entsprechend höher) |
 | `PIN_SQ` | 0,64 | 0,64 | B | Vierkant der Stifte |
 | `HDR_W` | 10,66 | `NPIN * PITCH + 0.5` = 10,66 | M, Runde 2 | Körper wegen Abbruchrest etwa 0,5 mm länger als 4 · 2,54 |
-| `HDR_BODY` | 2,0 | 2,54 | E, Runde 4 / v6 | Körperhöhe der Winkelleiste; 2,54 wurde aus dem Datenblatt (Würth WR-PHD 2,54 ±0,15) übernommen, am Kit gemessen etwa 2,0 |
+| `HDR_BODY` | 2,0 | 2,0 | E, Runde 4 / v6 | Körperhöhe der Winkelleiste; 2,54 wurde aus dem Datenblatt (Würth WR-PHD 2,54 ±0,15) übernommen, am Kit gemessen etwa 2,0 |
 | `HDR_T` | 2,0 | 2,0 | M, Runde 3 | Körperdicke in Pin-Richtung; mit 2,54 wackelte der Körper |
 | `HDR_LEG` | 7,0 | 7,0 | M (±0,5) | senkrechter Pin bis Außenkante der Biegung |
 | `RA_BACK` | 1,0 | 1,0 | M (±0,5) | gerader Pin zwischen Körper und senkrechtem Pin |
 | `RA_TAIL` | 3,0 | 3,0 | M (±0,5) | Lötende hinter dem Körper |
-| `HDR_UP` | abgeleitet | `HDR_LEG - 0.32 - 1.27` = 5,41 | A | Stiftspitze über Körperoberkante; die 1,27 sind fest eingetragen (halbe Höhe 2,54), siehe Abweichung 5 |
+| `HDR_UP` | abgeleitet | `HDR_LEG - PIN_SQ/2 - HDR_BODY/2` = 5,68 | A | Stiftspitze über Körperoberkante, Biegung auf halber Körperhöhe |
 | `SNUG` | 0,22 | 0,22 | Runde 2 | Spiel je Seite Buchse in der Tasche: 0,25 passt sehr gut, darf etwas kleiner |
-| `SNUG_HDR` | 0,1 | 0,15 | E | Spiel je Seite Leistenkörper in der Tasche; Runde 3 ging mit 0,2, Runde 4 testete 0,15 / 0,10 / 0,05 |
+| `SNUG_HDR` | 0,1 | 0,1 | E | Spiel je Seite Leistenkörper in der Tasche; Runde 3 ging mit 0,2, Runde 4 testete 0,15 / 0,10 / 0,05 |
 | `RIB` | 0,12 | 0,12 | unbelegt (Herkunft) | Übermaß der Crush-Rippen |
-| `HOLE` | 1,4 | 1,25 | E | Stiftloch (Muldenboden, Trichterhals). Runde 2: 1,2 geht ohne Kraft, tiefes Einzelloch erst ab 1,4; deshalb 1,4 |
+| `HOLE` | 1,4 | 1,4 | E | Stiftloch (Muldenboden, Trichterhals). Runde 2: 1,2 geht ohne Kraft, tiefes Einzelloch erst ab 1,4; deshalb 1,4 |
 | `CEIL` | 0,8 | 0,8 | Umbau Winkelleiste | Muldenboden über dem Steckerteil |
 | `FUNNEL_T` | 1,0 | 1,0 | Plan | Trichterplatte (bei der Kassette zugleich Schieber) |
 | `FUNNEL_D` | 2,4 | 2,4 | Plan | Trichteröffnung unten |
-| `STEP_CLR` | 0,1 | fehlt | E | Luft zwischen Stufe und Pin im echten Dock A (neu mit v6) |
+| `STEP_CLR` | 0,1 | 0,1 | E | Luft zwischen Stufe und Pin im echten Dock A (neu mit v6) |
 | `CLR` | 0,25 | 0,25 | Plan | Spiel je Seite Fuß in der Mulde (Führungsband) |
 | `RELIEF` | 0,30 | 0,30 | Plan | zusätzliches Spiel unter dem Führungsband |
 | Fußhöhe `F` | abgeleitet | `layer_up(g1 + GUIDE + CH_F + CH_P)` | A | 9,8 mm nach dem Umbau (vorher 9,6); E 3,88 mm, g1 4,88, Plattendicke 30,6 mm (Dupont) |
@@ -126,18 +136,16 @@ Ausgabe nennt `dicht=True` je Teil, die Kollisionsprüfung (muss „keine Kollis
 
 | Datei | Inhalt | Volumen | Hinweis |
 |---|---|---|---|
-| `0_passprobe.stl` | Passprobe Winkelleiste (Abschnitt 3) | etwa 4,5 cm³ | Schriftseite unten, Taschen offen nach oben |
+| `0_passprobe.stl` | Passprobe Winkelleiste v6 (Abschnitt 3) | 1,8 cm³ | Schriftseite unten, Taschen offen nach oben |
 | `1_probestueck.stl` | Gebäude mit Fuß | 6,1 cm³ | Fuß nach unten, Dach oben; nur das Dach ist Brücke (19,6 mm) |
 | `2_kassette.stl` | Kassette | 5,8 cm³ | steht aufrecht, Buchsentasche unten offen |
 | `3_schieber.stl` | Schieber (Trichterplatte, 1 mm) | 0,6 cm³ | liegt flach, ohne Brim, erste Schicht 20 mm/s |
-| `4_platte.stl` | Mini-Platte mit Mulde, Dock A, Federzunge | 17,0 cm³ | |
+| `4_platte.stl` | Mini-Platte mit Mulde, Dock A, Federzunge | 16,2 cm³ | |
 | `5_deckel.stl` | Deckel mit zwei Stempeln | 3,3 cm³ | Stempel zeigen nach oben |
 
-Alle fünf Teile des Probestücks zusammen 33 cm³ (bei 100 % Füllung etwa 41 g PLA).
+Alle fünf Teile des Probestücks zusammen 32 cm³ (bei 100 % Füllung etwa 40 g PLA).
 
-Druckreihenfolge laut `LIESMICH.txt`: zuerst 3 und 2 (klein), dann 1, dann 4 und 5. Die Passprobe 0 wird
-vorab gedruckt (Reihenfolge dafür im LIESMICH nicht festgelegt: „Passprobe fehlt in diesem Satz“ steht noch
-im Text, obwohl `0_passprobe.stl` im ZIP liegt).
+Druckreihenfolge laut `LIESMICH.txt`: zuerst die Passprobe 0, dann 3 und 2 (klein), dann 1, dann 4 und 5.
 
 Slicer-Einstellungen: Düse 0,4 mm, Schichthöhe 0,2 mm, PLA oder PETG, Wände 3 Linien (1,2 mm), Füllung 15 %,
 Brückenerkennung an, keine Stützen. Die Lichtfenster sind nur 0,4 mm dick (eine Linie); der Slicer muss
@@ -150,7 +158,7 @@ WS2812B-Streifenstück (60/m 10 mm oder 144/m 12 mm), 4 Blechschrauben M3 × 8 o
 
 Zu messen: Schieber (gleitet, bündig), Kassette (ohne Spiel, Anschlag), Stecken (Einstecken unter 10 N,
 Herausziehen 3 bis 8 N, hebt die Mini-Platte mit?), Kontakt (LED leuchtet, DETECT-Pin liest LOW; Stifte
-stecken 3,6 mm in der Buchse, Kontaktpunkt geschätzt), Licht (gleichmäßig auf allen vier Seiten).
+stecken 3,9 mm in der Buchse, Kontaktpunkt geschätzt), Licht (gleichmäßig auf allen vier Seiten).
 Ergebnisse des Drucks: unbelegt.
 
 ## 5. Ablage im Repo
@@ -228,8 +236,8 @@ und `stl/steckmodul/passprobe.stl` stammen von älteren Passproben, die aktuelle
 | Passprobe | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
 | Winkelpin Maße | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
 
-Ob die veröffentlichten Seiten dem aktuellen Stand der Dateien entsprechen, ist unbelegt; die Passprobe-Seite
-müsste nach v6 neu veröffentlicht werden.
+Nach v6 sind Passprobe, Dupont-Plan und Institutsgebäude neu veröffentlicht; die Seite des JST-Plans stammt vom
+alten Stand und ist nicht betroffen.
 
 ## 6. Vorschlag zur Umstrukturierung (nur Vorschlag, nichts umgebaut)
 
