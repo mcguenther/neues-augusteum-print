@@ -36,44 +36,57 @@ def probe_source():
 
 
 # --------------------------------------------------------------------------
-# Passprobe (Version 2): Taschen für Buchse und Stiftleiste, Stiftlöcher, beschriftet
+# Passprobe (Version 3): alle Taschen öffnen sich zur Druckbettseite, bestückt wird von unten wie in Kassette und Platte
 # --------------------------------------------------------------------------
-PP_W, PP_L, PP_H = 66.0, 38.0, 9.0          # Block
+PP_W, PP_L, PP_H = 66.0, 44.0, 9.0           # Block
 PP_CL = (0.0, 0.1, 0.2)                      # Spiel je Seite (Spalten)
 PP_X = (-21.0, 0.0, 21.0)                    # Mitten der drei Spalten
-PP_Y_B, PP_Y_L, PP_Y_H = -11.0, 0.0, 13.0    # Reihen: Buchse, Leistenkörper, Stiftlöcher
+PP_Y_H, PP_Y_L, PP_Y_B = -16.0, 0.0, 14.0    # Reihen (y im Bauteil): Stiftlöcher, Leiste, Buchse
 PP_HOLES = (0.9, 1.0, 1.1, 1.2, 1.3)         # Lochdurchmesser
 PP_HOLE_X = (-24.0, -12.0, 0.0, 12.0, 24.0)
-PP_BUCHSE_Z = 2.0                            # Boden der Buchsentasche (Tasche 7 mm tief)
-PP_TRENCH = (-4.4, 4.4, -0.6, 4.9, 3.0)      # Schlitz für Pins unter der Leiste: x0, x1, y0, y1, Boden-z
+PP_B_DEPTH = 7.0                             # Buchsentasche (halbe Gehäusehöhe), darüber Decke mit Aderschlitz
+PP_FLOOR = sd.CEIL                           # Decke über dem Leistenkörper (wie der Muldenboden in der Platte)
+PP_ROOM = (7.2, 6.5)                         # Raum unter der Leiste: halbe Breite x, halbe Tiefe y (Lötenden nach beiden Seiten)
+PP_ROOM_H = PP_H - PP_FLOOR - sd.HDR_BODY    # Höhe des Raums bis zur Unterkante des Körpers
+PP_SLOT = (2 * abs(sd.pin_x()[0]) + sd.WIRE_D + 0.3, sd.WIRE_D + 0.3)    # Aderschlitz wie in der Kassette
+PP_LABEL_Y = dict(B=PP_Y_B + 5.4, L=9.6, H=PP_Y_H + 4.4)
 
 
 def passprobe():
-    """Reihe 1: Buchse (Dupont-Gehäuse 1×4) in Taschen mit 0,0 / 0,1 / 0,2 mm Spiel je Seite.
-    Reihe 2: Kunststoffkörper der Stiftleiste, Pins nach oben; darunter Schlitz für gerade und abgewinkelte Pins.
-    Reihe 3: Stiftlöcher 0,9 bis 1,3 mm. Beschriftung im Teil."""
+    """Wie im Gebäude: Eingesetzt wird von unten (Druckbettseite), die Stifte zeigen nach oben.
+    Reihe Buchse: Taschen mit 0,0 / 0,1 / 0,2 mm Spiel, 7 mm tief, Decke mit Aderschlitz.
+    Reihe Leiste: Raum für die Lötenden, darüber die Tasche für den Körper (2,54 mm) und eine 0,8-mm-Decke mit vier
+    Stiftlöchern (Ø HOLE) wie der Muldenboden. Reihe Stiftlöcher: 0,9 bis 1,3 mm.
+    Schrift auf der Einsetzseite, lesbar, wenn man den Block wie ein Buch um die lange Kante umdreht."""
     from steckmodul import box, cbox, cyl, diff
     import manifold3d as m3d
     blk = box(-PP_W / 2, PP_W / 2, -PP_L / 2, PP_L / 2, 0, PP_H)
     cuts = []
     for c, x in zip(PP_CL, PP_X):
-        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, PP_BUCHSE_Z, PP_H + 0.01, cx=x, cy=PP_Y_B))
-        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, PP_H - sd.HDR_BODY, PP_H + 0.01, cx=x, cy=PP_Y_L))
-        x0, x1, y0, y1, zb = PP_TRENCH
-        cuts.append(box(x + x0, x + x1, PP_Y_L + y0, PP_Y_L + y1, zb, PP_H - sd.HDR_BODY + 0.01))
+        # Buchse
+        cuts.append(cbox(sd.HSG_W + 2 * c, sd.HSG_T + 2 * c, -0.01, PP_B_DEPTH, cx=x, cy=PP_Y_B))
+        cuts.append(cbox(PP_SLOT[0], PP_SLOT[1], PP_B_DEPTH - 0.01, PP_H + 0.01, cx=x, cy=PP_Y_B))
+        # Leiste: Raum, Körpertasche, Decke mit Löchern
+        cuts.append(box(x - PP_ROOM[0], x + PP_ROOM[0], PP_Y_L - PP_ROOM[1], PP_Y_L + PP_ROOM[1], -0.01, PP_ROOM_H))
+        cuts.append(cbox(sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c, PP_ROOM_H - 0.01, PP_H - PP_FLOOR, cx=x, cy=PP_Y_L))
+        for px_ in sd.pin_x():
+            cuts.append(cyl(sd.HOLE / 2, PP_H - PP_FLOOR - 0.01, PP_H + 0.01, cx=x + px_, cy=PP_Y_L, n=24))
     for hd, x in zip(PP_HOLES, PP_HOLE_X):
         cuts.append(cyl(hd / 2, -0.01, PP_H + 0.01, cx=x, cy=PP_Y_H, n=32))
     try:
         import generate
+
         def label(text, x, y, size=3.0):
-            cs = generate.text_cross_section(text, size, x, y - size / 2, anchor="center")
-            if cs is not None:
-                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
+            cs = generate.text_cross_section(text, size, 0.0, -size / 2, anchor="center")
+            if cs is not None:      # an y gespiegelt: lesbar, wenn man den Block um die lange Kante (x-Achse) umdreht
+                cs = cs.scale((1.0, -1.0)).translate((x, y))
+                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, -0.2]))
         for c, x in zip(PP_CL, PP_X):
-            label("B %s" % ("%.1f" % c).replace(".", ","), x, PP_Y_B - 5.6)
-            label("L %s" % ("%.1f" % c).replace(".", ","), x, PP_Y_L - 5.0)
+            t = ("%.1f" % c).replace(".", ",")
+            label("B " + t, x, PP_LABEL_Y["B"])
+            label("L " + t, x, PP_LABEL_Y["L"])
         for hd, x in zip(PP_HOLES, PP_HOLE_X):
-            label("%s" % ("%.1f" % hd).replace(".", ","), x, PP_Y_H - 4.4, 2.6)
+            label(("%.1f" % hd).replace(".", ","), x, PP_LABEL_Y["H"], 2.6)
     except Exception as e:
         print("  (Beschriftung übersprungen: %s)" % e)
     return diff(blk, *cuts)
@@ -194,6 +207,11 @@ def previews(P, fl):
         items.append((tm, col[c]))
         x += w + 10
     im = preview.render(items, size=(1500, 700), azim=-30, elev=30); im.save(os.path.join(PREV, "druckteile.png"))
+    # Passprobe von der Einsetzseite (um die lange Kante umgedreht, Schrift lesbar)
+    import trimesh
+    pp = to_tm(passprobe())
+    pp.apply_transform(trimesh.transformations.rotation_matrix(np.pi, [1, 0, 0]))
+    im = preview.render([(pp, "#b9bfc4")], size=(1300, 880), azim=-90, elev=89); im.save(os.path.join(PREV, "passprobe_einsetzseite.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, HERE))
 
 
@@ -213,7 +231,7 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                ({vols['3_schieber']:.1f} cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     ({vols['4_platte']:.1f} cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              ({vols['5_deckel']:.1f} cm³)
-  0_passprobe.stl     Passprobe: Taschen für Buchse und Stiftleiste, Stiftlöcher (Anleitung: stecker/probe/passprobe.html)
+  0_passprobe.stl     Passprobe: Taschen für Buchse und Stiftleiste, Stiftlöcher; wird von unten bestückt wie Kassette und Platte (Anleitung: stecker/probe/passprobe.html)
 
   Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
 

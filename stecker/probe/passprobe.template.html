@@ -73,6 +73,9 @@ svg .lab { font-weight: 600; font-size: 12px; }
 svg .lab.a { fill: var(--c-a); } svg .lab.b { fill: var(--c-b); } svg .lab.c { fill: var(--c-c); }
 svg .blk { fill: var(--c-blk); stroke: var(--fg); stroke-opacity: 0.35; stroke-width: 1; }
 svg .pocket { stroke-width: 2; }
+svg .slot { fill: var(--bg); stroke: var(--c-a); stroke-width: 1; }
+svg .hole.b { stroke: var(--c-b); stroke-width: 1.5; }
+svg .arrow { stroke: var(--accent); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 svg .pocket { fill: var(--c-pocket); }
 svg .pocket.a { stroke: var(--c-a); } svg .pocket.b { stroke: var(--c-b); }
 svg .trench { fill: var(--c-trench); stroke: var(--c-b); stroke-width: 1; stroke-dasharray: 3 2; }
@@ -100,22 +103,22 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
 <!-- ============================ DAS TEIL ============================ -->
 <section aria-labelledby="h1">
   <h2 id="h1"><span class="n">1</span>Das Teil</h2>
-  <p>Der Block ist 66 × 38 × 9 mm groß. Jede Tasche steht dreimal da, mit 0,0 / 0,1 / 0,2 mm Spiel je Seite. Die Beschriftung ist in den Block graviert und steht immer <b>unter</b> der Tasche, zu der sie gehört (Draufsicht, Druckbett unten).</p>
+  <p>Der Block ist 66 × 44 × 9 mm groß. Er wird wie Kassette und Platte <b>von unten</b> bestückt, also von der Seite, die beim Druck auf dem Bett lag. Dort sind die Taschen offen, und dort steht auch die Schrift. Dreh den Block um die lange Kante um, dann liest du die Schrift richtig herum, und die Buchsenreihe liegt unten. Jede Tasche gibt es dreimal, mit 0,0 / 0,1 / 0,2 mm Spiel je Seite.</p>
   <div class="fig">/*TOP*/</div>
   <ul style="margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px;max-width:72ch">
-    <li><span class="tag a">A</span><b>Buchse</b> (unten): drei Taschen <code>B 0,0</code>, <code>B 0,1</code>, <code>B 0,2</code>, je 7 mm tief.</li>
-    <li><span class="tag b">B</span><b>Stiftleiste</b> (Mitte): drei flache Taschen <code>L 0,0</code> bis <code>L 0,2</code> für den Kunststoffkörper (2,54 mm tief). Dahinter ein Schlitz, in dem die Pins unter dem Körper Platz haben.</li>
-    <li><span class="tag c">C</span><b>Stiftlöcher</b> (oben): fünf Löcher mit 0,9 / 1,0 / 1,1 / 1,2 / 1,3 mm, durchgehend.</li>
+    <li><span class="tag a">A</span><b>Buchse</b> (unten): drei Taschen <code>B 0,0</code>, <code>B 0,1</code>, <code>B 0,2</code>, je 7 mm tief, wie die halbe Gehäusehöhe. Oben haben sie einen Schlitz für die Adern, genau wie die Kassette.</li>
+    <li><span class="tag b">B</span><b>Stiftleiste</b> (Mitte): drei Taschen <code>L 0,0</code> bis <code>L 0,2</code> für den Kunststoffkörper (2,54 mm tief). Darunter liegt ein Raum für die Lötenden, darüber eine 0,8 mm dünne Decke mit vier Löchern für die Pins. Das ist der Muldenboden aus der Platte.</li>
+    <li><span class="tag c">C</span><b>Stiftlöcher</b> (oben): fünf einzelne Löcher mit 0,9 / 1,0 / 1,1 / 1,2 / 1,3 mm, durchgehend.</li>
   </ul>
   <div class="fig">/*SECTION*/</div>
-  <p class="small muted">Schnitt entlang der mittleren Spalte (Spiel 0,1). Die Teile sind so eingezeichnet, wie sie später sitzen sollen.</p>
+  <p class="small muted">Schnitt durch die mittlere Spalte (Spiel 0,1) an Pin 2. Die Teile sind so eingezeichnet, wie sie sitzen sollen. In der Ansicht steht die Buchsenseite links.</p>
 </section>
 
 <!-- ============================ DRUCKEN ============================ -->
 <section aria-labelledby="h2">
   <h2 id="h2"><span class="n">2</span>Drucken</h2>
   <div class="cols">
-    <div class="card"><h3>Lage</h3><p>Flach, Unterseite auf dem Bett, Beschriftung oben. Keine Stützen, kein Rand.</p></div>
+    <div class="card"><h3>Lage</h3><p>Flach, die Seite mit den Taschen und der Schrift liegt auf dem Bett. Keine Stützen, kein Rand. Auf einem strukturierten Bett ist die Schrift unten schwer lesbar. Dann gilt: Die Spalten sind von links nach rechts 0,0 / 0,1 / 0,2.</p></div>
     <div class="card"><h3>Einstellungen</h3><p>0,4-mm-Düse, 0,2 mm Schichthöhe, 3 Wände (1,2 mm), Füllung 15 bis 20 %, PLA oder PETG.</p></div>
     <div class="card"><h3>Erste Schicht</h3><p>Nicht zu stark andrücken. Sonst quillt der Rand der ersten Schichten in die Taschen und macht sie unten enger (Elefantenfuß).</p></div>
   </div>
@@ -139,11 +142,11 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   <h2 id="h4"><span class="n">4</span>Was wo hineinkommt</h2>
   <ol class="steps">
     <li><b><span class="tag a">A</span>Buchse in die Taschen B 0,0, B 0,1, B 0,2</b>
-      Das Dupont-Gehäuse 1×4 mit der <b>Steckseite nach unten</b> einsetzen, also die Seite mit den vier kleinen Öffnungen zuerst. Die Kabelseite ragt oben heraus. Crimpkontakte müssen nicht drin sein, mit Kontakten und Adern ist es näher an der Wirklichkeit. Probiere nacheinander von eng nach weit und merke dir drei Dinge: Geht es überhaupt hinein? Mit wie viel Druck? Hält es, wenn du den Block umdrehst und leicht klopfst?</li>
+      Das Dupont-Gehäuse 1×4 wird <b>von unten</b> eingeschoben, mit der <b>Kabelseite zuerst</b>. Crimpkontakte und Adern müssen nicht drin sein, mit ihnen ist es näher an der Wirklichkeit. Die Adern gehen dann oben durch den Schlitz. Die Steckseite mit den vier kleinen Öffnungen ragt 7 mm unten heraus, denn die Tasche ist nur halb so tief wie das Gehäuse hoch. Probiere nacheinander von eng nach weit und merke dir: Geht es überhaupt hinein? Mit wie viel Druck? Hält es, wenn du den Block umdrehst und leicht klopfst?</li>
     <li><b><span class="tag b">B</span>Stiftleiste in die Taschen L 0,0, L 0,1, L 0,2</b>
-      Ein Stück mit 4 Pins abbrechen (zwischen Pin 4 und Pin 5 mit der Flachzange über die Kante biegen). Den <b>Kunststoffkörper in die flache Tasche</b> legen, die langen Pins zeigen nach oben. <i>Gerade Leiste:</i> die kurzen Lötenden zeigen nach unten in den Schlitz. <i>Winkelleiste:</i> die abgewinkelten Lötenden zeigen nach hinten (nach oben im Bild) und liegen im Schlitz. Gleiche Fragen wie bei der Buchse.</li>
+      Ein Stück mit 4 Pins abbrechen (zwischen Pin 4 und Pin 5 mit der Flachzange über die Kante biegen). Die Leiste <b>von unten</b> durch den Raum nach oben schieben, die langen Pins zeigen nach oben und gehen durch die vier Löcher in der Decke. Der Körper rutscht in die Tasche, bis er an der Decke anliegt. <b>Alle vier Pins müssen gleichzeitig durch die Löcher gehen.</b> Das prüft auch den Pinabstand von 2,54 mm. Die Lötenden bleiben im Raum darunter. Bei der Winkelleiste zeigen sie zur Seite, es ist egal, zu welcher. Frage dich wie bei der Buchse: Hineingegangen? Wie viel Druck? Sitzt der Körper fest?</li>
     <li><b><span class="tag c">C</span>Einen Pin in die Löcher stecken</b>
-      Ziehe einen einzelnen Pin aus einer Leiste oder nimm einen losen Male-Crimp-Pin (nur die Pinspitze durchstecken). Prüfe von oben nach unten durch alle fünf Löcher: Das <code>1,1</code> entspricht dem Trichterhals im Schieber. Der Pin hat 0,64 mm Seitenlänge und damit 0,91 mm Diagonale, ein Loch mit 0,9 mm ist also zu eng.</li>
+      Ziehe einen einzelnen Pin aus einer Leiste oder nimm einen losen Male-Crimp-Pin. Prüfe durch alle fünf Löcher: Das <code>1,1</code> entspricht dem Trichterhals im Schieber und den Löchern in der Decke von Schritt B. Der Pin hat 0,64 mm Seitenlänge und damit 0,91 mm Diagonale, ein Loch mit 0,9 mm ist also zu eng.</li>
     <li><b>Zusätzlich, ohne Probe:</b>
       Stecke die Buchse von Hand auf einen Pin der Leiste und fühle die Kraft. Wenn schon das schwer geht, wird das Stecken im Gebäude auch schwer.</li>
   </ol>
@@ -156,11 +159,12 @@ svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
   <table>
     <thead><tr><th>Beobachtung</th><th>Wert im Generator</th></tr></thead>
     <tbody>
-      <tr><td>Buchse oder Leistenkörper gehen <b>mit leichtem Daumendruck</b> hinein und bleiben beim Klopfen sitzen. Nimm die erste Tasche, bei der das gilt.</td><td>Spiel dieser Tasche wird <code>SNUG</code> (jetzt <span class="num">/*SNUG*/ mm</span>). Passt erst <code>0,2</code>, auch die Crush-Rippen <code>RIB</code> (jetzt <span class="num">/*RIB*/ mm</span>) auf 0,2 erhöhen.</td></tr>
+      <tr><td>Buchse oder Leistenkörper gehen <b>mit leichtem Daumendruck</b> hinein und bleiben beim Klopfen sitzen. Bei der Leiste müssen dabei alle vier Pins durch die Löcher gehen. Nimm die erste Tasche, bei der das gilt.</td><td>Spiel dieser Tasche wird <code>SNUG</code> (jetzt <span class="num">/*SNUG*/ mm</span>). Passt erst <code>0,2</code>, auch die Crush-Rippen <code>RIB</code> (jetzt <span class="num">/*RIB*/ mm</span>) auf 0,2 erhöhen.</td></tr>
       <tr><td>Alle Taschen sind zu eng, auch <code>0,2</code>.</td><td>Die Teile sind größer als angenommen: Maße aus Schritt 3 eintragen und <code>SNUG</code> auf 0,3 setzen. Dann bitte neue Probe drucken.</td></tr>
       <tr><td>Schon <code>0,0</code> passt locker oder fällt heraus.</td><td><code>SNUG</code> auf 0,05 und <code>RIB</code> auf 0,2 oder 0,25, damit die Rippen den Halt liefern.</td></tr>
       <tr><td>Buchse und Leiste brauchen unterschiedliches Spiel.</td><td>Beide Werte notieren. Dann trenne ich <code>SNUG</code> in zwei Konstanten.</td></tr>
       <tr><td>Ein Pin geht <b>ohne Kraft</b> durch ein Loch. Nimm das kleinste solche Loch.</td><td>Dieser Durchmesser wird <code>HOLE</code> (jetzt <span class="num">/*HOLE*/ mm</span>).</td></tr>
+      <tr><td>Die Leiste lässt sich in keiner Tasche einsetzen, weil die Pins die Löcher in der Decke nicht treffen, ein einzelner Pin geht aber durch <code>1,1</code>.</td><td>Der Pinabstand deiner Leiste weicht ab. Miss den Abstand über alle vier Pins und schick ihn mir. Dann vergrößere ich die Löcher in der Decke oder verschiebe sie.</td></tr>
       <tr><td>Erst das <code>1,3</code> lässt einen Pin durch.</td><td><code>HOLE</code> auf 1,3 und die Trichteröffnung <code>FUNNEL_D</code> auf 2,6 setzen.</td></tr>
     </tbody>
   </table>
