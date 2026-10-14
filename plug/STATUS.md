@@ -181,6 +181,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/institute.py` | Generator | Institutsgebäude mit Fuß, Kassette, Schieber, Platte, Deckel |
 | `plug/sample.py` | Generator | Probestück (22 × 36 mm), `README.txt`, ZIP; ruft die Passprobe auf |
 | `plug/fit_test/` | Passprobe | `generator.py` (Geometrie), `build_page.py`, `page.template.html`, `page.html`, `angled_pin.html` (Maße der Winkelleiste) |
+| `plug/roadmap/` | Fahrplan Testdrucke | `build.py` (Maße aus `dims()`, Tabelle `PARTS` mit Material und Zeit je Test), `template.html`, `page.html`; Abhängigkeiten, Zeitplan, Karten je Test, Änderungsradius der Konstanten |
 | `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
@@ -207,6 +208,7 @@ plug/fit_test/generator.py   importiert dupont as sd, geom
 plug/sample.py       importiert dupont as sd, institute as I, fit_test.generator, geom
    ^
 plug/fit_test/build_page.py   importiert dupont, fit_test.generator
+plug/roadmap/build.py        importiert dupont, institute (nur dims() und Konstanten)
 plug/views/build_views.py     liest nur Vorlage und data.json
 plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 ```
@@ -222,6 +224,7 @@ plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 | `python3 -m plug.sample` | `stl/steckmodul_probe/*` (inkl. `README.txt`, ZIP), `vorschau/steckmodul_probe/*` |
 | `python3 -m plug.views.build_views` | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
 | `python3 -m plug.fit_test.build_page` | `plug/fit_test/page.html` |
+| `python3 -m plug.roadmap.build` | `plug/roadmap/page.html` |
 | `python3 -m plug.build_all` | alles obige nacheinander |
 
 Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html`, `angled_pin.html`.
@@ -235,6 +238,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Institutsgebäude | `plug/build/institute/view.html` | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
 | Passprobe | `plug/fit_test/page.html` | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
 | Winkelpin Maße | `plug/fit_test/angled_pin.html` | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
+| Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
