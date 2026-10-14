@@ -12,7 +12,8 @@ prior (Suchbereich der Pose, Meter im lokalen System x Ost / y Nord):
     hfov [lo, hi]  pitch [lo, hi]  z [lo, hi]  roll [lo, hi]
 
 Aufruf:
-    python3 registrierung.py suche [id ...]     Pose per Himmelslinie suchen (alle ohne Pose, oder die genannten)
+    python3 registrierung.py suche [--seeds=N] [id ...]   Pose per Himmelslinie suchen (alle ohne Pose, oder die
+                                                genannten), N Zufallsstarts, danach Kantenabgleich
     python3 registrierung.py pruefen [id ...]   Überlagerungen (Modellkanten im Foto) nach vorschau/messung/ schreiben
 """
 import json
@@ -77,23 +78,39 @@ def grenzen(prior):
             tuple(prior.get("roll", (-3, 3))), tuple(prior.get("hfov", (55, 80)))]
 
 
-def suche_pose(fid, e, popsize=12, maxiter=90, seed=1):
+def suche_pose(fid, e, popsize=12, maxiter=90, seed=1, verfeinern=True):
+    """Pose per Himmelslinie (differential evolution im Suchbereich `prior`), danach Kantenabgleich
+    (kamera.register). Der Kantenabgleich wird verworfen, wenn die Himmelslinie dadurch deutlich schlechter passt."""
+    import cv2
     img = foto_bild(fid, e)
     mesh, _, _ = szene.gesamt(None, "lod2")
     s = skyline.Suche(img, mesh.triangles, min_abdeckung=e["prior"].get("min_abdeckung", 0.4))
     kam, c = s.lauf(grenzen(e["prior"]), popsize=popsize, maxiter=maxiter, seed=seed, workers=1)
-    print("  %-24s Kosten %.4f  %s" % (fid, c, kam.to_dict()))
+    if verfeinern:
+        gray = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2GRAY)
+        k2, k0, k1 = K.register(kam, mesh.triangles, mesh.face_normals, gray)
+        p2 = k2.to_dict()
+        c2 = s.kosten([*p2["pos"], p2["yaw"], p2["pitch"], p2["roll"], p2["hfov"]])
+        if c2 <= 1.5 * c + 0.01:
+            kam, c = k2, c2
+    print("  %-24s Seed %d  Kosten %.4f  %s" % (fid, seed, c, kam.to_dict()))
     return fid, kam.to_dict(), float(c)
 
 
-def registriere(ids=None, jobs=None, neu=False):
+def registriere(ids=None, jobs=None, neu=False, seeds=(1,)):
+    """Sucht die Pose der Fotos ohne Pose (oder der genannten ids); je Foto werden mehrere Seeds probiert und
+    die mit den kleinsten Kosten behalten."""
     kat = lade_katalog()
     todo = [i for i, e in kat["fotos"].items() if (ids is None or i in ids) and "prior" in e
             and (neu or "pose" not in e or (ids and i in ids))]
     if jobs:
         parallel.JOBS = jobs
-    res = parallel.starmap(suche_pose, [(i, kat["fotos"][i]) for i in todo])
+    res = parallel.starmap(suche_pose, [(i, kat["fotos"][i], 12, 90, sd) for i in todo for sd in seeds])
+    best = {}
     for fid, pose, c in res:
+        if fid not in best or c < best[fid][1]:
+            best[fid] = (pose, c)
+    for fid, (pose, c) in best.items():
         kat["fotos"][fid]["pose"], kat["fotos"][fid]["pose_kosten"] = pose, round(c, 4)
         kat["fotos"][fid].pop("geprueft", None)
     speichere_katalog(kat)
@@ -115,7 +132,11 @@ def pruefbild(fid, e, out_dir, laser=None):
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] == "suche":
-        registriere(sys.argv[2:] or None)
+        args = sys.argv[2:]
+        seeds = (1,)
+        if args and args[0].startswith("--seeds="):
+            seeds = tuple(range(1, int(args.pop(0).split("=")[1]) + 1))
+        registriere(args or None, seeds=seeds)
     elif len(sys.argv) >= 2 and sys.argv[1] == "pruefen":
         kat = lade_katalog()
         sc = szene.laden("laserscan")
