@@ -32,7 +32,7 @@ im gleichen Bildmaßstab:
 <!-- AUTO:quellen -->
 <table>
 <tr><th align="center"><b>OpenStreetMap</b><br><sub>Klötzchen aus Grundriss und Höhe</sub></th><th align="center"><b>LoD2 Stadt Leipzig</b><br><sub>amtliche Höhen und Dachformen</sub></th><th align="center"><b>Laserscan GeoSN</b><br><sub>gemessene Dachlandschaft</sub></th></tr>
-<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_osm.png" alt="OpenStreetMap" width="282"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_lod2.png" alt="LoD2 Stadt Leipzig" width="280"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan.png" alt="Laserscan GeoSN" width="280"></td></tr>
+<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_osm.png" alt="OpenStreetMap" width="282"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_lod2.png" alt="LoD2 Stadt Leipzig" width="281"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan.png" alt="Laserscan GeoSN" width="281"></td></tr>
 </table>
 <!-- /AUTO:quellen -->
 
@@ -50,8 +50,8 @@ Bildmaßstab):
 <!-- AUTO:massstaebe -->
 <table>
 <tr><th align="center"><b>1:1500</b><br><sub>kompakt</sub></th><th align="center"><b>1:1000</b><br><sub>groß, mehr Detail</sub></th></tr>
-<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1500.png" alt="1:1500" width="316"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1000.png" alt="1:1000" width="452"></td></tr>
-<tr><td align="center"><sub>102 × 213 × 98 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>147 × 307 × 147 mm<br>in 2 Teile geteilt</sub></td></tr>
+<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1500.png" alt="1:1500" width="317"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1000.png" alt="1:1000" width="452"></td></tr>
+<tr><td align="center"><sub>102 × 195 × 98 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>147 × 280 × 147 mm<br>in 2 Teile geteilt</sub></td></tr>
 </table>
 <!-- /AUTO:massstaebe -->
 
@@ -70,8 +70,7 @@ denselben Bildmaßstab; bei 1:1500 sind alle Maße ⅔ so groß.
 <tr><td valign="middle"><b>04 Seminargebäude</b></td><td align="center" valign="middle"><img src="vorschau/readme/04_osm.png" alt="Seminargebäude, OpenStreetMap" width="200"><br><sub>38 × 98 × 21 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/04_lod2.png" alt="Seminargebäude, LoD2 Stadt Leipzig" width="202"><br><sub>39 × 100 × 24 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/04_laserscan.png" alt="Seminargebäude, Laserscan GeoSN" width="202"><br><sub>39 × 100 × 28 mm</sub></td></tr>
 <tr><td valign="middle"><b>05 Institutsgebäude</b><br><sub>Wirtschaftswiss. Fakultät, Grimmaische Str. 12</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_osm.png" alt="Institutsgebäude, OpenStreetMap" width="202"><br><sub>105 × 48 × 18 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_lod2.png" alt="Institutsgebäude, LoD2 Stadt Leipzig" width="202"><br><sub>106 × 45 × 31 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/05_laserscan.png" alt="Institutsgebäude, Laserscan GeoSN" width="201"><br><sub>105 × 45 × 32 mm</sub></td></tr>
 <tr><td valign="middle"><b>06 City-Hochhaus</b> <sup>Extra</sup><br><sub>„Uniriese“</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_osm.png" alt="City-Hochhaus, OpenStreetMap" width="83"><br><sub>48 × 45 × 155 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_lod2.png" alt="City-Hochhaus, LoD2 Stadt Leipzig" width="83"><br><sub>47 × 46 × 142 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/06_laserscan.png" alt="City-Hochhaus, Laserscan GeoSN" width="83"><br><sub>47 × 46 × 145 mm</sub></td></tr>
-<tr><td valign="middle"><b>07 Moritzbastei</b> <sup>Extra</sup><br><sub>historische Bastion</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_osm.png" alt="Moritzbastei, OpenStreetMap" width="202"><br><sub>67 × 65 × 4 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_lod2.png" alt="Moritzbastei, LoD2 Stadt Leipzig" width="202"><br><sub>67 × 64 × 6 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_laserscan.png" alt="Moritzbastei, Laserscan GeoSN" width="202"><br><sub>67 × 64 × 9 mm</sub></td></tr>
-<tr><td valign="middle"><b>08 Innenhof</b><br><sub>Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_osm.png" alt="Innenhof, OpenStreetMap" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_lod2.png" alt="Innenhof, LoD2 Stadt Leipzig" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/08_laserscan.png" alt="Innenhof, Laserscan GeoSN" width="202"><br><sub>54 × 95 × 15 mm</sub></td></tr>
+<tr><td valign="middle"><b>08 Innenhof</b><br><sub>Leibnizforum mit Leibnizdenkmal, Beeten und Bäumen</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_osm.png" alt="Innenhof, OpenStreetMap" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_lod2.png" alt="Innenhof, LoD2 Stadt Leipzig" width="202"><br><sub>54 × 95 × 15 mm</sub></td><td align="center" valign="middle"><img src="vorschau/readme/07_laserscan.png" alt="Innenhof, Laserscan GeoSN" width="202"><br><sub>54 × 95 × 15 mm</sub></td></tr>
 </table>
 <!-- /AUTO:gebaeude -->
 
@@ -89,7 +88,7 @@ verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
 Der Innenhof zwischen Paulinum/Neuem Augusteum, Seminar-, Hörsaal- und
 Institutsgebäude ist ein eigenes Druckteil `08_innenhof` (gehört zum Campus):
 
-<p align="center"><img src="vorschau/readme/08_laserscan.png" alt="Innenhof (Leibnizforum), Laserscan, 1:1000"></p>
+<p align="center"><img src="vorschau/readme/07_laserscan.png" alt="Innenhof (Leibnizforum), Laserscan, 1:1000"></p>
 
 Die Höhen sind dieselben für alle drei Quellen; nur der Rand des Hofteils folgt den
 Gebäudegrundrissen der jeweiligen Quelle (Maße 1:1000 ca. 54 × 95 × 15 mm, mit Bäumen).
@@ -155,7 +154,7 @@ Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 |-------|--------|
 | `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert (dazu `08_innenhof.stl`) |
 | `komplett_campus*.stl` | Alle Campusgebäude auf einer 2 mm Sockelplatte, in einem Stück |
-| `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese und Moritzbastei |
+| `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |
 | `komplett_*_objekte.3mf` | Sockelplatte und Gebäude als **getrennte Objekte** an der richtigen Position, **mehrfarbig vorbereitet**: jedes Gebäude hat sein Fassaden-Filament, die Dächer sind mit dem Dach-Filament vorbemalt (siehe [Mehrfarbig drucken](#mehrfarbig-drucken)) |
 | `komplett_*_objekte_3filamente.3mf`, `…_4filamente.3mf` | dasselbe mit nur 3 bzw. 4 Filamenten (nur Laserscan mit Extras, siehe [Mit nur 3 oder 4 Filamenten](#mit-nur-3-oder-4-filamenten)) |
@@ -249,8 +248,8 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
 
 Die Farben sind Anhaltswerte: Die Fotos stimmen untereinander nur grob überein (Belichtung,
 spiegelndes Glas, Ausrichtung auf einige Meter), die Messung zeigt die Richtung (hell statt
-schwarz, Audimax weiß), nicht den letzten Farbton. Moritzbastei und Innenhof haben keine
-registrierbaren sonnigen Fotos und behalten die Werte der früheren Handmessung. Das Hörsaalgebäude
+schwarz, Audimax weiß), nicht den letzten Farbton. Der Innenhof hat keine
+registrierbaren sonnigen Fotos und behält die Werte der früheren Handmessung. Das Hörsaalgebäude
 bleibt unverändert. Die weißen Platten von Hörsaal-, Seminar- und Institutsgebäude behalten ebenfalls den
 hellen Wert der Handmessung (`beibehalten` in den Fassadendateien), weil das Mittel über Platten und
 Fenster zu grau wurde. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
@@ -297,7 +296,7 @@ Filament-Nummern sind hier 1–3 bzw. 1–4.
 | 1 | Beige `#e4e0d8` | Stein, helle Platten, Sockelplatte |
 | 2 | Blaugrau `#778f93` | Glas und Fenster (Maßwerkfenster und Rosette am Paulinum), Glasfassade des Uniriese, Dächer von Paulinum, Neuem Augusteum und Uniriese |
 | 3 | Graphit `#42494f` | Sockel, dunkle Bänder und Fensterbänder, dunkles Glas |
-| 4 | Rotbraun `#7d3937` (nur 4 Filamente) | Brüstungsbänder, rote Wandflächen und Dächer, Ziegel der Moritzbastei |
+| 4 | Rotbraun `#7d3937` (nur 4 Filamente) | Brüstungsbänder, rote Wandflächen und Dächer |
 
 Die Palette ist so gewählt, dass die **Kontraste an den Kanten zwischen Zonen** erhalten
 bleiben, also die hellen und dunklen Bänder (z. B. am Seminargebäude) und die Fenster,
@@ -307,7 +306,7 @@ und nicht so, dass jeder Farbton stimmt. Dafür gelten drei Regeln (`PROFILE` un
 - Jede Farbe wird der nächsten Profilfarbe zugeordnet (CIE-Lab).
 - Fenster und Glas sind immer Blaugrau. Nach dem Nächste-Farbe-Prinzip würden sie sonst
   zu Beige und verschwinden im Giebel.
-- Die Dächer von Hörsaal-, Seminar- und Institutsgebäude und der Moritzbastei sind nie
+- Die Dächer von Hörsaal-, Seminar- und Institutsgebäude sind nie
   Blaugrau: Das Blaugrau im Luftbild ist dort vor allem Schatten, die Dächer werden
   Beige. Rote Dächer bleiben bei 4 Filamenten rotbraun.
 

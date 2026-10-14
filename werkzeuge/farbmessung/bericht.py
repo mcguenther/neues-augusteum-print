@@ -21,7 +21,7 @@ import registrierung as R
 
 OUT = os.path.join(G.HERE, "vorschau", "farbvergleich")
 NAMEN = {"01": "Paulinum", "02": "Neues Augusteum (mit Audimax)", "03": "Hörsaalgebäude / Mensa am Park",
-         "04": "Seminargebäude", "05": "Institutsgebäude", "06": "City-Hochhaus „Uniriese“", "07": "Moritzbastei",
+         "04": "Seminargebäude", "05": "Institutsgebäude", "06": "City-Hochhaus „Uniriese“",
          "08": "Innenhof (Leibnizforum)"}
 FARBNAMEN = {  # lesbare Namen der Farbschlüssel
     "stein_hell": "Giebelstein", "weiss": "weißer Kalkstein", "stein_glas": "Stein-Glas-Bänder", "glas": "Glasstreifen",

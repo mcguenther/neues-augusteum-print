@@ -55,6 +55,11 @@ BUILDINGS = [
     dict(slug="06_city_hochhaus", osm="w35462506", group="extra",
          name="City-Hochhaus (\"Uniriese\")",
          title="City-Hochhaus", note="„Uniriese“"),
+]
+
+# Vorerst zurückgestellt (nicht im Generator, in keinem Bild, keiner Datei): siehe archiv/<name>/README.md.
+# Zum Wiederaufnehmen den Eintrag nach BUILDINGS verschieben und data/fassaden/<slug>.json zurückkopieren.
+ARCHIV = [
     dict(slug="07_moritzbastei", osm="r1769862", group="extra",
          name="Moritzbastei",
          title="Moritzbastei", note="historische Bastion"),

@@ -5,33 +5,33 @@
  },
  "_dachpalette": [
   {
-   "rgb": "#b3b7b6",
-   "anteil": 0.268,
+   "rgb": "#b3b8b8",
+   "anteil": 0.264,
    "name": "hell"
   },
   {
-   "rgb": "#647077",
-   "anteil": 0.188,
-   "name": "grau"
-  },
-  {
-   "rgb": "#929798",
-   "anteil": 0.181,
+   "rgb": "#636f77",
+   "anteil": 0.195,
    "name": "grau"
   },
   {
    "rgb": "#424d55",
-   "anteil": 0.149,
+   "anteil": 0.157,
    "name": "dunkel"
   },
   {
-   "rgb": "#d4d9da",
-   "anteil": 0.111,
+   "rgb": "#8e979a",
+   "anteil": 0.156,
+   "name": "grau"
+  },
+  {
+   "rgb": "#d5dadb",
+   "anteil": 0.114,
    "name": "hell"
   },
   {
    "rgb": "#b78380",
-   "anteil": 0.104,
+   "anteil": 0.114,
    "name": "rot"
   }
  ],
@@ -1435,71 +1435,6 @@
   },
   "fassade": "#bdc8d4"
  },
- "07_moritzbastei": {
-  "name": "Moritzbastei",
-  "dach": "#aba6a2",
-  "basis": "ziegel",
-  "zonen": [
-   {
-    "name": "Außenwand Süd/Ost/Südwest (Stein)",
-    "farbe": "stein",
-    "seite": [
-     60,
-     255
-    ],
-    "z": [
-     0,
-     4.9
-    ]
-   },
-   {
-    "name": "Putzwand Nordseite (NNO)",
-    "farbe": "putz",
-    "seite": [
-     0,
-     50
-    ],
-    "z": [
-     0,
-     3.4
-    ],
-    "entlang": [
-     0.21,
-     0.67
-    ]
-   },
-   {
-    "name": "Ziegelband oben außen",
-    "farbe": "ziegel",
-    "seite": [
-     60,
-     255
-    ],
-    "z": [
-     4.9,
-     6.6
-    ]
-   }
-  ],
-  "farben": {
-   "ziegel": {
-    "rgb": "#8c5439",
-    "notiz": "Ziegel (rotbraun): Eingangsbau, Innenwände zum Hof, Brüstungsband oben",
-    "quelle": "Prüflauf: sonnige Ziegelflächen in den Moritzbastei-Fotos"
-   },
-   "stein": {
-    "rgb": "#928e89",
-    "notiz": "hellgraue Natursteinmauer (Außenwand Süd/Ost, teils mit Efeu)",
-    "quelle": "Foto (2 Messfelder)"
-   },
-   "putz": {
-    "rgb": "#d8d2c4",
-    "notiz": "weiß verputzter Anbau am Nordende",
-    "quelle": "Prüflauf: Putzanbau in den Moritzbastei-Fotos"
-   }
-  },
-  "fassade": "#8c5439"
- },
  "08_innenhof": {
   "name": "Innenhof (Leibnizforum)",
   "dach": null,
@@ -1622,15 +1557,14 @@
    "fuer": [
     "Platte",
     "06 m6",
-    "08 denkmalplatz",
     "Dach hell",
-    "07 putz",
+    "08 denkmalplatz",
     "06 m1"
    ]
   },
   {
    "nr": 2,
-   "rgb": "#8a8f91",
+   "rgb": "#898f92",
    "fuer": [
     "01 stein_glas",
     "06 m5",
@@ -1638,16 +1572,15 @@
     "02 m5",
     "01 zink",
     "06 m7",
-    "05 m3",
     "08 platz",
     "Dach grau",
     "01 rosette_innen",
-    "07 stein"
+    "05 m3"
    ]
   },
   {
    "nr": 3,
-   "rgb": "#4a4d52",
+   "rgb": "#494b4e",
    "fuer": [
     "01 glas",
     "02 lamellen",
@@ -1657,9 +1590,7 @@
     "04 sockel",
     "02 m3",
     "05 m1",
-    "08 stamm",
-    "04 glas",
-    "04 m1"
+    "08 stamm"
    ]
   },
   {
@@ -1743,6 +1674,14 @@
   },
   {
    "nr": 12,
+   "rgb": "#505866",
+   "fuer": [
+    "04 glas",
+    "04 m1"
+   ]
+  },
+  {
+   "nr": 13,
    "rgb": "#272d35",
    "fuer": [
     "05 dunkel",
@@ -1750,13 +1689,6 @@
     "06 glas",
     "08 beet_rand",
     "08 bronze"
-   ]
-  },
-  {
-   "nr": 13,
-   "rgb": "#8c5439",
-   "fuer": [
-    "07 ziegel"
    ]
   },
   {
