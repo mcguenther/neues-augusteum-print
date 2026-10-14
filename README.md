@@ -222,8 +222,8 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
   die Rosette am Paulinum, und Spitzbögen `bogen`, die als feine Treppe angenähert werden) sind
   von Hand gesetzt, ebenso die Rückfallfarben (`hex`, aus der früheren Handmessung an Fotos).
   Format und Prüfwerkzeug siehe `fassaden.py`; Prüfansichten je Gebäude in `vorschau/fassaden/`.
-  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude, City-Hochhaus sowie Hörsaal- und
-  Seminargebäude kommen aus der **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
+  Die **Farben** von Paulinum, Neuem Augusteum, Institutsgebäude und City-Hochhaus (beim
+  Seminargebäude einzelne Zonen) kommen aus der **Fotoprojektion** (`python3 farbmessung.py messen`): Das 3D-Modell wird in sonnige, frei
   lizenzierte Fotos projiziert (Katalog `data/messfotos.json`: Flickr/Openverse und andere, Pose
   über die Himmelslinie bestimmt, `registrierung.py`, `skyline.py`, `kamera.py`). Jedes Pixel gehört
   so zu einer Wandzelle (1 m × 1 m, dieselben Koordinaten wie die Zonen). Aus der Aufnahmezeit
@@ -250,8 +250,10 @@ abgebildet, deren Fläche erscheint im Gesamteindruck.
 Die Farben sind Anhaltswerte: Die Fotos stimmen untereinander nur grob überein (Belichtung,
 spiegelndes Glas, Ausrichtung auf einige Meter), die Messung zeigt die Richtung (hell statt
 schwarz, Audimax weiß), nicht den letzten Farbton. Moritzbastei und Innenhof haben keine
-registrierbaren sonnigen Fotos und behalten die Werte der früheren Handmessung; beim Hörsaal- und
-Seminargebäude ist die Plattenfarbe das Mittel über Platten und Fenster. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
+registrierbaren sonnigen Fotos und behalten die Werte der früheren Handmessung. Das Hörsaalgebäude
+bleibt unverändert. Die weißen Platten von Hörsaal-, Seminar- und Institutsgebäude behalten ebenfalls den
+hellen Wert der Handmessung (`beibehalten` in den Fassadendateien), weil das Mittel über Platten und
+Fenster zu grau wurde. Die Lage der Zonen ist aus Fotos und Geschosszahlen abgeleitet (Genauigkeit etwa
 ±0,5–1 m, Hofseiten ohne Foto plausibel ergänzt – Details in den Notizen der Zonendateien).
 
 ## Mehrfarbig drucken

@@ -73,11 +73,13 @@ Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie
 (LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
 Farben: je Gebäude `data/fassaden/<slug>.json` (handgesetzte Zonen + Rückfallfarben als `hex`;
 die alten Messfelder stehen als `proben_alt`). Die Fassadenfarben von Paulinum, Neuem Augusteum,
-Institutsgebäude, City-Hochhaus, Hörsaal- und Seminargebäude kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
+Institutsgebäude und City-Hochhaus (Seminargebäude: nur einzelne Zonen) kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
 (liest `data/messfotos.json`, schreibt `data/messung.json`). Neue Fotos aufnehmen und ausrichten:
 `registrierung.py suche [--seeds=3] <id>` (Pose per Himmelslinie plus Kantenabgleich), Überlagerung ansehen
 (`registrierung.py pruefen <id>`, vollständig ansehen, nicht nur im Kontaktbogen), bei Passung `"geprueft": true` im
-Katalog setzen, sonst `"verworfen": "<Grund>"`. Fotos aus einer Recherche (Flickr/Commons über Openverse) übernimmt
+Katalog setzen, sonst `"verworfen": "<Grund>"`. Eine gemessene Farbe lässt sich in `data/fassaden/<slug>.json` mit
+`"beibehalten": "<Grund>"` auf dem Wert der Handmessung festhalten (so bleiben die weißen Platten von Hörsaal-, Seminar- und
+Institutsgebäude hell, das Mittel über Platten und Fenster wurde zu grau); Flächen darüber gelten nur ab ΔE 25 (`HALTEN_MIN_DE`). Fotos aus einer Recherche (Flickr/Commons über Openverse) übernimmt
 `werkzeuge/farbmessung/katalog_recherche.py <katalog.json> <nr> …`. Panoramax lieferte nur beschattete Fassaden. Wikimedia drosselt geteilte IPs (die Commons-API
 liefert 429; Seiten und `thumb.wikimedia.org` mit ≤ Originalbreite gehen). `farben.py` setzt
 `data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).

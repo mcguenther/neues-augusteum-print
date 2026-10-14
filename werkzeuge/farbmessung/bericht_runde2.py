@@ -95,6 +95,12 @@ def zonen_neu(messung, slug):
     return sum(1 for z in m["bericht"]["zonen"] if z["neu"]) if m else 0
 
 
+def mit_ergebnis(m):
+    """Zahl der Gebäude, bei denen die Fotos eine Farbe oder eine Zone neu bestimmt haben."""
+    return sum(1 for s, g in m["gebaeude"].items()
+               if zonen_neu(m, s) or any(v["gemessen"] for v in g["bericht"]["farben"].values()))
+
+
 def kennzahlen(alt_ids, neu_ids, kons_alt, kons_neu, m_alt, m_neu):
     def licht(k):
         return int((k["n_licht"] > 0).sum())
@@ -104,7 +110,7 @@ def kennzahlen(alt_ids, neu_ids, kons_alt, kons_neu, m_alt, m_neu):
         ("Fotos", len(alt_ids), len(neu_ids), "am Modell ausgerichtet und geprüft"),
         ("Zellen mit Messung", len(kons_alt["b"]), len(kons_neu["b"]), "Wandzellen à 1 m × 1 m"),
         ("davon besonnt", licht(kons_alt), licht(kons_neu), "mindestens eine Messung mit Sonne"),
-        ("Gebäude gemessen", len(m_alt["gebaeude"]), len(m_neu["gebaeude"]), "von sieben Gebäuden mit Fassadenmodell"),
+        ("Gebäude mit Messergebnis", mit_ergebnis(m_alt), mit_ergebnis(m_neu), "neue Farbe oder Zone aus Fotos, von sieben"),
         ("Zonen aus Fotos", z_alt, z_neu, "Farbflächen über den Handzonen"),
     ]
 
@@ -133,7 +139,8 @@ def befunde_html(alt, neu, m_alt, m_neu, texte):
         l = aend.get(slug, [])
         gemessen_alt = slug in m_alt["gebaeude"]
         gemessen_neu = slug in m_neu["gebaeude"]
-        if not l and za == zn and gemessen_alt == gemessen_neu:
+        behalten = [B.FARBNAMEN.get(k, "Fläche " + k) for k, f in neu[slug]["farben"].items() if "beibehalten" in f.get("quelle", "")]
+        if not l and za == zn and not behalten and gemessen_alt == gemessen_neu:
             karten.append('<div><span class="marke alt">gleich</span><h3>%s</h3><p>Keine Änderung an Farben und Zonen.</p></div>'
                           % html.escape(name))
             continue
@@ -142,14 +149,17 @@ def befunde_html(alt, neu, m_alt, m_neu, texte):
             pkt.append('<li>%s <span style="white-space:nowrap">%s <code>%s</code> → %s <code>%s</code></span> (ΔE %.0f)</li>' % (
                 html.escape(B.FARBNAMEN.get(k, "Fläche " + k)), B.swatch(a, "alt"), a, B.swatch(n_, "neu"), n_, d))
         kopf = []
-        if not gemessen_alt and gemessen_neu:
+        if not gemessen_alt and gemessen_neu and not behalten:
             kopf.append("Neu gemessen (vorher keine Fotos mit Sonne).")
+        if behalten:
+            kopf.append("Von Hand beibehalten (Messung war grauer): %s." % ", ".join(behalten))
         if zn != za:
             kopf.append("Zonen aus Fotos: %d → %d." % (za, zn))
         if l:
             kopf.append("%d Farbe%s geändert." % (len(l), "n" if len(l) > 1 else ""))
-        karten.append('<div><span class="marke neu">geändert</span><h3>%s</h3><p>%s</p><ul>%s</ul></div>' % (
-            html.escape(name), html.escape(" ".join(kopf)), "".join(pkt)))
+        karten.append('<div><span class="marke %s">%s</span><h3>%s</h3><p>%s</p><ul>%s</ul></div>' % (
+            "neu" if (l or zn != za) else "alt", "geändert" if (l or zn != za) else "beibehalten", html.escape(name),
+            html.escape(" ".join(kopf)), "".join(pkt)))
     return "\n".join(karten)
 
 

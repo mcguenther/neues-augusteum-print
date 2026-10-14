@@ -729,9 +729,9 @@
   ],
   "farben": {
    "platten": {
-    "rgb": "#b6b4b2",
+    "rgb": "#f4ede7",
     "notiz": "helle Fassadenplatten",
-    "quelle": "Fotos: 67 besonnte Zellen"
+    "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
    },
    "sockel": {
     "rgb": "#4a4a4f",
@@ -749,7 +749,7 @@
     "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 18): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    }
   },
-  "fassade": "#b6b4b2"
+  "fassade": "#f4ede7"
  },
  "04_seminargebaeude": {
   "name": "Seminargebäude",
@@ -911,9 +911,9 @@
   ],
   "farben": {
    "wabenplatten": {
-    "rgb": "#c2c5c9",
+    "rgb": "#eeebe7",
     "notiz": "weiße Wabenplatten",
-    "quelle": "Fotos: 595 besonnte Zellen"
+    "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
    },
    "band_rotbraun": {
     "rgb": "#723830",
@@ -946,7 +946,7 @@
     "quelle": "Fotos: 53 Messzellen"
    }
   },
-  "fassade": "#c2c5c9"
+  "fassade": "#eeebe7"
  },
  "05_institutsgebaeude": {
   "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
@@ -1145,9 +1145,9 @@
   ],
   "farben": {
    "naturstein": {
-    "rgb": "#aeaeb0",
+    "rgb": "#c4beb6",
     "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
-    "quelle": "Fotos: 472 besonnte Zellen"
+    "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
    },
    "rotbraun": {
     "rgb": "#7e423d",
@@ -1185,7 +1185,7 @@
     "quelle": "Fotos: 111 Messzellen"
    }
   },
-  "fassade": "#aeaeb0"
+  "fassade": "#c4beb6"
  },
  "06_city_hochhaus": {
   "name": "City-Hochhaus (\"Uniriese\")",
@@ -1624,6 +1624,7 @@
     "06 m6",
     "08 denkmalplatz",
     "Dach hell",
+    "07 putz",
     "06 m1"
    ]
   },
@@ -1646,7 +1647,7 @@
   },
   {
    "nr": 3,
-   "rgb": "#494b4e",
+   "rgb": "#4a4d52",
    "fuer": [
     "01 glas",
     "02 lamellen",
@@ -1656,28 +1657,25 @@
     "04 sockel",
     "02 m3",
     "05 m1",
-    "08 stamm"
+    "08 stamm",
+    "04 glas",
+    "04 m1"
    ]
   },
   {
    "nr": 4,
-   "rgb": "#c3cacb",
+   "rgb": "#c7c2bc",
    "fuer": [
     "01 stein_hell",
-    "04 wabenplatten",
-    "07 putz",
-    "01 fensterglas",
-    "06 fassade"
+    "05 naturstein"
    ]
   },
   {
    "nr": 5,
-   "rgb": "#aaaeb0",
+   "rgb": "#a8aeb0",
    "fuer": [
     "01 m1",
     "02 m2",
-    "05 naturstein",
-    "03 platten",
     "08 pflaster",
     "Dach hell",
     "05 m2",
@@ -1710,14 +1708,24 @@
   },
   {
    "nr": 8,
-   "rgb": "#f0ecea",
+   "rgb": "#f0ece8",
    "fuer": [
     "01 weiss",
-    "02 pavillon_weiss"
+    "04 wabenplatten",
+    "02 pavillon_weiss",
+    "03 platten"
    ]
   },
   {
    "nr": 9,
+   "rgb": "#b6ccd5",
+   "fuer": [
+    "01 fensterglas",
+    "06 fassade"
+   ]
+  },
+  {
+   "nr": 10,
    "rgb": "#b59180",
    "fuer": [
     "02 sandstein",
@@ -1725,20 +1733,12 @@
    ]
   },
   {
-   "nr": 10,
+   "nr": 11,
    "rgb": "#7d3937",
    "fuer": [
     "03 rot",
     "05 rotbraun",
     "04 band_rotbraun"
-   ]
-  },
-  {
-   "nr": 11,
-   "rgb": "#505866",
-   "fuer": [
-    "04 glas",
-    "04 m1"
    ]
   },
   {

@@ -1756,10 +1756,10 @@
    "basis": "platten",
    "farben": {
     "platten": {
-     "hex": "#b6b4b2",
+     "hex": "#f4ede7",
      "notiz": "helle Fassadenplatten",
      "alt": "#f4ede7",
-     "quelle": "Fotos: 67 besonnte Zellen"
+     "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
     },
     "sockel": {
      "hex": "#4a4a4f",
@@ -1990,8 +1990,8 @@
     "farben": {
      "platten": {
       "alt": "#f4ede7",
-      "neu": "#b6b4b2",
-      "gemessen": true,
+      "neu": "#f4ede7",
+      "gemessen": false,
       "zellen": 67,
       "zellen_alle": 309
      },
@@ -2033,7 +2033,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 32.1,
+      "de": 52.8,
       "neu": false
      },
      {
@@ -2051,7 +2051,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 15.4,
+      "de": 19.0,
       "neu": false
      },
      {
@@ -2069,7 +2069,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 38.8,
+      "de": 51.8,
       "neu": false
      },
      {
@@ -2087,7 +2087,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 42.9,
+      "de": 49.2,
       "neu": false
      },
      {
@@ -2105,7 +2105,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 26.7,
+      "de": 27.9,
       "neu": false
      },
      {
@@ -2123,7 +2123,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 41.2,
+      "de": 45.4,
       "neu": false
      },
      {
@@ -2159,7 +2159,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 42.5,
+      "de": 63.1,
       "neu": false
      },
      {
@@ -2177,7 +2177,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 21.9,
+      "de": 42.7,
       "neu": false
      },
      {
@@ -2231,7 +2231,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 6.2,
+      "de": 14.8,
       "neu": false
      },
      {
@@ -2249,7 +2249,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "platten",
-      "de": 17.6,
+      "de": 4.0,
       "neu": false
      }
     ],
@@ -2260,10 +2260,10 @@
    "basis": "wabenplatten",
    "farben": {
     "wabenplatten": {
-     "hex": "#c2c5c9",
+     "hex": "#eeebe7",
      "notiz": "weiße Wabenplatten",
      "alt": "#eeebe7",
-     "quelle": "Fotos: 595 besonnte Zellen"
+     "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
     },
     "band_rotbraun": {
      "hex": "#723830",
@@ -2458,8 +2458,8 @@
     "farben": {
      "wabenplatten": {
       "alt": "#eeebe7",
-      "neu": "#c2c5c9",
-      "gemessen": true,
+      "neu": "#eeebe7",
+      "gemessen": false,
       "zellen": 595,
       "zellen_alle": 595
      },
@@ -2508,7 +2508,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "wabenplatten",
-      "de": 4.2,
+      "de": 10.3,
       "neu": false
      },
      {
@@ -2526,7 +2526,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "wabenplatten",
-      "de": 40.2,
+      "de": 54.3,
       "neu": true
      },
      {
@@ -2562,7 +2562,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "wabenplatten",
-      "de": 2.3,
+      "de": 15.4,
       "neu": false
      }
     ],
@@ -2573,10 +2573,10 @@
    "basis": "naturstein",
    "farben": {
     "naturstein": {
-     "hex": "#aeaeb0",
+     "hex": "#c4beb6",
      "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
      "alt": "#c4beb6",
-     "quelle": "Fotos: 472 besonnte Zellen"
+     "quelle": "unverändert (von Hand beibehalten: Das Mittel über Platten und Fenster wirkte zu grau, die helleren Platten der Handmessung gefielen besser (Runde 2))"
     },
     "rotbraun": {
      "hex": "#7e423d",
@@ -2813,8 +2813,8 @@
     "farben": {
      "naturstein": {
       "alt": "#c4beb6",
-      "neu": "#aeaeb0",
-      "gemessen": true,
+      "neu": "#c4beb6",
+      "gemessen": false,
       "zellen": 472,
       "zellen_alle": 790
      },
@@ -2899,7 +2899,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "naturstein",
-      "de": 25.6,
+      "de": 33.8,
       "neu": false
      },
      {
@@ -2917,7 +2917,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "naturstein",
-      "de": 13.2,
+      "de": 20.9,
       "neu": false
      },
      {
@@ -2935,7 +2935,7 @@
       "licht": 0.0,
       "fotos": 1.0,
       "unter": "naturstein",
-      "de": 31.8,
+      "de": 39.2,
       "neu": false
      },
      {
@@ -3186,8 +3186,8 @@
       "n": 8,
       "licht": 0.0,
       "fotos": 1.25,
-      "unter": "rotbraun",
-      "de": 34.8,
+      "unter": "dunkel",
+      "de": 2.3,
       "neu": false
      },
      {
@@ -3277,7 +3277,7 @@
       "licht": 1.0,
       "fotos": 1.0,
       "unter": "naturstein",
-      "de": 0.6,
+      "de": 7.9,
       "neu": false
      }
     ],
