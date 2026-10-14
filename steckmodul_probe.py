@@ -36,44 +36,42 @@ def probe_source():
 
 
 # --------------------------------------------------------------------------
-# Passprobe (Version 6): Winkelleiste nach Foto. Der Körper sitzt NEBEN den senkrechten Pins (Pin-Mitte 2,59 mm hinter der
-# Körpermitte), die Lötenden ragen nach hinten (-y). Gemessen wird: Spiel der Körpertasche (zwei Zeilen) und die Lage der
-# Pins zum Körper (drei Spalten, Löcher um -0,4 / 0 / +0,4 mm verschoben, weil die Messung nur ±0,5 mm genau ist).
+# Passprobe (Version 5): Winkelleiste, Körper 2,0 mm dick in Pin-Richtung (v4: mit 2,54 wackelte er und die Pins kamen schief heraus).
+# Drei Spalten Spiel der Körpertasche (0,15 / 0,10 / 0,05), zwei Zeilen Lochdurchmesser (1,5 / 1,3 mm). Die Lage der Pins (v4: alle
+# drei Verschiebungen gingen) bleibt bei Soll.
 # --------------------------------------------------------------------------
-PP_ROWS = (0.20, 0.30)                       # Spiel je Seite der Körpertasche, je Zeile
-PP_OFF = (-0.4, 0.0, 0.4)                    # Verschiebung der Pinlöcher gegenüber dem Soll (+ = weg vom Körper), je Spalte
-PP_HOLE = 1.5                                # Lochdurchmesser (alle gleich, damit nur die Lage getestet wird)
-PP_PITCH = 13.4                              # Spaltenabstand
+PP_CL = (0.15, 0.10, 0.05)                   # Spiel je Seite der Körpertasche (x und y), je Spalte
+PP_HOLES = (1.5, 1.3)                        # Lochdurchmesser, je Zeile
+PP_PITCH = 13.0                              # Spaltenabstand
 PP_X = tuple((i - 1) * PP_PITCH for i in range(3))
 PP_FLOOR = sd.CEIL                           # Decke über dem Körper (wie der Muldenboden in der Platte)
 PP_UNDER = 1.2                               # Platz unter dem Körper
 PP_H = round(PP_FLOOR + sd.HDR_BODY + PP_UNDER, 1)    # Plattendicke
-PP_YOFF = sd.HDR_BODY / 2 + sd.RA_BACK + sd.PIN_SQ / 2   # Pin-Mitte hinter der Körpermitte (Soll)
+PP_YOFF = sd.HDR_T / 2 + sd.RA_BACK + sd.PIN_SQ / 2   # Pin-Mitte hinter der Körpermitte (Soll)
 PP_HCH = 0.3                                 # Senkung (45°) an den Löchern auf der Schriftseite = Bettseite beim Druck
 PP_CH = 0.5                                  # Einlauffase (45°) am Taschenrand
 PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite von Schacht und Lötendenschlitz
 PP_WALL = 1.8
-_hd = sd.HDR_BODY / 2 + max(PP_ROWS)         # größte halbe Taschentiefe
-PP_BACK = _hd + sd.RA_TAIL + 0.9             # Lötendenschlitz reicht so weit hinter die Körpermitte (-y)
-PP_FWD = PP_YOFF + max(PP_OFF) + sd.PIN_SQ / 2 + 0.8   # Schacht reicht so weit vor die Körpermitte (+y)
+PP_BACK = sd.HDR_T / 2 + max(PP_CL) + sd.RA_TAIL + 0.9   # Lötendenschlitz reicht so weit hinter die Körpermitte (-y)
+PP_FWD = PP_YOFF + sd.PIN_SQ / 2 + 0.8                    # Schacht reicht so weit vor die Körpermitte (+y)
 _y, PP_YB, PP_LAB = 1.4 + 1.3, [], []
-PP_LAB_OFF = _y                              # Spaltenbeschriftung (Verschiebung) ganz unten
+PP_LAB_C = _y                                # Spaltenbeschriftung (Spiel) ganz unten
 _y += 1.3 + 1.3
-for _c in PP_ROWS:
+for _h in PP_HOLES:
     PP_YB.append(_y + PP_BACK)
     _y += PP_BACK + PP_FWD + 1.0 + 1.3
-    PP_LAB.append(_y)                        # Zeilenbeschriftung (Spiel) über der Zeile
+    PP_LAB.append(_y)                        # Zeilenbeschriftung (Lochdurchmesser) über der Zeile
     _y += 1.3 + 1.3
 PP_L = round(_y - 1.3 + 1.4, 1)
-PP_W = round((len(PP_X) - 1) * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_ROWS) + PP_WALL), 1)
-PP_LAB_OFF = round(PP_LAB_OFF - PP_L / 2, 2)
+PP_W = round((len(PP_X) - 1) * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_CL) + PP_WALL), 1)
+PP_LAB_C = round(PP_LAB_C - PP_L / 2, 2)
 PP_YB = [round(v - PP_L / 2, 2) for v in PP_YB]
 PP_LAB = [round(v - PP_L / 2, 2) for v in PP_LAB]
 
 
 def passprobe():
-    """Flache Platte, y nach oben wie in der Draufsicht. Zwei Zeilen (Spiel der Körpertasche 0,2 / 0,3 mm), drei Spalten
-    (Pinlöcher um -0,4 / 0 / +0,4 mm verschoben). Je Feld: Tasche für den Körper (2,54 mm hoch, von der Taschenseite offen),
+    """Flache Platte, y nach oben wie in der Draufsicht. Drei Spalten (Spiel der Körpertasche 0,15 / 0,10 / 0,05 mm), zwei Zeilen
+    (Lochdurchmesser 1,5 / 1,3 mm). Je Feld: Tasche für den Körper (10,66 × 2,0 mm, 2,54 mm hoch, von der Taschenseite offen),
     Schacht für Knick und senkrechte Pins, Schlitz für die 3-mm-Lötenden nach -y, darüber der Muldenboden mit vier Löchern.
     Rückgabe in Druckausrichtung: Schriftseite auf dem Bett (um die x-Achse umgedreht), Taschen offen nach oben, keine Brücken."""
     from steckmodul import box, cbox, cyl, diff
@@ -90,16 +88,16 @@ def passprobe():
 
     def cone(hd, cx, cy):                             # Senkung am Loch, an der Schriftseite z = PP_H um PP_HCH weiter
         return m3d.Manifold.cylinder(PP_HCH + 0.01, hd / 2, hd / 2 + PP_HCH + 0.01, 32).translate([cx, cy, PP_H - PP_HCH])
-    for c, yb in zip(PP_ROWS, PP_YB):
-        hw, hd = sd.HDR_W / 2 + c, sd.HDR_BODY / 2 + c
-        for off, x in zip(PP_OFF, PP_X):
+    for hole, yb in zip(PP_HOLES, PP_YB):
+        for c, x in zip(PP_CL, PP_X):
+            hw, hd = sd.HDR_W / 2 + c, sd.HDR_T / 2 + c
             cuts.append(box(x - hw, x + hw, yb - hd, yb + hd, -0.01, zb))                                  # Körper
             cuts.append(chamfer(2 * hw, 2 * hd, x, yb))
             cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, yb, yb + PP_FWD, -0.01, zb))                    # Schacht (Knick, Pins)
             cuts.append(box(x - PP_SLOT_X, x + PP_SLOT_X, yb - PP_BACK, yb, -0.01, zm + 0.7))              # Lötenden
             for px_ in sd.pin_x():
-                cuts.append(cyl(PP_HOLE / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=yb + PP_YOFF + off, n=32))
-                cuts.append(cone(PP_HOLE, x + px_, yb + PP_YOFF + off))
+                cuts.append(cyl(hole / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=yb + PP_YOFF, n=32))
+                cuts.append(cone(hole, x + px_, yb + PP_YOFF))
     try:
         import generate
 
@@ -108,11 +106,11 @@ def passprobe():
             if cs is not None:
                 cs = cs.translate((x, y))
                 cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
-        for off, x in zip(PP_OFF, PP_X):
-            label(("%+g" % off if off else "0").replace(".", ","), x, PP_LAB_OFF)
-        for c, ly in zip(PP_ROWS, PP_LAB):
+        for c, x in zip(PP_CL, PP_X):
+            label(("%.2f" % c).replace(".", ","), x, PP_LAB_C)
+        for hole, ly in zip(PP_HOLES, PP_LAB):
             for x in PP_X:
-                label(("%g" % c).replace(".", ","), x, ly)
+                label(("%.1f" % hole).replace(".", ","), x, ly)
     except Exception as e:
         print("  (Beschriftung übersprungen: %s)" % e)
     return diff(blk, *cuts).rotate([180.0, 0.0, 0.0]).translate([0.0, 0.0, PP_H])    # Druckausrichtung

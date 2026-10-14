@@ -61,6 +61,7 @@ PIN_SQ = 0.64         # B  Vierkant der Stifte
 HDR_W = NPIN * PITCH + 0.5   # M  Leistenstück, 4 Pins abgebrochen: Körper gemessen etwa 0,5 mm länger (Abbruchrest), Passprobe v4
 HDR_BODY = 2.54       # B  Kunststoffkörper (Würth WR-PHD: 2,54 ±0,15)
 HDR_LEG = 7.0         # M  Winkelleiste: senkrechter Pin vom Ende bis zur Außenkante der Biegung, gemessen 7 ±0,5
+HDR_T = 2.0           # M  Winkelleiste: Körperdicke in Pin-Richtung, gemessen 2 (Passprobe v4: mit 2,54 wackelte der Körper)
 HDR_UP = HDR_LEG - 0.32 - 1.27   # A  Stiftspitze über der Körperoberkante, wenn die Biegung auf halber Körperhöhe liegt (= 5,41)
 HDR_TAIL = 3.0        # B  gerade Leiste: Lötende unter dem Körper (3,0 ±0,2)
 RA_BACK = 1.0         # M  Winkelleiste: gerader Pin zwischen Körper und senkrechtem Pin: gemessen 1 ±0,5. Der Körper sitzt NEBEN dem senkrechten Pin
@@ -76,7 +77,8 @@ PAD_X = 3.5           # S  Abstand der äußeren Pads von der Streifenmitte
 CLR = 0.25            # Spiel je Seite: Fuß in der Mulde (Führungsband)
 RELIEF = 0.30         # zusätzliches Spiel unter dem Führungsband (gegen Klemmen)
 BAND = 5.0            # Höhe des engen Führungsbands unter der Muldenfase
-SNUG = 0.22           # Spiel je Seite: Gehäuse/Leiste in der Tasche (Passprobe v4: Gehäuse 0,25 sitzt gut, darf etwas kleiner)
+SNUG = 0.22           # Spiel je Seite: Gehäuse in der Tasche (Passprobe v4: Gehäuse 0,25 sitzt gut, darf etwas kleiner)
+SNUG_HDR = 0.15       # Spiel je Seite: Winkelleistenkörper in der Tasche (vorläufig; Passprobe v5 testet 0,15 / 0,10 / 0,05)
 RIB = 0.12            # Übermaß der Crush-Rippen
 HOLE = 1.25           # Stiftloch (Muldenboden, Trichterhals); Vierkant-Diagonale 0,91. Passprobe v4: 1,2 mit 0,3-Senkung geht ohne Kraft
 FUNNEL_D = 2.4        # Trichteröffnung unten
@@ -194,7 +196,7 @@ def dims():
     sock_w, sock_d = pk_w + 2 * WALL, pk_d + 2 * WALL
     total = sock_d + GAP_L + LED_L + 0.3
     HY = -total / 2 + sock_d / 2
-    y_off = HDR_BODY / 2 + RA_BACK + PIN_SQ / 2          # Winkelleiste: senkrechte Pins stehen so weit hinter der Körpermitte
+    y_off = HDR_T / 2 + RA_BACK + PIN_SQ / 2          # Winkelleiste: senkrechte Pins stehen so weit hinter der Körpermitte
     y_b = HY - y_off                                      # Mitte des Körpers (Dock A); Lötenden zeigen nach -y
     LY0 = HY + sock_d / 2 + GAP_L            # LED-Anfang (Pad-Ende)
     # Platte
@@ -265,9 +267,9 @@ def header_part(variant):
     pins = []
     if variant == "A":
         yb, zm = d["y_b"], d["z_bm"]
-        body = cbox(HDR_W, HDR_BODY, z_bb, z_hb, cy=yb)
+        body = cbox(HDR_W, HDR_T, z_bb, z_hb, cy=yb)
         for x in pin_x():          # waagerechter Pin durch den Körper, 3 mm Lötende nach -y, hinter 1 mm Pin der Knick nach oben
-            pins.append(box(x - PIN_SQ / 2, x + PIN_SQ / 2, yb - HDR_BODY / 2 - RA_TAIL, HY + PIN_SQ / 2,
+            pins.append(box(x - PIN_SQ / 2, x + PIN_SQ / 2, yb - HDR_T / 2 - RA_TAIL, HY + PIN_SQ / 2,
                             zm - PIN_SQ / 2, zm + PIN_SQ / 2))
             pins.append(cbox(PIN_SQ, PIN_SQ, zm - PIN_SQ / 2, d["z_tip"], cx=x, cy=HY))
         return union([body] + pins)
@@ -568,7 +570,7 @@ def dock_a_cuts(cx, d, T=lambda m: m):
     """Winkelleiste: Tasche für den Körper (neben den senkrechten Pins), Schacht für Knick und senkrechte Pins,
     Schlitz für die 3-mm-Lötenden nach -y. Alles von der Kabelraum-Seite (unten) offen, oben schließt der Muldenboden."""
     HY, yb, zb, zh, zm = d["HY"], d["y_b"], d["z_bb"], d["z_hb"], d["z_bm"]
-    hw, hd = HDR_W / 2 + SNUG, HDR_BODY / 2 + SNUG
+    hw, hd = HDR_W / 2 + SNUG_HDR, HDR_T / 2 + SNUG_HDR
     px = abs(pin_x()[0]) + PIN_SQ / 2 + 0.8
     return [T(box(cx - hw, cx + hw, yb - hd, yb + hd, zb - 0.01, zh)),                                   # Körper
             T(box(cx - px, cx + px, yb, HY + PIN_SQ / 2 + 0.8, zb - 0.01, zh)),                          # Schacht für Knick und Pins
@@ -596,7 +598,7 @@ def dock_ribs(variant, cx, d):
     ribs = []
     if variant == "A":      # Körper liegt neben den Pins: nur Rippen an den Stirnseiten, die Pins im Muldenboden halten ihn in y
         for sx in (-1, 1):
-            ribs.append(cbox(2 * RIB + 0.2, 0.6, d["z_bb"], d["z_hb"], cx=cx + sx * (HDR_W / 2 + SNUG - RIB + 0.1), cy=d["y_b"]))
+            ribs.append(cbox(2 * RIB + 0.2, 0.6, d["z_bb"], d["z_hb"], cx=cx + sx * (HDR_W / 2 + SNUG_HDR - RIB + 0.1), cy=d["y_b"]))
         return ribs
     if variant == "B":
         z0, z1, w, t = d["z_bb"], d["z_hb"], HDR_W, HDR_BODY
