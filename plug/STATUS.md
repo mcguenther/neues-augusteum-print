@@ -182,6 +182,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/sample.py` | Generator | Probestück (22 × 36 mm), `README.txt`, ZIP; ruft die Passprobe auf |
 | `plug/fit_test/` | Passprobe | `generator.py` (Geometrie), `build_page.py`, `page.template.html`, `page.html`, `angled_pin.html` (Maße der Winkelleiste) |
 | `plug/roadmap/` | Fahrplan Testdrucke | `build.py` (Maße aus `dims()`, Tabelle `PARTS` mit Material und Zeit je Test), `template.html`, `page.html`; Abhängigkeiten, Zeitplan, Karten je Test, Änderungsradius der Konstanten |
+| `plug/series.py` | Generator | Passungsserien für den ersten Nachtdruck (K Kontakt-Plättchen, N Schieber, S Boden-Platten, R Buchsenhülsen, FM Mulden-Ringe, dazu C Kassette und D Passprobe) nach `stl/steckmodul_night1/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night1/`; Spiel je Teil als Gravur, Beurteilung nach Gefühl, weil Spalte unter 0,5 mm nicht messbar sind |
 | `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
@@ -209,6 +210,7 @@ plug/sample.py       importiert dupont as sd, institute as I, fit_test.generator
    ^
 plug/fit_test/build_page.py   importiert dupont, fit_test.generator
 plug/roadmap/build.py        importiert dupont, institute (nur dims() und Konstanten)
+plug/series.py               importiert dupont, institute, sample, fit_test.generator, roadmap.build (Zeitmodell)
 plug/views/build_views.py     liest nur Vorlage und data.json
 plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 ```
@@ -225,6 +227,7 @@ plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 | `python3 -m plug.views.build_views` | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
 | `python3 -m plug.fit_test.build_page` | `plug/fit_test/page.html` |
 | `python3 -m plug.roadmap.build` | `plug/roadmap/page.html` |
+| `python3 -m plug.series` (rund 6 min) | `stl/steckmodul_night1/*`, `vorschau/steckmodul_night1/*` |
 | `python3 -m plug.build_all` | alles obige nacheinander |
 
 Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html`, `angled_pin.html`.

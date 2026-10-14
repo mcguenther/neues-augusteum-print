@@ -179,10 +179,10 @@ td:first-child { white-space: nowrap; }
   <h2>Kurzfassung</h2>
   <ol>
     <li><b>Nach Unabhängigkeit testen, nicht nach Montagereihenfolge.</b> Kassette innen (C), Schieber und Nut (N), Podest mit Deckel (D), Fuß und Mulde (FM) und Licht (L) brauchen kein Ergebnis voneinander. Nur der Schacht (S) braucht das Außenmaß aus C, nur die Verbundtests V1 und V2 brauchen alles.</li>
-    <li><b>Zuerst messen, 0 g.</b> Das Probestück wurde laut STATUS schon einmal ganz gedruckt („wackelt überall“), aber ohne Zahlen. Mit Schieblehre und Fühlerlehre an den alten Teilen und den Kaufteilen steht in 20 Minuten fest, ob ein Spiel überhaupt geändert werden muss.</li>
+    <li><b>Spalte unter 0,5 mm lassen sich nicht messen.</b> Darum tragen die Testteile ihr Spiel als Gravur, und die Hand ist das Messgerät: je Serie die engste Variante, die ohne Gewalt passt, und die weiteste, die nicht merklich wackelt. Das Probestück war laut STATUS schon einmal ganz gedruckt („wackelt überall“), aber ohne Zahlen. Bauteile (Buchse, Streifen, Pins) lassen sich messen und werden vorher gemessen.</li>
     <li><b>Ein Gate: Kontakt-Tiefe K.</b> Sie ändert nur Höhen (Fußhöhe {{F}} mm, Schieberdicke), nie eine seitliche Passung. Sie kostet etwa 1 g und 10 Minuten und kommt vor alles, was eine Höhe festschreibt (N, V1, V2).</li>
     <li><b>Die Lücke vor den Pins:</b> S und N einzeln, dann V1 (Kassette und Schieber im Gebäude, ohne Pins), erst danach V2 mit Platte und Stiften.</li>
-    <li><b>8 Stunden sind kein Engpass.</b> Alle unabhängigen Tests zusammen brauchen etwa {{G_INDEP}} g und {{H_INDEP}} h (schneller Drucker {{H_INDEP_FAST}} h). Die Nacht gehört der Breite (je Fuge drei Spielwerte), nicht der Tiefe (V1 und V2 mit ungeprüften Fugen).</li>
+    <li><b>Eine Nacht reicht für alle unabhängigen Serien.</b> Der Kern (K, N, S, C, R, D) braucht etwa {{G_CORE}} g und {{H_CORE}} h (schneller Drucker {{H_CORE_FAST}} h), mit den Mulden-Ringen (FM) etwa {{G_ALL}} g und {{H_ALL}} h. Gedruckt wird in die Breite (je Fuge vier Spielwerte), nicht in die Tiefe (V1 und V2 mit ungeprüften Fugen).</li>
   </ol>
 </section>
 
@@ -215,11 +215,11 @@ td:first-child { white-space: nowrap; }
 </section>
 
 <section id="zeitplan">
-  <h2>Zeitplan: erste Stunde und Nacht</h2>
-  <p>Die erste Stunde gehört den kurzen Tests mit schneller Rückmeldung (M, K, C). Dazwischen fallen zwei Entscheidungen, die bestimmen, was in die Nachtplatte kommt. Die Nacht druckt dann alles Unabhängige mit je drei Spielwerten, damit morgen für jede Fuge ein Wert feststeht statt nur Passt oder Passt nicht.</p>
+  <h2>Zeitplan: erste Nacht</h2>
+  <p>Alle unabhängigen Serien kommen in einen Druck. Jede Serie trägt ihre Spielwerte als Gravur, damit morgen für jede Fuge ein Wert feststeht statt nur „passt“ oder „passt nicht“. Die STL liegen in <code>stl/steckmodul_night1/</code> (<code>python3 -m plug.series</code>), die Anleitung zu den Teilen in der <code>README.txt</code> dort.</p>
   <figure>
     <div class="fig">{{FIG_TIME}}</div>
-    <figcaption>Zeit je Abschnitt linear, am Sprung bei 1:00 gestaucht. Nachtplatte (N, S, D, L und Beilage R): etwa {{G_NIGHT}} g, {{H_NIGHT}} h, fertig gegen {{NIGHT_END}}. Voraussetzung: Die STL für K, N, S, L und R müssen vorher erzeugt werden, K zuerst.</figcaption>
+    <figcaption>Kern der Nachtplatte (K, N, S, C, R, D): etwa {{G_CORE}} g, {{H_CORE}} h, fertig gegen {{CORE_END}}. Die Mulden-Ringe (FM) sind das schwerste Teil und optional. Zeigt der Slicer für alles mehr als etwa 7 Stunden, FM in eine zweite Nacht schieben.</figcaption>
   </figure>
 </section>
 
@@ -257,7 +257,7 @@ td:first-child { white-space: nowrap; }
   <h2>Grenzen dieses Fahrplans</h2>
   <ul class="limits">
     <li><b>Zeiten und Mengen sind Schätzungen.</b> Material: Voxelmodell der vorhandenen STL (3 Wände, 15 % Füllung, 4 Deck- und Bodenschichten), für neue Teile ein Grobentwurf. Zeit: 9 g/h plus 5 s je Schicht und 5 min Start (normaler Drucker) bzw. 25 g/h, 2 s, 3 min (schneller Drucker). Die Slicer-Zeit hat Vorrang.</li>
-    <li><b>Die neuen Teile (K, N, S, L, R, Serie FM) sind Entwürfe.</b> Für sie gibt es noch keinen Generator und keine STL.</li>
+    <li><b>Die Serien K, N, S, C, R, FM und D</b> kommen aus <code>plug/series.py</code> und sind auf Kollisionen und Dichtheit geprüft, aber noch nicht gedruckt. Das Licht (L), Federzunge und Rast sowie die Rippen-Serie sind noch Entwurf, ohne STL.</li>
     <li><b>Stand der Versuche</b> stammt aus <code>plug/STATUS.md</code>. Was darüber hinaus im Chat gemessen wurde, steht hier nicht.</li>
     <li><b>Nicht Teil dieses Fahrplans:</b> die Druckpause als Hauptlösung (Pausenprobe), Dock B und C, und die Kassette bei 1:1500 (Hauptbalken 14,7 mm, Kassette 15,7 mm breit, siehe <code>plug/PLAN.md</code> 3.3).</li>
   </ul>
