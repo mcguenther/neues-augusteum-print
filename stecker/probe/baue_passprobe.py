@@ -33,11 +33,14 @@ def top_view():
         w, d = sd.HDR_W + 2 * c, sd.HDR_BODY + 2 * c    # Leiste: von oben nicht sichtbar, nur die Löcher
         s.append(f'<rect x="{px(x-w/2)}" y="{py(pr.PP_Y_L+d/2)}" width="{w*S}" height="{d*S}" class="pocket b ghost"/>')
         s.append(f'<rect x="{px(x-pr.PP_SLOT_X)}" y="{py(pr.PP_Y_L+pr.PP_TAIL)}" width="{2*pr.PP_SLOT_X*S}" height="{(pr.PP_TAIL-d/2)*S}" class="trench"/>')
+        hd = pr.PP_HOLES[pr.PP_X.index(x)]
         for xp in sd.pin_x():
-            s.append(f'<circle cx="{px(x+xp)}" cy="{py(pr.PP_Y_L)}" r="{pr.PP_LHOLE*S/2:.1f}" class="hole b"/>')
+            s.append(f'<circle cx="{px(x+xp)}" cy="{py(pr.PP_Y_L)}" r="{(hd/2+pr.PP_HCH)*S:.1f}" class="csink"/>')
+            s.append(f'<circle cx="{px(x+xp)}" cy="{py(pr.PP_Y_L)}" r="{hd*S/2:.1f}" class="hole b"/>')
         s.append(f'<text x="{px(x)}" y="{py(pr.PP_Y_LAB_C)+4}" text-anchor="middle" class="eng">{g(c)}</text>')
     for hd, x in zip(pr.PP_HOLES, pr.PP_X):
-        s.append(f'<circle cx="{px(x)}" cy="{py(pr.PP_Y_H)}" r="{max(hd*S/2, 2.2)}" class="hole"/>')
+        s.append(f'<circle cx="{px(x)}" cy="{py(pr.PP_Y_H)}" r="{(hd/2+pr.PP_HCH)*S:.1f}" class="csink"/>')
+        s.append(f'<circle cx="{px(x)}" cy="{py(pr.PP_Y_H)}" r="{hd*S/2:.1f}" class="hole"/>')
         s.append(f'<text x="{px(x)}" y="{py(pr.PP_Y_LAB_H)+4}" text-anchor="middle" class="eng">{f(hd,1)}</text>')
     for letter, y, cls in (("A", pr.PP_Y_B, "a"), ("B", pr.PP_Y_L, "b"), ("C", pr.PP_Y_H, "c")):
         yy = py(y)
@@ -69,9 +72,12 @@ def section_view():
     d2 = sd.HDR_BODY + 2 * c
     s.append(f'<rect x="{px(yl-d2/2)}" y="{pz(zb)}" width="{d2*S}" height="{zb*S}" class="cut"/>')
     s.append(f'<rect x="{px(yl)}" y="{pz(pr.PP_SLOT_H)}" width="{pr.PP_TAIL*S}" height="{pr.PP_SLOT_H*S}" class="cut"/>')
-    s.append(f'<rect x="{px(yl-pr.PP_LHOLE/2)}" y="{pz(H)}" width="{pr.PP_LHOLE*S}" height="{pr.PP_FLOOR*S}" class="cut"/>')
     hd = pr.PP_HOLES[1]
+    cs = pr.PP_HCH
+    s.append(f'<rect x="{px(yl-hd/2)}" y="{pz(H)}" width="{hd*S}" height="{pr.PP_FLOOR*S}" class="cut"/>')
     s.append(f'<rect x="{px(yh-hd/2)}" y="{pz(H)}" width="{hd*S}" height="{pr.PP_HOLE_DEPTH*S}" class="cut"/>')
+    for yc in (yl, yh):                                 # Senkungen an der Schriftseite (oben in der Zeichnung)
+        s.append(f'<path d="M{px(yc-hd/2-cs)} {pz(H)}L{px(yc+hd/2+cs)} {pz(H)}L{px(yc+hd/2)} {pz(H-cs)}L{px(yc-hd/2)} {pz(H-cs)}Z" class="cut"/>')
     ch = pr.PP_CH
     for yc, dd in ((yb, d), (yl, d2)):                  # Einlauffasen unten an Buchsen- und Leistentasche
         for sgn in (-1, 1):
@@ -132,7 +138,7 @@ def main():
     html = (TEMPLATE.replace("/*TOP*/", top_view()).replace("/*SECTION*/", section_view())
             .replace("/*ROWS*/", rows)
             .replace("/*CL*/", " / ".join(g(c) for c in pr.PP_CL)).replace("/*CLN*/", g(pr.PP_CL[0])).replace("/*CLX*/", g(pr.PP_CL[-1]))
-            .replace("/*HOLES*/", " / ".join(g(h) for h in pr.PP_HOLES)).replace("/*LHOLE*/", g(pr.PP_LHOLE)).replace("/*CH*/", g(pr.PP_CH))
+            .replace("/*HOLES*/", " / ".join(g(h) for h in pr.PP_HOLES)).replace("/*HCH*/", g(pr.PP_HCH)).replace("/*CH*/", g(pr.PP_CH))
             .replace("/*OPTS*/", "".join(f"<option>{g(c)}</option>" for c in pr.PP_CL)).replace("/*HOPTS*/", "".join(f"<option>{g(h)}</option>" for h in pr.PP_HOLES))
             .replace("/*PW*/", f(pr.PP_W, 1)).replace("/*PL*/", f(pr.PP_L, 1)).replace("/*PH*/", f(pr.PP_H, 1))
             .replace("/*SNUG*/", f(sd.SNUG)).replace("/*HOLE*/", f(sd.HOLE, 1)).replace("/*RIB*/", f(sd.RIB)))
