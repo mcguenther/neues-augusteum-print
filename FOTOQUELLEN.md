@@ -24,6 +24,16 @@ den Wandflächen zugeordnet (`farbmessung.py`). Pose, Aufnahmezeit und Belichtun
 | [fl_16719063090](https://www.flickr.com/photos/46604778@N00/16719063090) | domjisch | CC BY 2.0 | 2015-03-17 | flickr |
 | [fl_9656690560](https://www.flickr.com/photos/40787640@N03/9656690560) | prayerslayer | CC BY 2.0 | 2013-08-22 | flickr |
 | [fl_14005411673](https://www.flickr.com/photos/123851327@N06/14005411673) | Jackie_ffm | CC BY 2.0 | 2014-03-14 | flickr |
+| [cm_89035e08](https://commons.wikimedia.org/wiki/File:Schinkeltor%2C_Neues_Augusteum%2C_Universit%C3%A4t_Leipzig%2C_2014.JPG) | Wilhelm Thomas Fiege | CC BY-SA 3.0 | 2014-04-26 | commons |
+| [cm_a432dae5](https://commons.wikimedia.org/wiki/File:NSG_Leipzig.JPG) | JesterWr | CC BY 3.0 | 2010-03-07 | commons |
+| [cm_867bcac5](https://commons.wikimedia.org/wiki/File:Leipzig_Uni_Campus_Neu_Nordseite.JPG) | JesterWr | CC BY 3.0 | 2010-03-07 | commons |
+| [cm_1e4df457](https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_-_Paulinum_01_ies.jpg) | Frank Vincentz | CC BY-SA 3.0 | 2015-07-07 | commons |
+| [cm_7688a7cf](https://commons.wikimedia.org/wiki/File:Mensa_am_Park.JPG) | JesterWr | CC BY 3.0 | 2010-03-07 | commons |
+| [cm_2c42c9b4](https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_01_ies.jpg) | Frank Vincentz | CC BY-SA 3.0 | 2015-07-07 | commons |
+| [cm_32166237](https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_04_ies.jpg) | Frank Vincentz | CC BY-SA 3.0 | 2015-07-07 | commons |
+| [cm_f3cf5ae4](https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Neues_Augusteum_%2B_Paulinum_05_ies.jpg) | Frank Vincentz | CC BY-SA 3.0 | 2015-07-07 | commons |
+| [cm_719477f3](https://commons.wikimedia.org/wiki/File:Leipzig%2C_die_Universit%C3%A4tskirche_%28Paulinum%29.jpg) | Dguendel | CC BY 4.0 | 2018-03-24 | commons |
+| [cm_4d3eca4c](https://commons.wikimedia.org/wiki/File:Leipzig_-_Augustusplatz_%2B_Radisson_Blu_%2B_Europahaus_%2B_Neues_Gewandhaus_%2B_City-Hochhaus_01_ies.jpg) | Frank Vincentz | CC BY-SA 3.0 | 2015-07-07 | commons |
 
 ## Handmessung (Altbestand, für nicht neu gemessene Farben übernommen)
 

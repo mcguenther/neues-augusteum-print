@@ -1,0 +1,33 @@
+<div class="viewer" id="viewer3d">
+  <div class="szene">
+    <canvas aria-label="3D-Modell des Campus, vorher und nachher"></canvas>
+    <div class="trenner" hidden><div class="griff" aria-hidden="true">⇔</div></div>
+    <span class="tag l alt">vorher</span><span class="tag r">nachher</span>
+    <div class="legende" hidden>
+      <div><span class="k" style="background:#c9ced1"></span>unverändert (ΔE &lt; 4)</div>
+      <div><span class="k" style="background:#f2d04f"></span>leicht (4–10)</div>
+      <div><span class="k" style="background:#ee8a2b"></span>deutlich (10–20)</div>
+      <div><span class="k" style="background:#c4234f"></span>stark (über 20)</div>
+    </div>
+    <div class="laden">3D-Modell wird geladen …</div>
+    <div class="meldung" hidden></div>
+  </div>
+  <div class="leiste">
+    <div class="gruppe"><span>Darstellung</span>
+      <button type="button" data-modus="teilen" aria-pressed="true">Regler</button>
+      <button type="button" data-modus="vorher" aria-pressed="false">vorher</button>
+      <button type="button" data-modus="nachher" aria-pressed="false">nachher</button>
+      <button type="button" data-modus="aenderung" aria-pressed="false">Änderung</button>
+    </div>
+    <div class="gruppe"><span>Ansicht</span>
+      <button type="button" data-ansicht="platz">Augustusplatz</button>
+      <button type="button" data-ansicht="uniriese">Uniriese</button>
+      <button type="button" data-ansicht="sued">Süd</button>
+      <button type="button" data-ansicht="west">West</button>
+      <button type="button" data-ansicht="nord">Nord</button>
+      <button type="button" data-ansicht="oben">von oben</button>
+    </div>
+    <label class="regler">vorher <input type="range" min="2" max="98" value="50" aria-label="Trennlinie zwischen vorher und nachher"> nachher</label>
+  </div>
+  <p class="hinweis">Ziehen dreht das Modell, Scrollen oder Zwei-Finger-Geste zoomt, rechte Maustaste oder zwei Finger verschieben. Beide Hälften zeigen dieselbe Kamera.</p>
+</div>

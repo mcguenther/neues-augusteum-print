@@ -1983,7 +1983,20 @@
      3.6,
      4.9
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -121.224,
+     17.83,
+     3.659
+    ],
+    "yaw": 103.75,
+    "pitch": 6.423,
+    "roll": -0.338,
+    "hfov": 61.062
+   },
+   "pose_kosten": 0.0017,
+   "geprueft": true
   },
   "cm_a432dae5": {
    "quelle": "commons",
@@ -2022,7 +2035,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -165.299,
+     138.186,
+     1.541
+    ],
+    "yaw": 163.983,
+    "pitch": 10.119,
+    "roll": -2.997,
+    "hfov": 69.361
+   },
+   "pose_kosten": 0.0195,
+   "geprueft": true
   },
   "fl_5355563189": {
    "quelle": "flickr",
@@ -2039,28 +2065,41 @@
    "licht": "sonnig mit Schleierwolken, Westfassade besonnt; Uhrzeit 15:02; Sonne Azimut 227°, Höhe 52° (rechnerisch direkt beschienene Fassadenseiten: Süd, West)",
    "prior": {
     "bereich": [
-     -205,
-     -145,
-     50,
-     220
+     -185,
+     -150,
+     60,
+     170
     ],
     "yaw_bereich": [
-     140,
-     205
+     145,
+     185
     ],
     "pitch": [
      -3,
-     25
+     12
     ],
     "hfov": [
-     45,
-     90
+     40,
+     66
     ],
     "z": [
-     1.5,
-     3.0
+     1.3,
+     2.5
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -157.96,
+     161.227,
+     1.311
+    ],
+    "yaw": 169.781,
+    "pitch": -2.861,
+    "roll": -1.852,
+    "hfov": 61.407
+   },
+   "pose_kosten": 0.0172,
+   "verworfen": "Gebäudegrenzen liegen um ein Gebäude daneben"
   },
   "cm_867bcac5": {
    "quelle": "commons",
@@ -2097,7 +2136,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -143.424,
+     139.625,
+     2.207
+    ],
+    "yaw": 133.466,
+    "pitch": 10.233,
+    "roll": -2.979,
+    "hfov": 58.32
+   },
+   "pose_kosten": 0.0369,
+   "geprueft": true
   },
   "cm_1e4df457": {
    "quelle": "commons",
@@ -2135,7 +2187,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -24.627,
+     43.191,
+     2.977
+    ],
+    "yaw": 15.766,
+    "pitch": 59.951,
+    "roll": -2.701,
+    "hfov": 76.708
+   },
+   "pose_kosten": 0.0186,
+   "geprueft": true
   },
   "cm_438c2e7f": {
    "quelle": "commons",
@@ -2173,7 +2238,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -9.575,
+     23.061,
+     2.94
+    ],
+    "yaw": -17.046,
+    "pitch": 14.961,
+    "roll": 2.9,
+    "hfov": 17.978
+   },
+   "pose_kosten": 0.0395,
+   "verworfen": "Modellflächen passen nicht zur Fassade"
   },
   "cm_7688a7cf": {
    "quelle": "commons",
@@ -2211,7 +2289,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -136.88,
+     -167.398,
+     2.86
+    ],
+    "yaw": 22.542,
+    "pitch": 22.506,
+    "roll": 0.119,
+    "hfov": 48.436
+   },
+   "pose_kosten": 0.0128,
+   "geprueft": true
   },
   "cm_e1e5fb60": {
    "quelle": "commons",
@@ -2228,28 +2319,41 @@
    "licht": "tiefblauer Himmel, Mensa-Fassade besonnt; Uhrzeit 10:46; Sonne Azimut 121°, Höhe 50° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
    "prior": {
     "bereich": [
-     -205,
-     -110,
-     -195,
-     -110
+     -175,
+     -125,
+     -200,
+     -150
     ],
     "yaw_bereich": [
-     10,
-     80
+     5,
+     40
     ],
     "pitch": [
-     -3,
-     15
+     0,
+     12
     ],
     "hfov": [
      66,
      80
     ],
     "z": [
-     1.5,
-     3.0
+     1.3,
+     2.5
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -129.602,
+     -172.938,
+     2.154
+    ],
+    "yaw": 7.021,
+    "pitch": 11.859,
+    "roll": -1.854,
+    "hfov": 76.32
+   },
+   "pose_kosten": 0.0416,
+   "verworfen": "Pose um etwa 70 px verschoben (Mensa und Uniriese)"
   },
   "cm_3b7d7aa5": {
    "quelle": "commons",
@@ -2287,7 +2391,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -131.69,
+     -130.929,
+     2.374
+    ],
+    "yaw": 54.087,
+    "pitch": 18.022,
+    "roll": 2.872,
+    "hfov": 38.443
+   },
+   "pose_kosten": 0.0182,
+   "verworfen": "Teleaufnahme, Pose passt nicht"
   },
   "cm_d97072a8": {
    "quelle": "commons",
@@ -2325,7 +2442,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -0.154,
+     -110.123,
+     2.836
+    ],
+    "yaw": -103.371,
+    "pitch": -4.05,
+    "roll": -0.001,
+    "hfov": 79.426
+   },
+   "pose_kosten": 0.033,
+   "verworfen": "Nur das Dach der Bastion ist abgedeckt, Pose ungenau, verputzte Wand"
   },
   "cm_73eef6bc": {
    "quelle": "commons",
@@ -2363,7 +2493,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -100.862,
+     -156.827,
+     2.142
+    ],
+    "yaw": 41.882,
+    "pitch": 24.713,
+    "roll": -2.587,
+    "hfov": 48.09
+   },
+   "pose_kosten": 0.0148,
+   "verworfen": "Pose passt nicht"
   },
   "cm_2c42c9b4": {
    "quelle": "commons",
@@ -2402,7 +2545,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     98.776,
+     67.792,
+     1.458
+    ],
+    "yaw": -90.095,
+    "pitch": 9.785,
+    "roll": -0.789,
+    "hfov": 44.947
+   },
+   "pose_kosten": 0.0448,
+   "geprueft": true
   },
   "cm_32166237": {
    "quelle": "commons",
@@ -2441,7 +2597,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     89.582,
+     1.16,
+     3.974
+    ],
+    "yaw": -69.942,
+    "pitch": 7.779,
+    "roll": 0.222,
+    "hfov": 58.263
+   },
+   "pose_kosten": 0.0205,
+   "geprueft": true
   },
   "cm_f3cf5ae4": {
    "quelle": "commons",
@@ -2479,7 +2648,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -4.76,
+     -24.879,
+     2.993
+    ],
+    "yaw": -21.917,
+    "pitch": 11.657,
+    "roll": 2.984,
+    "hfov": 33.075
+   },
+   "pose_kosten": 0.0272,
+   "geprueft": true
   },
   "cm_37fb5ce2": {
    "quelle": "commons",
@@ -2518,7 +2700,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     7.49,
+     -19.978,
+     1.504
+    ],
+    "yaw": -74.96,
+    "pitch": 5.619,
+    "roll": -0.966,
+    "hfov": 41.952
+   },
+   "pose_kosten": 0.0559,
+   "verworfen": "Pose passt nicht"
   },
   "cm_719477f3": {
    "quelle": "commons",
@@ -2556,7 +2751,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -7.631,
+     -16.189,
+     2.711
+    ],
+    "yaw": -27.843,
+    "pitch": 18.153,
+    "roll": 2.924,
+    "hfov": 30.325
+   },
+   "pose_kosten": 0.0227,
+   "geprueft": true
   },
   "cm_9812eb34": {
    "quelle": "commons",
@@ -2573,28 +2781,45 @@
    "licht": "wolkenlos tiefblau, Ostseite des Hochhauses voll besonnt; Uhrzeit 10:03; Sonne Azimut 109°, Höhe 43° (rechnerisch direkt beschienene Fassadenseiten: Ost, Süd)",
    "prior": {
     "bereich": [
-     20,
-     110,
-     -100,
-     -30
+     55,
+     115,
+     -112,
+     -78
     ],
     "yaw_bereich": [
-     235,
-     285
+     272,
+     298
     ],
     "pitch": [
-     3,
-     22
+     2,
+     16
     ],
     "hfov": [
-     24,
-     30
+     20,
+     32
     ],
     "z": [
-     1.5,
-     3.0
+     1.2,
+     2.2
+    ],
+    "roll": [
+     -2,
+     2
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     114.517,
+     -91.996,
+     2.181
+    ],
+    "yaw": -62.026,
+    "pitch": 14.254,
+    "roll": -1.73,
+    "hfov": 20.846
+   },
+   "pose_kosten": 0.0682,
+   "verworfen": "Pose passt nicht (Uniriese liegt außerhalb des Modellausschnitts)"
   },
   "cm_c00e0207": {
    "quelle": "commons",
@@ -2633,7 +2858,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     50.574,
+     -61.197,
+     1.513
+    ],
+    "yaw": -86.685,
+    "pitch": -1.878,
+    "roll": -0.422,
+    "hfov": 50.2
+   },
+   "pose_kosten": 0.0566,
+   "verworfen": "Pose passt nicht"
   },
   "cm_4d3eca4c": {
    "quelle": "commons",
@@ -2671,7 +2909,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     149.828,
+     105.275,
+     1.669
+    ],
+    "yaw": -152.787,
+    "pitch": 10.067,
+    "roll": 2.784,
+    "hfov": 72.268
+   },
+   "pose_kosten": 0.0282,
+   "geprueft": true
   },
   "fl_25041852629": {
    "quelle": "flickr",
@@ -2709,7 +2960,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -6.523,
+     -110.238,
+     4.658
+    ],
+    "yaw": -91.35,
+    "pitch": 47.278,
+    "roll": 5.927,
+    "hfov": 55.688
+   },
+   "pose_kosten": 0.0668,
+   "verworfen": "Pose passt nicht"
   },
   "fl_15722085221": {
    "quelle": "flickr",
@@ -2747,7 +3011,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     129.386,
+     81.636,
+     1.906
+    ],
+    "yaw": -80.047,
+    "pitch": 3.72,
+    "roll": -1.632,
+    "hfov": 15.202
+   },
+   "pose_kosten": 0.0201,
+   "verworfen": "Pose passt nicht (Laub verdeckt den Giebel)"
   },
   "fl_48025156148": {
    "quelle": "flickr",
@@ -2785,7 +3062,20 @@
      1.5,
      3.0
     ]
-   }
+   },
+   "pose": {
+    "pos": [
+     -184.477,
+     -113.346,
+     1.513
+    ],
+    "yaw": 41.218,
+    "pitch": 6.65,
+    "roll": -5.648,
+    "hfov": 69.249
+   },
+   "pose_kosten": 0.0582,
+   "verworfen": "Pose passt nicht, Aufnahmezeit unplausibel"
   }
  }
 }

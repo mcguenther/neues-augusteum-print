@@ -119,58 +119,72 @@
     ]
    },
    {
-    "name": "Messung O z 4–30 m",
+    "name": "Messung O z 26–56 m",
     "farbe": "zink",
     "seite": "O",
     "z": [
-     4.0,
-     30.0
-    ],
-    "entlang": [
-     0.0,
-     0.226
-    ],
-    "quelle": "farbmessung"
-   },
-   {
-    "name": "Messung O z 30–56 m",
-    "farbe": "zink",
-    "seite": "O",
-    "z": [
-     30.0,
+     26.0,
      56.0
     ],
     "entlang": [
-     0.226,
+     0.0,
      1.0
     ],
     "quelle": "farbmessung"
    },
    {
-    "name": "Messung S z 4–42 m",
-    "farbe": "m1",
-    "seite": "S",
+    "name": "Messung O z 0–26 m",
+    "farbe": "zink",
+    "seite": "O",
     "z": [
-     4.0,
-     42.0
+     0.0,
+     26.0
     ],
     "entlang": [
-     0.5969,
+     0.0,
+     0.113
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 0–4 m",
+    "farbe": "m1",
+    "seite": "O",
+    "z": [
+     0.0,
+     4.0
+    ],
+    "entlang": [
+     0.113,
+     1.0
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung S z 24–46 m",
+    "farbe": "glas",
+    "seite": "S",
+    "z": [
+     24.0,
+     46.0
+    ],
+    "entlang": [
+     0.8427,
      0.9831
     ],
     "quelle": "farbmessung"
    },
    {
-    "name": "Messung S z 42–52 m",
+    "name": "Messung S z 40–56 m",
     "farbe": "m2",
     "seite": "S",
     "z": [
-     42.0,
-     52.0
+     40.0,
+     56.0
     ],
     "entlang": [
-     0.5969,
-     0.9831
+     0.632,
+     0.8427
     ],
     "quelle": "farbmessung"
    },
@@ -190,7 +204,7 @@
    },
    {
     "name": "Messung W z 42–58 m",
-    "farbe": "m4",
+    "farbe": "m1",
     "seite": "W",
     "z": [
      42.0,
@@ -253,32 +267,32 @@
    "stein_hell": {
     "rgb": "#cac5c2",
     "notiz": "Giebel Ost: heller grauer Naturstein (Travertin-/Kalkstein-Eindruck)",
-    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 12): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 13): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "weiss": {
     "rgb": "#eee9e8",
     "notiz": "weißer Kalkstein: Spitzbogen-Blende mit Maßwerkfenster am Ostgiebel",
-    "quelle": "unverändert (zu wenige besonnte Messzellen: 224)"
+    "quelle": "unverändert (zu wenige besonnte Messzellen: 226)"
    },
    "stein_glas": {
-    "rgb": "#8c9497",
+    "rgb": "#80878a",
     "notiz": "Seiten/Westgiebel: graue Steinbänder mit senkrechten Glasstreifen (Gesamteindruck)",
-    "quelle": "Fotos: 442 besonnte Zellen"
+    "quelle": "Fotos: 594 besonnte Zellen"
    },
    "glas": {
     "rgb": "#34464c",
     "notiz": "Glasstreifen links vom Giebel (dunkles, spiegelndes Glas)",
-    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 9): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 10): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "zink": {
     "rgb": "#8c969f",
     "notiz": "Dachreiter/Turmspitze: graues Zinkblech",
-    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 12): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 13): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "fensterglas": {
     "rgb": "#afd0d6",
     "notiz": "großes Maßwerkfenster im Spitzbogen: helles türkisblaues Glas mit weißem Maßwerk (Gesamteindruck)",
-    "quelle": "unverändert (zu wenige besonnte Messzellen: 85)"
+    "quelle": "unverändert (zu wenige besonnte Messzellen: 84)"
    },
    "rosette_innen": {
     "rgb": "#8f9088",
@@ -286,27 +300,22 @@
     "quelle": "unverändert (zu wenige besonnte Messzellen: 10)"
    },
    "m1": {
-    "rgb": "#81acc0",
+    "rgb": "#a5a19f",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 116 Messzellen"
+    "quelle": "Fotos: 160 Messzellen"
    },
    "m2": {
-    "rgb": "#667682",
+    "rgb": "#697f8b",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 38 Messzellen"
+    "quelle": "Fotos: 74 Messzellen"
    },
    "m3": {
     "rgb": "#727476",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
     "quelle": "Fotos: 119 Messzellen"
-   },
-   "m4": {
-    "rgb": "#a09b96",
-    "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 51 Messzellen"
    }
   },
-  "fassade": "#8c9497"
+  "fassade": "#80878a"
  },
  "02_neues_augusteum": {
   "name": "Neues Augusteum",
@@ -331,29 +340,15 @@
     ]
    },
    {
-    "name": "Messung O z 20–32 m",
+    "name": "Messung O z 24–32 m",
     "farbe": "m1",
     "seite": "O",
     "z": [
-     20.0,
+     24.0,
      32.0
     ],
     "entlang": [
      0.0,
-     0.4212
-    ],
-    "quelle": "farbmessung"
-   },
-   {
-    "name": "Messung O z 8–32 m",
-    "farbe": "m1",
-    "seite": "O",
-    "z": [
-     8.0,
-     32.0
-    ],
-    "entlang": [
-     0.6581,
      0.8951
     ],
     "quelle": "farbmessung"
@@ -374,20 +369,6 @@
    },
    {
     "name": "Messung O z 0–8 m",
-    "farbe": "lamellen",
-    "seite": "O",
-    "z": [
-     0.0,
-     8.0
-    ],
-    "entlang": [
-     0.1053,
-     0.3159
-    ],
-    "quelle": "farbmessung"
-   },
-   {
-    "name": "Messung O z 0–8 m",
     "farbe": "m3",
     "seite": "O",
     "z": [
@@ -395,45 +376,45 @@
      8.0
     ],
     "entlang": [
-     0.3159,
+     0.1053,
+     0.2633
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 0–8 m",
+    "farbe": "m4",
+    "seite": "O",
+    "z": [
+     0.0,
+     8.0
+    ],
+    "entlang": [
+     0.2633,
      0.8951
     ],
     "quelle": "farbmessung"
    },
    {
-    "name": "Messung O z 8–20 m",
-    "farbe": "m4",
-    "seite": "O",
-    "z": [
-     8.0,
-     20.0
-    ],
-    "entlang": [
-     0.3159,
-     0.4212
-    ],
-    "quelle": "farbmessung"
-   },
-   {
-    "name": "Messung O z 12–20 m",
-    "farbe": "m4",
-    "seite": "O",
-    "z": [
-     12.0,
-     20.0
-    ],
-    "entlang": [
-     0.0,
-     0.3159
-    ],
-    "quelle": "farbmessung"
-   },
-   {
-    "name": "Messung W z 12–34 m",
+    "name": "Messung W z 26–34 m",
     "farbe": "m5",
     "seite": "W",
     "z": [
-     12.0,
+     26.0,
+     34.0
+    ],
+    "entlang": [
+     0.0,
+     0.238
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung W z 26–34 m",
+    "farbe": "m2",
+    "seite": "W",
+    "z": [
+     26.0,
      34.0
     ],
     "entlang": [
@@ -489,9 +470,9 @@
   ],
   "farben": {
    "glas_stein": {
-    "rgb": "#7e8b93",
+    "rgb": "#7d8d94",
     "notiz": "Glas mit grauen/beigen Natursteinlamellen (Gesamteindruck, Ost und Hof)",
-    "quelle": "Fotos: 1320 besonnte Zellen"
+    "quelle": "Fotos: 1391 besonnte Zellen"
    },
    "lamellen": {
     "rgb": "#444850",
@@ -506,35 +487,35 @@
    "pavillon_weiss": {
     "rgb": "#f1efeb",
     "notiz": "weiße, nahtlose Außenhülle des Audimax (Dach und Wand, dreilagige weiße Triflex-Beschichtung, Herstellerangabe Foamglas/Heinze); in den Fotos hell/weiß",
-    "quelle": "unverändert (zu wenige besonnte Messzellen: 0)"
+    "quelle": "unverändert (zu wenige besonnte Messzellen: 20)"
    },
    "m1": {
-    "rgb": "#668196",
+    "rgb": "#5f7d96",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 605 Messzellen"
+    "quelle": "Fotos: 362 Messzellen"
    },
    "m2": {
-    "rgb": "#c0bfc3",
+    "rgb": "#b5adaa",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 42 Messzellen"
+    "quelle": "Fotos: 108 Messzellen"
    },
    "m3": {
-    "rgb": "#797a79",
+    "rgb": "#525354",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 307 Messzellen"
+    "quelle": "Fotos: 96 Messzellen"
    },
    "m4": {
-    "rgb": "#a9c0cb",
+    "rgb": "#6a7477",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 250 Messzellen"
+    "quelle": "Fotos: 339 Messzellen"
    },
    "m5": {
-    "rgb": "#bbb3af",
+    "rgb": "#897e7f",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 75 Messzellen"
+    "quelle": "Fotos: 34 Messzellen"
    }
   },
-  "fassade": "#7e8b93"
+  "fassade": "#7d8d94"
  },
  "03_hoersaalgebaeude": {
   "name": "Hörsaalgebäude (mit Mensa am Park)",
@@ -748,27 +729,27 @@
   ],
   "farben": {
    "platten": {
-    "rgb": "#f4ede7",
+    "rgb": "#b6b4b2",
     "notiz": "helle Fassadenplatten",
-    "quelle": "Foto (3 Messfelder)"
+    "quelle": "Fotos: 67 besonnte Zellen"
    },
    "sockel": {
     "rgb": "#4a4a4f",
     "notiz": "dunkler Naturstein (Sockel, EG)",
-    "quelle": "Foto (3 Messfelder)"
+    "quelle": "unverändert (zu wenige besonnte Messzellen: 7)"
    },
    "glas": {
     "rgb": "#5b7070",
     "notiz": "Fensterbänder/Glasflächen (dunkles, spiegelndes Glas)",
-    "quelle": "Foto (4 Messfelder)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 10): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "rot": {
     "rgb": "#863138",
     "notiz": "rote Verkleidung (Bänder, Paneele, Mensa-Stützen, Brücke)",
-    "quelle": "Foto (5 Messfelder)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 18): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    }
   },
-  "fassade": "#f4ede7"
+  "fassade": "#b6b4b2"
  },
  "04_seminargebaeude": {
   "name": "Seminargebäude",
@@ -898,36 +879,74 @@
      0.76,
      0.9
     ]
+   },
+   {
+    "name": "Messung W z 0–26 m",
+    "farbe": "m1",
+    "seite": "W",
+    "z": [
+     0.0,
+     26.0
+    ],
+    "entlang": [
+     0.2839,
+     0.3448
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung W z 0–4 m",
+    "farbe": "m2",
+    "seite": "W",
+    "z": [
+     0.0,
+     4.0
+    ],
+    "entlang": [
+     0.0,
+     0.2839
+    ],
+    "quelle": "farbmessung"
    }
   ],
   "farben": {
    "wabenplatten": {
-    "rgb": "#eeebe7",
+    "rgb": "#c2c5c9",
     "notiz": "weiße Wabenplatten",
-    "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+    "quelle": "Fotos: 595 besonnte Zellen"
    },
    "band_rotbraun": {
     "rgb": "#723830",
     "notiz": "rotbraunes Brüstungsband über dem Sockel",
-    "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 18): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "sockel": {
     "rgb": "#46464a",
     "notiz": "dunkler Naturstein (Sockel, EG)",
-    "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 27): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "glas": {
     "rgb": "#46526a",
     "notiz": "Fensterbänder (dunkles Glas in Bändern)",
-    "quelle": "Prüflauf: sonnige Flächen in den Seminargebäude-Fotos (Messfelder lagen teils im Schatten)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 15): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "glasfassade": {
     "rgb": "#60769c",
     "notiz": "Glasbau am Eingang (Pfosten-Riegel-Fassade, blau spiegelnd)",
-    "quelle": "Foto (2 Messfelder)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 14): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+   },
+   "m1": {
+    "rgb": "#595d63",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 144 Messzellen"
+   },
+   "m2": {
+    "rgb": "#686867",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 53 Messzellen"
    }
   },
-  "fassade": "#eeebe7"
+  "fassade": "#c2c5c9"
  },
  "05_institutsgebaeude": {
   "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
@@ -1040,12 +1059,26 @@
     ]
    },
    {
-    "name": "Messung O z 6–20 m",
-    "farbe": "m1",
+    "name": "Messung O z 20–32 m",
+    "farbe": "glasfront",
     "seite": "O",
     "z": [
-     6.0,
-     20.0
+     20.0,
+     32.0
+    ],
+    "entlang": [
+     0.3424,
+     0.5869
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 0–6 m",
+    "farbe": "glasfront",
+    "seite": "O",
+    "z": [
+     0.0,
+     6.0
     ],
     "entlang": [
      0.1956,
@@ -1055,38 +1088,66 @@
    },
    {
     "name": "Messung O z 0–6 m",
-    "farbe": "dunkel",
+    "farbe": "m1",
     "seite": "O",
     "z": [
      0.0,
      6.0
     ],
     "entlang": [
-     0.2935,
+     0.0,
+     0.1956
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 6–16 m",
+    "farbe": "glasfront",
+    "seite": "O",
+    "z": [
+     6.0,
+     16.0
+    ],
+    "entlang": [
+     0.0,
+     0.1956
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 6–12 m",
+    "farbe": "m2",
+    "seite": "O",
+    "z": [
+     6.0,
+     12.0
+    ],
+    "entlang": [
+     0.1956,
      0.5869
     ],
     "quelle": "farbmessung"
    },
    {
-    "name": "Messung O z 20–32 m",
-    "farbe": "glasfront",
+    "name": "Messung O z 12–20 m",
+    "farbe": "m3",
     "seite": "O",
     "z": [
-     20.0,
-     32.0
+     12.0,
+     20.0
     ],
     "entlang": [
-     0.2935,
-     0.3913
+     0.1956,
+     0.5869
     ],
     "quelle": "farbmessung"
    }
   ],
   "farben": {
    "naturstein": {
-    "rgb": "#c4beb6",
+    "rgb": "#aeaeb0",
     "notiz": "heller Naturstein, Lochfassade als Gesamteindruck (Wand + Fensterbänder)",
-    "quelle": "unverändert (zu wenige besonnte Messzellen: 8)"
+    "quelle": "Fotos: 472 besonnte Zellen"
    },
    "rotbraun": {
     "rgb": "#7e423d",
@@ -1106,15 +1167,25 @@
    "kopfbau_dunkel": {
     "rgb": "#424b4f",
     "notiz": "Kopfbau am Augustusplatz: dunkles Glas, dunkler Stein",
-    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 21): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 19): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "m1": {
-    "rgb": "#979797",
+    "rgb": "#5a4747",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 185 Messzellen"
+    "quelle": "Fotos: 35 Messzellen"
+   },
+   "m2": {
+    "rgb": "#9caab0",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 89 Messzellen"
+   },
+   "m3": {
+    "rgb": "#919391",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 111 Messzellen"
    }
   },
-  "fassade": "#c4beb6"
+  "fassade": "#aeaeb0"
  },
  "06_city_hochhaus": {
   "name": "City-Hochhaus (\"Uniriese\")",
@@ -1170,62 +1241,199 @@
     ]
    },
    {
-    "name": "Messung O z 88–140 m",
+    "name": "Messung O z 32–140 m",
     "farbe": "m1",
     "seite": "O",
     "z": [
-     88.0,
+     32.0,
      140.0
     ],
     "entlang": [
-     0.0,
-     0.7354
+     0.4137,
+     0.9193
     ],
     "quelle": "farbmessung"
    },
    {
-    "name": "Messung O z 20–88 m",
+    "name": "Messung O z 0–22 m",
+    "farbe": "m2",
+    "seite": "O",
+    "z": [
+     0.0,
+     22.0
+    ],
+    "entlang": [
+     0.9193,
+     1.0
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 22–140 m",
+    "farbe": "m3",
+    "seite": "O",
+    "z": [
+     22.0,
+     140.0
+    ],
+    "entlang": [
+     0.9193,
+     1.0
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 80–140 m",
+    "farbe": "m3",
+    "seite": "O",
+    "z": [
+     80.0,
+     140.0
+    ],
+    "entlang": [
+     0.0,
+     0.4137
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 20–80 m",
     "farbe": "m2",
     "seite": "O",
     "z": [
      20.0,
-     88.0
+     80.0
     ],
     "entlang": [
      0.0,
-     0.7354
+     0.4137
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung O z 0–32 m",
+    "farbe": "m4",
+    "seite": "O",
+    "z": [
+     0.0,
+     32.0
+    ],
+    "entlang": [
+     0.8274,
+     0.9193
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung S z 0–58 m",
+    "farbe": "m2",
+    "seite": "S",
+    "z": [
+     0.0,
+     58.0
+    ],
+    "entlang": [
+     0.0,
+     0.2568
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung S z 58–140 m",
+    "farbe": "m5",
+    "seite": "S",
+    "z": [
+     58.0,
+     140.0
+    ],
+    "entlang": [
+     0.0,
+     0.2568
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung W z 0–118 m",
+    "farbe": "m6",
+    "seite": "W",
+    "z": [
+     0.0,
+     118.0
+    ],
+    "entlang": [
+     0.0,
+     0.7606
+    ],
+    "quelle": "farbmessung"
+   },
+   {
+    "name": "Messung W z 0–118 m",
+    "farbe": "m7",
+    "seite": "W",
+    "z": [
+     0.0,
+     118.0
+    ],
+    "entlang": [
+     0.7606,
+     1.0
     ],
     "quelle": "farbmessung"
    }
   ],
   "farben": {
    "fassade": {
-    "rgb": "#87a7b9",
+    "rgb": "#bdc8d4",
     "notiz": "helle graue Natursteinplatten mit Fensterreihen (Lochfassade, Gesamteindruck)",
-    "quelle": "Fotos: 791 besonnte Zellen"
+    "quelle": "Fotos: 3281 besonnte Zellen"
    },
    "glas": {
     "rgb": "#222f45",
     "notiz": "dunkles Glas, fast schwarz-navy (Bandfenster mit dunklen Brüstungen), SW-Seite und Ostspitze",
-    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 16): Farbe bleibt, Flächen kommen aus der Segmentierung)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 17): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "sockel": {
     "rgb": "#24303e",
     "notiz": "dunkler Sockelbau/Eingangsbereich",
-    "quelle": "unverändert (zu wenige besonnte Messzellen: 16)"
+    "quelle": "unverändert (Zone uneinheitlich (Median-ΔE 13): Farbe bleibt, Flächen kommen aus der Segmentierung)"
    },
    "m1": {
-    "rgb": "#5f788c",
+    "rgb": "#d0e0ef",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 143 Messzellen"
+    "quelle": "Fotos: 819 Messzellen"
    },
    "m2": {
-    "rgb": "#9eabaf",
+    "rgb": "#a1aaae",
     "notiz": "aus Fotos gemessene Fläche (automatisch)",
-    "quelle": "Fotos: 265 Messzellen"
+    "quelle": "Fotos: 607 Messzellen"
+   },
+   "m3": {
+    "rgb": "#657d91",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 372 Messzellen"
+   },
+   "m4": {
+    "rgb": "#9ab1c0",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 123 Messzellen"
+   },
+   "m5": {
+    "rgb": "#7c868f",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 588 Messzellen"
+   },
+   "m6": {
+    "rgb": "#dbdde0",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 804 Messzellen"
+   },
+   "m7": {
+    "rgb": "#8f98a1",
+    "notiz": "aus Fotos gemessene Fläche (automatisch)",
+    "quelle": "Fotos: 241 Messzellen"
    }
   },
-  "fassade": "#87a7b9"
+  "fassade": "#bdc8d4"
  },
  "07_moritzbastei": {
   "name": "Moritzbastei",
@@ -1413,29 +1621,32 @@
    "rgb": "#e4e0d8",
    "fuer": [
     "Platte",
+    "06 m6",
     "08 denkmalplatz",
     "Dach hell",
-    "07 putz"
+    "06 m1"
    ]
   },
   {
    "nr": 2,
-   "rgb": "#909494",
+   "rgb": "#8a8f91",
    "fuer": [
     "01 stein_glas",
-    "05 m1",
+    "06 m5",
+    "02 glas_stein",
+    "02 m5",
+    "01 zink",
+    "06 m7",
+    "05 m3",
     "08 platz",
     "Dach grau",
-    "01 zink",
-    "01 m4",
     "01 rosette_innen",
-    "07 stein",
-    "02 glas_stein"
+    "07 stein"
    ]
   },
   {
    "nr": 3,
-   "rgb": "#464b51",
+   "rgb": "#494b4e",
    "fuer": [
     "01 glas",
     "02 lamellen",
@@ -1443,61 +1654,66 @@
     "Dach dunkel",
     "03 sockel",
     "04 sockel",
-    "08 stamm",
-    "04 glas"
+    "02 m3",
+    "05 m1",
+    "08 stamm"
    ]
   },
   {
    "nr": 4,
-   "rgb": "#bdbbb9",
+   "rgb": "#c3cacb",
    "fuer": [
     "01 stein_hell",
-    "02 m2",
-    "05 naturstein",
-    "02 m5",
-    "08 pflaster",
-    "Dach hell"
-   ]
-  },
-  {
-   "nr": 5,
-   "rgb": "#84aabc",
-   "fuer": [
-    "01 m1",
+    "04 wabenplatten",
+    "07 putz",
+    "01 fensterglas",
     "06 fassade"
    ]
   },
   {
+   "nr": 5,
+   "rgb": "#aaaeb0",
+   "fuer": [
+    "01 m1",
+    "02 m2",
+    "05 naturstein",
+    "03 platten",
+    "08 pflaster",
+    "Dach hell",
+    "05 m2",
+    "06 m2",
+    "06 m4"
+   ]
+  },
+  {
    "nr": 6,
-   "rgb": "#687782",
+   "rgb": "#637c94",
    "fuer": [
     "01 m2",
-    "06 m1",
+    "06 m3",
     "02 m1",
-    "04 glasfassade",
-    "01 m3",
-    "05 glasfront",
-    "02 m3",
-    "03 glas",
-    "Dach grau"
+    "04 glasfassade"
    ]
   },
   {
    "nr": 7,
-   "rgb": "#f0ece8",
+   "rgb": "#6a7171",
    "fuer": [
-    "01 weiss",
-    "04 wabenplatten",
-    "02 pavillon_weiss",
-    "03 platten"
+    "01 m3",
+    "05 glasfront",
+    "02 m4",
+    "Dach grau",
+    "04 m2",
+    "08 beet",
+    "03 glas"
    ]
   },
   {
    "nr": 8,
-   "rgb": "#acc8d0",
+   "rgb": "#f0ecea",
    "fuer": [
-    "01 fensterglas",
-    "02 m4"
+    "01 weiss",
+    "02 pavillon_weiss"
    ]
   },
   {
@@ -1519,6 +1735,14 @@
   },
   {
    "nr": 11,
+   "rgb": "#505866",
+   "fuer": [
+    "04 glas",
+    "04 m1"
+   ]
+  },
+  {
+   "nr": 12,
    "rgb": "#272d35",
    "fuer": [
     "05 dunkel",
@@ -1526,13 +1750,6 @@
     "06 glas",
     "08 beet_rand",
     "08 bronze"
-   ]
-  },
-  {
-   "nr": 12,
-   "rgb": "#9eabaf",
-   "fuer": [
-    "06 m2"
    ]
   },
   {
@@ -1544,9 +1761,8 @@
   },
   {
    "nr": 14,
-   "rgb": "#7a685f",
+   "rgb": "#7d665c",
    "fuer": [
-    "08 beet",
     "08 podest",
     "08 bank",
     "08 sockel"
