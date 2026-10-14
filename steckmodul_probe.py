@@ -54,15 +54,16 @@ PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite von Schach
 PP_WALL = 1.8
 PP_BACK = sd.HDR_T / 2 + max(PP_CL) + sd.RA_TAIL + 0.9   # Lötendenschlitz reicht so weit hinter die Körpermitte (-y)
 PP_FWD = PP_YOFF + sd.PIN_SQ / 2 + 0.8                    # Schacht reicht so weit vor die Körpermitte (+y)
-_y, PP_YB, PP_LAB = 1.4 + 1.3, [], []
+PP_TXT = 3.4                                # Schrifthöhe (fett, dazu 0,15 mm Verbreiterung, 0,6 mm tief graviert)
+_y, PP_YB, PP_LAB = 1.4 + PP_TXT / 2, [], []
 PP_LAB_C = _y                                # Spaltenbeschriftung (Spiel) ganz unten
-_y += 1.3 + 1.3
+_y += PP_TXT / 2 + 1.5
 for _h in PP_HOLES:
     PP_YB.append(_y + PP_BACK)
-    _y += PP_BACK + PP_FWD + 1.0 + 1.3
+    _y += PP_BACK + PP_FWD + 1.0 + PP_TXT / 2
     PP_LAB.append(_y)                        # Zeilenbeschriftung (Lochdurchmesser) über der Zeile
-    _y += 1.3 + 1.3
-PP_L = round(_y - 1.3 + 1.4, 1)
+    _y += PP_TXT / 2 + 1.5
+PP_L = round(_y - 1.5 + 1.4, 1)
 PP_W = round((len(PP_X) - 1) * PP_PITCH + 2 * (sd.HDR_W / 2 + max(PP_CL) + PP_WALL), 1)
 PP_LAB_C = round(PP_LAB_C - PP_L / 2, 2)
 PP_YB = [round(v - PP_L / 2, 2) for v in PP_YB]
@@ -101,11 +102,11 @@ def passprobe():
     try:
         import generate
 
-        def label(text, x, y, size=2.6):
+        def label(text, x, y, size=PP_TXT):
             cs = generate.text_cross_section(text, size, 0.0, -size / 2, anchor="center")
             if cs is not None:
-                cs = cs.translate((x, y))
-                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.5]))
+                cs = cs.offset(0.15, m3d.JoinType.Round).translate((x, y))     # fetter
+                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.6]))
         for c, x in zip(PP_CL, PP_X):
             label(("%.2f" % c).replace(".", ","), x, PP_LAB_C)
         for hole, ly in zip(PP_HOLES, PP_LAB):
