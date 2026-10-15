@@ -130,6 +130,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.decision.build` | Entscheidungsdokument nach Nacht 1 (Vorher/Nachher-Zeichnungen, Umgesetztes) `plug/decision/page.html` |
 | `python3 -m plug.feedback.build_night2` | Testbogen zu Nacht 2 (K, C v2, N, E, D, FM; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page_night2.html` |
 | `python3 -m plug.testcase.build_plan` | Planungsseite für den kompletten Testfall (Kassette v4, Mini-Gebäude, Mini-Grundplatte; Schnitt mit Regler, Draufsicht, Maßkette, Entscheidungen) `plug/testcase/plan.html`; Sollwerte in `plug/testcase/params.py`, Kassette v4 mit `python3 -m plug.testcase.kassette` |
+| `python3 -m plug.testcase.build` (ca. 2 min) | STL, README und ZIP des Testfalls (2 Kassetten v4, Mini-Gebäude A/B, Mini-Grundplatte, Mini-Deckel) nach `stl/steckmodul_testcase/`, Bilder nach `vorschau/steckmodul_testcase/` |
 | `python3 -m plug.series2` (ca. 2 min) | zweiter Nachtdruck (K, C v2, N Schieber, E Einpressen, D v7, FM): `stl/steckmodul_night2/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night2/` |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
