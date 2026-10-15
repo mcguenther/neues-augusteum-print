@@ -30,8 +30,9 @@ OUT = os.path.join(HERE, "plan.html")
 PREV = os.path.join(ROOT, "vorschau", "steckmodul_testcase")
 
 LOETRAUM_Y0 = -12.0     # Kabelraum und Lötenden-Schlitz reichen so weit nach −y (kein Wand-Ende direkt hinter den Spitzen)
-KABEL_Y1 = 9.0          # Kabelraum nach +y
-LID_WIN = (-12.0, -4.0)  # Fenster im Deckel über den Lötenden
+KABEL_Y1 = 3.0          # Kabelraum nach +y (reicht bis hinter den Knick der Pins)
+KABEL_HX = 7.5          # halbe Breite des Kabelraums (weniger Brücke über dem Bett als 9,0)
+LID_WIN = (-12.0, -4.0)  # Fenster im Deckel über den Lötenden (y), in x ±(KABEL_HX − 0.5)
 
 
 def de(x, n=2):
@@ -179,7 +180,7 @@ def svg_top():
         g.rect(x - 0.32, x + 0.32, ytail, 0.32, "d-pin")
         g.o.append('<circle cx="%.1f" cy="%.1f" r="%.1f" class="d-pin"/>' % (g.X(x), g.Z(0.0), 0.5 * S * 0.9))
     # Kabelraum, Schrauben
-    g.o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" class="d-dash"/>' % (g.X(-9.0), g.Z(KABEL_Y1), 18.0 * S, (KABEL_Y1 - LOETRAUM_Y0) * S))
+    g.o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" class="d-dash"/>' % (g.X(-KABEL_HX), g.Z(KABEL_Y1), 2 * KABEL_HX * S, (KABEL_Y1 - LOETRAUM_Y0) * S))
     for sx in (-1, 1):
         for sy in (ph0 + 3.0, ph1 - 3.0):
             g.o.append('<circle cx="%.1f" cy="%.1f" r="%.1f" class="d-screw"/>' % (g.X(sx * (pw / 2 - 2.8)), g.Z(sy), 1.6 * S * 0.5))
@@ -255,7 +256,7 @@ def head():
             '<p class="lead">Ein kompletter Aufbau in einem Druck: Kassette v4, ein Mini-Gebäude, das sie aufnimmt, und eine Mini-Grundplatte mit Winkelleiste. '
             'Damit wird zusammen geprüft, was einzeln schon passt: Einpressen, Mulde, Pin-Treffer ohne Trichter, Durchgang, Abziehen. '
             'Probestück und Institutsgebäude bleiben vorerst unverändert; die neuen Werte stehen in <code>plug/testcase/params.py</code>.</p>'
-            '<ul class="sum"><li><b>Kein Schieber, kein Trichterboden.</b> Die Pins gehen vom Muldenboden (%s mm) direkt in die Buchse: E = %s mm statt 3,88.</li>'
+            '<ul class="sum"><li><b>Kein Schieber, kein Trichterboden.</b> Die Pins gehen vom Muldenboden (%s mm) direkt in die Buchse: E = %s mm statt 3,88, wenn die Buchse bündig sitzt.</li>'
             '<li><b>Kassette eingepresst</b> (Spiel %s), Anschlag oben am Kammerboden, er kostet keine Pin-Länge.</li>'
             '<li><b>Lötseite frei:</b> hinter den Lötenden steht keine Wand, der Kabelraum ist offen.</li></ul></header>'
             % (de(P.CEIL_T, 1), de(d["E"]), de(P.KASS_CLR_T)))
@@ -280,7 +281,10 @@ def sec_assembly():
     return ('<section class="sec"><h2>Aufbau im Schnitt</h2>%s'
             '<p class="note">Die Buchse liegt bündig an der Fußunterkante, die Pins gehen durch den %s mm dicken Muldenboden und %s mm tief in die Buchse. '
             'Der Anschlagrand oben ist der Tiefenanschlag der Kassette; er liegt auf der anderen Seite der Buchse und nimmt keine Pin-Länge weg. '
-            'Hinter den Lötenden (links) stehen keine Wand und keine Stufe, der Raum ist zum Kabelraum offen.</p></section>' % (fig, de(P.CEIL_T, 1), de(d["E"])))
+            'Hinter den Lötenden (links) stehen keine Wand und keine Stufe, der Raum ist zum Kabelraum offen.</p>'
+            '<p class="risk"><b>Die Buchse muss bündig sitzen.</b> Sie hängt sonst an den Schultern, und jede Luft über ihr geht von E ab: Kassette 1 (Luft %s) schlimmstenfalls E = %s, '
+            'Kassette 2 (Luft %s) E = %s. Darum gibt es zwei Kassetten, und die Buchse wird mit der Steckseite auf dem Tisch bündig eingesetzt, nicht von unten bis an die Schultern geschoben.</p></section>'
+            % (fig, de(P.CEIL_T, 1), de(d["E"]), de(P.HSG_TOL_SAFE), de(d["E"] - P.HSG_TOL_SAFE), de(P.HSG_TOL_TIGHT), de(d["E"] - P.HSG_TOL_TIGHT)))
 
 
 def sec_top():
@@ -302,7 +306,8 @@ def sec_parts():
     pw, pl = P.plate_size()
     rows = [
         ("Kassette v4", "2 ×", "%s × %s × %s" % (de(k["cw"], 1), de(k["L"], 1), de(k["top"], 2)),
-         "Tasche %s × %s × %s, unten offen, Podest, Rundung R %s, flache LED-Fläche; eine bestücken, eine als Reserve" % (de(k["pk_w"]), de(k["pk_d"]), de(k["zp"]), de(P.FILLET_T, 1)),
+         "Tasche %s × %s, unten offen, Podest, Rundung R %s. Kassette 1 (1 Kerbe): Taschenhöhe %s, Luft über der Buchse %s. Kassette 2 (2 Kerben): Taschenhöhe %s, Luft %s" % (
+             de(k["pk_w"]), de(k["pk_d"]), de(P.FILLET_T, 1), de(sd.HSG_H + P.HSG_TOL_SAFE), de(P.HSG_TOL_SAFE), de(sd.HSG_H + P.HSG_TOL_TIGHT), de(P.HSG_TOL_TIGHT)),
          "Tasche unten auf dem Bett", "%s g je" % de(w["kass"], 0)),
         ("Mini-Gebäude A", "1 ×", "%s × %s × %s" % (de(P.BOX_W, 0), de(P.BOX_L, 0), de(d["box_h"], 2)),
          "L-Fuß (%s mm hoch, Fase 0,8), Schacht %s durchgehend, Einführfase %s, Fenster und Anschlagrand oben" % (de(d["F"], 1), de(P.KASS_CLR_T), de(P.ENTRY_CH_T, 1)),
@@ -336,7 +341,7 @@ def sec_changes():
         ("Fuß in der Mulde CLR", "0,25", de(P.MULDE_CLR_T), "FM: 0,10 und 0,15 gut, 0,20 wackelt"),
         ("Buchsentasche SNUG", "0,22", de(N2.SNUG2), "R und C: 0,20 passt"),
         ("Crush-Rippen RIB", "0,12", "keine", "R: ohne Rippen ideal"),
-        ("Taschenhöhe HSG_TOL", "0,25", de(N2.HSG_TOL2), "C: Buchse geht ganz hinein"),
+        ("Taschenhöhe HSG_TOL (Luft über der Buchse)", "0,25", "%s und %s" % (de(P.HSG_TOL_SAFE), de(P.HSG_TOL_TIGHT)), "C: Buchse ging ganz hinein; die enge Tasche begrenzt den Verlust an E (zwei Kassetten im Test)"),
         ("Podest über Taschenoberkante", "−1,05", "+%s" % de(N2.SEAT_RISE + P.PODEST_T, 1), "C: Adern knicken stark"),
         ("Rundung zur Tasche", "–", "R %s" % de(P.FILLET_T, 1), "Adern laufen im Bogen"),
         ("Stufe für Körperhöhe", "2,0", de(P.STEP_H_T, 1), "D: 2,0 und 1,8 liegen flach, 1,6 nicht"),
@@ -378,6 +383,7 @@ def sec_risks():
         ("Muldenboden 0,4 als Brücke.", "Zwei Schichten über der Körpertasche (etwa 11 × 4 mm). Die Überhangprüfung beim Erzeugen entscheidet; Fallback 0,6 (E = 5,08, noch stabil)."),
         ("Einpresskraft.", "Im Test E waren 7 mm Berührung. Im Mini-Gebäude sind es 17 mm, die Kraft wird mehr als doppelt. Darum Variante B mit Passzone von 8 mm."),
         ("Halt der Buchse beim Abziehen.", "Ohne Boden hält nur die Reibung in der Tasche. Der Zug der Pins ist schwach, das Feld im Testbogen war aber leer. Hier wird es geprüft."),
+        ("Buchse sitzt zu hoch.", "Hängt die Buchse an den Schultern, sinkt E um die Luft über ihr: 4,83 (Kassette 1) oder 5,13 (Kassette 2). 4,88 war in Nacht 2 schon Aussetzer-Bereich. Höhe der echten Buchsen noch nicht gemessen (Nennwert 14,0)."),
         ("Elefantenfuß.", "Das Gebäude steht mit dem Schacht-Eingang am Bett. Die Fase %s am Eingang soll den Wulst ausgleichen; bleibt er, auf 0,5." % de(P.ENTRY_CH_T, 1)),
         ("Reserve bei E.", "Echte Pin-Länge noch nicht gemessen (Nennwert %s)." % de(sd.HDR_UP)),
     ]
@@ -386,6 +392,7 @@ def sec_risks():
 
 def sec_checks():
     rows = [
+        ("0", "Buchsenhöhe messen (Schieblehre), Buchse bündig in die Kassette einsetzen", "Höhe höchstens 14,15, sonst nur Kassette 1; Unterkante der Buchse bündig mit der Kassette"),
         ("1", "Kassette von unten ins Mini-Gebäude drücken", "nur mit Daumendruck, schlägt am Rand an, sitzt fest, Buchse bündig mit der Fußunterkante"),
         ("2", "Mini-Gebäude in die Mulde setzen", "mit Fingerdruck, kein spürbares Spiel, nur in einer Lage, sinkt bis zum Boden"),
         ("3", "Pins durch den Muldenboden in die Buchse", "ohne Kraft, kein Verkanten, alle vier gehen gleichzeitig ein"),
@@ -424,6 +431,10 @@ DECISIONS = [
     dict(id="Z", tag="Zunge", title="Federzunge in der Mulde", rec="A",
          text="Bei Spiel 0,10 vielleicht unnötig; kostet bei der L-Form eine gerade Wand.",
          opts=[("A", "weglassen, erst ohne testen"), ("B", "mitdrucken (niedrige Priorität)")]),
+    dict(id="H", tag="Tasche", title="Taschenhöhe der Kassette", rec="A",
+         text="Die Luft über der Buchse kostet Einstecktiefe, wenn die Buchse beim Aufstecken nach oben rutscht.",
+         opts=[("A", "zwei Kassetten: 1 mit 0,45 Luft (sicher), 2 mit 0,15 Luft (begrenzt den Verlust auf E ≥ 5,13)"), ("B", "beide mit 0,45 wie in Nacht 2"),
+               ("C", "beide mit 0,15 (nur, wenn die Buchsen sicher höchstens 14,15 mm hoch sind)")]),
     dict(id="R", tag="Reserve", title="Muldenboden-Reserve", rec="A",
          text="E = 5,28 hat zwei Zehntel Reserve zur gemessenen Grenze.",
          opts=[("A", "nur eine Platte mit 0,4"), ("B", "zusätzlich zweite Platte mit 0,6 als Rückfall (E = 5,08), +{plate} g")]),

@@ -33,6 +33,10 @@ BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)
 EF_CH_T = 0.4           # Fase an Bettkanten von Steckteilen (0,3 ließ einen leichten Wulst)
 
+# ---- Taschenhöhe über der Buchse: sie bestimmt, wie weit die Buchse hinter der Kassettenunterkante sitzen kann (Einstecktiefe E sinkt um diesen Wert)
+HSG_TOL_SAFE = 0.45     # Kassette 1: wie Nacht 2 (Buchse ging ganz hinein)
+HSG_TOL_TIGHT = 0.15    # Kassette 2: engere Tasche, begrenzt den Verlust an E auf 0,15 (Buchse muss dazu höchstens 14,15 mm hoch sein)
+
 # ---- Kassette v4: Oberseite als Podest über der Buchse
 PODEST_T = 2.0          # LED-Fläche so viel höher als in Kassette v2 (dort 0,5 über der Taschenoberkante)
 FILLET_T = 2.5          # Rundung der Kante Tasche → Podest (= Podesthöhe über der Taschenoberkante, Adern laufen sofort im Bogen)
@@ -49,10 +53,13 @@ def e_of_t():
     return sd.HDR_UP - CEIL_T
 
 
-def kass_dims():
-    """Kassette v4 (Konstruktionslage: Unterkante z = 0, Mitte x = 0, y = 0 an der Taschenseite)."""
+def kass_dims(tol=None):
+    """Kassette v4 (Konstruktionslage: Unterkante z = 0, Mitte x = 0, y = 0 an der Taschenseite).
+    Die Gesamthöhe ist für beide Taschenhöhen gleich (Schultern sind bei der engen Tasche dicker), damit beide Kassetten am selben Anschlag stehen."""
+    tol = HSG_TOL_SAFE if tol is None else tol
     k = dict(N2.kass2_dims())
-    k["top"] = k["zp"] + N2.SEAT_RISE + PODEST_T
+    k["top"] = sd.HSG_H + HSG_TOL_SAFE + N2.SEAT_RISE + PODEST_T
+    k["zp"] = sd.HSG_H + tol
     k["zs"] = k["top"]
     return k
 

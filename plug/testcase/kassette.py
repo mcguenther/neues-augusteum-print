@@ -18,8 +18,9 @@ HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 PREV = os.path.join(HERE, "vorschau", "steckmodul_testcase")
 
 
-def kassette4(centered=False):
-    k = P.kass_dims()
+def kassette4(tol=None, centered=False, notches=0):
+    """tol = Luft über der Buchse (Taschenhöhe − 14,0); notches = Kerben in der +x-Seite als Kennzeichnung."""
+    k = P.kass_dims(tol)
     L, cw, top = k["L"], k["cw"], k["top"]
     body = N2.chamfered_block(cw, L, top, P.EF_CH_T, P.ENTRY_CH_T).translate([0, L / 2, 0])
     cuts = [cbox(k["pk_w"], k["pk_d"], -0.01, k["zp"], cy=k["ypin"]),                                  # Tasche, unten offen
@@ -31,6 +32,7 @@ def kassette4(centered=False):
     cuts.append(prism_x(prof, -N2.WIRE_W / 2, N2.WIRE_W / 2))
     gx = sorted([sd.pin_x()[3], sd.pad_x("GND")])
     cuts.append(box(gx[0] - 0.9, gx[1] + 0.9, k["seat0"] - 1.7, k["seat0"] - 0.5, top - sd.GROOVE[1], top + 0.01))   # Rinne für DETECT
+    cuts += N2.notches_x(notches, 6.0, 2.0, top - 2.0, cw / 2, pitch=2.4)
     m = diff(body, *cuts)
     return m.translate([0, -L / 2, 0]) if centered else m
 
@@ -74,6 +76,8 @@ def main():
     print("Kassette v4: %.2f × %.2f × %.2f mm, dicht=%s, Podest %.1f über v2" % (k["cw"], k["L"], k["top"], tm.is_watertight, P.PODEST_T))
     h = housing(k)
     v = vol_int(h, kc)
+    kt = P.kass_dims(P.HSG_TOL_TIGHT)
+    v += vol_int(housing(kt), kassette4(P.HSG_TOL_TIGHT, notches=2))
     print("Ader: kleinster Abstand zur Rundung %.2f mm (≥ 0 = frei), Länge der Kurve ca. %.1f mm" % (wire_clearance(k), sum(math.dist(a, b) for a, b in zip(wire_points(k), wire_points(k)[1:]))))
     print("Buchse (Nennmaß) in der Tasche: Überschneidung %.3f mm³  %s, Luft über der Buchse %.2f" % (v, "ok" if v < 0.05 else "KOLLISION", k["zp"] - h.bounding_box()[5]))
     # Bild: schräg, Schnitt mit Buchse und Ader, daneben Kassette v2 (alt)
