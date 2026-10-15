@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+"""Sollwerte für den kompletten Testfall (Kassette v4, Mini-Gebäude, Mini-Grundplatte) nach Nachtdruck 2.
+
+Gemeinsame Quelle für die Planungsseite (plug/testcase/plan/) und die späteren STL. Die Werte in plug/parts.py bleiben unverändert,
+solange Probestück und Institutsgebäude nicht umgebaut sind (sie rechnen noch mit Schieber und Trichterplatte). Erst nach dem
+Testfall werden diese Werte dort übernommen.
+
+Herkunft der Werte (Testbogen Nachtdruck 2, Antworten im Chat):
+  K  Durchgang stabil bei Plättchen 0,4 und 0,6, bei 0,8 und 1,0 Aussetzer; am liebsten 0,4
+  E  Einpressen: Spiel 0,06 je Seite geht gut hinein und sitzt fest
+  C  Buchse passt, LED 10 und 12 mm passen; Adern knicken stark → LED-Fläche als Podest 2 mm höher
+  D  Stufe für 1,8 (2,0 und 1,8 liegen flach), Körpertasche +1,5
+  FM Mulde: Spiel 0,10; Federzunge zunächst weglassen
+  Schieber und Trichterplatte entfallen (nehmen Pin-Länge weg)
+"""
+from plug import dupont as sd
+from plug import institute as I
+from plug import series2 as N2
+
+# ---- Stapelhöhe über der Winkelleiste: nur noch der Muldenboden (Schieber und Trichterplatte entfallen)
+CEIL_T = 0.4            # Muldenboden über der Winkelleiste (alt 0,8); Plättchen 0,4 hielt, 0,6 war die Grenze
+FUNNEL_T_T = 0.0        # keine Trichterplatte, Buchse liegt bündig an der Fußunterkante (alt 1,0)
+
+# ---- Passungen
+KASS_CLR_T = 0.06       # Kassette eingepresst im Schacht, je Seite (Test E)
+KASS_RELIEF = 0.20      # Variante B: Schacht hinter der Passzone entlastet
+KASS_FIT_LEN = 8.0      # Länge der Passzone ab Schachteingang (Test E: 7 mm Berührung gingen gut)
+MULDE_CLR_T = 0.10      # Fuß in der Mulde (Fuß-Lehre: 0,10 und 0,15 gut, 0,20 wackelt)
+STEP_H_T = 1.8          # Stufe für das Lötende wie für Körperhöhe 1,8 (2,0 und 1,8 liegen flach)
+BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
+
+# ---- Fasen
+ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)
+EF_CH_T = 0.4           # Fase an Bettkanten von Steckteilen (0,3 ließ einen leichten Wulst)
+
+# ---- Kassette v4: Oberseite als Podest über der Buchse
+PODEST_T = 2.0          # LED-Fläche so viel höher als in Kassette v2 (dort 0,5 über der Taschenoberkante)
+FILLET_T = 2.5          # Rundung der Kante Tasche → Podest (= Podesthöhe über der Taschenoberkante, Adern laufen sofort im Bogen)
+
+# ---- Mini-Gebäude (oben offen, Anschlag am Rand) und Mini-Grundplatte
+STOP_T = 1.2            # Anschlagrand über der Kassette (im Gebäude der Kammerboden)
+BOX_W, BOX_L = 24.0, 38.0          # Grundriss des Mini-Gebäudes (Hauptbalken-Ausschnitt)
+NOTCH_W, NOTCH_L = 3.5, 9.0        # Ausschnitt an der Ecke (+x, −y): konkave Ecke wie bei echten Grundrissen
+PLATE_MARGIN = 7.0                 # Platte ragt so weit über den Fuß hinaus (Mulde + Fase + Wand)
+LID_T_T = 2.0
+
+
+def e_of_t():
+    return sd.HDR_UP - CEIL_T
+
+
+def kass_dims():
+    """Kassette v4 (Konstruktionslage: Unterkante z = 0, Mitte x = 0, y = 0 an der Taschenseite)."""
+    k = dict(N2.kass2_dims())
+    k["top"] = k["zp"] + N2.SEAT_RISE + PODEST_T
+    k["zs"] = k["top"]
+    return k
+
+
+def dims():
+    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0."""
+    g1 = sd.HDR_UP - CEIL_T
+    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P)
+    z_hb = -F - CEIL_T                       # Oberkante Winkelleistenkörper
+    z_bb = z_hb - sd.HDR_BODY                # Unterkante
+    z_tip = z_hb + sd.HDR_UP
+    z_bm = z_hb - sd.HDR_BODY / 2            # Höhe der waagerechten Pins
+    z_bend = z_bb - 0.5
+    z_lt = sd.layer_down(z_bend - 3.0)
+    k = kass_dims()
+    y_off = sd.HDR_T / 2 + sd.RA_BACK + sd.PIN_SQ / 2      # Pin-Reihe liegt so weit hinter der Körpermitte
+    yb = -y_off                                              # Körpermitte
+    y_tail = yb - sd.HDR_T / 2 - sd.RA_TAIL                  # Spitze der Lötenden
+    y_kass0 = -k["ypin"]                                     # Kassette beginnt (Taschenseite) bei y_kass0
+    y_kass1 = y_kass0 + k["L"]
+    yc = (y_kass0 + y_kass1) / 2
+    top = -F + k["top"]                                      # Oberkante Kassette
+    return dict(F=F, E=sd.HDR_UP - CEIL_T, z_hb=z_hb, z_bb=z_bb, z_tip=z_tip, z_bm=z_bm, z_lt=z_lt, plate_t=-z_lt,
+                y_off=y_off, yb=yb, y_tail=y_tail, y_kass0=y_kass0, y_kass1=y_kass1, yc=yc, kass_top=top,
+                kass_h=k["top"], box_top=top + STOP_T, box_h=F + top + STOP_T,
+                guide=F - g1 - sd.CH_F - sd.CH_P, step=sd.step_z(z_hb, STEP_H_T, sd.STEP_CLR))
+
+
+def footprint():
+    """Grundriss des Mini-Gebäudes (Mitte der Kassette im Ursprung der Fußform, x zur Pin-Reihe, y wie im Testfall); L-Form."""
+    w, l = BOX_W / 2, BOX_L / 2
+    return [(-w, -l), (w - NOTCH_W, -l), (w - NOTCH_W, -l + NOTCH_L), (w, -l + NOTCH_L), (w, l), (-w, l)]
+
+
+def plate_size():
+    return BOX_W + 2 * PLATE_MARGIN, BOX_L + 2 * PLATE_MARGIN
+
+
+if __name__ == "__main__":
+    d = dims()
+    k = kass_dims()
+    for key, v in d.items():
+        print("%-10s %8.2f" % (key, v))
+    print("Kassette v4 %.2f × %.2f × %.2f, Tasche %.2f" % (k["cw"], k["L"], k["top"], k["zp"]))
+    print("Platte %.1f × %.1f" % plate_size())
