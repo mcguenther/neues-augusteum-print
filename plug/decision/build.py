@@ -111,8 +111,8 @@ def kass_profile(new):
     seat0 = y_p0 + pk_d + sd.WALL + N2.GAP_L2
     seat1 = seat0 + I.SEAT_L + 2 * N2.SEAT_TOL
     zs = zp + N2.SEAT_RISE
-    return dict(pk_d=pk_d, zp=zp, y_p0=y_p0, seat0=seat0, seat1=seat1, top=zs + sd.LED_REC, sock=None, sock_top=None,
-                L=seat1 + sd.WALL, zs=zs)
+    return dict(pk_d=pk_d, zp=zp, y_p0=y_p0, seat0=seat0, seat1=seat1, top=zs, sock=None, sock_top=None,
+                L=seat1, zs=zs)                                    # nach deiner Antwort: oben flach, keine LED-Tasche
 
 
 def svg_c(new):
@@ -155,7 +155,7 @@ def svg_c(new):
         # Maße
         g.line(p["seat0"], zs - 0.6, y1 + 1.2, zs - 0.6, "dimn")
         g.text((p["seat0"] + y1) / 2 + 0.6, zs - 2.0, "+1 mm", "lbln")
-        g.text(p["seat1"] - 1, zs + 1.4, "Ablage %s mm über Taschenoberkante" % de(N2.SEAT_RISE, 1), "lbln", "end")
+        g.text(p["seat1"] - 1, zs + 1.4, "flache Oberseite %s mm über Taschenoberkante" % de(N2.SEAT_RISE, 1), "lbln", "end")
         g.text(y1 + r + 0.3, zs - 3.4, "rund R %s" % de(r, 1), "lbln", "start")
         g.text(yb, -1.6, "Fase %s" % de(N2.ENTRY_CH, 1), "lbln")
     return g.svg(390, 230, "Kassette %s im Schnitt" % ("neu" if new else "alt"))
@@ -229,6 +229,8 @@ def decisions():
                  "Plättchen <b>0,6 / 0,9 / 1,2 / 1,5 / 1,8 mm</b>, also E = 5,08 bis 3,88 mm.",
         consts=[("Plättchen", "1,2 / 1,8 / 2,4", "0,6 / 0,9 / 1,2 / 1,5 / 1,8"), ("CEIL + FUNNEL_T", "0,8 + 1,0", "offen, folgt aus K")],
         figs=[("Einstecktiefe je Plättchen", svg_k())],
+        final="Kontakte waren gecrimpt, über 1,2 mm bringt nichts: Plättchen <b>%s mm</b> (E = %s bis %s mm). Die Zeichnung zeigt schon diese Werte." % (
+            " / ".join(de(t, 1) for t in N2.K2_T), de(N2.e_of(N2.K2_T[0])), de(N2.e_of(N2.K2_T[-1]))),
         ask="Waren beim Test Kontakte im Gehäuse? Wenn ja, steckt der Kontaktpunkt tiefer als angenommen, und die dünnen Plättchen werden noch wichtiger."))
     D.append(dict(
         id="N", title="Schieber in der Nut ersetzen durch Bodenplatte zum Eindrücken", tag="N → B", status="Empfehlung",
@@ -242,13 +244,17 @@ def decisions():
                  "Im Gebäude sperrt der Muldenboden die Platte zusätzlich." % de(N2.B_MARGIN, 1),
         consts=[("Halterung", "Schieber in Schwalbenschwanz-Nut", "Bodenplatte in Vertiefung"), ("KEY_CLR", "0,15", "entfällt"), ("B_CLR (neu)", "–", "0,05 bis 0,20, Ergebnis offen")],
         figs=[("Nacht 1: Schnitt durch die Wand", svg_n_old()), ("Nacht 2: Schnitt durch den Schacht", svg_n_new())],
+        final="Nicht so umgesetzt. Du wolltest den Schieber noch einmal probieren und gefragt, ob man die Kassette einfach einpressen kann. Darum zwei Tests: "
+              "<b>N</b> Schieber mit Spiel <b>%s</b>, %s mm Luft darüber, Fasen; Platte A wie im Gebäude (mit Brücke), Platte B umgedreht gedruckt (ohne Brücke). "
+              "<b>E</b> Kassette v3 mit eingebauter Trichterplatte als Boden, in einen Schacht eingepresst, Spiel <b>%s</b>." % (
+                  " / ".join(de(c) for c in N2.N2_CLR), de(N2.N2_HEAD, 1), " / ".join(de(c) for c in N2.E_CLR)),
         alt="Alternative: Schieber behalten mit 0,3 bis 0,5 mm Spiel und 0,5 mm mehr Luft unter der Decke. Die Brücke bleibt dann bestehen."))
     D.append(dict(
         id="S", title="Schachtspiel 0,20 → 0,15 mm, mit Einführfase", tag="S", status="Entscheidung",
         found="0,05 passt nicht, 0,10 nur mit Kraft, <b>0,15 ideal</b>, 0,20 minimales Spiel.",
         why="0,15 ist die engste Variante ohne Kraft. Eine Fase an der Schachtöffnung erleichtert das Einsetzen, ohne das Spiel zu vergrößern.",
         decision="<code>KASS_CLR</code> = <b>0,15</b>, Einführfase %s mm an der Schachtöffnung." % de(N2.ENTRY_CH, 1),
-        consts=[("KASS_CLR", "0,20", "0,15"), ("Einführfase", "–", "0,4 an jeder Steckstelle")], figs=[]))
+        consts=[("KASS_CLR", "0,20", "0,15"), ("Einführfase", "–", "0,4 an jeder Steckstelle")], figs=[], final="Wie vorgeschlagen."))
     D.append(dict(
         id="C", title="Kassette v2: Tasche, Ablage, runder Aderweg", tag="C + R", status="Entscheidung",
         found="Buchse nur mit Kraft und nicht ganz hinein. Adern knicken stark zwischen Taschenoberkante und Ablage. LED-Streifen 10 und 12 mm passen in der Breite, in der Länge fehlt 1 mm Richtung Tasche. "
@@ -263,6 +269,7 @@ def decisions():
                 ("Kassette: Länge", de(pk_old["L"], 1), de(pk_new["L"], 1)),
                 ("Oberkante Ablage über Unterkante", de(pk_old["top"], 1), de(pk_new["top"], 1))],
         figs=[("Nacht 1: Ader muss hoch, über die Kante und wieder runter", svg_c(False)), ("Nacht 2: Ablage höher, Kante rund, 1 mm mehr Abstand", svg_c(True))],
+        final="Wie vorgeschlagen, aber ohne LED-Tasche: Die Oberseite ist eine <b>flache Fläche</b> %s mm über der Taschenoberkante (Zeichnung schon so)." % de(N2.SEAT_RISE, 1),
         note="Folge für das Gebäude (später, nicht in dieser Nacht): Die Kassette wird %s mm höher, Kammerboden und Fenster rücken mit." % de(pk_new["top"] - pk_old["top"], 1)))
     D.append(dict(
         id="D", title="Passprobe: Körpertasche zum Lötende hin verlängern", tag="D", status="Test",
@@ -270,28 +277,31 @@ def decisions():
         why="Der echte Körper ist durch den Abbruchrest und Grate etwas länger als 2,0 mm. Liegt seine Kante auf der Stufe, kippt die ganze Leiste.",
         decision="Neue Passprobe mit drei Feldern: Tasche <b>0,5 / 1,0 / 1,5 mm</b> länger zum Lötende hin, Stufe entsprechend kürzer. Körperhöhe bleibt 2,0.",
         consts=[("Körpertasche Richtung Lötende", "+0", "+0,5 / +1,0 / +1,5 (Ergebnis offen)")],
-        figs=[("Nacht 1", svg_d(0)), ("Nacht 2 (Beispiel +1,0)", svg_d(1.0))]))
+        figs=[("Nacht 1", svg_d(0)), ("Nacht 2 (+%s)" % de(N2.D2_EXT, 1), svg_d(N2.D2_EXT))],
+        final="Tasche pauschal <b>+%s mm</b>, dafür wird wie geplant die <b>Körperhöhe</b> variiert: <b>%s</b> (Stufe wie in v6, Dreieck / Quadrat / Kreis)." % (
+            de(N2.D2_EXT, 1), " / ".join(de(h, 1) for h in N2.D2_H))))
     D.append(dict(
         id="FM", title="Fuß-Lehre für die Mulden-Ringe", tag="FM", status="Ergänzung",
         found="Nicht getestet, weil unklar war, was das Gebäude-Probestück ist.",
         why="Die Ringe sind schon gedruckt. Es fehlt nur ein Fuß in Originalform.",
         decision="<b>Fuß-Lehre</b> in die ZIP: Fuß des Probestücks (22 × 36 mm, Kodierecke, Fase unten), oben offen und leicht. Ringe aus Nacht 1 weiterverwenden.",
-        consts=[], figs=[("Fuß-Lehre im Ring", svg_fm())]))
+        consts=[], figs=[("Fuß-Lehre im Ring", svg_fm())], final="Wie vorgeschlagen."))
     D.append(dict(
         id="G", title="Druck allgemein: Beschriftung, Elefantenfuß, Brücken", tag="Druck", status="Regel",
         found="Schwarzes PLA, Gravur schlecht lesbar. Elefantenfuß etwa 0,2 mm. Die einzige lange Brücke (S) ist misslungen.",
         why="Gravuren in Schwarz verschwinden; erhabene Schrift und Kerben in der Kante fangen Licht und lassen sich fühlen.",
         decision="<ul><li>Beschriftung <b>erhaben</b> (0,6 mm) auf Flächen, die nicht passen müssen, sonst Kerben in der Kante; <b>Rang als Kerben</b> (1 Kerbe = engste Variante).</li>"
                  "<li><b>Fase %s</b> an den Bettkanten aller Steckteile, <b>Einführfase %s</b> an jeder Öffnung.</li><li>Keine Brücken über 10 mm.</li></ul>" % (de(N2.EF_CH, 1), de(N2.ENTRY_CH, 1)),
-        consts=[], figs=[("Beschriftung alt und neu", svg_label())]))
+        consts=[], figs=[("Beschriftung alt und neu", svg_label())], final="Wie vorgeschlagen. Die eine Brücke (Platte N A) bleibt bewusst, mit Hinweis auf „Thick bridges“ in der README."))
     return D
 
 
 PLAN = [
-    ("K", "Kontakt-Plättchen", "5 Plättchen 0,6 bis 1,8 mm", "≈ 2 g"),
-    ("B", "Bodenplatte-Prüfkörper", "4 Körper mit Schacht 0,15 und Vertiefung, 4 Platten 0,05 bis 0,20", "≈ 12 g"),
-    ("C", "Kassette v2", "2 Stück (eine zum Bestücken, eine als Lehre für B)", "≈ 8 g"),
-    ("D", "Passprobe v7", "3 Felder, Tasche +0,5 / +1,0 / +1,5", "≈ 2 g"),
+    ("K", "Kontakt-Plättchen", "4 Plättchen 0,4 / 0,6 / 0,8 / 1,0 mm", "≈ 1 g"),
+    ("C", "Kassette v2", "2 Stück, oben flach (eine zum Bestücken, eine für N)", "≈ 7 g"),
+    ("N", "Schieber und Platten", "4 Schieber 0,20 bis 0,50; Platte A mit Brücke, Platte B umgedreht", "≈ 10 g"),
+    ("E", "Kassette zum Einpressen", "2 × Kassette v3 mit Trichterboden, 3 Körper 0,06 / 0,09 / 0,12", "≈ 15 g"),
+    ("D", "Passprobe v7", "Tasche +1,5, Körperhöhe 2,0 / 1,8 / 1,6", "≈ 2 g"),
     ("FM", "Fuß-Lehre", "für die Mulden-Ringe aus Nacht 1", "≈ 4 g"),
 ]
 
@@ -307,6 +317,8 @@ def card(dd):
         extra += '<p class="alt"><b>Alternative:</b> %s</p>' % dd["alt"].replace("Alternative: ", "")
     if dd.get("note"):
         extra += '<p class="note">%s</p>' % dd["note"]
+    if dd.get("final"):
+        extra += '<p class="fin"><b>Umgesetzt nach deiner Antwort:</b> %s</p>' % dd["final"]
     if dd.get("ask"):
         extra += '<p class="ask"><b>Rückfrage:</b> %s</p>' % dd["ask"]
     sel = ('<label class="ok" for="a-%s"><span>Deine Meinung</span><select id="a-%s" data-did="%s"><option value="">– bitte wählen –</option>'

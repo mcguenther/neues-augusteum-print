@@ -46,6 +46,9 @@ von `steckmodul.py` ist `plug/archive/jst/jst.py`, `stecker/` ist `plug/`).
 | e | `db01aae` | Probestück (22 × 36 mm Ausschnitt des Hauptbalkens) mit Kassette, Schieber, Mini-Platte, Deckel: `steckmodul_probe.py`, `stl/steckmodul_probe/` | Billiger Drucktest für Schieber, Kassette, Stecken und Licht durch die 0,4-mm-Wand. |
 | f | `5f8f992` bis `a58143d` | Passproben `passprobe()` in `steckmodul_probe.py` mit Anleitungsseite `stecker/probe/`; mehrere Runden (Abschnitt 3) | Die Maße der echten Kaufteile (Buchse, Winkelleiste, Pins) sind teils geschätzt; die Probe gleicht sie am Druck ab. |
 
+| g | `8965f40` bis `604660b` | Fahrplan (`plug/roadmap`), erster Nachtdruck `plug/series.py` (Serien K, N, S, C, R, FM, D), Testbogen `plug/feedback` | Spalte unter 0,5 mm sind nicht messbar, darum Serien mit Spielwert auf dem Teil und Beurteilung nach Gefühl. |
+| h | `6adfdae` und danach | Entscheidungsdokument `plug/decision` nach dem Ergebnis von Nacht 1, zweiter Nachtdruck `plug/series2.py` | Ergebnis Nacht 1: S 0,15, R 0,20 ohne Rippen, alle Schieber klemmten (34-mm-Brücke über der Nut hängt durch), K ohne Kontakt ab 1,8, D schief. Antworten: K nur bis 1,0, Schieber noch einmal mit mehr Spiel und dazu Kassette zum Einpressen (E), LED-Fläche flach, D mit Tasche +1,5 und variierter Körperhöhe. |
+
 Wichtige Konstruktionsentscheidungen aus dem Chat und den Commits:
 
 - Winkelleiste falsch modelliert (Commit `5d123b3`): Nach einem Foto und den Maßen des Nutzers sitzt der
@@ -183,6 +186,8 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/fit_test/` | Passprobe | `generator.py` (Geometrie), `build_page.py`, `page.template.html`, `page.html`, `angled_pin.html` (Maße der Winkelleiste) |
 | `plug/roadmap/` | Fahrplan Testdrucke | `build.py` (Maße aus `dims()`, Tabelle `PARTS` mit Material und Zeit je Test), `template.html`, `page.html`; Abhängigkeiten, Zeitplan, Karten je Test, Änderungsradius der Konstanten |
 | `plug/series.py` | Generator | Passungsserien für den ersten Nachtdruck (K Kontakt-Plättchen, N Schieber, S Boden-Platten, R Buchsenhülsen, FM Mulden-Ringe, dazu C Kassette und D Passprobe) nach `stl/steckmodul_night1/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night1/`; Spiel je Teil als Gravur, Beurteilung nach Gefühl, weil Spalte unter 0,5 mm nicht messbar sind |
+| `plug/decision/` | Entscheidungen | `build.py` (Zeichnungen mit Maßen aus `plug/series2.py`), `template.html`, `page.html`; Befund, Deutung, Vorschlag und das nach der Antwort Umgesetzte je Entscheidung |
+| `plug/series2.py` | Generator | Zweiter Nachtdruck nach `stl/steckmodul_night2/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night2/`: K Plättchen 0,4 bis 1,0; C Kassette v2 (oben flach); N Schieber 0,20 bis 0,50 mit Platte A (Brücke) und B (umgedreht); E Kassette v3 mit Trichterboden zum Einpressen, Körper 0,06 / 0,09 / 0,12; D Passprobe v7; FM Fuß-Lehre. Oben im Modul die neuen Sollwerte (`KASS_CLR2`, `SNUG2`, `HSG_TOL2`, Fasen) |
 | `plug/feedback/` | Testbogen | `build.py` (Schritte, Formularfelder, Zeichnungen mit Maßen aus `dims()`), `template.html`, `page.html`; führt Schritt für Schritt durch die Serien der ersten Nacht, Ergebnistext zum Kopieren |
 | `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
@@ -212,6 +217,8 @@ plug/sample.py       importiert dupont as sd, institute as I, fit_test.generator
 plug/fit_test/build_page.py   importiert dupont, fit_test.generator
 plug/roadmap/build.py        importiert dupont, institute (nur dims() und Konstanten)
 plug/series.py               importiert dupont, institute, sample, fit_test.generator, roadmap.build (Zeitmodell)
+plug/series2.py              importiert dupont, institute, sample, series (Hilfen), fit_test.generator, roadmap.build
+plug/decision/build.py       importiert dupont, institute, series2, feedback.build (Zeichenhilfe G)
 plug/views/build_views.py     liest nur Vorlage und data.json
 plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 ```
@@ -230,6 +237,8 @@ plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 | `python3 -m plug.roadmap.build` | `plug/roadmap/page.html` |
 | `python3 -m plug.feedback.build` | `plug/feedback/page.html` |
 | `python3 -m plug.series` (rund 6 min) | `stl/steckmodul_night1/*`, `vorschau/steckmodul_night1/*` |
+| `python3 -m plug.series2` (rund 2 min) | `stl/steckmodul_night2/*` (alte STL dort werden gelöscht), `vorschau/steckmodul_night2/*` |
+| `python3 -m plug.decision.build` | `plug/decision/page.html` |
 | `python3 -m plug.build_all` | alles obige nacheinander |
 
 Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html`, `angled_pin.html`.
@@ -245,6 +254,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Winkelpin Maße | `plug/fit_test/angled_pin.html` | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
 | Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
+| Entscheidungen Nachtdruck 2 | `plug/decision/page.html` | https://claude.ai/artifact/6JoAe2iL2YDrvqFVppF8Fo |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
@@ -280,5 +290,8 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; Federzunge und Kräfte sind
    berechnet, nicht gemessen (Zielwerte: Einstecken unter 10 N, Herausziehen 3 bis 8 N). Der Nutzer will das später testen.
 6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
-7. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
+7. Nachtdruck 2 (`plug/series2.py`) ist erzeugt, noch nicht gedruckt. Danach entscheiden: Schieber (N) oder Einpressen (E) als
+   Halt der Kassette, Plättchendicke aus K (legt Muldenboden und Trichterplatte fest), Stufe aus D, `CLR` aus FM. Erst dann die
+   Werte in `plug/parts.py` übernehmen und Probestück, Institut und Seiten neu bauen (die Kassette wird rund 1,3 mm höher).
+8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.

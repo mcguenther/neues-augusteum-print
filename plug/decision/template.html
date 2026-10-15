@@ -52,6 +52,7 @@ code { font-family: var(--mono); font-size: .86em; background: color-mix(in srgb
 .dcs { border-left: 3px solid var(--new); padding-left: 12px; }
 .dcs ul { margin: 6px 0 0; padding-left: 1.1em; display: grid; gap: 4px; }
 .alt, .note { font-size: .9rem; color: var(--muted); }
+.fin { font-size: .92rem; border-left: 3px solid var(--new); background: color-mix(in srgb, var(--new) 9%, transparent); padding: 8px 12px; border-radius: 0 6px 6px 0; }
 .ask { font-size: .92rem; border-left: 3px solid var(--warn); padding-left: 12px; }
 .figs { display: grid; gap: 12px; min-width: 0; }
 .fig { margin: 0; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -103,11 +104,11 @@ svg .cham { fill: var(--new); stroke: none; }
 <header class="top">
   <p class="kicker">Steckmechanismus · nach Nachtdruck 1</p>
   <h1>Entscheidungen Nachtdruck 2</h1>
-  <p class="lead">Was aus deinem Testbogen folgt, als Vorher/Nachher. Grün ist neu, Rot zeigt das Problem. Unter jeder Karte kannst du zustimmen oder eine Notiz schreiben; ganz unten steht der Text zum Kopieren. Die STL für Nacht 2 baue ich erst nach diesem Dokument.</p>
+  <p class="lead">Was aus deinem Testbogen folgt, als Vorher/Nachher. Grün ist neu, Rot zeigt das Problem. Deine Antworten sind eingearbeitet: In jeder Karte steht grün hinterlegt, was nach deiner Antwort umgesetzt ist. Die Auswahl unten bleibt für Nachträge.</p>
   <ul class="sum">
-    <li><b>Fest:</b> Schachtspiel 0,15; Buchsentasche 0,20 ohne Rippen und 0,2 mm höher; Ablage höher mit runder Kante und 1 mm weiter weg; Fasen an allen Steckstellen; Beschriftung erhaben.</li>
-    <li><b>Neu:</b> Statt Schieber in der Nut eine Bodenplatte zum Eindrücken (keine 34-mm-Brücke mehr).</li>
-    <li><b>Wiederholen:</b> Kontakt-Tiefe mit Kontakten im Gehäuse und dünneren Plättchen; Passprobe mit längerer Tasche; Mulden-Ringe mit Fuß-Lehre.</li>
+    <li><b>Fest:</b> Schachtspiel 0,15; Buchsentasche 0,20 ohne Rippen und 0,2 mm höher; Oberseite flach, 0,5 mm über der Tasche, runde Kante, LED 1 mm weiter weg; Fasen an allen Steckstellen; Beschriftung erhaben.</li>
+    <li><b>Zwei Wege für den Halt der Kassette:</b> Schieber noch einmal (mehr Spiel, Luft über dem Schieber, Platte mit und ohne Brücke) und Kassette v3 zum Einpressen mit eingebauter Trichterplatte.</li>
+    <li><b>Wiederholen:</b> Kontakt-Tiefe mit Plättchen 0,4 bis 1,0; Passprobe mit Tasche +1,5 und Körperhöhe 2,0 / 1,8 / 1,6; Mulden-Ringe mit Fuß-Lehre.</li>
   </ul>
 </header>
 
@@ -115,7 +116,7 @@ svg .cham { fill: var(--new); stroke: none; }
 
 <section class="plan">
   <h2>Nachtdruck 2: Inhalt</h2>
-  <p class="lead">Grobe Schätzung, zusammen etwa 28 g; bei deinem Drucker (47 g in 2,5 h) gut 1,5 Stunden. Die genauen Werte stehen nach dem Erzeugen in der README der ZIP.</p>
+  <p class="lead">Zusammen etwa 39 g; bei deinem Drucker (47 g in 2,5 h) gut 2 Stunden. Genaue Werte in der README der ZIP (<code>stl/steckmodul_night2/night2_series.zip</code>).</p>
   <div style="overflow-x:auto"><table><thead><tr><th>Teil</th><th>Was</th><th>Varianten</th><th class="num">Material</th></tr></thead><tbody>{{PLAN}}</tbody></table></div>
 </section>
 
