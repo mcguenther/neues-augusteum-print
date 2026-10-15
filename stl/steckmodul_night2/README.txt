@@ -34,8 +34,8 @@ So wird geprüft
   N  Erst in Platte B (ohne Brücke), dann in Platte A (mit Brücke): Welcher Schieber gleitet mit Fingerdruck, welcher wackelt?
      Dann Kassette v2 von oben in den Schacht, sie steht auf dem Schieber. Geht ein Pin durch alle vier Trichter?
      Unterschied A/B = Einfluss der Brücke.
-  E  Buchse von oben in eine Kassette v3, bis auf den Boden. Kassette mit dem Boden voran in einen E-Körper drücken, bis
-     sie am Rand anschlägt (der Rand liegt auf dem Bett, die Kassette kommt von oben). Welche hält beim Umdrehen und Schütteln,
+  E  Buchse von oben in eine Kassette v3, bis auf den Boden. Kassette mit der offenen Seite (Tasche, flache Oberseite) voran von
+     oben in einen E-Körper drücken, bis sie am Rand anschlägt (der Rand liegt auf dem Bett; im Gebäude ist es der Kammerboden). Welche hält beim Umdrehen und Schütteln,
      welche lässt sich mit dem Daumen noch herausdrücken? Mit Winkelleiste: Pins von unten durch die Trichter stecken und
      wieder abziehen, bleibt die Kassette sitzen? (Der Körper ist nur 8 mm hoch, im Gebäude wäre es mehr Länge.)
   D  Winkelleiste in jedes Feld: Liegt der Körper flach in der Tasche? Kommen die Pins gerade heraus? Welche Stufe trägt das Lötende?

@@ -187,6 +187,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/roadmap/` | Fahrplan Testdrucke | `build.py` (Maße aus `dims()`, Tabelle `PARTS` mit Material und Zeit je Test), `template.html`, `page.html`; Abhängigkeiten, Zeitplan, Karten je Test, Änderungsradius der Konstanten |
 | `plug/series.py` | Generator | Passungsserien für den ersten Nachtdruck (K Kontakt-Plättchen, N Schieber, S Boden-Platten, R Buchsenhülsen, FM Mulden-Ringe, dazu C Kassette und D Passprobe) nach `stl/steckmodul_night1/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night1/`; Spiel je Teil als Gravur, Beurteilung nach Gefühl, weil Spalte unter 0,5 mm nicht messbar sind |
 | `plug/decision/` | Entscheidungen | `build.py` (Zeichnungen mit Maßen aus `plug/series2.py`), `template.html`, `page.html`; Befund, Deutung, Vorschlag und das nach der Antwort Umgesetzte je Entscheidung |
+| `plug/feedback/build_night2.py` | Testbogen | `template_night2.html` → `page_night2.html`; Schritte K, C v2, N (Platte A/B), E (Einpressen), D v7, FM; Ableitung von ENG/WEIT und dickstem stabilen Plättchen im Ergebnistext |
 | `plug/series2.py` | Generator | Zweiter Nachtdruck nach `stl/steckmodul_night2/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night2/`: K Plättchen 0,4 bis 1,0; C Kassette v2 (oben flach); N Schieber 0,20 bis 0,50 mit Platte A (Brücke) und B (umgedreht); E Kassette v3 mit Trichterboden zum Einpressen, Körper 0,06 / 0,09 / 0,12; D Passprobe v7; FM Fuß-Lehre. Oben im Modul die neuen Sollwerte (`KASS_CLR2`, `SNUG2`, `HSG_TOL2`, Fasen) |
 | `plug/feedback/` | Testbogen | `build.py` (Schritte, Formularfelder, Zeichnungen mit Maßen aus `dims()`), `template.html`, `page.html`; führt Schritt für Schritt durch die Serien der ersten Nacht, Ergebnistext zum Kopieren |
 | `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
@@ -239,6 +240,7 @@ plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 | `python3 -m plug.series` (rund 6 min) | `stl/steckmodul_night1/*`, `vorschau/steckmodul_night1/*` |
 | `python3 -m plug.series2` (rund 2 min) | `stl/steckmodul_night2/*` (alte STL dort werden gelöscht), `vorschau/steckmodul_night2/*` |
 | `python3 -m plug.decision.build` | `plug/decision/page.html` |
+| `python3 -m plug.feedback.build_night2` | `plug/feedback/page_night2.html` |
 | `python3 -m plug.build_all` | alles obige nacheinander |
 
 Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html`, `angled_pin.html`.
@@ -255,6 +257,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
 | Entscheidungen Nachtdruck 2 | `plug/decision/page.html` | https://claude.ai/artifact/6JoAe2iL2YDrvqFVppF8Fo |
+| Testbogen Nachtdruck 2 | `plug/feedback/page_night2.html` | https://claude.ai/artifact/BFNzrL5xcJZBBbW3ULtvzz |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
