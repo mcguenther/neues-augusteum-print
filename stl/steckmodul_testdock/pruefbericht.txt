@@ -1,0 +1,27 @@
+Test-Dock flache Unterseite: Platte 40.0 × 50.4 × 10.6 mm (Unterseite z -10.6), Füße 8 × 8, Luft 3.5 und 2.5, Zapfen 2.5, Loch 2.8 tief
+
+Teile (Druckausrichtung, Bett z = 0):
+  D_platte.stl       40.0 ×   51.0 ×  10.6 mm   11.8 cm³  ≈  8.5 g  dicht=True
+      waagerechte Decken: z=2.8: 58 mm² (36.3 × 26.3); z=0.2: 47 mm² (39.6 × 50.0); z=0.4: 46 mm² (40.0 × 50.4); z=4.6: 37 mm² (24.8 × 38.8)   Überhang flacher als 45° zur Senkrechten: 2 mm²
+  D_fuesse_3_5.stl   40.0 ×   30.0 ×   6.0 mm    1.0 cm³  ≈  1.1 g  dicht=True
+      waagerechte Decken: z=1.2: 19 mm² (40.0 × 22.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  D_fuesse_2_5.stl   40.0 ×   30.0 ×   5.0 mm    0.7 cm³  ≈  0.9 g  dicht=True
+      waagerechte Decken: z=1.2: 19 mm² (40.0 × 22.6); z=2.1: 19 mm² (40.0 × 22.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+
+Prüfung der Passungen (Überschneidungsvolumen, mm³; muss 0 sein):
+  Winkelleiste an der Platte (Pins durch die Löcher, Körper liegt nur an)       0.000  ok
+  Mini-Gebäude in der Mulde der Platte                                          0.000  ok
+  Kassette im Mini-Gebäude                                                      0.000  ok
+  Buchse (Nennmaß, bündig) und Winkelleiste (Pins in den Kammern)               0.000  ok
+  Kassette und Winkelleiste                                                     0.000  ok
+  Zapfen im Zapfenloch der Platte (Gleitspiel 0,15)                             0.000  ok
+  Kontrolle: Zapfen um 0,4 versetzt stößt an der Lochwand an                    1.247  stößt an (wie erwartet)
+  Füße 3,5 und 2,5 stecken im Loch: Zapfen 2,5 passt in 2,8 Lochtiefe           0.000  ok
+  Draht (Tail 1,0 unter der Platte, 1,6 dick) und Tisch bei Luft 3,5            0.000  ok
+  Körper der Leiste (hängt 2,0 tief) und Tisch bei Luft 2,5                     0.000  ok
+  Kontrolle: Draht bei Luft 2,5 stößt an den Tisch (Grenze des Tests)          18.480  stößt an (wie erwartet)
+  Luft unter der Platte: Körper reicht 2.0, Draht etwa 2.9 unter die Unterseite
+  -> keine Kollisionen
+Material ≈ 10 g, Zeit normal ≈ 1.4 h
+Material ≈ 10 g, Zeit schnell ≈ 0.5 h
+Bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 0.6 h
