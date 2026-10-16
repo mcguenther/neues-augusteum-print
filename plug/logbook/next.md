@@ -42,8 +42,8 @@ Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die G
 
 ## Hohlkörper-Gebäude (beschlossen und im Generator umgesetzt, Plan `plug/hollow/plan.html`)
 
-Beschlossen (2026-10-16): Wand und Dach 0,8 mm, unten offen, keine Lichtfenster; Decke glatt, wo sie höchstens 10 mm frei spannt, sonst 45°-Gewölbe (für alle Gebäude, bei denen es nicht gut passt); Ausgabe zusätzlich in `einzeln_hohl/` (alle Quellen und Maßstäbe, `--no-hohl` lässt sie weg); Fuß und Kassette getrennt (kommen aus `plug/`); Licht wie die Kassette liegt; Farbe **beide Versionen**: STL einfarbig hell und `_farbig.3mf` mit Fassadenfarben.
-Umsetzung: `hohl.py` (Verfahren), `generate.py` (`hohl_models`, `colour_hohl`), `fassaden.colour_mesh(ref=…)`, `werkzeuge/hohl_schnitt.py`; Studie und Plan in `plug/hollow/`.
+Beschlossen (2026-10-16): Wand und Dach 0,8 mm, unten offen, keine Lichtfenster; Decke glatt, wo sie höchstens 10 mm frei spannt, sonst 45°-Gewölbe (für alle Gebäude, bei denen es nicht gut passt); Nachtrag: das Gewölbe ist eine glatte 45°-Fläche von den Wänden bis zum First, ohne Stufen, Kanten nach unten, Brücke oben oder Taschen darüber (`hohl.FIRST = 0`; mit 10 statt 0 bliebe oben ein 10-mm-Streifen, siehe Tabelle im Plan); Ausgabe zusätzlich in `einzeln_hohl/` (alle Quellen und Maßstäbe, `--no-hohl` lässt sie weg); Fuß und Kassette getrennt (kommen aus `plug/`); Licht wie die Kassette liegt; Farbe **beide Versionen**: STL einfarbig hell und `_farbig.3mf` mit Fassadenfarben.
+Umsetzung: `hohl.py` (Verfahren), `generate.py` (`hohl_models`, `colour_hohl`), `fassaden.colour_mesh(ref=…)`; Studie, Ansichten (`views.py`, Bilder `vorschau/hohl/`) und Plan in `plug/hollow/`.
 
 Offen:
 1. **Lichtprobe** Wandstreifen 0,4 / 0,8 / 1,2 mit LED (Schritt L in Steckprobe 2): bestätigt oder ändert `hohl.WAND`.
@@ -52,7 +52,7 @@ Offen:
 4. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm) und durch farbige Wände: ungetestet.
 5. Slicer prüfen: 0,8-mm-Wände, `_farbig.3mf` mit bemalten Dreiecken (Innenflächen einfarbig).
 
-Zahlen (Laserscan 1:1500): alle sechs Hohlkörper dicht; freie Spannweite vorher bis 30 mm (Hörsaalgebäude), nachher höchstens etwa 10 mm; Gewölbe kostet im Hörsaalgebäude 33 % und im Neuen Augusteum 18 % des Hohlraums, bei OSM im Hörsaalgebäude 77 % (nur 9 mm hoch, Flachdach).
+Zahlen (Laserscan 1:1500, glattes Gewölbe bis zum First): alle sechs Hohlkörper dicht; freie Spannweite vorher bis 30 mm (Hörsaalgebäude), nachher höchstens etwa 10 mm; vom Hohlraum bleiben Paulinum und City-Hochhaus 100 %, Institutsgebäude 91 %, Seminargebäude 83 %, Neues Augusteum 79 %, Hörsaalgebäude 59 % (mit 10-mm-Streifen oben: 100 / 99 / 100 / 92 / 80 %).
 
 ## Priorität 2
 

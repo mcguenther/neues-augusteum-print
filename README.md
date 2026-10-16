@@ -87,11 +87,12 @@ verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
 
 Für Gebäude mit LED (Steckmechanismus, siehe [`plug/`](plug/)) baut `generate.py` jedes Gebäude zusätzlich als **dünne Schale**: Wand und Dach 0,8 mm,
 unten offen, ohne Lichtfenster; das Licht der LED scheint durch die ganze Hülle. Flache Decken, die mehr als 10 mm frei spannen würden,
-bekommen unter sich ein 45°-Gewölbe, damit sie ohne Stützen druckbar bleiben. Die Dateien liegen in `einzeln_hohl/`:
+bekommen ein glattes 45°-Gewölbe: Die Decke steigt von den Wänden auf und schließt oben in einem First, ohne Stufen, Kanten nach unten,
+Brücken oder Taschen darüber; so bleibt sie ohne Stützen druckbar. Die Dateien liegen in `einzeln_hohl/`:
 `NN_name.stl` (einfarbig, in einem hellen Filament drucken) und `NN_name_farbig.3mf` (Fassadenfarben wie die Komplettmodelle, Innenflächen
 in der häufigsten Wandfarbe). Komplettmodell, Grundplatte und 3MF-Objekte bleiben massiv; `python3 generate.py --no-hohl` lässt die Hohlkörper weg.
 Ein Fuß mit Schacht für die Kassette kommt aus dem Steckmechanismus und ist noch nicht Teil dieser Dateien. Verfahren: [`hohl.py`](hohl.py),
-Planung und Messwerte: `plug/hollow/plan.html`; Schnittbilder: `python3 werkzeuge/hohl_schnitt.py stl/laserscan/1zu1500/einzeln_hohl --out <ordner>`.
+Planung, 3D-Ansicht und Messwerte: `plug/hollow/plan.html` (`python3 -m plug.hollow.build_plan`), aufgeschnittene Bilder: `vorschau/hohl/`.
 
 ## Innenhof (Leibnizforum)
 

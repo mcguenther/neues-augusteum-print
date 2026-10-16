@@ -63,13 +63,13 @@ def bridge_analysis(layers, step=LAYER):
                 # größte Reichweite dieser Lage (Binärsuche über den Abstand zur Lage darunter)
                 def frei(r):
                     g = u.difference(prev.buffer(r, quad_segs=4))
-                    return None if g.is_empty else (g.buffer(-0.05).buffer(0.05) if g.area > 0.1 else None)
-                if frei(maxr + 0.05) is not None and not frei(maxr + 0.05).is_empty and frei(maxr + 0.05).area > 0.1:
+                    return None if g.is_empty else (g.buffer(-0.05).buffer(0.05) if g.area > 1.0 else None)
+                if frei(maxr + 0.05) is not None and not frei(maxr + 0.05).is_empty and frei(maxr + 0.05).area > 1.0:
                     lo, hi = maxr, maxr + 60.0
                     for _ in range(9):
                         mid = (lo + hi) / 2
                         g = frei(mid)
-                        if g is None or g.is_empty or g.area <= 0.1:
+                        if g is None or g.is_empty or g.area <= 1.0:
                             hi = mid
                         else:
                             lo = mid

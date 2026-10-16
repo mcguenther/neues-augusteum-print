@@ -281,12 +281,12 @@ def table_numbers():
     rows = []
     for n in NAMES:
         a, b = STUDY["laserscan/" + n], STUDY["osm/" + n]
-        loss = lambda d: 100 * (d["cav_ohne_gewoelbe"] - d["cav"]) / d["cav_ohne_gewoelbe"]
+        keep = lambda d, key="cav": 100 * d[key] / d["cav_ohne_gewoelbe"]
         w0 = 2 * a["bridge"]["maxr_ohne_gewoelbe"]
         cls = ' class="warn"' if w0 > 10 else ""
-        rows.append("<tr><th scope=\"row\">%s</th><td>%s</td><td>%s %%</td><td%s>%s</td><td>%s</td><td>%s %%</td><td>%s / %s %%</td></tr>" % (
-            TITLE[n], de(a["H"]), de(a["shell_pct"]), cls, de(w0), de(2 * a["bridge"]["maxr"]), de(loss(a), 0),
-            de(2 * b["bridge"]["maxr_ohne_gewoelbe"]), de(loss(b), 0)))
+        rows.append("<tr><th scope=\"row\">%s</th><td>%s</td><td>%s</td><td%s>%s</td><td>%s</td><td>%s %%</td><td>%s %%</td><td>%s %%</td></tr>" % (
+            TITLE[n], de(a["H"]), de(a["cav_ohne_gewoelbe"] / 1000), cls, de(w0), de(2 * a["bridge"]["maxr"]), de(keep(a), 0),
+            de(keep(a, "cav_first10"), 0), de(keep(b), 0)))
     return "\n".join(rows)
 
 
@@ -317,6 +317,7 @@ CSS = """
   --bg:#f3f5f8; --fg:#1b2531; --muted:#576577; --line:#d3dae3; --card:#ffffff;
   --accent:#a85d00; --accent-soft:#fbe9cc;
   --shell:#7f93ad; --cav:#fff6e0; --foot:#4f6580; --plate:#cdd4de; --hole:#f3f5f8; --cass:#2b3645; --led:#f0a233;
+  --v-outer:#c9c2b6; --v-inner:#f1e6cf; --v-vault:#e39a3b;
   --fp:#e4e9f0; --s1:#f4e2bb; --s2:#e9b44c; --s3:#d9722b; --s4:#b3261e;
   --ok:#1f7a4a; --ok-bg:#dff1e6; --warn:#a85d00; --warn-bg:#fbe9cc; --bad:#a82a22; --bad-bg:#f8dcd9;
   --sans:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -325,12 +326,14 @@ CSS = """
   --bg:#11161c; --fg:#e3e8ef; --muted:#97a3b3; --line:#29323e; --card:#19202a;
   --accent:#f0a233; --accent-soft:#3a2d14;
   --shell:#6a7f9b; --cav:#2b2416; --foot:#8497b1; --plate:#2b3441; --hole:#11161c; --cass:#c8d2df; --led:#f6b24a;
+  --v-outer:#9b958b; --v-inner:#d9cdb4; --v-vault:#e8a24a;
   --fp:#202935; --s1:#4a3d22; --s2:#a47a25; --s3:#d0702c; --s4:#e0483f;
   --ok:#62c48d; --ok-bg:#173325; --warn:#f0a233; --warn-bg:#3a2d14; --bad:#ee7b72; --bad-bg:#3c1b19; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#11161c; --fg:#e3e8ef; --muted:#97a3b3; --line:#29323e; --card:#19202a;
   --accent:#f0a233; --accent-soft:#3a2d14;
   --shell:#6a7f9b; --cav:#2b2416; --foot:#8497b1; --plate:#2b3441; --hole:#11161c; --cass:#c8d2df; --led:#f6b24a;
+  --v-outer:#9b958b; --v-inner:#d9cdb4; --v-vault:#e8a24a;
   --fp:#202935; --s1:#4a3d22; --s2:#a47a25; --s3:#d0702c; --s4:#e0483f;
   --ok:#62c48d; --ok-bg:#173325; --warn:#f0a233; --warn-bg:#3a2d14; --bad:#ee7b72; --bad-bg:#3c1b19; color-scheme:dark}
 *{box-sizing:border-box}
@@ -356,6 +359,25 @@ figcaption{color:var(--muted);font-size:14px;max-width:80ch}
 .fig{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto}
 .fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
 .fig svg.wide{min-width:680px}
+.viewer{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.viewer .bar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.viewer label{display:flex;gap:8px;align-items:center}
+.viewer select,.viewer input[type=range]{font:inherit;accent-color:var(--accent)}
+.viewer select{padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.viewer input[type=range]{width:min(260px,60vw)}
+.viewer .val{font:500 12px var(--mono);color:var(--muted);min-width:90px}
+#v3d{width:100%;min-height:300px;position:relative;touch-action:none}
+#v3d canvas{display:block}
+#v3d-note{padding:24px 14px;color:var(--muted)}
+.vlegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);padding:10px 14px;border-top:1px solid var(--line)}
+.vlegend i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:-2px;border:1px solid var(--line)}
+.renders{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.renders img{display:block;width:100%;height:auto;border-radius:6px}
+.secgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.secgrid .fig{display:flex;flex-direction:column;gap:8px}
+.secrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+.secrow .tag{font-size:11px}
+.secrow svg{width:100%;height:190px;max-width:100%}
 .pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
 .pair .fig{display:flex;flex-direction:column;gap:6px}
 .pair .tag{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -403,6 +425,115 @@ svg .dim-t{fill:var(--muted)}
 """
 
 
+VIEWER_JS = r"""
+(function () {
+  var DATA = __DATA__;
+  var host = document.getElementById('v3d');
+  var note = document.getElementById('v3d-note');
+  if (!window.THREE || !THREE.OrbitControls) { note.textContent = '3D-Ansicht konnte nicht geladen werden; die Bilder darunter zeigen dieselben Gebäude.'; return; }
+  var renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true }); } catch (e) { note.textContent = 'WebGL ist hier nicht verfügbar; die Bilder darunter zeigen dieselben Gebäude.'; return; }
+  note.hidden = true;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.localClippingEnabled = true;
+  host.appendChild(renderer.domElement);
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(32, 1, 0.5, 4000);
+  camera.up.set(0, 0, 1);
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = false;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x4a505c, 0.5));
+  var sun = new THREE.DirectionalLight(0xffffff, 0.6); sun.position.set(-0.4, 1.0, 1.4); scene.add(sun);
+  var fill = new THREE.DirectionalLight(0xffffff, 0.22); fill.position.set(0.8, -0.6, 0.5); scene.add(fill);
+  var plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
+  var mesh = null, cur = null, axis = 0, highlight = true;
+  var sel = document.getElementById('v3d-bld'), cutAxis = document.getElementById('v3d-axis'), cut = document.getElementById('v3d-cut'),
+      cutVal = document.getElementById('v3d-cutval'), hl = document.getElementById('v3d-hl');
+  function tok(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#999'; }
+  function colours() {
+    var c = [new THREE.Color(tok('--v-outer')), new THREE.Color(tok('--v-inner')), new THREE.Color(tok('--v-vault'))];
+    if (!highlight) c[2] = c[1].clone();
+    return c;
+  }
+  function bytes(b64) { var s = atob(b64), u = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; }
+  var cache = {};
+  function geom(slug) {
+    if (cache[slug]) return cache[slug];
+    var d = DATA[slug], q = new Uint16Array(bytes(d.v)), f = new Uint32Array(bytes(d.f)), k = new Uint8Array(bytes(d.c));
+    var n = f.length / 3, pos = new Float32Array(n * 9), cls = k;
+    for (var t = 0; t < n; t++) for (var j = 0; j < 3; j++) {
+      var vi = f[t * 3 + j], o = t * 9 + j * 3;
+      for (var a = 0; a < 3; a++) pos[o + a] = d.lo[a] + q[vi * 3 + a] / 65535 * d.sc[a];
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 9), 3));
+    g.computeVertexNormals();
+    cache[slug] = { g: g, cls: cls, n: n, d: d };
+    return cache[slug];
+  }
+  function paint() {
+    if (!cur) return;
+    var c = colours(), col = cur.g.getAttribute('color');
+    for (var t = 0; t < cur.n; t++) { var cc = c[cur.cls[t]]; for (var j = 0; j < 3; j++) col.setXYZ(t * 3 + j, cc.r, cc.g, cc.b); }
+    col.needsUpdate = true;
+    scene.background = new THREE.Color(tok('--card'));
+  }
+  function setCut() {
+    var d = cur.d, lo = d.lo[axis === 0 ? 1 : 0], hi = lo + d.sc[axis === 0 ? 1 : 0];
+    var v = lo + (hi - lo) * cut.value / 1000;
+    plane.normal.set(axis === 1 ? -1 : 0, axis === 0 ? -1 : 0, 0);
+    plane.constant = v;
+    cutVal.textContent = (axis === 0 ? 'y = ' : 'x = ') + v.toFixed(1).replace('.', ',') + ' mm';
+    render();
+  }
+  function show(slug) {
+    cur = geom(slug);
+    if (mesh) scene.remove(mesh);
+    var mat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide, clippingPlanes: [plane] });
+    mesh = new THREE.Mesh(cur.g, mat);
+    scene.add(mesh);
+    paint();
+    var d = cur.d, c = new THREE.Vector3(d.lo[0] + d.sc[0] / 2, d.lo[1] + d.sc[1] / 2, d.lo[2] + d.sc[2] / 2);
+    var r = Math.sqrt(d.sc[0] * d.sc[0] + d.sc[1] * d.sc[1] + d.sc[2] * d.sc[2]);
+    controls.target.copy(c);
+    camera.position.set(c.x + r * 0.42, c.y + r * 0.82, c.z + r * 0.5);
+    axis = d.cut_axis; cutAxis.value = String(axis);
+    var lo = d.lo[axis === 0 ? 1 : 0], hi = lo + d.sc[axis === 0 ? 1 : 0];
+    cut.value = Math.round((d.cut - lo) / (hi - lo) * 1000);
+    controls.update();
+    setCut();
+  }
+  function size() {
+    var w = host.clientWidth, h = Math.max(300, Math.min(560, Math.round(w * 0.62)));
+    renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); render();
+  }
+  function render() { renderer.render(scene, camera); }
+  controls.addEventListener('change', render);
+  sel.addEventListener('change', function () { show(sel.value); });
+  cutAxis.addEventListener('change', function () { axis = +cutAxis.value; cut.value = 500; setCut(); });
+  cut.addEventListener('input', setCut);
+  hl.addEventListener('change', function () { highlight = hl.checked; paint(); render(); });
+  window.addEventListener('resize', size);
+  if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { paint(); render(); });
+  size();
+  show(sel.value);
+})();
+"""
+
+
+def img_uri(path, width=900):
+    """PNG -> WebP-Daten-URI (klein genug zum Einbetten)."""
+    import base64, io
+    from PIL import Image
+    im = Image.open(path).convert("RGB")
+    if im.width > width:
+        im = im.resize((width, round(im.height * width / im.width)))
+    buf = io.BytesIO()
+    im.save(buf, "WEBP", quality=82, method=6)
+    return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
 def card(num, title, status, kind, options, text):
     lis = []
     for lab, desc, rec in options:
@@ -412,7 +543,19 @@ def card(num, title, status, kind, options, text):
 
 
 def page():
+    from plug.hollow import views as V
+    meshes, pngs = V.build(NAMES, STUDY, TITLE)
     hs = STUDY["laserscan/03_hoersaalgebaeude"]
+    keep = lambda n, key="cav": 100 * STUDY["laserscan/" + n][key] / STUDY["laserscan/" + n]["cav_ohne_gewoelbe"]
+    options = "".join('<option value="%s"%s>%s</option>' % (n, " selected" if n == "02_neues_augusteum" else "", TITLE[n]) for n in NAMES)
+    renders = "".join('<figure><div class="fig"><img src="%s" alt="%s aufgeschnitten, Gewölbe orange" loading="lazy" width="900" height="620"></div>'
+                      '<figcaption>%s: %s %% des Hohlraums bleiben</figcaption></figure>' % (img_uri(pngs[n]), TITLE[n], TITLE[n], de(keep(n), 0))
+                      for n in NAMES)
+    secs = "".join('<figure><div class="fig"><b>%s</b><div class="secrow"><div><span class="tag">ohne Gewölbe</span>%s</div>'
+                   '<div><span class="tag">mit Gewölbe</span>%s</div></div></div></figure>' % (
+                       TITLE[n], vault_section_svg(n, "sect0", "Schnitt %s ohne Gewölbe" % TITLE[n]),
+                       vault_section_svg(n, "sect", "Schnitt %s mit Gewölbe" % TITLE[n])) for n in NAMES)
+    viewer_js = VIEWER_JS.replace("__DATA__", json.dumps(meshes, separators=(",", ":")))
     loss_osm = lambda n: 100 * (STUDY["osm/" + n]["cav_ohne_gewoelbe"] - STUDY["osm/" + n]["cav"]) / STUDY["osm/" + n]["cav_ohne_gewoelbe"]
     sp0 = lambda n: 2 * STUDY["laserscan/" + n]["bridge"]["maxr_ohne_gewoelbe"]
     loss = lambda n: 100 * (STUDY["laserscan/" + n]["cav_ohne_gewoelbe"] - STUDY["laserscan/" + n]["cav"]) / STUDY["laserscan/" + n]["cav_ohne_gewoelbe"]
@@ -427,11 +570,11 @@ def page():
               ("0,8 mm", "zwei Linien, stabil, Licht mit heller LED wahrscheinlich ausreichend", True),
               ("1,2 mm", "drei Linien, wie die bisherige Lichtkammer; Licht ungewiss", False)],
              "Umgesetzt als Parameter <code>WAND</code> in <code>hohl.py</code>. Die Lichtprobe mit Controller (Steckprobe 2, Schritt L) bestätigt oder ändert den Wert."),
-        card("2", "Decke über dem Hohlraum", "beschlossen: Gewölbe bei Bedarf", "ok",
+        card("2", "Decke über dem Hohlraum", "beschlossen: glattes Gewölbe bei Bedarf", "ok",
              [("A  glatt", "Decke als Brücke, wo sie höchstens 10 mm frei spannt", True),
-              ("B  Gewölbe 45°", "überall, wo die Decke mehr als 10 mm frei spannt, nicht nur im Hörsaalgebäude", True),
+              ("B  Gewölbe 45°", "überall, wo die Decke mehr als 10 mm frei spannen würde: glatte Fläche von den Wänden bis zum First, darüber kein Hohlraum", True),
               ("C  Rippe", "verworfen: schattet das Licht ab", False)],
-             "Nach deiner Vorgabe gilt das Gewölbe für jedes Gebäude, bei dem die glatte Decke nicht gut passt. Im Laserscan trifft es vier von sechs Gebäuden, sehr unterschiedlich stark."),
+             "Das Gewölbe hat keine Stufen, Kanten nach unten oder Brücken oben. Steht zur Wahl: oben ein 10-mm-Streifen statt des Firsts, das spart in breiten, niedrigen Flügeln viel Füllung (Tabelle unten)."),
         card("3", "Ausgabe", "beschlossen: zusätzlich", "ok",
              [("Zusätzlich", "neuer Ordner <code>einzeln_hohl/</code> je Quelle und Maßstab; komplett, Grundplatte, 3MF bleiben massiv", True),
               ("Ersatz", "verworfen", False),
@@ -476,9 +619,32 @@ def page():
 <section>
   <div class="summary">
     <div class="card"><h3>Im Generator <span class="pill ok">umgesetzt</span></h3><p><code>generate.py</code> schreibt jedes Gebäude zusätzlich als Hohlkörper nach <code>einzeln_hohl/</code>, einfarbig als STL und mit Fassadenfarben als 3MF. Alle Dateien sind dicht. Wand und Dach 0,8 mm, unten offen.</p></div>
-    <div class="card"><h3>Gewölbe <span class="pill ok">wo nötig</span></h3><p>Flache Decken, die mehr als 10 mm frei spannen, bekommen ein 45°-Gewölbe. Im Laserscan trifft das das Hörsaalgebäude stark ({de(sp0('03_hoersaalgebaeude'),0)} auf 10 mm, {de(loss('03_hoersaalgebaeude'),0)} % weniger Hohlraum) und das Neue Augusteum ({de(sp0('02_neues_augusteum'),0)} auf 10 mm, {de(loss('02_neues_augusteum'),0)} %), Seminar- und Institutsgebäude kaum.</p></div>
+    <div class="card"><h3>Gewölbe <span class="pill ok">glatt, 45°</span></h3><p>Wo eine Decke mehr als 10 mm frei spannen würde, steigt sie von den Wänden mit 45° auf und schließt oben in einem First: keine Brücke, keine Kante nach unten, keine Tasche. Im Laserscan trifft das vor allem das Hörsaalgebäude ({de(loss('03_hoersaalgebaeude'),0)} % weniger Hohlraum) und das Neue Augusteum ({de(loss('02_neues_augusteum'),0)} %).</p></div>
     <div class="card"><h3>Noch offen <span class="pill warn">Licht und Druck</span></h3><p>Wandstärke 0,8 mm ist festgelegt, das Licht dadurch aber ungemessen. Ebenso ungedruckt: Gewölbe und 10-mm-Brücken, Fuß und Kassette in der Schale.</p></div>
   </div>
+</section>
+
+<section>
+  <h2>Die Hohlkörper ansehen</h2>
+  <p>Alle sechs Gebäude im Laserscan, 1:1500, wie sie <code>generate.py</code> nach <code>einzeln_hohl/</code> schreibt. Die 3D-Ansicht lässt sich drehen (ziehen), zoomen (scrollen) und aufschneiden; orange ist das Gewölbe, also Material, das ohne Gewölbe Hohlraum wäre.</p>
+  <div class="viewer">
+    <div class="bar">
+      <label for="v3d-bld">Gebäude <select id="v3d-bld">{options}</select></label>
+      <label for="v3d-axis">Schnitt <select id="v3d-axis"><option value="0">quer zu y</option><option value="1">quer zu x</option></select></label>
+      <label for="v3d-cut"><input id="v3d-cut" type="range" min="0" max="1000" value="500" aria-label="Lage des Schnitts"><span class="val" id="v3d-cutval"></span></label>
+      <label for="v3d-hl"><input id="v3d-hl" type="checkbox" checked> Gewölbe hervorheben</label>
+    </div>
+    <div id="v3d"><p id="v3d-note">3D-Ansicht wird geladen …</p></div>
+    <div class="vlegend"><span><i style="background:var(--v-outer)"></i>Außenhaut</span><span><i style="background:var(--v-inner)"></i>innen: Wand und Decke wie gezielt</span><span><i style="background:var(--v-vault)"></i>Gewölbe (45°)</span><span>Netz für die Ansicht vereinfacht</span></div>
+  </div>
+
+  <h3 style="margin-top:22px">Aufgeschnitten</h3>
+  <div class="renders">{renders}</div>
+  <figure><figcaption style="margin-top:8px">Schnitt durch die Stelle mit der größten freien Decke (vor dem Gewölbe). Dunkel ist die Schnittfläche durch Wand, Dach und Gewölbe.</figcaption></figure>
+
+  <h3 style="margin-top:22px">Schnitte ohne und mit Gewölbe</h3>
+  <div class="secgrid">{secs}</div>
+  <figure><figcaption style="margin-top:8px">Echte Schnitte (Lagen 0,4 mm) an derselben Stelle. Das Gewölbe zieht die Decke nur dort ein, wo sie frei spannen würde; dort steigt sie gleichmäßig mit 45° von den Wänden auf. Darüber bleibt kein Hohlraum.</figcaption></figure>
 </section>
 
 <section>
@@ -495,13 +661,13 @@ def page():
   <h2>Wo der Generator ansetzt</h2>
   <figure><div class="fig">{flow_svg()}</div>
   <figcaption>Der Hohlraum entsteht aus dem fertigen Volumenkörper, unabhängig von der Datenquelle. Das ist möglich, weil der Querschnitt aller Gebäude nach oben nur kleiner wird.</figcaption></figure>
-  <h3 style="margin-top:18px">Verfahren in fünf Schritten</h3>
+  <h3 style="margin-top:18px">Verfahren</h3>
   <ul class="plain">
     <li>Den Volumenkörper alle 0,4 mm in der Höhe schneiden.</li>
     <li>Jeden Schnitt um die Wandstärke nach innen versetzen. Was dünner als 1,6 mm ist, bleibt voll.</li>
     <li>Die Decke folgt dem Dach: Die Wand einer Lage richtet sich nach dem Querschnitt 0,8 mm weiter oben, so bleibt das Dach überall 0,8 mm dick.</li>
-    <li>Gewölbe: Liegt Material einer Lage weiter als 5 mm vom Material der Lage darunter (freie Spannweite über 10 mm), wird der Hohlraum darunter von der Wand her mit 45° eingezogen, bis es höchstens 5 mm sind.</li>
-    <li>Die Lagen zu Platten vereinigen, nach unten offen machen und vom Volumenkörper abziehen.</li>
+    <li>Gewölbe: Deckenstellen, die weiter als 5 mm von einer Stütze (Wand oder tiefere Decke) entfernt sind, würden über mehr als 10 mm frei spannen. Für sie steigt die Decke als glatte 45°-Fläche von den durchgehenden Wänden auf und schließt in einem First. Es gibt keine flache Brücke oben, keine Senke und keine Kante nach unten.</li>
+    <li>Hohlraum = Ziel-Hohlraum (exakte Wände) geschnitten mit dem Körper unter der 45°-Fläche; jede Stelle ist eine Säule vom Boden bis zur Decke, also keine Taschen. Dann vom Volumenkörper abziehen.</li>
   </ul>
   <p class="note">Die Wand ist in Millimetern fest, nicht im Maßstab: 0,8 mm sind bei 1:1500 eine Wand von 1,2 m, bei 1:1000 von 0,8 m.</p>
 </section>
@@ -526,19 +692,12 @@ def page():
   <div class="fig"><div class="heat">{''.join(heat)}</div>
   <div class="legend"><span><i style="background:var(--fp)"></i>getragen, unter 1 mm</span><span><i style="background:var(--s1)"></i>ab 1 mm</span><span><i style="background:var(--s2)"></i>ab 5 mm</span><span><i style="background:var(--s3)"></i>ab 10 mm</span><span><i style="background:var(--s4)"></i>ab 20 mm</span></div></div>
 
-  <h3 style="margin-top:20px">Das Gewölbe am Hörsaalgebäude</h3>
-  <div class="pair">
-    <figure><div class="fig"><span class="tag">glatte Decke, Spannweite bis {de(sp0('03_hoersaalgebaeude'),0)} mm</span>{vault_section_svg('03_hoersaalgebaeude', 'sect0', 'Schnitt Hörsaalgebäude ohne Gewölbe')}</div></figure>
-    <figure><div class="fig"><span class="tag">mit Gewölbe, Spannweite etwa 10 mm</span>{vault_section_svg('03_hoersaalgebaeude', 'sect', 'Schnitt Hörsaalgebäude mit Gewölbe')}</div></figure>
-  </div>
-  <figure><figcaption style="margin-top:10px">Echter Schnitt durch die breiteste Decke des Hörsaalgebäudes. Das Gewölbe zieht den Hohlraum nur unter den flachen Decken ein; die Seitenwände bleiben senkrecht.</figcaption></figure>
-
   <div class="tblw" style="margin-top:14px"><table>
-    <thead><tr><th>Gebäude</th><th>Höhe mm</th><th>Schale</th><th>Spannweite ohne Gewölbe mm</th><th>mit Gewölbe mm</th><th>Hohlraum weg</th><th>OSM: Spannweite ohne / Hohlraum weg</th></tr></thead>
+    <thead><tr><th>Gebäude</th><th>Höhe mm</th><th>Hohlraum ohne Gewölbe cm³</th><th>Spannweite ohne Gewölbe mm</th><th>mit Gewölbe mm</th><th>Hohlraum bleibt</th><th>zum Vergleich mit 10-mm-Brücke oben</th><th>OSM: Hohlraum bleibt</th></tr></thead>
     <tbody>
 {table_numbers()}
     </tbody></table></div>
-  <figure><figcaption style="margin-top:8px">Laserscan 1:1500; letzte Spalte OSM 1:1500. „Schale“ ist der Anteil des Volumens, der Material bleibt. OSM hat nur Flachdächer: Dort frisst das Gewölbe viel Hohlraum (Hörsaalgebäude {de(loss_osm('03_hoersaalgebaeude'),0)} %, das Gebäude ist nur 9 mm hoch). Das ist ein Grund, die Hohlkörper aus dem Laserscan zu drucken.</figcaption></figure>
+  <figure><figcaption style="margin-top:8px">Laserscan 1:1500; letzte Spalte OSM 1:1500. „Mit 10-mm-Brücke oben“: dasselbe Gewölbe, aber oben ein flacher Streifen von 10 mm statt des Firsts (<code>hohl.FIRST = 10</code>); das spart Füllung, lässt aber eine Brücke über dem Gewölbe. Breite, niedrige Flügel kostet der First viel: im Neuen Augusteum ist der linke Flügel 25 mm breit und nur 10 mm hoch, ein 45°-Gewölbe bis zum First braucht dort 12,5 mm. OSM hat nur Flachdächer, dort bleibt noch weniger.</figcaption></figure>
   <p class="note">Verworfen: Stützmaterial im Hohlraum (nicht entfernbar), Dach als getrenntes Teil (Fuge, Lichtspalt), Rippen (schatten das Licht ab).</p>
 </section>
 
@@ -556,12 +715,15 @@ def page():
 <section>
   <h2>Grundlage</h2>
   <ul class="plain">
-    <li>Studie: <code>python3 -m plug.hollow.study</code> (Laserscan und OSM, 1:1500, etwa 5 s), Ergebnis <code>plug/hollow/study.json</code>, Verfahren in <code>hohl.py</code> (Wurzel), Messung der Brücken in <code>plug/hollow/shell.py</code>; Schnittbilder: <code>werkzeuge/hohl_schnitt.py</code>.</li>
+    <li>Studie: <code>python3 -m plug.hollow.study</code> (Laserscan und OSM, 1:1500, etwa 1 min), Ergebnis <code>plug/hollow/study.json</code>, Verfahren in <code>hohl.py</code> (Wurzel), Messung der Brücken in <code>plug/hollow/shell.py</code>; Ansichten (3D und Renderbilder <code>vorschau/hohl/</code>): <code>plug/hollow/views.py</code>, beim Bau dieser Seite.</li>
     <li>Fuß und Platte: <code>plug/logbook/current.md</code>; Kassetten und Passstudie: <code>plug/logbook/cassettes.md</code>.</li>
     <li>Nicht geprüft: Slicer-Verhalten bei 0,8-mm-Wänden, Lichtdurchgang, Druck der Gewölbe und Brücken, farbige 3MF im Slicer (Innenflächen in einer Wandfarbe).</li>
   </ul>
 </section>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>{viewer_js}</script>
 """
     return html
 

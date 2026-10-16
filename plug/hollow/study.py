@@ -72,8 +72,9 @@ def main():
         for name in NAMES:
             t0 = time.time()
             man = S.load(os.path.join(HERE, "stl", quelle, "1zu1500", "einzeln", name + ".stl"))
-            layers = hohl.layers(man, WALL, ROOF, bruecke=hohl.BRUECKE)
-            lay0 = hohl.layers(man, WALL, ROOF, bruecke=None)
+            layers = hohl.layers(man, WALL, ROOF)
+            lay0 = hohl.layers(man, WALL, ROOF, gewoelbe=False)
+            cav_first10 = sum(S.LAYER * k.area for _, _, k in hohl.layers(man, WALL, ROOF, first=10.0) if not k.is_empty)
             br0, classes0 = S.bridge_analysis(lay0)
             vol = man.volume()
             cav_vol = sum(S.LAYER * (e.area if not e.is_empty else 0.0) for _, _, e in layers)
@@ -94,7 +95,7 @@ def main():
             d = dict(H=round(H, 1), vol=round(vol), cav=round(cav_vol), shell=round(vol - cav_vol),
                      shell_pct=round(100 * (vol - cav_vol) / vol, 1),
                      foot=rings(foot, 0.1), cavity_low=rings(layers[min(len(layers) - 1, int(2.0 / S.LAYER))][2], 0.1),
-                     cut_y=round(cy, 2), cut_axis=axis, sect=sect, sect0=sect0, cav_ohne_gewoelbe=round(cav0), islands=islands,
+                     cut_y=round(cy, 2), cut_axis=axis, sect=sect, sect0=sect0, cav_ohne_gewoelbe=round(cav0), cav_first10=round(cav_first10), islands=islands,
                      bridge=dict(maxr=round(br["maxr"], 2), maxr_ohne_gewoelbe=round(br0["maxr"], 2), area=round(br["area"]),
                                  area_cls={str(k): round(v) for k, v in br["area_cls"].items()}),
                      footprint_area=round(foot.area))
