@@ -55,7 +55,7 @@
 <header>
   <div class="kicker">Steckmechanismus · Lösungsfindung · Maßstab 1:1300</div>
   <h1>Wohin mit der Powerbank?</h1>
-  <p class="lead">Bei 1:1300 ist die Platte nur <span class="num" id="plate-dims"></span> groß. Das Fach der Powerbank belegt davon rund ein Drittel und nimmt Docks weg. Hier kannst du das Fach selbst verschieben, drehen und verändern und siehst sofort, welche Gebäude ihr LED-Dock behalten.</p>
+  <p class="lead">Bei 1:1300 ist die Platte nur <span class="num" id="plate-dims"></span> groß. Das Fach der Powerbank belegt davon rund ein Drittel und nimmt Docks weg. Hier kannst du das Fach selbst verschieben, drehen und verändern und siehst sofort, welche Gebäude ihr LED-Dock behalten. Die Seite rechnet mit einer einheitlichen Kassettenbreite und freien Dock-Lagen (Näherung, 3-mm-Raster); die Konzeptseite rechnet mit den festgelegten Lagen und je Gebäude passender Kassette.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -406,7 +406,7 @@
     const need = Math.round(F.plug + F.L + 2 * F.clr), needW = Math.round(F.W + 2 * F.clr + F.cable);
     $('answer').innerHTML =
       '<div class="rec"><span class="lbl">Platz</span><span class="big">' + need + ' × ' + needW + ' mm</span><span class="small">Fach der Powerbank mit 35 mm Steckerraum und Kabelkanal, von ' + fmt(D.W, 0) + ' × ' + fmt(D.H, 0) + ' mm Platte. Das sind ' + Math.round(need * needW / (D.W * D.H) * 100) + ' % der Fläche. Die Längsseite passt nur entlang der langen Plattenachse.</span></div>' +
-      '<div><span class="lbl">Docks</span><span class="big">' + okN + ' von 6</span><span class="small">Mit der halben Nische (12 × 9,5 mm) gibt der Generator bei 1:1300 an der Südkante ' + okN + ' freie Docks: ' + s13.docks.filter((d) => d.ok).map((d) => short[d.slug]).join(', ') + '. Ohne Dock bleiben ' + s13.docks.filter((d) => !d.ok).map((d) => short[d.slug]).join(' und ') + ' (Kassette zu breit für den Fuß).</span></div>' +
+      '<div><span class="lbl">Docks</span><span class="big">' + okN + ' von 6</span><span class="small">Mit der halben Nische (12 × 9,5 mm) gibt der Generator bei 1:1300 (Laserscan-Grundrisse, Mulde F 14,2, Lagen aus scale.md, nicht passende Docks neu gesucht) ' + okN + ' freie Docks: ' + s13.docks.filter((d) => d.ok).map((d) => short[d.slug]).join(', ') + '. Ohne Dock bleiben ' + s13.docks.filter((d) => !d.ok).map((d) => short[d.slug]).join(' und ') + ' (kein freier Platz für die Nische neben dem Fach).</span></div>' +
       '<div><span class="lbl">Elektronik</span><span class="big">' + s13.esp[0] + ' × ' + s13.esp[1] + ' mm</span><span class="small">Platz für die Elektronik an der besten Lage. Soll sind ' + D.esp[0][0] + ' × ' + D.esp[0][1] + ' mm.</span></div>';
     const narrow = D.width_rows.find((r) => r.w === D.kass_w.narrow);
     const lev = [

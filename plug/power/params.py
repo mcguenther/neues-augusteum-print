@@ -22,8 +22,13 @@ EF_CH = P2.PROP["EF_CH"]            # Fase an Bettkanten 0,5 (Vorschlag r4)
 
 
 def stack():
-    """Maßkette der Steckprobe (z = 0 Plattenoberseite): F, E, z_hb, z_bb, z_tip …"""
+    """Maßkette der Steckprobe (z = 0 Plattenoberseite): F, E, z_hb, z_bb, z_tip … (F 10,2; für Steckprobe 2, Fachprobe und Test-Dock)."""
     return TP.dims()
+
+
+def stack_plan():
+    """Maßkette der Campus-Platte nach plug/logbook/scale.md: Mulde überall 4 mm tiefer (F 14,2, Platte 20,2; wie plug/campus.py)."""
+    return TP.dims_plan()
 
 
 # ---- Powerbank Intenso XS5000 (weiß 7313522). Quellen: Intenso-Datenblatt (2026), Bedienungsanleitung v1.10, TonUINO-Forum

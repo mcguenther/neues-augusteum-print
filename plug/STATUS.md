@@ -321,7 +321,7 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
+9. Grundplatte mit Powerbank (Konzept, Stand 6 = abgeglichen mit `scale.md`: Laserscan-Grundrisse, Platte 115,6 × 220,8 mm, Mulde F 14,2 eine Ebene, Gesamtdicke 31,2 mm, Docks an den festgelegten Lagen, Fach Süd, 5 von 6 Docks frei, Hochhaus ohne Platz, Elektronik 50 × 30; die folgenden Zahlen sind der ältere Stand 5 mit OSM-Grundrissen und F 10,2; Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
    Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab 1:1300 (Nutzer, Platzgründe; Platte 114 × 223 mm, 8,5 mm Rand auf dem 24-cm-Hut). Die Kassette passt nur
    in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus; Seminar und Institut notfalls zusammenlegen, Kassetten-Redesign im separaten Chat); bei 1:1300 und der halben Nische (12 × 9,5 mm, eine Öffnung, Nutzer) sind
    4 Docks frei, Elektronik 60 × 35 mm (mit der alten Nische 24 × 19 mm waren es 3 und 50 × 30). Dock mit Steg-Anschlag, keine Taste, kein Stößel; Powerbank-Lage Süd (4 Docks, nicht unter

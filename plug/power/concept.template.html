@@ -157,10 +157,9 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 5</div>
+  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 6</div>
   <h1>Powerbank in der Grundplatte</h1>
-  <p class="lead">Stand 5 setzt den Maßstab auf 1:1300 (Platte passt mit Rand auf den Doktorhut), prüft, welche Docks dort noch frei bleiben, und hält die Fasen, die große Kabelnische und den flacheren Faden. Stand 4 prüfte die Fasen, gab den Lötenden eine große Kabelnische und
-    führte den Faden flacher durch die Ecken. Die Zahlen kommen aus den OSM-Grundrissen und den Werten der Steckprobe.</p>
+  <p class="lead">Stand 6 gleicht das Konzept mit der Festlegung in <code>plug/logbook/scale.md</code> ab: Laserscan-Grundrisse, Maßstab 1:1300 (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14,2 mm, eine Ebene ohne Stufen), Hof-Aussparung 6 mm tief, Kassette je Gebäude (v4, V1RS, V2R) und die vom Nutzer festgelegten Dock-Lagen. Docks, die die Powerbank berühren würde, werden neu gesucht. Dazu die halbe Nische (12 × 9,5 mm) und der flachere Faden. Die Zahlen kommen aus den Laserscan-Grundrissen und den Werten der Steckprobe.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -259,8 +258,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     <div class="card"><h3>Fuß in der Mulde, Schnitt im Maßstab</h3><svg id="chfig" role="img" aria-label="Schnitt durch Fuß und Mulde mit den Fasen"></svg></div>
     <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
       <ul>
-        <li>Die Gebäude haben jetzt im Modell die <b>Fußfase</b> (<span class="num" id="chFoot"></span>) aus dem Probestück, die Mulden die <b>Muldenfase</b>
-          (<span class="num" id="chPocket"></span>). Beides kommt aus <code>plug/institute.py</code>.</li>
+        <li>Die Mulde ist eine Ebene ohne Stufen und ohne Fase (<code>scale.md</code>); die <b>Fußfase</b> (<span class="num" id="chFoot"></span>) setzt der Gebäude-Generator, im Konzept ist sie noch nicht modelliert.</li>
         <li>Alle Teile, die am Bett liegen, haben an Außenkanten und Mündungen <span class="num" id="chBed"></span> Fase (Elefantenfuß, L02, L03).</li>
         <li>Noch nicht im Konzept: Schachteingang der Kassette im Gebäude-Generator, <code>innenhof.py</code> und die Stoßkanten beim Teilen. Das sind drei Aufgaben für den Generator.</li>
       </ul>
@@ -341,7 +339,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   set('vTurn', fmt(2 * D.v_angle, 0) + '°'); set('vTurn2', fmt(2 * D.v_plan2.angle, 0) + '°');
   set('vApex', mm(VV.apex)); set('vLeg', 'Ø ' + mm(VV.leg_d)); set('vR', 'R ' + mm(VV.entry_r)); set('vWall', mm(VV.wall));
   set('vOver', mm(0.2 * VV.slope, 2)); set('vSpan', mm(2 * hs));
-  set('chFoot', mm(CHD.foot)); set('chPocket', mm(CHD.pocket)); set('chBed', mm(CHD.bed));
+  set('chFoot', mm(CHD.foot)); set('chBed', mm(CHD.bed));
   set('stampTxt', mm(H.z_bb - H.stamp_top));
   set('plugTxt', mm(PB.plug, 0)); set('cableTxt', mm(PB.cable, 0)); set('winTxt', mm(FA.win[1] - FA.win[0], 0));
   set('fenceTxt', fmt(UK.fence[0], 1) + ' × ' + fmt(UK.fence[1], 0) + ' mm'); set('clrTxt', mm(PB.clr));
@@ -356,7 +354,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     `<div class="rec"><span class="lbl">Maßstab für den Hut</span><span class="big">1:${rec.scale}</span>
       <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt mit ${fmt(-rec.hut.over, 1)} mm Rand je Seite auf den 24-cm-Hut (bei 1:1000 stünde sie ${fmt(v1.hut.over, 1)} mm über). <b>Preis:</b> LED-Docks sind nur an ${nOk(rec)} von 6 Gebäuden frei (${rec.docks.filter((d) => d.ok).map((d) => short[d.slug]).join(', ')}); ${rec.docks.filter((d) => !d.ok).map((d) => short[d.slug] + (d.why.startsWith('Kassette') ? ' (Kassette passt nicht in den Fuß)' : ' (Powerbank liegt im Weg)')).join(', ')} bleiben ohne. Die Elektronik schrumpft auf ${rec.esp[0]} × ${rec.esp[1]} mm (Soll ${D.esp[0]} × ${D.esp[1]}).</span></div>
     <div><span class="lbl">Fasen</span><span class="big">geprüft</span>
-      <span class="small">Fußfase ${fmt(CHD.foot)} und Muldenfase ${fmt(CHD.pocket)} sind jetzt im Modell, dazu ${fmt(CHD.bed)} an allen Bettkanten und Mündungen. Drei Stellen liegen im Generator und fehlen noch (Tabelle unten).</span></div>
+      <span class="small">Mulde ohne Stufen und ohne Fase (scale.md), Fußfase ${fmt(CHD.foot)} kommt aus dem Gebäude-Generator; ${fmt(CHD.bed)} an allen Bettkanten und Mündungen der Platten (Tabelle unten).</span></div>
     <div><span class="lbl">Lötenden</span><span class="big">${fmt(NI.w, 0)} × ${fmt(DK.y_slot - DK.niche_end, 1)} mm Nische</span>
       <span class="small">Hinter der Körpertasche ein offener Raum, darunter der Unterkasten ${fmt(H.uk_t)} hoch hohl. Die Docks liegen nicht über der Powerbank. ${Object.entries(rec.sides).map(([k, q]) => ({ N: 'Nordkante', S: 'Südkante' })[k] + ': ' + q.ok + ' von ' + rec.n_possible + ' Docks frei, ' + q.under_hof + ' % unter dem Hof').join('; ')}. Die Suche nimmt die Lage mit den meisten freien Docks.</span></div>
     <div><span class="lbl">Faden</span><span class="big">${fmt(D.v_angle, 0)}° statt ${fmt(D.v_plan2.angle, 0)}°</span>
@@ -569,16 +567,13 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     const X = (x) => 20 + (x - x0) * k, Y = (z) => 12 + (zT - z) * k;
     const poly = (pts, fill, extra = '') => `<polygon points="${pts.map(([x, z]) => X(x) + ',' + Y(z)).join(' ')}" style="fill:${fill}" ${extra}/>`;
     const st = 'stroke="var(--edge)" stroke-width="0.8"';
-    const wall = [[x0, zT], [-clr - cP, zT], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]];
-    let s = poly([[x0, 0], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]], 'var(--c-plate)', st);
+        let s = poly([[x0, 0], [-clr, 0], [-clr, -F], [x0, -F]], 'var(--c-plate)', st);
     s += poly([[0, -0.0], [x1, 0], [x1, -F + 0.0], [cF, -F], [0, -F + cF]], 'var(--c-bld)', st);
     s += poly([[0, 0.0], [0, zT * 0 + 1.0], [x1, 1.0], [x1, 0]], 'var(--c-bld)', st);
     s += `<path d="M${X(x0)} ${Y(0)}H${X(x1)}" class="dim" style="stroke-dasharray:3 3;stroke:var(--muted)"/>`;
     const lab = (x, z, t, a = 'start', c = '') => `<text x="${X(x)}" y="${Y(z)}" text-anchor="${a}" ${c}>${t}</text>`;
     s += lab(x0 + 0.2, 1.1, 'Plattenoberseite', 'start', 'class="mut"');
-    s += lab(-clr - cP - 0.2, -cP / 2, 'Muldenfase ' + fmt(cP) + ' (Einführung)', 'end');
-    s += lab(-clr - 0.3, -cP - band / 2, 'Band ' + fmt(band, 0) + ' mm, Spiel 0,10', 'end');
-    s += lab(-clr - relief - 0.3, -cP - band - 1.6, 'darunter 0,30 mehr', 'end');
+    s += lab(-clr - 0.3, -F / 2, 'gerade Wand, Spiel 0,10, keine Fase', 'end');
     s += lab(cF + 0.5, -F + 0.5, 'Fußfase ' + fmt(cF) + ' (Bett)', 'start');
     s += lab(x1 - 0.3, -F / 2, 'Fuß ' + fmt(F) + ' mm tief', 'end', 'style="font-weight:600"');
     s += lab(x0 + 0.2, -F - 0.9, 'Muldenboden ' + fmt(H.ceil) + ' mm über der Leiste', 'start', 'class="mut"');
