@@ -44,6 +44,8 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L20 | Hinter den Lötenden zu wenig Platz (Fasen und Trichter schränken ein) | im echten Boden unter der Winkelleiste so viel wie möglich freilassen; Kabel sollen ohne Wand wegführen | r3 |
 | L21 | Deckelstempel stoßen beim Aufsetzen an, Körper der Winkelleiste kippt in der Tasche | Konzept neu planen; Heißkleber auf die Winkelleiste und Stempel weglassen ist der Ausweg (Stützen nachträglich abschneiden) | r3 |
 | L22 | Gebäude ohne Kodierecke, aber mit L-Fuß: nur eine Lage, Mulde passt | echte Gebäude folgen dem Grundriss; Kodierecke ist nicht nötig | r3 |
+| L30 | Kassette mit Rücken-LED: der Rücken-Chip ragte 2,1 mm hinter die Schachtwand, kommt von unten nicht durch | Beim Einschieben von unten muss jeder Querschnitt der Kassette (auch Streifen und Chips) durch den Schacht im Fuß; im Plan die Hülle über alle z prüfen | Plan Kassetten-Varianten |
+| L31 | Gebäudehöhe aus der Bounding-Box täuscht: Seminargebäude 18,8 mm, geschlossene Dachfläche nur etwa 16,4 | Höhenprüfung als Schnitt in der nötigen Höhe (Grundriss und Höhe zusammen), nicht über die Gesamthöhe | Plan Kassetten-Varianten |
 
 ## Prozess
 
