@@ -35,7 +35,7 @@ Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Pl
 
 Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
 
-**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten).
+**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten, Fachprobe Powerbank auswerten).
 
 ## Priorität 1 (erledigt): Steckprobe 2 (r4)
 
