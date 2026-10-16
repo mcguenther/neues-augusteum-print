@@ -523,7 +523,7 @@ Alle Aufrufe aus dem Repo-Wurzelverzeichnis.
 | `python3 -m plug.sample` | rund 15 s | `stl/steckmodul_probe/` (Probestück, `0_passprobe.stl`, `README.txt`, `probedruck_kassette.zip`), `vorschau/steckmodul_probe/` |
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
 | `python3 -m plug.fit_test.build_page` | | `plug/fit_test/page.html` (Anleitung der Passprobe) |
-| `python3 -m plug.power.build_concept` | rund 5 s | `plug/power/concept.html` (Grundplatte mit Powerbank, Unterkasten, Faden, Kapitel 6) |
+| `python3 -m plug.power.build_concept` | rund 50 s | `plug/power/concept.html` (Grundplatte mit Powerbank, Unterkasten, Faden, Kapitel 6) |
 | `python3 -m plug.build_all [--skip-institute]` | | alles oben in der richtigen Reihenfolge |
 | `python3 -m plug.check [--skip-institute]` | | prüft, dass alle STL `dicht=True` melden und „keine Kollisionen“ gemeldet wird |
 
@@ -534,52 +534,68 @@ Chronologie, Passprobe-Ergebnisse und offene Aufgaben: `plug/STATUS.md`.
 
 Die Ausgabe von `plug.dupont`, `plug.institute` und `plug.sample` muss je Teil `dicht=True` und „keine Kollisionen“ zeigen.
 
-## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 3)
+## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 4)
 
-Stand: Konzept für 1:1000, nichts davon ist im Generator der Platte gebaut. Seite `plug/power/concept.html`
-(`python3 -m plug.power.build_concept`, rund 5 s: Draufsicht mit Maßen, 3D, Schnitt, Ecke, Passmaße, Testdrucke). Werte in
-`plug/power/params.py`; was aus der Steckprobe kommt, liest diese Datei aus `plug/testcase/params.py` und `build_plan2.PROP`
-(Regel 8 im Logbuch: neue Werte nicht in `parts.py`). Stand 3 übernimmt PR #11 (Steckprobe 1, Plan Steckprobe 2).
+Stand: Konzept, nichts davon ist im Generator der Platte gebaut. Seite `plug/power/concept.html` (`python3 -m plug.power.build_concept`,
+rund 50 s: drei Maßstäbe mit Draufsicht, 3D, Schnitten, Dock, Ecke, Fasen, Passmaßen, Testdrucken). Werte in `plug/power/params.py`; was aus der
+Steckprobe kommt, liest diese Datei aus `plug/testcase/params.py` und `build_plan2.PROP` (Regel 8 im Logbuch: neue Werte nicht in `parts.py`).
+Stand 4 folgt auf die Rückmeldung zu Stand 3 (Fasen, Maßstab, Lötenden, Faden).
 
-### 6.1 Aufbau 1:1000: 144 × 283 × 27,0 mm
+### 6.1 Aufbau
 
-- **Oberplatte 12,6 mm** = Mulde 10,2 + Muldenboden 0,4 + Körper der Winkelleiste 2,0 (Maßkette der Steckprobe, E 5,28).
-  Mulde mit 0,10 Spiel je Seite (bewährt). Dock wie Platte B, die Tasche der Leiste ist nach unten offen; der Kabelraum ist der
-  Unterkasten (L20). Unterseite am Bett, nur Böschungen und kurze Decken (L04, L05).
-- **Unterkasten 14,4 mm** (ersetzt den Deckel): Boden 1,2, Wand 2,4, Stützen 6 × 6 im Raster 40, sechs davon mit Zentrierzapfen
-  Ø 4 × 1,5 (Loch Ø 4,3, Gleitspiel 0,15 nach L10) an den Enden und beidseits des Stoßes der Oberplatte. Anschlag unter jeder
-  Winkelleiste mit 1,2 mm Luft (Plan Steckprobe 2, Karte D) und Heißkleber (Karte K). Offen nach oben gedruckt.
-- Druckbett: Oberplatte und Unterkasten je 2 Teile, Stöße versetzt (y = 134 bzw. 109 mm), die Zapfen halten beide Seiten.
-- Material geschätzt (1 mm Hülle, 15 % Füllung): Oberplatte 173 g, Unterkasten 98 g, zusammen etwa 271 g.
+- **Oberplatte 12,6 mm** = Mulde 10,2 + Muldenboden 0,4 + Körper der Winkelleiste 2,0 (Maßkette der Steckprobe, E 5,28). Mulde mit 0,10 Spiel,
+  Dock wie Platte B (Trichter um die Pins, nach unten offene Tasche). Unterseite am Bett, Hohlräume nur als Böschung, kurze Decke oder Fenster mit Steg.
+- **Unterkasten 14,4 mm** (ersetzt den Deckel): Boden 1,2, Wand 2,4, Stützen 6 × 6 im Raster 40, Zentrierzapfen Ø 4 × 1,5 (Loch 4,3, Gleitspiel 0,15 nach
+  L10) an den Enden und am Stoß der Oberplatte, Zaun um die Powerbank, Fenster in der Kante, Eckaussparungen für den Faden. Innen hohl, offen nach oben gedruckt.
+- Zusammen **27,0 mm**. Der Stoß der Druckteile liegt bei Oberplatte und Unterkasten an verschiedenen Stellen.
 
-### 6.2 Powerbank Intenso XS5000
+### 6.2 Maßstab und Doktorhut (24 cm angenommen, ungemessen)
 
-- 90 × 63 × 12,6 mm (Datenblatt, ungemessen), alle Anschlüsse an einer Schmalseite. Anschlussseite zur Nordkante, 35 mm
-  Steckerraum für einen geraden USB-A-Stecker, Kabel in einem 6-mm-Kanal an der Längsseite. Fach 126 × 70 × 13,2 mm.
-- Zaun 1,6 × 5 mm, Spiel 0,5 je Seite, 0,6 Luft oben (geschätzt). Fenster in der Kante (46 mm) für LEDs, microUSB und USB-C,
-  Stößel 4 × 4 mm zur Taste. 48 % der Powerbank liegen unter dem Innenhof, der Rest unter Institut, Seminargebäude, Paulinum.
-- Strom und Schaltplan: eigener Chat. Für die Platte zählt: 5 V / 2,1 A gesamt, Standby nach 30 s unter etwa 50 mA.
+| Maßstab | Platte B × T | Hut | Kassette passt in | Material (geschätzt) |
+|---|---|---|---|---|
+| 1:1000 | 144 × 283 mm | 21,3 mm je Seite über | alle 6 | etwa 274 g |
+| **1:1200** | 122 × 240 mm | passt knapp (239,5 mm, 0,2 mm Rand je Seite) | 4 von 6 (nicht Seminargebäude, City-Hochhaus) | etwa 202 g |
+| 1:1250 | 118 × 231 mm | 4,5 mm Rand je Seite | 4 von 6 | etwa 189 g |
 
-### 6.3 Faden zum Doktorhut
+1:1200 ist der erste runde Maßstab, bei dem die Platte auf den Hut passt (15 % kleiner als 1:1000 ergäbe 1:1176 mit 244 mm, zu lang). Ab 1:1100 passt die
+Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäude und das City-Hochhaus; größte Breite des Seminargebäudes 20,5 mm (1:1000),
+17,1 mm (1:1200). Offene Entscheidung: 1:1200 mit vier LED-Gebäuden, 1:1000 mit sechs und einer Platte über dem Hut, oder eine schmalere Kassette.
 
-- V-Kanal aus dem Plan Steckprobe 2 in jeder Ecke der Oberplatte: Ø 2,2, Scheitel 3,4 über der Unterseite, Böschung 0,15 je Schicht,
-  Trichter R 2,0, Wände ≥ 1,4, Achse senkrecht zur nächsten Kante, Mitte 6,0 von der Kante. Bei 1:1000 liegen alle vier direkt in den Ecken.
-- Der Unterkasten ist an jeder Ecke ausgespart (7,3 × 11,4 mm); der Faden hängt dort frei vom Trichter zum Hut. Festgezogen drückt er
-  die Oberplatte auf den Unterkasten und beides auf den Hut. Keine Schrauben (feste Vorgabe).
-- Doktorhut mit 24 cm angenommen (ungemessen): Die Platte steht in der Länge 2,1 cm je Seite über.
+### 6.3 Dock: Platz hinter den Lötenden
 
-### 6.4 Zusammenbau
+- Kabelnische hinter der Körpertasche: 24 mm breit, 19 mm lang, Decke 1,6 mm über dem Bett (Stufe der Steckprobe), drei Fenster mit zwei Stegen 1,6 mm
+  (Spannweite höchstens etwa 8 mm, L04). Die Decke liegt 0,8 mm unter dem Muldenboden. Alle Mündungen am Bett mit 0,5 Fase.
+- Darunter ist der Unterkasten 14,4 mm hoch hohl. Die Dockzone (28 × 27 mm) bleibt frei von Stützen, Zaun, Elektronik und Powerbank (die Powerbank hat nur 0,6 mm
+  Luft nach oben, ein Dock darüber ließe den Adern keinen Raum).
+- Anschlag: Steg 18 × 1,8 mm unter dem Körper mit 1,2 mm Luft und zwei Streben nach vorn, Kabelseite offen (statt Block und Stempel; L06, L21). Dazu Heißkleber.
+- Platzierung (Suche in `build_concept.py`): je Gebäude eine Kassettenlage im Fuß (1,2 mm Wand), Nische frei. Fach und Dock-Lagen werden zusammen gesucht.
 
-1. Winkelleisten von unten in die Oberplatte, Heißkleber, Adern anlöten.
-2. Oberplatte umdrehen, Fäden durch die V-Kanäle ziehen.
-3. Unterkasten bestücken: Elektronik, Sammelleitung, Powerbank mit USB-A-Kabel, Stößel.
-4. Oberplatte aufsetzen (Zapfen), Fadenenden durch die Eckaussparungen.
-5. Auf den Hut nähen und festziehen. 6. Innenhof einlegen, Gebäude stecken.
+### 6.4 Powerbank Intenso XS5000
 
-### 6.5 Nächster Druck (Vorschlag, nicht abgenickt)
+- 90 × 63 × 12,6 mm (Datenblatt, ungemessen), Anschlüsse an einer Schmalseite. Anschlussseite zur Plattenkante, 35 mm Steckerraum für einen geraden USB-A-Stecker,
+  Kabelkanal 6 mm an der Längsseite, Fach 126 × 70 × 13,2 mm, Fenster in der Kante (46 mm), Stößel 4 × 4 zur Taste, Zaun 1,6 × 5, Spiel 0,5 je Seite, 0,6 Luft oben.
+- Lage: Bei 1:1000 Nordkante, 48 % unter dem Innenhof, alle 6 Docks frei. Bei 1:1200 Nordkante 34 % unter dem Hof, aber ohne freies Dock für das Paulinum
+  (3 von 4); Südkante 0 % unter dem Hof, alle 4 Docks frei. Bei 1:1250 gleich (Nord 31 %, Süd 1 %). Die Suche nimmt die Lage mit den meisten freien Docks.
+- Strom und Schaltplan: eigener Chat (5 V / 2,1 A gesamt, Standby nach 30 s unter etwa 50 mA).
 
-- **T1 Steckprobe 2 im neuen Aufbau:** Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4 (38 × 52 mm) statt Platte B 16,2 + Deckel 2,0;
-  dazu Gebäude und Kassette aus dem Plan Steckprobe 2. Prüft zusätzlich Anschlag, Zapfen und Faden an zwei Ecken.
-- **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt um das Fach (etwa 135 × 79 mm) mit Zaun, Fenster, Stößel, Kanal, dazu eine
-  Deckplatte 2 mm mit Zapfenlöchern. Prüft Spiel, Fenster, Stößel, Steckerraum.
-- Später T3: Stoß der Druckteile. Vorher offen: Karten aus dem Plan Steckprobe 2, Doktorhut und Powerbank messen, Lage der Docks.
+### 6.5 Faden zum Doktorhut
+
+- V-Kanal in jeder Ecke der Oberplatte, jetzt **40° statt 53°** zur Waagerechten (Böschung 1,2 statt 0,75; Überhang 0,24 statt 0,15 mm je Schicht, etwa 50° statt 37°
+  zur Senkrechten), Scheitel 3,4 über der Unterseite, Ø 2,2, Trichter R 2,0, Wände 1,4, Eintritte 8,2 mm auseinander. Der Faden knickt um 80° statt 106°.
+  Vorschlag, ungetestet, das Überhangrisiko muss T1 zeigen. Bei allen Maßstäben liegen die vier V direkt in den Ecken.
+- Eckaussparung im Unterkasten (7,3 × 11,4 mm), der Faden hängt dort frei zum Hut; Festziehen drückt Oberplatte und Unterkasten zusammen. Keine Schrauben.
+
+### 6.6 Fasen-Check
+
+Im Modell: Gebäudefuß unten 0,8 (`institute.foot_solid`), Mulde oben 1,0 (`institute.pocket_cuts`), Bettkanten 0,5 an Oberplatte, Unterkasten, Eckaussparungen,
+Taschen, Nische und Zapfenlöchern, Pinlöcher 0,15, Zapfenspitze 0,5, Innenhof-Teil unten 0,4. Noch nicht im Generator: Schachteingang der Kassette (0,5), `innenhof.py`
+(0,4), Stoßkanten beim Teilen (`split_tiles`, 0,4); Stößelführung und Fenster in der Fachprobe prüfen.
+
+### 6.7 Nächster Druck (Vorschlag, nicht abgenickt)
+
+- **T1 Steckprobe 2 im neuen Aufbau:** Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4, Gebäude mit Fußfase. Prüft Dock mit Nische (hängen die Adern frei, hält die Decke),
+  Steg-Anschlag, Zapfen, Faden an zwei Ecken (**53° gegen 40°**) und die Fasen.
+- **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt etwa 135 × 79 mm mit Zaun, Fenster, Stößel, Kanal und Deckplatte.
+- Später T3: Stoß der Druckteile.
+- Offene Entscheidungen: Maßstab und Kassette für die schlanken Gebäude, Powerbank-Lage (Süd oder Nord), Faden-Neigung, Fachprobe jetzt oder nach dem Nachmessen,
+  Doktorhut messen (bestimmt 1:1200 oder 1:1250).

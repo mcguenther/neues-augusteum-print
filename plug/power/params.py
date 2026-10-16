@@ -11,8 +11,12 @@ from plug.testcase import params as TP
 # ---- aus der Steckprobe übernommen (nicht hier ändern)
 MULDE_CLR = TP.MULDE_CLR_T          # 0,10 je Seite, bewährt (r2 FM, r3 M)
 CEIL = TP.CEIL_T                    # Muldenboden 0,4, vorläufig (r2 K, r3 S)
-V = dict(leg_d=P2.PROP["LEG_D"], apex=P2.PROP["APEX"], slope=P2.PROP["SLOPE"], entry_r=P2.PROP["ENTRY_R"],
-         y=P2.PROP["LASCHE_Y"], wall=1.4)   # V-Kanal für den Faden, Zwischenstand r4 (nicht abgenickt)
+V_PLAN2 = dict(leg_d=P2.PROP["LEG_D"], apex=P2.PROP["APEX"], slope=P2.PROP["SLOPE"], entry_r=P2.PROP["ENTRY_R"],
+               y=P2.PROP["LASCHE_Y"], wall=1.4)   # V-Kanal wie im Plan Steckprobe 2 (Zwischenstand r4, nicht abgenickt): 53° zur Waagerechten
+# Stand 4: flacher (Nutzer: der Faden läuft zu steil). Böschung 1,2 mm je mm Höhe = 40° zur Waagerechten, 0,24 mm Überhang je Schicht
+# (Plan Steckprobe 2: 0,15). Vorschlag, ungetestet; T1 druckt beide Winkel nebeneinander.
+V = dict(V_PLAN2, slope=1.2)
+V["y"] = round(V["apex"] * V["slope"] + V["entry_r"] + V["wall"], 2)   # Mitte des V von der Kante: Trichter mit Wand 1,4 zur Kante
 STAMP_AIR = P2.PROP["STAMP_AIR"]    # Anschlag unter dem Leistenkörper: 1,2 mm Luft (Vorschlag r4, Karte D)
 EF_CH = P2.PROP["EF_CH"]            # Fase an Bettkanten 0,5 (Vorschlag r4)
 
@@ -48,11 +52,24 @@ POST = (6.0, 40.0)        # E  Stützen unter der Oberplatte: Kante, Raster
 PIN = dict(d=4.0, h=1.5, clr=0.15)   # E  Zentrierzapfen auf Stützen, Loch in der Oberplatte mit Gleitspiel 0,15 (L10)
 NOTCH_PAD = 0.4           # E  Eckaussparung im Unterkasten reicht so weit über die Fadentrichter hinaus
 
+# ---- Dock in der Oberplatte: Kabelnische hinter den Lötenden (Nutzer: Lötenden brauchen viel Freiluft, das Kabel muss nach unten fallen)
+SLOT_END = P2.PROP["SLOT_END"]   # Ende des Lötendenschlitzes -8,0 (Plan Steckprobe 2)
+NICHE = dict(w=24.0, l=16.0, rib=1.6, rib_x=4.0)   # E  Nische hinter dem Schlitz: Breite, Länge, Stege gegen Durchhängen (Fenster höchstens 8 mm)
+ANSCHLAG = dict(w=18.0, t=1.8, gusset=6.0)          # E  Steg unter dem Körper der Leiste im Unterkasten (Länge, Dicke, Strebe), 1,2 Luft
+ZONE_PAD = 2.0                                      # E  Platz rund um Nische und Körper, in dem Unterkasten und Powerbank nichts haben
+KASS_WALL = 1.2                                     # E  Wand des Gebäudes um den Schacht der Kassette
+
+# ---- Fasen (Bettkanten gegen den Elefantenfuß, Einführfasen), Quelle Logbuch L02, L03
+CH_BED = 0.5                                        # Bettkanten von Steckteilen und Mündungen am Bett (Plan Steckprobe 2: 0,5)
+CH_HOF = 0.4                                        # Innenhof-Teil unten (nur 1 mm in der Vertiefung)
+CH_PIN = 0.5                                        # Spitze der Zentrierzapfen
+
 # ---- Elektronik, Doktorhut
 ESP_BOX = (60.0, 35.0)    # S  ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter
 HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemessen
 
 # ---- Druck und Material
 BED = 250.0               # Druckbett Bambu A1 (256, mit Rand)
+SCALES = (1000, 1200, 1250)   # 1000 zur Referenz; 1200: erster runder Maßstab, bei dem die Platte auf den Hut passt
 PLA = 1.24                # g/cm³
 SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken/Böden), 15 % Füllung

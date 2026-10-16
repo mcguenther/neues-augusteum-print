@@ -11,7 +11,7 @@
   --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
   --canvas: #e7eae5; --edge: #1b2220;
   --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
-  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-hut: #2b2f33;
+  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-niche: #d97a1f; --c-hut: #2b2f33;
   --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -21,7 +21,7 @@
     --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
     --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
     --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
-    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-hut: #3a4046;
+    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
     color-scheme: dark;
   }
 }
@@ -30,7 +30,7 @@
   --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
   --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
   --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
-  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-hut: #3a4046;
+  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -139,17 +139,28 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 .parts .card { gap: 4px; }
 .parts .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
 #corner { width: 100%; max-width: 640px; height: auto; display: block; }
-#corner text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+#corner text { font-family: var(--font); font-size: 11px; fill: var(--fg); }
 #corner .mut { fill: var(--muted); }
+.pill.no { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips .pill { font-size: 0.7rem; padding: 0 6px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+#dock, #chfig { width: 100%; height: auto; display: block; }
+#dock text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+#chfig text { font-family: var(--font); font-size: 10.5px; fill: var(--fg); }
+#dock .mut, #chfig .mut { fill: var(--muted); }
+.inv { fill: var(--panel) !important; }
+#dock .dim, #chfig .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.legend .sw2::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--sw); }
 </style>
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 3</div>
+  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 4</div>
   <h1>Powerbank in der Grundplatte</h1>
-  <p class="lead">Maßstab 1:1000. Oberplatte mit den Mulden über einem hohlen Unterkasten, darin die Intenso XS5000 unter dem Innenhof.
-    Stand 3 übernimmt die Maßkette und die Passungen aus der Steckprobe und die Fadenführung aus dem Plan zur Steckprobe 2. Er klärt, wie die
-    Teile zusammenpassen und was als Nächstes gedruckt wird.</p>
+  <p class="lead">Stand 4 prüft die Fasen, setzt den Maßstab so, dass die Platte auf den Doktorhut passt, gibt den Lötenden eine große Kabelnische und
+    führt den Faden flacher durch die Ecken. Die Zahlen kommen aus den OSM-Grundrissen und den Werten der Steckprobe.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -157,19 +168,29 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <div class="answer" id="answer"></div>
 </section>
 
+<section aria-labelledby="h-sc">
+  <h2 id="h-sc">Maßstab und Doktorhut</h2>
+  <div class="sticky"><div class="seg" role="radiogroup" aria-label="Maßstab" id="seg"></div></div>
+  <p class="vnote" id="vnote"></p>
+  <div class="scroll"><table id="vtab"></table></div>
+  <p class="small muted">Doktorhut mit <span class="num" id="hutTxt"></span> Kantenlänge angenommen, nicht gemessen. Kassette: <span class="num" id="kassTxt"></span>
+    mit <span class="num" id="kwallTxt"></span> Wand um den Schacht. „Dock frei“ heißt: Die Nische (siehe unten) liegt weder über der Powerbank noch über der
+    Elektronik, den Eckaussparungen oder einem anderen Dock.</p>
+</section>
+
 <section aria-labelledby="h-view">
   <h2 id="h-view">Platte <span class="num muted" id="viewDims" style="font-size:1rem;font-weight:500"></span></h2>
   <div class="views">
     <div class="card">
       <h3>Draufsicht <span class="muted small num" id="planDims"></span></h3>
-      <svg id="plan" role="img" aria-label="Draufsicht der Platte mit Gebäuden, Innenhof, Powerbank, Fadenführung und Doktorhut"></svg>
+      <svg id="plan" role="img" aria-label="Draufsicht der Platte mit Gebäuden, Docks, Powerbank, Fadenführung und Doktorhut"></svg>
       <div class="legend">
         <span style="--sw:var(--c-bld)">Gebäude (Mulde)</span><span style="--sw:var(--c-hof)">Innenhof</span>
         <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Steckerraum, Kabel</span>
-        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-under)">Stütze, mit Zapfen umrandet</span>
-        <span style="--sw:var(--c-thread)">Faden-V, Eckaussparung</span>
+        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-niche)">Dock: Körper und Kabelnische</span>
+        <span style="--sw:var(--c-under)">Stütze, mit Zapfen umrandet</span><span style="--sw:var(--c-thread)">Faden-V, Eckaussparung</span>
         <span style="--sw:var(--c-cut)">Stoß Oberplatte</span><span style="--sw:var(--c-cut2)">Stoß Unterkasten</span>
-        <span style="--sw:var(--c-hut)">Doktorhut <span class="num" id="hutTxt"></span></span>
+        <span style="--sw:var(--c-hut)">Doktorhut</span>
       </div>
     </div>
     <div class="card">
@@ -179,7 +200,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
         <label for="explode">Auseinanderziehen</label><input type="range" id="explode" min="0" max="1" step="0.01" value="0.35">
         <label><input type="checkbox" id="xray" checked> Platte durchsichtig</label>
         <label><input type="checkbox" id="hut"> Doktorhut</label>
-        <span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="edge">Kante</button><button type="button" data-view="corner">Ecke</button></span>
+        <span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="edge">Kante</button><button type="button" data-view="dock">Dock</button><button type="button" data-view="corner">Ecke</button></span>
       </div>
       <div class="legend">
         <span style="--sw:var(--c-plate)">Oberplatte</span><span style="--sw:var(--c-under)">Unterkasten</span>
@@ -194,95 +215,98 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   </div>
 </section>
 
-<section aria-labelledby="h-fit">
-  <h2 id="h-fit">Wie die Teile zusammenpassen</h2>
-  <div class="parts" id="parts"></div>
-  <h3>Zusammenbau</h3>
-  <ol>
-    <li>Winkelleisten von unten in die Taschen der Oberplatte stecken, je ein Tropfen Heißkleber, Adern an die Lötenden löten. Die Lötenden
-      zeigen frei nach unten, darunter ist nur noch der Unterkasten.</li>
-    <li>Oberplatte umdrehen. An jeder Ecke einen Faden durch den V-Kanal ziehen: in einen Trichter hinein, über die Lasche, aus dem anderen
-      Trichter heraus (gebogene Nadel oder Draht). Beide Enden hängen lassen.</li>
-    <li>Unterkasten bestücken: Elektronik, Sammelleitung, Powerbank mit eingestecktem USB-A-Kabel in den Zaun, Kabel in den Kanal, Stößel in
-      seine Führung.</li>
-    <li>Oberplatte aufsetzen: Zapfen in die Löcher, die Anschläge stehen <span class="num" id="stampTxt"></span> unter den Leisten, die Fadenenden
-      hängen durch die Eckaussparungen nach unten.</li>
-    <li>Auf den Doktorhut setzen, die acht Fadenenden durch den Hut nähen und festziehen. Der Faden zieht die Oberplatte auf den Unterkasten
-      und beide auf den Hut.</li>
-    <li>Innenhof einlegen, Gebäude stecken. Laden über USB-C durch das Fenster in der Kante, Taste über den Stößel.</li>
-  </ol>
-  <h3>Passmaße</h3>
-  <div class="scroll"><table id="fits"></table></div>
-  <p class="small muted">Status wie im Logbuch (<code>plug/logbook/current.md</code>). Die Werte stehen in <code>plug/power/params.py</code>; was aus der
-    Steckprobe kommt, liest die Datei aus <code>plug/testcase/params.py</code> und dem Plan zur Steckprobe 2, damit beide dieselbe Maßkette haben.</p>
+<section aria-labelledby="h-dock">
+  <h2 id="h-dock">Dock: Platz hinter den Lötenden</h2>
+  <div class="two">
+    <div class="card"><h3>Längsschnitt durch die Pinreihe, Lötenden nach rechts, im Maßstab</h3><svg id="dock" role="img" aria-label="Schnitt durch ein Dock mit Kabelnische, Anschlag und herabhängenden Adern"></svg></div>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <ul>
+        <li><b>Vorher:</b> Schlitz nur <span class="num" id="oldSlot"></span> hinter der Leiste, darunter ein Anschlagblock. Die Adern hatten keinen Raum, um nach unten zu fallen. Die Decke über der Nische liegt <span class="num" id="roofTxt"></span> unter dem Muldenboden.</li>
+        <li><b>Jetzt:</b> hinter der Körpertasche eine Kabelnische, <span class="num" id="nW"></span> breit und <span class="num" id="nL"></span> lang, Decke
+          <span class="num" id="nH"></span> über dem Bett (Höhe der Stufe aus der Steckprobe). Von dort fallen die Adern frei in den Unterkasten.</li>
+        <li>Drei Fenster mit zwei Stegen (<span class="num" id="nRib"></span>): Die Decke überbrückt nie mehr als etwa 8 mm (L04). Alle Mündungen am Bett haben
+          <span class="num" id="nCh"></span> Fase.</li>
+        <li>Darunter ist der Unterkasten <span class="num" id="ukH"></span> hoch hohl. In der Dockzone (<span class="num" id="zoneTxt"></span>) stehen weder Stütze noch Zaun,
+          und die Powerbank liegt nicht darunter: Sie hat nur <span class="num" id="clrZ"></span> Luft nach oben.</li>
+        <li>Der Anschlag ist jetzt ein Steg (<span class="num" id="ansTxt"></span>) unter dem Körper, mit <span class="num" id="airTxt"></span> Luft und zwei Streben nach vorn. Die Kabelseite bleibt offen.</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section aria-labelledby="h-oe">
-  <h2 id="h-oe">Faden an den Ecken</h2>
-  <div class="views">
+<section aria-labelledby="h-fd">
+  <h2 id="h-fd">Faden an den Ecken, flacher</h2>
+  <div class="two">
     <div class="card"><h3>Schnitt durch eine Ecke, entlang des V</h3><svg id="corner" role="img" aria-label="Schnitt durch eine Ecke mit V-Kanal, Eckaussparung und Fadenweg"></svg></div>
     <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
       <ul>
-        <li>Der V-Kanal aus dem Plan zur Steckprobe 2 sitzt in der Oberplatte: Kanal <span class="num" id="vLeg"></span>, Scheitel
-          <span class="num" id="vApex"></span> über der Unterseite, Schenkel als Böschung mit 0,15 mm Überhang je Schicht, Trichter
-          <span class="num" id="vR"></span> am Bett. Der Faden tritt nicht an der Oberseite aus.</li>
-        <li>Neu gegenüber der Steckprobe: Der Deckel ist hier ein <span class="num" id="ukH"></span> hoher Unterkasten. An jeder Ecke ist er
-          ausgespart (<span class="num" id="notchTxt"></span>), der Faden hängt dort frei vom Trichter zum Hut.</li>
-        <li>Lage: so nah an der Ecke, wie Mulden und Innenhof es zulassen, Wände mindestens <span class="num" id="vWall"></span>. Bei 1:1000 liegen alle
-          vier V direkt in den Ecken.</li>
-        <li>Festgezogen drückt der Faden die Oberplatte auf den Unterkasten. Die Zapfen halten beide Teile seitlich, auch an den Stößen der Druckteile.</li>
+        <li>Neigung <span class="num" id="vAng"></span> zur Waagerechten statt <span class="num" id="vAng2"></span> im Plan Steckprobe 2. Der Faden knickt am Scheitel
+          dadurch um <span class="num" id="vTurn"></span> statt um <span class="num" id="vTurn2"></span>. Scheitel weiter <span class="num" id="vApex"></span> über der Unterseite, Kanal
+          <span class="num" id="vLeg"></span>, Trichter <span class="num" id="vR"></span>. Gestrichelt der alte Verlauf.</li>
+        <li>Der Preis: <span class="num" id="vOver"></span> Überhang je Schicht statt 0,15 mm (etwa 50° zur Senkrechten statt 37°). Das ist ein Risiko für den Druck,
+          Platte B lief mit 0,15. T1 druckt beide Winkel nebeneinander.</li>
+        <li>Die Eintritte liegen <span class="num" id="vSpan"></span> auseinander, die Lasche ist entsprechend breiter. Bei allen drei Maßstäben passen die vier V direkt in die Ecken
+          (Wand zur Kante und zu den Mulden mindestens <span class="num" id="vWall"></span>).</li>
+        <li>Der Unterkasten ist an jeder Ecke ausgespart; der Faden hängt dort frei vom Trichter zum Hut. Festgezogen drückt er die Oberplatte auf den Unterkasten.</li>
       </ul>
-      <p class="small muted" id="hutNote"></p>
     </div>
   </div>
+</section>
+
+<section aria-labelledby="h-ch">
+  <h2 id="h-ch">Fasen-Check</h2>
+  <div class="two">
+    <div class="card"><h3>Fuß in der Mulde, Schnitt im Maßstab</h3><svg id="chfig" role="img" aria-label="Schnitt durch Fuß und Mulde mit den Fasen"></svg></div>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <ul>
+        <li>Die Gebäude haben jetzt im Modell die <b>Fußfase</b> (<span class="num" id="chFoot"></span>) aus dem Probestück, die Mulden die <b>Muldenfase</b>
+          (<span class="num" id="chPocket"></span>). Beides kommt aus <code>plug/institute.py</code>.</li>
+        <li>Alle Teile, die am Bett liegen, haben an Außenkanten und Mündungen <span class="num" id="chBed"></span> Fase (Elefantenfuß, L02, L03).</li>
+        <li>Noch nicht im Konzept: Schachteingang der Kassette im Gebäude-Generator, <code>innenhof.py</code> und die Stoßkanten beim Teilen. Das sind drei Aufgaben für den Generator.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll"><table id="fasen"></table></div>
+</section>
+
+<section aria-labelledby="h-fit">
+  <h2 id="h-fit">Wie die Teile zusammenpassen</h2>
+  <ol>
+    <li>Winkelleisten von unten in die Taschen der Oberplatte stecken, Heißkleber, Adern anlöten und nach unten hängen lassen.</li>
+    <li>Oberplatte umdrehen, Fäden durch die V-Kanäle ziehen (gebogene Nadel oder Draht), Enden hängen lassen.</li>
+    <li>Unterkasten bestücken: Elektronik, Sammelleitung, Powerbank mit USB-A-Kabel im Zaun, Stößel.</li>
+    <li>Oberplatte aufsetzen: Zapfen in die Löcher, Stege unter den Leisten mit <span class="num" id="stampTxt"></span> Luft, Fadenenden durch die Eckaussparungen.</li>
+    <li>Auf den Doktorhut nähen und festziehen. Innenhof einlegen, Gebäude stecken. Laden über USB-C durch das Fenster in der Kante.</li>
+  </ol>
+  <div class="scroll"><table id="fits"></table></div>
+  <p class="small muted">Status wie im Logbuch (<code>plug/logbook/current.md</code>). Werte in <code>plug/power/params.py</code>; die Steckprobe-Werte kommen aus
+    <code>plug/testcase/</code>.</p>
 </section>
 
 <section aria-labelledby="h-pb">
   <h2 id="h-pb">Powerbank im Fach</h2>
   <ul>
-    <li>Anschlussseite zur Nordkante, die Powerbank sitzt <span class="num" id="plugTxt"></span> hinter der Kante. Davor steckt ein gerader
-      USB-A-Stecker, das Kabel biegt zur Längsseite und läuft in einem <span class="num" id="cableTxt"></span> breiten Kanal zurück.</li>
-    <li>Ein Fenster in der Kante (<span class="num" id="winTxt"></span> breit) gibt LEDs, microUSB und USB-C frei. Die Taste liegt im Fenster,
-      aber <span class="num" id="plugTxt2"></span> tief: ein gedruckter Stößel (<span class="num" id="rodTxt"></span>) reicht bis zur Kante.</li>
-    <li>Die Powerbank liegt im Zaun (<span class="num" id="fenceTxt"></span>) mit <span class="num" id="clrTxt"></span> Spiel je Seite,
-      darüber <span class="num" id="clrZTxt"></span> Luft bis zur Oberplatte. Sie liegt zu <span class="num" id="hofPct"></span> unter dem Innenhof,
-      sonst unter Institutsgebäude, Seminargebäude und Paulinum; deren Docks müssen neben dem Fach sitzen.</li>
+    <li>Anschlussseite zur Plattenkante, <span class="num" id="plugTxt"></span> Steckerraum für einen geraden USB-A-Stecker, Kabelkanal <span class="num" id="cableTxt"></span> an
+      der Längsseite, Fenster in der Kante (<span class="num" id="winTxt"></span>) für LEDs, microUSB und USB-C, Stößel <span class="num" id="rodTxt"></span> zur Taste.</li>
+    <li>Zaun <span class="num" id="fenceTxt"></span>, <span class="num" id="clrTxt"></span> Spiel je Seite. Fach <span class="num" id="fachTxt"></span>. Maße der Powerbank
+      <span class="num" id="pbDims"></span> (Datenblatt, ungemessen).</li>
   </ul>
-  <div class="scroll"><table id="pbtab"></table></div>
 </section>
 
 <section aria-labelledby="h-next">
   <h2 id="h-next">Was als Nächstes gedruckt wird</h2>
-  <p>Vorschlag: zwei kleine Teile in einem Druck. Die Steckprobe 2 bekommt den neuen Aufbau, sie prüft damit Steckmechanismus, Anschlag, Zapfen
-    und Faden zusammen. Die Fachprobe misst die Powerbank, bevor die große Platte entsteht. Erst nach dem Abnicken gibt es STL (Regel 2 im Logbuch).</p>
+  <p>Vorschlag, nicht abgenickt (Regel 2 im Logbuch: erst abnicken, dann STL):</p>
   <div class="tests" id="tests"></div>
   <h3>Vor dem Druck zu entscheiden</h3>
-  <ol>
-    <li>Steckprobe 2 im neuen Aufbau (Oberplatte 12,6 + Mini-Unterkasten) statt Platte B 16,2 + Deckel 2,0?</li>
-    <li>Die offenen Karten aus dem Plan zur Steckprobe 2: Fadenführung (V-Kanal), Halt der Winkelleiste (Anschlag mit 1,2 mm Luft und Heißkleber),
-      Taschenhöhe 14,60, Schachttiefe Kassette + 0,3, Fase 0,5, Lötschlitz.</li>
-    <li>Fachprobe jetzt mitdrucken oder erst die Powerbank und den USB-Stecker nachmessen?</li>
-  </ol>
+  <ol id="decide"></ol>
 </section>
 
 <section aria-labelledby="h-el">
   <h2 id="h-el">Strom</h2>
-  <p>Schaltplan und Laufzeit stehen im eigenen Chat. Für die Platte zählt nur: Die Powerbank liefert 5 V mit <span class="num" id="imaxTxt"></span>
-    gesamt, über ein gerades USB-A-Kabel in die Sammelleitung im Unterkasten. Unter etwa <span class="num" id="keepTxt"></span> Last geht sie nach
-    <span class="num" id="sleepTxt"></span> in den Standby; das muss die Schaltung berücksichtigen.</p>
+  <p>Eigener Chat. Für die Platte zählt: 5 V mit <span class="num" id="imaxTxt"></span> gesamt, gerades USB-A-Kabel in die Sammelleitung im Unterkasten; unter etwa
+    <span class="num" id="keepTxt"></span> Last geht die Powerbank nach <span class="num" id="sleepTxt"></span> in den Standby.</p>
 </section>
-
-<section aria-labelledby="h-op">
-  <h2 id="h-op">Offen</h2>
-  <ol>
-    <li>Doktorhut messen: Kantenlänge, Knopf in der Mitte (Höhe, Durchmesser). Bei 1:1000 steht die Platte über den angenommenen 24-cm-Hut hinaus.</li>
-    <li>Powerbank und USB-A-Stecker messen (Fachprobe): Außenmaße, Lage von LEDs, Taste und Buchsen, Länge des Steckergriffs.</li>
-    <li>Lage der Docks je Gebäude festlegen: nicht über dem Fach, neben einer Stütze für den Anschlag.</li>
-    <li>Danach Oberplatte und Unterkasten im Generator bauen und die bewährten Werte nach <code>plug/parts.py</code> übernehmen.</li>
-  </ol>
-</section>
-<p class="small muted">Erzeugt mit <code>python3 -m plug.power.build_concept</code> aus <code>plug/power/concept.template.html</code>.
-  Werte in <code>plug/power/params.py</code>.</p>
+<p class="small muted">Erzeugt mit <code>python3 -m plug.power.build_concept</code> aus <code>plug/power/concept.template.html</code>. Werte in <code>plug/power/params.py</code>.</p>
 </div>
 
 <script type="application/json" id="data">/*DATA*/</script>
@@ -291,114 +315,122 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 (function () {
   const $ = (id) => document.getElementById(id);
   const D = JSON.parse($('data').textContent);
-  const H = D.heights, PB = D.pb, FA = D.fach, UK = D.uk, VV = D.v;
+  const H = D.heights, PB = D.pb, FA = D.fach, UK = D.uk, VV = D.v, DK = D.dock, NI = D.niche, CHD = D.ch;
   const fmt = (v, n = 1) => (+v).toFixed(n).replace('.', ',').replace('-', '−');
   const mm = (v, n = 1) => fmt(v, n) + ' mm';
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const dims = fmt(D.plate[0], 0) + ' × ' + fmt(D.plate[1], 0) + ' × ' + fmt(D.thick, 0) + ' mm';
+  const set = (id, t) => { $(id).textContent = t; };
+  const V = Object.fromEntries(D.variants.map((v) => [v.scale, v]));
+  const dimsOf = (v) => fmt(v.plate[0], 0) + ' × ' + fmt(v.plate[1], 0) + ' × ' + fmt(v.thick, 0) + ' mm';
   const cen = (polys) => { let x = 0, y = 0, n = 0; for (const p of polys) for (const q of p) { x += q[0]; y += q[1]; n++; } return [x / n, y / n]; };
   const bb = (p) => { const xs = p.map((q) => q[0]), ys = p.map((q) => q[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+  const short = { '01_paulinum': 'Paulinum', '02_neues_augusteum': 'Augusteum', '03_hoersaalgebaeude': 'Hörsaal', '04_seminargebaeude': 'Seminar', '05_institutsgebaeude': 'Institut', '06_city_hochhaus': 'Hochhaus' };
+  const rec = V[D.rec];
+  let cur = D.rec;
 
   /* ---------- Texte ---------- */
-  const set = (id, t) => { $(id).textContent = t; };
-  set('viewDims', '1:' + D.scale + ' · ' + dims);
-  set('hutTxt', fmt(D.hut.size / 10, 0) + ' × ' + fmt(D.hut.size / 10, 0) + ' cm');
+  const kw = DK.kass_w, kl = DK.kass1 - DK.kass0;
+  set('hutTxt', fmt(D.hut / 10, 0) + ' × ' + fmt(D.hut / 10, 0) + ' cm');
+  set('kassTxt', fmt(kw, 1) + ' × ' + fmt(kl, 1) + ' mm'); set('kwallTxt', '1,2 mm');
+  set('oldSlot', mm(3.0 + 0.7, 1)); set('roofTxt', mm(-H.F - H.z_slot)); set('nW', mm(NI.w, 0)); set('nL', mm(DK.y_slot - DK.niche_end, 0)); set('nH', mm(H.z_slot - H.z_bb));
+  set('nRib', mm(NI.rib)); set('nCh', mm(CHD.bed)); set('ukH', mm(H.uk_t));
+  set('zoneTxt', fmt(NI.w + 4, 0) + ' × ' + fmt(DK.y_front + 2 - (DK.niche_end - 2), 0) + ' mm'); set('clrZ', mm(PB.clr_z));
+  set('ansTxt', fmt(UK.anschlag.w, 0) + ' × ' + fmt(UK.anschlag.t, 1) + ' mm'); set('airTxt', mm(H.z_bb - H.stamp_top));
+  const hs = D.v_hs, hs2 = D.v_plan2.apex * D.v_plan2.slope;
+  set('vAng', fmt(D.v_angle, 0) + '°'); set('vAng2', fmt(D.v_plan2.angle, 0) + '°');
+  set('vTurn', fmt(2 * D.v_angle, 0) + '°'); set('vTurn2', fmt(2 * D.v_plan2.angle, 0) + '°');
+  set('vApex', mm(VV.apex)); set('vLeg', 'Ø ' + mm(VV.leg_d)); set('vR', 'R ' + mm(VV.entry_r)); set('vWall', mm(VV.wall));
+  set('vOver', mm(0.2 * VV.slope, 2)); set('vSpan', mm(2 * hs));
+  set('chFoot', mm(CHD.foot)); set('chPocket', mm(CHD.pocket)); set('chBed', mm(CHD.bed));
   set('stampTxt', mm(H.z_bb - H.stamp_top));
-  set('vLeg', 'Ø ' + mm(VV.leg_d)); set('vApex', mm(VV.apex)); set('vR', 'R ' + mm(VV.entry_r)); set('vWall', mm(VV.wall));
-  set('ukH', mm(H.uk_t));
-  const nb = bb(D.vs[0].notch.map((p) => [Math.max(0, Math.min(D.plate[0], p[0])), Math.max(0, Math.min(D.plate[1], p[1]))]));
-  set('notchTxt', fmt(nb[2] - nb[0], 1) + ' × ' + fmt(nb[3] - nb[1], 1) + ' mm');
-  set('plugTxt', mm(PB.plug, 0)); set('plugTxt2', mm(PB.plug, 0)); set('cableTxt', mm(PB.cable, 0));
-  set('winTxt', mm(FA.win[1] - FA.win[0], 0)); set('rodTxt', fmt(PB.rod, 0) + ' × ' + fmt(PB.rod, 0) + ' mm');
-  set('fenceTxt', fmt(UK.fence[0], 1) + ' × ' + fmt(UK.fence[1], 0) + ' mm'); set('clrTxt', mm(PB.clr)); set('clrZTxt', mm(PB.clr_z));
-  set('hofPct', D.under_hof + ' %');
+  set('plugTxt', mm(PB.plug, 0)); set('cableTxt', mm(PB.cable, 0)); set('winTxt', mm(FA.win[1] - FA.win[0], 0)); set('rodTxt', fmt(PB.rod, 0) + ' × ' + fmt(PB.rod, 0) + ' mm');
+  set('fenceTxt', fmt(UK.fence[0], 1) + ' × ' + fmt(UK.fence[1], 0) + ' mm'); set('clrTxt', mm(PB.clr));
+  set('fachTxt', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm'); set('pbDims', fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1) + ' mm');
   set('imaxTxt', fmt(PB.imax, 1) + ' A'); set('keepTxt', PB.keep + ' mA'); set('sleepTxt', PB.sleep + ' s');
-  set('hutNote', 'Doktorhut mit ' + fmt(D.hut.size / 10, 0) + ' cm Kantenlänge angenommen (bitte messen). Die Platte ist ' + fmt(D.plate[0] / 10, 1) + ' × ' +
-    fmt(D.plate[1] / 10, 1) + ' cm groß und steht in der Länge ' + fmt((D.plate[1] - D.hut.size) / 20, 1) + ' cm je Seite über.');
-  const M = D.material, g = M.ober[0] + M.uk[0];
+
+  const nFit = (v) => Object.values(v.cand).filter((c) => c > 0).length;
+  const gsum = (v) => v.material.ober[0] + v.material.uk[0];
+  const v1 = V[1000];
   $('answer').innerHTML =
-    `<div class="rec"><span class="lbl">Platte 1:${D.scale}</span><span class="big">${dims}</span>
-      <span class="small">Oberplatte <span class="num">${mm(-H.deck)}</span> (Mulde ${fmt(H.F)} + Muldenboden ${fmt(H.ceil)} + Leiste ${fmt(H.body)}),
-      Unterkasten <span class="num">${mm(H.uk_t)}</span>. Je 2 Druckteile, Material etwa <span class="num">${g} g</span>.</span></div>
-    <div><span class="lbl">Aus der Steckprobe übernommen</span><span class="big">E ${fmt(H.E, 2)} mm</span>
-      <span class="small">Mulde ${fmt(H.F)} tief mit 0,10 Spiel, Muldenboden 0,4, Dock wie Platte B mit offener Tasche nach unten, Anschlag mit
-      ${fmt(H.z_bb - H.stamp_top)} Luft, V-Kanal für den Faden, keine Schrauben.</span></div>
-    <div><span class="lbl">Nächster Druck (Vorschlag)</span><span class="big">2 Proben</span>
-      <span class="small">Steckprobe 2 im neuen Zwei-Lagen-Aufbau mit Faden-Ecke, dazu eine Fachprobe für Powerbank, Fenster, Stößel und
-      USB-Stecker.</span></div>`;
+    `<div class="rec"><span class="lbl">Maßstab für den Hut</span><span class="big">1:${rec.scale}</span>
+      <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt knapp auf den 24-cm-Hut (${fmt(-rec.hut.over, 2)} mm Rand je Seite); 1:1250 lässt
+      ${fmt(-V[1250].hut.over, 1)} mm. Bei 1:1000 stünde die Platte ${fmt(v1.hut.over, 1)} mm über. <b>Preis:</b> Die Kassette passt nur noch in ${nFit(rec)} von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus).</span></div>
+    <div><span class="lbl">Fasen</span><span class="big">geprüft</span>
+      <span class="small">Fußfase ${fmt(CHD.foot)} und Muldenfase ${fmt(CHD.pocket)} sind jetzt im Modell, dazu ${fmt(CHD.bed)} an allen Bettkanten und Mündungen. Drei Stellen liegen im Generator und fehlen noch (Tabelle unten).</span></div>
+    <div><span class="lbl">Lötenden</span><span class="big">${fmt(NI.w, 0)} × ${fmt(DK.y_slot - DK.niche_end, 0)} mm Nische</span>
+      <span class="small">Hinter der Körpertasche ein offener Raum, darunter der Unterkasten ${fmt(H.uk_t)} hoch hohl. Die Docks liegen nicht über der Powerbank. ${Object.entries(rec.sides).map(([k, q]) => ({ N: 'Nordkante', S: 'Südkante' })[k] + ': ' + q.ok + ' von ' + rec.n_possible + ' Docks frei, ' + q.under_hof + ' % unter dem Hof').join('; ')}. Die Suche nimmt die Lage mit den meisten freien Docks.</span></div>
+    <div><span class="lbl">Faden</span><span class="big">${fmt(D.v_angle, 0)}° statt ${fmt(D.v_plan2.angle, 0)}°</span>
+      <span class="small">Der Faden knickt am Scheitel um ${fmt(2 * D.v_angle, 0)}° statt ${fmt(2 * D.v_plan2.angle, 0)}°. Überhang ${fmt(0.2 * VV.slope, 2)} mm je Schicht statt 0,15: Das muss T1 zeigen.</span></div>`;
 
-  /* ---------- Teile ---------- */
-  $('parts').innerHTML = [
-    ['--c-plate', 'Oberplatte', mm(-H.deck) + ' · 2 Teile', 'Mulden oben, Unterseite am Bett. Docks, Zapfenlöcher und V-Kanäle von unten, nur Böschungen und kurze Decken.'],
-    ['--c-under', 'Unterkasten', mm(H.uk_t) + ' · 2 Teile', 'Boden am Bett, offen nach oben. Stützen, Zapfen, Zaun, Fenster, Eckaussparungen. Stoß versetzt zur Oberplatte.'],
-    ['--c-hof', 'Innenhof', 'Einlegeteil', 'Liegt in der 1-mm-Vertiefung der Oberplatte, wie bisher.'],
-    ['--c-bld', 'Gebäude mit Fuß', 'Kassette eingepresst', 'Fuß ' + mm(H.F) + ' in der Mulde, Spiel 0,10; Pins der Leiste gehen in die Buchse der Kassette.'],
-    ['--c-pb', 'Powerbank', fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1), 'Lose im Zaun des Unterkastens, oben von der Oberplatte gehalten.'],
-    ['--c-thread', 'Faden', '4 Ecken', 'Vom Hut durch die Eckaussparung, durch den V-Kanal, zurück zum Hut.']
-  ].map(([c, t, m, d]) => `<div class="card"><h3><span class="sw" style="background:var(${c})"></span>${t}</h3><span class="meta">${m}</span><span class="small">${d}</span></div>`).join('');
-
-  /* ---------- Passmaße ---------- */
-  const pill = (s) => { const c = /bewährt/.test(s) && !/offen/.test(s) ? 'ok' : /Vorschlag|Zwischenstand|vorläufig|Regel/.test(s) ? 'mid' : 'warn'; return `<span class="pill ${c}">${s}</span>`; };
-  $('fits').innerHTML = '<thead><tr><th>Fuge</th><th>Wert</th><th>Status</th><th>Herkunft</th></tr></thead><tbody>' +
-    D.fits.map((r) => `<tr><td>${r[0]}</td><td class="num" style="white-space:normal">${r[1].replace(/\./g, ',')}</td><td>${pill(r[2])}</td><td class="src">${r[3]}</td></tr>`).join('') + '</tbody>';
-
-  /* ---------- Testdrucke ---------- */
-  const fl = FA.L + 2 * UK.wall + 4, fw = FA.W + 2 * UK.wall + 4;
-  $('tests').innerHTML = [
-    ['rec', 'T1 · Steckprobe 2 im neuen Aufbau', 'etwa 38 × 52 mm Grundfläche · Oberplatte ' + mm(-H.deck) + ' + Unterkasten ' + mm(H.uk_t) + ' · Gebäude und Kassette aus dem Plan zur Steckprobe 2',
-      ['Alles aus Steckprobe 2: Taschenhöhe 14,60, Schacht + 0,3, Fase 0,5, Pins, Kontakt, Licht', 'Dock mit nach unten offener Tasche: Platz für Kabel und Lötstellen (L20)',
-        'Anschlag aus dem Unterkasten (1,2 mm Luft) und Heißkleber: kippt der Körper noch?', 'Zapfen und Löcher: sitzt die Oberplatte ohne Spiel und ohne Klemmen?',
-        'Faden an zwei Ecken: einfädeln, festziehen, drückt er die Teile zusammen?']],
-    ['rec', 'T2 · Fachprobe Powerbank', 'etwa ' + fmt(fl, 0) + ' × ' + fmt(fw, 0) + ' mm · Unterkasten-Ausschnitt ' + mm(H.uk_t) + ' hoch + Deckplatte 2 mm mit Zapfenlöchern',
-      ['Powerbank im Zaun: Spiel ' + fmt(PB.clr, 1) + ' je Seite, ' + fmt(PB.clr_z, 1) + ' Luft oben (unter der Deckplatte)', 'Fenster trifft LEDs, microUSB und USB-C; Ladekabel lässt sich einstecken',
-        'Stößel drückt die Taste, gleitet in der Führung', 'Gerader USB-A-Stecker und Kabel passen in ' + fmt(PB.plug, 0) + ' mm und den Kanal von ' + fmt(PB.cable, 0) + ' mm',
-        'Nebenbei: Zapfen-Passung an einem zweiten Ort']],
-    ['', 'T3 · später: Stoß der Druckteile', 'Streifen über den Stoß von Oberplatte und Unterkasten',
-      ['Versetzte Stöße und Zapfen: bleibt die Platte eben?', 'erst nach T1, wenn die Zapfen-Passung feststeht']]
-  ].map(([c, t, m, l]) => `<div class="card ${c}"><h3>${t}</h3><span class="meta">${m}</span><ul>${l.map((x) => '<li>' + x + '</li>').join('')}</ul></div>`).join('');
-
-  /* ---------- Powerbank-Tabelle ---------- */
-  $('pbtab').innerHTML = '<thead><tr><th>Größe</th><th>Wert</th><th>Quelle</th></tr></thead><tbody>' + [
-    ['Außenmaße', fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1) + ' mm, ' + PB.g + ' g', 'B Datenblatt, ungemessen'],
-    ['Schmalseite', PB.ports.join(' · '), 'B Bild der Anleitung, Lage ungemessen'],
-    ['Fach', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm (Steckerraum ' + fmt(PB.plug, 0) + ', Kabelkanal ' + fmt(PB.cable, 0) + ')', 'S'],
-  ].map((r) => `<tr><td>${r[0]}</td><td class="num" style="white-space:normal">${r[1]}</td><td class="src">${r[2]}</td></tr>`).join('') + '</tbody>';
+  /* ---------- Maßstab wählen ---------- */
+  $('seg').innerHTML = D.variants.map((v) => `<input type="radio" name="v" id="v-${v.scale}" value="${v.scale}" ${v.scale === cur ? 'checked' : ''}><label for="v-${v.scale}">1:${v.scale} <span class="dims">${dimsOf(v)}</span></label>`).join('');
+  document.querySelectorAll('input[name=v]').forEach((r) => r.addEventListener('change', () => { cur = +r.value; render(); }));
+  const NOTE = (v) => {
+    const parts = [];
+    if (v.scale === 1000) parts.push('Referenz, wie bisher. Die Kassette passt in alle sechs Gebäude und die Powerbank liegt an der Nordkante zu ' + v.under_hof + ' % unter dem Innenhof, aber die Platte ist ' + fmt(v.plate[1], 0) + ' mm lang und steht ' + fmt(v.hut.over, 1) + ' mm je Seite über den Hut.');
+    else parts.push('Die Platte passt auf den 24-cm-Hut (' + fmt(v.plate[1], 1) + ' mm lang). Die Kassette passt in ' + nFit(v) + ' von 6 Gebäuden; ' + v.docks.filter((d) => !d.ok && d.why.startsWith('Kassette')).map((d) => short[d.slug]).join(' und ') + ' bleiben ohne LED-Dock.');
+    parts.push('Die Powerbank liegt an der ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side] + 'kante, zu ' + v.under_hof + ' % unter dem Innenhof.');
+    const alt = Object.entries(v.sides).filter(([k]) => k !== v.side).map(([k, q]) => 'Alternative ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[k] + 'kante: ' + q.ok + ' von ' + v.n_possible + ' Docks frei' + (q.fail.length ? ' (kein Platz für ' + q.fail.map((t) => t.split(' ')[0]).join(', ') + ')' : '') + ', ' + q.under_hof + ' % unter dem Hof.');
+    parts.push(...alt);
+    const nd = v.docks.filter((d) => !d.ok && !d.why.startsWith('Kassette'));
+    if (nd.length) parts.push('Kein freies Dock für ' + nd.map((d) => short[d.slug]).join(', ') + '.');
+    return parts.join(' ');
+  };
+  function table() {
+    const st = (ok, t) => `<span class="pill ${ok}">${t}</span>`;
+    let h = '<thead><tr><th>Maßstab</th><th>Platte B × T × H</th><th>Hut</th><th>Kassette passt in</th><th>Dock frei</th><th>Powerbank</th><th>Material</th></tr></thead><tbody>';
+    for (const v of D.variants) {
+      const chips = v.docks.map((d) => `<span class="pill ${d.ok ? 'ok' : d.why.startsWith('Kassette') ? 'warn' : 'mid'}" title="${d.ok ? 'Dock frei' : d.why}">${short[d.slug]}</span>`).join('');
+      const hut = v.hut.fits ? st('ok', fmt(-v.hut.over, 1) + ' mm Rand') : st('warn', fmt(v.hut.over, 1) + ' mm über');
+      h += `<tr class="${v.scale === cur ? 'sel' : ''}"><td>1:${v.scale}</td><td class="num">${dimsOf(v)}</td><td>${hut}</td><td><div class="chips">${chips}</div></td>
+        <td class="num">${v.docks_ok} von ${nFit(v)}</td><td>${({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side]}kante, ${v.under_hof} % unter dem Hof</td><td class="num">≈ ${gsum(v)} g</td></tr>`;
+    }
+    $('vtab').innerHTML = h + '</tbody>';
+  }
 
   /* ---------- Draufsicht ---------- */
-  (function plan() {
-    const W = D.plate[0], Hh = D.plate[1], k = 1;
+  function plan(v) {
+    const W = v.plate[0], Hh = v.plate[1];
     const py = (y) => Hh - y;
     const pts = (p) => p.map(([x, y]) => x.toFixed(2) + ' ' + py(y).toFixed(2));
     const path = (polys) => polys.map((p) => 'M' + pts(p).join('L') + 'Z').join('');
-    const sw = 0.35, fs = 4.2;
-    const hut = D.hut.size, hx0 = W / 2 - hut / 2, hy0 = Hh / 2 - hut / 2;
+    const sw = 0.35, fs = 4.0;
+    const hut = D.hut, hx0 = W / 2 - hut / 2, hy0 = Hh / 2 - hut / 2;
     let s = '';
     s += `<rect x="${hx0}" y="${hy0}" width="${hut}" height="${hut}" style="fill:var(--c-hut);fill-opacity:.12;stroke:var(--c-hut);stroke-width:${sw * 2};stroke-dasharray:4 2"/>`;
     s += `<circle cx="${W / 2}" cy="${Hh / 2}" r="8" style="fill:none;stroke:var(--c-hut);stroke-width:${sw * 1.5}"/>`;
     s += `<text x="${hx0 + 3}" y="${hy0 + hut - 3}" style="font-size:${fs}px;fill:var(--muted)">Doktorhut ${fmt(hut / 10, 0)} cm (angenommen)</text>`;
-    s += `<path d="${path(D.outline)}" style="fill:var(--c-plate);fill-opacity:.35;stroke:var(--edge);stroke-width:${sw}"/>`;
-    for (const c of D.deck_cuts) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:3 2"/>`;
-    for (const c of D.uk_cuts) if (c !== null) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut2);stroke-width:${sw * 2};stroke-dasharray:1 1.5"/>`;
-    for (const b of D.buildings) s += `<path d="${path(b.poly)}" style="fill:var(--c-bld);stroke:var(--edge);stroke-width:${sw}"/>`;
-    s += `<path d="${path(D.hof)}" style="fill:var(--c-hof);stroke:var(--edge);stroke-width:${sw}"/>`;
-    for (const p of D.posts) s += `<path d="M${pts(p.r).join('L')}Z" style="fill:var(--c-under);fill-opacity:.55${p.pin ? ';stroke:var(--fg);stroke-width:0.6' : ''}"/>`;
-    s += `<path d="${path(D.fach_poly)}" style="fill:none;stroke:var(--accent);stroke-width:${sw * 2.2};stroke-dasharray:2 1.2"/>`;
-    s += `<path d="${path(D.niche)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
-    s += `<path d="${path(D.channel)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
-    s += `<path d="${path(D.body)}" style="fill:var(--c-pb);fill-opacity:.6;stroke:var(--edge);stroke-width:${sw * 1.6}"/>`;
-    s += `<path d="${path(D.plug)}" style="fill:var(--c-port);fill-opacity:.85"/>`;
-    s += `<path d="M${pts(D.cable).join('L')}" style="fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round"/>`;
-    s += `<path d="${path(D.rod)}" style="fill:var(--c-port);fill-opacity:.5"/>`;
-    s += `<path d="${path(D.window)}" style="fill:var(--c-thread);fill-opacity:.5"/>`;
-    s += `<path d="${path(D.elec)}" style="fill:var(--c-elec);fill-opacity:.8;stroke:var(--edge);stroke-width:${sw}"/>`;
-    for (const v of D.vs) {
-      s += `<path d="M${pts(v.notch.map((p) => [Math.max(0, Math.min(W, p[0])), Math.max(0, Math.min(Hh, p[1]))])).join('L')}Z" style="fill:var(--c-thread);fill-opacity:.22;stroke:var(--c-thread);stroke-width:${sw}"/>`;
-      s += `<path d="M${pts([v.ent[0], v.c]).join('L')}L${pts([v.ent[1]])}" style="fill:none;stroke:var(--c-thread);stroke-width:${VV.leg_d}"/>`;
-      for (const e of v.ent) s += `<circle cx="${e[0]}" cy="${py(e[1])}" r="${VV.entry_r}" style="fill:none;stroke:var(--c-thread);stroke-width:0.5"/>`;
+    s += `<path d="${path(v.outline)}" style="fill:var(--c-plate);fill-opacity:.35;stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (const c of v.deck_cuts) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:3 2"/>`;
+    for (const c of v.uk_cuts) if (c !== null) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut2);stroke-width:${sw * 2};stroke-dasharray:1 1.5"/>`;
+    for (const b of v.buildings) s += `<path d="${path(b.poly)}" style="fill:var(--c-bld);stroke:var(--edge);stroke-width:${sw}"/>`;
+    s += `<path d="${path(v.hof)}" style="fill:var(--c-hof);stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (const p of v.posts) s += `<path d="M${pts(p.r).join('L')}Z" style="fill:var(--c-under);fill-opacity:.55${p.pin ? ';stroke:var(--fg);stroke-width:0.6' : ''}"/>`;
+    s += `<path d="${path(v.fach_poly)}" style="fill:none;stroke:var(--accent);stroke-width:${sw * 2.2};stroke-dasharray:2 1.2"/>`;
+    s += `<path d="${path(v.niche)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
+    s += `<path d="${path(v.channel)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
+    s += `<path d="${path(v.body)}" style="fill:var(--c-pb);fill-opacity:.6;stroke:var(--edge);stroke-width:${sw * 1.6}"/>`;
+    s += `<path d="${path(v.plug)}" style="fill:var(--c-port);fill-opacity:.85"/>`;
+    s += `<path d="M${pts(v.cable).join('L')}" style="fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round"/>`;
+    s += `<path d="${path(v.rod)}" style="fill:var(--c-port);fill-opacity:.5"/>`;
+    s += `<path d="${path(v.window)}" style="fill:var(--c-thread);fill-opacity:.5"/>`;
+    s += `<path d="${path(v.elec)}" style="fill:var(--c-elec);fill-opacity:.8;stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (const d of v.docks) if (d.ok) {
+      s += `<path d="M${pts(d.zone).join('L')}Z" style="fill:none;stroke:var(--c-niche);stroke-width:${sw};stroke-dasharray:1 1"/>`;
+      s += `<path d="M${pts(d.kass).join('L')}Z" style="fill:var(--c-bld);fill-opacity:.2;stroke:var(--fg);stroke-width:${sw}"/>`;
+      for (const n of d.niche) s += `<path d="M${pts(n).join('L')}Z" style="fill:var(--c-niche);fill-opacity:.55"/>`;
+      s += `<path d="M${pts(d.body).join('L')}Z" style="fill:var(--c-port)"/>`;
     }
-    const short = { 'Institutsgebäude': 'Institut', 'Seminargebäude': 'Seminar', 'Hörsaalgebäude': 'Hörsaal', 'Neues Augusteum': 'Augusteum', 'City-Hochhaus': 'Hochhaus', 'Paulinum': 'Paulinum' };
-    for (const b of D.buildings) { const [x, y] = cen(b.poly); s += `<text x="${x}" y="${py(y)}" text-anchor="middle" style="font-size:${fs}px;fill-opacity:.7">${short[b.title] || b.title}</text>`; }
-    const [bx, by] = cen(D.body);
+    for (const x of v.vs) {
+      s += `<path d="M${pts(x.notch.map((p) => [Math.max(0, Math.min(W, p[0])), Math.max(0, Math.min(Hh, p[1]))])).join('L')}Z" style="fill:var(--c-thread);fill-opacity:.22;stroke:var(--c-thread);stroke-width:${sw}"/>`;
+      s += `<path d="M${pts([x.ent[0], x.c]).join('L')}L${pts([x.ent[1]])}" style="fill:none;stroke:var(--c-thread);stroke-width:${VV.leg_d}"/>`;
+      for (const e of x.ent) s += `<circle cx="${e[0]}" cy="${py(e[1])}" r="${VV.entry_r}" style="fill:none;stroke:var(--c-thread);stroke-width:0.5"/>`;
+    }
+    for (const b of v.buildings) {
+      const [x, y] = cen(b.poly); const d = v.docks.find((q) => q.slug === b.slug);
+      s += `<text x="${x}" y="${py(y)}" text-anchor="middle" style="font-size:${fs}px;fill-opacity:.8">${short[b.slug]}${d && !d.ok && d.why.startsWith('Kassette') ? ' (ohne Dock)' : ''}</text>`;
+    }
+    const [bx, by] = cen(v.body);
     s += `<text x="${bx}" y="${py(by) + 1.5}" text-anchor="middle" style="font-size:${fs * 1.1}px;font-weight:600">Powerbank</text>`;
     s += `<text x="${W - 12}" y="10" text-anchor="end" style="font-size:${fs}px;font-weight:600">N ↑</text>`;
     const dl = (x1, y1, x2, y2, label, vert) => {
@@ -413,12 +445,12 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     s += dl(minX - 4, 0, minX - 4, Hh, fmt(Hh, 1) + ' mm', true);
     $('plan').setAttribute('viewBox', `${minX - 11} ${minY - 2} ${maxX - minX + 13} ${maxY - minY + 14}`);
     $('plan').innerHTML = s;
-    set('planDims', '1:' + D.scale + ' · ' + dims);
-  })();
+    set('planDims', '1:' + v.scale + ' · ' + dimsOf(v));
+  }
 
-  /* ---------- Schnitt ---------- */
-  (function section() {
-    const S = D.section, f0 = S.u0, f1 = f0 + FA.L, p0 = f0 + PB.plug + PB.clr;
+  /* ---------- Schnitt entlang der Powerbank ---------- */
+  function section(v) {
+    const S = v.section, f0 = S.u0, f1 = f0 + FA.L, p0 = f0 + PB.plug + PB.clr;
     const t0 = 0, t1 = Math.min(S.len, f1 + 40);
     const zTop = 22, bot = H.uk_bot, zBot = bot - 4;
     const Wpx = 1000, k = (Wpx - 170) / (t1 - t0), Hpx = (zTop - zBot) * k + 56;
@@ -428,8 +460,6 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     const zf = bot + UK.floor;
     let s = R(t0, t1, H.deck, 0, 'var(--c-plate)', st) + R(t0, t1, bot, zf, 'var(--c-under)', st);
     s += R(0, UK.wall, zf, H.deck, 'var(--c-under)', st) + R(0, UK.wall + 0.1, zf + 1, Math.min(H.deck, zf + PB.T), 'var(--panel)');
-    let dockC = null, best = 0;
-    for (const it of S.items) if (it.kind === 'bld') { const a = Math.max(it.t0, f1 + 3), b = Math.min(it.t1, t1 - 28); if (b - a > best) { best = b - a; dockC = (a + b) / 2; } }
     for (const it of S.items) {
       if (it.t1 < t0 || it.t0 > t1) continue;
       const a = Math.max(it.t0, t0), b = Math.min(it.t1, t1);
@@ -438,20 +468,9 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
         let zz = `M${X(a)} ${Y(14)}`; for (let t = a; t < b; t += 3) zz += `L${X(Math.min(t + 1.5, b))} ${Y(15)}L${X(Math.min(t + 3, b))} ${Y(14)}`;
         s += `<path d="${zz}L${X(b)} ${Y(16.5)}L${X(a)} ${Y(16.5)}Z" style="fill:var(--panel)"/>`;
         s += `<text x="${(X(a) + X(b)) / 2}" y="${Y(17.5)}" text-anchor="middle">${it.title}</text>`;
-        if (dockC !== null && dockC > a && dockC < b) {
-          const c = dockC;
-          s += R(c - 2.5, c + 3.5, H.deck, H.z_hb, 'var(--panel)');
-          s += R(c - 1, c + 1, H.z_bb, H.z_hb, 'var(--c-port)');
-          s += R(c - 0.32, c + 0.32, H.z_hb, H.z_tip, 'var(--c-port)');
-          s += R(c + 1, c + 4, H.z_bm - 0.32, H.z_bm + 0.32, 'var(--c-port)');
-          s += `<path d="M${X(c + 4)} ${Y(H.z_bm)}Q${X(c + 9)} ${Y(H.z_bm)} ${X(c + 10)} ${Y(zf + 1)}" style="fill:none;stroke:var(--c-thread);stroke-width:2"/>`;
-          s += R(c - 3, c + 3, zf, H.stamp_top, 'var(--c-under)', st);
-          s += `<text x="${X(c + 4)}" y="${Y((zf + H.stamp_top) / 2) + 4}" class="mut">Anschlag, ${fmt(H.z_bb - H.stamp_top)} mm Luft</text>`;
-          s += `<text x="${X(c + 11)}" y="${Y(H.deck) + 16}" class="mut">Dock, Lötenden frei</text>`;
-        }
       } else {
-        s += R(a, b, -H.pocket, D.hub, 'var(--c-hof)', st);
-        if (b - a > 20) s += `<text x="${(X(a) + X(b)) / 2}" y="${Y(D.hub + 3)}" text-anchor="middle">Innenhof</text>`;
+        s += R(a, b, -H.pocket, v.hub, 'var(--c-hof)', st);
+        if (b - a > 20) s += `<text x="${(X(a) + X(b)) / 2}" y="${Y(v.hub + 3)}" text-anchor="middle">Innenhof</text>`;
       }
     }
     s += R(f1 - 0.01, f1 + UK.fence[0], zf, zf + UK.fence[1], 'var(--c-under)', st);
@@ -466,20 +485,62 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     const xr = X(t1) + 16;
     s += dim(0, bot, xr, fmt(-bot) + ' mm gesamt') + dim(0, H.deck, xr + 110, 'Oberplatte ' + fmt(-H.deck)) + dim(H.deck, bot, xr + 110, 'Unterkasten ' + fmt(H.deck - bot));
     s += hdim(UK.wall, p0, bot - 1.5, 'Steckerraum ' + fmt(PB.plug, 0) + ' mm');
-    s += `<text x="${X(0)}" y="${Hpx - 6}" class="mut">Links das Fenster in der Kante, gestrichelt der Stößel zur Taste (seitlich versetzt), gelb der USB-A-Stecker. Unter dem Gebäude rechts als Beispiel ein Dock mit Anschlag.</text>`;
+    s += `<text x="${X(0)}" y="${Hpx - 6}" class="mut">Links das Fenster in der Kante, gestrichelt der Stößel zur Taste (seitlich versetzt), gelb der USB-A-Stecker. Die Docks liegen nicht auf diesem Schnitt, siehe unten.</text>`;
     $('sect').setAttribute('viewBox', `0 0 ${Wpx + 90} ${Hpx}`);
     $('sect').innerHTML = s;
-    set('sectNote', '(von der Nordkante aus, Gebäude oben abgeschnitten, 1:' + D.scale + ')');
+    set('sectNote', '(von der ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side] + 'kante aus, Gebäude oben abgeschnitten, 1:' + v.scale + ')');
+  }
+
+  /* ---------- Dock im Längsschnitt ---------- */
+  (function dock() {
+    // w = −y (Lötenden nach rechts); z wie in der Maßkette (0 = Plattenoberseite)
+    const wMin = -13, wMax = -DK.niche_end + 4;
+    const zT = -H.F + 3.2, zB = H.uk_bot - 1.2;
+    const k = 15, X = (w) => 16 + (w - wMin) * k, Y = (z) => 12 + (zT - z) * k;
+    const R = (a, b, z0, z1, fill, extra = '') => `<rect x="${X(a)}" y="${Y(Math.max(z0, z1))}" width="${(b - a) * k}" height="${Math.abs(z1 - z0) * k}" style="fill:${fill}" ${extra}/>`;
+    const st = 'stroke="var(--edge)" stroke-width="0.8"';
+    const zf = H.uk_bot + UK.floor, wEnd = -DK.niche_end, wSl = -DK.y_slot, wSE = -DK.slot_end, wt = -DK.y_tail;
+    const hd = DK.hd, wb0 = -(DK.yb + hd), wb1 = -(DK.yb - hd), at = UK.anschlag.t, ya = -DK.yb - at / 2;
+    let s = '';
+    s += R(wMin, wMax, -H.F, zT, 'var(--c-bld)', st);                       // Gebäudefuß in der Mulde
+    s += R(wMin, wMax, H.deck, -H.F, 'var(--c-plate)', st);                 // Oberplatte unter dem Muldenboden
+    s += R(wMin, wMax, zf, zB, 'var(--c-under)', st);                       // Boden des Unterkastens
+    s += R(wMin, wMax, zf - 0.01, H.deck, 'var(--panel)');                  // Unterkasten hohl
+    s += R(wb0, wb1, H.z_bb - 0.01, H.z_hb, 'var(--panel)');                // Körpertasche, nach unten offen
+    s += R(-0.9, wb0, H.z_bb - 0.01, H.z_hb, 'var(--panel)');               // Raum für Knick und Pins
+    s += R(wSl, wEnd, H.z_bb - 0.01, H.z_slot, 'var(--panel)');             // Schlitz und Kabelnische
+    s += R(wb0 + 0.1, wb1 - 0.1, H.z_bb, H.z_hb, 'var(--c-port)');          // Körper der Winkelleiste
+    s += R(-0.32, 0.32, H.z_bm - 0.32, -H.F + 0.0, 'var(--c-port)');        // senkrechter Pin im Pinloch (durch den Muldenboden)
+    s += R(-0.32, wt, H.z_bm - 0.32, H.z_bm + 0.32, 'var(--c-port)');        // Lötende nach hinten
+    // Anschlag-Steg unter dem Körper, Strebe nach vorn
+    s += R(ya, ya + at, zf, H.stamp_top, 'var(--c-under)', st);
+    s += `<polygon points="${X(ya)},${Y(zf)} ${X(ya - UK.anschlag.gusset)},${Y(zf)} ${X(ya)},${Y(H.stamp_top - 2)}" style="fill:var(--c-under)" ${st}/>`;
+    // Adern, fallen vom Lötende frei nach unten und laufen zur Sammelleitung
+    for (const [dx, c] of [[0, 'var(--c-thread)'], [0.8, 'var(--warn)'], [1.6, 'var(--c-niche)'], [2.4, 'var(--fg)']]) {
+      s += `<path d="M${X(wt - 0.2 + dx * 0.15)} ${Y(H.z_bm)}C${X(wt + 1.5 + dx * 0.4)} ${Y(H.z_bm - 0.1)} ${X(wt + 2.3 + dx * 0.6)} ${Y(H.z_bm - 3)} ${X(wt + 2.6 + dx * 0.9)} ${Y(zf + 2.5)}S${X(wt + 4 + dx)} ${Y(zf + 0.6)} ${X(wt + 8 + dx)} ${Y(zf + 0.6)}" style="fill:none;stroke:${c};stroke-width:1.8;stroke-linecap:round"/>`;
+    }
+    const lab = (w, z, t, a = 'start', c = '') => `<text x="${X(w)}" y="${Y(z)}" text-anchor="${a}" ${c}>${t}</text>`;
+    s += lab(wMin + 0.3, zT - 0.5, 'Gebäudefuß in der Mulde', 'start', 'class="mut"');
+    s += lab(wMin + 0.3, -H.F - 1.5, 'Oberplatte', 'start');
+    s += `<text x="${X(wSE + 1.0)}" y="${Y(H.z_bb + 0.55) + 4}" style="font-weight:600;font-size:12px">Kabelnische ${fmt(NI.w, 0)} × ${fmt(wEnd - wSl, 0)} mm, Decke ${fmt(H.z_slot - H.z_bb)} hoch</text>`;
+    s += lab(wb1 + 0.1, H.z_bb - 0.9, 'Körper', 'start', 'class="mut"');
+    s += lab(ya - UK.anschlag.gusset - 0.4, (zf + H.stamp_top) / 2, 'Anschlag-Steg', 'end');
+    s += lab(wt + 4.3, H.z_bm - 4.2, 'Adern fallen frei in den Unterkasten', 'start');
+    s += `<text x="${X(wMin + 0.4)}" y="${Y(zf) + 0.6 * k + 5}" class="inv">Boden Unterkasten</text>`;
+    const dimh = (a, b, z, t) => `<path class="dim" d="M${X(a)} ${Y(z) - 4}v8M${X(b)} ${Y(z) - 4}v8M${X(a)} ${Y(z)}H${X(b)}"/><text x="${(X(a) + X(b)) / 2}" y="${Y(z) + 16}" text-anchor="middle">${t}</text>`;
+    const dv = (z0, z1, w, t) => `<path class="dim" d="M${X(w) - 4} ${Y(z0)}h8M${X(w) - 4} ${Y(z1)}h8M${X(w)} ${Y(z0)}V${Y(z1)}"/><text x="${X(w) - 7}" y="${(Y(z0) + Y(z1)) / 2 + 4}" text-anchor="end">${t}</text>`;
+    s += dv(H.deck, zf, wMax - 0.3, 'frei ' + fmt(H.deck - zf));
+    s += dv(H.deck, H.z_slot, wSE + 0.3, '');
+    $('dock').setAttribute('viewBox', `0 0 ${X(wMax) + 12} ${Y(zB) + 28}`);
+    $('dock').innerHTML = s;
   })();
 
   /* ---------- Ecke im Schnitt ---------- */
   (function corner() {
-    const hs = D.v_hs, r = VV.entry_r, ld = VV.leg_d, deck = H.deck, bot = H.uk_bot;
-    // t entlang der V-Achse ab der Plattenkante; V-Mitte bei VV.y
-    const tc = VV.y, e1 = tc - hs, e2 = tc + hs;
-    const notchEnd = e2 + r + 0.4;
-    const t0 = -3, t1 = 30, zT = deck + 9, zB = bot - 7;
-    const k = 16, X = (t) => 30 + (t - t0) * k, Y = (z) => 16 + (zT - z) * k;
+    const r = VV.entry_r, ld = VV.leg_d, deck = H.deck, bot = H.uk_bot;
+    const tc = VV.y, e1 = tc - hs, e2 = tc + hs, notchEnd = e2 + r + 0.4;
+    const t0 = -3, t1 = notchEnd + 10, zT = deck + 9, zB = bot - 7;
+    const k = 14, X = (t) => 30 + (t - t0) * k, Y = (z) => 16 + (zT - z) * k;
     const R = (a, b, z0, z1, fill, extra = '') => `<rect x="${X(a)}" y="${Y(Math.max(z0, z1))}" width="${(b - a) * k}" height="${Math.abs(z1 - z0) * k}" style="fill:${fill}" ${extra}/>`;
     const st = 'stroke="var(--edge)" stroke-width="0.8"';
     let s = '';
@@ -489,21 +550,74 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     s += R(t0, t1, zB, bot - 2, 'var(--c-hut)');
     for (const e of [e1, e2]) s += `<polygon points="${X(e - r)},${Y(deck)} ${X(e + r)},${Y(deck)} ${X(e + ld / 2)},${Y(deck + 1.5)} ${X(e - ld / 2)},${Y(deck + 1.5)}" style="fill:var(--panel)"/>`;
     for (const [a, b] of [[e1, tc], [e2, tc]]) s += `<line x1="${X(a)}" y1="${Y(deck)}" x2="${X(b)}" y2="${Y(deck + VV.apex)}" style="stroke:var(--panel);stroke-width:${ld * k};stroke-linecap:round"/>`;
+    const old = `M${X(tc - hs2)} ${Y(bot - 2)}L${X(tc - hs2)} ${Y(deck)}L${X(tc)} ${Y(deck + VV.apex)}L${X(tc + hs2)} ${Y(deck)}L${X(tc + hs2)} ${Y(bot - 2)}`;
+    s += `<path d="${old}" style="fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 3"/>`;
     const th = `M${X(e1 - 1.5)} ${Y(bot - 2)}L${X(e1)} ${Y(deck)}L${X(tc)} ${Y(deck + VV.apex)}L${X(e2)} ${Y(deck)}L${X(e2 + 1.5)} ${Y(bot - 2)}`;
     s += `<path d="${th}" style="fill:none;stroke:var(--c-thread);stroke-width:2.5;stroke-linejoin:round"/>`;
     const lab = (t, z, txt, a = 'start', c = '') => `<text x="${X(t)}" y="${Y(z)}" text-anchor="${a}" ${c}>${txt}</text>`;
-    s += lab(t1 + 0.6, deck + 4.5, 'Oberplatte') + lab(t1 + 0.6, (bot + deck) / 2, 'Unterkasten (hohl)') + lab(t1 + 0.6, zB + 2, 'Doktorhut');
-    s += lab(tc + 2.2, deck + VV.apex + 0.3, 'Lasche, Scheitel ' + fmt(VV.apex) + ' mm über der Unterseite');
-    s += lab((e1 + notchEnd) / 2, bot + 3, 'Eckaussparung', 'middle', 'class="mut"');
+    s += lab(t1 - 0.4, deck + 6, 'Oberplatte', 'end') + lab(t1 - 0.4, (bot + deck) / 2, 'Unterkasten (hohl)', 'end') + `<text x="${X(t1 - 0.4)}" y="${Y(zB + 2)}" text-anchor="end" class="inv">Doktorhut</text>`;
     s += lab(0.3, zT - 1.2, 'Plattenkante', 'start', 'class="mut"');
-    s += `<path class="dim" d="M${X(0)} ${Y(zT) + 2}V${Y(zB)}" style="stroke:var(--muted);stroke-dasharray:3 3;fill:none"/>`;
-    $('corner').setAttribute('viewBox', `0 0 ${X(t1) + 150} ${Y(zB) + 10}`);
+    s += lab(tc, deck + VV.apex + 1.3, 'Lasche, Scheitel ' + fmt(VV.apex) + ' über der Unterseite', 'middle');
+    s += lab(tc, deck + VV.apex + 3.0, fmt(D.v_angle, 0) + '° (alt gestrichelt: ' + fmt(D.v_plan2.angle, 0) + '°)', 'middle', 'style="font-weight:600"');
+    s += lab(e1 - 1.6, bot + 5, 'Eckaussparung', 'end', 'class="mut"');
+    $('corner').setAttribute('viewBox', `0 0 ${X(t1) + 10} ${Y(zB) + 10}`);
     $('corner').innerHTML = s;
   })();
 
+  /* ---------- Fasen: Fuß in der Mulde ---------- */
+  (function chfig() {
+    const clr = 0.1, relief = 0.3, band = 5.0, F = H.F, cP = CHD.pocket, cF = CHD.foot;
+    const k = 26, x0 = -9, x1 = 9, zT = 1.6, zB = -F - 1.4;
+    const X = (x) => 20 + (x - x0) * k, Y = (z) => 12 + (zT - z) * k;
+    const poly = (pts, fill, extra = '') => `<polygon points="${pts.map(([x, z]) => X(x) + ',' + Y(z)).join(' ')}" style="fill:${fill}" ${extra}/>`;
+    const st = 'stroke="var(--edge)" stroke-width="0.8"';
+    const wall = [[x0, zT], [-clr - cP, zT], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]];
+    let s = poly([[x0, 0], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]], 'var(--c-plate)', st);
+    s += poly([[0, -0.0], [x1, 0], [x1, -F + 0.0], [cF, -F], [0, -F + cF]], 'var(--c-bld)', st);
+    s += poly([[0, 0.0], [0, zT * 0 + 1.0], [x1, 1.0], [x1, 0]], 'var(--c-bld)', st);
+    s += `<path d="M${X(x0)} ${Y(0)}H${X(x1)}" class="dim" style="stroke-dasharray:3 3;stroke:var(--muted)"/>`;
+    const lab = (x, z, t, a = 'start', c = '') => `<text x="${X(x)}" y="${Y(z)}" text-anchor="${a}" ${c}>${t}</text>`;
+    s += lab(x0 + 0.2, 1.1, 'Plattenoberseite', 'start', 'class="mut"');
+    s += lab(-clr - cP - 0.2, -cP / 2, 'Muldenfase ' + fmt(cP) + ' (Einführung)', 'end');
+    s += lab(-clr - 0.3, -cP - band / 2, 'Band ' + fmt(band, 0) + ' mm, Spiel 0,10', 'end');
+    s += lab(-clr - relief - 0.3, -cP - band - 1.6, 'darunter 0,30 mehr', 'end');
+    s += lab(cF + 0.5, -F + 0.5, 'Fußfase ' + fmt(cF) + ' (Bett)', 'start');
+    s += lab(x1 - 0.3, -F / 2, 'Fuß ' + fmt(F) + ' mm tief', 'end', 'style="font-weight:600"');
+    s += lab(x0 + 0.2, -F - 0.9, 'Muldenboden ' + fmt(H.ceil) + ' mm über der Leiste', 'start', 'class="mut"');
+    $('chfig').setAttribute('viewBox', `0 0 ${X(x1) + 20} ${Y(zB) + 4}`);
+    $('chfig').innerHTML = s;
+  })();
+
+  /* ---------- Tabellen ---------- */
+  const pill = (t) => { const c = /^bewährt$/.test(t) || /^im Modell/.test(t) ? 'ok' : /ungemessen|nicht|fehlt|Generator|Fachprobe|offen|Kippen/.test(t) ? 'warn' : 'mid'; return `<span class="pill ${c}">${t}</span>`; };
+  $('fasen').innerHTML = '<thead><tr><th>Kante</th><th>Fase</th><th>Stand</th><th>Herkunft</th></tr></thead><tbody>' +
+    D.fasen.map((r) => `<tr><td>${r[0]}</td><td class="num" style="white-space:normal">${r[1].replace(/\./g, ',')}</td><td>${pill(r[2])}</td><td class="src">${r[3].replace(/`/g, '')}</td></tr>`).join('') + '</tbody>';
+  $('fits').innerHTML = '<thead><tr><th>Fuge</th><th>Wert</th><th>Status</th><th>Herkunft</th></tr></thead><tbody>' +
+    D.fits.map((r) => `<tr><td>${r[0]}</td><td class="num" style="white-space:normal">${r[1].replace(/\./g, ',')}</td><td>${pill(r[2])}</td><td class="src">${r[3]}</td></tr>`).join('') + '</tbody>';
+
+  /* ---------- Testdrucke ---------- */
+  const fl = FA.L + 2 * UK.wall + 4, fw = FA.W + 2 * UK.wall + 4;
+  $('tests').innerHTML = [
+    ['rec', 'T1 · Steckprobe 2 im neuen Aufbau', 'Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4 · Gebäude und Kassette aus dem Plan Steckprobe 2 · beide Gebäude mit Fußfase',
+      ['Alles aus Steckprobe 2 (Taschenhöhe 14,60, Schacht + 0,3, Fase 0,5, Pins, Kontakt, Licht)', 'Dock mit Kabelnische: Adern anlöten, hängen sie frei? Hält die Decke mit den Stegen (kein Durchhängen)?',
+        'Steg-Anschlag mit 1,2 Luft plus Heißkleber: kippt der Körper noch?', 'Zapfen und Löcher (Gleitspiel 0,15): sitzt die Oberplatte ohne Klemmen?',
+        'Faden an zwei Ecken, <b>ein V mit 53° und eines mit 40°</b>: drucken beide sauber, läuft der Faden leichter?', 'Fasen: Fuß 0,8, Mulde 1,0, Bettkanten 0,5: bleibt ein Wulst?']],
+    ['rec', 'T2 · Fachprobe Powerbank', 'Unterkasten-Ausschnitt etwa ' + fmt(fl, 0) + ' × ' + fmt(fw, 0) + ' mm, ' + fmt(H.uk_t) + ' hoch, mit Deckplatte 2 mm',
+      ['Powerbank im Zaun (Spiel ' + fmt(PB.clr, 1) + ', ' + fmt(PB.clr_z, 1) + ' Luft oben)', 'Fenster trifft LEDs, microUSB und USB-C', 'Stößel drückt die Taste', 'Gerader USB-A-Stecker passt in ' + fmt(PB.plug, 0) + ' mm, Kabel in den Kanal von ' + fmt(PB.cable, 0) + ' mm']],
+    ['', 'T3 · später: Stoß der Druckteile', 'Streifen über den Stoß von Oberplatte und Unterkasten', ['Versetzte Stöße und Zapfen: bleibt die Platte eben?', 'erst nach T1']]
+  ].map(([c, t, m, l]) => `<div class="card ${c}"><h3>${t}</h3><span class="meta">${m}</span><ul>${l.map((x) => '<li>' + x + '</li>').join('')}</ul></div>`).join('');
+  $('decide').innerHTML = [
+    '<b>Maßstab:</b> 1:1200 mit nur vier LED-Gebäuden (Seminargebäude und City-Hochhaus ohne Dock), oder 1:1000 mit allen sechs und einer Platte, die über den Hut ragt? Dritter Weg: eine schmalere Kassette für die schlanken Gebäude (eigene Planung).',
+    '<b>Powerbank-Lage bei 1:1200:</b> Südkante (alle vier möglichen Docks frei, Powerbank liegt nicht unter dem Innenhof) oder Nordkante (unter dem Innenhof, aber Institut und Paulinum ohne freies Dock)?',
+    '<b>Faden-Neigung:</b> 40° (flacher, mehr Überhang) in T1 gegen 53° testen, ja?',
+    'Fachprobe T2 mitdrucken oder erst Powerbank und USB-Stecker nachmessen?',
+    'Doktorhut messen (Kantenlänge, Knopf in der Mitte): bestimmt, ob 1:1200 oder 1:1250.'
+  ].map((x) => '<li>' + x + '</li>').join('');
+
   /* ---------- 3D ---------- */
-  (function init3d() {
-    if (!window.THREE) { $('stage').innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Draufsicht und Schnitt gelten trotzdem.</p>'; return; }
+  let T = null;
+  function init3d() {
+    if (!window.THREE) { $('stage').innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Draufsicht und Schnitte gelten trotzdem.</p>'; return; }
     const canvas = $('cv'), stage = $('stage');
     let renderer;
     try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
@@ -528,36 +642,55 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
       g.computeVertexNormals();
       const m = new THREE.Mesh(g, mats[mat]); m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), edgeMat)); return m;
     };
-    const box = (L, W, T, mat) => { const g = new THREE.BoxGeometry(L, W, T); const m = new THREE.Mesh(g, mats[mat]); m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat)); return m; };
+    const box = (L, W, T2, mat) => { const g = new THREE.BoxGeometry(L, W, T2); const m = new THREE.Mesh(g, mats[mat]); m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat)); return m; };
     const G = {};
-    for (const n of ['bld', 'hof', 'ober', 'uk', 'pb', 'hut', 'thread']) { G[n] = new THREE.Group(); scene.add(G[n]); }
-    for (const slug in D.meshes.buildings) G.bld.add(mk(D.meshes.buildings[slug], 'bld'));
-    G.hof.add(mk(D.meshes.hof, 'hof')); G.ober.add(mk(D.meshes.ober, 'plate')); G.uk.add(mk(D.meshes.uk, 'under'));
-    const fr = D.frame, sg = fr.sgn;
-    const fg = new THREE.Group(); fg.position.set(fr.c[0], fr.c[1], 0); fg.rotation.z = fr.ang * Math.PI / 180; G.pb.add(fg);
-    const zf = H.uk_bot + UK.floor;
-    const at = (m, u, vv, z) => { m.position.set(u, vv * sg, z); fg.add(m); return m; };
-    const bvc = FA.bv0 + PB.W / 2, zm = zf + PB.T / 2;
-    at(box(PB.L, PB.W, PB.T, 'pb'), FA.bu0 + PB.L / 2, bvc, zm);
-    const PW = { usb_a: [12.5, 5], usb_c: [9, 3.4], micro: [7.5, 2.8], taste: [4, 4], leds: [10, 1.2] };
-    for (const k in PB.port_v) at(box(1.2, PW[k][0], PW[k][1], k === 'leds' ? 'plug' : 'port'), FA.bu0 - 0.4, bvc + PB.port_v[k], zm);
-    const ua = bvc + PB.port_v.usb_a;
-    at(box(12, 12, 4.5, 'port'), FA.bu0 - 6, ua, zm); at(box(13, 15, 8, 'plug'), FA.bu0 - 18.5, ua, zm);
-    const kc = FA.kv0 + PB.cable / 2, pe = FA.bu0 - 25, zc = zf + 2.5;
-    const curve = new THREE.CatmullRomCurve3([[pe, ua, zm], [pe - 6, (ua + kc) / 2, zc + 1], [pe, kc, zc], [FA.u0 + FA.L, kc, zc], [FA.u0 + FA.L + 14, kc, zc]].map(([u, vv, z]) => new THREE.Vector3(u, vv * sg, z)));
-    fg.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 60, 2, 8, false), mats.plug));
-    at(box(FA.bu0 - FA.u0 + UK.wall, PB.rod, PB.rod, 'port'), (FA.u0 - UK.wall + FA.bu0) / 2, bvc + PB.port_v.taste, zm + 4);
-    const eb = bb(D.elec[0]); const e = box(eb[2] - eb[0] - 2, eb[3] - eb[1] - 2, 8, 'elec'); e.position.set((eb[0] + eb[2]) / 2, (eb[1] + eb[3]) / 2, zf + 4); G.pb.add(e);
-    const hb = box(D.hut.size, D.hut.size, 3, 'hut'); hb.position.set(D.plate[0] / 2, D.plate[1] / 2, H.uk_bot - 1.5); G.hut.add(hb);
-    const threads = D.vs.map((v) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(18), 3)); const l = new THREE.Line(g, threadMat); G.thread.add(l); return { l, v }; });
-    const st = { view: null, target: [D.plate[0] / 2, D.plate[1] / 2, 0], dirty: true, name: 'iso' };
+    const st = { view: null, target: [0, 0, 0], dirty: true, name: 'iso', v: null, threads: [], docks: [] };
+    function clear() { for (const n in G) { scene.remove(G[n]); } }
+    function build(v) {
+      clear();
+      for (const n of ['bld', 'hof', 'ober', 'uk', 'pb', 'hut', 'thread']) { G[n] = new THREE.Group(); scene.add(G[n]); }
+      st.v = v;
+      for (const slug in v.meshes.buildings) G.bld.add(mk(v.meshes.buildings[slug], 'bld'));
+      G.hof.add(mk(v.meshes.hof, 'hof')); G.ober.add(mk(v.meshes.ober, 'plate')); G.uk.add(mk(v.meshes.uk, 'under'));
+      const fr = v.frame, sg = fr.sgn;
+      const fg = new THREE.Group(); fg.position.set(fr.c[0], fr.c[1], 0); fg.rotation.z = fr.ang * Math.PI / 180; G.pb.add(fg);
+      const zf = H.uk_bot + UK.floor;
+      const at = (m, u, vv, z) => { m.position.set(u, vv * sg, z); fg.add(m); return m; };
+      const bvc = FA.bv0 + PB.W / 2, zm = zf + PB.T / 2;
+      at(box(PB.L, PB.W, PB.T, 'pb'), FA.bu0 + PB.L / 2, bvc, zm);
+      const PW = { usb_a: [12.5, 5], usb_c: [9, 3.4], micro: [7.5, 2.8], taste: [4, 4], leds: [10, 1.2] };
+      for (const k in PB.port_v) at(box(1.2, PW[k][0], PW[k][1], k === 'leds' ? 'plug' : 'port'), FA.bu0 - 0.4, bvc + PB.port_v[k], zm);
+      const ua = bvc + PB.port_v.usb_a;
+      at(box(12, 12, 4.5, 'port'), FA.bu0 - 6, ua, zm); at(box(13, 15, 8, 'plug'), FA.bu0 - 18.5, ua, zm);
+      const kc = FA.kv0 + PB.cable / 2, pe = FA.bu0 - 25, zc = zf + 2.5;
+      const curve = new THREE.CatmullRomCurve3([[pe, ua, zm], [pe - 6, (ua + kc) / 2, zc + 1], [pe, kc, zc], [FA.u0 + FA.L, kc, zc], [FA.u0 + FA.L + 14, kc, zc]].map(([u, vv, z]) => new THREE.Vector3(u, vv * sg, z)));
+      fg.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 60, 2, 8, false), mats.plug));
+      at(box(FA.bu0 - FA.u0 + UK.wall, PB.rod, PB.rod, 'port'), (FA.u0 - UK.wall + FA.bu0) / 2, bvc + PB.port_v.taste, zm + 4);
+      const eb = bb(v.elec[0]); const e = box(eb[2] - eb[0] - 2, eb[3] - eb[1] - 2, 8, 'elec'); e.position.set((eb[0] + eb[2]) / 2, (eb[1] + eb[3]) / 2, zf + 4); G.pb.add(e);
+      // Adern an den Docks (rot), hängen von den Lötenden in den Unterkasten
+      for (const d of v.docks) if (d.ok) {
+        const a = (d.phi) * Math.PI / 180, ux = Math.cos(a), uy = Math.sin(a);       // lokales +x
+        const vx = -Math.sin(a), vy = Math.cos(a);                                    // lokales +y
+        for (const lx of [-3.81, -1.27, 1.27, 3.81]) {
+          const loc = (x, y) => [d.p[0] + ux * x + vx * y, d.p[1] + uy * x + vy * y];
+          const a0 = loc(lx, DK.y_tail), a1 = loc(lx * 1.4, DK.y_tail - 3), a2 = loc(lx * 2.2, DK.y_tail - 6);
+          const cv2 = new THREE.CatmullRomCurve3([new THREE.Vector3(a0[0], a0[1], H.z_bm), new THREE.Vector3(a1[0], a1[1], H.z_bm - 4), new THREE.Vector3(a2[0], a2[1], zf + 3)]);
+          const gg = new THREE.BufferGeometry().setFromPoints(cv2.getPoints(20)); G.thread.add(new THREE.Line(gg, threadMat));
+        }
+      }
+      const hb = box(D.hut, D.hut, 3, 'hut'); hb.position.set(v.plate[0] / 2, v.plate[1] / 2, H.uk_bot - 1.5); G.hut.add(hb);
+      const btn = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 4, 24), mats.hut); btn.rotation.x = Math.PI / 2; btn.position.set(v.plate[0] / 2, v.plate[1] / 2, H.uk_bot + 2); G.hut.add(btn);
+      st.threads = v.vs.map((x) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(18), 3)); const l = new THREE.Line(g, threadMat); G.thread.add(l); return { l, x }; });
+      $('tag3d').textContent = '1:' + v.scale + ' · ' + dimsOf(v);
+      setView(st.name); explode(); xray(); hutv(); theme();
+    }
     function explode() {
+      if (!st.v) return;
       const e = +$('explode').value;
       G.bld.position.z = e * 70; G.hof.position.z = e * 45; G.pb.position.z = -e * 25; G.uk.position.z = -e * 45; G.hut.position.z = -e * 70;
       const zTop = H.deck + VV.apex, zH = H.uk_bot + G.hut.position.z;
-      for (const { l, v } of threads) {
-        const [a, c, b] = [v.ent[0], v.c, v.ent[1]];
-        const ax = v.axis === 'y' ? [0, 1] : [1, 0];
+      for (const { l, x } of st.threads) {
+        const [a, c, b] = [x.ent[0], x.c, x.ent[1]], ax = x.axis === 'y' ? [0, 1] : [1, 0];
         const arr = l.geometry.attributes.position.array;
         arr.set([a[0] - ax[0] * 1.5, a[1] - ax[1] * 1.5, zH, a[0], a[1], H.deck, c[0], c[1], zTop, b[0], b[1], H.deck, b[0] + ax[0] * 1.5, b[1] + ax[1] * 1.5, zH, b[0] + ax[0] * 1.5, b[1] + ax[1] * 1.5, zH]);
         l.geometry.attributes.position.needsUpdate = true; l.geometry.computeBoundingSphere();
@@ -565,14 +698,17 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
       st.dirty = true;
     }
     function xray() { const x = $('xray').checked; for (const k of ['plate', 'under']) { mats[k].transparent = x; mats[k].opacity = x ? 0.32 : 1; mats[k].depthWrite = !x; mats[k].needsUpdate = true; } st.dirty = true; }
-    function hut() { G.hut.visible = $('hut').checked; st.dirty = true; }
-    const VIEWS = { iso: { az: 55, el: 30 }, top: { az: -90, el: 88 }, under: { az: -120, el: -35 }, edge: { az: 0, el: 14 }, corner: { az: -135, el: -25 } };
+    function hutv() { if (G.hut) G.hut.visible = $('hut').checked; st.dirty = true; }
+    const VIEWS = { iso: { az: 55, el: 30 }, top: { az: -90, el: 88 }, under: { az: -120, el: -35 }, edge: { az: 0, el: 14 }, dock: { az: -60, el: -40 }, corner: { az: -135, el: -25 } };
     function setView(n) {
-      st.name = n; const w = Math.max(D.plate[0], D.plate[1]);
+      if (!st.v) return;
+      const v = st.v; st.name = n; const w = Math.max(v.plate[0], v.plate[1]), fr = v.frame;
       st.view = Object.assign({}, VIEWS[n], { dist: w * 2.3 });
-      st.target = [D.plate[0] / 2, D.plate[1] / 2, 0];
+      st.target = [v.plate[0] / 2, v.plate[1] / 2, 0];
       if (n === 'edge') { const a = fr.ang * Math.PI / 180; st.view.az = fr.ang + 180 + 25; st.target = [fr.c[0] + Math.cos(a) * FA.u0, fr.c[1] + Math.sin(a) * FA.u0, -15]; st.view.dist = 170; }
-      if (n === 'corner') { st.target = [D.vs[0].c[0], D.vs[0].c[1], -15]; st.view.dist = 90; }
+      if (n === 'corner') { st.target = [v.vs[0].c[0], v.vs[0].c[1], -15]; st.view.dist = 90; }
+      if (G.pb) G.pb.visible = n !== 'dock';
+      if (n === 'dock') { const fc = v.frame.c; const ds = v.docks.filter((q) => q.ok).sort((a, c) => Math.hypot(c.p[0] - fc[0], c.p[1] - fc[1]) - Math.hypot(a.p[0] - fc[0], a.p[1] - fc[1])); const d = ds[0]; if (d) { st.target = [d.p[0], d.p[1], -14]; st.view.dist = 70; st.view.az = d.phi - 90 + 60; st.view.el = -45; } }
       st.dirty = true;
     }
     function theme() { for (const k in TOK) mats[k].color.set(css(TOK[k])); threadMat.color.set(css('--c-thread')); renderer.setClearColor(css('--canvas')); edgeMat.color.set(css('--edge')); st.dirty = true; }
@@ -584,20 +720,29 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
     canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
     canvas.addEventListener('pointermove', (e) => {
-      const p = ptrs.get(e.pointerId); if (!p) return;
+      const p = ptrs.get(e.pointerId); if (!p || !st.view) return;
       if (ptrs.size === 1) { st.view.az -= (e.clientX - p[0]) * 0.4; st.view.el = Math.max(-89, Math.min(89, st.view.el + (e.clientY - p[1]) * 0.3)); }
       p[0] = e.clientX; p[1] = e.clientY;
       if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) st.view.dist *= pinch / d; pinch = d; }
       st.dirty = true;
     });
-    canvas.addEventListener('wheel', (e) => { e.preventDefault(); st.view.dist *= 1 + e.deltaY * 0.001; st.dirty = true; }, { passive: false });
-    $('explode').addEventListener('input', explode); $('xray').addEventListener('change', xray); $('hut').addEventListener('change', hut);
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); if (st.view) { st.view.dist *= 1 + e.deltaY * 0.001; st.dirty = true; } }, { passive: false });
+    $('explode').addEventListener('input', explode); $('xray').addEventListener('change', xray); $('hut').addEventListener('change', hutv);
     document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
     new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    $('tag3d').textContent = '1:' + D.scale + ' · ' + dims;
-    setView('iso'); explode(); xray(); hut(); theme(); resize();
-    (function loop() { if (st.dirty) { cam(); renderer.render(scene, camera); st.dirty = false; } requestAnimationFrame(loop); })();
-  })();
+    resize();
+    (function loop() { if (st.dirty && st.view) { cam(); renderer.render(scene, camera); st.dirty = false; } requestAnimationFrame(loop); })();
+    T = { build };
+  }
+
+  function render() {
+    const v = V[cur];
+    set('vnote', NOTE(v)); set('viewDims', '1:' + v.scale + ' · ' + dimsOf(v));
+    table(); plan(v); section(v);
+    if (T) T.build(v);
+  }
+  init3d();
+  render();
 })();
 </script>

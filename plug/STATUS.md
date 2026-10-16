@@ -312,8 +312,8 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Grundplatte mit Powerbank (Konzept, Stand 3, 1:1000): 144 × 283 × 27,0 mm, Oberplatte 12,6 (Maßkette der Steckprobe: Mulde 10,2,
-   Muldenboden 0,4, Spiel 0,10) über hohlem Unterkasten 14,4 mit Stützen, Zentrierzapfen und Anschlag (1,2 Luft). Powerbank XS5000 im
-   Unterkasten, 35 mm hinter der Nordkante, Fenster und Stößel. Faden: V-Kanal aus Plan Steckprobe 2 in den Ecken der Oberplatte,
-   Eckaussparungen im Unterkasten. Werte in `plug/power/params.py`. Vorschlag nächster Druck: Steckprobe 2 im Zwei-Lagen-Aufbau + Fachprobe.
-   Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
+9. Grundplatte mit Powerbank (Konzept, Stand 4): Oberplatte 12,6 über hohlem Unterkasten 14,4 (27,0 mm), Werte der Steckprobe in `plug/power/params.py`.
+   Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab für den 24-cm-Hut: 1:1200 (122 × 240 mm), dort passt die Kassette nur
+   in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus). Dock mit Kabelnische 24 × 19 mm, Steg-Anschlag; Powerbank-Lage Süd (alle Docks frei, nicht unter
+   dem Hof) oder Nord (34 % unter dem Hof, Paulinum ohne Dock). Faden-V 40° statt 53°. Vorschlag nächster Druck: T1 Steckprobe 2 im Zwei-Lagen-Aufbau,
+   T2 Fachprobe. Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.

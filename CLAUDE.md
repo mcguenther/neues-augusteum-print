@@ -134,7 +134,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.testcase.build_feedback` | Testbogen zum Testfall (Kassette bestücken, Einpressen, Mulde, Winkelleiste, Stecken, Durchgang, Abziehen; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/testcase/feedback.html` |
 | `python3 -m plug.testcase.build` (ca. 2 min) | STL, README und ZIP des Testfalls (2 Kassetten v4, Mini-Gebäude A/B, Mini-Grundplatte, Mini-Deckel) nach `stl/steckmodul_testcase/`, Bilder nach `vorschau/steckmodul_testcase/` |
 | `python3 -m plug.series2` (ca. 2 min) | zweiter Nachtdruck (K, C v2, N Schieber, E Einpressen, D v7, FM): `stl/steckmodul_night2/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night2/` |
-| `python3 -m plug.power.build_concept` (ca. 5 s) | Konzeptseite Grundplatte mit Powerbank (1:1000, Oberplatte + hohler Unterkasten, Faden-V, Passmaße, Testdrucke) `plug/power/concept.html`; Werte in `plug/power/params.py` (liest die Steckprobe-Werte aus `plug/testcase/`), Plan Kapitel 6 |
+| `python3 -m plug.power.build_concept` (ca. 50 s) | Konzeptseite Grundplatte mit Powerbank (drei Maßstäbe, Oberplatte + hohler Unterkasten, Dock mit Kabelnische, Faden-V, Fasen-Check, Passmaße, Testdrucke) `plug/power/concept.html`; Werte in `plug/power/params.py` (liest die Steckprobe-Werte aus `plug/testcase/`), Plan Kapitel 6 |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 

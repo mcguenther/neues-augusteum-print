@@ -36,12 +36,12 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 | Funktionstest | Adern und LED bestücken, Controller anschließen (Schritt L im Testbogen): Licht, Wackeln, Zehnfach-Abziehen | r3 L: noch nicht getestet, Adern biegen rund |
 | Testbogen | Feld „Luft unter der Buchse“ ersetzen durch ja/nein; Feld „Platte A oder B“ und Formular-Version aufnehmen | L24, L25 |
 
-### Vorschlag aus dem Powerbank-Konzept (Stand 3, nicht abgenickt)
+### Vorschlag aus dem Powerbank-Konzept (Stand 4, nicht abgenickt)
 
-Die große Platte (1:1000) ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4 mm geplant (`plug/power/concept.html`, PLAN Kapitel 6).
-Daraus der Vorschlag, Steckprobe 2 gleich im Zwei-Lagen-Aufbau zu drucken (Mini-Oberplatte 12,6 + Mini-Unterkasten mit Anschlag 1,2 Luft,
-Zentrierzapfen Ø 4 / Loch 4,3 und Eckaussparungen für den Faden) und eine **Fachprobe Powerbank** mitzudrucken (Zaun 0,5 Spiel, Fenster,
-Stößel, 35 mm Steckerraum). Werte: `plug/power/params.py`.
+Die große Platte ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4 mm geplant (`plug/power/concept.html`, PLAN Kapitel 6; Maßstab 1:1200 für den
+24-cm-Doktorhut, Kassette passt dort in 4 von 6 Gebäuden). Daraus der Vorschlag: Steckprobe 2 im Zwei-Lagen-Aufbau drucken (Mini-Oberplatte 12,6 + Mini-Unterkasten mit
+Steg-Anschlag 1,2 Luft, Zentrierzapfen Ø 4 / Loch 4,3, Kabelnische hinter den Lötenden, **zwei Faden-V mit 53° und 40°**, Gebäude mit Fußfase 0,8) und eine
+**Fachprobe Powerbank** mitzudrucken (Zaun, Fenster, Stößel, 35 mm Steckerraum). Werte: `plug/power/params.py`.
 
 ## Priorität 2
 
