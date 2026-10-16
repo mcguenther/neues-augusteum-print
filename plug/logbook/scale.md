@@ -102,7 +102,7 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 ### Korrektur 2026-10-16 (Nutzer: Umrisse erkennbar, Hof zu flach)
 
 - **Gebäude werden um die 4 mm nach unten verlängert:** Der volle Gebäudeumriss (Laserscan-Grundriss) reicht 4 mm unter die Plattenoberfläche (`OUTLINE_CLR_T` 0,1 Spiel), darunter folgt wie getestet die Fußmulde mit 10,2 mm (um 4 mm nach unten verschoben, auf die Umriss-Aussparung begrenzt). Gesamttiefe F bleibt 14,2, Platte 20,2. Auf der Platte sind so die Gebäudeumrisse zu sehen. Die erste Umsetzung (reine 4 mm Führungslänge im Fuß) war ein Missverständnis. Der Gebäude-Generator (Fuß und Körper 4 mm länger) bleibt To-do im Hohlkörper-Chat.
-- **Hof-Einsatz tiefer:** statt 1 mm jetzt `HOF_DEPTH_T = 3,0` mm unter der Oberfläche (Annahme, nicht die 4 mm der Gebäude), Fuge `HOF_CLR_T` 0,1, Einführfase unten 0,4 (Einsatz); Aussparung ohne Fase oben, damit die Wand zur Gebäude-Aussparung 0,4 mm bleibt. `innenhof.model(s, fps, tiefe, spiel)`, Einsatz als `stl/steckmodul_campus/hof_einsatz_1zu1300.stl`.
+- **Hof-Einsatz tiefer:** statt 1 mm jetzt `HOF_DEPTH_T = 6,0` mm unter der Oberfläche (Nutzer; vorher 1 mm, dann 3 mm), Fuge `HOF_CLR_T` 0,1, Einführfase unten 0,4 (Einsatz); Aussparung ohne Fase oben, damit die Wand zur Gebäude-Aussparung 0,4 mm bleibt. `innenhof.model(s, fps, tiefe, spiel)`, Einsatz als `stl/steckmodul_campus/hof_einsatz_1zu1300.stl`.
 
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
@@ -156,7 +156,7 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | Licht | Luft über der LED, Richtwert 8 mm | Annahme | Hotspots unter dem Dach |
 | | Neues Augusteum: LED 6,7 mm neben der Mitte, 9,1 mm Luft | Nutzerentscheidung, ungetestet | Lichtverteilung im Trakt |
 | | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
-| Innenhof | Hof-Einsatz 3 mm tief (`HOF_DEPTH_T`) | Annahme | Sitz, sonst tiefer |
+| Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
 | | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
 | | Wand 0,4 mm zwischen Hof- und Gebäude-Aussparung | ungetestet | Druck, Stehenbleiben |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
