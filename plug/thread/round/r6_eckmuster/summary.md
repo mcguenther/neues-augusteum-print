@@ -1,4 +1,4 @@
-# r5: Eckmuster Fadenführung P3 und P45 (Auswertung, 2026-10-16)
+# r6: Eckmuster Fadenführung P3 und P45 (Auswertung, 2026-10-16)
 
 Vorläufiger Rundeneintrag für `plug/logbook/rounds/` (dieser Chat schreibt nur in `plug/thread/`; beim Merge dorthin verschieben und `current.md`, `lessons.md`, `next.md`, `plug/STATUS.md` nachziehen).
 Wörtlicher Ergebnistext: [`result.txt`](result.txt). Stand der Teile: `plug/thread/stl/faden_eckmuster_v1.zip` (Commit `1f1529a`). Plan: Artifact https://claude.ai/artifact/PB7g6bhrdDhJx5oM7XRwax, Testbogen https://claude.ai/artifact/9qinNK1GZiZTRRZJeqjXTx.
@@ -30,7 +30,7 @@ Im Ergebnistext steht bei der ZIP „nicht gedruckt“, zugleich sind Decke und 
 
 - Fadenführung der großen Platte: Tasche mit Luft 4,0, Fasen 2,0 und 1,0, gebaut mit den Funktionen aus `plug/thread/build.py` (`cavity`, `chamfer_cutter`, `steg`); Eckaussparung 30 × 18 im Unterkasten.
 - `v_solid` und `place_vs` im Konzept (`plug/power/build_concept.py`) werden durch die Tasche ersetzt (nach Merge, nicht in diesem Paket).
-- Neue Lehre L37 (Entwurf; höchste Nummer im Logbuch ist L36): Kanäle und Löcher unter etwa 3 mm schließen sich im Druck; Fadenwege als offene Taschen mit mindestens 5 mm freiem Maß bauen. Offene Tasche mit runder Decke und 3 bis 4,5 mm Luft: glatt, ohne Support.
+- Neue Lehre L39 (Entwurf; höchste Nummer im Logbuch ist L38): Kanäle und Löcher unter etwa 3 mm schließen sich im Druck; Fadenwege als offene Taschen mit mindestens 5 mm freiem Maß bauen. Offene Tasche mit runder Decke und 3 bis 4,5 mm Luft: glatt, ohne Support.
 
 ## Was die Runde nicht klärte
 
