@@ -26,7 +26,7 @@ Mit der halben Nische (12 × 9,5 mm) gibt der Generator bei 1:1300 an der Südka
 
 ### Idee des Nutzers: ganze Fläche unter der Platte als Steckerraum (2026-10-16, nicht entschieden)
 
-Statt Tasche, Schlitz, Nische, Steg und Rippen: Leiste nur 1 mm tief in der Platte, 1 mm ragt unten heraus, darunter ein durchgehender Raum (Powerbank, Stecker, Adern). Bewertung: geht, vereinfacht den Aufbau stark und lässt die Powerbank auch unter den Docks liegen (Docks begrenzt nur noch die Kassette). Luft über der Powerbank nicht 1 mm, sondern etwa 3,4 mm (1,0 Leiste + 0,6 Spiel + Lötende und Draht), Gesamthöhe dann 29,4 statt 27,0 mm (Oberplatte 11,6 statt 12,6). Offen: Halt der Leiste (flache Tasche mit Rippen, Heißkleber), Drahtführung in der Luft, Höhe der Elektronik daneben. Zeichnung `vorschau/steckmodul_power/steckerraum_idee.png`.
+Statt Tasche, Schlitz, Nische, Steg und Rippen: Leiste nur 1 mm tief in der Platte, 1 mm ragt unten heraus, darunter ein durchgehender Raum (Powerbank, Stecker, Adern). Bewertung: geht, vereinfacht den Aufbau stark und lässt die Powerbank auch unter den Docks liegen (Docks begrenzt nur noch die Kassette). Luft über der Powerbank nicht 1 mm, sondern etwa 3,4 mm (1,0 Leiste + 0,6 Spiel + Lötende und Draht), Gesamthöhe dann 29,4 statt 27,0 mm (Oberplatte 11,6 statt 12,6). Offen: Halt der Leiste (flache Tasche mit Rippen, Heißkleber), Höhe der Elektronik daneben. Die Drähte brauchen **keine Führung** (Nutzer: alles ist ein Prototyp). Zeichnung `vorschau/steckmodul_power/steckerraum_idee.png`.
 
 ## Priorität 1 neu: Steckprobe 3 (r5, nach r4)
 
