@@ -45,12 +45,12 @@ MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufe
 OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
 
 # ---- Fasen
-ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)
-EF_CH_T = 0.5           # Fase an Bettkanten von Steckteilen; Steckprobe 2: 0,5 (0,3 und 0,4 ließen einen leichten Wulst)
+ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)
+EF_CH_T = 0.4           # Fase an Bettkanten von Steckteilen (0,3 ließ einen leichten Wulst)
 
 # ---- Taschenhöhe über der Buchse: sie bestimmt, wie weit die Buchse hinter der Kassettenunterkante sitzen kann (Einstecktiefe E sinkt um diesen Wert)
-HSG_TOL_SAFE = 0.60     # Steckprobe 2: Tasche 14,60 (Buchse etwa 14,55; bei 14,45 stand sie 0,1 heraus). Steckprobe 1: 0,45
-HSG_TOL_TIGHT = 0.15    # nur Steckprobe 1 (Kassette 2, passte keine Buchse); in Steckprobe 2 entfällt die Variante
+HSG_TOL_SAFE = 0.45     # Kassette 1: wie Nacht 2 (Buchse ging ganz hinein)
+HSG_TOL_TIGHT = 0.15    # Kassette 2: engere Tasche, begrenzt den Verlust an E auf 0,15 (Buchse muss dazu höchstens 14,15 mm hoch sein)
 
 # ---- Kassette v4: Oberseite als Podest über der Buchse
 PODEST_T = 2.0          # LED-Fläche so viel höher als in Kassette v2 (dort 0,5 über der Taschenoberkante)
@@ -62,15 +62,6 @@ BOX_W, BOX_L = 24.0, 38.0          # Grundriss des Mini-Gebäudes (Hauptbalken-A
 NOTCH_W, NOTCH_L = 3.5, 9.0        # Ausschnitt an der Ecke (+x, −y): konkave Ecke wie bei echten Grundrissen
 PLATE_MARGIN = 7.0                 # Platte ragt so weit über den Fuß hinaus (Mulde + Fase + Wand)
 LID_T_T = 2.0
-
-
-# ---- Steckprobe 2 (Plan plug/testcase/plan2.html, Empfehlungen A abgenickt am 2026-10-16; Zwei-Lagen-Aufbau und Faden-V 40° neu aus plug/power/)
-SHAFT_EXTRA_T = 0.30    # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
-SLOT_END_T = -8.0       # Lötende-Schlitz 1 mm länger (Ende bei −8,0 statt −7,0), L20
-STAMP_AIR_T = 1.2       # Luft zwischen Anschlag-Steg und Körper der Winkelleiste (Karte D)
-S2_MARGIN = 8.0         # Rand der Mini-Oberplatte um den Fuß: Wand zwischen Mulde und Faden-V mindestens 1,4 (bei 7,0 nur 1,2)
-V_LEG_D, V_APEX, V_ENTRY_R, V_WALL = 2.2, 3.4, 2.0, 1.4      # Faden-V (Plan Steckprobe 2, Karte F)
-V_SLOPE_A, V_SLOPE_B = 0.75, 1.2   # Böschung: A = 53° zur Waagerechten (Plan, 0,15 mm Überhang je Schicht), B = 40° (flacher, 0,24 mm je Schicht)
 
 
 def e_of_t():
