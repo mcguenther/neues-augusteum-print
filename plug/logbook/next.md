@@ -36,6 +36,10 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 | Funktionstest | Adern und LED bestücken, Controller anschließen (Schritt L im Testbogen): Licht, Wackeln, Zehnfach-Abziehen | r3 L: noch nicht getestet, Adern biegen rund |
 | Testbogen | Feld „Luft unter der Buchse“ ersetzen durch ja/nein; Feld „Platte A oder B“ und Formular-Version aufnehmen | L24, L25 |
 
+### Fachprobe Powerbank: Plan liegt vor (`plug/power/plan_fach.html`, wartet auf das Abnicken)
+
+Vorschlag: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 29 g), Deckplatte 2 mm, Messschablone. **Kein Stößel** (Nutzer: die Taste sitzt ganz woanders). Lage der Taste ist offen; im Konzept (`plug/power/concept.html`, `build_concept.fach_parts`) steht der Stößel noch und müsste entfernt werden.
+
 ### Steckprobe 2 gebaut, wartet auf den Druck (Powerbank-Konzept Stand 5, 1:1300)
 
 Die große Platte ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4 mm geplant (`plug/power/concept.html`, PLAN Kapitel 6; Maßstab 1:1300 vom Nutzer

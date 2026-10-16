@@ -272,6 +272,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
 | Planung Steckprobe 2 | `plug/testcase/plan2.html` | https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 |
 | Powerbank-Konzept | `plug/power/concept.html` | https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS |
+| Plan Fachprobe Powerbank | `plug/power/plan_fach.html` | https://claude.ai/artifact/JgTgE5ckNHmt56F3igkXhK |
 | Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
