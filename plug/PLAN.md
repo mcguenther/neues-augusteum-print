@@ -351,6 +351,7 @@ bzw. Haken in eine Bohrung am Prüfling, senkrecht ziehen, Höchstwert ablesen. 
 - Controller: ESP32, je Dock ein Ausgang für DIN und ein Eingang für DETECT. Pegel 3,3 → 5 V mit 74AHCT125, 330 Ω in
   Reihe je Datenleitung, 1000 µF am 5-V-Eingang.
 - Strom: 60 mA je LED bei Vollweiß, sieben LEDs unter 0,5 A; 28 AWG trägt das auf kurzen Wegen.
+- Quelle: Powerbank Intenso XS5000 in der Platte, siehe Kapitel 6 (Konzept).
 - Hot-Plug: Alle Stifte sind gleich lang. Datenleitung erst nach DETECT = LOW plus 100 ms freigeben.
 
 ### 2.8 Vergleich mit dem JST-XH-Plan
@@ -522,6 +523,7 @@ Alle Aufrufe aus dem Repo-Wurzelverzeichnis.
 | `python3 -m plug.sample` | rund 15 s | `stl/steckmodul_probe/` (Probestück, `0_passprobe.stl`, `README.txt`, `probedruck_kassette.zip`), `vorschau/steckmodul_probe/` |
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
 | `python3 -m plug.fit_test.build_page` | | `plug/fit_test/page.html` (Anleitung der Passprobe) |
+| `python3 -m plug.power.build_concept` | rund 10 s | `plug/power/concept.html` (Konzept Powerbank, Kapitel 6) |
 | `python3 -m plug.build_all [--skip-institute]` | | alles oben in der richtigen Reihenfolge |
 | `python3 -m plug.check [--skip-institute]` | | prüft, dass alle STL `dicht=True` melden und „keine Kollisionen“ gemeldet wird |
 
@@ -531,3 +533,56 @@ Winkelleiste, Anleitungsseite, Maßseite `angled_pin.html`), `plug/views/` (Ansi
 Chronologie, Passprobe-Ergebnisse und offene Aufgaben: `plug/STATUS.md`.
 
 Die Ausgabe von `plug.dupont`, `plug.institute` und `plug.sample` muss je Teil `dicht=True` und „keine Kollisionen“ zeigen.
+
+## 6. Stromversorgung mit Powerbank (Konzept)
+
+Stand: Konzept, nichts davon ist im Generator der Platte gebaut. Seite: `plug/power/concept.html`
+(`python3 -m plug.power.build_concept`, Draufsicht, 3D, Schnitt, Laufzeitrechner). Konstanten `PB_*`, `UK_*`, `HOF_LEDGE`,
+`ESP_BOX` in `plug/parts.py`.
+
+### 6.1 Powerbank Intenso XS5000
+
+| Größe | Wert | Quelle |
+|---|---|---|
+| Außenmaße | 90 × 63 × 12,6 mm (Anleitung: 13), 103 g | B Datenblatt |
+| Energie | 5000 mAh bei 3,7 V = 18,5 Wh; nutzbar bei 5 V etwa 3,1 Ah (Wirkungsgrad 85 %, S) | A |
+| Ausgang | 5 V / 2,1 A gesamt für USB-A und USB-C, kein PD (Händlerangaben 3,1 A gehören zur XS10000) | B Anleitung |
+| Eingang | USB-C oder microUSB, 5 V / 2,1 A | B Anleitung |
+| Anschlussseite | LEDs, Taste, microUSB, USB-C, USB-A an einer Schmalseite | B Bild der Anleitung, nachmessen |
+| Abschaltung | Standby etwa 30 s nach dem letzten Verbraucher, Taste weckt. Bleibt an bei etwa 50 mA (100 Ω), nicht bei 10 bis 20 mA | B Anleitung / S TonUINO-Forum |
+
+### 6.2 Passt sie unter den Innenhof?
+
+Der Innenhof ist bei 1:1000 nur 21 bis 31 mm breit (Median 31, schmalste Stelle 21, quer zur Hofachse), die Powerbank 63 mm.
+Das Fach braucht 105 × 64 × 13,4 mm (Powerbank, 0,5 mm Spiel je Seite, 14 mm Steckerraum vor den Anschlüssen) und 2 mm
+Auflage für das Innenhof-Teil. Die Suche (`fit_rect`, beliebig gedreht) ergibt: Ganz unter dem Hof passt das Fach erst
+ab **1:436**, gerundet 1:430. Die Platte wäre dann 319 × 626 mm (6 Druckteile), das City-Hochhaus 361 mm hoch.
+
+### 6.3 Vorschlag: Unterkasten statt Deckel (1:1000)
+
+- Oberplatte wie beim Institutsgebäude (Mulden 9,8 mm, Dock A, Unterseite bei −16,2 mm), darunter ein Unterkasten von 15,0 mm
+  (Boden 1,6, Fach 13,4 innen). Zusammen **31,2 mm**, Grundfläche 144 × 283 mm (2 Druckteile, wie die Grundplatte).
+- Der Unterkasten ersetzt den Deckel, trägt die Stempel unter den Docks, das Fach und die Elektronik (60 × 35 mm, S).
+  Er wird offen nach oben gedruckt; ein Fach in der Oberplatte wäre eine 64-mm-Brücke unter den Mulden.
+- Die Powerbank liegt längs unter dem Innenhof, ragt unter Institutsgebäude, Seminargebäude und Paulinum (37 % ihrer
+  Fläche unter dem Hof). Die Anschlussseite liegt an der Nordkante, ein Fenster macht Taste, LEDs und USB-C zugänglich.
+- Bei 1:1500 geht es genauso (100 × 196 × 31,2 mm), die Powerbank füllt die Platte fast in der Breite.
+- Variante Hof-Fach (1:430): Platte bleibt 18,2 mm dick, Innenhof-Teil ist der Deckel; zum Laden wird der Hof abgehoben.
+
+### 6.4 Elektrik
+
+- USB-A mit gewinkeltem Stecker, Kabel abgeschnitten, 5 V und GND auf die Sammelleitung; Schiebeschalter in der Kante.
+- ESP32 an 5 V, 1000 µF, 2 × 74AHCT125 für sechs Docks, DETECT mit Pull-up (Abschnitt 2.7).
+- Haltelast 100 Ω (0,25 W) über Logik-MOSFET, nur zugeschaltet, wenn die LEDs aus sind (etwa 1 s alle 10 bis 20 s).
+  Ohne sie schaltet die Powerbank nach 30 s ab, sobald der ESP schläft; das kann als automatisches Ausschalten gewollt sein.
+- Laufzeit (S): ESP 100 mA plus 8 LEDs bei 30 % etwa 12,6 h; Vollweiß (8 × 60 mA) etwa 5,4 h.
+- Laden bei ausgeschaltetem Modell; Durchladen (laden und versorgen zugleich) ist nicht belegt.
+
+### 6.5 Offen
+
+1. Powerbank nachmessen (Maße, Lage von Taste und Buchsen, Eckenradius).
+2. Abschaltschwelle messen (ESP32 mit WLAN, Modem-Sleep, mit und ohne 100 Ω); wacht sie bei neuer Last von selbst auf?
+3. Entscheidung Maßstab und Variante.
+4. Lage der Docks je Gebäude so wählen, dass Kabelräume das Fach nicht kreuzen; danach Unterkasten im Generator bauen,
+   zuerst als Probestück mit Fach und Fenster.
+5. Gewinkelten USB-A-Stecker beschaffen und den Steckerraum anpassen.
