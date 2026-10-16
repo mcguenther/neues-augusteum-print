@@ -51,6 +51,8 @@ von `steckmodul.py` ist `plug/archive/jst/jst.py`, `stecker/` ist `plug/`).
 
 | g | `8965f40` bis `604660b` | Fahrplan (`plug/roadmap`), erster Nachtdruck `plug/series.py` (Serien K, N, S, C, R, FM, D), Testbogen `plug/feedback` | Spalte unter 0,5 mm sind nicht messbar, darum Serien mit Spielwert auf dem Teil und Beurteilung nach Gefühl. |
 | h | `6adfdae` und danach | Entscheidungsdokument `plug/decision` nach dem Ergebnis von Nacht 1, zweiter Nachtdruck `plug/series2.py` | Ergebnis Nacht 1: S 0,15, R 0,20 ohne Rippen, alle Schieber klemmten (34-mm-Brücke über der Nut hängt durch), K ohne Kontakt ab 1,8, D schief. Antworten: K nur bis 1,0, Schieber noch einmal mit mehr Spiel und dazu Kassette zum Einpressen (E), LED-Fläche flach, D mit Tasche +1,5 und variierter Körperhöhe. |
+| i | `44d5013` bis `69fb76f` | Steckprobe 1 (`plug/testcase/`): Kassette v4, Mini-Gebäude A/B, Mini-Grundplatte A (Support) und B (Trichter, ohne Support), Mini-Deckel; Plan, STL, Testbogen | Kompletter Steckmechanismus im Kleinen ohne Schieber. Ergebnis: Einpressen, Mulde und Pin-Treffer ohne Trichter bewährt, Kontakt da; Körper kippt, Deckel falsch geplant (Logbuch r3). |
+| j | `ce47e6e`, `e2dbb03` | Plan Steckprobe 2 (`plug/testcase/plan2.html`) mit Faden-Lasche statt Schrauben, höherer Tasche, tieferem Schacht | Zwischenstand, noch nicht abgenickt, keine STL (Logbuch r4). Vorgabe: nichts schrauben, Faden unten ein und aus. |
 
 Wichtige Konstruktionsentscheidungen aus dem Chat und den Commits:
 
@@ -303,8 +305,8 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; Federzunge und Kräfte sind
    berechnet, nicht gemessen (Zielwerte: Einstecken unter 10 N, Herausziehen 3 bis 8 N). Der Nutzer will das später testen.
 6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
-7. Nachtdruck 2 (`plug/series2.py`) ist erzeugt, noch nicht gedruckt. Danach entscheiden: Schieber (N) oder Einpressen (E) als
-   Halt der Kassette, Plättchendicke aus K (legt Muldenboden und Trichterplatte fest), Stufe aus D, `CLR` aus FM. Erst dann die
-   Werte in `plug/parts.py` übernehmen und Probestück, Institut und Seiten neu bauen (die Kassette wird rund 1,3 mm höher).
+7. Stand: Nachtdruck 1 und 2 und Steckprobe 1 sind gedruckt und ausgewertet (`plug/logbook/rounds/r1` bis `r3`). Als Nächstes: Steckprobe 2 (Plan liegt vor,
+   `plug/logbook/rounds/r4_steckprobe2/summary.md`, Entscheidungskarten offen). Werte in `plug/parts.py` erst nach bewährter Runde übernehmen und dann Probestück,
+   Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.

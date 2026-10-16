@@ -38,7 +38,7 @@ Muldenboden direkt in die Buchse.
 | Winkelleiste im Dock | Pins treten gerade aus; **Körper kippt oder wackelt** | offen | r3 W | `plate()` |
 | Platz hinter den Lötenden | für diese Probe zu wenig (Fasen und Trichter); im echten Boden soll darunter so viel wie möglich frei sein | offen | r3 W | `LOETRAUM_Y0`, `SLOT_END` |
 | Deckel mit Stempeln | passt nicht (Stempel stoßen beim Aufsetzen an, mehr als 1 mm Luft nötig); Konzept neu | verworfen | r3 W | `lid()` |
-| Befestigung | **keine Schrauben**; Löcher in Deckel und Platte, ein Faden (Doktorhut, vier Fäden an den Ecken) zieht beides zusammen; Ösen von unten für Schlaufen | beschlossen, Ausführung offen | r3 Nachtrag | `SCREW_X`, `lid()` |
+| Befestigung | **keine Schrauben** (fest); Platte wird an einen Doktorhut genäht, vier Fäden an den Ecken. Fadenführung als Planungs-Zwischenstand: nicht oben austretend, breiter Trichter unten, schräg durch eine Lasche, schräg nach unten heraus (V-Kanal, Plan Steckprobe 2) | beschlossen (keine Schrauben), Ausführung Zwischenstand, ungetestet | r3 Nachtrag, r4 | `build_plan2.PROP`, `lid()` |
 | Muldenboden und Kabelraum als Brücken (Platte A, erster Druck) | Muldenboden stark durchgehängt oder Löcher zu, Decke des Kabelraums stark durchgehängt (Thick bridges an) | verworfen für den Druck ohne Support | r3 | `plate("A")` |
 | Platte B (Trichter, ohne Support) | Pin-Löcher offen, Pins treten gerade aus, Kontakt vorhanden; Körper kippt ohne Halt von unten; Platz für Kabel hinter den Lötenden durch die Fasen zu klein | **Basis**, mit Mängeln | r3 W, S | `plate("B")` |
 

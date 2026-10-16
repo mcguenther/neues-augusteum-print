@@ -13,13 +13,14 @@ gepflegte Sicht darauf: Was hat geklappt, was nicht, was kommt als Nächstes.
 
 Runden: [r0 Passproben und Probestück](rounds/r0_fitprobes/summary.md) ·
 [r1 Nachtdruck 1](rounds/r1_night1/summary.md) · [r2 Nachtdruck 2](rounds/r2_night2/summary.md) ·
-[r3 Steckprobe 1](rounds/r3_steckprobe1/summary.md)
+[r3 Steckprobe 1](rounds/r3_steckprobe1/summary.md) ·
+[r4 Steckprobe 2 (Planung, Zwischenstand)](rounds/r4_steckprobe2/summary.md)
 
 ## Begriffe
 
 - **Steckprobe**: der Testaufbau aus Mini-Gebäude (L-Fuß), Kassette mit Buchse, Mini-Grundplatte mit Winkelleiste und Mini-Deckel.
   Er prüft den kompletten Steckmechanismus im Kleinen, ohne ein echtes Gebäude zu drucken. Im Code heißt das Paket
-  `plug/testcase/` (englischer Ordnername), in Gesprächen und Dokumenten sagen wir *Steckprobe* (`r3` = Steckprobe 1).
+  `plug/testcase/` (englischer Ordnername), in Gesprächen und Dokumenten sagen wir *Steckprobe* (`r3` = Steckprobe 1; der Name ist vom Nutzer bestätigt).
 - **Kassette**: gedruckte Hülse für Dupont-Buchse, Adern und LED-Streifen; wird von unten in den Schacht des Gebäudefußes gepresst.
 - **Platte / Dock A**: Grundplatte mit Mulde für den Fuß und der Tasche für die abgewinkelte Winkelleiste; Pins ragen durch den Muldenboden.
 - **E** (Einstecktiefe): wie tief die Pins in der Buchse stecken; Durchgang stabil ab etwa 5,1 mm.

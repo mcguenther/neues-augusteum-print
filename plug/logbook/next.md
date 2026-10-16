@@ -8,16 +8,17 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 - **Platte B** ist die getestete Platte (W, S, D); die Druckmängel gehören zu Platte A. Basis ist B.
 - **Schrauben entfallen**; Deckel und Platte bekommen Löcher für den Faden, der beides andrückt.
 - **Buchsen nachmessen entfällt**; das Delta reicht (Tasche mindestens 0,1 über 14,45).
-- **Faden:** tritt **nicht an der Oberseite** aus. An der Unterseite eine breite Einführung (Trichter); der Faden läuft von unten **schräg durch eine Lasche** der Platte und
-  **schräg nach unten wieder heraus** (V-Kanal an den vier Ecken). Umsetzung im Plan Steckprobe 2: Kanal Ø 2,2 mit 0,15 mm Überhang je Schicht (Platte-B-Böschung, etwa 53° zur
-  Waagerechten), Scheitel 3,4 mm über der Unterseite, Trichter Radius 2,0, Mitte x ±15,6, Wände mindestens 1,4 mm, Ausschnitte im Deckel über den Trichtern
-  (`plug/testcase/build_plan2.py`, `PROP`). Noch abzunicken: Ausschnitte im Deckel in Ordnung? Lasche wie verstanden?
+- **Keine Schrauben** (feste Vorgabe): die Platte wird an einen Doktorhut genäht, vier Fäden an den Ecken.
+- **Faden (Planungs-Zwischenstand, nicht abgenickt):** tritt **nicht an der Oberseite** aus. Unten eine breite Einführung (Trichter); der Faden läuft von unten
+  **schräg durch eine Lasche** der Platte und **schräg nach unten wieder heraus** (V-Kanal an den vier Ecken). Der Plan Steckprobe 2 setzt das so um: Kanal Ø 2,2 mit 0,15 mm
+  Überhang je Schicht (Platte-B-Böschung, etwa 53° zur Waagerechten), Scheitel 3,4 mm über der Unterseite, Trichter Radius 2,0, Mitte x ±15,6, Wände mindestens 1,4 mm,
+  Ausschnitte im Deckel über den Trichtern (`plug/testcase/build_plan2.py`, `PROP`; Eintrag `rounds/r4_steckprobe2/summary.md`). Die Einzelheiten dürfen sich noch ändern.
+- **Name „Steckprobe“** passt (bestätigt).
 
 ## Offene Fragen an den Nutzer (im Plan Steckprobe 2 als Entscheidungskarten)
 
 1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
-2. **Name** „Steckprobe“ in Ordnung?
-3. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D).
+2. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D); alle Karten warten auf das Abnicken.
 
 ## Priorität 1: Steckprobe 2 (r4)
 
