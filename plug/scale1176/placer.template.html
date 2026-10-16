@@ -1,0 +1,265 @@
+<title>Kassetten-Platzierung</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: links die Platte als Zeichenfläche, rechts Steuerung und Warnungen; schmal untereinander */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2630; --muted: #5a6877; --line: #d5dce3;
+  --accent: #1f5f8b; --accent-soft: #e2eef6;
+  --ok: #1f7a4d; --ok-soft: #e0f1e8; --warn: #9a6200; --warn-soft: #fbf0d6; --no: #b3261e; --no-soft: #fbe3e1;
+  --plate: #dfe5eb; --fp: #c9d2db; --hof: #cfe6d3; --shaft: #1f5f8b; --dock: #e9c46a; --led: #f2c200; --canvas: #eef1f4;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --plate: #232b34; --fp: #323d49; --hof: #25402d; --shaft: #6db3e0; --dock: #8a6d1f; --led: #ffd93a; --canvas: #181e25; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --plate: #232b34; --fp: #323d49; --hof: #25402d; --shaft: #6db3e0; --dock: #8a6d1f; --led: #ffd93a; --canvas: #181e25; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; } h2 { font-size: 1rem; margin: 0 0 8px; }
+p { margin: 0; } .muted { color: var(--muted); } .mono { font-family: var(--mono); font-size: 0.9em; }
+.kicker { font: 500 0.75rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.app { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } }
+.stage { background: var(--canvas); border: 1px solid var(--line); border-radius: 6px; position: relative; min-width: 0; }
+canvas { display: block; width: 100%; height: min(78vh, 900px); touch-action: none; cursor: crosshair; border-radius: 6px; }
+.tools { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; min-width: 0; }
+button, select, input { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px; }
+button { cursor: pointer; } button:hover { background: var(--accent-soft); } button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.1); }
+input[type=number] { width: 6.6em; font-family: var(--mono); font-size: 0.9rem; }
+.row { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; } .row label { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--muted); }
+.list { display: flex; flex-direction: column; gap: 4px; }
+.item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; background: var(--surface); text-align: left; width: 100%; }
+.item.sel { border-color: var(--accent); background: var(--accent-soft); }
+.item small { color: var(--muted); display: block; font-size: 0.78rem; }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.bad { background: var(--no-soft); color: var(--no); }
+.msgs { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.msgs li { padding: 6px 9px; border-radius: 4px; font-size: 0.88rem; border-left: 4px solid var(--line); }
+.msgs li.ok { background: var(--ok-soft); border-color: var(--ok); } .msgs li.warn { background: var(--warn-soft); border-color: var(--warn); } .msgs li.bad { background: var(--no-soft); border-color: var(--no); } .msgs li.info { background: var(--accent-soft); border-color: var(--accent); }
+.nums { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; font-size: 0.85rem; } .nums b { font: 500 0.95rem var(--mono); display: block; }
+textarea { width: 100%; min-height: 8.5em; font: 0.78rem var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px; resize: vertical; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; color: var(--muted); } .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: -2px; border: 1px solid var(--line); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<main>
+<header>
+  <div class="kicker">Steckplatte 1:1300</div>
+  <h1>Kassetten-Platzierung</h1>
+  <p class="muted" style="margin-top:6px;max-width:80ch">Schacht der Kassette ziehen, drehen und die Kassette wechseln. Farbe und Liste zeigen sofort, was gegen die Lage spricht: Wand um den Schacht, Dachhöhe, Luft über der LED, LED-Abstand zur Mitte und das Dock unter der Platte. Mit „Kopieren“ übernimmst du die Lagen für <span class="mono">plug/scale1176/placements_1300.json</span>.</p>
+</header>
+<div class="app">
+  <div class="stage">
+    <canvas id="cv" aria-label="Plan der Platte mit den Schächten der Kassetten"></canvas>
+    <div class="tools"><button id="zin" title="Zoom +">+</button><button id="zout" title="Zoom −">−</button><button id="zall">Gesamt</button><button id="zsel">Zoom auf Gebäude</button></div>
+  </div>
+  <div class="panel">
+    <div class="box"><h2>Gebäude</h2><div class="list" id="list"></div></div>
+    <div class="box" id="ctl"></div>
+    <div class="box"><h2>Warnungen und Hinweise</h2><ul class="msgs" id="msgs"></ul></div>
+    <div class="box"><h2>Positionen kopieren</h2>
+      <div class="row" style="margin-bottom:8px"><button class="primary" id="copyall">Alle kopieren</button><button id="copyone">Nur dieses Gebäude</button><button id="resetall">Alle zurücksetzen</button></div>
+      <textarea id="out" readonly aria-label="Positionen als JSON"></textarea>
+      <p class="muted" style="margin-top:6px;font-size:0.8rem" id="copystate"></p>
+    </div>
+  </div>
+</div>
+<div class="legend">
+  <span><i style="background:var(--shaft)"></i>Schacht (grün/gelb/rot = Prüfung)</span><span><i style="background:var(--dock)"></i>Dock unter der Platte (Lötraum, Kabelraum)</span>
+  <span><i style="background:var(--led)"></i>LED</span><span><i style="background:var(--hof)"></i>Innenhof</span><span>Kreuz = Mitte der Grundfläche</span><span>weiße Punkte = Pin-Reihe</span><span>Ziehen: Schacht verschieben, Fläche ziehen: Ansicht, Rad: Zoom, Pfeiltasten und Q/E: Feinschritte</span>
+</div>
+</main>
+<script>
+var D = @DATA@;
+var ORDER = ["v4", "V1", "V1R", "V1RS", "V2", "V2R"];
+var VLABEL = {v4: "v4 flach (LED nach oben)", V1: "V1 quer", V1R: "V1R quer, 2 LEDs", V1RS: "V1RS quer breit, 2 LEDs", V2: "V2 hochkant", V2R: "V2R hochkant, 2 LEDs"};
+var WALL_MIN = 0.8, WALL_PREF = 1.2, LUFT_BAD = 5, LUFT_WARN = 8, LED_WARN = 4, LED_BAD = 10, DOCK_EDGE = 1.0;
+var CK = ["01_paulinum", "02_neues_augusteum", "03_hoersaalgebaeude", "04_seminargebaeude", "05_institutsgebaeude", "06_city_hochhaus"];
+var keys = CK.filter(function (k) { return D.buildings[k]; });
+function de(x, n) { return Number(x).toFixed(n === undefined ? 1 : n).replace(".", ","); }
+function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function b64(s) { var bin = atob(s), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+keys.forEach(function (k) { var g = D.buildings[k].grid; g.h8 = b64(g.h); });
+var state = { sel: keys[0], delta: D.delta, items: {}, view: null };
+function startItems() { keys.forEach(function (k) { var s = D.buildings[k].start; state.items[k] = { var: s.var, cx: s.cx, cy: s.cy, angle: s.angle }; }); }
+startItems();
+try { var sv = JSON.parse(localStorage.getItem("placer1300") || "null"); if (sv && sv.items) { keys.forEach(function (k) { if (sv.items[k]) state.items[k] = sv.items[k]; }); if (sv.delta !== undefined) state.delta = sv.delta; } } catch (e) {}
+function save() { try { localStorage.setItem("placer1300", JSON.stringify({ items: state.items, delta: state.delta })); } catch (e) {} }
+
+// ---------- Geometrie
+function rot(a, x, y) { var r = a * Math.PI / 180, c = Math.cos(r), s = Math.sin(r); return [c * x - s * y, s * x + c * y]; }
+function toWorld(it, ux, uy) { var p = rot(it.angle, ux, uy); return [p[0] + it.cx, p[1] + it.cy]; }
+function pip(pt, ring) { var x = pt[0], y = pt[1], ins = false; for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) { var xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1]; if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) ins = !ins; } return ins; }
+function inAny(pt, rings) { for (var i = 0; i < rings.length; i++) if (pip(pt, rings[i])) return true; return false; }
+function distSeg(p, a, b) { var dx = b[0] - a[0], dy = b[1] - a[1], t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1); t = Math.max(0, Math.min(1, t)); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }
+function distRing(p, ring) { var m = 1e9; for (var i = 0; i < ring.length - 1; i++) m = Math.min(m, distSeg(p, ring[i], ring[i + 1])); return m; }
+function height(b, x, y) { var g = b.grid, ix = Math.floor((x - g.minx) / g.res), iy = Math.floor((g.maxy - y) / g.res); if (ix < 0 || iy < 0 || ix >= g.nx || iy >= g.ny) return 0; return g.h8[iy * g.nx + ix] / 2; }
+function needOf(v) { var V = D.variants[v]; return V.top - D.F0 - state.delta + D.stop; }
+function ledOver(v) { return D.variants[v].ledz - D.F0 - state.delta; }
+
+// exakte Abstandstransformation (Felzenszwalb), Abstand in Zellen zum nächsten nicht nutzbaren Feld
+function edt1(f, n, d, v, z) { var k = 0, q, s, p; v[0] = 0; z[0] = -1e20; z[1] = 1e20;
+  for (q = 1; q < n; q++) { p = v[k]; s = ((f[q] + q * q) - (f[p] + p * p)) / (2 * q - 2 * p); while (s <= z[k]) { k--; p = v[k]; s = ((f[q] + q * q) - (f[p] + p * p)) / (2 * q - 2 * p); } k++; v[k] = q; z[k] = s; z[k + 1] = 1e20; }
+  k = 0; for (q = 0; q < n; q++) { while (z[k + 1] < q) k++; d[q] = (q - v[k]) * (q - v[k]) + f[v[k]]; } }
+function edt(mask, nx, ny) { var INF = 1e12, f = new Float64Array(Math.max(nx, ny)), d = new Float64Array(Math.max(nx, ny)), v = new Int32Array(Math.max(nx, ny)), z = new Float64Array(Math.max(nx, ny) + 1), g = new Float64Array(nx * ny);
+  for (var i = 0; i < nx * ny; i++) g[i] = mask[i] ? INF : 0;
+  for (var x = 0; x < nx; x++) { for (var y = 0; y < ny; y++) f[y] = g[y * nx + x]; edt1(f, ny, d, v, z); for (var y2 = 0; y2 < ny; y2++) g[y2 * nx + x] = d[y2]; }
+  for (var y3 = 0; y3 < ny; y3++) { for (var x3 = 0; x3 < nx; x3++) f[x3] = g[y3 * nx + x3]; edt1(f, nx, d, v, z); for (var x4 = 0; x4 < nx; x4++) g[y3 * nx + x4] = Math.sqrt(d[x4]); }
+  return g; }
+var dcache = {};
+function distField(k, need) { var key = k + "|" + need.toFixed(2), b = D.buildings[k]; if (dcache[key]) return dcache[key]; var g = b.grid, m = new Uint8Array(g.nx * g.ny), thr = (need - 0.2) * 2; for (var i = 0; i < m.length; i++) m[i] = g.h8[i] >= thr && g.h8[i] > 0 ? 1 : 0; dcache[key] = edt(m, g.nx, g.ny); return dcache[key]; }
+function distAt(k, field, x, y) { var g = D.buildings[k].grid, ix = Math.floor((x - g.minx) / g.res), iy = Math.floor((g.maxy - y) / g.res); if (ix < 0 || iy < 0 || ix >= g.nx || iy >= g.ny) return 0; return field[iy * g.nx + ix]; }
+
+// ---------- Prüfung
+function dockWorld(k) { var it = state.items[k], V = D.variants[it.var]; return D.dock.map(function (ring) { return ring.map(function (p) { return toWorld(it, p[0], p[1] - V.yc); }); }); }
+function sampleRing(ring, step) { var out = []; for (var i = 0; i < ring.length - 1; i++) { var a = ring[i], b = ring[i + 1], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / step)); for (var j = 0; j < n; j++) out.push([a[0] + (b[0] - a[0]) * j / n, a[1] + (b[1] - a[1]) * j / n]); } return out; }
+function evaluate() {
+  var res = {};
+  var docks = {}; keys.forEach(function (k) { docks[k] = dockWorld(k); });
+  keys.forEach(function (k) {
+    var b = D.buildings[k], it = state.items[k], V = D.variants[it.var], need = needOf(it.var), field = distField(k, need), msgs = [];
+    var w = V.w, d = V.d, outside = 0, low = 0, total = 0, minH = 1e9, wall = 1e9, thr = need - 0.2;
+    function probe(ux, uy, edge) { var p = toWorld(it, ux, uy), h = height(b, p[0], p[1]); total++; if (h <= 0) outside++; else { if (h < thr) low++; minH = Math.min(minH, h); } if (edge) wall = Math.min(wall, Math.max(0, (distAt(k, field, p[0], p[1]) - 0.5) * b.grid.res)); }
+    for (var s = 0; s <= 1.0001; s += 0.25 / Math.max(w, d)) { probe(-w / 2 + s * w, -d / 2, true); probe(-w / 2 + s * w, d / 2, true); probe(-w / 2, -d / 2 + s * d, true); probe(w / 2, -d / 2 + s * d, true); }
+    for (var ux = -w / 2; ux <= w / 2; ux += 0.5) for (var uy = -d / 2; uy <= d / 2; uy += 0.5) probe(ux, uy, false);
+    if (outside > 0 || low > 0) wall = 0;
+    var led = toWorld(it, V.led[0], V.led[1]), hLed = height(b, led[0], led[1]), luft = hLed - ledOver(it.var), ledDist = Math.hypot(led[0] - b.target[0], led[1] - b.target[1]);
+    var lvl = { wall: wall < WALL_MIN ? "bad" : (wall < WALL_PREF ? "warn" : "ok"), luft: luft < LUFT_BAD ? "bad" : (luft < LUFT_WARN ? "warn" : "ok"), led: ledDist > LED_BAD ? "bad" : (ledDist > LED_WARN ? "warn" : "ok") };
+    if (outside > 0) msgs.push(["bad", "Der Schacht ragt über den Grundriss hinaus (" + Math.round(100 * outside / total) + " % der Fläche liegen außerhalb des Gebäudes)."]);
+    if (low > 0) msgs.push(["bad", "Das Dach über dem Schacht ist an der niedrigsten Stelle nur " + de(minH) + " mm hoch, nötig sind " + de(need) + " mm (Kassettenoberkante plus Dach)."]);
+    if (outside === 0 && low === 0) { if (wall < WALL_MIN) msgs.push(["bad", "Wand um den Schacht nur " + de(wall, 2) + " mm, Mindestmaß " + de(WALL_MIN) + " mm."]); else if (wall < WALL_PREF) msgs.push(["warn", "Wand um den Schacht " + de(wall, 2) + " mm, bevorzugt " + de(WALL_PREF) + " mm."]); }
+    if (hLed <= 0) msgs.push(["bad", "Die LED liegt außerhalb des Gebäudes."]); else if (luft < LUFT_BAD) msgs.push(["bad", "Luft über der LED nur " + de(luft) + " mm (Dach " + de(hLed) + " mm über der Platte, LED " + de(ledOver(it.var)) + " mm). Das Licht sitzt fast unter dem Dach."]); else if (luft < LUFT_WARN) msgs.push(["warn", "Luft über der LED " + de(luft) + " mm, Richtwert " + LUFT_WARN + " mm (Annahme, ungetestet)."]);
+    if (ledDist > LED_BAD) msgs.push(["bad", "LED " + de(ledDist) + " mm von der Mitte der Grundfläche entfernt."]); else if (ledDist > LED_WARN) msgs.push(["warn", "LED " + de(ledDist) + " mm von der Mitte der Grundfläche entfernt."]);
+    // Dock
+    var dk = docks[k], plate = D.outline, bad = 0, near = 1e9, under = {};
+    dk.forEach(function (ring) { sampleRing(ring, 1.0).forEach(function (p) { if (!inAny(p, plate)) { bad++; near = -1; } else { var m = 1e9; plate.forEach(function (r) { m = Math.min(m, distRing(p, r)); }); near = Math.min(near, m); } }); });
+    if (near < 0) { msgs.push(["bad", "Das Dock (Löt- und Kabelraum) ragt über den Rand der Platte hinaus."]); lvl.dock = "bad"; } else if (near < DOCK_EDGE) { msgs.push(["bad", "Das Dock hat nur " + de(near) + " mm Abstand zum Plattenrand, nötig " + de(DOCK_EDGE) + " mm."]); lvl.dock = "bad"; } else lvl.dock = "ok";
+    keys.forEach(function (o) {
+      if (o === k) return;
+      var cnt = 0, cnt2 = 0;
+      for (var gx = -9; gx <= 9; gx += 0.5) for (var gy = -12; gy <= 6; gy += 0.5) { var P0 = toWorld(it, gx, gy - V.yc); if (inAny(P0, D.dock.map(function (r) { return r; })) ) { if (inAny(P0, docks[o])) cnt++; if (inAny(P0, D.buildings[o].fp)) cnt2++; } }
+      if (cnt > 0) { msgs.push(["bad", "Das Dock überlappt das Dock von " + D.buildings[o].name + " (etwa " + de(cnt * 0.25, 0) + " mm²)."]); lvl.dock = "bad"; }
+      else if (cnt2 > 0) under[o] = cnt2 * 0.25;
+    });
+    Object.keys(under).forEach(function (o) { msgs.push(["info", "Das Dock liegt teilweise unter der Mulde von " + D.buildings[o].name + " (etwa " + de(under[o], 0) + " mm²); dort bleibt nur der 0,4-mm-Muldenboden darüber."]); });
+    var worst = "ok"; ["wall", "luft", "led", "dock"].forEach(function (n) { if (lvl[n] === "bad") worst = "bad"; else if (lvl[n] === "warn" && worst !== "bad") worst = "warn"; });
+    if (outside > 0 || low > 0) worst = "bad";
+    if (!msgs.some(function (m) { return m[0] !== "info"; })) msgs.unshift(["ok", "Keine Einwände gegen diese Lage."]);
+    res[k] = { wall: wall, minH: minH, hLed: hLed, luft: luft, ledDist: ledDist, led: led, need: need, lvl: lvl, worst: worst, msgs: msgs, dock: dk, outside: outside, low: low };
+  });
+  return res;
+}
+
+// ---------- Zeichnen
+var cv = document.getElementById("cv"), ctx = cv.getContext("2d"), R = {}, lastEval = null, offs = {};
+function bbox() { var xs = [], ys = []; D.outline.forEach(function (r) { r.forEach(function (p) { xs.push(p[0]); ys.push(p[1]); }); }); return [Math.min.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, xs), Math.max.apply(null, ys)]; }
+var BB = bbox();
+function fit(bb, pad) { var W = cv.width / dpr, H = cv.height / dpr, k = Math.min((W - 2 * pad) / (bb[2] - bb[0]), (H - 2 * pad) / (bb[3] - bb[1])); return { cx: (bb[0] + bb[2]) / 2, cy: (bb[1] + bb[3]) / 2, k: k }; }
+var dpr = window.devicePixelRatio || 1;
+function resize() { var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1; cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); if (!state.view) state.view = fit(BB, 14); draw(); }
+function sx(x) { return (x - state.view.cx) * state.view.k + cv.width / dpr / 2; }
+function sy(y) { return -(y - state.view.cy) * state.view.k + cv.height / dpr / 2; }
+function wx(px) { return (px - cv.width / dpr / 2) / state.view.k + state.view.cx; }
+function wy(py) { return -(py - cv.height / dpr / 2) / state.view.k + state.view.cy; }
+function path(rings) { ctx.beginPath(); rings.forEach(function (r) { r.forEach(function (p, i) { if (i) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); }); ctx.closePath(); }); }
+function heightImg(k, need, selected) { var key = k + "|" + need.toFixed(2) + "|" + (selected ? 1 : 0) + "|" + css("--fp"), b = D.buildings[k], g = b.grid; if (offs[key]) return offs[key]; var c = document.createElement("canvas"); c.width = g.nx; c.height = g.ny; var cx = c.getContext("2d"), im = cx.createImageData(g.nx, g.ny), hex = css("--fp").replace("#", ""), br = parseInt(hex.substr(0, 2), 16), bg = parseInt(hex.substr(2, 2), 16), bb = parseInt(hex.substr(4, 2), 16);
+  for (var i = 0; i < g.nx * g.ny; i++) { var h = g.h8[i] / 2; if (h <= 0) continue; var t = Math.min(1, h / 30), f = 0.78 + 0.22 * t; var r = br, gr = bg, bl = bb, a = 255; var dark = document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var m = dark ? 0.7 + 0.6 * t : 1.05 - 0.28 * t; r = Math.min(255, br * m); gr = Math.min(255, bg * m); bl = Math.min(255, bb * m);
+    if (selected && h < need - 0.2) { r = r * 0.6 + 242 * 0.4; gr = gr * 0.6 + 140 * 0.4; bl = bl * 0.6 + 60 * 0.4; }
+    im.data[4 * i] = r; im.data[4 * i + 1] = gr; im.data[4 * i + 2] = bl; im.data[4 * i + 3] = a; }
+  cx.putImageData(im, 0, 0); offs[key] = c; return c; }
+function statusColor(l) { return l === "bad" ? css("--no") : (l === "warn" ? css("--warn") : css("--ok")); }
+function draw() {
+  if (!state.view) return;
+  var ev = lastEval = evaluate(); R = ev;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = css("--plate"); path(D.outline); ctx.fill(); ctx.strokeStyle = css("--line"); ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = css("--hof"); path(D.hof); ctx.fill();
+  keys.forEach(function (k) { var b = D.buildings[k], g = b.grid, it = state.items[k], img = heightImg(k, needOf(it.var), k === state.sel); ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(img, sx(g.minx), sy(g.maxy), g.nx * g.res * state.view.k, g.ny * g.res * state.view.k); });
+  keys.forEach(function (k) { var b = D.buildings[k]; ctx.strokeStyle = k === state.sel ? css("--accent") : css("--muted"); ctx.lineWidth = k === state.sel ? 2 : 1; path(b.fp); ctx.stroke(); });
+  keys.forEach(function (k) { var e = ev[k]; ctx.fillStyle = css("--dock"); ctx.globalAlpha = 0.4; path(e.dock); ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = css("--dock"); ctx.lineWidth = 1; ctx.stroke(); });
+  keys.forEach(function (k) { var e = ev[k], it = state.items[k], V = D.variants[it.var], w = V.w, d = V.d, c = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]].map(function (p) { return toWorld(it, p[0], p[1]); });
+    var col = statusColor(e.worst); ctx.beginPath(); c.forEach(function (p, i) { if (i) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); }); ctx.closePath(); ctx.globalAlpha = 0.55; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = 1; ctx.strokeStyle = col; ctx.lineWidth = k === state.sel ? 3 : 1.5; ctx.stroke();
+    // bevorzugte Wand als gestrichelter Rahmen
+    var c2 = [[-w / 2 - WALL_PREF, -d / 2 - WALL_PREF], [w / 2 + WALL_PREF, -d / 2 - WALL_PREF], [w / 2 + WALL_PREF, d / 2 + WALL_PREF], [-w / 2 - WALL_PREF, d / 2 + WALL_PREF]].map(function (p) { return toWorld(it, p[0], p[1]); });
+    ctx.setLineDash([4, 3]); ctx.beginPath(); c2.forEach(function (p, i) { if (i) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); }); ctx.closePath(); ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
+    for (var i = 0; i < 4; i++) { var p = toWorld(it, (i - 1.5) * 2.54, -V.yc); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(sx(p[0]), sy(p[1]), Math.max(1.5, 0.45 * state.view.k), 0, 6.3); ctx.fill(); }
+    ctx.fillStyle = css("--led"); ctx.strokeStyle = "#000"; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(sx(e.led[0]), sy(e.led[1]), Math.max(3, 1.1 * state.view.k), 0, 6.3); ctx.fill(); ctx.stroke();
+    var t = D.buildings[k].target; ctx.strokeStyle = css("--fg"); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(sx(t[0]) - 6, sy(t[1])); ctx.lineTo(sx(t[0]) + 6, sy(t[1])); ctx.moveTo(sx(t[0]), sy(t[1]) - 6); ctx.lineTo(sx(t[0]), sy(t[1]) + 6); ctx.stroke();
+    ctx.fillStyle = css("--fg"); ctx.font = "600 12px " + css("--sans"); ctx.textAlign = "center"; var cp = toWorld(it, 0, 0); ctx.lineWidth = 3; ctx.strokeStyle = css("--surface"); ctx.strokeText(D.buildings[k].name, sx(cp[0]), sy(cp[1]) - Math.max(10, d * state.view.k / 2 + 10)); ctx.fillText(D.buildings[k].name, sx(cp[0]), sy(cp[1]) - Math.max(10, d * state.view.k / 2 + 10)); });
+  panel();
+}
+
+// ---------- Bedienfeld
+function pill(l, t) { return '<span class="pill ' + l + '">' + t + '</span>'; }
+function panel() {
+  var ev = R, h = "";
+  keys.forEach(function (k) { var e = ev[k], it = state.items[k]; h += '<button class="item' + (k === state.sel ? " sel" : "") + '" data-k="' + k + '"><span>' + D.buildings[k].name + '<small>' + it.var + ' · Wand ' + de(Math.min(e.wall, 9.9)) + ' mm · Luft ' + de(e.luft) + ' mm</small></span>' + pill(e.worst, e.worst === "ok" ? "passt" : (e.worst === "warn" ? "prüfen" : "Problem")) + '</button>'; });
+  document.getElementById("list").innerHTML = h;
+  var k = state.sel, it = state.items[k], e = ev[k], opts = ORDER.map(function (v) { return '<option value="' + v + '"' + (v === it.var ? " selected" : "") + '>' + VLABEL[v] + '</option>'; }).join("");
+  var dl = [0, 4, 8].map(function (v) { return '<option value="' + v + '"' + (v === state.delta ? " selected" : "") + '>' + v + ' mm</option>'; }).join("");
+  document.getElementById("ctl").innerHTML = '<h2>' + D.buildings[k].name + '</h2>' +
+    '<div class="row" style="margin-bottom:8px"><label>Kassette <select id="svar">' + opts + '</select></label><label>Mulde tiefer um <select id="sdel">' + dl + '</select></label></div>' +
+    '<div class="row" style="margin-bottom:8px"><label>x <input type="number" step="0.25" id="ix" value="' + it.cx.toFixed(2) + '"></label><label>y <input type="number" step="0.25" id="iy" value="' + it.cy.toFixed(2) + '"></label><label>Winkel° <input type="number" step="1" id="ia" value="' + it.angle.toFixed(1) + '"></label></div>' +
+    '<div class="row" style="margin-bottom:8px"><button data-r="-5">⟲ 5°</button><button data-r="-1">⟲ 1°</button><button data-r="1">⟳ 1°</button><button data-r="5">⟳ 5°</button><button id="flip">180°</button></div>' +
+    '<div class="row" style="margin-bottom:10px"><button data-m="-1,0">←</button><button data-m="0,1">↑</button><button data-m="0,-1">↓</button><button data-m="1,0">→</button><button id="ledc">LED zur Mitte</button><button id="reset">Start</button></div>' +
+    '<div class="nums"><div><span>Wand um den Schacht</span><b>' + de(Math.min(e.wall, 9.9), 2) + ' mm</b></div><div><span>Luft LED bis Dach</span><b>' + de(e.luft) + ' mm</b></div><div><span>LED zur Mitte</span><b>' + de(e.ledDist) + ' mm</b></div><div><span>Dach, niedrigste Stelle</span><b>' + de(e.minH > 1e8 ? 0 : e.minH) + ' mm (nötig ' + de(e.need) + ')</b></div></div>';
+  document.getElementById("msgs").innerHTML = e.msgs.map(function (m) { return '<li class="' + m[0] + '">' + m[1] + '</li>'; }).join("");
+  document.getElementById("out").value = exportJSON();
+}
+function exportJSON(one) { var o = {}; (one ? [state.sel] : keys).forEach(function (k) { var it = state.items[k], e = R[k]; o[k] = { var: it.var, wall: Math.round(Math.min(e.wall, 9.9) * 10) / 10, cx: Math.round(it.cx * 1000) / 1000, cy: Math.round(it.cy * 1000) / 1000, angle: Math.round(((it.angle % 360) + 360) % 360 * 10) / 10 }; }); return JSON.stringify(o, null, 1); }
+function copy(text, label) { var st = document.getElementById("copystate"); function fallback() { var ta = document.getElementById("out"); ta.value = text; ta.focus(); ta.select(); st.textContent = "Kopieren nicht möglich, der Text ist markiert (Strg+C)."; }
+  try { navigator.clipboard.writeText(text).then(function () { st.textContent = label + " kopiert."; }, fallback); } catch (e) { fallback(); } }
+function upd() { save(); draw(); }
+function norm(a) { return ((a % 360) + 360) % 360; }
+document.addEventListener("click", function (ev) {
+  var t = ev.target.closest("button, .item"); if (!t) return;
+  var it = state.items[state.sel];
+  if (t.dataset.k) { state.sel = t.dataset.k; draw(); return; }
+  if (t.dataset.r) { it.angle = norm(it.angle + Number(t.dataset.r)); upd(); return; }
+  if (t.dataset.m) { var m = t.dataset.m.split(",").map(Number), st = ev.shiftKey ? 1 : 0.25; it.cx += m[0] * st; it.cy += m[1] * st; upd(); return; }
+  if (t.id === "flip") { it.angle = norm(it.angle + 180); upd(); }
+  else if (t.id === "ledc") { var V = D.variants[it.var], tg = D.buildings[state.sel].target, lw = toWorld(it, V.led[0], V.led[1]); it.cx += tg[0] - lw[0]; it.cy += tg[1] - lw[1]; upd(); }
+  else if (t.id === "reset") { var s = D.buildings[state.sel].start; state.items[state.sel] = { var: s.var, cx: s.cx, cy: s.cy, angle: s.angle }; upd(); }
+  else if (t.id === "resetall") { startItems(); upd(); }
+  else if (t.id === "copyall") copy(exportJSON(false), "Alle Positionen");
+  else if (t.id === "copyone") copy(exportJSON(true), "Position");
+  else if (t.id === "zin") zoom(1.3); else if (t.id === "zout") zoom(1 / 1.3); else if (t.id === "zall") { state.view = fit(BB, 14); draw(); }
+  else if (t.id === "zsel") { var b = D.buildings[state.sel], xs = [], ys = []; b.fp.forEach(function (r) { r.forEach(function (p) { xs.push(p[0]); ys.push(p[1]); }); }); state.view = fit([Math.min.apply(null, xs) - 6, Math.min.apply(null, ys) - 6, Math.max.apply(null, xs) + 6, Math.max.apply(null, ys) + 6], 10); draw(); }
+});
+document.addEventListener("change", function (ev) { var t = ev.target, it = state.items[state.sel];
+  if (t.id === "svar") { it.var = t.value; upd(); } else if (t.id === "sdel") { state.delta = Number(t.value); upd(); }
+  else if (t.id === "ix") { it.cx = Number(t.value); upd(); } else if (t.id === "iy") { it.cy = Number(t.value); upd(); } else if (t.id === "ia") { it.angle = norm(Number(t.value)); upd(); } });
+function zoom(f, px, py) { var v = state.view; if (px === undefined) { px = cv.width / dpr / 2; py = cv.height / dpr / 2; } var x = wx(px), y = wy(py); v.k *= f; v.cx = x - (px - cv.width / dpr / 2) / v.k; v.cy = y + (py - cv.height / dpr / 2) / v.k; draw(); }
+cv.addEventListener("wheel", function (e) { e.preventDefault(); var r = cv.getBoundingClientRect(); zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+var drag = null;
+function insideShaft(k, x, y) { var it = state.items[k], V = D.variants[it.var], r = rot(-it.angle, x - it.cx, y - it.cy); return Math.abs(r[0]) <= V.w / 2 + 0.8 && Math.abs(r[1]) <= V.d / 2 + 0.8; }
+cv.addEventListener("pointerdown", function (e) { var r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, x = wx(px), y = wy(py), hit = null;
+  var order = [state.sel].concat(keys.filter(function (k) { return k !== state.sel; })); for (var i = 0; i < order.length; i++) if (insideShaft(order[i], x, y)) { hit = order[i]; break; }
+  cv.setPointerCapture(e.pointerId); cv.focus && cv.focus();
+  if (hit) { state.sel = hit; var it = state.items[hit]; drag = { mode: "move", k: hit, dx: it.cx - x, dy: it.cy - y }; draw(); } else drag = { mode: "pan", px: px, py: py, cx: state.view.cx, cy: state.view.cy }; });
+cv.addEventListener("pointermove", function (e) { if (!drag) return; var r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  if (drag.mode === "move") { var it = state.items[drag.k]; it.cx = wx(px) + drag.dx; it.cy = wy(py) + drag.dy; draw(); } else { state.view.cx = drag.cx - (px - drag.px) / state.view.k; state.view.cy = drag.cy + (py - drag.py) / state.view.k; draw(); } });
+cv.addEventListener("pointerup", function () { if (drag && drag.mode === "move") save(); drag = null; });
+cv.tabIndex = 0;
+cv.addEventListener("keydown", function (e) { var it = state.items[state.sel], st = e.shiftKey ? 1 : 0.25, used = true;
+  if (e.key === "ArrowLeft") it.cx -= st; else if (e.key === "ArrowRight") it.cx += st; else if (e.key === "ArrowUp") it.cy += st; else if (e.key === "ArrowDown") it.cy -= st;
+  else if (e.key === "q" || e.key === "Q") it.angle = norm(it.angle - (e.shiftKey ? 5 : 1)); else if (e.key === "e" || e.key === "E") it.angle = norm(it.angle + (e.shiftKey ? 5 : 1)); else used = false;
+  if (used) { e.preventDefault(); upd(); } });
+window.addEventListener("resize", resize);
+try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { offs = {}; draw(); }); } catch (e) {}
+new MutationObserver(function () { offs = {}; draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+resize();
+</script>

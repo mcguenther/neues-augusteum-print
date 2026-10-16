@@ -127,3 +127,8 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 | City-Hochhaus | V2R | 1,2 | 0,1 | 92,4 | 80,8 |
 
   Mittig kostet Luft: Im Neuen Augusteum liegt die LED jetzt unter dem niedrigen Mitteltrakt (Dach 7,0 mm, Luft 4,1 mm); vorher, in der Ecke unter dem höheren Dach, waren es 9,6 mm. Im Institutsgebäude begrenzt der L-Grundriss die Mitte (LED 4,0 mm daneben).
+
+### Neues Augusteum und Platzierungs-App (2026-10-16)
+
+- **Neues Augusteum: LED unter dem hohen Dach** (Nutzer) statt exakt mittig: `PREFER_ROOF` in `plug/campus.py`; Ergebnis: Dach 12,0 mm über dem Schacht, LED 6,7 mm von der Mitte, Luft 9,1 mm (statt 4,1 bei mittiger Lage).
+- **Platzierungs-App** `plug/scale1176/placer.html` (Artifact https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2): Schächte ziehen, drehen, Kassette und Muldentiefe wechseln; Prüfungen: Wand um den Schacht (0,8 Mindestmaß, 1,2 bevorzugt), Dachhöhe über dem Schacht gegen die nötige Höhe, Luft über der LED (unter 5 rot, unter 8 gelb, Annahme), LED-Abstand zur Mitte (über 4 gelb, über 10 rot), Dock innerhalb der Platte (1 mm Rand) und ohne Überlappung mit anderen Docks, Hinweis bei Dock unter fremder Mulde. „Kopieren“ liefert JSON für `plug/scale1176/placements_1300.json`; danach `python3 -m plug.campus` (ohne `--replace`).

@@ -166,7 +166,18 @@ def place_all(models, scale, replace=False):
         _, env_local = dock_local(var, 0.0, d)
         best = None
         for wall in WALL_PREF:
-            u = slice_poly(solid, max(need - 0.2, 0.3), fp)
+            z_use = max(need - 0.2, 0.3)
+            if slug in PREFER_ROOF:                         # höchste Dachhöhe, bei der der Schacht noch passt, dann dort möglichst mittig
+                lo, hi = z_use, hmax - 0.2
+                for _ in range(7):
+                    mid = (lo + hi) / 2
+                    um = slice_poly(solid, mid, fp)
+                    if um is not None and not um.is_empty and FS.fit(um, w + 2 * wall, dep + 2 * wall) is not None:
+                        lo = mid
+                    else:
+                        hi = mid
+                z_use = lo - 0.3
+            u = slice_poly(solid, z_use, fp)
             if u is None or u.is_empty:
                 continue
             cand = candidates(u, w + 2 * wall, dep + 2 * wall, led_dxy, tgt)
@@ -192,6 +203,8 @@ def place_all(models, scale, replace=False):
 
 
 OUTLINE = None
+# Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
+PREFER_ROOF = {"02_neues_augusteum"}
 
 
 def outline_ok(env):
@@ -223,7 +236,7 @@ def build(scale=P.SCALE_PLAN, replace=False):
         env = affinity.translate(affinity.rotate(affinity.translate(env_local, 0, -yc), p["angle"], origin=(0, 0)), p["cx"], p["cy"])
         bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in envs)
         envs.append(env)
-        report.append((slug, p["var"], p["wall"], p["led_dist"], bad))
+        report.append((slug, p["var"], p["wall"], p.get("led_dist", 0.0), bad))
         # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante
         cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
         # Muldenboden bleibt 0,4 mm; Pin-Löcher kommen aus dock_cuts_b
