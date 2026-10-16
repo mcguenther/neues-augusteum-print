@@ -124,7 +124,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.sample` (ca. 15 s) | Probestück 22 × 36 mm mit Kassette, Schieber, Mini-Platte, Deckel, dazu die Passprobe `0_passprobe.stl`, `README.txt` und `probedruck_kassette.zip` nach `stl/steckmodul_probe/`, Bilder nach `vorschau/steckmodul_probe/` |
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | 3D-Seiten `plug/views/dupont/view.html` bzw. `plug/build/institute/view.html` aus Vorlage und `data.json` |
 | `python3 -m plug.fit_test.build_page` | Anleitungsseite der Passprobe `plug/fit_test/page.html` |
-| `python3 -m plug.power.build_concept` (ca. 10 s) | Konzeptseite Powerbank in der Platte `plug/power/concept.html` (Maße `PB_*` in `plug/parts.py`, Plan Kapitel 6) |
+| `python3 -m plug.power.build_concept` (ca. 20 s) | Konzeptseite Powerbank, Unterkasten und Ösen für den Doktorhut `plug/power/concept.html` (Maße `PB_*`, `UK_*`, `OESE`, `HUT` in `plug/parts.py`, Plan Kapitel 6) |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 

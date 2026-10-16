@@ -11,7 +11,7 @@
   --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
   --canvas: #e7eae5; --edge: #1b2220;
   --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
-  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220;
+  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-hut: #2b2f33;
   --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -21,7 +21,7 @@
     --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
     --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
     --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
-    --c-elec: #4c9a69; --c-cut: #ff8d62;
+    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-hut: #3a4046;
     color-scheme: dark;
   }
 }
@@ -30,7 +30,7 @@
   --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
   --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
   --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
-  --c-elec: #4c9a69; --c-cut: #ff8d62;
+  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-hut: #3a4046;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -86,7 +86,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
 .ctrl button:focus-visible, .ctrl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
-.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
 
 /* Schnitt */
 .scroll { overflow-x: auto; }
@@ -100,7 +100,7 @@ table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
 th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent); }
-.pill { display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
 .pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
 .src { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
 
@@ -121,25 +121,30 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 #wiring { width: 100%; min-width: 640px; height: auto; display: block; }
 #wiring text { font-family: var(--font); font-size: 13px; fill: var(--fg); }
 #wiring .mut { fill: var(--muted); font-size: 11.5px; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--fg); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.seg label .dims { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.seg input:checked + label .dims { color: var(--on-accent); }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.cmp .card .big { font-family: var(--mono); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+#oese { width: 100%; max-width: 560px; height: auto; display: block; }
+#oese text { font-family: var(--font); font-size: 15px; fill: var(--fg); }
+#oese .mut { fill: var(--muted); }
 </style>
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Stromversorgung · Konzept</div>
+  <div class="kicker">Steckmechanismus · Stromversorgung · Konzept, Stand 2</div>
   <h1>Powerbank in der Grundplatte</h1>
-  <p class="lead">Die Intenso XS5000 (<span class="num" id="pbDims"></span>) soll ESP32 und LEDs versorgen und in der Platte
-    unter dem Innenhof liegen. Der Innenhof ist aber schmal: bei 1:1000 nur <span class="num" id="hofW"></span> breit, die Powerbank
-    <span class="num" id="pbW"></span>. Die Seite rechnet nach, ab welchem Maßstab sie ganz unter den Hof passt, und zeigt, wie sie
-    bei 1:1000 trotzdem darunter Platz findet.</p>
+  <p class="lead">Die Intenso XS5000 (<span class="num" id="pbDims"></span>) versorgt ESP32 und LEDs und liegt unter dem Innenhof.
+    Stand 2: dünnere Oberplatte über einem hohlen Unterkasten, Powerbank weiter innen mit Platz für ein normales USB-Kabel,
+    vier Ösen zum Annähen an einen Doktorhut.</p>
 </header>
 
 <section aria-labelledby="h-ans">
   <h2 id="h-ans">Antwort in Kürze</h2>
   <div class="answer" id="answer"></div>
   <p class="small muted">Gerechnet aus den OSM-Grundrissen des Generators (<code>generate.osm_models</code>) und dem Innenhof aus
-    <code>innenhof.py</code>. Das Fach ist <span class="num" id="fachTxt"></span> groß (Powerbank plus Spiel und Platz für den
-    Winkelstecker vor den Anschlüssen) und braucht im Hof rundum <span class="num" id="ledgeTxt"></span> Auflage für das Innenhof-Teil.</p>
+    <code>innenhof.py</code>. Material geschätzt mit <span class="num" id="matNote"></span>.</p>
 </section>
 
 <section aria-labelledby="h-var">
@@ -151,24 +156,28 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <div class="views">
     <div class="card">
       <h3>Draufsicht <span class="muted small num" id="planDims"></span></h3>
-      <svg id="plan" role="img" aria-label="Draufsicht der Platte mit Gebäuden, Innenhof und Powerbank"></svg>
+      <svg id="plan" role="img" aria-label="Draufsicht der Platte mit Gebäuden, Innenhof, Powerbank, Ösen und Doktorhut"></svg>
       <div class="legend">
         <span style="--sw:var(--c-bld)">Gebäude (Mulde)</span><span style="--sw:var(--c-hof)">Innenhof</span>
-        <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Steckerraum</span>
-        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-cut)">Kachelschnitt (Druckbett 250 mm)</span>
+        <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Steckerraum, Kabel</span>
+        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-thread)">Ösen</span>
+        <span style="--sw:var(--c-cut)">Schnitt Oberplatte</span><span style="--sw:var(--c-cut2)">Schnitt Unterkasten</span>
+        <span style="--sw:var(--c-hut)">Doktorhut <span class="num" id="hutTxt"></span></span>
       </div>
     </div>
     <div class="card">
       <h3>3D: Gebäude eingesetzt</h3>
-      <div class="stage" id="stage"><canvas id="cv" aria-label="3D-Ansicht, ziehen zum Drehen"></canvas></div>
+      <div class="stage" id="stage"><canvas id="cv" aria-label="3D-Ansicht, ziehen zum Drehen"></canvas><span class="tag" id="tag3d"></span></div>
       <div class="ctrl">
         <label for="explode">Auseinanderziehen</label><input type="range" id="explode" min="0" max="1" step="0.01" value="0.35">
         <label><input type="checkbox" id="xray" checked> Platte durchsichtig</label>
-        <span style="display:flex;gap:6px"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="edge">Kante</button></span>
+        <label><input type="checkbox" id="hut"> Doktorhut</label>
+        <span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="edge">Kante</button></span>
       </div>
       <div class="legend">
-        <span style="--sw:var(--c-plate)">Oberplatte mit Mulden (Dock A)</span><span style="--sw:var(--c-under)" id="lgUnder">Unterkasten</span>
-        <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--c-elec)">Elektronik</span>
+        <span style="--sw:var(--c-plate)">Oberplatte</span><span style="--sw:var(--c-under)">Unterkasten</span>
+        <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">USB-Stecker und Kabel</span>
+        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-thread)">Faden</span>
       </div>
     </div>
   </div>
@@ -182,21 +191,57 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 </section>
 
 <section aria-labelledby="h-uk">
-  <h2 id="h-uk">Vorschlag: Unterkasten statt Deckel</h2>
+  <h2 id="h-uk">Dünnerer Boden: Oberplatte und hohler Unterkasten</h2>
   <ul>
-    <li><b>Zwei Lagen.</b> Oben die Platte wie beim Institutsgebäude: Mulden für die Gebäudefüße (<span class="num" data-h="F"></span> tief),
-      Dock A darunter, Unterseite bei <span class="num" data-h="ober"></span>. Darunter ein Unterkasten
-      (<span class="num" data-h="uk_t"></span> hoch), der den bisherigen Deckel ersetzt. Er trägt die Stempel unter den Docks und hat
-      das Powerbank-Fach (<span class="num" data-h="fach_h"></span> innen hoch) und die Elektronik. Zusammen <span class="num" data-h="total_uk"></span>,
-      etwa so dick wie die Mini-Platte des Prototyps (30,6 mm).</li>
-    <li><b>Keine Brücke.</b> Der Unterkasten wird offen nach oben gedruckt, die Oberplatte hat eine glatte Unterseite. Ein Fach in der
-      Oberplatte selbst wäre <span class="num" id="bridgeW"></span> breit überbrückt und läge unter den Mulden; das spart etwa 5 mm, sackt aber durch.</li>
-    <li><b>Anschlussseite an der Kante.</b> Taste, Ladestand-LEDs, USB-C und microUSB liegen an einer Schmalseite. Das Fach endet mit dieser
-      Seite an der Plattenkante, ein Fenster in der Wand macht Taste und Ladebuchse zugänglich. Vor den Anschlüssen bleiben
-      <span class="num" id="plugTxt"></span> für einen gewinkelten USB-A-Stecker, der die Platte versorgt.</li>
-    <li><b>Herausnehmen.</b> Unterkasten abschrauben (M3-Blechschrauben wie beim Deckel geplant) oder das Fach zur Kante hin als Schublade
-      ausführen. Der Innenhof bleibt ein normales Steckteil.</li>
+    <li><b>Oberplatte nur so dick wie nötig.</b> Unter der Mulde (<span class="num" data-h="F"></span>) liegen nur noch der Muldenboden
+      (<span class="num" data-h="ceil"></span>) und der Körper der Winkelleiste (<span class="num" data-h="body"></span>). Die Oberplatte
+      endet bei <span class="num" data-h="deck"></span> statt bei <span class="num" data-h="old_ober"></span>. Die Leiste steckt in einer nach unten offenen Tasche,
+      ihre Lötenden zeigen frei in den Unterkasten.</li>
+    <li><b>Kabelraum im Unterkasten.</b> Der Unterkasten ist innen hohl (<span class="num" data-h="uk_t"></span> hoch): Boden, Außenwand,
+      Stützen unter der Oberplatte, ein niedriger Zaun um die Powerbank und die Ösenblöcke. Kabel, Lötstellen und Elektronik liegen frei,
+      eigene Kabelräume und Kanäle in der Platte entfallen.</li>
+    <li><b>Keine Brücken, keine Stempel.</b> Beide Teile haben eine glatte Unterseite und werden offen nach oben gedruckt. Das
+      vermeidet die durchgehängten Kabelraum-Decken und die anstoßenden Deckel-Stempel aus Steckprobe 1. Gegen den Steckdruck hält ein
+      Tropfen Heißkleber die Leiste, wie beim Probestück.</li>
+    <li><b>Zusammen <span class="num" data-h="total_uk"></span></b> statt <span class="num" data-h="old_total"></span>. Mit dem
+      Muldenboden 0,4 mm aus der Steckprobe wären es noch 0,4 mm weniger.</li>
   </ul>
+  <div class="cmp" id="cmp"></div>
+</section>
+
+<section aria-labelledby="h-usb">
+  <h2 id="h-usb">Powerbank weiter innen, Kabel um die Ecke</h2>
+  <ul>
+    <li>Alle Anschlüsse liegen an einer Schmalseite. Die Powerbank sitzt deshalb <span class="num" id="plugTxt"></span> hinter der
+      Plattenkante: Platz für einen geraden USB-A-Stecker (Griff etwa 25 mm) und die Biegung des Kabels.</li>
+    <li>Das Kabel biegt vor der Schmalseite zur Längsseite und läuft in einem Kanal (<span class="num" id="cableTxt"></span> breit)
+      neben der Powerbank zurück zur Elektronik.</li>
+    <li>Ein Fenster in der Kante gibt die Ladebuchsen (USB-C, microUSB) und die Ladestand-LEDs frei. Ein USB-C-Stecker reicht die
+      <span class="num" id="plugTxt2"></span> bis zur Buchse. Die Taste liegt zu tief für den Finger: ein gedruckter Stößel (4 × 4 mm)
+      führt von der Kante bis zur Taste.</li>
+    <li>Die Powerbank liegt lose zwischen dem Zaun und wird beim Zusammennähen durch die Oberplatte gehalten
+      (<span class="num" id="pbAir"></span> Luft darüber).</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-oe">
+  <h2 id="h-oe">Ösen für den Doktorhut</h2>
+  <div class="views">
+    <div class="card"><h3>Schnitt durch eine Öse</h3><svg id="oese" role="img" aria-label="Schnitt durch eine Öse mit Fadenweg"></svg></div>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <ul>
+        <li>Vier Ösen, je so nah an einer Ecke, wie Mulden, Innenhof und Fach es zulassen. Jede Öse ist ein Block im Unterkasten
+          (<span class="num" id="oeBlock"></span>) mit zwei Fadenlöchern (<span class="num" id="oeHole"></span>). Sein Zapfen greift
+          <span class="num" id="oePin"></span> in die Oberplatte und richtet beide Teile zueinander aus.</li>
+        <li>In der Oberplatte verbindet ein Tunnel die beiden Löcher. Die Fadenschlaufe läuft vom Hut durch das eine Loch hinauf, durch den
+          Tunnel und durch das andere wieder hinunter.</li>
+        <li>Zieht man die Fäden am Hut fest, drückt die Oberplatte den Unterkasten auf den Hut. Schrauben und Stempel braucht es nicht.</li>
+        <li>Einfädeln: Oberplatte umdrehen, Schlaufe durch den Tunnel ziehen (gebogene Nadel oder Draht), Unterkasten mit der Elektronik
+          aufsetzen, die Fadenenden durch seine Löcher führen, dann auf den Hut nähen.</li>
+      </ul>
+      <p class="small muted" id="hutNote"></p>
+    </div>
+  </div>
 </section>
 
 <section aria-labelledby="h-pb">
@@ -236,30 +281,33 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <h2 id="h-el">Verdrahtung</h2>
   <div class="scroll card"><svg id="wiring" viewBox="0 0 980 270" role="img" aria-label="Schaltplan als Blockbild"></svg></div>
   <ul>
-    <li>USB-A der Powerbank mit gewinkeltem Stecker, Kabel abgeschnitten: 5 V und GND auf die Sammelleitung (22 AWG) im Unterkasten.
-      Ein Schiebeschalter in der Plattenkante trennt 5 V.</li>
+    <li>Ein normales USB-A-Kabel (gerader Stecker) läuft um die Schmalseite in den Kabelkanal. Am Ende abgeschnitten: 5 V und GND auf die
+      Sammelleitung (22 AWG) im Unterkasten. Ein Schiebeschalter neben dem Fenster trennt 5 V.</li>
     <li>ESP32 am 5-V-Pin, 1000 µF am Eingang, je Dock DIN über 74AHCT125 (zwei Bausteine für sechs Docks) und 330 Ω, DETECT mit Pull-up
       (wie in <code>plug/PLAN.md</code>, Abschnitt 2.7).</li>
     <li>Haltelast: 100 Ω (0,25 W) über einen Logik-MOSFET an einem GPIO. Der ESP schaltet sie nur zu, wenn alle LEDs aus sind, etwa
       1 s alle 10 bis 20 s. Wer das automatische Ausschalten nutzen will, lässt sie weg: Deep-Sleep, dann schaltet die Powerbank nach 30 s ab.</li>
-    <li>Laden: über USB-C oder microUSB, während das Modell aus ist. Ob die XS5000 gleichzeitig laden und versorgen kann, ist nicht belegt.</li>
+    <li>Laden: über USB-C oder microUSB durch das Fenster, während das Modell aus ist. Ob die XS5000 gleichzeitig laden und versorgen kann,
+      ist nicht belegt.</li>
   </ul>
 </section>
 
 <section aria-labelledby="h-op">
   <h2 id="h-op">Offen und als Nächstes</h2>
   <ol>
-    <li>Powerbank nachmessen: Außenmaße, Lage von Taste und Buchsen an der Schmalseite, Rundung der Ecken.</li>
-    <li>Abschaltschwelle messen: ESP32 allein, mit WLAN und im Modem-Sleep an der Powerbank, mit und ohne 100 Ω. Wacht sie auf, wenn wieder
-      Last kommt, oder nur per Taste?</li>
-    <li>Entscheiden: Unterkasten bei 1:1000 (Vorschlag), Unterkasten bei 1:1500 oder großer Maßstab mit Hof-Fach.</li>
-    <li>Lage der Docks je Gebäude festlegen; die Kabelräume dürfen das Fach nicht kreuzen. Danach Unterkasten und Oberplatte im Generator
-      (<code>plug/</code>) bauen, zuerst als Probestück mit Fach und Fenster.</li>
-    <li>Winkelstecker USB-A beschaffen (links oder rechts gewinkelt) und den Steckerraum anpassen.</li>
+    <li>Doktorhut messen: Kantenlänge des Deckbretts, Höhe und Durchmesser des Knopfs in der Mitte. Bei 1:1000 steht die Platte über den
+      Hut hinaus; unter der Plattenmitte braucht es vielleicht eine Mulde für den Knopf.</li>
+    <li>Powerbank nachmessen: Außenmaße, Lage von Taste, LEDs und Buchsen an der Schmalseite. Länge des USB-A-Steckers am vorhandenen Kabel.</li>
+    <li>Abschaltschwelle messen: ESP32 mit WLAN und im Modem-Sleep an der Powerbank, mit und ohne 100 Ω. Wacht sie bei neuer Last von
+      selbst auf, oder nur per Taste?</li>
+    <li>Entscheiden: Maßstab und Variante. Danach die Lage der Docks je Gebäude festlegen (nicht über dem Fach) und Oberplatte und
+      Unterkasten im Generator (<code>plug/</code>) bauen, zuerst als Probestück: eine Ecke mit Öse, Fenster, Stößel und Fach.</li>
+    <li>Muldenboden 0,4 mm und die übrigen Werte aus Steckprobe 1 (Zweig <code>claude/practical-keller-jnebos</code>) übernehmen, sobald
+      der Zweig gemergt ist.</li>
   </ol>
 </section>
 <p class="small muted">Erzeugt mit <code>python3 -m plug.power.build_concept</code> aus <code>plug/power/concept.template.html</code>.
-  Powerbank-Maße in <code>plug/parts.py</code> (PB_*).</p>
+  Maße in <code>plug/parts.py</code> (PB_*, UK_*, OESE, HUT).</p>
 </div>
 
 <script type="application/json" id="data">/*DATA*/</script>
@@ -268,149 +316,232 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 (function () {
   const $ = (id) => document.getElementById(id);
   const DATA = JSON.parse($('data').textContent);
-  const H = DATA.heights, PB = DATA.pb, FA = DATA.fach;
+  const H = DATA.heights, PB = DATA.pb, FA = DATA.fach, OE = DATA.oese, UK = DATA.uk;
   const fmt = (v, n = 1) => (+v).toFixed(n).replace('.', ',').replace('-', '−');
   const mm = (v, n = 1) => fmt(v, n) + ' mm';
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const V = Object.fromEntries(DATA.variants.map((v) => [v.key, v]));
+  const dims = (v) => fmt(v.plate[0], 0) + ' × ' + fmt(v.plate[1], 0) + ' × ' + fmt(v.thick, 0) + ' mm';
+  const gsum = (v) => v.material.deck[0] + v.material.uk[0];
 
   /* ---------- Texte ---------- */
   $('pbDims').textContent = fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1) + ' mm';
-  $('pbW').textContent = mm(PB.W, 0);
-  $('hofW').textContent = fmt(V.uk1000.hof_w[1], 0) + ' bis ' + mm(V.uk1000.hof_w[0], 0);
-  $('fachTxt').textContent = fmt(FA.L + FA.plug, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm';
-  $('ledgeTxt').textContent = mm(FA.ledge, 0);
-  $('plugTxt').textContent = mm(FA.plug, 0);
-  $('bridgeW').textContent = mm(FA.W, 0);
+  $('plugTxt').textContent = mm(PB.plug, 0); $('plugTxt2').textContent = mm(PB.plug, 0);
+  $('cableTxt').textContent = mm(PB.cable, 0);
+  $('pbAir').textContent = mm(PB.clr_z);
   $('sleepTxt').textContent = PB.sleep + ' s';
   $('keepTxt').textContent = PB.keep + ' mA';
-  document.querySelectorAll('[data-h]').forEach((el) => { el.textContent = mm(H[el.dataset.h]); });
+  $('hutTxt').textContent = fmt(DATA.hut / 10, 0) + ' × ' + fmt(DATA.hut / 10, 0) + ' cm';
+  $('oeBlock').textContent = fmt(OE.L, 0) + ' × ' + fmt(OE.B, 0) + ' mm';
+  $('oeHole').textContent = mm(OE.hole, 0);
+  $('oePin').textContent = mm(OE.pin);
+  $('matNote').textContent = fmt(DATA.mat.shell, 0) + ' mm Hülle und ' + fmt(DATA.mat.infill * 100, 0) + ' % Füllung, PLA ' + fmt(DATA.mat.pla, 2) + ' g/cm³';
+  document.querySelectorAll('[data-h]').forEach((el) => { el.textContent = mm(Math.abs(H[el.dataset.h])); });
 
-  const hv = V.hof, u1 = V.uk1000, u15 = V.uk1500;
+  const hv = V.hof, u1 = V.uk1000, u15 = V.uk1500, M1 = u1.material;
+  const gNew = gsum(u1), gOld = M1.old_deck[0] + M1.old_uk[0];
   const hochhaus = (v) => v.buildings.find((b) => b.slug === '06_city_hochhaus').h;
   $('answer').innerHTML =
-    `<div><span class="lbl">Ganz unter dem Innenhof</span><span class="big">ab 1:${hv.scale}</span>
-      <span class="small">Platte <span class="num">${fmt(hv.plate[0] / 10, 0)} × ${fmt(hv.plate[1] / 10, 0)} cm</span>, ${hv.tiles} Druckteile,
-      City-Hochhaus <span class="num">${fmt(hochhaus(hv) / 10, 0)} cm</span> hoch. Gerechnete Grenze 1:${DATA.hof_limit_exact}, auf einen runden Maßstab abgerundet.</span></div>
-    <div class="rec"><span class="lbl">Vorschlag bei 1:1000</span><span class="big">${fmt(u1.plate[0], 0)} × ${fmt(u1.plate[1], 0)} × ${fmt(u1.thick, 0)} mm</span>
-      <span class="small">Grundfläche wie die heutige Grundplatte, ${fmt(u1.thick, 0)} statt ${fmt(H.plate_A, 0)} mm dick (Dock A): Powerbank im Unterkasten unter dem Innenhof,
-      sie ragt unter die Nachbargebäude (<span class="num">${u1.under_hof} %</span> ihrer Fläche liegt unter dem Hof).</span></div>
-    <div><span class="lbl">Bei 1:1500</span><span class="big">${fmt(u15.plate[0], 0)} × ${fmt(u15.plate[1], 0)} × ${fmt(u15.thick, 0)} mm</span>
-      <span class="small">Geht auch, die Powerbank füllt die Platte fast in der Breite (Innenraum <span class="num">${fmt(u15.plate[0] - 2 * DATA.uk.wall, 0)} mm</span>).</span></div>`;
+    `<div class="rec"><span class="lbl">Dünnerer Boden, 1:1000</span><span class="big">${fmt(H.total_uk, 1)} statt ${fmt(H.old_total, 1)} mm</span>
+      <span class="small">Platte <span class="num">${dims(u1)}</span>. Material geschätzt <span class="num">${gNew} g</span> statt
+      <span class="num">${gOld} g</span> (<span class="num">−${Math.round((1 - gNew / gOld) * 100)} %</span>).</span></div>
+    <div><span class="lbl">Ganz unter dem Innenhof</span><span class="big">ab 1:${hv.scale}</span>
+      <span class="small">Mit dem längeren Fach (Steckerraum ${fmt(PB.plug, 0)} mm) liegt die Grenze bei 1:${DATA.hof_limit_exact}. Platte
+      <span class="num">${dims(hv)}</span>, ${hv.tiles} Druckteile.</span></div>
+    <div><span class="lbl">Doktorhut ${fmt(DATA.hut / 10, 0)} × ${fmt(DATA.hut / 10, 0)} cm</span><span class="big">${u1.hut.fits ? 'passt' : 'zu lang'} bei 1:1000</span>
+      <span class="small">Die Platte ist <span class="num">${fmt(u1.plate[1] / 10, 1)} cm</span> lang und steht
+      <span class="num">${fmt((u1.plate[1] - DATA.hut) / 20, 1)} cm</span> je Seite über. Bei 1:1500 (<span class="num">${dims(u15)}</span>) ${u15.hut.fits ? 'passt sie' : 'passt sie nicht'}.</span></div>`;
 
   /* ---------- Variante wählen ---------- */
-  const LABELS = { uk1000: ['Unterkasten', '1:1000'], uk1500: ['Unterkasten', '1:1500'], hof: ['Hof-Fach', '1:' + hv.scale] };
+  const LABELS = { uk1000: 'Unterkasten 1:1000', uk1500: 'Unterkasten 1:1500', hof: 'Hof-Fach 1:' + hv.scale };
   const NOTES = {
-    uk1000: 'Vorschlag. Die Powerbank liegt im Unterkasten längs unter dem Innenhof, mit der Anschlussseite an der Nordkante (unter dem Institutsgebäude). Sie reicht unter Institutsgebäude, Seminargebäude und Paulinum; dort liegt sie unter den Mulden, die ' + mm(H.F) + ' tief sind. Die Docks dieser Gebäude müssen neben dem Fach sitzen.',
-    uk1500: 'Gleiches Prinzip im kleinen Maßstab. Die Powerbank ist fast so breit wie die Platte und reicht weit unter das Institutsgebäude. Die Kassette passt bei 1:1500 nicht in jedes Gebäude (siehe PLAN.md 3.3).',
-    hof: 'Die Powerbank liegt ganz unter dem Innenhof; das Innenhof-Teil ist der Deckel des Fachs. Die Platte bleibt ' + mm(H.plate_A) + ' dick (Fach bis ' + mm(-H.hof_floor) + ' unter der Oberseite). Zum Laden und Einschalten wird der Hof herausgehoben. Dafür wird das ganze Modell ' + fmt(1000 / hv.scale, 1) + '-mal so groß wie bei 1:1000.'
+    uk1000: 'Vorschlag. Die Powerbank liegt im Unterkasten längs unter dem Innenhof, die Anschlussseite zeigt zur Nordkante. Sie reicht unter Institutsgebäude, Seminargebäude und Paulinum; die Docks dieser Gebäude müssen neben dem Fach sitzen. Die Schnitte für das Druckbett liegen bei Oberplatte und Unterkasten an verschiedenen Stellen, damit die Teile sich gegenseitig überbrücken.',
+    uk1500: 'Gleiches Prinzip im kleinen Maßstab. Mit dem längeren Fach liegt die Powerbank zum größten Teil unter dem Institutsgebäude, nur ein kleiner Teil unter dem Hof. Die Platte passt auf ein Druckbett von 250 mm und auf einen Doktorhut.',
+    hof: 'Die Powerbank liegt ganz unter dem Innenhof, das Innenhof-Teil ist der Deckel des Fachs. Zum Laden und Einschalten wird der Hof herausgehoben, ein Fenster in der Kante entfällt. Dafür wird das ganze Modell ' + fmt(1000 / hv.scale, 1) + '-mal so groß wie bei 1:1000.'
   };
   let cur = 'uk1000';
-  $('seg').innerHTML = DATA.variants.map((v) => `<input type="radio" name="v" id="v-${v.key}" value="${v.key}" ${v.key === cur ? 'checked' : ''}><label for="v-${v.key}">${LABELS[v.key][0]} <span class="num">${LABELS[v.key][1]}</span></label>`).join('');
+  $('seg').innerHTML = DATA.variants.map((v) => `<input type="radio" name="v" id="v-${v.key}" value="${v.key}" ${v.key === cur ? 'checked' : ''}><label for="v-${v.key}">${LABELS[v.key]} <span class="dims">${dims(v)}</span></label>`).join('');
   document.querySelectorAll('input[name=v]').forEach((r) => r.addEventListener('change', () => { cur = r.value; render(); }));
 
-  /* ---------- Vergleichstabelle ---------- */
+  /* ---------- Vergleichstabelle und Material ---------- */
   function table() {
     const st = (ok, t) => `<span class="pill ${ok}">${t}</span>`;
-    let h = '<thead><tr><th>Variante</th><th>Platte B × T</th><th>Dicke</th><th>Druckteile Platte</th><th>Powerbank unter dem Hof</th><th>Taste und Laden</th><th>City-Hochhaus</th></tr></thead><tbody>';
+    let h = '<thead><tr><th>Variante</th><th>Platte B × T × H</th><th>Druckteile oben + unten</th><th>Material</th><th>Powerbank unter dem Hof</th><th>Doktorhut</th><th>Taste und Laden</th><th>City-Hochhaus</th></tr></thead><tbody>';
     for (const v of DATA.variants) {
-      const access = v.mode === 'hof' ? st('mid', 'Hof abheben') : st('ok', 'an der Kante');
+      const access = v.mode === 'hof' ? st('mid', 'Hof abheben') : st('ok', 'Fenster in der Kante');
       const hof = v.under_hof === 100 ? st('ok', '100 %') : st('mid', v.under_hof + ' %');
-      h += `<tr class="${v.key === cur ? 'sel' : ''}"><td>${LABELS[v.key][0]} <span class="num">${LABELS[v.key][1]}</span></td><td class="num">${fmt(v.plate[0], 0)} × ${fmt(v.plate[1], 0)} mm</td><td class="num">${mm(v.thick)}</td><td class="num">${v.tiles}</td><td>${hof}</td><td>${access}</td><td class="num">${mm(hochhaus(v), 0)}</td></tr>`;
+      const hut = v.hut.fits ? st('ok', 'passt') : st('warn', 'steht über');
+      h += `<tr class="${v.key === cur ? 'sel' : ''}"><td>${LABELS[v.key]}</td><td class="num">${dims(v)}</td><td class="num">${v.tiles} + ${v.tiles}</td><td class="num">≈ ${gsum(v)} g</td><td>${hof}</td><td>${hut}</td><td>${access}</td><td class="num">${mm(hochhaus(v), 0)}</td></tr>`;
     }
     $('vtab').innerHTML = h + '</tbody>';
   }
+  $('cmp').innerHTML = [
+    ['Oberplatte bisher', M1.old_deck, H.old_ober], ['Oberplatte neu', M1.deck, -H.deck],
+    ['Unterkasten bisher', M1.old_uk, H.old_total - H.old_ober], ['Unterkasten neu', M1.uk, H.uk_t]
+  ].map(([t, g, d]) => `<div class="card"><span class="lbl small muted">${t} · 1:1000</span><span class="big">≈ ${g[0]} g</span><span class="small muted">${mm(d)} hoch · ${fmt(g[1], 0)} cm³ Volumen</span></div>`).join('');
 
   /* ---------- Draufsicht ---------- */
   function plan(v) {
-    const W = v.plate[0], Hh = v.plate[1], k = W / 144;
+    const W = v.plate[0], Hh = v.plate[1], k = Math.max(W, 144) / 144;
     const py = (y) => Hh - y;
-    const path = (polys) => polys.map((p) => 'M' + p.map(([x, y]) => x.toFixed(2) + ' ' + py(y).toFixed(2)).join('L') + 'Z').join('');
+    const pts = (p) => p.map(([x, y]) => x.toFixed(2) + ' ' + py(y).toFixed(2));
+    const path = (polys) => polys.map((p) => 'M' + pts(p).join('L') + 'Z').join('');
     const sw = 0.35 * k, fs = 4.2 * k;
-    let s = `<path d="${path(v.outline)}" style="fill:var(--c-plate);fill-opacity:.35;stroke:var(--edge);stroke-width:${sw}"/>`;
-    const nx = Math.ceil(W / 250);
-    for (let i = 1; i < nx; i++) s += `<path d="M${W * i / nx} 0V${Hh}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:${3 * k} ${2 * k}"/>`;
-    for (const c of v.cuts) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:${3 * k} ${2 * k}"/>`;
+    const hut = DATA.hut, hx0 = W / 2 - hut / 2, hy0 = Hh / 2 - hut / 2;
+    let s = '';
+    s += `<rect x="${hx0}" y="${hy0}" width="${hut}" height="${hut}" style="fill:var(--c-hut);fill-opacity:.12;stroke:var(--c-hut);stroke-width:${sw * 2};stroke-dasharray:${4 * k} ${2 * k}"/>`;
+    s += `<circle cx="${W / 2}" cy="${Hh / 2}" r="${8}" style="fill:none;stroke:var(--c-hut);stroke-width:${sw * 1.5}"/>`;
+    s += `<text x="${hx0 + 3 * k}" y="${hy0 + hut - 3 * k}" style="font-size:${fs}px;fill:var(--muted)">Doktorhut ${fmt(hut / 10, 0)} cm</text>`;
+    s += `<path d="${path(v.outline)}" style="fill:var(--c-plate);fill-opacity:.35;stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (let i = 1; i < v.x_cuts; i++) s += `<path d="M${W * i / v.x_cuts} 0V${Hh}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:${3 * k} ${2 * k}"/>`;
+    for (const c of v.deck_cuts) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut);stroke-width:${sw * 2};stroke-dasharray:${3 * k} ${2 * k}"/>`;
+    for (const c of v.uk_cuts) if (c !== null) s += `<path d="M0 ${py(c)}H${W}" style="stroke:var(--c-cut2);stroke-width:${sw * 2};stroke-dasharray:${1 * k} ${1.5 * k}"/>`;
     for (const b of v.buildings) s += `<path d="${path(b.poly)}" style="fill:var(--c-bld);stroke:var(--edge);stroke-width:${sw}"/>`;
     s += `<path d="${path(v.hof)}" style="fill:var(--c-hof);stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (const p of v.posts) s += `<path d="M${pts(p).join('L')}Z" style="fill:var(--c-under);fill-opacity:.55"/>`;
     s += `<path d="${path(v.fach)}" style="fill:none;stroke:var(--accent);stroke-width:${sw * 2.2};stroke-dasharray:${2 * k} ${1.2 * k}"/>`;
-    s += `<path d="${path(v.niche)}" style="fill:var(--accent-fill);fill-opacity:.55"/>`;
-    s += `<path d="${path(v.body)}" style="fill:var(--c-pb);fill-opacity:.5;stroke:var(--edge);stroke-width:${sw * 1.6}"/>`;
-    if (v.elec) s += `<path d="${path(v.elec)}" style="fill:var(--c-elec);fill-opacity:.8;stroke:var(--edge);stroke-width:${sw}"/>`;
+    s += `<path d="${path(v.niche)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
+    s += `<path d="${path(v.channel)}" style="fill:var(--accent-fill);fill-opacity:.25"/>`;
+    s += `<path d="${path(v.body)}" style="fill:var(--c-pb);fill-opacity:.6;stroke:var(--edge);stroke-width:${sw * 1.6}"/>`;
+    s += `<path d="${path(v.plug)}" style="fill:var(--c-port);fill-opacity:.85"/>`;
+    s += `<path d="M${pts(v.cable).join('L')}" style="fill:none;stroke:var(--accent);stroke-width:${1.8 * k};stroke-linejoin:round;stroke-linecap:round"/>`;
+    if (v.mode !== 'hof') s += `<path d="${path(v.rod)}" style="fill:var(--c-port);fill-opacity:.5"/>`;
+    s += `<path d="${path(v.elec)}" style="fill:var(--c-elec);fill-opacity:.8;stroke:var(--edge);stroke-width:${sw}"/>`;
+    for (const o of v.oesen) {
+      s += `<path d="M${pts(o.rect).join('L')}Z" style="fill:var(--c-thread);fill-opacity:.25;stroke:var(--c-thread);stroke-width:${sw * 1.5}"/>`;
+      for (const d of [-OE.pitch / 2, OE.pitch / 2]) {
+        const [cx, cy] = o.x ? [o.c[0] + d, o.c[1]] : [o.c[0], o.c[1] + d];
+        s += `<circle cx="${cx}" cy="${py(cy)}" r="${OE.hole / 2}" style="fill:var(--c-thread)"/>`;
+      }
+    }
     // Beschriftung
     const cen = (polys) => { let x = 0, y = 0, n = 0; for (const p of polys) for (const q of p) { x += q[0]; y += q[1]; n++; } return [x / n, y / n]; };
     const short = { 'Institutsgebäude': 'Institut', 'Seminargebäude': 'Seminar', 'Hörsaalgebäude': 'Hörsaal', 'Neues Augusteum': 'Augusteum', 'City-Hochhaus': 'Hochhaus', 'Paulinum': 'Paulinum' };
-    for (const b of v.buildings) { const [x, y] = cen(b.poly); s += `<text x="${x}" y="${py(y)}" text-anchor="middle" style="font-size:${fs}px;fill-opacity:.75">${short[b.title] || b.title}</text>`; }
+    for (const b of v.buildings) { const [x, y] = cen(b.poly); s += `<text x="${x}" y="${py(y)}" text-anchor="middle" style="font-size:${fs}px;fill-opacity:.7">${short[b.title] || b.title}</text>`; }
     const [bx, by] = cen(v.body);
     s += `<text x="${bx}" y="${py(by) + fs * 0.35}" text-anchor="middle" style="font-size:${fs * 1.1}px;font-weight:600">Powerbank</text>`;
-    s += `<circle cx="${v.port[0]}" cy="${py(v.port[1])}" r="${1.6 * k}" style="fill:var(--accent)"/>`;
-    // Maße
-    s += `<text x="${W / 2}" y="${Hh + 7 * k}" text-anchor="middle" style="font-size:${fs}px;font-family:var(--mono)">${fmt(W, 1)} mm</text>`;
-    s += `<text x="${-4 * k}" y="${Hh / 2}" text-anchor="middle" transform="rotate(-90 ${-4 * k} ${Hh / 2})" style="font-size:${fs}px;font-family:var(--mono)">${fmt(Hh, 1)} mm</text>`;
     s += `<text x="${W - 4 * k}" y="${8 * k}" text-anchor="end" style="font-size:${fs}px;font-weight:600">N ↑</text>`;
+    // Maßlinien
+    const dl = (x1, y1, x2, y2, label, vert) => {
+      const a = 2.2 * k;
+      let d = `<path d="M${x1} ${y1}L${x2} ${y2}" style="stroke:var(--fg);stroke-width:${sw * 1.4}"/>`;
+      d += vert ? `<path d="M${x1 - a} ${y1}h${2 * a}M${x2 - a} ${y2}h${2 * a}" style="stroke:var(--fg);stroke-width:${sw * 1.4}"/>`
+        : `<path d="M${x1} ${y1 - a}v${2 * a}M${x2} ${y2 - a}v${2 * a}" style="stroke:var(--fg);stroke-width:${sw * 1.4}"/>`;
+      if (vert) d += `<text x="${x1 - 2.5 * k}" y="${(y1 + y2) / 2}" text-anchor="middle" transform="rotate(-90 ${x1 - 2.5 * k} ${(y1 + y2) / 2})" style="font-size:${fs * 1.05}px;font-family:var(--mono);font-weight:500">${label}</text>`;
+      else d += `<text x="${(x1 + x2) / 2}" y="${y1 + 6.5 * k}" text-anchor="middle" style="font-size:${fs * 1.05}px;font-family:var(--mono);font-weight:500">${label}</text>`;
+      return d;
+    };
+    const minX = Math.min(0, hx0), minY = Math.min(0, hy0), maxX = Math.max(W, hx0 + hut), maxY = Math.max(Hh, hy0 + hut);
+    s += dl(0, maxY + 4 * k, W, maxY + 4 * k, fmt(W, 1) + ' mm', false);
+    s += dl(minX - 4 * k, 0, minX - 4 * k, Hh, fmt(Hh, 1) + ' mm', true);
     const svg = $('plan');
-    svg.setAttribute('viewBox', `${-9 * k} ${-2 * k} ${W + 11 * k} ${Hh + 12 * k}`);
+    svg.setAttribute('viewBox', `${minX - 11 * k} ${minY - 2 * k} ${maxX - minX + 13 * k} ${maxY - minY + 14 * k}`);
     svg.innerHTML = s;
-    $('planDims').textContent = '1:' + v.scale;
+    $('planDims').textContent = '1:' + v.scale + ' · ' + dims(v);
   }
 
   /* ---------- Schnitt ---------- */
   function section(v) {
-    const S = v.section, fl = FA.L + FA.plug;
-    const f0 = S.c - fl / 2, f1 = S.c + fl / 2;
-    const t0 = v.mode === 'hof' ? Math.max(0, f0 - 45) : 0, t1 = Math.min(S.len, f1 + 45);
-    const zTop = 22, zBot = (v.mode === 'hof' ? H.z_lb : H.uk_bot) - 4;
-    const Wpx = 1000, k = (Wpx - 150) / (t1 - t0), Hpx = (zTop - zBot) * k + 44;
+    const S = v.section;
+    const fl = FA.L, f0 = S.u0, f1 = f0 + fl;               // Fach von der Anschlussseite aus
+    const p0 = f0 + PB.plug + PB.clr;                       // Anschlussseite der Powerbank
+    const t0 = v.mode === 'hof' ? Math.max(0, f0 - 40) : 0, t1 = Math.min(S.len, f1 + 40);
+    const zTop = 22, bot = v.bot, zBot = bot - 4;
+    const Wpx = 1000, k = (Wpx - 170) / (t1 - t0), Hpx = (zTop - zBot) * k + 56;
     const X = (t) => 20 + (t - t0) * k, Y = (z) => 10 + (zTop - z) * k;
     const R = (a, b, z0, z1, fill, extra = '') => `<rect x="${X(Math.max(a, t0))}" y="${Y(Math.max(z0, z1))}" width="${Math.max(0, (Math.min(b, t1) - Math.max(a, t0)) * k)}" height="${Math.abs(z1 - z0) * k}" style="fill:${fill}" ${extra}/>`;
     const st = 'stroke="var(--edge)" stroke-width="0.8"';
     let s = '';
-    const pl0 = v.mode === 'hof' ? H.z_lt : H.uk_top;
-    s += R(t0, t1, pl0, 0, 'var(--c-plate)', st);
-    if (v.mode === 'hof') s += R(t0, t1, H.z_lb, H.z_lt, 'var(--c-under)', st);
-    else {
-      s += R(t0, t1, H.uk_bot, H.uk_top, 'var(--c-under)', st);
-      s += R(DATA.uk.wall, f1, H.uk_fach, H.uk_top + 0.01, 'var(--panel)');
-      s += R(0, DATA.uk.wall + 0.01, H.uk_fach + 1, H.uk_fach + PB.T, 'var(--panel)');
+    const zf = bot + UK.floor;                               // Oberkante Boden
+    // Oberplatte
+    s += R(t0, t1, H.deck, 0, 'var(--c-plate)', st);
+    // Unterkasten: Boden, Kantenwand mit Fenster
+    s += R(t0, t1, bot, zf, 'var(--c-under)', st);
+    if (v.mode !== 'hof' && t0 === 0) {
+      s += R(0, UK.wall, zf, H.deck, 'var(--c-under)', st);
+      s += R(0, UK.wall + 0.1, zf + 1, Math.min(H.deck, zf + PB.T), 'var(--panel)');
     }
     // Gebäude und Hof
+    let dockDone = false;
     for (const it of S.items) {
       if (it.t1 < t0 || it.t0 > t1) continue;
       const a = Math.max(it.t0, t0), b = Math.min(it.t1, t1);
       if (it.kind === 'bld') {
         s += R(a - 0.25, b + 0.25, -H.F, 0.01, 'var(--panel)');
         s += R(a, b, -H.F, 14, 'var(--c-bld)', st);
-        // Bruchkante oben
         let zz = `M${X(a)} ${Y(14)}`; for (let t = a; t < b; t += 3) zz += `L${X(Math.min(t + 1.5, b))} ${Y(15)}L${X(Math.min(t + 3, b))} ${Y(14)}`;
-        s += `<path d="${zz}L${X(b)} ${Y(16.5)}L${X(a)} ${Y(16.5)}Z" style="fill:var(--card,var(--panel))"/>`;
+        s += `<path d="${zz}L${X(b)} ${Y(16.5)}L${X(a)} ${Y(16.5)}Z" style="fill:var(--panel)"/>`;
         s += `<text x="${(X(a) + X(b)) / 2}" y="${Y(17.5)}" text-anchor="middle">${it.title}</text>`;
+        if (!dockDone && b - a > 12) {
+          // Dock A als Beispiel: Leistenkörper unter dem Muldenboden, Tasche nach unten offen
+          const c = (a + b) / 2;
+          s += R(c - 2.5, c + 2.5, H.deck, -H.F - H.ceil, 'var(--panel)');
+          s += R(c - 1, c + 1, H.deck, -H.F - H.ceil, 'var(--c-port)');
+          s += R(c - 0.32, c + 0.32, -H.F - H.ceil, H.z_tip, 'var(--c-port)');
+          s += R(c + 1, c + 4, H.deck + 0.7, H.deck + 1.34, 'var(--c-port)');
+          s += `<path d="M${X(c + 4)} ${Y(H.deck + 1)}Q${X(c + 9)} ${Y(H.deck + 1)} ${X(c + 10)} ${Y(zf + 1)}" style="fill:none;stroke:var(--c-thread);stroke-width:2"/>`;
+          dockDone = true;
+        }
       } else {
         s += R(a, b, -H.pocket, v.hub, 'var(--c-hof)', st);
         if (b - a > 20) s += `<text x="${(X(a) + X(b)) / 2}" y="${Y(v.hub + 3)}" text-anchor="middle">Innenhof</text>`;
       }
     }
-    // Fach und Powerbank
-    if (v.mode === 'hof') s += R(f0, f1, H.hof_fach, -H.pocket + 0.01, 'var(--panel)');
-    const zf = v.mode === 'hof' ? H.hof_fach : H.uk_fach;
-    const p0 = f0 + FA.plug + PB.clr;
-    s += R(f0, f0 + FA.plug, zf, zf + PB.T, 'var(--accent-fill)', 'opacity="0.45"');
+    // Fach im Hof-Variante durch die Oberplatte
+    if (v.mode === 'hof') s += R(f0, f1, zf, -H.pocket + 0.01, 'var(--panel)');
+    // Stützen bzw. Zaun am Ende der Powerbank
+    if (v.mode !== 'hof') s += R(f1 - 0.01, f1 + UK.fence[0], zf, zf + UK.fence[1], 'var(--c-under)', st);
+    // Powerbank, Stecker, Kabel, Stößel
     s += R(p0, p0 + PB.L, zf, zf + PB.T, 'var(--c-pb)', st);
     s += `<text x="${X(p0 + PB.L / 2)}" y="${Y(zf + PB.T / 2) + 4}" text-anchor="middle" style="font-weight:600;fill:var(--on-pb)">Powerbank ${fmt(PB.L, 0)} × ${fmt(PB.T, 1)}</text>`;
-    // Winkelstecker
-    s += R(p0 - 9, p0, zf + 2.5, zf + 9, 'var(--c-port)');
-    s += R(p0 - 9, p0 - 5, zf + 9, zf + 11.5, 'var(--c-port)');
-    const yb = Y(v.mode === 'hof' ? H.z_lb : H.uk_bot) + 18;
-    s += `<text x="${X(Math.max(f0, t0))}" y="${yb}" class="mut">${v.mode === 'hof' ? 'Steckerraum: gewinkelter USB-A-Stecker; Taste und Ladebuchse nach Abheben des Hofs' : 'Steckerraum mit gewinkeltem USB-A-Stecker, Fenster in der Kante: Taste, LEDs, USB-C'}</text>`;
-    // Maße rechts
-    const xr = X(t1) + 18;
-    const dim = (z0, z1, x, label) => `<path class="dim" d="M${x - 4} ${Y(z0)}h8M${x - 4} ${Y(z1)}h8M${x} ${Y(z0)}V${Y(z1)}"/><text x="${x + 7}" y="${(Y(z0) + Y(z1)) / 2 + 4}">${label}</text>`;
-    const bot = v.mode === 'hof' ? H.z_lb : H.uk_bot;
-    s += dim(0, bot, xr, fmt(-bot) + ' mm');
-    s += dim(0, -H.F, xr + 70, 'Mulde ' + fmt(H.F));
-    $('sect').setAttribute('viewBox', `0 0 ${Wpx + 60} ${Hpx}`);
+    const zm = zf + PB.T / 2;
+    s += R(p0 - 12, p0, zm - 2, zm + 2, 'var(--c-port)');
+    s += R(p0 - 25, p0 - 12, zm - 4, zm + 4, 'var(--accent-fill)', st);
+    s += `<circle cx="${X(p0 - 29)}" cy="${Y(zf + 2.5)}" r="${2.2 * k}" style="fill:var(--accent);stroke:var(--edge);stroke-width:0.8"/>`;
+    s += `<path d="M${X(p0 - 25)} ${Y(zm)}Q${X(p0 - 30)} ${Y(zm)} ${X(p0 - 29)} ${Y(zf + 2.5)}" style="fill:none;stroke:var(--accent);stroke-width:${3.5 * k}"/>`;
+    if (v.mode !== 'hof') s += R(0, p0, zm + 3, zm + 5, 'none', 'stroke="var(--fg)" stroke-dasharray="4 3" stroke-width="1"');
+    // Maße
+    const dim = (z0, z1, x, label) => `<path class="dim" d="M${x - 4} ${Y(z0)}h8M${x - 4} ${Y(z1)}h8M${x} ${Y(z0)}V${Y(z1)}"/><text x="${x + 7}" y="${Math.abs(z1 - z0) * k < 34 ? Math.max(Y(z0), Y(z1)) + 14 : (Y(z0) + Y(z1)) / 2 + 4}">${label}</text>`;
+    const hdim = (a, b, z, label) => `<path class="dim" d="M${X(a)} ${Y(z) - 4}v8M${X(b)} ${Y(z) - 4}v8M${X(a)} ${Y(z)}H${X(b)}"/><text x="${(X(a) + X(b)) / 2}" y="${Y(z) + 15}" text-anchor="middle">${label}</text>`;
+    const xr = X(t1) + 16;
+    s += dim(0, bot, xr, fmt(-bot) + ' mm gesamt');
+    s += dim(0, H.deck, xr + 110, 'Oberplatte ' + fmt(-H.deck));
+    s += dim(H.deck, bot, xr + 110, 'Unterkasten ' + fmt(H.deck - bot));
+    if (v.mode !== 'hof') s += hdim(UK.wall, p0, bot - 1.5, 'Steckerraum ' + fmt(PB.plug, 0) + ' mm');
+    s += `<text x="${X(Math.max(t0, 0)) }" y="${Hpx - 6}" class="mut">${v.mode === 'hof' ? 'Hof abheben: Taste und Ladebuchse liegen frei. Unter dem Gebäude als Beispiel Dock A, Lötenden frei im Unterkasten.' : 'Fenster in der Kante (Ladebuchsen, LEDs), gestrichelt der Stößel zur Taste (seitlich versetzt), gelb der USB-A-Stecker, das Kabel biegt zur Längsseite. Unter dem ersten Gebäude als Beispiel Dock A: Lötenden frei im Unterkasten.'}</text>`;
+    $('sect').setAttribute('viewBox', `0 0 ${Wpx + 90} ${Hpx}`);
     $('sect').innerHTML = s;
-    $('sectNote').textContent = v.mode === 'hof' ? '(Ausschnitt um das Fach, Gebäude oben abgeschnitten)' : '(von der Plattenkante aus, Gebäude oben abgeschnitten)';
+    $('sectNote').textContent = (v.mode === 'hof' ? '(Ausschnitt um das Fach' : '(von der Plattenkante aus') + ', Gebäude oben abgeschnitten, 1:' + v.scale + ')';
   }
+
+  /* ---------- Öse im Schnitt ---------- */
+  (function () {
+    const k = 13, p = OE.pitch / 2, hh = OE.hole / 2;
+    const deck = H.deck, bot = H.uk_bot, top = deck + OE.pin + OE.up;
+    const x0 = -OE.L / 2 - 6, x1 = OE.L / 2 + 6, zT = top + 3, zB = bot - 6;
+    const X = (x) => 30 + (x - x0) * k, Y = (z) => 16 + (zT - z) * k;
+    const R = (a, b, z0, z1, fill, extra = '') => `<rect x="${X(a)}" y="${Y(Math.max(z0, z1))}" width="${(b - a) * k}" height="${Math.abs(z1 - z0) * k}" style="fill:${fill}" ${extra}/>`;
+    const st = 'stroke="var(--edge)" stroke-width="0.8"';
+    let s = '';
+    s += R(x0, x1, deck, zT, 'var(--c-plate)', st);                                   // Oberplatte (Ausschnitt)
+    s += R(-OE.L / 2 - 0.25, OE.L / 2 + 0.25, deck, deck + OE.pin + 0.2, 'var(--panel)');  // Aufnahme für den Zapfen
+    s += R(x0, x1, bot, bot + UK.floor, 'var(--c-under)', st);                       // Boden
+    s += R(-OE.L / 2, OE.L / 2, bot, deck + OE.pin, 'var(--c-under)', st);           // Block mit Zapfen
+    for (const d of [-p, p]) s += R(d - hh, d + hh, bot - 0.01, top, 'var(--panel)'); // Löcher
+    s += R(-p - hh, p + hh, top - OE.hole, top, 'var(--panel)');                    // Tunnel
+    s += R(x0, x1, zB, bot - 2, 'var(--c-hut)');                                     // Hut
+    const th = `M${X(-p - 2.5)} ${Y(zB)}L${X(-p)} ${Y(bot - 2)}L${X(-p)} ${Y(top - hh)}L${X(p)} ${Y(top - hh)}L${X(p)} ${Y(bot - 2)}L${X(p + 2.5)} ${Y(zB)}`;
+    s += `<path d="${th}" style="fill:none;stroke:var(--c-thread);stroke-width:2.5;stroke-linejoin:round"/>`;
+    const lab = (x, z, t, a = 'start') => `<text x="${X(x)}" y="${Y(z)}" text-anchor="${a}">${t}</text>`;
+    s += lab(x1 + 0.6, deck + 2, 'Oberplatte') + lab(x1 + 0.6, (bot + deck) / 2, 'Unterkasten') + lab(x1 + 0.6, zB + 1.5, 'Doktorhut');
+    s += lab(p + hh + 0.6, top - 0.6, 'Tunnel (Öse)') + lab(-OE.L / 2 - 0.6, deck + OE.pin / 2, 'Zapfen ' + fmt(OE.pin), 'end');
+    s += `<text x="${X(0)}" y="${Y(zB) + 18}" text-anchor="middle" class="mut">Faden vom Hut durch beide Löcher, über die Öse</text>`;
+    const svg = $('oese');
+    svg.setAttribute('viewBox', `0 0 ${X(x1) + 110} ${Y(zB) + 28}`);
+    svg.innerHTML = s;
+  })();
+  $('hutNote').textContent = 'Doktorhut mit ' + fmt(DATA.hut / 10, 0) + ' cm Kantenlänge angenommen (bitte messen). Bei 1:1000 ist die Platte ' +
+    fmt(u1.plate[0] / 10, 1) + ' × ' + fmt(u1.plate[1] / 10, 1) + ' cm groß, bei 1:1500 ' + fmt(u15.plate[0] / 10, 1) + ' × ' + fmt(u15.plate[1] / 10, 1) + ' cm.';
 
   /* ---------- 3D ---------- */
   let three = null;
@@ -427,10 +558,11 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.75));
     const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(60, -50, 90); scene.add(sun);
     const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(-60, 80, -40); scene.add(fill);
-    const TOK = { plate: '--c-plate', under: '--c-under', bld: '--c-bld', hof: '--c-hof', pb: '--c-pb', port: '--c-port', elec: '--c-elec', niche: '--accent-fill' };
+    const TOK = { plate: '--c-plate', under: '--c-under', bld: '--c-bld', hof: '--c-hof', pb: '--c-pb', port: '--c-port', elec: '--c-elec', plug: '--accent-fill', hut: '--c-hut', thread: '--c-thread' };
     const mats = {};
     for (const k in TOK) mats[k] = new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.03, flatShading: true, side: THREE.DoubleSide });
     const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
+    const threadMat = new THREE.LineBasicMaterial({ color: 0xc8423b });
     const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
     const mk = (e, mat) => {
       const g = new THREE.BufferGeometry();
@@ -443,41 +575,63 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     };
     const box = (L, W, T, mat) => { const g = new THREE.BoxGeometry(L, W, T); const m = new THREE.Mesh(g, mats[mat]); m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat)); return m; };
     const groups = {};
+    let threadLines = [];
     function build(v) {
       for (const k in groups) scene.remove(groups[k]);
       const G = (n) => { const g = new THREE.Group(); groups[n] = g; scene.add(g); return g; };
-      const gb = G('bld'), gh = G('hof'), go = G('ober'), gu = G('unten'), gp = G('pb');
+      const gb = G('bld'), gh = G('hof'), gd = G('deck'), gu = G('uk'), gp = G('pb'), gt = G('hut'), gth = G('thread');
       for (const slug in v.meshes.buildings) gb.add(mk(v.meshes.buildings[slug], 'bld'));
       gh.add(mk(v.meshes.hof, 'hof'));
-      go.add(mk(v.meshes.plate.ober, 'plate'));
-      gu.add(mk(v.meshes.plate.unten, 'under'));
-      // Powerbank
-      const cen = (polys) => { let x = 0, y = 0, n = 0; for (const p of polys) for (const q of p) { x += q[0]; y += q[1]; n++; } return [x / n, y / n]; };
-      const [bx, by] = cen(v.body), a = v.ang * Math.PI / 180;
-      const zf = v.mode === 'hof' ? H.hof_fach : H.uk_fach;
-      const pb = box(PB.L, PB.W, PB.T, 'pb'); pb.position.set(bx, by, zf + PB.T / 2); pb.rotation.z = a; gp.add(pb);
-      // Anschlüsse an der Schmalseite (−L/2): USB-A, USB-C, Taste
-      for (const [off, w, h] of [[18, 12.5, 5], [2, 9, 3.4], [-12, 7.5, 2.8], [-24, 4, 4]]) {
-        const p = box(1.6, w, h, 'port'); p.position.set(-PB.L / 2 - 0.5, off, 0); pb.add(p);
-      }
-      const plug = box(9, 15, 7, 'niche'); plug.position.set(-PB.L / 2 - 5.5, 18, 0); pb.add(plug);
-      if (v.elec) {
-        const [ex, ey] = cen(v.elec); const xs = v.elec[0].map((p) => p[0]), ys = v.elec[0].map((p) => p[1]);
-        const e = box(Math.max(...xs) - Math.min(...xs) - 2, Math.max(...ys) - Math.min(...ys) - 2, 8, 'elec');
-        e.position.set(ex, ey, H.uk_bot + DATA.uk.floor + 4); gp.add(e);
-      }
+      gd.add(mk(v.meshes.deck, 'plate'));
+      gu.add(mk(v.meshes.uk, 'under'));
+      // Powerbank im Fach-Rahmen (u entlang, v quer)
+      const fr = v.frame, a = fr.ang * Math.PI / 180, sg = fr.sgn;
+      const fg = new THREE.Group(); fg.position.set(fr.c[0], fr.c[1], 0); fg.rotation.z = a; gp.add(fg);
+      const zf = v.bot + UK.floor;
+      const at = (m, u, vv, z) => { m.position.set(u, vv * sg, z); fg.add(m); return m; };
+      const bvc = FA.bv0 + PB.W / 2, zm = zf + PB.T / 2;
+      at(box(PB.L, PB.W, PB.T, 'pb'), FA.bu0 + PB.L / 2, bvc, zm);
+      const PW = { usb_a: [12.5, 5], usb_c: [9, 3.4], micro: [7.5, 2.8], taste: [4, 4], leds: [10, 1.2] };
+      for (const k in PB.port_v) at(box(1.2, PW[k][0], PW[k][1], k === 'leds' ? 'plug' : 'port'), FA.bu0 - 0.4, bvc + PB.port_v[k], zm);
+      const ua = bvc + PB.port_v.usb_a;
+      at(box(12, 12, 4.5, 'port'), FA.bu0 - 6, ua, zm);
+      at(box(13, 15, 8, 'plug'), FA.bu0 - 18.5, ua, zm);
+      const kc = FA.kv0 + PB.cable / 2, pe = FA.bu0 - 25, zc = zf + 2.5;
+      const curve = new THREE.CatmullRomCurve3([[pe, ua, zm], [pe - 6, (ua + kc) / 2, zc + 1], [pe, kc, zc], [FA.u0 + FA.L, kc, zc], [FA.u0 + FA.L + 14, kc, zc]]
+        .map(([u, vv, z]) => new THREE.Vector3(u, vv * sg, z)));
+      fg.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 60, 2, 8, false), mats.plug));
+      if (v.mode !== 'hof') at(box(FA.bu0 - FA.u0 + UK.wall, 4, 4, 'port'), (FA.u0 - UK.wall + FA.bu0) / 2, bvc + PB.port_v.taste, zm + 4);
+      const xs = v.elec[0].map((p) => p[0]), ys = v.elec[0].map((p) => p[1]);
+      const e = box(Math.max(...xs) - Math.min(...xs) - 2, Math.max(...ys) - Math.min(...ys) - 2, 8, 'elec');
+      e.position.set((Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2, zf + 4); gp.add(e);
+      // Doktorhut
+      const hb = box(DATA.hut, DATA.hut, 3, 'hut'); hb.position.set(v.plate[0] / 2, v.plate[1] / 2, v.bot - 1.5); gt.add(hb);
+      const btn = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 4, 24), mats.hut); btn.rotation.x = Math.PI / 2; btn.position.set(v.plate[0] / 2, v.plate[1] / 2, v.bot + 2); gt.add(btn);
+      // Fäden
+      threadLines = v.oesen.map((o) => {
+        const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(12 * 3), 3));
+        const l = new THREE.Line(g, threadMat); gth.add(l); return { l, o };
+      });
       three.v = v;
-      three.k = v.plate[0] / 144;
+      three.k = Math.max(v.plate[0], 144) / 144;
       three.center = [v.plate[0] / 2, v.plate[1] / 2, 0];
+      $('tag3d').textContent = '1:' + v.scale + ' · ' + dims(v);
       setView(three.viewName || 'iso');
-      applyExplode(); applyXray();
+      applyExplode(); applyXray(); applyHut();
     }
     function applyExplode() {
-      const e = +$('explode').value, k = three.k;
-      groups.bld.position.z = e * 70 * k; groups.hof.position.z = e * 45 * k;
-      const hof = three.v.mode === 'hof';
-      groups.pb.position.z = (hof ? 1 : -1) * e * 30 * k; groups.unten.position.z = -e * 55 * k;
-      if (hof) groups.hof.position.z = e * 60 * k;
+      const e = +$('explode').value, k = three.k, hofV = three.v.mode === 'hof';
+      groups.bld.position.z = e * 70 * k; groups.hof.position.z = (hofV ? 60 : 45) * e * k;
+      groups.pb.position.z = (hofV ? 30 : -25) * e * k; groups.uk.position.z = -e * 45 * k; groups.hut.position.z = -e * 70 * k;
+      const zTop = H.deck + OE.pin + OE.up - OE.hole / 2, zH = three.v.bot - 0 + groups.hut.position.z;
+      for (const { l, o } of threadLines) {
+        const p = OE.pitch / 2, pts = [];
+        const at = (d) => (o.x ? [o.c[0] + d, o.c[1]] : [o.c[0], o.c[1] + d]);
+        const [ax, ay] = at(-p), [bx, by] = at(p), [cx, cy] = at(-p - 4), [dx, dy] = at(p + 4);
+        pts.push(cx, cy, zH - 3, ax, ay, zH, ax, ay, zTop, bx, by, zTop, bx, by, zH, dx, dy, zH - 3);
+        const arr = l.geometry.attributes.position.array; arr.fill(0); arr.set(pts); l.geometry.setDrawRange(0, 6);
+        l.geometry.attributes.position.needsUpdate = true; l.geometry.computeBoundingSphere();
+      }
       three.dirty = true;
     }
     function applyXray() {
@@ -485,20 +639,22 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
       for (const k of ['plate', 'under']) { mats[k].transparent = x; mats[k].opacity = x ? 0.32 : 1; mats[k].depthWrite = !x; mats[k].needsUpdate = true; }
       three.dirty = true;
     }
-    const VIEWS = { iso: { az: 55, el: 30, f: 1.25 }, top: { az: -90, el: 88, f: 1.25 }, under: { az: -120, el: -35, f: 1.2 }, edge: { az: 0, el: 12, f: 1.0 } };
+    function applyHut() { groups.hut.visible = $('hut').checked; three.dirty = true; }
+    const VIEWS = { iso: { az: 55, el: 30, f: 1.25 }, top: { az: -90, el: 88, f: 1.25 }, under: { az: -120, el: -35, f: 1.2 }, edge: { az: 0, el: 14, f: 1.0 } };
     function setView(n) {
       three.viewName = n;
       const v = three.v, w = Math.max(v.plate[0], v.plate[1]);
       three.view = Object.assign({}, VIEWS[n], { dist: w * VIEWS[n].f * 1.9 });
       if (n === 'edge') {
-        // auf die Anschlussseite schauen
-        const a = v.ang * Math.PI / 180; three.view.az = (v.ang + 180);
-        three.target = [v.port[0], v.port[1], -15]; three.view.dist = w * 0.75;
+        const fr = v.frame, a = fr.ang * Math.PI / 180, u0 = FA.u0;
+        three.view.az = fr.ang + 180 + 25;
+        three.target = [fr.c[0] + Math.cos(a) * u0, fr.c[1] + Math.sin(a) * u0, -15]; three.view.dist = Math.max(160, w * 0.6);
       } else three.target = three.center.slice();
       three.dirty = true;
     }
     function theme() {
       for (const k in TOK) mats[k].color.set(css(TOK[k]));
+      threadMat.color.set(css('--c-thread'));
       renderer.setClearColor(css('--canvas'));
       edgeMat.color.set(css('--edge'));
       three.dirty = true;
@@ -525,6 +681,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     canvas.addEventListener('wheel', (e) => { e.preventDefault(); three.view.dist *= 1 + e.deltaY * 0.001; three.dirty = true; }, { passive: false });
     $('explode').addEventListener('input', applyExplode);
     $('xray').addEventListener('change', applyXray);
+    $('hut').addEventListener('change', applyHut);
     document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
     new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -542,7 +699,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     ['Schmalseite', PB.ports.join(' · '), 'B Bild der Anleitung'],
     ['Standby', 'nach etwa ' + PB.sleep + ' s ohne Verbraucher, Taste weckt', 'B Anleitung'],
     ['Haltelast', 'bleibt an ab etwa ' + PB.keep + ' mA (100 Ω), nicht bei 10 bis 20 mA', 'S Forum'],
-    ['Fach im Modell', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm plus ' + fmt(FA.plug, 0) + ' mm Steckerraum', 'E Spiel ' + fmt(PB.clr, 1) + ' je Seite, ' + fmt(PB.clr_z, 1) + ' oben'],
+    ['Fach im Modell', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm (Steckerraum ' + fmt(PB.plug, 0) + ', Kabelkanal ' + fmt(PB.cable, 0) + ')', 'E Spiel ' + fmt(PB.clr, 1) + ' je Seite, ' + fmt(PB.clr_z, 1) + ' oben'],
   ].map((r) => `<tr><td>${r[0]}</td><td class="num" style="white-space:normal">${r[1]}</td><td class="src">${r[2]}</td></tr>`).join('') + '</tbody>';
 
   /* ---------- Rechner ---------- */
@@ -568,10 +725,10 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   /* ---------- Verdrahtung ---------- */
   (function () {
     const bx = (x, y, w, h, t, sub, fill) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" style="fill:${fill || 'var(--panel)'};stroke:var(--edge);stroke-width:1"/>` +
-      `<text x="${x + w / 2}" y="${y + h / 2 - (sub ? 3 : -4)}" text-anchor="middle" style="font-weight:600">${t}</text>` + (sub ? `<text x="${x + w / 2}" y="${y + h / 2 + 14}" text-anchor="middle" class="mut">${sub}</text>` : '');
+      `<text x="${x + w / 2}" y="${y + h / 2 - (sub ? 3 : -4)}" text-anchor="middle" style="font-weight:600${fill === 'var(--c-pb)' ? ';fill:var(--on-pb)' : ''}">${t}</text>` + (sub ? `<text x="${x + w / 2}" y="${y + h / 2 + 14}" text-anchor="middle" class="mut">${sub}</text>` : '');
     const ln = (d, c, dash) => `<path d="${d}" style="fill:none;stroke:${c};stroke-width:2.2${dash ? ';stroke-dasharray:5 4' : ''}"/>`;
     let s = '';
-    s += bx(10, 100, 150, 60, 'Powerbank', 'USB-A, 5 V / 2,1 A', 'var(--c-pb)');
+    s += bx(10, 100, 150, 60, 'Powerbank', 'USB-A-Kabel, 5 V / 2,1 A', 'var(--c-pb)');
     s += bx(200, 100, 110, 60, 'Schalter', 'in der Kante');
     s += bx(350, 100, 130, 60, '5-V-Schiene', '1000 µF, 22 AWG');
     s += bx(540, 20, 150, 60, 'ESP32', '5 V an VIN');
@@ -592,7 +749,6 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   function render() {
     const v = V[cur];
     $('vnote').textContent = NOTES[cur];
-    $('lgUnder').textContent = v.mode === 'hof' ? 'Deckel' : 'Unterkasten';
     table(); plan(v); section(v);
     if (three) three.build(v);
   }

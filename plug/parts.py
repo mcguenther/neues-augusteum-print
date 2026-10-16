@@ -107,9 +107,14 @@ PB_SLEEP_S = 30           # B  Standby nach etwa 30 s ohne Verbraucher, Taste we
 PB_KEEP_MA = 50           # S  Dauerlast, bei der sie an bleibt (Forum: 100 Ω an 5 V hält sie an, 10 bis 20 mA nicht)
 PB_PORTS = ("LEDs", "Taste", "microUSB in", "USB-C in/out", "USB-A out")   # B  alle an einer Schmalseite (63 mm, aus dem Bild der Anleitung)
 PB_CLR = 0.5              # E  Spiel je Seite im Fach
-PB_CLR_Z = 0.8            # E  Luft über der Powerbank
-PB_PLUG = 14.0            # S  Platz vor der Anschlussseite (Winkelstecker USB-A, Finger an der Taste)
-UK_FLOOR = 1.6            # E  Boden des Unterkastens
+PB_CLR_Z = 0.6            # E  Luft über der Powerbank
+PB_PLUG = 35.0            # S  Platz vor der Anschlussseite: gerader USB-A-Stecker (Griff etwa 25 mm) plus Biegung des Kabels
+PB_CABLE = 6.0            # S  Kabelkanal entlang der Längsseite (USB-Kabel bis 4,5 mm)
+PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, taste=-16.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte (Bild der Anleitung)
+UK_FLOOR = 1.2            # E  Boden des Unterkastens
 UK_WALL = 2.4             # E  Außenwand des Unterkastens
+UK_CABLE_H = 4.0          # E  Mindesthöhe des Kabelraums im Unterkasten (Variante Hof-Fach)
 HOF_LEDGE = 2.0           # E  Auflage des Innenhof-Teils rund um das Fach (Variante Hof-Fach)
+OESE = dict(L=14.0, B=7.0, hole=3.0, pitch=7.0, pin=1.5, up=4.0)   # E  Öse je Ecke: Block im Unterkasten mit zwei Fadenlöchern, Zapfen in die Oberplatte, Tunnel darüber
+HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts (nachmessen)
 ESP_BOX = (60.0, 35.0)    # S  Elektronik im Unterkasten: ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter

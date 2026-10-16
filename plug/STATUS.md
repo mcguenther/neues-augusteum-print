@@ -274,7 +274,9 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
 7. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-8. Stromversorgung (neu, Konzept): Powerbank Intenso XS5000 (90 × 63 × 12,6 mm). Ganz unter den Innenhof passt sie erst ab
-   1:436 (Hof bei 1:1000 nur 21 bis 31 mm breit). Vorschlag: Unterkasten statt Deckel bei 1:1000, Platte 144 × 283 × 31,2 mm,
-   Powerbank unter Hof und Nachbargebäuden, Anschlussseite an der Nordkante. Offen: Powerbank nachmessen, Abschaltschwelle
-   messen, Maßstab entscheiden. Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
+8. Stromversorgung und Doktorhut (Konzept, Stand 2): Powerbank Intenso XS5000 (90 × 63 × 12,6 mm). Oberplatte nur noch 12,6 mm
+   (Mulde + Muldenboden + Leistenkörper) über einem hohlen Unterkasten (14,4 mm, ersetzt den Deckel), zusammen 27,0 statt 31,2 mm,
+   Material bei 1:1000 etwa 278 statt 397 g. Powerbank 35 mm hinter der Kante (gerader USB-A-Stecker, Kabelkanal an der Längsseite),
+   Fenster und Tastenstößel. Vier Ösen zum Annähen an einen Doktorhut (Faden zieht die Oberplatte auf den Unterkasten). Ganz unter
+   den Innenhof passt die Powerbank erst ab 1:403. Offen: Hut und Powerbank messen, Abschaltschwelle, Maßstab entscheiden.
+   Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
