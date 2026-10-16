@@ -28,7 +28,8 @@ TEMPLATE = os.path.join(HERE, "plan.template.html")
 OUT = os.path.join(HERE, "plan3.html")
 FIT = json.load(open(os.path.join(HERE, "variants_fit.json"), encoding="utf-8"))
 META = FIT["_meta"]
-LABEL = {"v4": "Kassette v4", "V1": "V1 (quer)", "V2": "V2 (hochkant)", "V2R": "V2 mit Rücken-LED", "V1R": "V1 mit Rücken-LED"}
+SIDE_X = V.SIDE_EXTRA
+LABEL = {"v4": "Kassette v4", "V1": "V1 (quer)", "V2": "V2 (hochkant)", "V2R": "V2 mit Rücken-LED", "V1R": "V1R oben", "V1RS": "V1R seitlich"}
 WALL = META["wall_min"]
 F = P.dims()["F"]                      # Fußhöhe: Plattenoberseite liegt F über der Kassettenunterkante
 BUCHSE = 14.55
@@ -193,16 +194,52 @@ def svg_rueck(kind):
         pts = V.wire_path(kind, 1)
         g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(q[1]), g.Z(q[2])) for q in pts))
         wr = sd.WIRE_D / 2
-        zt0 = z0 + 2.0 if kind == "V1R" else z0 + sh - 1.5
-        jp = [(yf - V.FPC - wr - 0.1, zt0), (yf - V.FPC - wr - 0.1, top + 0.3), (yf + V.BLATT_T / 2, top + 0.4), (yr + V.FPC + wr + 0.1, top + 0.3), (yr + V.FPC + wr + 0.1, zt0)]
+        zt0 = z0 + 2.0 if kind in ("V1R", "V1RS") else z0 + sh - 1.5
+        if kind == "V1RS":                                  # Adern gehen am Blattrand vorbei (hinter der Schnittebene), auf Höhe der Pads
+            jp = [(yf - V.FPC - wr - 0.1, zt0), (yr + V.FPC + wr + 0.1, zt0)]
+        else:
+            jp = [(yf - V.FPC - wr - 0.1, zt0), (yf - V.FPC - wr - 0.1, top + 0.3), (yf + V.BLATT_T / 2, top + 0.4), (yr + V.FPC + wr + 0.1, top + 0.3), (yr + V.FPC + wr + 0.1, zt0)]
         g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(a), g.Z(b)) for a, b in jp))
-        g.text(yf + V.BLATT_T / 2, top + 1.6, "Verkettung über die Kante", "dls")
+        if kind == "V1RS":
+            g.text(depth + 0.8, zt0 + 0.3, "Verkettung am Rand vorbei", "dls", "start")
+        else:
+            g.text(yf + V.BLATT_T / 2, top + 1.6, "Verkettung über die Kante", "dls")
         g.text(depth + 0.8, zj + jog / 2 + 0.2, "Versatz 45°", "dls", "start")
         g.line(yf - V.STRIP_T, zc + 6.0, yb_chip, zc + 6.0, "dimn")
         g.text((yf - V.STRIP_T + yb_chip) / 2, zc + 6.6, "%s von Chip zu Chip" % de(yb_chip - (yf - V.STRIP_T), 1), "dln")
         g.text(depth + 0.8, zc - 0.4, "Luft %s vorn und hinten" % de(min(yf - V.STRIP_T, depth - yb_chip), 1), "dls", "start")
     g.text(depth / 2, zb / 2, "Unterbau %s tief" % de(depth, 2), "dlb")
     return g.svg(int(70 + (depth + 3.0) * S + 160), int(12 + zmax * S + 18), "Schnitt: Schachtwände gestrichelt, %s" % ("Rücken-LED ragt aus dem Schacht" if kind == "bad" else "Blatt versetzt, beide Streifen im Schacht"))
+
+
+def svg_top_side():
+    """Draufsicht auf V1R seitlich in Höhe der Pads (Schnitt z): Schachtwände, Blatt, beide Streifen, Verkettungsadern am rechten Blattrand vorbei."""
+    d = V.dims("V1RS")
+    S = 17.0
+    w, depth = d["w"], d["depth"]
+    g = G(S, 20 + w / 2 * S, 62 + depth * S)
+    c = 0.06
+    yf, yb, yr = d["y_fpc"], d["yb"], d["yb"] + V.BLATT_T
+    wr = sd.WIRE_D / 2
+    xo = d["x_off"]
+    g.rect(-w / 2, w / 2, 0.0, depth, "d-void")
+    g.rect(d["bx0"], d["bx1"], yb, yb + V.BLATT_T, "d-kass")
+    for y0, y1_ in ((yf, yb), (yr, yr + V.FPC)):
+        g.rect(xo - V.STRIP_L / 2, xo + V.STRIP_L / 2, y0, y1_, "d-led")
+    for y0, y1_ in ((yf - 1.9, yf), (yr + V.FPC, yr + V.STRIP_T)):
+        g.rect(xo - V.CHIP / 2, xo + V.CHIP / 2, y0, y1_, "d-led")
+    for yy in (-c, depth + c):
+        g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" style="stroke:var(--warn);stroke-width:1.4;stroke-dasharray:6 4"/>' % (g.X(-w / 2 - c), g.Z(yy), g.X(w / 2 + c), g.Z(yy)))
+    for xx in (-w / 2 - c, w / 2 + c):
+        g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" style="stroke:var(--warn);stroke-width:1.4;stroke-dasharray:6 4"/>' % (g.X(xx), g.Z(-c), g.X(xx), g.Z(depth + c)))
+    pts = [(d["x_off"] + V.STRIP_L / 2 - 1.4, yf - wr - 0.1), (d["bx1"] + 0.7, yf - wr - 0.1), (d["bx1"] + 0.7, yb + V.BLATT_T / 2), (d["bx1"] + 0.7, yr + V.FPC + wr + 0.1), (d["x_off"] + V.STRIP_L / 2 - 1.4, yr + V.FPC + wr + 0.1)]
+    g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(a), g.Z(b)) for a, b in pts))
+    g.line(d["bx1"], depth + 0.9, w / 2, depth + 0.9, "dimn")
+    g.text((d["bx1"] + w / 2) / 2, depth + 1.5, "%s Platz für die Adern" % de(w / 2 - d["bx1"], 1), "dln")
+    g.text(0, depth + 1.5 if False else -1.0, "vorn (Chip vorn)", "dls")
+    g.text(-w / 2 + 0.2, depth + 0.9, "hinten", "dls", "start")
+    g.text(d["bx0"] + 0.3, yb + 0.4, "Blatt", "dls", "start")
+    return g.svg(int(40 + w * S), int(62 + depth * S + 30), "Draufsicht in Höhe der Pads: Adern gehen am rechten Blattrand vorbei")
 
 
 def bridge_around_height():
@@ -222,7 +259,7 @@ def head():
             '<ul class="sum"><li><b>Höhe:</b> V2 braucht Gebäude ab %s mm. Bei 1:1500 reicht das nur für City-Hochhaus und Paulinum; bei 1:1000 kommt Neues Augusteum dazu (Institutsgebäude knapp nicht, 0,9 mm Wand). Seminar- und Hörsaalgebäude sind zu niedrig.</li>'
             '<li><b>Rücken-LED:</b> Du hast recht, so wie V2 jetzt gezeichnet ist, schiebt sie sich von unten nicht durch den Schacht (der hintere Chip ragt %s mm heraus). Dein Vorschlag, das Blatt oben nach vorn zu versetzen, geht, wenn der Unterbau auf %s mm Tiefe wächst.</li>'
             '<li><b>Mit zweiter LED:</b> %s × %s × %s mm, Gebäude ab %s mm hoch: bei 1:1500 nur das City-Hochhaus, bei 1:1000 Paulinum, Neues Augusteum und Hochhaus.</li>'
-            '<li><b>V1R:</b> V1 mit zweiter LED auf dem Rücken, gleiches Prinzip (Blatt in der Mitte, oben nach vorn versetzt, Unterbau 6,4 tief). Abschnitt „V1 mit Rücken-LED“. Der Fit in die Gebäude folgt, sobald der Maßstab feststeht.</li>'
+            '<li><b>V1R:</b> V1 mit zweiter LED auf dem Rücken, gleiches Prinzip (Blatt in der Mitte, oben nach vorn versetzt, Unterbau 6,4 tief). Abschnitt „V1 mit Rücken-LED“, in zwei Varianten: Verkettung oben über die Kante oder seitlich am Blattrand vorbei. Der Fit in die Gebäude folgt, sobald der Maßstab feststeht.</li>'
             '<li><b>Seminargebäude</b> (1:1500) ist ein eigenes Problem: Dach nur etwa 16,4 mm hoch und schmal; dafür braucht es eine niedrige Variante (siehe Karte „Seminargebäude“).</li></ul></header>'
             % (de(need_height("V2"), 1), de(bad_out(), 1), de(V.R_DEPTH, 1),
                de(o["V2R"]["w"], 1), de(o["V2R"]["d"], 1), de(o["V2R"]["h"], 1), de(need_height("V2R"), 1)))
@@ -278,31 +315,39 @@ def sec_rueck():
 
 
 def sec_v1r():
-    d1, dr, dv = V.dims("V1"), V.dims("V1R"), V.dims("V2R")
-    h_over = need_height("V1R")
-    h_side = bridge_around_height() - F + P.STOP_T
-    rows = [("Grundfläche außen", "%s × %s" % (de(d1["w"], 1), de(d1["depth"], 1)), "%s × %s" % (de(dr["w"], 1), de(dr["depth"], 1)), "%s × %s" % (de(dv["w"], 1), de(dv["depth"], 1))),
-            ("Höhe der Kassette", de(d1["top"], 1), de(dr["top"], 1), de(dv["top"], 1)),
-            ("Gebäude mindestens", de(need_height("V1"), 1), de(h_over, 1), de(need_height("V2R"), 1)),
-            ("LED-Mitte über der Platte", de(d1["z0"] + d1["sh"] / 2 - F, 1), de(dr["z0"] + dr["sh"] / 2 - F, 1), de(dv["z0"] + dv["sh"] / 2 - F, 1)),
-            ("Streifen", "quer, 1", "quer, 2 (vorn und hinten)", "hochkant, 2 (vorn und hinten)"),
-            ("Adernweg zur Buchse", "seitlich unter dem Streifen", "seitlich, vor dem Versatz", "gerade nach oben")]
+    d1, dr, ds, dv = V.dims("V1"), V.dims("V1R"), V.dims("V1RS"), V.dims("V2R")
+    hs = {k: need_height(k) for k in ("V1", "V1R", "V1RS", "V2R")}
+    rows = [("Grundfläche außen", *["%s × %s" % (de(d["w"], 1), de(d["depth"], 1)) for d in (d1, dr, ds)]),
+            ("Höhe der Kassette", *[de(d["top"], 1) for d in (d1, dr, ds)]),
+            ("Gebäude mindestens", *[de(hs[k], 1) for k in ("V1", "V1R", "V1RS")]),
+            ("LED-Mitte über der Platte", *[de(d["z0"] + d["sh"] / 2 - F, 1) for d in (d1, dr, ds)]),
+            ("Streifen", "quer, 1", "quer, 2", "quer, 2"),
+            ("Verkettung der zwei Streifen", "–", "3 Adern über die Blattoberkante", "3 Adern am rechten Blattrand vorbei"),
+            ("Blatt", "%s breit, bis %s" % (de(d1["w"], 1), de(d1["top"], 1)), "%s breit, bis %s (2,5 über den Streifen)" % (de(dr["w"], 1), de(dr["top"], 1)),
+             "%s breit, bis %s; Unterbau %s breit, Blatt 1 mm nach links" % (de(ds["bx1"] - ds["bx0"], 1), de(ds["top"], 1), de(ds["w"], 1)))]
     trs = "".join('<tr><td><b>%s</b></td>%s</tr>' % (r[0], "".join('<td class="n">%s</td>' % c for c in r[1:])) for r in rows)
-    fig = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>Schnitt durch die Mitte: Blatt in der Mitte, oben nach vorn versetzt, Streifen quer auf beiden Seiten, Verkettung über die Oberkante. '
+    fig = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>V1R oben, Schnitt durch die Mitte: Blatt in der Mitte, oben nach vorn versetzt, Streifen quer auf beiden Seiten, Verkettung über die Oberkante. '
            'Die Schachtwände (rot gestrichelt) bleiben frei.</figcaption></figure>' % svg_rueck("V1R"))
-    return ('<section class="sec"><h2>V1 mit Rücken-LED (V1R)</h2>'
-            '<p>Gleiches Prinzip wie V2R: Das Blatt wandert oben in die Mitte, damit beide Streifen durch den Schacht passen. Unterbau %s tief, das Blatt bleibt %s breit wie bei V1. '
-            'Der zweite Streifen klebt um 180° gedreht auf dem Rücken (Pads am rechten Ende); die drei Verkettungsadern gehen am rechten Ende über die Blattoberkante. '
-            'Die Adern von der Buchse laufen wie bei V1 seitlich zum linken Pad-Ende, jetzt aber vor dem Versatz, damit sie nicht am Blatt anstoßen.</p>'
-            '%s<div class="tw"><table class="t"><thead><tr><th></th><th>V1</th><th>V1R</th><th>V2R</th></tr></thead><tbody>%s</tbody></table></div>'
-            '<p class="note">Kein Fit in die Gebäude gerechnet: Das folgt, sobald der Maßstab feststeht.</p>'
-            '<p class="note">Verkettung seitlich statt über die Kante: Das Blatt wäre am rechten Ende etwa 2 mm breiter (%s statt %s), dafür etwa %s mm niedriger (Gebäude ab %s statt %s mm). '
-            'Das steht als Karte unten.</p>'
-            '<p class="risk"><b>Zu beachten:</b> V1R teilt die Risiken von V1 (Adernweg seitlich, Verdrillen zu den Pads) und von V2R (Versatz als 45°-Überhang, Streifendicke 2,2 nicht belegt, Blatt trägt zwei Streifen). '
-            'Das Blatt ist hier %s breit und %s hoch über dem Versatz, damit steifer als bei V2R.</p>'
-            '<figure class="fig"><img alt="V1 mit Rücken-LED: vorn, hinten, im Schnitt" src="%s"><figcaption>V1R, Konzept: von vorn, von hinten, im Schnitt.</figcaption></figure></section>'
-            % (de(V.R_DEPTH, 1), de(dr["w"], 1), fig, trs, de(dr["w"] + 2.0, 1), de(dr["w"], 1), de(V.R_JUMP, 1), de(h_side, 1), de(h_over, 1),
-               de(dr["w"], 1), de(dr["top"] - dr["z_j"] - dr["jog"], 1), BP.img_uri("variante_v1r.png", 1000)))
+    figs = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>V1R seitlich, Schnitt durch die Mitte: gleiche Form, aber das Blatt endet auf Höhe der Streifen, die Verkettung läuft auf Höhe der Pads am Blattrand vorbei (hinter der Schnittebene).</figcaption></figure>'
+            % svg_rueck("V1RS"))
+    figt = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>V1R seitlich, Draufsicht in Höhe der Pads: Der Unterbau ist %s breit, das Blatt sitzt %s nach links und lässt rechts %s Platz, durch den die drei Adern vom vorderen zum hinteren Streifen laufen.</figcaption></figure>'
+            % (svg_top_side(), de(ds["w"], 1), de(-ds["x_off"], 1), de(ds["w"] / 2 - ds["bx1"], 1)))
+    return ('<section class="sec"><h2>V1 mit Rücken-LED: zwei Varianten der Verkettung</h2>'
+            '<p>Gleiches Prinzip wie V2R: Das Blatt wandert oben in die Mitte, damit beide Streifen durch den Schacht passen (Unterbau %s tief). Der zweite Streifen klebt um 180° gedreht auf dem Rücken, seine Pads liegen wie beim vorderen am rechten Ende. '
+            'Die Adern von der Buchse laufen wie bei V1 seitlich zum linken Pad-Ende, jetzt vor dem Versatz, damit sie nicht am Blatt anstoßen. Die beiden Varianten unterscheiden sich nur darin, wie die drei Verkettungsadern auf den Rücken kommen.</p>'
+            '<div class="tw"><table class="t"><thead><tr><th></th><th>V1</th><th>V1R oben</th><th>V1R seitlich</th></tr></thead><tbody>%s</tbody></table></div>'
+            '<h3>V1R oben: über die Blattoberkante</h3><p class="note">Das Blatt ragt 2,5 mm über die Streifen, die Adern gehen am rechten Ende nach oben, über die Kante und hinten wieder hinunter. Der Unterbau bleibt %s breit; dafür steht die Kassette %s hoch.</p>'
+            '<div class="two">%s<figure class="fig"><img alt="V1R oben: vorn, hinten, im Schnitt" src="%s"><figcaption>V1R oben, Konzept: von vorn, von hinten, im Schnitt.</figcaption></figure></div>'
+            '<h3>V1R seitlich: am Blattrand vorbei</h3><p class="note">Das Blatt endet auf Höhe der Streifen, die Adern laufen auf Höhe der Pads um den rechten Blattrand. Dafür wird der Unterbau %s breit (+%s) und das Blatt samt Streifen sitzt 1 mm links der Mitte. '
+            'Die Kassette steht nur %s hoch (Gebäude ab %s mm statt %s).</p>'
+            '<div class="two">%s%s</div>'
+            '<figure class="fig"><img alt="V1R seitlich: vorn, hinten, im Schnitt" src="%s"><figcaption>V1R seitlich, Konzept: von vorn, von hinten, im Schnitt.</figcaption></figure>'
+            '<p class="risk"><b>Zu beachten:</b> Beide teilen die Risiken von V1 (Adernweg seitlich, Verdrillen zu den Pads) und von V2R (Versatz als 45°-Überhang, Streifendicke 2,2 nicht belegt, Blatt trägt zwei Streifen). '
+            'Seitlich: der Unterbau ist 2 mm breiter, die Adern am Rand haben nur %s Platz, dafür fehlt die Brücke über die Kante. Oben: kein Platz am Rand nötig, aber 2,5 mm mehr Höhe und eine Ader-Schlaufe über der Kante.</p>'
+            '<p class="note">Kein Fit in die Gebäude gerechnet: Das folgt, sobald der Maßstab feststeht.</p></section>'
+            % (de(V.R_DEPTH, 1), trs, de(dr["w"], 1), de(dr["top"], 1), fig, BP.img_uri("variante_v1r.png", 900),
+               de(ds["w"], 1), de(SIDE_X, 1), de(ds["top"], 1), de(hs["V1RS"], 1), de(hs["V1R"], 1), figs, figt, BP.img_uri("variante_v1rs.png", 1000),
+               de(ds["w"] / 2 - ds["bx1"], 1)))
 
 
 def sec_verstanden():
@@ -447,10 +492,8 @@ DECISIONS = [
                ("B", "Blatt bleibt hinten, Unterbau wird %s tief (einfach, aber 1,4 mm mehr Grundfläche, kein Versatz)" % de(V.dims("V2")["y1"] + V.BLATT_T + V.STRIP_T + 0.4, 1)),
                ("C", "Blatt nur 0,8 dick, Unterbau bleibt 5,34 (Luft nur 0,26, Blatt zu dünn, nicht empfohlen)"),
                ("D", "keine zweite LED")]),
-    dict(id="Q", tag="V1R", title="Verkettung bei V1 mit Rücken-LED", rec="A", text="Der Streifen ist quer, die Pads liegen am Ende.",
-         opts=[("A", "über die Blattoberkante am rechten Ende (Blatt 2,5 höher, Gebäude ab %s mm)" % de(need_height("V1R"), 1)),
-               ("B", "seitlich am Blattrand vorbei (Blatt 2 mm breiter, Gebäude ab %s mm)" % de(bridge_around_height() - F + P.STOP_T, 1)),
-               ("C", "Fenster im Blatt neben dem Streifenende")]),
+    dict(id="Q", tag="V1R", title="Welche V1R-Verkettung kommt in den Probedruck?", rec="A", text="Zwei Varianten, oben über die Kante (Gebäude ab %s mm) und seitlich am Blattrand vorbei (Gebäude ab %s mm, Unterbau 19,2 breit)." % (de(need_height("V1R"), 1), de(need_height("V1RS"), 1)),
+         opts=[("A", "beide drucken und vergleichen"), ("B", "nur oben"), ("C", "nur seitlich")]),
     dict(id="K", tag="Verkettung", title="Wie wird der zweite Streifen gespeist?", rec="A", text="Der WS2812B-Streifen hat an beiden Enden Pads.",
          opts=[("A", "Verkettung: DOUT des vorderen Streifens über die Blattkante zu DIN des hinteren (um 180° gedreht), nur ein Satz Adern"),
                ("B", "Fenster im Blatt statt über die Kante (Blatt %s niedriger, aber am Fenster schwächer)" % de(V.R_JUMP, 1)),

@@ -26,16 +26,17 @@ STRIP_W, STRIP_L, STRIP_T = sd.LED_W, sd.LED_L, sd.LED_T     # 10 × 16,7 × 2,2
 STRIP_TOL = 0.25        # Spiel je Seite um den Streifen
 FPC = sd.LED_FPC        # Folie ohne Chip
 CHIP = 5.0              # Chip 5 × 5
-ROOM = dict(V1=1.0, V2=1.5, V2R=1.5, V1R=1.5)     # Luft zwischen Schulterfläche und Streifenunterkante für die Adern
+ROOM = dict(V1=1.0, V2=1.5, V2R=1.5, V1R=1.5, V1RS=1.5)     # Luft zwischen Schulterfläche und Streifenunterkante für die Adern
 EF = 0.5                # Fase am Bett
 
 # ---- V2R: V2 mit zweitem Streifen auf dem Rücken (Blatt in der Mitte, oben nach vorn versetzt)
 R_DEPTH = 6.4           # Tiefe des Unterbaus (alt 5,34): front Chip + Blatt + Rückseiten-Chip müssen von unten durch den Schacht
 R_BLADE_Y = 2.6         # Vorderseite des oberen Blatts (Blatt 2,6 bis 3,8, Mitte = Mitte des Unterbaus)
 R_STEP_Z = 0.8          # das Blatt steigt zuerst 0,8 an der hinteren Wand, dann 45° nach vorn
+SIDE_EXTRA = 2.0        # V1RS: Unterbau so viel breiter; die Adern gehen am rechten Blattrand vorbei
 R_JUMP = 2.5            # Blatt ragt so weit über die Streifen hinaus (Brücke der Verkettungsadern)
 
-RVARS = ("V1R", "V2R")      # Varianten mit zweitem Streifen auf dem Rücken
+RVARS = ("V1R", "V1RS", "V2R")      # Varianten mit zweitem Streifen auf dem Rücken
 
 
 def base():
@@ -51,7 +52,7 @@ def base():
 def dims(var):
     b = base()
     room = ROOM[var]
-    if var in ("V1", "V1R"):
+    if var in ("V1", "V1R", "V1RS"):
         w, sh = STRIP_L + 2 * STRIP_TOL, STRIP_W            # Streifen quer: Länge waagerecht, Breite senkrecht
     else:
         w, sh = max(b["pk_w"] + 2 * sd.WALL, STRIP_W + 2 * STRIP_TOL), STRIP_L    # hochkant
@@ -59,13 +60,15 @@ def dims(var):
     z_top = z0 + sh + STRIP_TOL             # Oberkante des Blatts
     y_face = b["y1"] - STRIP_T              # Vorderseite des Streifens (Chip)
     d = dict(b, var=var, w=w, sh=sh, z0=z0, top=z_top, y_face=y_face, y_fpc=b["y1"] - FPC, room=room,
-             strip_w=(STRIP_L if var in ("V1", "V1R") else STRIP_W), strip_h=sh, yb=b["y1"])
+             strip_w=(STRIP_L if var in ("V1", "V1R", "V1RS") else STRIP_W), strip_h=sh, yb=b["y1"], x_off=0.0, bx0=-w / 2, bx1=w / 2)
     if var in RVARS:
         jog = b["y1"] - R_BLADE_Y                                  # Versatz des Blatts nach vorn (45°, also gleiche Höhe)
         z_j = b["z_b"] + R_STEP_Z
         z0 = z_j + jog
         d.update(depth=R_DEPTH, yb=R_BLADE_Y, jog=jog, z_j=z_j, z0=z0, room=z0 - b["z_b"], top=z0 + sh + STRIP_TOL + R_JUMP,
                  y_face=R_BLADE_Y - FPC - 1.9, y_fpc=R_BLADE_Y - FPC, yb_back=R_BLADE_Y + BLATT_T)
+    if var == "V1RS":                                              # Verkettung seitlich am Blattrand vorbei: Unterbau 2 mm breiter, Blatt und Streifen 1 mm nach links
+        d.update(w=w + SIDE_EXTRA, x_off=-SIDE_EXTRA / 2, bx0=-(w + SIDE_EXTRA) / 2, bx1=(w + SIDE_EXTRA) / 2 - SIDE_EXTRA, top=d["z0"] + sh + STRIP_TOL)
     return d
 
 
@@ -97,9 +100,10 @@ def kassette(var):
         blatt = box(-w / 2, w / 2, d["y1"], d["y1"] + BLATT_T, zb - 0.01, d["top"])
         return union([m, blatt])
     y1, yb, zj = d["y1"], d["yb"], d["z_j"]
-    lower = box(-w / 2, w / 2, y1, y1 + BLATT_T, zb - 0.01, zj + 0.01)                   # Fortsetzung der hinteren Taschenwand
-    jog = prism_x([(y1, zj), (y1 + BLATT_T, zj), (yb + BLATT_T, zj + d["jog"]), (yb, zj + d["jog"])], -w / 2, w / 2)    # 45° nach vorn
-    upper = box(-w / 2, w / 2, yb, yb + BLATT_T, zj + d["jog"] - 0.01, d["top"])
+    bx0, bx1 = d["bx0"], d["bx1"]
+    lower = box(bx0, bx1, y1, y1 + BLATT_T, zb - 0.01, zj + 0.01)                        # Fortsetzung der hinteren Taschenwand
+    jog = prism_x([(y1, zj), (y1 + BLATT_T, zj), (yb + BLATT_T, zj + d["jog"]), (yb, zj + d["jog"])], bx0, bx1)    # 45° nach vorn
+    upper = box(bx0, bx1, yb, yb + BLATT_T, zj + d["jog"] - 0.01, d["top"])
     return union([m, lower, jog, upper])
 
 
@@ -110,13 +114,13 @@ def housing(var):
 
 def strip(var):
     d = dims(var)
-    sw, sh, z0, y1 = d["strip_w"], d["strip_h"], d["z0"], d["yb"] if var in RVARS else d["y1"]
+    sw, sh, z0, y1, xo = d["strip_w"], d["strip_h"], d["z0"], d["yb"] if var in RVARS else d["y1"], d["x_off"]
     zc = z0 + sh / 2
-    parts = [box(-sw / 2, sw / 2, y1 - FPC, y1, z0, z0 + sh),
-             box(-CHIP / 2, CHIP / 2, y1 - STRIP_T, y1 - FPC, zc - CHIP / 2, zc + CHIP / 2)]
+    parts = [box(xo - sw / 2, xo + sw / 2, y1 - FPC, y1, z0, z0 + sh),
+             box(xo - CHIP / 2, xo + CHIP / 2, y1 - STRIP_T, y1 - FPC, zc - CHIP / 2, zc + CHIP / 2)]
     if var in RVARS:                                               # zweiter Streifen auf dem Rücken, um 180° gedreht (DIN oben bzw. am anderen Ende)
         yr = y1 + BLATT_T
-        parts += [box(-sw / 2, sw / 2, yr, yr + FPC, z0, z0 + sh), box(-CHIP / 2, CHIP / 2, yr + FPC, yr + STRIP_T, zc - CHIP / 2, zc + CHIP / 2)]
+        parts += [box(xo - sw / 2, xo + sw / 2, yr, yr + FPC, z0, z0 + sh), box(xo - CHIP / 2, xo + CHIP / 2, yr + FPC, yr + STRIP_T, zc - CHIP / 2, zc + CHIP / 2)]
     return union(parts)
 
 
@@ -126,8 +130,8 @@ def wire_path(var, i):
     x = sd.pin_x()[i]
     wr = sd.WIRE_D / 2
     ya, yp = d["ypin"], d["y_fpc"] - wr - 0.1       # Ader in der Tasche, Ader auf dem Pad
-    if var == "V1R":                                               # wie V1, aber das Blatt springt nach vorn: Adern laufen vor dem Versatz seitlich zum Pad-Ende
-        xe = -STRIP_L / 2 + 1.4
+    if var in ("V1R", "V1RS"):                                     # wie V1, aber das Blatt springt nach vorn: Adern laufen vor dem Versatz seitlich zum Pad-Ende
+        xe = d["x_off"] - STRIP_L / 2 + 1.4
         z_pad = d["z0"] + 2.0 + 1.6 * i
         yw = 1.9
         return [(x, ya, d["zp"]), (x, ya, d["z_b"] + 0.4), (x, yw, d["z_b"] + 1.5), (xe + 1.5 - 0.3 * i, yw, d["z_b"] + 1.5), (xe + 0.3 * i, yp, d["z0"] + 0.6), (xe, yp, z_pad)]
@@ -151,14 +155,18 @@ def wires(var):
         d = dims(var)
         wr = sd.WIRE_D / 2
         for k in range(3):
-            if var == "V1R":                                       # Pads am rechten Ende, quer zur Streifenbreite
-                x = STRIP_L / 2 - 1.4 - 0.3 * k
+            if var in ("V1R", "V1RS"):                             # Pads am rechten Ende, quer zur Streifenbreite
+                x = d["x_off"] + STRIP_L / 2 - 1.4 - 0.3 * k
                 zt = d["z0"] + 2.0 + 1.6 * k
             else:
                 x = sd.pin_x()[k] * 0.55
                 zt = d["z0"] + d["sh"] - 1.5 - 0.9 * k
-            pts = [(x, d["y_fpc"] - wr - 0.1, zt), (x, d["y_fpc"] - wr - 0.1, d["top"] + 0.3), (x, d["yb"] + BLATT_T / 2, d["top"] + 0.4),
-                   (x, d["yb_back"] + FPC + wr + 0.1, d["top"] + 0.3), (x, d["yb_back"] + FPC + wr + 0.1, zt)]
+            yA, yB = d["y_fpc"] - wr - 0.1, d["yb_back"] + FPC + wr + 0.1
+            if var == "V1RS":                                      # am rechten Blattrand vorbei, auf Höhe der Pads
+                xs = d["bx1"] + 0.7 + 0.0 * k
+                pts = [(x, yA, zt), (xs, yA, zt), (xs, d["yb"] + BLATT_T / 2, zt), (xs, yB, zt), (x, yB, zt)]
+            else:
+                pts = [(x, yA, zt), (x, yA, d["top"] + 0.3), (x, d["yb"] + BLATT_T / 2, d["top"] + 0.4), (x, yB, d["top"] + 0.3), (x, yB, zt)]
             out += [capsule(a, b, wr) for a, b in zip(pts, pts[1:])]
     return union(out)
 
@@ -177,7 +185,7 @@ def main():
     os.makedirs(PREV, exist_ok=True)
     from PIL import Image
     ok = True
-    for var in ("V1", "V2", "V2R", "V1R"):
+    for var in ("V1", "V2", "V2R", "V1R", "V1RS"):
         k = kassette(var)
         tm = to_tm(k)
         d = dims(var)
@@ -206,7 +214,10 @@ def main():
     q1, qb = render_set("V1R", px=px)
     q2, _ = render_set("V1R", px=px, azim=130)
     sheet_of([q1, q2, qb], "variante_v1r.png")
-    print("Bild: vorschau/steckmodul_testcase/variante_v2r.png, variante_v1r.png")
+    t1, tb = render_set("V1RS", px=px)
+    t2, _ = render_set("V1RS", px=px, azim=130)
+    sheet_of([t1, t2, tb], "variante_v1rs.png")
+    print("Bild: vorschau/steckmodul_testcase/variante_v2r.png, variante_v1r.png, variante_v1rs.png")
     print("Bild: vorschau/steckmodul_testcase/varianten_v1_v2.png")
     return 0 if ok else 1
 

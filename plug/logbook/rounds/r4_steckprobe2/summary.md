@@ -62,3 +62,8 @@ Nutzer: V2 ist besser; passt es von der Höhe? Zweite LED auf der Rückseite geg
 Nutzer: auch für V1 eine Rückenvariante; der Fit in die Gebäude folgt, sobald der Maßstab ganz genau feststeht (V1R ist daher nicht in der Fit-Tabelle).
 V1R: Unterbau 17,2 × 6,4, Kassette 30,2 hoch (Gebäude ab 21,2 mm), Blatt in der Mitte und oben 45° nach vorn versetzt wie V2R, Streifen quer auf beiden Seiten, Verkettung über die Oberkante am rechten Ende
 (Alternative am rechten Rand vorbei: Blatt 2 mm breiter, Gebäude ab 18,7). Generator `plug/testcase/variants.py` (`V1R`), Bild `vorschau/steckmodul_testcase/variante_v1r.png`, Abschnitt und Karte „V1R“ in `plan3.html`.
+
+## Nachtrag 4: V1R in zwei Varianten
+
+Nutzer: zwei Varianten für V1R, eine mit den Leitungen oben vorbei, eine seitlich vorbei. `V1R` (oben, Blatt 2,5 über den Streifen, Kassette 17,2 × 6,4 × 30,2, Gebäude ab 21,2) und `V1RS` (seitlich: Unterbau 19,2 breit, Blatt samt Streifen 1 mm nach links,
+2,0 Platz rechts für die drei Adern, Kassette 19,2 × 6,4 × 27,7, Gebäude ab 18,7). Bilder `variante_v1r.png`, `variante_v1rs.png`; Karte Q fragt, welche in den Probedruck kommt (Empfehlung: beide).
