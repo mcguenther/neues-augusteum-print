@@ -1,6 +1,6 @@
 # Aufgabe für einen neuen Chat: Fachprobe Powerbank auswerten
 
-**Erledigt (2026-10-16): ausgewertet in `rounds/r5_fachprobe/`.** Nicht gemacht: Stößel und Taste von der Konzeptseite entfernen, Seite neu veröffentlichen (siehe `next.md`).
+**Erledigt (2026-10-16): ausgewertet in `rounds/r5_fachprobe/`.** Stößel und Taste sind von der Konzeptseite entfernt, die Seite ist neu veröffentlicht.
 
 Stand bei Anlage: 2026-10-16. Die Fachprobe ist **gebaut, aber noch nicht gedruckt**. Dieser Chat beginnt, sobald der Nutzer den Ergebnistext des Testbogens einfügt. Liegt noch kein Ergebnistext vor, frage danach und baue nichts.
 

@@ -34,7 +34,7 @@ PB_IMAX = 2.1             # B  5 V / 2,1 A gesamt für USB-A und USB-C
 PB_SLEEP_S = 30           # B  Standby nach etwa 30 s ohne Verbraucher
 PB_KEEP_MA = 50           # S  bleibt an ab etwa 50 mA (Forum)
 PB_PORTS = ("LEDs", "Taste", "microUSB in", "USB-C in/out", "USB-A out")   # B  an einer Schmalseite (Bild der Anleitung)
-PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, taste=-16.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen
+PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen (Taste entfällt, Nutzer)
 
 # ---- Fach im Unterkasten
 PB_CLR = 0.5              # S  Spiel je Seite (Kaufteil ungemessen; Fachprobe klärt es)
@@ -42,7 +42,6 @@ PB_CLR_Z = 0.8            # S  Luft über der Powerbank bis zur Oberplatte; war 
 PB_PLUG = 35.0            # S  Platz vor der Anschlussseite: gerader USB-A-Stecker (Griff etwa 25 mm) plus Biegung; ungemessen
 PB_CABLE = 6.0            # S  Kabelkanal entlang der Längsseite (USB-Kabel bis 4,5 mm)
 FENCE = (1.6, 5.0)        # E  Zaun um die Powerbank: Breite, Höhe über dem Boden
-ROD = 4.0                 # E  Stößel zur Taste, Querschnitt (Führung mit 0,15 Gleitspiel, L10)
 WINDOW_PAD = 2.0          # E  Fenster in der Kante reicht so weit über LEDs und Buchsen hinaus
 
 # ---- Unterkasten

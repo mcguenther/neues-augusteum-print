@@ -26,7 +26,7 @@ Ob die Powerbank (Intenso XS5000, laut Datenblatt 90 × 63 × 12,6 mm, ungemesse
 
 ## Entscheidungen und Folgen
 
-- `plug/power/params.py`: **`PB_CLR_Z` 0,6 → 0,8** (Luft über der Powerbank, +0,2 nach Nutzer). `PB_T` bleibt 12,6 (ungemessen); kein Zahlenwert für die tatsächliche Dicke. Fachhöhe 13,2 → 13,4, Unterkasten 14,4 → 14,6, Gesamthöhe der Grundplatte 27,0 → 27,2 mm (`python3 -m plug.power.build_concept`, Seite `plug/power/concept.html` neu erzeugt, Artifact noch nicht neu veröffentlicht).
+- `plug/power/params.py`: **`PB_CLR_Z` 0,6 → 0,8** (Luft über der Powerbank, +0,2 nach Nutzer). `PB_T` bleibt 12,6 (ungemessen); kein Zahlenwert für die tatsächliche Dicke. Fachhöhe 13,2 → 13,4, Unterkasten 14,4 → 14,6, Gesamthöhe der Grundplatte 27,0 → 27,2 mm (`python3 -m plug.power.build_concept`, Seite `plug/power/concept.html` neu erzeugt und als Artifact https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS neu veröffentlicht, Version 6).
 - `plug/parts.py` unverändert. Der gedruckte Satz (`stl/steckmodul_fachprobe/`) bleibt auf Luft 0,6 stehen und wurde nicht neu gebaut.
 - Neue Lehre L35 (Powerbank ungemessen, Luft im Worst-Case rechnen: Prüfbericht hatte 13,0 → 0,2 mm Luft noch als „ok“ gemeldet) in `lessons.md`.
 
@@ -36,4 +36,4 @@ Ob die Powerbank (Intenso XS5000, laut Datenblatt 90 × 63 × 12,6 mm, ungemesse
 - Ursache des Wackelns der Deckplatte.
 - Ob der Zaun fehlte oder nur am Anschlussende steht; Sitz im Zaun, Seitenspiel, Länge.
 - Kabelkanal, Fenster mit Anschlüssen, Steckerraum 35 mm.
-- Die Konzeptseite zeigt noch Stößel und Taste (entfallen laut Nutzer); nicht entfernt, weil die Aufgabe dieses Chats auf Logbuch und Werte begrenzt wurde.
+- Stößel und Taste sind danach (Folgeauftrag, gleicher Tag) aus der Konzeptseite entfernt: `PP.ROD`, `PB_PORT_V["taste"]`, `PORT_HALF["taste"]` und die Stößelzeilen in `build_concept.py` und `concept.template.html` gestrichen, der Text sagt jetzt „Eine Taste gibt es nicht“.
