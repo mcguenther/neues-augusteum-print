@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Steckplatte des Campus: Grundplatte mit Umriss-Aussparung (4 mm), Fuß-Mulde und Dock (Winkelleiste) je Gebäude und Aussparung für den Innenhof-Einsatz.
+"""Steckplatte des Campus: Grundplatte mit Mulde (voller Gebäudeumriss), vier Pin-Löchern je Gebäude und Aussparung für den Innenhof-Einsatz.
 
-Festlegung (plug/logbook/scale.md): Maßstab 1:1300, Mulde überall 4 mm tiefer (F 14,2, Platte 20,2 mm), Kassette je Gebäude aus
+Festlegung (plug/logbook/scale.md): Maßstab 1:1300, Mulde überall 4 mm tiefer (F 14,2), Kassette je Gebäude aus
 params.CASSETTE (v4, V1RS, V2R). Die Lage der Mulde im Grundriss wird gesucht (Rechteck um den Schacht, beliebige Drehung, höchste Dachhöhe
 bei mindestens 0,8 mm Wand, bevorzugt 1,2 mm) und in plug/scale1176/placements_<N>.json zwischengespeichert.
+
+Flache Unterseite (Konzept des Test-Docks, plug/power/build_dock.py): Die Platte ist F + CEIL_T = 14,6 mm dick, der Muldenboden (0,4 mm) ist die
+unterste Schicht auf dem Bett, die Unterseite ist eben. Pin-Löcher mit Fase beidseitig, keine Tasche, keine Stufe, keine Hohlräume, kein Support.
+Die Winkelleiste wird von unten aufgeklebt (Körper hängt 2,0 mm unter der Platte, Lötenden und Draht darunter); der Steckerraum entsteht erst
+durch den Unterkasten (noch nicht Teil dieser Datei).
 
 Aufruf (aus dem Wurzelverzeichnis):
     python3 -m plug.campus [--scale 1300] [--replace]    # STL nach stl/steckmodul_campus/, Bilder nach vorschau/steckmodul_campus/
@@ -25,7 +30,9 @@ import generate as G
 import innenhof
 from plug import dupont as sd
 from plug import institute as I
+from plug import series2 as N2
 from plug.geom import diff, ext, to_tm, union
+from plug.power import build_concept as BC
 from plug.scale1176 import variants1250 as W
 from plug.testcase import build as TB
 from plug.testcase import fit_study as FS
@@ -137,11 +144,24 @@ def mulde_body(slug_fp, d):
 
 
 def dock_local(var, wall, d):
-    """Dock (Winkelleiste, Lötraum, Kabelraum) im Gebäudesystem und sein Grundriss (shapely)."""
-    cuts = TB.dock_cuts_b(d)
-    cs = union(cuts).project()
+    """Dock im Gebäudesystem (Pin-Reihe bei y = 0): Schnittkörper der Pin-Löcher und Hüllkurve (shapely) von Leiste, Lötenden und Draht unter der Platte.
+    Die Hüllkurve stammt aus dem Dock der Platte B (dock_cuts_b); sie ist größer als die aufgeklebte Leiste und hält die Lagen aus der Platzierungs-App gültig."""
+    cs = union(TB.dock_cuts_b(d)).project()
     env = unary_union([Polygon(r) for r in cs.to_polygons()])
-    return cuts, env
+    return pin_holes(d), env
+
+
+def pin_holes(d):
+    """Vier Pin-Löcher durch den Muldenboden, Fase unten (Bett) und oben (Mulde), wie im Test-Dock."""
+    cuts = []
+    for x in sd.pin_x():
+        cuts += N2.hole_ch(x, 0.0, -plate_thickness(d), -d["F"], sd.HOLE, TB.HOLE_CH, TB.HOLE_CH)
+    return cuts
+
+
+def plate_thickness(d):
+    """Mulde F plus Muldenboden CEIL_T; darunter nichts (flache Unterseite)."""
+    return d["F"] + P.CEIL_T
 
 
 def place_all(models, scale, replace=False):
@@ -222,9 +242,9 @@ def build(scale=P.SCALE_PLAN, replace=False):
     OUTLINE = outline
     places = place_all({k: v for k, v in models.items() if k in P.CASSETTE}, scale, replace)
     d = P.dims_plan()
-    T = d["plate_t"]
+    T = plate_thickness(d)
     hof_solid = models[G.HOF["slug"]][0]
-    plate = G.extrude(outline, 0.0, T)
+    plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T)           # Bettkante mit Fase gegen den Elefantenfuß
     plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan")
     cut_all, report, envs = [], [], []
     for slug, p in places.items():
@@ -239,7 +259,7 @@ def build(scale=P.SCALE_PLAN, replace=False):
         report.append((slug, p["var"], p["wall"], p.get("led_dist"), bad))
         # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante
         cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
-        # Muldenboden bleibt 0,4 mm; Pin-Löcher kommen aus dock_cuts_b
+        # Muldenboden bleibt 0,4 mm und ist die unterste Schicht; die Pin-Löcher kommen aus pin_holes
     # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Wand
     # zu den Gebäude-Aussparungen 0,4 mm bleibt
     hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s)
@@ -261,12 +281,16 @@ def main():
     tm.export(path)
     b = outline.bounds
     print("Platte %.1f × %.1f × %.1f mm, dicht=%s, Mulde %.1f, Plattendicke %.1f" % (
-        b[2] - b[0], b[3] - b[1], P.dims_plan()["plate_t"], tm.is_watertight, P.dims_plan()["F"], P.dims_plan()["plate_t"]))
+        b[2] - b[0], b[3] - b[1], plate_thickness(P.dims_plan()), tm.is_watertight, P.dims_plan()["F"], plate_thickness(P.dims_plan())))
     hof_tm = to_tm(hof_solid)
     hof_path = os.path.join(OUT, "hof_einsatz_1zu%d.stl" % a.scale)
     hof_tm.export(hof_path)
     print("Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s, %.1f mm unter der Oberfläche" % (*hof_tm.extents, hof_tm.is_watertight, P.HOF_DEPTH_T))
     ok = tm.is_watertight and hof_tm.is_watertight
+    from plug.fit_test.generator import overhangs
+    ov = overhangs(plate, "steckplatte")
+    print("  waagerechte Decken: %s   Überhang flacher als 45° zur Senkrechten: %.0f mm²" % (
+        "; ".join("z=%.1f: %.0f mm² (%.1f × %.1f)" % f for f in sorted(ov["flat"], key=lambda t: -t[1])[:4]) or "keine", ov["steep_area"]))
     for slug, var, wall, flip, bad in report:
         print("  %-22s %-5s Wand %.1f, %s, Dock außerhalb/überlappt %.2f mm²" % (
             slug, var, wall, "LED %.1f mm von der Mitte" % flip if flip is not None else "Lage aus der Platzierungs-App", bad))

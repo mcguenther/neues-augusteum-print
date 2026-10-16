@@ -114,7 +114,7 @@ def dims(extra=0.0):
 
 
 def dims_plan():
-    """Maßkette mit der festgelegten Zusatztiefe (F 14,2, Platte 20,2 mm)."""
+    """Maßkette mit der festgelegten Zusatztiefe (F 14,2; die alte Platte B wäre 20,2 mm dick, die Steckplatte `plug/campus.py` ist F + CEIL_T = 14,6 mm)."""
     return dims(MULDE_EXTRA_T)
 
 
