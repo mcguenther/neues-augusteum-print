@@ -24,6 +24,8 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 Maßstab **1:1300** (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14,2, Platte 20,2), Kassette v4 (Paulinum, Neues Augusteum, Hörsaal), V1RS (Seminar, Institut), V2R (Hochhaus). Offen: V1RS und V2R sind Konzepte ohne Test, Fuß 14,2 mm ungetestet, Hof bei 1:1300 neu rechnen. Steckprobe 2 muss die tiefere Mulde (14,2 mm) prüfen, wenn sie gedruckt wird.
 
+**Ungetestet:** alle Planwerte der Festlegung stehen mit Test in [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“; `plug/parts.py` erst nach bestandenem Test ändern.
+
 **Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
 
 **To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.

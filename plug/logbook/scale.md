@@ -136,3 +136,29 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 ### Lagen vom Nutzer festgelegt (2026-10-16)
 
 Der Nutzer hat die Lagen in der Platzierungs-App eingestellt (`plug/scale1176/placements_user_1300.json`); `python3 -m plug.scale1176.nudge` hat sie minimal angepasst, bis die Wand um den Schacht mindestens 1,2 mm beträgt (Verschiebung bis 0,8 mm, Drehung bis 3°), und `placements_1300.json` geschrieben. Ergebnis: nur das Paulinum musste (um dx −0,10, dy −0,10 mm, Wand 1,10 → 1,21 mm); alle anderen Lagen sind unverändert (Wand: Neues Augusteum 4,8, Hörsaal 6,7, Seminar 4,1, Institut 1,5, Hochhaus 4,7 mm). Docks innerhalb der Platte und ohne Überlappung. Grafik `vorschau/steckmodul_campus/positionen_diff.png` (`python3 -m plug.scale1176.nudge_plot`). Die Platte `stl/steckmodul_campus/steckplatte_1zu1300.stl` ist damit neu erzeugt. Die LED-Lage ist nicht mehr mittig erzwungen, sondern die des Nutzers.
+
+## Ungetestete Planwerte (müssen noch getestet werden)
+
+Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `plug/testcase/params.py` (`MULDE_EXTRA_T`, `CASSETTE`, `HOF_*`, `OUTLINE_CLR_T`, `SCALE_PLAN`) und `plug/scale1176/placements_1300.json`; `plug/parts.py` bleibt unverändert, bis ein Test sie bestätigt hat. Test: Steckprobe 3 (Reserve-Druck, `next.md`).
+
+| Bereich | Wert | Stand | Was der Test zeigen muss |
+|---|---|---|---|
+| Mulde und Platte | Mulde 14,2 mm als eine Ebene mit vollem Gebäudeumriss (getestet war der L-Fuß mit 10,2 mm) | ungetestet | Einführen, Kippen, Klemmen, Ziehkraft, Verzug |
+| | Spiel Umriss zur Mulde 0,1 mm je Seite (`OUTLINE_CLR_T`) | ungetestet auf großen Flächen | Ob das Gebäude bei langen Kanten sauber hineingeht |
+| | Muldenboden 0,4 mm unter sehr großen Mulden | im Kleinen bewährt, groß ungetestet | Druck ohne Support, Halt beim Einstecken |
+| | Dock in der 20,2 mm dicken Platte, 4 mm tiefer | ungetestet | Pin-Treffer, Kabelraum, Löträume ohne Support |
+| | Platte 20,2 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |
+| Kassetten | V1RS (Seminar, Institut), V2R (Hochhaus) | nur Konzepte, nie gedruckt | Einpressen mit Streifen und Blatt, Adernweg, Verkettung der zwei LEDs |
+| | Streifendicke 2,2 mm | nicht gemessen | am echten Streifen messen, vor jeder STL |
+| | Blattdicke 1,2 oder 1,6 mm, 45°-Versatz über dem Aderschlitz | offen | Druckbarkeit, Bruch beim Biegen |
+| | Wand um den Schacht (Paulinum 1,2, Institut 1,5, sonst über 4 mm) | nur gerechnet | Ob Einpressen hält und die Wand nicht reißt |
+| | v4 im Paulinum bei 1,2 mm Wand | knapp | wie oben, Rückfall V1RS |
+| Licht | Luft über der LED, Richtwert 8 mm | Annahme | Hotspots unter dem Dach |
+| | Neues Augusteum: LED 6,7 mm neben der Mitte, 9,1 mm Luft | Nutzerentscheidung, ungetestet | Lichtverteilung im Trakt |
+| | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
+| Innenhof | Hof-Einsatz 3 mm tief (`HOF_DEPTH_T`) | Annahme | Sitz, sonst tiefer |
+| | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
+| | Wand 0,4 mm zwischen Hof- und Gebäude-Aussparung | ungetestet | Druck, Stehenbleiben |
+| | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
+| | Halt des Einsatzes (Reibrippen oder Kleber) | nicht festgelegt | bleibt er ohne Halt liegen |
+| Maßstab | 1:1300 | ungetestet | feine Details bei Mindestbreite 0,8 mm |

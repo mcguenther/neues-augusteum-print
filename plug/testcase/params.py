@@ -29,7 +29,7 @@ MULDE_CLR_T = 0.10      # Fuß in der Mulde (Fuß-Lehre: 0,10 und 0,15 gut, 0,20
 STEP_H_T = 1.8          # Stufe für das Lötende wie für Körperhöhe 1,8 (2,0 und 1,8 liegen flach)
 BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
-# ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
+# ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md); ALLE folgenden Planwerte sind NOCH NICHT GETESTET (Liste: scale.md, „Ungetestete Planwerte“): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
 # Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
 # Die Mulde ist eine einzige Ebene: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (F 14,2); keine Stufe, keine zweite Ebene in Form der
 # Kassette. Die Kassette sitzt im Gebäudekörper und schließt unten bündig mit ihm ab; die Umrisse der Gebäude sind auf der Platte erkennbar.
