@@ -1,0 +1,190 @@
+<title>Passprüfung Maßstab 1:1176</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Ergebnis zuerst, dann Beleg (Tabelle, Grundrisse), dann Entscheidungskarten */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2630; --muted: #5a6877; --line: #d5dce3;
+  --accent: #1f5f8b; --accent-soft: #e2eef6;
+  --ok: #1f7a4d; --ok-soft: #e0f1e8; --warn: #9a6200; --warn-soft: #fbf0d6; --no: #b3261e; --no-soft: #fbe3e1;
+  --fp: #e6ebf0; --fp-line: #8a97a5; --hof: #cfe6d3; --shaft: #1f5f8b; --foot: #9cc3de; --sol: #e9c46a;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.55;
+  padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 1.3rem; margin: 0 0 12px; text-wrap: balance; }
+h3 { font-size: 1.02rem; margin: 0; }
+p { margin: 0 0 10px; max-width: 68ch; } p:last-child { margin-bottom: 0; }
+.kicker { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.lead { font-size: 1.1rem; color: var(--fg); max-width: 70ch; }
+.muted { color: var(--muted); } .mono { font-family: var(--mono); font-size: 0.92em; }
+section { min-width: 0; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.ans { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ans .tag { font: 500 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ans .big { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.no { background: var(--no-soft); color: var(--no); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.93rem; }
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { font: 500 0.74rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; font-family: var(--mono); font-size: 0.9em; } thead th.num { text-align: right; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figcaption { display: flex; flex-direction: column; font-size: 0.88rem; } figcaption span { color: var(--muted); }
+.plan svg, .big-plan svg { width: 100%; height: auto; display: block; max-height: 360px; }
+.big-plan { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.big-plan svg { max-height: 640px; }
+svg .fp { fill: var(--fp); stroke: var(--fp-line); stroke-width: 0.35; } svg .hof { fill: var(--hof); stroke: var(--ok); stroke-width: 0.3; }
+svg .sol { fill: var(--sol); fill-opacity: 0.55; stroke: none; } svg .foot { fill: var(--foot); fill-opacity: 0.8; stroke: var(--shaft); stroke-width: 0.25; }
+svg .shaft { fill: var(--shaft); } svg .sc { stroke: var(--fg); stroke-width: 0.5; } svg .sct { fill: var(--fg); font: 2.2px var(--mono); }
+svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stroke: var(--bg); stroke-width: 0.7px; } svg .hofl { fill: var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.86rem; color: var(--muted); margin-top: 10px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--line); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card.rec { border: 2px solid var(--accent); }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; font-size: 0.92rem; }
+.card .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.badge { font: 500 0.72rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 3px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; } .facts b { display: block; font: 500 1.05rem var(--mono); } .facts span { font-size: 0.82rem; color: var(--muted); }
+.note { background: var(--warn-soft); border-radius: 6px; padding: 14px 16px; font-size: 0.93rem; }
+.q { background: var(--accent-soft); border-radius: 6px; padding: 14px 16px; } .q ol { margin: 6px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<main>
+<header>
+  <div class="kicker">Steckmechanismus · Prüfung zum Maßstab</div>
+  <h1>Passen Kassette und Fuß bei 1:1176, und wie kommt der Innenhof auf die Platte?</h1>
+  <p class="lead" style="margin-top:12px">Das Gesamtmodell ist bei 1:1176 genau 15 % kleiner als bei 1:1000. Geprüft wurde mit dem Stand aus Steckprobe 1 (Kassette v4, Schacht, Mulde). Gerechnet ist an den Grundrissen und Höhen der Laserscan-Gebäude, nicht gedruckt.</p>
+</header>
+
+<section aria-labelledby="ergebnis">
+  <h2 id="ergebnis">Ergebnis</h2>
+  <div class="answers">
+    <div class="ans">
+      <span class="tag">A · Passt es?</span>
+      <span class="big">Fünf von sechs Gebäuden ja, das City-Hochhaus nur mit gekürzter Kassette.</span>
+      <p>Der Schacht für die Kassette misst @KW@ × @KL@ mm. Mit 1,2 mm Wand rundum braucht der Fuß 16,0 × 32,0 mm. Das findet in Paulinum, Neuem Augusteum, Hörsaal-, Seminar- und Institutsgebäude Platz, mit jeweils mindestens 1,4 mm Wand. Der Uniriese hat bei 1:1176 nur etwa 29 × 29 mm Grundfläche. Dort passt der Schacht erst mit @UNIKL@ mm Länge und 0,8 mm Wand.</p>
+      <p class="muted">Reserve beim Maßstab: Institutsgebäude bis etwa 1:1210, Seminargebäude bis 1:1290. Beide stehen nur 3 bis 10 % vor der Grenze.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">B · Innenhof</span>
+      <span class="big">Als eigenes Einsteckteil, Bäume angedruckt.</span>
+      <p>Der Hof (@HOFW@ × @HOFL@ mm, nur drei Bäume und das Denkmal als feine Teile) bleibt ein Podest in einer Aussparung der Platte, so wie im Komplettmodell heute schon. Die Bäume werden nicht einzeln gesteckt. Der Stamm ist 0,8 mm dick, ein Steckstift bräuchte mindestens 1,2 mm.</p>
+      <p class="muted">Gründe und die beiden anderen Wege stehen unten in den Entscheidungskarten.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">Nebenbefund</span>
+      <span class="big">Die Platte wird einteilig: 126,5 × 241,5 mm.</span>
+      <p>Bei 1:1000 war sie zu groß für ein Druckbett und wurde in zwei Teile geteilt. Bei 1:1176 liegt sie unter der Kachelgrenze von 250 mm. Das Bett des A1 hat 256 mm, die Reserve für Rand und Brim ist klein.</p>
+      <p class="muted">Das ist auch der Grund gegen 1:1100 als Ausweg für den Uniriesen: Die Platte wäre mit etwa 258 mm wieder zu lang.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="beleg">
+  <h2 id="beleg">Beleg: Wandmaß je Gebäude</h2>
+  <p>Gesucht ist das Rechteck des Schachts in beliebiger Drehung, das samt Wand in den Grundriss passt. Es zählt nur die Fläche, auf der das Gebäude hoch genug ist (Kassettenoberkante 7,95 mm plus 0,8 mm Dach, also mindestens 8,75 mm über der Straße). Die Wand soll mindestens 0,8 mm (MIN_FEATURE) betragen, besser 1,2 mm.</p>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wandmaß je Gebäude">
+  <table>
+    <thead><tr><th>Gebäude</th><th class="num">Fläche mm² (1:1176)</th><th class="num">Höhe mm (1:1176)</th><th class="num">Max. Wand mm bei 1:1000</th><th class="num">bei 1:1176</th><th class="num">bei 1:1500</th><th class="num">Grenzmaßstab bei 0,8 mm Wand</th><th>Urteil 1:1176</th></tr></thead>
+    <tbody>
+@TABLE@
+    </tbody>
+  </table>
+  </div>
+  <p class="muted" style="margin-top:10px">Urteil: passt ab 1,2 mm Wand, knapp ab 0,8 mm, darunter passt nicht. Das City-Hochhaus steht auf „passt nicht“ für den vollen Schacht. Die Suche arbeitet mit 0,2 m Raster und 5°-Schritten, die Werte sind auf etwa 0,2 mm genau. Das Hörsaalgebäude hat so viel Platz, dass die Suche bei 6 mm Wand endet.</p>
+</section>
+
+<section aria-labelledby="plaene">
+  <h2 id="plaene">So sitzt der Schacht in jedem Grundriss</h2>
+  <div class="grid">
+@GRID@
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--shaft)"></i>Schacht der Kassette</span>
+    <span><i style="background:var(--foot)"></i>Fuß mit Wand</span>
+    <span><i style="background:var(--sol)"></i>Raum für die Lötenden unter der Platte (3,6 mm hinter dem Schacht)</span>
+    <span><i style="background:var(--fp)"></i>Grundriss</span>
+  </div>
+</section>
+
+<section aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtplan mit Innenhof</h2>
+  <div class="big-plan">@OVERVIEW@</div>
+  <p class="muted" style="margin-top:10px">Der Hof liegt zwischen den Gebäuden und enthält keinen Schacht. Die Fuge zu den Gebäuden beträgt 0,5 mm. Der Raum für die Lötenden liegt unter der Plattenoberfläche (unterhalb von 10,6 mm Tiefe), der Hofeinsatz reicht nur 1 mm unter die Oberfläche. Die beiden stoßen sich deshalb senkrecht nicht, auch wo der Lötraum seitlich unter den Hof ragt. Ob die Löträume der Nachbarn zusammenstoßen, ist noch nicht gerechnet.</p>
+</section>
+
+<section aria-labelledby="hof">
+  <h2 id="hof">Entscheidung: Innenhof einstecken oder aufdrucken?</h2>
+  <div class="facts" style="margin-bottom:16px">
+    <div><b>@HOFW@ × @HOFL@ mm</b><span>Hof bei 1:1176, Fläche @HOFA@ mm²</span></div>
+    <div><b>3 Bäume</b><span>Krone Ø 7,7 bis 8,0 mm, 7,9 bis 9,5 mm hoch</span></div>
+    <div><b>Stamm Ø 0,8 mm</b><span>Mindestbreite, maßstäblich wären 0,35 mm</span></div>
+    <div><b>+2,0 mm</b><span>Hof liegt 2,34 m über der Straße</span></div>
+    <div><b>kein LED, keine Kabel</b><span>der Hof braucht keinen Steckkontakt</span></div>
+  </div>
+  <div class="cards">
+    <article class="card rec">
+      <div class="head"><h3>A · Eigenes Einsteckteil, Bäume angedruckt</h3><span class="badge">Empfehlung</span></div>
+      <p>Podest mit Pflaster, Beeten, Bänken, Denkmal und den drei Bäumen als eigener Druck, von oben in eine Aussparung der Platte gelegt. Entspricht dem heutigen Komplettmodell.</p>
+      <ul>
+        <li>Das Teil mit dem höchsten Druckrisiko (0,8-mm-Stämme, feine Bänke) ist klein. Misslingt es, wird nur der Hof neu gedruckt, nicht die 241-mm-Platte mit Mulden und Kabelraum.</li>
+        <li>Der Hof braucht Pflaster, Beet, Baum und Bronze in eigenen Farben. Die Farbwechsel fallen nur am kleinen Teil an, die Platte bleibt einfarbig.</li>
+        <li>Er kommt von oben, auch wenn die Gebäude schon stecken.</li>
+        <li class="muted">Preis: Fuge von 0,25 mm je Seite, der Hof braucht einen Halt (Reibrippen oder Tropfen Kleber), und die Oberkante muss auf 2,0 mm über der Straße passen.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <div class="head"><h3>B · Direkt auf die Platte drucken</h3></div>
+      <p>Der Hof ist Teil der Platte, die Oberfläche mit Pflaster und Bäumen entsteht im selben Druck.</p>
+      <ul>
+        <li>Keine Fuge, keine Montage, kein Teil, das verloren geht.</li>
+        <li>Technisch möglich, weil die Platte mit der Mulde nach oben gedruckt wird und der Hof dann in den obersten Schichten entsteht.</li>
+        <li class="muted">Preis: Ein abgebrochener Baum oder ein Fehler im Hof macht die ganze Platte unbrauchbar. Farbwechsel und Spülabfall fallen an der großen Platte an. Eine Änderung am Hof (Bäume, Farben) heißt Neudruck der Platte.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <div class="head"><h3>C · Podest einstecken, Bäume einzeln einstecken</h3></div>
+      <p>Das Podest bleibt ein Einsatz wie in A. Die drei Bäume sind lose Teile mit Zapfen in Löchern des Podests.</p>
+      <ul>
+        <li>Die Bäume sind beim Transport und Stecken geschützt und lassen sich einzeln ersetzen.</li>
+        <li class="muted">Preis: Ein Zapfen braucht nach dem Stand der Passproben mindestens 1,2 mm, das Loch 1,4 mm. Der Stamm müsste von 0,8 auf etwa 1,6 mm wachsen, im Maßstab fast 2 m Durchmesser. Dazu kommen drei lose Teile ohne Halt gegen Abziehen. Der Nutzen ist klein, weil der Stamm auch bei A bricht und nur der Hof neu gedruckt wird.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="offen">
+  <h2 id="offen">Was noch fehlt</h2>
+  <div class="note">
+    <p><b>Nicht geprüft:</b> Die Gebäude des Generators sind heute Vollkörper. Für die Kassette braucht jedes Gebäude einen Hohlraum und ein Lichtfenster; dort ändert sich Wandstärke und Dachfläche. Das Licht durch die Wand wurde noch nicht mit eingebauter LED gesehen.</p>
+    <p>Ebenso fehlt ein Druck des Fußes in den kleinen Maßen: Der L-förmige Fuß der Mini-Gebäude (24 × 38 mm) ist größer als die Füße hier (16 × 32 mm).</p>
+  </div>
+  <div class="q" style="margin-top:16px">
+    <b>Fragen an dich</b>
+    <ol>
+      <li>Ist 1:1176 gesetzt, und soll der Uniriese eine um 4,5 mm kürzere Kassette bekommen? Die Länge der LED-Auflage ist in Steckprobe 1 nicht ausgereizt worden.</li>
+      <li>Innenhof nach A (eigenes Einsteckteil, Bäume angedruckt)? Dann folgt als Nächstes ein kurzer Probedruck des Hofs bei 1:1176 mit Halt.</li>
+      <li>Soll der Halt des Hofs über Reibrippen gehen oder über einen Tropfen Kleber?</li>
+    </ol>
+  </div>
+</section>
+</main>

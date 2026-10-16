@@ -1,0 +1,200 @@
+<title>Passprüfung Maßstab 1:1176</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Ergebnis zuerst, dann Beleg (Tabelle, Grundrisse), dann Entscheidungskarten */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2630; --muted: #5a6877; --line: #d5dce3;
+  --accent: #1f5f8b; --accent-soft: #e2eef6;
+  --ok: #1f7a4d; --ok-soft: #e0f1e8; --warn: #9a6200; --warn-soft: #fbf0d6; --no: #b3261e; --no-soft: #fbe3e1;
+  --fp: #e6ebf0; --fp-line: #8a97a5; --hof: #cfe6d3; --shaft: #1f5f8b; --foot: #9cc3de; --sol: #e9c46a;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.55;
+  padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 1.3rem; margin: 0 0 12px; text-wrap: balance; }
+h3 { font-size: 1.02rem; margin: 0; }
+p { margin: 0 0 10px; max-width: 68ch; } p:last-child { margin-bottom: 0; }
+.kicker { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.lead { font-size: 1.1rem; color: var(--fg); max-width: 70ch; }
+.muted { color: var(--muted); } .mono { font-family: var(--mono); font-size: 0.92em; }
+section { min-width: 0; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.ans { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ans .tag { font: 500 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ans .big { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.no { background: var(--no-soft); color: var(--no); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.93rem; }
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { font: 500 0.74rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; font-family: var(--mono); font-size: 0.9em; } thead th.num { text-align: right; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figcaption { display: flex; flex-direction: column; font-size: 0.88rem; } figcaption span { color: var(--muted); }
+.plan svg, .big-plan svg { width: 100%; height: auto; display: block; max-height: 360px; }
+.big-plan { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.big-plan svg { max-height: 640px; }
+svg .fp { fill: var(--fp); stroke: var(--fp-line); stroke-width: 0.35; } svg .hof { fill: var(--hof); stroke: var(--ok); stroke-width: 0.3; }
+svg .sol { fill: var(--sol); fill-opacity: 0.55; stroke: none; } svg .foot { fill: var(--foot); fill-opacity: 0.8; stroke: var(--shaft); stroke-width: 0.25; }
+svg .shaft { fill: var(--shaft); } svg .sc { stroke: var(--fg); stroke-width: 0.5; } svg .sct { fill: var(--fg); font: 2.2px var(--mono); }
+svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stroke: var(--bg); stroke-width: 0.7px; } svg .hofl { fill: var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.86rem; color: var(--muted); margin-top: 10px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--line); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card.rec { border: 2px solid var(--accent); }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; font-size: 0.92rem; }
+.card .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.badge { font: 500 0.72rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 3px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; } .facts b { display: block; font: 500 1.05rem var(--mono); } .facts span { font-size: 0.82rem; color: var(--muted); }
+.note { background: var(--warn-soft); border-radius: 6px; padding: 14px 16px; font-size: 0.93rem; }
+.q { background: var(--accent-soft); border-radius: 6px; padding: 14px 16px; } .q ol { margin: 6px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<main>
+<header>
+  <div class="kicker">Steckmechanismus · Prüfung zum Maßstab</div>
+  <h1>Passen Kassette und Fuß bei 1:1176, und wie kommt der Innenhof auf die Platte?</h1>
+  <p class="lead" style="margin-top:12px">Das Gesamtmodell ist bei 1:1176 genau 15 % kleiner als bei 1:1000. Geprüft wurde mit dem Stand aus Steckprobe 1 (Kassette v4, Schacht, Mulde). Gerechnet ist an den Grundrissen und Höhen der Laserscan-Gebäude, nicht gedruckt.</p>
+</header>
+
+<section aria-labelledby="ergebnis">
+  <h2 id="ergebnis">Ergebnis</h2>
+  <div class="answers">
+    <div class="ans">
+      <span class="tag">A · Passt es?</span>
+      <span class="big">Fünf von sechs Gebäuden ja, das City-Hochhaus nur mit gekürzter Kassette.</span>
+      <p>Der Schacht für die Kassette misst 13,6 × 29,6 mm. Mit 1,2 mm Wand rundum braucht der Fuß 16,0 × 32,0 mm. Das findet in Paulinum, Neuem Augusteum, Hörsaal-, Seminar- und Institutsgebäude Platz, mit jeweils mindestens 1,4 mm Wand. Der Uniriese hat bei 1:1176 nur etwa 29 × 29 mm Grundfläche. Dort passt der Schacht erst mit 25,1 mm Länge und 0,8 mm Wand.</p>
+      <p class="muted">Reserve beim Maßstab: Institutsgebäude bis etwa 1:1210, Seminargebäude bis 1:1290. Beide stehen nur 3 bis 10 % vor der Grenze.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">B · Innenhof</span>
+      <span class="big">Als eigenes Einsteckteil, Bäume angedruckt.</span>
+      <p>Der Hof (45,5 × 80,8 mm, nur drei Bäume und das Denkmal als feine Teile) bleibt ein Podest in einer Aussparung der Platte, so wie im Komplettmodell heute schon. Die Bäume werden nicht einzeln gesteckt. Der Stamm ist 0,8 mm dick, ein Steckstift bräuchte mindestens 1,2 mm.</p>
+      <p class="muted">Gründe und die beiden anderen Wege stehen unten in den Entscheidungskarten.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">Nebenbefund</span>
+      <span class="big">Die Platte wird einteilig: 126,5 × 241,5 mm.</span>
+      <p>Bei 1:1000 war sie zu groß für ein Druckbett und wurde in zwei Teile geteilt. Bei 1:1176 liegt sie unter der Kachelgrenze von 250 mm. Das Bett des A1 hat 256 mm, die Reserve für Rand und Brim ist klein.</p>
+      <p class="muted">Das ist auch der Grund gegen 1:1100 als Ausweg für den Uniriesen: Die Platte wäre mit etwa 258 mm wieder zu lang.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="beleg">
+  <h2 id="beleg">Beleg: Wandmaß je Gebäude</h2>
+  <p>Gesucht ist das Rechteck des Schachts in beliebiger Drehung, das samt Wand in den Grundriss passt. Es zählt nur die Fläche, auf der das Gebäude hoch genug ist (Kassettenoberkante 7,95 mm plus 0,8 mm Dach, also mindestens 8,75 mm über der Straße). Die Wand soll mindestens 0,8 mm (MIN_FEATURE) betragen, besser 1,2 mm.</p>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wandmaß je Gebäude">
+  <table>
+    <thead><tr><th>Gebäude</th><th class="num">Fläche mm² (1:1176)</th><th class="num">Höhe mm (1:1176)</th><th class="num">Max. Wand mm bei 1:1000</th><th class="num">bei 1:1176</th><th class="num">bei 1:1500</th><th class="num">Grenzmaßstab bei 0,8 mm Wand</th><th>Urteil 1:1176</th></tr></thead>
+    <tbody>
+<tr><th scope=row>Paulinum</th><td class=num>953</td><td class=num>50</td><td class=num>3,4</td><td class=num>1,8</td><td class=num>–</td><td class=num>1:1330</td><td><span class='pill ok'>passt</span></td></tr>
+<tr><th scope=row>Neues Augusteum</th><td class=num>2624</td><td class=num>32</td><td class=num>≥ 6,0</td><td class=num>5,0</td><td class=num>2,4</td><td class=num>1:1780</td><td><span class='pill ok'>passt</span></td></tr>
+<tr><th scope=row>Hörsaalgebäude</th><td class=num>4999</td><td class=num>21</td><td class=num>≥ 6,0</td><td class=num>≥ 6,0</td><td class=num>6,0</td><td class=num>1:1990+</td><td><span class='pill ok'>passt</span></td></tr>
+<tr><th scope=row>Seminargebäude</th><td class=num>1440</td><td class=num>24</td><td class=num>3,0</td><td class=num>1,4</td><td class=num>–</td><td class=num>1:1290</td><td><span class='pill ok'>passt</span></td></tr>
+<tr><th scope=row>Institutsgebäude</th><td class=num>1962</td><td class=num>27</td><td class=num>4,0</td><td class=num>1,4</td><td class=num>–</td><td class=num>1:1210</td><td><span class='pill ok'>passt</span></td></tr>
+<tr><th scope=row>City-Hochhaus</th><td class=num>834</td><td class=num>123</td><td class=num>1,8</td><td class=num>0,0</td><td class=num>–</td><td class=num>1:1100</td><td><span class='pill no'>passt nicht</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted" style="margin-top:10px">Urteil: passt ab 1,2 mm Wand, knapp ab 0,8 mm, darunter passt nicht. Das City-Hochhaus steht auf „passt nicht“ für den vollen Schacht. Die Suche arbeitet mit 0,2 m Raster und 5°-Schritten, die Werte sind auf etwa 0,2 mm genau. Das Hörsaalgebäude hat so viel Platz, dass die Suche bei 6 mm Wand endet.</p>
+</section>
+
+<section aria-labelledby="plaene">
+  <h2 id="plaene">So sitzt der Schacht in jedem Grundriss</h2>
+  <div class="grid">
+<figure><div class=plan><svg viewBox="0 0 58.4 43.2" role="img" aria-label="Grundriss Paulinum mit Schacht"><polygon class="fp" points="4.00,25.66 5.58,18.07 7.70,7.92 28.66,12.25 33.58,12.16 33.40,7.83 36.20,8.46 38.85,9.06 39.35,9.18 40.03,14.61 53.07,17.30 54.14,17.52 53.65,19.88 54.43,20.04 52.82,27.72 51.21,35.40 50.45,35.24 49.67,39.15 49.02,39.01 48.56,38.91 49.37,35.02 41.34,33.36 40.26,38.55 34.85,37.43 32.50,36.95 32.78,35.63 33.22,33.48 33.58,31.76 26.95,30.39 6.57,26.19 4.00,25.66"/><polygon class="fp" points="33.39,7.73 37.73,8.63 38.71,4.00 38.71,4.02 38.47,5.17 38.47,5.18 37.83,8.22 37.74,8.63 37.74,8.64 37.73,8.64 37.44,8.58 33.40,7.74 33.39,7.73"/><polygon class="sol" points="50.59,17.66 47.06,17.03 44.27,32.81 47.81,33.43 50.59,17.66"/><polygon class="foot" points="47.06,17.03 15.58,11.48 12.80,27.26 44.27,32.81 47.06,17.03"/><polygon class="shaft" points="45.67,18.01 16.55,12.87 14.19,26.29 43.30,31.42 45.67,18.01"/><line class="sc" x1="4.0" y1="41.6" x2="14.0" y2="41.6"/><text class="sct" x="15.5" y="42.3">10 mm</text></svg></div><figcaption><b>Paulinum</b><span>Schacht 13.6 × 29.6 mm, Wand 1,2 mm</span></figcaption></figure>
+<figure><div class=plan><svg viewBox="0 0 61.6 74.2" role="img" aria-label="Grundriss Neues Augusteum mit Schacht"><polygon class="fp" points="13.89,8.52 13.91,8.44 14.83,4.00 34.59,8.07 41.84,9.57 41.05,13.36 40.76,14.76 41.96,15.01 42.23,13.75 42.25,13.66 43.06,9.82 51.90,11.65 57.63,12.83 56.82,16.72 57.28,16.82 56.81,19.07 52.78,38.35 54.55,38.77 54.28,40.05 55.08,40.23 54.99,40.61 53.36,47.24 53.83,47.33 54.39,47.45 53.90,49.46 54.51,49.60 54.48,49.71 54.63,49.74 54.62,49.79 54.47,49.78 53.43,53.86 53.60,53.94 53.59,53.97 53.42,53.93 53.39,54.05 52.81,53.91 52.23,56.36 51.66,56.24 51.15,56.12 49.44,63.11 48.61,62.91 48.31,64.09 47.02,63.77 46.64,65.30 41.53,64.29 40.30,70.22 30.67,68.24 30.61,68.23 20.11,66.07 20.11,66.07 18.27,65.69 18.27,65.70 17.15,65.47 17.74,62.72 18.54,58.96 5.39,56.19 4.00,55.90 4.31,54.43 5.05,50.91 4.63,50.82 5.08,48.66 4.25,48.49 5.18,44.09 6.00,44.26 6.45,42.09 6.88,42.17 7.48,39.32 6.97,39.00 6.48,38.43 6.20,37.63 6.19,36.92 6.50,34.90 7.16,30.92 8.66,23.31 10.27,16.44 11.40,12.32 11.96,11.49 12.74,11.05 13.40,10.90 13.89,8.52"/><polygon class="sol" points="32.48,17.68 31.86,21.22 47.64,24.00 48.26,20.46 32.48,17.68"/><polygon class="foot" points="31.86,21.22 26.31,52.69 42.09,55.47 47.64,24.00 31.86,21.22"/><polygon class="shaft" points="32.83,22.61 27.70,51.72 41.11,54.08 46.25,24.97 32.83,22.61"/><line class="sc" x1="4.0" y1="72.6" x2="14.0" y2="72.6"/><text class="sct" x="15.5" y="73.3">10 mm</text></svg></div><figcaption><b>Neues Augusteum</b><span>Schacht 13.6 × 29.6 mm, Wand 1,2 mm</span></figcaption></figure>
+<figure><div class=plan><svg viewBox="0 0 78.3 123.6" role="img" aria-label="Grundriss Hörsaalgebäude mit Schacht"><polygon class="fp" points="20.59,104.45 4.00,51.31 9.63,24.34 16.20,25.69 17.31,20.53 19.59,20.98 18.49,26.16 26.04,27.71 25.23,31.59 34.05,33.40 35.41,33.68 37.71,22.62 39.44,14.27 40.61,8.65 41.58,4.00 59.77,7.79 61.16,8.08 69.58,9.86 74.31,10.85 73.51,14.61 72.92,17.36 74.04,17.59 71.57,29.37 69.33,40.10 70.28,40.04 70.32,45.46 69.78,50.87 68.67,56.18 66.99,61.34 64.76,66.29 63.93,65.85 61.70,76.57 57.62,96.06 48.63,102.62 36.63,111.39 25.33,119.64 20.59,104.45"/><polygon class="sol" points="47.71,77.16 47.71,73.57 31.69,73.57 31.69,77.16 47.71,77.16"/><polygon class="foot" points="47.71,73.57 47.71,41.61 31.69,41.61 31.69,73.57 47.71,73.57"/><polygon class="shaft" points="46.51,72.37 46.51,42.81 32.89,42.81 32.89,72.37 46.51,72.37"/><line class="sc" x1="4.0" y1="122.0" x2="14.0" y2="122.0"/><text class="sct" x="15.5" y="122.7">10 mm</text></svg></div><figcaption><b>Hörsaalgebäude</b><span>Schacht 13.6 × 29.6 mm, Wand 1,2 mm</span></figcaption></figure>
+<figure><div class=plan><svg viewBox="0 0 41.5 93.0" role="img" aria-label="Grundriss Seminargebäude mit Schacht"><polygon class="fp" points="14.24,7.43 14.83,4.46 14.90,4.00 19.91,5.04 20.70,5.21 20.64,5.50 37.30,8.97 37.39,8.55 37.49,8.57 36.99,10.98 37.52,11.09 33.66,29.58 33.03,29.45 30.69,40.71 31.31,40.84 27.44,59.35 26.82,59.23 24.47,70.49 25.09,70.62 21.26,88.99 4.00,85.43 7.82,67.06 8.03,67.10 10.38,55.82 10.17,55.77 14.03,37.27 14.23,37.31 16.58,26.04 16.37,26.00 19.99,8.61 16.03,7.80 15.91,7.77 15.62,7.71 15.49,7.69 15.20,7.63 15.07,7.60 14.78,7.54 14.66,7.51 14.33,7.45 14.24,7.43"/><polygon class="sol" points="17.78,21.15 17.16,24.69 32.93,27.47 33.56,23.93 17.78,21.15"/><polygon class="foot" points="17.16,24.69 11.61,56.16 27.38,58.94 32.93,27.47 17.16,24.69"/><polygon class="shaft" points="18.13,26.08 13.00,55.19 26.41,57.55 31.54,28.44 18.13,26.08"/><line class="sc" x1="4.0" y1="91.4" x2="14.0" y2="91.4"/><text class="sct" x="15.5" y="92.1">10 mm</text></svg></div><figcaption><b>Seminargebäude</b><span>Schacht 13.6 × 29.6 mm, Wand 1,2 mm</span></figcaption></figure>
+<figure><div class=plan><svg viewBox="0 0 97.6 46.5" role="img" aria-label="Grundriss Institutsgebäude mit Schacht"><polygon class="fp" points="10.56,32.80 10.78,32.85 11.67,28.31 4.89,26.96 4.47,26.88 4.00,26.78 4.02,26.62 4.77,23.04 8.68,4.34 22.22,7.14 38.61,10.53 93.62,23.11 91.20,34.67 90.69,37.09 90.69,37.09 89.96,40.54 85.62,39.64 76.10,37.67 35.14,29.19 32.42,42.12 32.32,42.10 32.23,42.52 15.57,39.05 15.63,38.76 14.84,38.59 9.83,37.55 10.56,32.80"/><polygon class="sol" points="22.36,4.00 21.74,7.54 37.51,10.32 38.14,6.78 22.36,4.00"/><polygon class="foot" points="21.74,7.54 16.19,39.01 31.96,41.79 37.51,10.32 21.74,7.54"/><polygon class="shaft" points="22.71,8.93 17.58,38.04 30.99,40.40 36.12,11.29 22.71,8.93"/><line class="sc" x1="4.0" y1="44.9" x2="14.0" y2="44.9"/><text class="sct" x="15.5" y="45.6">10 mm</text></svg></div><figcaption><b>Institutsgebäude</b><span>Schacht 13.6 × 29.6 mm, Wand 1,2 mm</span></figcaption></figure>
+<figure><div class=plan><svg viewBox="0 0 47.9 46.7" role="img" aria-label="Grundriss City-Hochhaus mit Schacht"><polygon class="fp" points="23.26,36.73 18.49,39.20 15.44,41.12 14.31,41.94 13.41,42.70 12.82,42.21 13.01,41.97 11.61,40.29 9.55,38.32 7.27,36.60 4.82,35.14 4.63,35.38 4.00,34.90 4.28,34.36 4.28,34.35 6.51,29.40 8.19,24.24 9.30,18.93 9.84,13.52 9.80,8.10 9.80,8.09 9.75,7.40 10.49,7.20 10.58,7.51 14.13,7.00 17.58,6.00 20.84,4.52 20.75,4.21 21.48,4.00 22.46,5.71 24.87,9.56 27.23,7.70 30.16,11.37 27.79,13.24 30.93,16.42 33.51,18.74 35.99,20.67 39.35,22.94 42.89,24.93 43.90,25.43 43.73,26.17 43.41,26.09 42.82,27.71 42.46,29.39 42.36,31.11 42.68,31.17 42.54,31.92 41.41,32.02 37.94,32.33 33.39,33.15 28.24,34.70 23.26,36.73"/><polygon class="sol" points="10.64,5.18 10.33,8.76 25.49,10.08 25.81,6.51 10.64,5.18"/><polygon class="foot" points="10.33,8.76 8.01,35.32 23.17,36.64 25.49,10.08 10.33,8.76"/><polygon class="shaft" points="11.06,9.62 8.87,34.59 22.44,35.78 24.63,10.81 11.06,9.62"/><line class="sc" x1="4.0" y1="45.1" x2="14.0" y2="45.1"/><text class="sct" x="15.5" y="45.8">10 mm</text></svg></div><figcaption><b>City-Hochhaus</b><span>Schacht 13.6 × 25.1 mm, Wand 0,8 mm, gekürzt</span></figcaption></figure>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--shaft)"></i>Schacht der Kassette</span>
+    <span><i style="background:var(--foot)"></i>Fuß mit Wand</span>
+    <span><i style="background:var(--sol)"></i>Raum für die Lötenden unter der Platte (3,6 mm hinter dem Schacht)</span>
+    <span><i style="background:var(--fp)"></i>Grundriss</span>
+  </div>
+</section>
+
+<section aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtplan mit Innenhof</h2>
+  <div class="big-plan"><svg viewBox="0 0 124.5 227.8" role="img" aria-label="Gesamtplan 1:1176 mit Innenhof und Schächten"><polygon class="fp" points="69.03,58.57 70.61,50.98 72.73,40.83 93.69,45.16 98.61,45.07 98.43,40.74 101.23,41.37 103.88,41.97 104.38,42.09 105.06,47.52 118.10,50.21 119.17,50.43 118.68,52.79 119.46,52.95 117.85,60.63 116.24,68.31 115.48,68.15 114.70,72.06 114.05,71.92 113.59,71.82 114.40,67.93 106.37,66.27 105.29,71.46 99.88,70.34 97.53,69.86 97.81,68.54 98.25,66.39 98.61,64.67 91.98,63.30 71.60,59.10 69.03,58.57"/><polygon class="fp" points="98.42,40.64 102.76,41.54 103.74,36.91 103.74,36.93 103.50,38.08 103.50,38.09 102.86,41.13 102.77,41.54 102.77,41.55 102.76,41.55 102.47,41.49 98.43,40.65 98.42,40.64"/><polygon class="fp" points="70.66,63.62 70.68,63.54 71.60,59.10 91.36,63.17 98.61,64.67 97.82,68.46 97.53,69.86 98.73,70.11 99.00,68.85 99.02,68.76 99.83,64.92 108.67,66.75 114.40,67.93 113.59,71.82 114.05,71.92 113.58,74.17 109.55,93.45 111.32,93.87 111.05,95.15 111.85,95.33 111.76,95.71 110.13,102.34 110.60,102.43 111.16,102.55 110.67,104.56 111.28,104.70 111.25,104.81 111.40,104.84 111.39,104.89 111.24,104.88 110.20,108.96 110.37,109.04 110.36,109.07 110.19,109.03 110.16,109.15 109.58,109.01 109.00,111.46 108.43,111.34 107.92,111.22 106.21,118.21 105.38,118.01 105.08,119.19 103.79,118.87 103.41,120.40 98.30,119.39 97.07,125.32 87.44,123.34 87.38,123.33 76.88,121.17 76.88,121.17 75.04,120.79 75.04,120.80 73.92,120.57 74.51,117.82 75.31,114.06 62.16,111.29 60.77,111.00 61.08,109.53 61.82,106.01 61.40,105.92 61.85,103.76 61.02,103.59 61.95,99.19 62.77,99.36 63.22,97.19 63.65,97.27 64.25,94.42 63.74,94.10 63.25,93.53 62.97,92.73 62.96,92.02 63.27,90.00 63.93,86.02 65.43,78.41 67.04,71.54 68.17,67.42 68.73,66.59 69.51,66.15 70.17,66.00 70.66,63.62"/><polygon class="fp" points="21.59,207.66 5.00,154.52 10.63,127.55 17.20,128.90 18.31,123.74 20.59,124.19 19.49,129.37 27.04,130.92 26.23,134.80 35.05,136.61 36.41,136.89 38.71,125.83 40.44,117.48 41.61,111.86 42.58,107.21 60.77,111.00 62.16,111.29 70.58,113.07 75.31,114.06 74.51,117.82 73.92,120.57 75.04,120.80 72.57,132.58 70.33,143.31 71.28,143.25 71.32,148.67 70.78,154.08 69.67,159.39 67.99,164.55 65.76,169.50 64.93,169.06 62.70,179.78 58.62,199.27 49.63,205.83 37.63,214.60 26.33,222.85 21.59,207.66"/><polygon class="fp" points="21.97,41.98 22.56,39.01 22.63,38.55 27.64,39.59 28.43,39.76 28.37,40.05 45.03,43.52 45.12,43.10 45.22,43.12 44.72,45.53 45.25,45.64 41.39,64.13 40.76,64.00 38.42,75.26 39.04,75.39 35.17,93.90 34.55,93.78 32.20,105.04 32.82,105.17 28.99,123.54 11.73,119.98 15.55,101.61 15.76,101.65 18.11,90.37 17.90,90.32 21.76,71.82 21.96,71.86 24.31,60.59 24.10,60.55 27.72,43.16 23.76,42.35 23.64,42.32 23.35,42.26 23.22,42.24 22.93,42.18 22.80,42.15 22.51,42.09 22.39,42.06 22.06,42.00 21.97,41.98"/><polygon class="fp" points="23.36,33.80 23.58,33.85 24.47,29.31 17.69,27.96 17.27,27.88 16.80,27.78 16.82,27.62 17.57,24.04 21.48,5.34 35.02,8.14 51.41,11.53 106.42,24.11 104.00,35.67 103.49,38.09 103.49,38.09 102.76,41.54 98.42,40.64 88.90,38.67 47.94,30.19 45.22,43.12 45.12,43.10 45.03,43.52 28.37,40.05 28.43,39.76 27.64,39.59 22.63,38.55 23.36,33.80"/><polygon class="fp" points="84.74,171.88 79.97,174.35 76.92,176.27 75.79,177.09 74.89,177.85 74.30,177.36 74.49,177.12 73.09,175.44 71.03,173.47 68.75,171.75 66.30,170.29 66.11,170.53 65.48,170.05 65.76,169.51 65.76,169.50 67.99,164.55 69.67,159.39 70.78,154.08 71.32,148.67 71.28,143.25 71.28,143.24 71.23,142.55 71.97,142.35 72.06,142.66 75.61,142.15 79.06,141.15 82.32,139.67 82.23,139.36 82.96,139.15 83.94,140.86 86.35,144.71 88.71,142.85 91.64,146.52 89.27,148.39 92.41,151.57 94.99,153.89 97.47,155.82 100.83,158.09 104.37,160.08 105.38,160.58 105.21,161.32 104.89,161.24 104.30,162.86 103.94,164.54 103.84,166.26 104.16,166.32 104.02,167.07 102.89,167.17 99.42,167.48 94.87,168.30 89.72,169.85 84.74,171.88"/><polygon class="hof" points="33.42,104.78 32.79,104.65 32.94,103.92 33.83,99.80 33.81,99.79 34.81,94.96 36.21,95.57 36.62,95.20 36.69,93.47 36.69,93.45 36.69,93.43 37.88,90.83 40.07,92.29 40.14,92.62 40.22,92.95 41.81,86.53 41.22,85.85 39.65,85.62 37.75,87.32 37.22,86.52 39.63,75.00 39.01,74.87 41.15,64.59 41.78,64.72 45.84,45.25 45.31,45.14 45.71,43.23 48.33,30.78 77.48,36.81 77.27,38.65 76.42,39.50 75.67,39.33 74.51,40.56 74.02,40.58 73.27,40.43 72.34,40.24 70.12,50.87 68.44,58.95 71.01,59.49 70.19,63.44 70.17,63.52 69.74,65.59 69.32,65.68 68.38,66.21 67.70,67.21 66.55,71.42 64.94,78.31 63.44,85.93 62.77,89.92 62.46,91.99 62.47,92.82 62.81,93.79 63.42,94.49 63.69,94.66 63.26,96.68 62.83,96.60 62.38,98.77 61.56,98.60 60.43,103.98 61.25,104.15 60.81,106.31 61.22,106.40 60.59,109.43 60.38,110.41 58.28,109.97 57.94,109.63 58.57,105.81 57.58,104.76 41.57,101.77 39.87,101.34 38.85,100.32 38.66,100.51 39.14,101.32 39.27,101.53 53.68,104.73 54.57,104.52 57.53,105.88 57.08,109.07 56.66,109.63 42.19,106.62 41.17,111.54 32.00,111.54 33.42,104.78"/><polygon class="sol" points="115.62,50.56 112.09,49.94 109.30,65.72 112.84,66.34 115.62,50.56"/><polygon class="foot" points="112.09,49.94 80.61,44.39 77.83,60.17 109.30,65.72 112.09,49.94"/><polygon class="shaft" points="110.70,50.91 81.58,45.78 79.22,59.19 108.33,64.33 110.70,50.91"/><polygon class="sol" points="89.25,72.78 88.63,76.31 104.41,79.09 105.03,75.56 89.25,72.78"/><polygon class="foot" points="88.63,76.31 83.08,107.79 98.86,110.57 104.41,79.09 88.63,76.31"/><polygon class="shaft" points="89.60,77.70 84.47,106.81 97.88,109.18 103.02,80.07 89.60,77.70"/><polygon class="sol" points="48.71,180.37 48.71,176.78 32.69,176.78 32.69,180.37 48.71,180.37"/><polygon class="foot" points="48.71,176.78 48.71,144.82 32.69,144.82 32.69,176.78 48.71,176.78"/><polygon class="shaft" points="47.51,175.58 47.51,146.02 33.89,146.02 33.89,175.58 47.51,175.58"/><polygon class="sol" points="25.51,55.70 24.89,59.23 40.66,62.02 41.29,58.48 25.51,55.70"/><polygon class="foot" points="24.89,59.23 19.34,90.71 35.11,93.49 40.66,62.02 24.89,59.23"/><polygon class="shaft" points="25.86,60.62 20.73,89.73 34.14,92.10 39.27,62.99 25.86,60.62"/><polygon class="sol" points="35.16,5.00 34.54,8.54 50.31,11.32 50.94,7.78 35.16,5.00"/><polygon class="foot" points="34.54,8.54 28.99,40.01 44.76,42.79 50.31,11.32 34.54,8.54"/><polygon class="shaft" points="35.51,9.93 30.38,39.04 43.79,41.40 48.92,12.29 35.51,9.93"/><polygon class="sol" points="72.12,140.33 71.81,143.90 86.97,145.23 87.29,141.65 72.12,140.33"/><polygon class="foot" points="71.81,143.90 69.49,170.46 84.65,171.79 86.97,145.23 71.81,143.90"/><polygon class="shaft" points="72.54,144.77 70.35,169.74 83.92,170.92 86.11,145.96 72.54,144.77"/><text class="lbl" x="102.1" y="53.9">Paulinum</text><text class="lbl" x="94.7" y="90.7">Neues Augusteum</text><text class="lbl" x="47.6" y="159.7">Hörsaalgebäude</text><text class="lbl" x="35.6" y="80.2">Seminargebäude</text><text class="lbl" x="63.8" y="24.3">Institutsgebäude</text><text class="lbl" x="90.0" y="158.1">City-Hochhaus</text><text class="lbl hofl" x="45.5" y="71.2">Innenhof</text><line class="sc" x1="5.0" y1="225.3" x2="25.0" y2="225.3"/><text class="sct" x="27.0" y="226.2">20 mm</text></svg></div>
+  <p class="muted" style="margin-top:10px">Der Hof liegt zwischen den Gebäuden und enthält keinen Schacht. Die Fuge zu den Gebäuden beträgt 0,5 mm. Der Raum für die Lötenden liegt unter der Plattenoberfläche (unterhalb von 10,6 mm Tiefe), der Hofeinsatz reicht nur 1 mm unter die Oberfläche. Die beiden stoßen sich deshalb senkrecht nicht, auch wo der Lötraum seitlich unter den Hof ragt. Ob die Löträume der Nachbarn zusammenstoßen, ist noch nicht gerechnet.</p>
+</section>
+
+<section aria-labelledby="hof">
+  <h2 id="hof">Entscheidung: Innenhof einstecken oder aufdrucken?</h2>
+  <div class="facts" style="margin-bottom:16px">
+    <div><b>45,5 × 80,8 mm</b><span>Hof bei 1:1176, Fläche 2002 mm²</span></div>
+    <div><b>3 Bäume</b><span>Krone Ø 7,7 bis 8,0 mm, 7,9 bis 9,5 mm hoch</span></div>
+    <div><b>Stamm Ø 0,8 mm</b><span>Mindestbreite, maßstäblich wären 0,35 mm</span></div>
+    <div><b>+2,0 mm</b><span>Hof liegt 2,34 m über der Straße</span></div>
+    <div><b>kein LED, keine Kabel</b><span>der Hof braucht keinen Steckkontakt</span></div>
+  </div>
+  <div class="cards">
+    <article class="card rec">
+      <div class="head"><h3>A · Eigenes Einsteckteil, Bäume angedruckt</h3><span class="badge">Empfehlung</span></div>
+      <p>Podest mit Pflaster, Beeten, Bänken, Denkmal und den drei Bäumen als eigener Druck, von oben in eine Aussparung der Platte gelegt. Entspricht dem heutigen Komplettmodell.</p>
+      <ul>
+        <li>Das Teil mit dem höchsten Druckrisiko (0,8-mm-Stämme, feine Bänke) ist klein. Misslingt es, wird nur der Hof neu gedruckt, nicht die 241-mm-Platte mit Mulden und Kabelraum.</li>
+        <li>Der Hof braucht Pflaster, Beet, Baum und Bronze in eigenen Farben. Die Farbwechsel fallen nur am kleinen Teil an, die Platte bleibt einfarbig.</li>
+        <li>Er kommt von oben, auch wenn die Gebäude schon stecken.</li>
+        <li class="muted">Preis: Fuge von 0,25 mm je Seite, der Hof braucht einen Halt (Reibrippen oder Tropfen Kleber), und die Oberkante muss auf 2,0 mm über der Straße passen.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <div class="head"><h3>B · Direkt auf die Platte drucken</h3></div>
+      <p>Der Hof ist Teil der Platte, die Oberfläche mit Pflaster und Bäumen entsteht im selben Druck.</p>
+      <ul>
+        <li>Keine Fuge, keine Montage, kein Teil, das verloren geht.</li>
+        <li>Technisch möglich, weil die Platte mit der Mulde nach oben gedruckt wird und der Hof dann in den obersten Schichten entsteht.</li>
+        <li class="muted">Preis: Ein abgebrochener Baum oder ein Fehler im Hof macht die ganze Platte unbrauchbar. Farbwechsel und Spülabfall fallen an der großen Platte an. Eine Änderung am Hof (Bäume, Farben) heißt Neudruck der Platte.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <div class="head"><h3>C · Podest einstecken, Bäume einzeln einstecken</h3></div>
+      <p>Das Podest bleibt ein Einsatz wie in A. Die drei Bäume sind lose Teile mit Zapfen in Löchern des Podests.</p>
+      <ul>
+        <li>Die Bäume sind beim Transport und Stecken geschützt und lassen sich einzeln ersetzen.</li>
+        <li class="muted">Preis: Ein Zapfen braucht nach dem Stand der Passproben mindestens 1,2 mm, das Loch 1,4 mm. Der Stamm müsste von 0,8 auf etwa 1,6 mm wachsen, im Maßstab fast 2 m Durchmesser. Dazu kommen drei lose Teile ohne Halt gegen Abziehen. Der Nutzen ist klein, weil der Stamm auch bei A bricht und nur der Hof neu gedruckt wird.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="offen">
+  <h2 id="offen">Was noch fehlt</h2>
+  <div class="note">
+    <p><b>Nicht geprüft:</b> Die Gebäude des Generators sind heute Vollkörper. Für die Kassette braucht jedes Gebäude einen Hohlraum und ein Lichtfenster; dort ändert sich Wandstärke und Dachfläche. Das Licht durch die Wand wurde noch nicht mit eingebauter LED gesehen.</p>
+    <p>Ebenso fehlt ein Druck des Fußes in den kleinen Maßen: Der L-förmige Fuß der Mini-Gebäude (24 × 38 mm) ist größer als die Füße hier (16 × 32 mm).</p>
+  </div>
+  <div class="q" style="margin-top:16px">
+    <b>Fragen an dich</b>
+    <ol>
+      <li>Ist 1:1176 gesetzt, und soll der Uniriese eine um 4,5 mm kürzere Kassette bekommen? Die Länge der LED-Auflage ist in Steckprobe 1 nicht ausgereizt worden.</li>
+      <li>Innenhof nach A (eigenes Einsteckteil, Bäume angedruckt)? Dann folgt als Nächstes ein kurzer Probedruck des Hofs bei 1:1176 mit Halt.</li>
+      <li>Soll der Halt des Hofs über Reibrippen gehen oder über einen Tropfen Kleber?</li>
+    </ol>
+  </div>
+</section>
+</main>
