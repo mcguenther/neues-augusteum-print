@@ -131,6 +131,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.feedback.build_night2` | Testbogen zu Nacht 2 (K, C v2, N, E, D, FM; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page_night2.html` |
 | `python3 -m plug.testcase.build_plan` | Planungsseite für den kompletten Testfall (Kassette v4, Mini-Gebäude, Mini-Grundplatte; Schnitt mit Regler, Draufsicht, Maßkette, Entscheidungen) `plug/testcase/plan.html`; Sollwerte in `plug/testcase/params.py`, Kassette v4 mit `python3 -m plug.testcase.kassette` |
 | `python3 -m plug.testcase.build_plan2` | Planungsseite Steckprobe 2 (Faden-Lasche mit V-Kanal und Trichter an der Unterseite, Kassette 14,60, Schacht 17,40, Entscheidungskarten) `plug/testcase/plan2.html`; Vorschläge in `PROP` der Datei, nach dem Abnicken nach `params.py` |
+| `python3 -m plug.testcase.build_plan3` | Planungsseite Kassetten-Varianten V1 (Streifen quer auf einer Wand) und V2 (Streifen hochkant): Passstudie in den Grundrissen, Schnitte, Maßkette, Entscheidungskarten `plug/testcase/plan3.html`; Konzeptgeometrie `python3 -m plug.testcase.variants` (Bild, keine STL), Passstudie `python3 -m plug.testcase.fit_study` (ca. 2 min, Ergebnis `variants_fit.json`) |
 | `python3 -m plug.testcase.build_feedback` | Testbogen zum Testfall (Kassette bestücken, Einpressen, Mulde, Winkelleiste, Stecken, Durchgang, Abziehen; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/testcase/feedback.html` |
 | `python3 -m plug.testcase.build` (ca. 2 min) | STL, README und ZIP des Testfalls (2 Kassetten v4, Mini-Gebäude A/B, Mini-Grundplatte, Mini-Deckel) nach `stl/steckmodul_testcase/`, Bilder nach `vorschau/steckmodul_testcase/` |
 | `python3 -m plug.series2` (ca. 2 min) | zweiter Nachtdruck (K, C v2, N Schieber, E Einpressen, D v7, FM): `stl/steckmodul_night2/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night2/` |
@@ -160,6 +161,10 @@ Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen un
 - Ohne abgenickten Plan keine STL. Maßkette im Plan mit Worst-Case rechnen. Formularfelder nur fühlbar oder ja/nein, Variante (A/B) immer abfragen.
 - Nach jeder Auswertung: `rounds/rN_*/summary.md` und `result.txt` (wörtlich), `current.md`, `lessons.md`, `next.md` und `plug/STATUS.md` nachziehen; den getesteten Satz einfrieren.
 - `plug/parts.py` erst ändern, wenn ein Wert bewährt ist; neue Werte stehen bis dahin in `plug/<paket>/params.py`.
+
+## HTML-Seiten präsentieren
+
+Plan-, Test- und Ansichtsseiten (HTML) immer mit dem **Artifact-Tool** veröffentlichen (privat), damit sie sich in der Claude-Code-App öffnen; `SendUserFile` allein reicht nicht. Bei einer Änderung dieselbe Datei erneut veröffentlichen (gleiche URL). Link in der Antwort nennen und in `plug/STATUS.md` (Tabelle der Artifacts) eintragen. Vorher den Skill `artifact-design` laden.
 
 ## Prüfen vor dem Commit
 

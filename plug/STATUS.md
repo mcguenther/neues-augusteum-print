@@ -53,6 +53,7 @@ von `steckmodul.py` ist `plug/archive/jst/jst.py`, `stecker/` ist `plug/`).
 | h | `6adfdae` und danach | Entscheidungsdokument `plug/decision` nach dem Ergebnis von Nacht 1, zweiter Nachtdruck `plug/series2.py` | Ergebnis Nacht 1: S 0,15, R 0,20 ohne Rippen, alle Schieber klemmten (34-mm-Brücke über der Nut hängt durch), K ohne Kontakt ab 1,8, D schief. Antworten: K nur bis 1,0, Schieber noch einmal mit mehr Spiel und dazu Kassette zum Einpressen (E), LED-Fläche flach, D mit Tasche +1,5 und variierter Körperhöhe. |
 | i | `44d5013` bis `69fb76f` | Steckprobe 1 (`plug/testcase/`): Kassette v4, Mini-Gebäude A/B, Mini-Grundplatte A (Support) und B (Trichter, ohne Support), Mini-Deckel; Plan, STL, Testbogen | Kompletter Steckmechanismus im Kleinen ohne Schieber. Ergebnis: Einpressen, Mulde und Pin-Treffer ohne Trichter bewährt, Kontakt da; Körper kippt, Deckel falsch geplant (Logbuch r3). |
 | j | `ce47e6e`, `e2dbb03` | Plan Steckprobe 2 (`plug/testcase/plan2.html`) mit Faden-Lasche statt Schrauben, höherer Tasche, tieferem Schacht | Zwischenstand, noch nicht abgenickt, keine STL (Logbuch r4). Vorgabe: nichts schrauben, Faden unten ein und aus. |
+| k | `Kassetten-Varianten` (Register `plug/logbook/cassettes.md`) | Plan Kassetten-Varianten (`plug/testcase/plan3.html`, `variants.py`, `fit_study.py`) | Kassette v4 passt bei 1:1500 nicht in Seminargebäude, City-Hochhaus, Paulinum. V1: Streifen quer auf einer Wand über der Buchse (17,2 × 5,3 × 26,4); V2: Streifen hochkant (13,0 × 5,3 × 33,5). Unterbau wie v4. Konzept, keine STL, nicht abgenickt (Logbuch r4, Nachtrag). |
 
 Wichtige Konstruktionsentscheidungen aus dem Chat und den Commits:
 
@@ -266,6 +267,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
 | Entscheidungen Nachtdruck 2 | `plug/decision/page.html` | https://claude.ai/artifact/6JoAe2iL2YDrvqFVppF8Fo |
+| Kassette V2 (Höhe, Rücken-LED) | `plug/testcase/plan3.html` | https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe |
 | Testbogen Nachtdruck 2 | `plug/feedback/page_night2.html` | https://claude.ai/artifact/BFNzrL5xcJZBBbW3ULtvzz |
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
