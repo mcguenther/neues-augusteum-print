@@ -162,6 +162,10 @@ Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen un
 - Nach jeder Auswertung: `rounds/rN_*/summary.md` und `result.txt` (wörtlich), `current.md`, `lessons.md`, `next.md` und `plug/STATUS.md` nachziehen; den getesteten Satz einfrieren.
 - `plug/parts.py` erst ändern, wenn ein Wert bewährt ist; neue Werte stehen bis dahin in `plug/<paket>/params.py`.
 
+## HTML-Seiten präsentieren
+
+Plan-, Test- und Ansichtsseiten (HTML) immer mit dem **Artifact-Tool** veröffentlichen (privat), damit sie sich in der Claude-Code-App öffnen; `SendUserFile` allein reicht nicht. Bei einer Änderung dieselbe Datei erneut veröffentlichen (gleiche URL). Link in der Antwort nennen und in `plug/STATUS.md` (Tabelle der Artifacts) eintragen. Vorher den Skill `artifact-design` laden.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.

@@ -267,6 +267,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
 | Entscheidungen Nachtdruck 2 | `plug/decision/page.html` | https://claude.ai/artifact/6JoAe2iL2YDrvqFVppF8Fo |
+| Kassette V2 (Höhe, Rücken-LED) | `plug/testcase/plan3.html` | https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe |
 | Testbogen Nachtdruck 2 | `plug/feedback/page_night2.html` | https://claude.ai/artifact/BFNzrL5xcJZBBbW3ULtvzz |
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |

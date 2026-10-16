@@ -28,12 +28,13 @@ TEMPLATE = os.path.join(HERE, "plan.template.html")
 OUT = os.path.join(HERE, "plan3.html")
 FIT = json.load(open(os.path.join(HERE, "variants_fit.json"), encoding="utf-8"))
 META = FIT["_meta"]
+LABEL = {"v4": "Kassette v4", "V1": "V1 (quer)", "V2": "V2 (hochkant)", "V2R": "V2 mit Rücken-LED"}
 WALL = META["wall_min"]
 F = P.dims()["F"]                      # Fußhöhe: Plattenoberseite liegt F über der Kassettenunterkante
 BUCHSE = 14.55
 NAMES = {"01_paulinum": "Paulinum", "02_neues_augusteum": "Neues Augusteum", "03_hoersaalgebaeude": "Hörsaalgebäude",
          "04_seminargebaeude": "Seminargebäude", "05_institutsgebaeude": "Institutsgebäude", "06_city_hochhaus": "City-Hochhaus"}
-KEYS = ("v4", "V1", "V2")
+KEYS = ("v4", "V1", "V2", "V2R")
 
 
 def outer(k):
@@ -41,12 +42,15 @@ def outer(k):
     return a + 2 * WALL, b + 2 * WALL
 
 
+def bad_out():
+    """Rücken-Chip am hinteren Blatt (V2): so weit ragt er hinter die Schachtwand."""
+    d = V.dims("V2")
+    return d["y1"] + V.BLATT_T + V.STRIP_T - (d["depth"] + 0.06)
+
+
 def need_height(k):
-    """Kleinste Gebäudehöhe über der Platte: Kassettenoberkante über der Platte plus Dach 1,2."""
-    top = V.outlines()[k]["h"]
-    if k == "v4":
-        top = V.base()["z_b"] + P.PODEST_T
-    return top - F + P.STOP_T
+    """Kleinste Gebäudehöhe über der Platte: Kassettenoberkante über der Platte (Fuß 10,2) plus Dach 1,2."""
+    return V.min_height(k)
 
 
 # --------------------------------------------------------------------------
@@ -91,7 +95,7 @@ def svg_fit(scale, name):
         o.append('<polygon points="%s" style="%s"/>' % (" ".join("%.1f,%.1f" % (sx(x, y), sy(x, y)) for x, y in pts), sty))
         o.append('</svg>')
         wv = row["walls"][k]
-        cap = "%s: %s × %s mm außen, %s" % (("Kassette v4" if k == "v4" else "Variante " + k[1]), de(a, 1), de(b, 1),
+        cap = "%s: %s × %s mm außen, %s" % (LABEL[k], de(a, 1), de(b, 1),
                                            "passt nicht" if wv is None else ("passt, Wand bis %s" % de(wv, 1) if fits else "Wand nur %s" % de(wv, 1)))
         panels.append('<figure class="fig"><div class="figbox">%s</div><figcaption>%s</figcaption></figure>' % ("".join(o), cap))
     return '<div class="three">%s</div>' % "".join(panels)
@@ -143,60 +147,165 @@ def svg_section(var):
     return g.svg(int(78 + (depth + 3.8) * S + 215), int(14 + zmax * S + 40), "Schnitt der Kassette %s mit Streifen und Maßen" % var)
 
 
+def svg_rueck(kind):
+    """Schnitt längs y mit Schachtwänden (gestrichelt): kind = "bad" (Rücken-Streifen am hinteren Blatt) oder "V2R" (Blatt in der Mitte, oben nach vorn versetzt)."""
+    S = 11.0
+    var = "V2R" if kind == "V2R" else "V2"
+    d = V.dims(var)
+    depth, zb, zp = d["depth"], d["z_b"], d["zp"]
+    top = d["top"] if kind == "V2R" else d["top"] + V.R_JUMP
+    zmax = top + 3.0
+    g = G(S, 70, 12 + zmax * S)
+    c = 0.06
+    g.rect(-2.6, -c, 0.0, F, "d-bld")
+    g.rect(depth + c, depth + 2.6, 0.0, F, "d-bld")
+    g.rect(0.0, depth, 0.0, zb, "d-kass")
+    g.rect(d["y_p0"], d["y1"], -0.01, zb + 0.01, "d-void")
+    g.rect(d["ypin"] - sd.HSG_T / 2, d["ypin"] + sd.HSG_T / 2, 0.0, BUCHSE, "d-hsg")
+    if kind == "V2R":
+        zj, jog, yb = d["z_j"], d["jog"], d["yb"]
+        g.rect(d["y1"], d["y1"] + V.BLATT_T, zb - 0.01, zj + 0.01, "d-kass")
+        g.poly([(d["y1"], zj), (d["y1"] + V.BLATT_T, zj), (yb + V.BLATT_T, zj + jog), (yb, zj + jog)], "d-kass")
+        g.rect(yb, yb + V.BLATT_T, zj + jog - 0.01, top, "d-kass")
+        yf, yr = yb, yb + V.BLATT_T
+    else:
+        g.rect(d["y1"], d["y1"] + V.BLATT_T, zb - 0.01, top, "d-kass")
+        yf, yr = d["y1"], d["y1"] + V.BLATT_T
+    z0, sh = d["z0"], d["sh"]
+    zc = z0 + sh / 2
+    g.rect(yf - V.FPC, yf, z0, z0 + sh, "d-led")
+    g.rect(yf - V.STRIP_T, yf - V.FPC, zc - V.CHIP / 2, zc + V.CHIP / 2, "d-led")
+    g.rect(yr, yr + V.FPC, z0, z0 + sh, "d-led")
+    g.rect(yr + V.FPC, yr + V.STRIP_T, zc - V.CHIP / 2, zc + V.CHIP / 2, "d-led")
+    g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="d-dash"/>' % (g.X(-4.0), g.Z(F), g.X(depth + 4.0), g.Z(F)))
+    g.text(depth + 4.2, F - 0.3, "Platte", "dls", "start")
+    for y in (-c, depth + c):                              # Schachtwände über die ganze Höhe
+        g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" style="stroke:var(--warn);stroke-width:1.4;stroke-dasharray:6 4"/>' % (g.X(y), g.Z(0), g.X(y), g.Z(top + 1.5)))
+    yb_chip = yr + V.STRIP_T
+    if kind == "bad":
+        g.text(depth + 0.6, zc + 4.2, "ragt %s aus dem Schacht" % de(yb_chip - depth - c, 1), "dlw", "start")
+        g.text(depth + 0.6, zc + 3.1, "(Rücken-LED, von unten", "dlw", "start")
+        g.text(depth + 0.6, zc + 2.2, "nicht durchzuschieben)", "dlw", "start")
+    else:
+        for y, lab in ((yf - V.STRIP_T, "vorderer Chip"), (yb_chip, "hinterer Chip")):
+            pass
+        pts = V.wire_path("V2R", 1)
+        g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(q[1]), g.Z(q[2])) for q in pts))
+        wr = sd.WIRE_D / 2
+        jp = [(yf - V.FPC - wr - 0.1, z0 + sh - 1.5), (yf - V.FPC - wr - 0.1, top + 0.3), (yf + V.BLATT_T / 2, top + 0.4), (yr + V.FPC + wr + 0.1, top + 0.3), (yr + V.FPC + wr + 0.1, z0 + sh - 1.5)]
+        g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(a), g.Z(b)) for a, b in jp))
+        g.text(yf + V.BLATT_T / 2, top + 1.6, "Verkettung über die Kante", "dls")
+        g.text(depth + 0.8, zj + jog / 2 + 0.2, "Versatz 45°", "dls", "start")
+        g.line(yf - V.STRIP_T, zc + 6.0, yb_chip, zc + 6.0, "dimn")
+        g.text((yf - V.STRIP_T + yb_chip) / 2, zc + 6.6, "%s von Chip zu Chip" % de(yb_chip - (yf - V.STRIP_T), 1), "dln")
+        g.text(depth + 0.8, zc - 0.4, "Luft %s vorn und hinten" % de(min(yf - V.STRIP_T, depth - yb_chip), 1), "dls", "start")
+    g.text(depth / 2, zb / 2, "Unterbau %s tief" % de(depth, 2), "dlb")
+    return g.svg(int(70 + (depth + 3.0) * S + 160), int(12 + zmax * S + 18), "Schnitt: Schachtwände gestrichelt, %s" % ("Rücken-LED ragt aus dem Schacht" if kind == "bad" else "Blatt versetzt, beide Streifen im Schacht"))
+
+
 # --------------------------------------------------------------------------
 # Inhalt
 # --------------------------------------------------------------------------
 def head():
     o = V.outlines()
-    return ('<header class="top"><p class="kicker">Steckmechanismus · Kassette</p><h1>Kassette in zwei Varianten</h1>'
-            '<p class="lead">Die Kassette v4 (%s × %s mm, Streifen flach hinter der Buchse) passt im Maßstab 1:1500 nicht in jedes Gebäude. Hier stehen zwei Konzepte, '
-            'bei denen der Streifen steht und auf einer dünnen Wand klebt. Es sind Konzepte, keine STL. Der Unterbau bleibt wie bei v4; dadurch gelten die bewährten Werte '
-            '(Buchsentasche, Einpressen 0,06, Dock und Muldenboden) weiter.</p>'
-            '<ul class="sum"><li><b>V1, Streifen quer:</b> %s × %s mm Grundfläche, %s hoch. Niedrig genug für das Seminargebäude (%s mm Höhe), die lange Kante liegt waagerecht.</li>'
-            '<li><b>V2, Streifen hochkant:</b> %s × %s mm Grundfläche, %s hoch. Für das City-Hochhaus: schlank, der Streifen steht auf einem Blatt über der Buchse.</li>'
-            '<li><b>Kassette v4</b> bleibt für breite, niedrige Gebäude (Hörsaalgebäude, nur %s mm hoch).</li>'
-            '<li><b>Offen:</b> der Weg der Adern bei V1 und die Dicke des Blatts; die Entscheidungskarten unten fragen genau das.</li></ul></header>'
-            % (de(o["v4"]["w"], 1), de(o["v4"]["d"], 1), de(o["V1"]["w"], 1), de(o["V1"]["d"], 1), de(o["V1"]["h"], 1), de(FIT["1zu1500/04_seminargebaeude"]["height"], 1),
-               de(o["V2"]["w"], 1), de(o["V2"]["d"], 1), de(o["V2"]["h"], 1), de(FIT["1zu1500/03_hoersaalgebaeude"]["height"], 1)))
+    return ('<header class="top"><p class="kicker">Steckmechanismus · Kassette</p><h1>Kassette V2: Höhe und zweite LED</h1>'
+            '<p class="lead">Stand 2: V2 (Streifen hochkant auf einem Blatt über der Buchse) ist die bevorzugte Variante. Diese Seite beantwortet zwei Fragen: Passt V2 von der Höhe in die Gebäude, '
+            'und geht eine zweite LED auf der Rückseite? Darunter steht weiter der erste Plan mit V1 und v4 als Vergleich. Konzepte, keine STL.</p>'
+            '<ul class="sum"><li><b>Höhe:</b> V2 braucht Gebäude ab %s mm. Bei 1:1500 reicht das nur für City-Hochhaus und Paulinum; bei 1:1000 kommt Neues Augusteum dazu (Institutsgebäude knapp nicht, 0,9 mm Wand). Seminar- und Hörsaalgebäude sind zu niedrig.</li>'
+            '<li><b>Rücken-LED:</b> Du hast recht, so wie V2 jetzt gezeichnet ist, schiebt sie sich von unten nicht durch den Schacht (der hintere Chip ragt %s mm heraus). Dein Vorschlag, das Blatt oben nach vorn zu versetzen, geht, wenn der Unterbau auf %s mm Tiefe wächst.</li>'
+            '<li><b>Mit zweiter LED:</b> %s × %s × %s mm, Gebäude ab %s mm hoch: bei 1:1500 nur das City-Hochhaus, bei 1:1000 Paulinum, Neues Augusteum und Hochhaus.</li>'
+            '<li><b>Seminargebäude</b> (1:1500) ist ein eigenes Problem: Dach nur etwa 16,4 mm hoch und schmal; dafür braucht es eine niedrige Variante (siehe Karte „Seminargebäude“).</li></ul></header>'
+            % (de(need_height("V2"), 1), de(bad_out(), 1), de(V.R_DEPTH, 1),
+               de(o["V2R"]["w"], 1), de(o["V2R"]["d"], 1), de(o["V2R"]["h"], 1), de(need_height("V2R"), 1)))
+
+
+def sec_height():
+    rows = []
+    for k in ("V2", "V2R"):
+        for sc, lab in (("1zu1500", "1:1500"), ("1zu1000", "1:1000")):
+            ok, no = [], []
+            for name in NAMES:
+                r = FIT["%s/%s" % (sc, name)]
+                (ok if combined(r, k).startswith("✓") else no).append("%s (%s)" % (NAMES[name], de(r["height"], 1)))
+            rows.append("<tr><td><b>%s</b></td><td>%s</td><td class=\"n\">%s</td><td>%s</td><td>%s</td></tr>" % (LABEL[k], lab, de(need_height(k), 1), ", ".join(ok) or "–", ", ".join(no)))
+    tab = ('<div class="tw"><table class="t"><thead><tr><th>Variante</th><th>Maßstab</th><th>braucht</th><th>passt (Gebäudehöhe)</th><th>passt nicht</th></tr></thead><tbody>%s</tbody></table></div>' % "".join(rows))
+    return ('<section class="sec"><h2>Frage 1: Passt V2 von der Höhe in die Gebäude?</h2>%s'
+            '<p class="note">Der Fuß taucht %s mm in die Platte, darüber steht die Kassette; V2 ragt %s mm über die Platte und braucht darüber %s mm Dach. Das sind %s mm Gebäudehöhe. '
+            'Die Rechnung nimmt die Dachform aus dem Laserscan: Das Seminargebäude ist laut Scan 18,8 mm hoch, hat aber nur eine kleine Dachaufsicht; die geschlossene Dachfläche liegt bei etwa 16,4 mm.</p>'
+            '<p class="risk"><b>Ergebnis:</b> V2 ist eine Variante für hohe Gebäude (City-Hochhaus, Paulinum, bei 1:1000 auch Neues Augusteum). Für Seminar-, Institut- und Hörsaalgebäude bei 1:1500 reicht die Höhe nicht. '
+            'Hebel, um niedriger zu werden: 144-LED/m-Streifen (13,9 statt 16,7 lang, aber 12 breit) spart 2,8 mm; Dach über der Kassette dünner (0,8 statt 1,2) spart 0,4 mm; der Fuß (%s) ist durch die Pin-Länge festgelegt.</p></section>'
+            % (tab, de(F, 1), de(V.dims("V2")["top"] - F, 1), de(P.STOP_T, 1), de(need_height("V2"), 1), de(F, 1)))
+
+
+def sec_rueck():
+    d2, dr = V.dims("V2"), V.dims("V2R")
+    o = V.outlines()
+    f1 = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>So geht es nicht: Streifen auf dem Rücken des hinteren Blatts. Der Chip ragt %s mm hinter die Schachtwand (rot gestrichelt), der Streifen allein schon %s.</figcaption></figure>'
+          % (svg_rueck("bad"), de(bad_out(), 1), de(d2["y1"] + V.BLATT_T + V.FPC - (d2["depth"] + 0.06), 1)))
+    f2 = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>Dein Vorschlag, V2R: Das Blatt steigt zuerst an der hinteren Wand, springt dann mit 45° nach vorn in die Mitte und trägt beide Streifen. Beide Chips liegen innerhalb der Schachtwände.</figcaption></figure>'
+          % svg_rueck("V2R"))
+    chain = [("vorderer Chip bis hinterer Chip", de(V.BLATT_T + 2 * V.STRIP_T, 1), "Chip 1,9 + Folie 0,3 je Seite + Blatt 1,2"),
+             ("Unterbau (Schacht ohne Spiel)", de(V.R_DEPTH, 1), "Luft %s vorn und hinten" % de((V.R_DEPTH - (V.BLATT_T + 2 * V.STRIP_T)) / 2, 1)),
+             ("Blatt oben, Vorderseite bei y", de(V.R_BLADE_Y, 1), "Mitte des Unterbaus: %s" % de(V.R_DEPTH / 2, 1)),
+             ("Versatz des Blatts nach vorn", de(dr["jog"], 2), "45°, also %s mm Höhe" % de(dr["jog"], 2)),
+             ("Streifenunterkante über der Schulterfläche", de(dr["room"], 2), "Ader-Luft ab dem Versatz"),
+             ("Oberkante des Blatts", de(dr["top"], 1), "Streifenende + 0,25 + %s für die Verkettungsadern" % de(V.R_JUMP, 1))]
+    trs = "".join('<tr><td>%s</td><td class="n">%s</td><td>%s</td></tr>' % c for c in chain)
+    return ('<section class="sec"><h2>Frage 2: Zweite LED auf der Rückseite</h2>'
+            '<p>Du hast richtig vermutet. Die Kassette wird mit dem Streifenende voran von unten durch den Schacht im Fuß geschoben (Fuß %s mm), also muss jeder Querschnitt der Kassette durch diesen Schacht passen. '
+            'Mit dem Blatt hinten säße der Rücken-Streifen bei y %s bis %s und damit hinter der Schachtwand. Das Blatt nach oben zu verlängern hilft dafür nicht, es muss in y in die Mitte.</p>'
+            '<div class="two">%s%s</div>'
+            '<p class="note">Der Versatz (Dein Gedanke) geht, ist aber knapp: Chip-Seite zu Chip-Seite sind %s mm (2 × 2,2 Streifen + 1,2 Blatt). Der bisherige Unterbau (%s tief) ist dafür um %s mm zu flach, und die Streifendicke (2,2) ist nicht belegt. '
+            'Darum wächst der Unterbau auf %s mm Tiefe (+%s), die Pins und die Buchse bleiben unverändert vorn. Außenmaß dann %s × %s mm.</p>'
+            '<div class="tw"><table class="t"><thead><tr><th>Größe</th><th>mm</th><th>Bemerkung</th></tr></thead><tbody>%s</tbody></table></div>'
+            '<p class="note"><b>Verkettung statt zweier Adersätze:</b> Der WS2812B-Streifen hat an beiden Enden Pads. Der vordere Streifen bekommt die Adern von der Buchse (unten, DIN), sein oberes Ende (DOUT) geht mit drei kurzen Adern über die Oberkante des Blatts zum oberen Ende des hinteren Streifens, '
+            'der dafür um 180° gedreht aufgeklebt wird. So gibt es nur einen Satz Adern durch den Schlitz. Zwei LEDs in Reihe an einem Controller-Ausgang sind kein Problem; der Streifen braucht etwa doppelt so viel Strom (bis etwa 120 mA bei Weiß).</p>'
+            '<p class="risk"><b>Nachteile:</b> Das Blatt wird %s mm höher als bei V2 (Verkettung über die Kante, Versatz), das Gebäude muss ab %s mm hoch sein. Der Versatz ist ein 45°-Überhang über dem Aderschlitz (druckbar, aber ungetestet). '
+            'Das Blatt steht frei und trägt jetzt zwei Streifen: L06 (dünn und hoch) gilt verschärft.</p>'
+            '<figure class="fig"><img alt="V2 mit Rücken-LED: vorn, hinten, im Schnitt" src="%s"><figcaption>V2R, Konzept: von vorn (Streifen A mit Adern), von hinten (Streifen B), im Schnitt. Orange: Kassette, weiß: Buchse, gelb: Streifen, rot: Adern.</figcaption></figure></section>'
+            % (de(F, 1), de(d2["y1"] + V.BLATT_T, 1), de(d2["y1"] + V.BLATT_T + V.STRIP_T, 1), f1, f2, de(V.BLATT_T + 2 * V.STRIP_T, 1), de(d2["depth"], 2), de((V.BLATT_T + 2 * V.STRIP_T) - d2["depth"], 2),
+               de(V.R_DEPTH, 1), de(V.R_DEPTH - d2["depth"], 2), de(o["V2R"]["w"], 1), de(o["V2R"]["d"], 1), trs,
+               de(dr["top"] - d2["top"], 1), de(need_height("V2R"), 1), BP.img_uri("variante_v2r.png", 1000)))
 
 
 def sec_verstanden():
-    return ('<section class="sec"><h2>So habe ich es verstanden</h2><ul class="q">'
+    return ('<section class="sec"><h2>Erster Plan: so habe ich V1 und V2 verstanden</h2><ul class="q">'
             '<li><b>V1:</b> Der Streifen wird um 90° gekippt und steht auf der langen Kante (16,7 mm waagerecht, 10 mm hoch). Er klebt auf einer Wand.</li>'
             '<li><b>V2:</b> Der Streifen steht hochkant (10 mm breit, 16,7 mm senkrecht) auf einer flacheren, dünnen Wand. Die Kassette ist nur die Buchse mit dieser Wand, deshalb schlank.</li>'
-            '<li>Ich habe die Wand als <b>Blatt</b> gebaut, das die hintere Taschenwand nach oben fortsetzt; der Streifen sitzt <b>über der Buchse</b>, die LED blickt nach vorn. '
-            'So liegt die LED über der Platte und die Adern kommen ohne Durchbruch zu den Pads. Falls du den Streifen neben der Buchse oder die LED nach hinten wolltest: Karte „Lichtrichtung“.</li></ul></section>')
+            '<li>Die Wand ist ein <b>Blatt</b>, das die hintere Taschenwand nach oben fortsetzt; der Streifen sitzt <b>über der Buchse</b>, die LED blickt nach vorn. '
+            'So liegt die LED über der Platte und die Adern kommen ohne Durchbruch zu den Pads.</li></ul></section>')
+
+
+def combined(r, k):
+    """Passt die Kassette in Grundriss UND Höhe? (Schnitt in der nötigen Höhe, Wand ab 1,2)"""
+    need = r["need"][k]
+    if r["height"] < need:
+        return "✗ zu niedrig (%s)" % de(need, 1)
+    wf, wh = r["walls"][k], r["walls_h"][k]
+    if wf is None or wf < WALL:
+        return "✗ Grundriss"
+    if wh is None or wh < WALL:
+        return "✗ oben zu schmal" if wh is None else "✗ oben Wand %s" % de(wh, 1)
+    return "✓ Wand %s" % de(min(wh, 3.9), 1)
 
 
 def sec_befund():
     rows = []
     for name in NAMES:
         r15, r10 = FIT["1zu1500/" + name], FIT["1zu1000/" + name]
-        cells = []
-        for k in KEYS:
-            def cell(r):
-                w = r["walls"][k]
-                if w is None:
-                    return "✗ passt nicht"
-                return ("✓ Wand %s" if w >= WALL else "✗ Wand nur %s") % de(min(w, 3.9), 1)
-            hh = r15["height"]
-            hok = hh >= need_height(k)
-            cells.append('<td class="n">%s<br><span style="color:var(--muted)">1:1000: %s</span></td>' % (cell(r15), cell(r10)))
-        h = FIT["1zu1500/" + name]["height"]
-        hcells = "".join('<td class="n">%s</td>' % (("✓ " if h >= need_height(k) else "✗ ") + de(need_height(k), 1)) for k in KEYS)
-        rows.append('<tr><td><b>%s</b></td><td class="n">%s</td>%s%s</tr>' % (NAMES[name], de(h, 1), "".join(cells), hcells))
-    thead = ('<tr><th rowspan="2">Gebäude</th><th rowspan="2">Höhe 1:1500</th><th colspan="3">Grundriss (Wand um den Schacht ab %s mm)</th><th colspan="3">Mindesthöhe (1:1500)</th></tr>'
-             '<tr><th>v4</th><th>V1</th><th>V2</th><th>v4</th><th>V1</th><th>V2</th></tr>' % de(WALL, 1))
+        cells = "".join('<td class="n">%s<br><span style="color:var(--muted)">1:1000: %s</span></td>' % (combined(r15, k), combined(r10, k)) for k in KEYS)
+        rows.append('<tr><td><b>%s</b></td><td class="n">%s<br><span style="color:var(--muted)">1:1000: %s</span></td>%s</tr>' % (
+            NAMES[name], de(r15["height"], 1), de(r10["height"], 1), cells))
+    thead = ('<tr><th>Gebäude</th><th>Höhe 1:1500</th>%s</tr>' % "".join("<th>%s<br>ab %s mm hoch</th>" % (LABEL[k], de(need_height(k), 1)) for k in KEYS))
     tab = '<div class="tw"><table class="t"><thead>%s</thead><tbody>%s</tbody></table></div>' % (thead, "".join(rows))
     figs = ""
     for name in ("04_seminargebaeude", "06_city_hochhaus"):
-        figs += '<h3>%s, Maßstab 1:1500</h3>%s' % (NAMES[name], svg_fit("1zu1500", name))
-    return ('<section class="sec"><h2>Warum die Kassette v4 nicht überall passt</h2>'
-            '<p class="note">Rechnung: größtes Rechteck (beliebig gedreht und verschoben) im Grundriss, 2 mm über dem Boden aus dem Laserscan. Außenmaß = Kassette + 0,06 Spiel je Seite + Wand um den Schacht. '
-            'Ab %s mm Wand gilt „passt“. Mindesthöhe = Kassettenoberkante über der Platte (Fuß %s) plus %s Dach.</p>%s%s'
-            '<p class="note">Fazit: Bei 1:1500 passt v4 nicht in Paulinum, Seminargebäude und City-Hochhaus (und im Institutsgebäude bleiben nur 0,4 mm Wand). Bei 1:1000 geht es überall, im Hochhaus mit %s mm Wand knapp. '
-            'V1 passt in jeden Grundriss, ist aber mit %s mm Höhe zu hoch für das Hörsaalgebäude. V2 braucht %s mm Höhe: nur Hochhaus, Paulinum (und knapp Neues Augusteum).</p></section>'
-            % (de(WALL, 1), de(F, 1), de(P.STOP_T, 1), tab, figs, de(FIT["1zu1000/06_city_hochhaus"]["walls"]["v4"], 1), de(need_height("V1"), 1), de(need_height("V2"), 1)))
+        figs += '<h3>%s, Maßstab 1:1500 (Grundriss)</h3>%s' % (NAMES[name], svg_fit("1zu1500", name))
+    return ('<section class="sec"><h2>Passt es in die Gebäude? (Grundriss und Höhe zusammen)</h2>'
+            '<p class="note">Rechnung: größtes Rechteck (beliebig gedreht und verschoben) im Schnitt des Laserscan-Gebäudes <b>in der Höhe, die die Kassette braucht</b>. Außenmaß = Kassette + 0,06 Spiel je Seite + Wand um den Schacht, '
+            'ab %s mm Wand gilt „passt“. Mindesthöhe = Kassettenoberkante über der Platte (Fuß %s) plus %s Dach. Die Dachform am Einbauort ist darin berücksichtigt, soweit der Schnitt sie zeigt.</p>%s'
+            '<p class="note">Die Bilder zeigen nur den Grundriss unten (2 mm über dem Boden): grün passt, rot gestrichelt passt nicht.</p>%s</section>'
+            % (de(WALL, 1), de(F, 1), de(P.STOP_T, 1), tab, figs))
 
 
 def sec_base():
@@ -243,18 +352,19 @@ def sec_images():
 
 def sec_compare():
     o = V.outlines()
-    d1, d2 = V.dims("V1"), V.dims("V2")
-    rows = [("Grundfläche außen", "%s × %s" % (de(o["v4"]["w"], 1), de(o["v4"]["d"], 1)), "%s × %s" % (de(o["V1"]["w"], 1), de(o["V1"]["d"], 1)), "%s × %s" % (de(o["V2"]["w"], 1), de(o["V2"]["d"], 1))),
-            ("Höhe der Kassette", de(o["v4"]["h"], 1), de(o["V1"]["h"], 1), de(o["V2"]["h"], 1)),
-            ("Mindesthöhe Gebäude (1:1500)", de(need_height("v4"), 1), de(need_height("V1"), 1), de(need_height("V2"), 1)),
-            ("LED-Mitte über der Platte", de(V.base()["z_b"] + P.PODEST_T - F, 1), de(d1["z0"] + d1["sh"] / 2 - F, 1), de(d2["z0"] + d2["sh"] / 2 - F, 1)),
-            ("Streifen", "flach, blickt nach oben", "steht quer, blickt nach vorn", "steht hochkant, blickt nach vorn"),
-            ("Adernweg", "flach über Rundung", "seitlich unter dem Streifen, verdrillt", "gerade nach oben"),
-            ("Brücken und Überhänge im Druck", "keine", "keine", "keine; Blatt frei stehend"),
-            ("Geeignet für (1:1500)", "Hörsaalgebäude, Neues Augusteum", "Seminargebäude, Institutsgebäude, Paulinum", "City-Hochhaus, Paulinum")]
-    trs = "".join('<tr><td><b>%s</b></td><td class="n">%s</td><td class="n">%s</td><td class="n">%s</td></tr>' % r for r in rows)
-    return ('<section class="sec"><h2>Vergleich</h2><div class="tw"><table class="t"><thead><tr><th></th><th>v4 (bisher)</th><th>V1 quer</th><th>V2 hochkant</th></tr></thead><tbody>%s</tbody></table></div>'
-            '<p class="note">Beide neuen Kassetten sind gerade Strangprofile ohne Überhang; die Tasche zeigt wie bisher zum Bett. Der Wert „Mindesthöhe“ ist der strengste: Das Dach am Einbauort muss mindestens so hoch sein.</p></section>' % trs)
+    d = {k: V.dims(k) for k in ("V1", "V2", "V2R")}
+    rows = [("Grundfläche außen", *["%s × %s" % (de(o[k]["w"], 1), de(o[k]["d"], 1)) for k in KEYS]),
+            ("Höhe der Kassette", *[de(o[k]["h"], 1) if k != "v4" else de(V.base()["z_b"] + P.PODEST_T, 1) for k in KEYS]),
+            ("Mindesthöhe Gebäude", *[de(need_height(k), 1) for k in KEYS]),
+            ("LED-Mitte über der Platte", de(V.base()["z_b"] + P.PODEST_T - F, 1), *[de(d[k]["z0"] + d[k]["sh"] / 2 - F, 1) for k in ("V1", "V2", "V2R")]),
+            ("LEDs", "1, nach oben", "1, nach vorn", "1, nach vorn", "2, vorn und hinten"),
+            ("Adernweg", "flach über Rundung", "seitlich, verdrillt", "gerade nach oben", "gerade nach oben, Verkettung über die Blattkante"),
+            ("Überhänge im Druck", "keine", "keine", "keine; Blatt frei stehend", "45°-Versatz des Blatts; Blatt frei stehend"),
+            ("Geeignet für (1:1500)", *[", ".join(NAMES[n] for n in NAMES if combined(FIT["1zu1500/" + n], k).startswith("✓")) or "–" for k in KEYS])]
+    trs = "".join('<tr><td><b>%s</b></td>%s</tr>' % (r[0], "".join('<td class="n">%s</td>' % c for c in r[1:])) for r in rows)
+    return ('<section class="sec"><h2>Vergleich</h2><div class="tw"><table class="t"><thead><tr><th></th>%s</tr></thead><tbody>%s</tbody></table></div>'
+            '<p class="note">„Geeignet für“ folgt der Tabelle oben (Grundriss und Höhe zusammen, 1:1500). Bei 1:1000 geht V2 zusätzlich in Neues Augusteum und Paulinum (Institutsgebäude knapp nicht).</p></section>'
+            % ("".join("<th>%s</th>" % LABEL[k] for k in KEYS), trs))
 
 
 def sec_chain():
@@ -279,7 +389,8 @@ def sec_risks():
     risks = [("Adernweg V1.", "Seitlicher Weg unter dem Streifen und Verdrillen zu den Pads ist nicht belegt. Wenn er knickt oder nicht lötbar ist, entfällt V1 oder die Pads wandern: dann Streifen um 180° drehen (Pad-Ende links/rechts), oder V2 auch für das Seminargebäude prüfen (zu hoch)."),
              ("Blatt dünn und hoch (L06).", "V2: 1,2 × 13 mm Querschnitt, 17 mm frei, Biegung quer zu den Schichten. Beim Kleben und Einpressen darf es nicht abbrechen. Vorschlag: 1,6 dick mit Hohlkehle am Fuß; im Test ein Blatt mit 1,2 und eins mit 1,6."),
              ("Seitlicher Lichtfleck.", "Die LED blickt nach vorn auf die Wand des Gebäudes; im schmalen Seminargebäude sind es nur wenige Millimeter bis dahin (Hotspot). Lichtkammer oberhalb des Fußes so groß wie möglich, Wand am Fenster 0,4. Erst am echten Gebäude zu beurteilen."),
-             ("Höhe V1.", "Seminargebäude 18,8 mm, V1 braucht %s: nur %s mm Reserve. Dachhöhe am Einbauort prüfen." % (de(need_height("V1"), 1), de(18.8 - need_height("V1"), 1))),
+             ("Seminargebäude 1:1500.", "Dach nur etwa 16,4 mm hoch und höchstens etwa 14 mm breit: V1 braucht %s Höhe, V2 %s, v4 passt nicht in den Grundriss. Eine flache Variante (Streifen neben der Buchse, Grundfläche etwa 31 × 10,5, Höhe 8,1) käme gerade auf 1,0 mm Wand. Offen, siehe Karte." % (de(need_height("V1"), 1), de(need_height("V2"), 1))),
+             ("Streifendicke.", "Die 2,2 mm des Streifens (Folie 0,3 plus Chip) sind nicht belegt; bei der Rücken-LED zählt sie doppelt. Vor der STL am echten Streifen messen (Schieblehre: Folie, Chip)."),
              ("Streifen kleben.", "Das Klebeband des Streifens haftet auf PLA, aber nicht nachgemessen; eine Lage Kreppband als Rückfall."),
              ("12-mm-Streifen.", "Bei V1 würde der Streifen 12 hoch (Blatt 2 mm höher), bei V2 12,5 breit: passt gerade auf 12,96. Im Standard bleibt es bei 10 mm.")]
     return '<section class="sec"><h2>Risiken</h2>%s</section>' % "".join('<p class="risk"><b>%s</b> %s</p>' % r for r in risks)
@@ -287,47 +398,54 @@ def sec_risks():
 
 def sec_test():
     return ('<section class="sec"><h2>Vorschlag für den Probedruck</h2><ul class="q">'
-            '<li><b>Kassetten:</b> V1 ×2 und V2 ×2 (eine bestückt, eine Reserve), V2 mit Blatt 1,2 und 1,6 (je eine). Kennzeichnung mit Kerben (1 = V1, 2 = V2).</li>'
-            '<li><b>Mini-Gebäude V1 und V2:</b> mit dem bisherigen L-Fuß (24 × 38), damit sie in die vorhandene Mulde der Mini-Grundplatte B passen. Schacht für den jeweiligen Unterbau, darüber eine Lichtkammer mit Dach und Fenster.</li>'
-            '<li><b>Geprüft wird:</b> Einpressen mit Blatt, Kleben des Streifens, Adernweg, Licht, Abziehen. Dock und Pins bleiben wie in Steckprobe 2.</li>'
-            '<li>Die Steckprobe 2 selbst (Platte, Deckel, Faden-Laschen) bleibt unberührt; dieser Probedruck kommt dazu oder danach.</li></ul></section>')
+            '<li><b>Kassetten:</b> V2 einseitig ×2 (Blatt 1,2 und 1,6) und V2R ×1 (zwei Streifen). Kennzeichnung mit Kerben (2 = V2, 3 = V2R).</li>'
+            '<li><b>Mini-Gebäude:</b> hoher Mini-Turm auf dem bisherigen L-Fuß (24 × 38), damit er in die vorhandene Mulde der Mini-Grundplatte B passt; Schacht für den jeweiligen Unterbau (5,34 bzw. 6,4 tief), darüber Lichtkammer mit Dach.</li>'
+            '<li><b>Geprüft wird:</b> Einpressen mit Blatt und Streifen (geht der Rücken-Streifen mit durch?), Kleben, Adernweg, Verkettung, Licht, Abziehen. Dock und Pins bleiben wie in Steckprobe 2.</li>'
+            '<li><b>Vorher messen:</b> Dicke des Streifens (Folie und Chip), Länge des Stücks, Lage der Pads.</li></ul></section>')
 
 
 DECISIONS = [
-    dict(id="A", tag="Varianten", title="Welche Kassetten gibt es?", rec="A", text="v4 passt nur in breite Gebäude, V1 und V2 ergänzen sie.",
-         opts=[("A", "Drei Kassetten: v4 für breite, niedrige Gebäude; V1 für Seminar-, Instituts- und Paulinum-Größe; V2 für City-Hochhaus"),
-               ("B", "Nur V1 und V2 (v4 entfällt); Hörsaalgebäude bekommt V1 und bleibt dafür 1 mm zu niedrig, also nicht empfehlenswert"),
-               ("C", "Nur V1 überall, wo die Höhe reicht; Hochhaus bekommt ebenfalls V1 (Grundriss passt dort: Wand 2,7)")]),
-    dict(id="L", tag="Licht", title="Lichtrichtung und Wand", rec="A", text="Die LED blickt nach vorn, das Blatt steht hinten, die Adern laufen ohne Durchbruch.",
-         opts=[("A", "LED nach vorn, Streifen über der Buchse, Blatt hinten (wie in den Bildern)"),
-               ("B", "LED nach hinten, Blatt vorn; die Adern müssen durch ein Fenster im Blatt (mehr Aufwand)"),
-               ("C", "Streifen neben der Buchse statt darüber (V1 wird dadurch deutlich breiter, nicht empfohlen)")]),
-    dict(id="T", tag="Blatt", title="Dicke des Blatts bei V2", rec="B", text="Das Blatt steht frei und ist quer zu den Schichten schwach (L06).",
+    dict(id="R", tag="Rücken-LED", title="Wie kommt die zweite LED auf den Rücken?", rec="A", text="Der Rücken-Streifen muss von unten durch den Schacht (Chip zu Chip %s mm)." % de(V.BLATT_T + 2 * V.STRIP_T, 1),
+         opts=[("A", "Blatt in der Mitte, oben 45° nach vorn versetzt (Dein Vorschlag), Unterbau %s tief" % de(V.R_DEPTH, 1)),
+               ("B", "Blatt bleibt hinten, Unterbau wird %s tief (einfach, aber 1,4 mm mehr Grundfläche, kein Versatz)" % de(V.dims("V2")["y1"] + V.BLATT_T + V.STRIP_T + 0.4, 1)),
+               ("C", "Blatt nur 0,8 dick, Unterbau bleibt 5,34 (Luft nur 0,26, Blatt zu dünn, nicht empfohlen)"),
+               ("D", "keine zweite LED")]),
+    dict(id="K", tag="Verkettung", title="Wie wird der zweite Streifen gespeist?", rec="A", text="Der WS2812B-Streifen hat an beiden Enden Pads.",
+         opts=[("A", "Verkettung: DOUT des vorderen Streifens über die Blattkante zu DIN des hinteren (um 180° gedreht), nur ein Satz Adern"),
+               ("B", "Fenster im Blatt statt über die Kante (Blatt %s niedriger, aber am Fenster schwächer)" % de(V.R_JUMP, 1)),
+               ("C", "zweiter Satz Adern aus dem Schlitz, am Blattrand vorbei (mehr Platz im Schacht nötig)")]),
+    dict(id="A", tag="Varianten", title="Welche Kassetten gibt es?", rec="A", text="V2 passt nur in hohe Gebäude; v4 und V1 decken niedrige ab.",
+         opts=[("A", "V2 (einseitig oder mit Rücken-LED) für Hochhaus und Paulinum; v4 für Hörsaalgebäude; V1 entfällt; Seminar und Institut folgen mit einer flachen Variante"),
+               ("B", "V2 und V1 beide behalten"),
+               ("C", "nur V2, niedrige Gebäude bekommen vorerst keine LED")]),
+    dict(id="W", tag="Seminargebäude", title="Seminargebäude bei 1:1500", rec="A", text="Dach nur etwa 16,4 mm, Breite etwa 14 mm: weder v4 noch V1 noch V2 passen.",
+         opts=[("A", "flache Variante V3: Streifen flach neben der Buchse (etwa 31 × 10,5, Höhe 8,1), später planen"),
+               ("B", "Seminargebäude nur bei 1:1000 mit LED (dort passt v4)"),
+               ("C", "Dach des Seminargebäudes im Modell höher machen (nicht empfohlen, Maßstab)")]),
+    dict(id="T", tag="Blatt", title="Dicke des Blatts", rec="B", text="Das Blatt steht frei und ist quer zu den Schichten schwach (L06); bei zwei Streifen verschärft.",
          opts=[("A", "1,2 mm (drei Wände)"), ("B", "1,6 mm (vier Wände) mit Hohlkehle R 1 am Fuß"), ("C", "1,6 mm und zwei Rippen links und rechts (45°)")]),
-    dict(id="H", tag="LED-Höhe", title="Höhe der LED bei V2", rec="A", text="Im Hochhaus (96 mm) liegt die LED mit dem Standardmast tief.",
-         opts=[("A", "Streifen direkt über dem Unterbau (LED-Mitte 13,8 über der Platte), für den Probedruck"), ("B", "Mast verlängerbar (Parameter), später für das echte Hochhaus"),
+    dict(id="H", tag="LED-Höhe", title="Höhe der LED im Hochhaus", rec="A", text="Im Hochhaus (96 mm) liegt die LED mit dem Standardmast tief (LED-Mitte etwa 15 mm über der Platte).",
+         opts=[("A", "Streifen direkt über dem Unterbau, für den Probedruck"), ("B", "Mast verlängerbar (Parameter), später für das echte Hochhaus"),
                ("C", "gleich einen längeren Mast drucken (LED-Mitte etwa 25 über der Platte)")]),
-    dict(id="B", tag="Unterbau", title="Breite des Unterbaus bei V1", rec="A", text="Das Blatt muss beim Einpressen von unten durch den Schacht.",
-         opts=[("A", "durchgehend 17,2 breit (einfach, Schacht ein Rechteck)"), ("B", "Unterbau 12,96, nur das Blatt 17,2 (Schacht gestuft, nicht von unten montierbar), nicht empfohlen")]),
-    dict(id="S", tag="Streifen", title="Streifenbreite", rec="A", text="Das 12-mm-Muster passte nicht durchs Fenster des Mini-Gebäudes.",
-         opts=[("A", "nur 10 mm (60 LED/m)"), ("B", "auch 12 mm (144 LED/m, 13,9 lang), Blatt entsprechend höher bzw. breiter")]),
+    dict(id="S", tag="Streifen", title="Streifenlänge", rec="A", text="Der 144-LED/m-Streifen ist kürzer (13,9), aber 12 breit.",
+         opts=[("A", "60 LED/m, 10 breit, 16,7 lang"), ("B", "144 LED/m, 12 breit, 13,9 lang: 2,8 mm niedriger, Blatt 12,5 breit (passt auf 12,96)")]),
     dict(id="P", tag="Probe", title="Probedruck", rec="A", text="Siehe „Vorschlag für den Probedruck“.",
-         opts=[("A", "Kassetten V1 und V2 plus zwei Mini-Gebäude auf dem bisherigen L-Fuß"), ("B", "nur die Kassetten, ohne Gebäude (Einpressen nicht prüfbar)"),
+         opts=[("A", "V2 einseitig (Blatt 1,2 und 1,6) und V2R plus Mini-Turm auf dem bisherigen L-Fuß"), ("B", "nur die Kassetten, ohne Gebäude (Einpressen nicht prüfbar)"),
                ("C", "erst Steckprobe 2 drucken, danach diesen Probedruck")]),
 ]
 
 
 def main():
-    sections = "".join([sec_verstanden(), sec_befund(), sec_base(), sec_images(), sec_var("V1"), sec_var("V2"), sec_compare(), sec_chain(), sec_risks(), sec_test()])
+    sections = "".join([sec_height(), sec_rueck(), sec_befund(), sec_verstanden(), sec_base(), sec_images(), sec_var("V2"), sec_var("V1"), sec_compare(), sec_chain(), sec_risks(), sec_test()])
     sections += '<section class="top"><h2>Entscheidungen</h2><p class="lead">Mit den Empfehlungen ist der Plan rund. Danach erzeuge ich die STL.</p></section>'
     sections += "\n".join(decision_card(x) for x in DECISIONS)
     spec = [dict(id=x["id"], tag=x["tag"], title=x["title"]) for x in DECISIONS]
     with open(TEMPLATE, encoding="utf-8") as f:
         page = f.read()
-    page = (page.replace("<title>Planung Testfall Kassette</title>", "<title>Kassetten-Varianten</title>")
-                .replace("testfall-plan-v1", "varianten-plan-v1").replace("PLANUNG TESTFALL KASSETTE · ANTWORT", "KASSETTEN-VARIANTEN · ANTWORT"))
-    page = page.replace("</style>", ".three{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:780px){.three{grid-template-columns:minmax(0,1fr)}}"
-                        ".fig .figbox svg{max-width:300px}</style>", 1)
+    page = (page.replace("<title>Planung Testfall Kassette</title>", "<title>Kassette V2</title>")
+                .replace("testfall-plan-v1", "varianten-plan-v2").replace("PLANUNG TESTFALL KASSETTE · ANTWORT", "KASSETTE V2 · ANTWORT"))
+    page = page.replace("</style>", ".three{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}"
+                        ".three .figbox svg{max-width:300px}</style>", 1)
     for k, v in {"{{HEAD}}": head(), "{{SECTIONS}}": sections, "{{SPEC}}": json.dumps(spec, ensure_ascii=False)}.items():
         page = page.replace(k, v)
     with open(OUT, "w", encoding="utf-8") as f:

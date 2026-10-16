@@ -30,13 +30,23 @@ WALL_MIN = 1.2          # Wand um den Schacht (wie sd.WALL)
 SHAFT_CLR = 0.06        # Spiel je Seite im Schacht
 
 
+_MESH = {}
+
+
 def footprint(scale, name, z=2.0):
-    m = trimesh.load(os.path.join(HERE, "stl", "laserscan", scale, "einzeln", name + ".stl"))
+    """Schnitt des Gebäudes z über dem Boden; None, wenn das Gebäude dort schon zu Ende ist. Zweiter Wert: Gebäudehöhe."""
+    key = (scale, name)
+    if key not in _MESH:
+        _MESH[key] = trimesh.load(os.path.join(HERE, "stl", "laserscan", scale, "einzeln", name + ".stl"))
+    m = _MESH[key]
+    h = float(m.bounds[1][2] - m.bounds[0][2])
+    if z >= h:
+        return None, h
     sec = m.section(plane_origin=[0, 0, m.bounds[0][2] + z], plane_normal=[0, 0, 1])
     p2, _ = sec.to_planar()
     ps = [Polygon(e).buffer(0) for e in p2.discrete if len(e) > 3]
     ps = [p for p in ps if p.area > 0.5]
-    return unary_union(ps), float(m.bounds[1][2] - m.bounds[0][2])
+    return unary_union(ps), h
 
 
 def fit(poly, A, B, astep=5, gstep=0.5):
@@ -84,16 +94,20 @@ def main():
     for sc in SCALES:
         for n in NAMES:
             poly, h = footprint(sc, n)
-            row = dict(height=round(h, 1), area=round(poly.area), walls={}, place={}, poly=None)
+            row = dict(height=round(h, 1), area=round(poly.area), walls={}, place={}, walls_h={}, need={}, poly=None)
             for k, (a, b) in cas.items():
                 w = max_wall(poly, a, b)
                 row["walls"][k] = None if w is None else round(w, 2)
-                pl = fit(poly, a + 2 * WALL_MIN, b + 2 * WALL_MIN)
-                row["place"][k] = pl
+                row["place"][k] = fit(poly, a + 2 * WALL_MIN, b + 2 * WALL_MIN)
+                # Höhe und Grundriss zusammen: Schnitt knapp unter der nötigen Höhe (Dach 1,2 über der Kassette)
+                need = V.min_height(k)
+                row["need"][k] = round(need, 2)
+                pz, _ = footprint(sc, n, need - 0.2)
+                row["walls_h"][k] = None if pz is None else (None if max_wall(pz, a, b) is None else round(max_wall(pz, a, b), 2))
             simp = poly.simplify(0.15)
             row["poly"] = [[round(x, 2), round(y, 2)] for x, y in (simp.exterior.coords if simp.geom_type == "Polygon" else max(simp.geoms, key=lambda g: g.area).exterior.coords)]
             res["%s/%s" % (sc, n)] = row
-            print(sc, n, row["height"], row["walls"], flush=True)
+            print(sc, n, row["height"], row["walls"], row["walls_h"], flush=True)
     res["_meta"] = dict(wall_min=WALL_MIN, shaft_clr=SHAFT_CLR, cassettes={k: [round(a, 2), round(b, 2)] for k, (a, b) in cas.items()})
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False)

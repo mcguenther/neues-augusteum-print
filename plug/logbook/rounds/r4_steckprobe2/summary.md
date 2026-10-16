@@ -46,3 +46,13 @@ V2 für das City-Hochhaus = Streifen hochkant, schlanker, nur die Buchse, Streif
 - Aufbau: gleicher Unterbau wie v4 (Dock, Pins, Einpressen bleiben gültig), darüber ein Blatt (1,2) als Fortsetzung der hinteren Taschenwand, Streifen davor, LED blickt nach vorn.
   V1 17,2 × 5,3 × 26,4 (Adern seitlich zum Pad-Ende), V2 13,0 × 5,3 × 33,5 (Adern gerade nach oben).
 - Offene Karten: Varianten (A: drei Kassetten), Lichtrichtung, Blattdicke V2 (Empfehlung 1,6), LED-Höhe V2, Unterbaubreite V1, Streifenbreite, Probedruck.
+
+## Nachtrag 2: V2 bevorzugt, Höhe und Rücken-LED
+
+Nutzer: V2 ist besser; passt es von der Höhe? Zweite LED auf der Rückseite gegenüber; geht das von unten? Idee: Blatt nach oben verlängern und oben nach vorn zur Mitte versetzen.
+
+- Höhe V2: Gebäude ab 24,5 mm. Grundriss und Höhe zusammen (Schnitt in der nötigen Höhe): 1:1500 nur City-Hochhaus und Paulinum; 1:1000 Paulinum, Neues Augusteum, Hochhaus (Institutsgebäude 0,9 Wand, knapp nicht).
+  Seminargebäude: geschlossene Dachfläche nur etwa 16,4 mm (die 18,8 sind eine kleine Aufsicht), V1 (17,3) und V2 passen nicht, v4 passt nicht in den Grundriss; V3 (flach neben der Buchse, etwa 31 × 10,5) käme auf 1,0 Wand. Offen.
+- Rücken-LED: Streifen am hinteren Blatt ragt 2,1 mm hinter die Schachtwand, kommt von unten nicht durch. V2R: Blatt in der Mitte, oben 45° nach vorn versetzt, Unterbau 6,4 tief (Chip zu Chip 5,6, Luft 0,4), Verkettung DOUT → DIN über die Blattkante,
+  Kassette 13,0 × 6,4 × 36,9, Gebäude ab 27,9. Streifendicke 2,2 ist nicht belegt (vor der STL messen).
+- Seite jetzt als Artifact: https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe. Neue Vorgabe: HTML-Seiten immer als Artifact präsentieren (CLAUDE.md).
