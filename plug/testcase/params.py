@@ -29,6 +29,21 @@ MULDE_CLR_T = 0.10      # Fuß in der Mulde (Fuß-Lehre: 0,10 und 0,15 gut, 0,20
 STEP_H_T = 1.8          # Stufe für das Lötende wie für Körperhöhe 1,8 (2,0 und 1,8 liegen flach)
 BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
+# ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md); ALLE folgenden Planwerte sind NOCH NICHT GETESTET (Liste: scale.md, „Ungetestete Planwerte“): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
+# Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
+# Die Mulde ist eine einzige Ebene: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (F 14,2); keine Stufe, keine zweite Ebene in Form der
+# Kassette. Die Kassette sitzt im Gebäudekörper und schließt unten bündig mit ihm ab; die Umrisse der Gebäude sind auf der Platte erkennbar.
+MULDE_EXTRA_T = 4.0
+SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchstens 230 × 230 mm)
+# Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
+CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
+            "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
+HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
+HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
+HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite; die Wand zwischen Hof- und Gebäude-Aussparung bleibt 0,4 mm (Fuge Hof zu Gebäude 0,5 minus 0,1)
+MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
+OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
+
 # ---- Fasen
 ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)
 EF_CH_T = 0.5           # Fase an Bettkanten von Steckteilen; Steckprobe 2: 0,5 (0,3 und 0,4 ließen einen leichten Wulst)
@@ -73,10 +88,11 @@ def kass_dims(tol=None):
     return k
 
 
-def dims():
-    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0."""
+def dims(extra=0.0):
+    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0.
+    extra: Zusatztiefe der Mulde (mm); 0 = getestete Steckprobe 1, MULDE_EXTRA_T = Planwert (dims_plan())."""
     g1 = sd.HDR_UP - CEIL_T
-    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P)
+    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P + extra)
     z_hb = -F - CEIL_T                       # Oberkante Winkelleistenkörper
     z_bb = z_hb - sd.HDR_BODY                # Unterkante
     z_tip = z_hb + sd.HDR_UP
@@ -95,6 +111,11 @@ def dims():
                 y_off=y_off, yb=yb, y_tail=y_tail, y_kass0=y_kass0, y_kass1=y_kass1, yc=yc, kass_top=top,
                 kass_h=k["top"], box_top=top + STOP_T, box_h=F + top + STOP_T,
                 guide=F - g1 - sd.CH_F - sd.CH_P, step=sd.step_z(z_hb, STEP_H_T, sd.STEP_CLR))
+
+
+def dims_plan():
+    """Maßkette mit der festgelegten Zusatztiefe (F 14,2, Platte 20,2 mm)."""
+    return dims(MULDE_EXTRA_T)
 
 
 def footprint():

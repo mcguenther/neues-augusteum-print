@@ -27,22 +27,21 @@ def stack():
 
 
 # ---- Powerbank Intenso XS5000 (weiß 7313522). Quellen: Intenso-Datenblatt (2026), Bedienungsanleitung v1.10, TonUINO-Forum
-PB_L, PB_W, PB_T = 90.0, 63.0, 12.6   # B  Außenmaße (Anleitung rundet auf 13); ungemessen
+PB_L, PB_W, PB_T = 90.0, 63.0, 12.6   # B  Außenmaße (Anleitung rundet auf 13); ungemessen. Fachprobe r5: "tatsächlich minimal dicker" (ohne Zahl), Luft darüber um 0,2 erhöht (PB_CLR_Z)
 PB_G = 103                # B  Gewicht in g
 PB_WH = 5.0 * 3.7         # A  18,5 Wh
 PB_IMAX = 2.1             # B  5 V / 2,1 A gesamt für USB-A und USB-C
 PB_SLEEP_S = 30           # B  Standby nach etwa 30 s ohne Verbraucher
 PB_KEEP_MA = 50           # S  bleibt an ab etwa 50 mA (Forum)
-PB_PORTS = ("LEDs", "Taste", "microUSB in", "USB-C in/out", "USB-A out")   # B  an einer Schmalseite (Bild der Anleitung)
-PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, taste=-16.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen
+PB_PORTS = ("LEDs", "microUSB in", "USB-C in/out", "USB-A out")   # B  an einer Schmalseite (Bild der Anleitung)
+PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen
 
 # ---- Fach im Unterkasten
 PB_CLR = 0.5              # S  Spiel je Seite (Kaufteil ungemessen; Fachprobe klärt es)
-PB_CLR_Z = 0.6            # S  Luft über der Powerbank bis zur Oberplatte
+PB_CLR_Z = 0.8            # S  Luft über der Powerbank bis zur Oberplatte; war 0,6, Fachprobe r5: Powerbank minimal dicker, "ca. 0,2 mm mehr Höhe" (Nutzer), Deckplatte wackelte
 PB_PLUG = 35.0            # S  Platz vor der Anschlussseite: gerader USB-A-Stecker (Griff etwa 25 mm) plus Biegung; ungemessen
 PB_CABLE = 6.0            # S  Kabelkanal entlang der Längsseite (USB-Kabel bis 4,5 mm)
 FENCE = (1.6, 5.0)        # E  Zaun um die Powerbank: Breite, Höhe über dem Boden
-ROD = 4.0                 # E  Stößel zur Taste, Querschnitt (Führung mit 0,15 Gleitspiel, L10)
 WINDOW_PAD = 2.0          # E  Fenster in der Kante reicht so weit über LEDs und Buchsen hinaus
 
 # ---- Unterkasten
@@ -54,7 +53,7 @@ NOTCH_PAD = 0.4           # E  Eckaussparung im Unterkasten reicht so weit über
 
 # ---- Dock in der Oberplatte: Kabelnische hinter den Lötenden (Nutzer: Lötenden brauchen viel Freiluft, das Kabel muss nach unten fallen)
 SLOT_END = P2.PROP["SLOT_END"]   # Ende des Lötendenschlitzes -8,0 (Plan Steckprobe 2)
-NICHE = dict(w=24.0, l=16.0, rib=1.6, rib_x=4.0)   # E  Nische hinter dem Schlitz: Breite, Länge, Stege gegen Durchhängen (Fenster höchstens 8 mm)
+NICHE = dict(w=12.0, l=6.46)   # E  eine Nische hinter dem Schlitz, halb so groß wie vorher (Nutzer, r4): 12 × 9,5 mm ab der Körpertasche (l zählt ab SLOT_END), ohne Fenster und Stege, Support erlaubt
 ANSCHLAG = dict(w=18.0, t=1.8, gusset=6.0)          # E  Steg unter dem Körper der Leiste im Unterkasten (Länge, Dicke, Strebe), 1,2 Luft
 ZONE_PAD = 2.0                                      # E  Platz rund um Nische und Körper, in dem Unterkasten und Powerbank nichts haben
 KASS_WALL = 1.2                                     # E  Wand des Gebäudes um den Schacht der Kassette

@@ -366,8 +366,8 @@ def readme_assets(stl_dir=os.path.join(HERE, "stl")):
                  dict(transparent=True, px_per_mm=k, pad=8 * DENSITY, **README_VIEW)))
     jobs += _group_jobs({"campus_%s.png" % q: meshes(q, "1zu1500") for q in quellen}, 270, 400, README_VIEW)
     if os.path.exists(objekte(best, "1zu1000")):
-        jobs += _group_jobs({"campus_%s_1zu1500.png" % best: meshes(best, "1zu1500"),
-                             "campus_%s_1zu1000.png" % best: meshes(best, "1zu1000")}, 440, 600, README_VIEW)
+        jobs += _group_jobs({"campus_%s_%s.png" % (best, sc): meshes(best, sc) for sc in ("1zu1500", "1zu1300", "1zu1000")
+                             if os.path.exists(objekte(best, sc))}, 440, 600, README_VIEW)
 
     # Einzelgebäude je Quelle (1:1000), je Gebäude gemeinsame Skala
     have1000 = [q for q in quellen if os.path.exists(objekte(q, "1zu1000"))]

@@ -21,6 +21,8 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 
 | Nr. | Beobachtung | Regel | Runde |
 |---|---|---|---|
+| L37 | Fachprobe Powerbank: Luft über der Powerbank 0,6 bei Datenblattdicke 12,6; die echte Powerbank ist „minimal dicker“, die Deckplatte wackelte (Nutzer: ca. 0,2 mm mehr Höhe). Der Prüfbericht hatte den Worst-Case 13,0 mit nur 0,2 Luft noch als „ok“ gemeldet | Bei ungemessenen Kaufteilen Luft aus dem **Worst-Case** wählen, nicht aus dem Nennmaß (hier 13,0 + 0,6 Luft), und die Dicke vor der nächsten Runde mit der Schieblehre notieren; lose aufliegende Deckel brauchen Luft und Halt (Zapfen, Faden) | r5 |
+| L38 | Zaun der Fachprobe: README und Prüfbericht nennen einen Zaun um die Powerbank, der Nutzer sagt, nur der Ausschnitt am Anschlussende sei gedruckt | Bei Ausschnitt-Proben (Variante B) im Plan und im Testbogen ausdrücklich benennen, **was nicht im Druck ist**, und das Ergebnis dazu abfragen (Sitz im Zaun nur mit vollem Zaun testbar) | r5 |
 | L08 | Datenblattmaße wichen vom Kit ab: Körper der Winkelleiste 2,0 statt 2,54; Buchse etwa 14,5 statt 14,0 hoch | Kaufteile am echten Teil messen, bevor Geometrie daran hängt; ungemessene Werte im Plan als „ungemessen“ markieren | r0, r3 |
 | L09 | Spalt unter 0,5 mm nicht messbar | Spielwerte als Serie mit Kennzeichnung drucken, nach Gefühl beurteilen (1 bis 5) | r1 |
 | L10 | Kassette im Schacht: 0,05 passt nicht, 0,10 nur mit Kraft, 0,15 ideal zum Gleiten, **0,06 eingepresst** ideal | Einpressen: 0,06 je Seite durchgehend; mit Passzone und Entlastung (8 mm + 0,20) zu lose | r1, r3 |

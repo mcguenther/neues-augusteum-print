@@ -190,12 +190,15 @@ def hub(data, s):
     return (data["boden_z"] - data["sockel_z"]) * s
 
 
-def model(s, building_fps_mm):
+def model(s, building_fps_mm, tiefe=None, spiel=0.0):
     """(Volumenkörper mm, Grundriss mm, Info): Platte von -POCKET_DEPTH bis zum Hofboden (hub),
-    Objekte darauf."""
+    Objekte darauf. tiefe: andere Tiefe unter der Oberfläche (Steckplatte, plug/campus.py); spiel: Einsatz so viel kleiner
+    als die Aussparung (Fuge je Seite)."""
     data = load()
     fp = flaeche_mm(building_fps_mm, s)
-    T = G.POCKET_DEPTH
+    if spiel:
+        fp = G.clean(fp.buffer(-spiel, join_style=2))
+    T = G.POCKET_DEPTH if tiefe is None else tiefe
     H = hub(data, s)
     # Pflaster aus getrennten Feldern, damit die Dreiecke an den Farbgrenzen enden
     felder = [G.scale_geom(Polygon(data["flaechen"][k]), s) for k in ("denkmalplatz", "platz")]
@@ -221,11 +224,24 @@ def model(s, building_fps_mm):
     zmax = max(o.get("hoehe", 1) for o in data["objekte"]) * s + 2
     objs = objs ^ G.extrude(fp.buffer(-0.05, join_style=2), -0.5, zmax)
     solid = G.union(slabs + [objs.translate([0, 0, H - 0.01])])
+    solid = solid ^ einfuehrfase(fp, T, H, zmax)
     counts = {}
     for o in data["objekte"]:
         counts[o["typ"]] = counts.get(o["typ"], 0) + 1
     return solid, fp, dict(objekte=" ".join("%s×%d" % kv for kv in counts.items()),
                            flaeche_m2=round(fp.area / s / s))
+
+
+def einfuehrfase(fp, T, H, zmax):
+    """Hüllkörper mit 45°-Fase an der Unterkante des Einsatzes (Bettkante, plan.params HOF_CH_T), damit er wie ein Gebäudefuß eingesetzt
+    wird: Schichtweise Treppe aus 0,2-mm-Scheiben, darüber unbeschnitten."""
+    from plug.testcase import params as P
+    ch, layer = P.HOF_CH_T, 0.2
+    parts = []
+    for k in range(int(round(ch / layer))):
+        parts.append(G.extrude(fp.buffer(-(ch - layer * (k + 0.5)), join_style=2), -T + layer * k - (0.01 if k == 0 else 0), -T + layer * (k + 1) + 0.01))
+    parts.append(G.extrude(fp.buffer(1.0), -T + ch, zmax + H + 5))
+    return G.union(parts)
 
 
 def colour_mesh(tm, to_local, eintrag):
