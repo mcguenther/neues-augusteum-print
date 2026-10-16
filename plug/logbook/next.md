@@ -36,16 +36,16 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 | Funktionstest | Adern und LED bestücken, Controller anschließen (Schritt L im Testbogen): Licht, Wackeln, Zehnfach-Abziehen | r3 L: noch nicht getestet, Adern biegen rund |
 | Testbogen | Feld „Luft unter der Buchse“ ersetzen durch ja/nein; Feld „Platte A oder B“ und Formular-Version aufnehmen | L24, L25 |
 
-### Fachprobe Powerbank: Plan liegt vor (`plug/power/plan_fach.html`, wartet auf das Abnicken)
+### Fachprobe Powerbank gebaut, wartet auf den Druck (`stl/steckmodul_fachprobe/`, Testbogen `plug/power/feedback_fach.html`)
 
-Vorschlag: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 29 g), Deckplatte 2 mm, Messschablone. **Kein Stößel** (Nutzer: die Taste sitzt ganz woanders). Lage der Taste ist offen; im Konzept (`plug/power/concept.html`, `build_concept.fach_parts`) steht der Stößel noch und müsste entfernt werden.
+Abgenickt: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 26 g), Deckplatte 2 mm, **ohne Schablone, Taste und Stößel** (Nutzer: die Taste braucht es nicht, später fragt der Mikrocontroller alle 5 s kurz Strom ab). Der Ladeanschluss muss durch das Fenster erreichbar bleiben, die USB-A-Buchse samt geradem Stecker ist eingeplant. Kabelkanal nur 4,4 mm frei neben dem Zaun (Kabel bis etwa 4 mm). Im Konzept (`plug/power/concept.html`, `build_concept.fach_parts`) steht der Stößel noch und müsste entfernt werden.
 
 ### Steckprobe 2 gebaut, wartet auf den Druck (Powerbank-Konzept Stand 5, 1:1300)
 
 Die große Platte ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4 mm geplant (`plug/power/concept.html`, PLAN Kapitel 6; Maßstab 1:1300 vom Nutzer
 gesetzt, Kassette passt dort in 4 von 6 Gebäuden, Dock frei an 3). Der Nutzer hat den Bau freigegeben: Steckprobe 2 (STL, README, ZIP, Prüfbericht in `stl/steckmodul_testcase2/`, Testbogen `plug/testcase/feedback2.html`) im Zwei-Lagen-Aufbau drucken (Mini-Oberplatte 12,6 + Mini-Unterkasten mit
 Steg-Anschlag 1,2 Luft, Zentrierzapfen Ø 4 / Loch 4,3, Kabelnische hinter den Lötenden, **zwei Faden-V mit 53° und 40°**, Gebäude mit Fußfase 0,8); eine
-**Fachprobe Powerbank** (Zaun, Fenster, Stößel, 35 mm Steckerraum) ist **nicht** mitgebaut. Das Kassetten-Redesign läuft in einem separaten Chat und kann die Kassette ersetzen. Werte: `plug/power/params.py`.
+**Fachprobe Powerbank** ist **nicht** mitgebaut (eigene Runde, siehe oben). Das Kassetten-Redesign läuft in einem separaten Chat und kann die Kassette ersetzen. Werte: `plug/power/params.py`.
 
 ## Priorität 2
 
