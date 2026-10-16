@@ -166,8 +166,8 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 .fig .table { stroke: var(--fg); stroke-width: 1.4; }
 .fig .dimn { stroke: var(--ok); stroke-width: 1.8; }
 .fig .mulde { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 5 3; }
-.fig .sup { fill: color-mix(in srgb, var(--c-niche) 40%, var(--panel)); stroke: var(--c-niche); stroke-width: 1; stroke-dasharray: 3 2; }
-.fig .step { fill: var(--c-plate); stroke: var(--edge); stroke-width: 1.2; }
+.fig .bodyo { fill: color-mix(in srgb, var(--c-port) 30%, transparent); stroke: var(--c-port); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.fig .tailo { stroke: var(--accent-fill); stroke-width: 1.4; }
 .fig .hole { fill: var(--panel); stroke: var(--edge); stroke-width: .8; }
 .fig .post { fill: var(--panel); stroke: var(--edge); stroke-width: .8; }
 #sect text { font-size: 7.4px; } #below text { font-size: 5.4px; } #below { min-width: 0; max-width: 560px; }
@@ -184,30 +184,30 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 <div class="wrap">
 <header>
   <div class="kicker">Steckmechanismus · Test-Dock · Plan, noch nicht abgenickt</div>
-  <h1>Test-Dock mit durchgehendem Steckerraum</h1>
-  <p class="lead">Die Winkelleiste steckt nur noch 1 mm tief in der Platte und ragt 1 mm heraus. Darunter gibt es keine Nische und keinen Steg mehr, nur einen offenen Raum, in dem später auch die Powerbank liegt. Die Lötenden liegen auf einer Stufe. Dieser Plan beschreibt ein kleines Test-Dock dafür. Erst nach deinem Okay entstehen STL.</p>
+  <h1>Test-Dock mit flacher Unterseite</h1>
+  <p class="lead">Alles auf einer Höhe, ohne Tasche, Stufe, Schlitz, Nische und Steg: Die Unterseite der Platte ist flach, die Winkelleiste liegt mit dem Körper einfach daran und wird aufgeklebt. Darunter gibt es nur einen offenen Raum, in dem später auch die Powerbank liegt. Dieser Plan beschreibt ein kleines Test-Dock dafür. Erst nach deinem Okay entstehen STL.</p>
 </header>
 
 <section aria-labelledby="h-ans">
   <h2 id="h-ans">Empfehlung</h2>
   <div class="answer">
     <div class="rec"><span class="lbl">Teile</span><span class="big">1 Platte + 8 Füße</span>
-      <span class="small">Mini-Oberplatte <span class="num">40,0 × 53,0 × 11,6 mm</span> mit Mulde und neuem Dock, dazu zwei Sätze Füße (3,4 und 2,4 mm) mit Zapfen. Gebäude und Kassette bleiben die aus Steckprobe 2.</span></div>
-    <div><span class="lbl">Der Tisch ist die Powerbank</span><span class="big">Luft 3,4 mm</span>
+      <span class="small">Mini-Oberplatte <span class="num">40,0 × 50,4 × 10,6 mm</span> mit Mulde und vier Pin-Löchern, dazu zwei Sätze Füße (3,5 und 2,5 mm) mit Zapfen. Gebäude und Kassette bleiben die aus Steckprobe 2.</span></div>
+    <div><span class="lbl">Ohne Support</span><span class="big">Platte nur flach</span>
+      <span class="small">Der Muldenboden (0,4 mm) sind die ersten Schichten auf dem Bett, nichts hängt frei. Brücke und Support entfallen ganz.</span></div>
+    <div><span class="lbl">Der Tisch ist die Powerbank</span><span class="big">Luft 3,5 mm</span>
       <span class="small">Die Platte steht auf den Füßen über dem Tisch. Der Tisch steht für die Oberkante der Powerbank. So prüfst du Leiste, Lötstelle und Draht, ohne die Powerbank zu brauchen.</span></div>
-    <div><span class="lbl">Geprüft wird</span><span class="big">5 Dinge</span>
-      <span class="small">Leiste in der flachen Tasche, Lötenden auf der Stufe, saubere Pin-Löcher mit Support, Halt der Leiste beim Aufstecken, Zapfen mit 2,5 mm Länge.</span></div>
-    <div><span class="lbl">Aufwand</span><span class="big">≈ 12 g</span>
-      <span class="small">Etwa 0,7 h auf deinem Drucker. Support sehr klein, nur 1 mm hoch unter dem Muldenboden.</span></div>
+    <div><span class="lbl">Aufwand</span><span class="big">≈ 10 g</span>
+      <span class="small">Etwa 0,5 h auf deinem Drucker (überschlagen). Die Platte ist 2,0 mm dünner als in Steckprobe 2.</span></div>
   </div>
 </section>
 
 <section aria-labelledby="h-fig">
   <h2 id="h-fig">So sieht das Dock aus</h2>
-  <div class="card"><h3>Längsschnitt durch die Pin-Reihe</h3><div class="scroll"><svg id="sect" viewBox="0 0 604 443" role="img" aria-label="Längsschnitt durch das neue Dock" class="fig"><rect x="16.0" y="49.0" width="572.0" height="255.2" class="plate" /><rect x="171.1" y="49.0" width="416.9" height="224.4" class="foot" /><rect x="215.8" y="282.2" width="143.4" height="22.0" class="void" /><rect x="148.0" y="292.8" width="67.8" height="11.4" class="void" /><rect x="248.8" y="282.2" width="48.4" height="44.0" class="body" /><line x1="185.0" y1="304.2" x2="324.0" y2="304.2" class="tail"/><line x1="324.0" y1="304.2" x2="324.0" y2="157.2" class="tail"/><polyline points="185.0,304.2 158.6,346.0 38.0,346.0" class="wire"/><line x1="16.0" y1="379.0" x2="588.0" y2="379.0" class="table"/><text x="24.8" y="394.0" class="lab mut" text-anchor="start">Tisch, steht für die Oberkante der Powerbank</text><line x1="522.0" y1="304.2" x2="522.0" y2="379.0" class="dimn"/><text x="513.2" y="345.6" class="lab ok" text-anchor="end">Luft 3,4</text><text x="577.0" y="23.0" class="lab mut" text-anchor="end">Plattenoberseite</text><text x="357.0" y="126.0" class="lab" text-anchor="start">Gebäudefuß in der Mulde</text><text x="24.8" y="148.0" class="lab mut" text-anchor="start">Platte 11,6</text><text x="24.8" y="181.0" class="lab mut" text-anchor="start">Muldenboden 0,4</text><text x="273.0" y="344.2" class="lab" text-anchor="middle">Körper 2,0: 1,0 in der Tasche, 1,0 heraus</text><text x="171.8" y="360.0" class="lab wirec" text-anchor="end">Draht</text><text x="161.2" y="291.8" class="lab" text-anchor="end">Stufe</text><text x="385.6" y="315.2" class="lab mut" text-anchor="start">Tasche 1,0 tief (Support)</text></svg></div>
-    <p class="small muted">Die Lötenden (orange) laufen auf Höhe der Plattenunterseite nach links und liegen in der Stufe, der Körper (dunkel) ragt 1,0 mm unter der Platte heraus. Der Draht (rot) hängt unter der Stufe in die Luft. Die Füße stehen vor und hinter dem Schnitt und sind nicht zu sehen.</p></div>
-  <div class="card"><h3>Ansicht der Plattenunterseite (wie im Slicer)</h3><div class="scroll"><svg id="below" viewBox="0 0 392 509" role="img" aria-label="Ansicht der Plattenunterseite mit Tasche, Stufe und Support" class="fig"><rect x="16.0" y="16.0" width="360.0" height="477.4" class="plate" /><rect x="88.0" y="88.0" width="216.0" height="342.0" class="mulde" /><rect x="147.1" y="353.0" width="97.7" height="58.7" class="sup" /><rect x="151.6" y="411.7" width="88.7" height="27.7" class="step" /><rect x="147.1" y="353.0" width="97.7" height="58.7" class="sup" /><rect x="150.7" y="378.4" width="90.5" height="19.8" class="body" /><circle cx="161.7" cy="367.4" r="6.3" class="hole"/><circle cx="161.7" cy="367.4" r="6.3" class="hole"/><circle cx="184.6" cy="367.4" r="6.3" class="hole"/><circle cx="184.6" cy="367.4" r="6.3" class="hole"/><circle cx="207.4" cy="367.4" r="6.3" class="hole"/><circle cx="207.4" cy="367.4" r="6.3" class="hole"/><circle cx="230.3" cy="367.4" r="6.3" class="hole"/><circle cx="230.3" cy="367.4" r="6.3" class="hole"/><circle cx="119.5" cy="295.4" r="19.3" class="post"/><circle cx="272.5" cy="295.4" r="19.3" class="post"/><circle cx="119.5" cy="97.4" r="19.3" class="post"/><circle cx="272.5" cy="97.4" r="19.3" class="post"/><text x="253.9" y="401.1" class="lab" text-anchor="start">Körper 10,9 × 2,2</text><text x="253.9" y="364.2" class="lab" text-anchor="start">Tasche mit Support</text><text x="246.4" y="429.9" class="lab" text-anchor="start">Stufe (massiv)</text><text x="196.0" y="359.4" class="lab" text-anchor="middle">4 Pin-Löcher Ø 1,4</text><text x="196.0" y="187.4" class="lab mut" text-anchor="middle">Mulde (oben)</text><text x="196.0" y="489.4" class="lab mut" text-anchor="middle">Plattenrand (vorn)</text><text x="119.5" y="281.4" class="lab" text-anchor="middle">Zapfenloch</text></svg></div>
-    <p class="small muted">Die orange gestrichelte Fläche ist die Tasche für die Leiste, sie wird mit Support gefüllt, damit der Muldenboden mit den Pin-Löchern sauber druckt. Die Stufe ist massiv. Vier Zapfenlöcher für die Füße.</p></div>
+  <div class="card"><h3>Längsschnitt durch die Pin-Reihe</h3><div class="scroll"><svg id="sect" viewBox="0 0 608 454" role="img" aria-label="Längsschnitt durch das neue Dock" class="fig"><rect x="16.0" y="52.0" width="576.0" height="254.4" class="plate" /><rect x="137.2" y="52.0" width="454.8" height="244.8" class="foot" /><rect x="221.9" y="306.4" width="52.8" height="48.0" class="body" /><line x1="152.3" y1="330.4" x2="304.0" y2="330.4" class="tail"/><line x1="304.0" y1="330.4" x2="304.0" y2="170.1" class="tail"/><polyline points="152.3,330.4 128.3,376.0 40.0,376.0" class="wire"/><line x1="16.0" y1="390.4" x2="592.0" y2="390.4" class="table"/><text x="23.2" y="404.4" class="lab mut" text-anchor="start">Tisch, steht für die Oberkante der Powerbank</text><line x1="532.0" y1="306.4" x2="532.0" y2="390.4" class="dimn"/><text x="522.4" y="352.4" class="lab ok" text-anchor="end">Luft 3,5</text><text x="582.4" y="47.0" class="lab mut" text-anchor="end">Plattenoberseite</text><text x="332.8" y="148.0" class="lab" text-anchor="start">Gebäudefuß in der Mulde</text><text x="25.6" y="172.0" class="lab mut" text-anchor="start">Platte 10,6</text><text x="25.6" y="200.8" class="lab mut" text-anchor="start">Muldenboden 0,4</text><text x="320.3" y="338.2" class="lab" text-anchor="start">Körper 2,0, aufgeklebt</text><text x="140.3" y="389.0" class="lab wirec" text-anchor="end">Draht</text><text x="152.3" y="324.4" class="lab" text-anchor="end">Lötende</text></svg></div>
+    <p class="small muted">Der Körper (dunkel) hängt mit seiner ganzen Höhe von 2,0 mm unter der flachen Plattenunterseite. Die Lötenden (orange) laufen auf halber Körperhöhe nach links, der Draht (rot) hängt in die Luft. Die senkrechten Pins gehen durch den 0,4 mm dicken Muldenboden in die Buchse im Gebäudefuß. Die Füße stehen vor und hinter dem Schnitt.</p></div>
+  <div class="card"><h3>Ansicht der Plattenunterseite (wie im Slicer)</h3><div class="scroll"><svg id="below" viewBox="0 0 392 485" role="img" aria-label="Ansicht der Plattenunterseite mit Pin-Löchern und aufgeklebtem Körper" class="fig"><rect x="16.0" y="16.0" width="360.0" height="453.3" class="plate" /><rect x="88.0" y="88.0" width="216.0" height="342.0" class="mulde" /><rect x="147.1" y="378.4" width="97.7" height="19.8" class="bodyo" /><circle cx="161.7" cy="367.4" r="6.3" class="hole"/><circle cx="184.6" cy="367.4" r="6.3" class="hole"/><circle cx="207.4" cy="367.4" r="6.3" class="hole"/><circle cx="230.3" cy="367.4" r="6.3" class="hole"/><line x1="161.7" y1="367.4" x2="161.7" y2="424.3" class="tailo"/><line x1="184.6" y1="367.4" x2="184.6" y2="424.3" class="tailo"/><line x1="207.4" y1="367.4" x2="207.4" y2="424.3" class="tailo"/><line x1="230.3" y1="367.4" x2="230.3" y2="424.3" class="tailo"/><circle cx="119.5" cy="295.4" r="19.3" class="post"/><circle cx="272.5" cy="295.4" r="19.3" class="post"/><circle cx="119.5" cy="97.4" r="19.3" class="post"/><circle cx="272.5" cy="97.4" r="19.3" class="post"/><text x="253.9" y="392.3" class="lab" text-anchor="start">Körper 10,9 × 2,2 (aufgeklebt)</text><text x="253.9" y="371.4" class="lab" text-anchor="start">4 Pin-Löcher Ø 1,4</text><text x="253.9" y="428.3" class="lab" text-anchor="start">Lötenden</text><text x="196.0" y="187.4" class="lab mut" text-anchor="middle">Mulde (oben)</text><text x="196.0" y="465.3" class="lab mut" text-anchor="middle">Plattenrand (vorn)</text><text x="119.5" y="281.4" class="lab" text-anchor="middle">Zapfenloch</text></svg></div>
+    <p class="small muted">Die Unterseite ist eben. Die gestrichelte Fläche zeigt, wo der Körper der Leiste aufgeklebt wird; die vier Pin-Löcher sind die einzigen Öffnungen, dazu vier Zapfenlöcher für die Füße.</p></div>
 </section>
 
 <section aria-labelledby="h-chain">
@@ -215,11 +215,12 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <div class="scroll"><table>
     <thead><tr><th>Maß</th><th>Soll</th><th>Worst-Case</th><th>Ergebnis</th><th>Quelle</th></tr></thead>
     <tbody>
-    <tr><td>Plattendicke</td><td class="num">Mulde 10,2 + Muldenboden 0,4 + Tasche 1,0 = 11,6</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill ok">1,0 dünner</span></td><td class="src">bewährt (F, Boden), neu (Tasche)</td></tr>
-    <tr><td>Einstecktiefe E</td><td class="num">5,28 (Körper oben bleibt z -10,6)</td><td class="num">Muldenboden 0,4 bis 0,5: E ≥ 5,18</td><td><span class="pill ok">wie Steckprobe 2</span></td><td class="src">bewährt (r4 S, D)</td></tr>
-    <tr><td>Körper der Leiste</td><td class="num">2,0: 1,0 in der Tasche, 1,0 darunter</td><td class="num">Tasche mit Spiel 0,1 je Seite</td><td><span class="pill ok">passt</span></td><td class="src">bewährt (HDR_BODY)</td></tr>
-    <tr><td>Lötenden auf der Stufe</td><td class="num">Tail z -11,60 ± 0,32, Stufendecke z -11,08</td><td class="num">Spiel oben 0,2 (bewährt für Körper 1,8 und 2,0)</td><td><span class="pill ok">liegt flach</span></td><td class="src">bewährt (r2 D)</td></tr>
-    <tr><td>Draht und Lötstelle</td><td class="num">bis etwa 1,9 unter der Plattenunterseite</td><td class="num">Luft 3,4: 1,5 Reserve; 2,4: 0,5</td><td><span class="pill mid">Test mit zwei Füßen</span></td><td class="src">S geschätzt, ungemessen</td></tr>
+    <tr><td>Plattendicke</td><td class="num">Mulde 10,2 + Muldenboden 0,4 = 10,6</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill ok">2,0 dünner</span></td><td class="src">bewährt (F, Boden)</td></tr>
+    <tr><td>Einstecktiefe E</td><td class="num">5,28 (Körper oben liegt an der Platte, z -10,6)</td><td class="num">Muldenboden 0,4 bis 0,5: E ≥ 5,18</td><td><span class="pill ok">wie Steckprobe 2</span></td><td class="src">bewährt (r4 S, D)</td></tr>
+    <tr><td>Körper der Leiste</td><td class="num">2,0 ganz unter der Platte, aufgeklebt</td><td class="num">Kleber 0,0 bis 0,3 Spalt: E bis 5,28 − 0,3 = 4,98</td><td><span class="pill mid">Kleber dünn halten</span></td><td class="src">bewährt (HDR_BODY), Kleber neu</td></tr>
+    <tr><td>Lötenden</td><td class="num">auf halber Körperhöhe, z -11,60, frei</td><td class="num">keine Stufe, kein Spiel nötig</td><td><span class="pill ok">frei</span></td><td class="src">neu</td></tr>
+    <tr><td>Draht und Lötstelle</td><td class="num">bis etwa 2,9 unter der Plattenunterseite</td><td class="num">Luft 3,5: 0,6 Reserve; 2,5: Draht liegt auf</td><td><span class="pill mid">Test mit zwei Füßen</span></td><td class="src">S geschätzt, ungemessen</td></tr>
+    <tr><td>Gesamthöhe der Platte (hochgerechnet)</td><td class="num">10,6 + 3,5 + Powerbank 12,6 + Boden 1,2 = 27,9</td><td class="num">Steckprobe 2: 27,0</td><td><span class="pill ok">etwa gleich</span></td><td class="src">A abgeleitet</td></tr>
     <tr><td>Zapfen</td><td class="num">Ø 4,0, Höhe 2,5, Loch Ø 4,3, 2,8 tief</td><td class="num">Gleitspiel 0,15 (bewährt), 1 mm länger</td><td><span class="pill mid">zu prüfen</span></td><td class="src">E, r4 U: 1,5 wackelte</td></tr>
     </tbody>
   </table></div>
@@ -228,24 +229,24 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 <section aria-labelledby="h-dec">
   <h2 id="h-dec">Entscheidungen</h2>
   <div class="dec">
-    <div class="card rec"><h3><span class="tag">A</span>Halt der Leiste beim Aufstecken</h3>
+    <div class="card rec"><h3><span class="tag">A</span>Halt der Leiste</h3>
       <div class="opts">
-        <div class="opt pick"><b>Erst nur Rippen, dann mit Kleber (empfohlen)</b><span>Rippen an den Stirnseiten und hinten (0,12 und 0,25 Übermaß) halten die Leiste in der Tasche. Der Testbogen fragt zuerst ohne, dann mit einem Tropfen Heißkleber am herausragenden Körper.</span></div>
-        <div class="opt"><b>Nur Rippen</b><span>Kein Kleber; reicht vielleicht nicht, wenn der Aufsteckdruck die Leiste nach unten schiebt.</span></div>
-        <div class="opt"><b>Hinterschnitt (Clip)</b><span>Haltenasen in der Tasche; druckt mit Support, mehr Aufwand, erst wenn A nicht reicht.</span></div>
+        <div class="opt pick"><b>Aufkleben, erst Sekundenkleber, dann Heißkleber (empfohlen)</b><span>Ohne Tasche hält nur der Kleber. Beim Aufstecken schiebt der Druck die Leiste von der Platte weg, deshalb muss er das halten. Der Testbogen fragt beides nacheinander ab.</span></div>
+        <div class="opt"><b>Doppelseitiges Klebeband</b><span>Sauber und dünn, aber weich: E könnte beim Aufstecken nachgeben.</span></div>
+        <div class="opt"><b>Flache Tasche (0,4 mm) als Ausrichtung</b><span>Gibt Lage und seitlichen Halt, aber wieder Support unter dem Muldenboden. Erst, wenn die Lage der Leiste ein Problem wird.</span></div>
       </div></div>
     <div class="card rec"><h3><span class="tag">B</span>Füße und Luft</h3>
       <div class="opts">
-        <div class="opt pick"><b>Zwei Sätze Füße: 3,4 und 2,4 mm (empfohlen)</b><span>Je vier Füße 6 × 6 mm mit Zapfen 2,5. Du probierst erst 3,4, dann 2,4, und siehst, wie knapp Draht und Lötstelle werden.</span></div>
-        <div class="opt"><b>Nur 3,4 mm</b><span>Weniger Teile, aber die untere Grenze der Luft bliebe ungeprüft.</span></div>
+        <div class="opt pick"><b>Zwei Sätze Füße: 3,5 und 2,5 mm (empfohlen)</b><span>Je vier Füße 6 × 6 mm mit Zapfen 2,5. Du probierst erst 3,5, dann 2,5, und siehst, ab wann der Draht am Tisch aufliegt.</span></div>
+        <div class="opt"><b>Nur 3,5 mm</b><span>Weniger Teile, aber die untere Grenze der Luft bliebe ungeprüft.</span></div>
       </div></div>
-    <div class="card"><h3><span class="tag">C</span>Stufe und Nische</h3>
+    <div class="card"><h3><span class="tag">C</span>Alles auf gleicher Höhe</h3>
       <div class="opts">
-        <div class="opt pick"><b>Stufe wie Steckprobe 1, keine Nische (entschieden)</b><span>Rille 3,1 mm lang, 0,52 tief, Breite wie der Schlitz. Die Nische von Steckprobe 2 (12 × 9,5 mm) entfällt, weil unter der Platte alles offen ist.</span></div>
+        <div class="opt pick"><b>Keine Tasche, keine Stufe, keine Nische (entschieden)</b><span>Die Leiste liegt flach an der Unterseite. Mehr Luft darunter (Körper 2,0 statt 1,0 sichtbar), dafür 1 mm dünnere Platte und kein Support.</span></div>
       </div></div>
     <div class="card"><h3><span class="tag">D</span>Was nicht zum Test gehört</h3>
       <div class="opts">
-        <div class="opt pick"><b>Faden-V und Powerbank-Fach</b><span>Fadenführung macht der andere Chat, das Fach steht in der Fachprobe. Dieses Dock zeigt nur Leiste, Lötenden, Support, Halt und Zapfen.</span></div>
+        <div class="opt pick"><b>Faden-V und Powerbank-Fach</b><span>Fadenführung macht der andere Chat, das Fach steht in der Fachprobe. Dieses Dock zeigt nur Leiste, Lötenden, Kleber und Zapfen.</span></div>
       </div></div>
   </div>
 </section>
@@ -255,21 +256,21 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <div class="scroll"><table>
     <thead><tr><th>Teil</th><th>Ausrichtung</th><th>Hinweise</th></tr></thead>
     <tbody>
-    <tr><td>Mini-Oberplatte</td><td>Unterseite auf dem Bett, Mulde oben</td><td>Tasche (1,0) und Stufe (0,52) sind Hohlräume direkt am Bett unter dem 0,4 mm dicken Muldenboden. Support: automatisch, Überhangwinkel 30°, Schnittstelle sauber (Abstand 0,1), nur auf der Bauplatte. Die Stufe bleibt massiv. Danach die vier Pin-Löcher mit einer Nadel oder einem 1,2-mm-Bohrer freimachen (Risiko: Supportreste in den Löchern).</td></tr>
-    <tr><td>Füße (2 × 4)</td><td>stehend, Zapfen oben</td><td>6 × 6 mm Querschnitt (L06), Zapfen Ø 4,0 × 2,5; Satz 3,4 mit einer Kerbe, Satz 2,4 mit zwei.</td></tr>
+    <tr><td>Mini-Oberplatte</td><td>Unterseite auf dem Bett, Mulde oben</td><td>Kein Support, keine Brücke. Muldenboden = erste zwei Schichten. Die vier Pin-Löcher (Ø 1,4) brauchen am Bett eine Fase von 0,15 gegen den Elefantenfuß (L02). Bettkanten mit Fase 0,5.</td></tr>
+    <tr><td>Füße (2 × 4)</td><td>stehend, Zapfen oben</td><td>6 × 6 mm Querschnitt (L06), Zapfen Ø 4,0 × 2,5; Satz 3,5 mit einer Kerbe, Satz 2,5 mit zwei.</td></tr>
     <tr><td>Gebäude, Kassette</td><td>aus Steckprobe 2</td><td>unverändert wiederverwenden, kein Neudruck.</td></tr>
     </tbody>
   </table></div>
-  <p class="small muted">Berücksichtigte Lehren: L02 Lochmündungen (Fase beidseitig, am Bett durch Support ersetzt), L05 Muldenboden nicht frei über einer Tasche drucken (jetzt Support), L06 keine freistehenden Stifte, L07 Druckausrichtung je Teil, L08 ungemessene Werte markiert, L24 nur fühlbare oder ja/nein-Felder, L25 Variante und ZIP-Version im Ergebnistext, L27 neue Werte nur in <code>plug/power/params.py</code>, L31 Support ist erlaubt.</p>
+  <p class="small muted">Hauptrisiko: die Leiste lässt sich beim zehnmaligen Aufstecken und Abziehen vom Kleber lösen. Berücksichtigte Lehren: L02 Lochmündungen, L05 keine Brücke (hier gar keine Hohlräume), L06 keine freistehenden Stifte, L07 Druckausrichtung je Teil, L08 ungemessene Werte markiert, L24 nur fühlbare oder ja/nein-Felder, L25 Variante und ZIP-Version im Ergebnistext, L27 neue Werte nur in <code>plug/power/params.py</code>.</p>
 </section>
 
 <section aria-labelledby="h-test">
   <h2 id="h-test">Was der Testbogen danach abfragt</h2>
   <ul>
-    <li>Support entfernt: Muldenboden glatt, vier Pin-Löcher offen oder mit Resten?</li>
-    <li>Leiste einsetzen: sitzt sie in der Tasche, liegen Körper und Lötenden flach, wackelt sie?</li>
-    <li>Gebäude aufstecken und abziehen, zehn Mal: bleibt die Leiste sitzen (ohne Kleber), dann mit einem Tropfen Kleber.</li>
-    <li>Draht anlöten und die Platte auf die Füße 3,4 und dann 2,4 setzen: hängt etwas am Tisch an?</li>
+    <li>Platte ansehen: Muldenboden glatt, vier Pin-Löcher offen (Fase gewirkt)?</li>
+    <li>Leiste mit Sekundenkleber an die flache Unterseite kleben, Pins durch die Löcher: liegt sie flach, sitzt sie gerade?</li>
+    <li>Gebäude aufstecken und abziehen, zehn Mal: hält der Kleber? Dann dasselbe mit Heißkleber.</li>
+    <li>Draht anlöten und die Platte auf die Füße 3,5 und dann 2,5 setzen: hängt etwas am Tisch an?</li>
     <li>Zapfen in den Löchern: Sitz 1 bis 5.</li>
     <li>Durchgang für alle vier Pins mit dem Multimeter.</li>
   </ul>
@@ -277,6 +278,6 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 
 <section>
   <h2>Nächster Schritt</h2>
-  <p>Wenn dir die Empfehlung passt (A: erst Rippen, dann Kleber; B: zwei Füße-Sätze; C: Stufe ohne Nische), baue ich STL, README, ZIP, Prüfbericht und den Testbogen. Sonst nenne mir die Änderungen.</p>
+  <p>Wenn dir die Empfehlung passt (A: aufkleben, B: zwei Füße-Sätze, C: alles auf gleicher Höhe), baue ich STL, README, ZIP, Prüfbericht und den Testbogen. Sonst nenne mir die Änderungen.</p>
 </section>
 </div>
