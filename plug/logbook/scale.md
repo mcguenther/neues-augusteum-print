@@ -65,7 +65,7 @@ Bis 1:1350 trägt der Plan, wenn auch das Paulinum V1RS bekommt (Hochhaus bei 1:
 
 | Wert | Wo | alt | neu | Warum |
 |---|---|---|---|---|
-| Zusatztiefe der Mulde | neue Konstante `MULDE_EXTRA_T` in `plug/testcase/params.py`, geht in `F = layer_up(g1 + GUIDE + CH_F + CH_P + MULDE_EXTRA_T)` ein (gleichwertig: `GUIDE` 3,0 → 7,0, erst nach bewährtem Test in `parts.py`) | 0 | 4,0 | LED sitzt 4 mm tiefer unter dem Dach |
+| Zusatztiefe der Mulde | neue Konstante `MULDE_EXTRA_T` in `plug/testcase/params.py`, geht in `F = layer_up(g1 + GUIDE + CH_F + CH_P + MULDE_EXTRA_T)` ein (Bedeutung: die 4 mm sind der **Gebäudekörper in voller Umrissform** unter der Plattenoberfläche, die Umrisse sind auf der Platte erkennbar; darunter folgt der Fuß mit der getesteten 10,2-mm-Mulde) | 0 | 4,0 | LED sitzt 4 mm tiefer unter dem Dach |
 | Fußhöhe / Muldentiefe F | abgeleitet, `dims()["F"]` | 10,2 | 14,2 | folgt aus der Zusatztiefe |
 | Plattendicke | abgeleitet, `dims()["plate_t"]` | 16,2 | 20,2 | Dock und Kabelraum rücken mit nach unten |
 | Lage von Winkelleiste, Pin-Spitze, Kabelraum | abgeleitet (`z_hb`, `z_bb`, `z_tip`, `z_lt`) | −10,6 / −12,6 / −4,92 / −16,2 | −14,6 / −16,6 / −8,92 / −20,2 | alles unter dem Muldenboden hängt an F |
@@ -84,7 +84,7 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 
 | Jetzt (Parameter, Planung, Generator) | Erst nach Test |
 |---|---|
-| `MULDE_EXTRA_T = 4.0` in `params.py` (F 14,2, Platte 20,2 und alle abgeleiteten Lagen) | `GUIDE` 3,0 → 7,0 in `plug/parts.py` (gleiche Wirkung, aber Quelle der bewährten Werte) |
+| `MULDE_EXTRA_T = 4.0` in `params.py` (F 14,2, Platte 20,2 und alle abgeleiteten Lagen) | Umriss-Aussparung 4 mm tief plus Fußmulde 10,2 als bewährt (Steckprobe 3); danach `plug/parts.py` |
 | Maßstab 1300 im Generator (`--scale 1300`), README-Block Maßstäbe | Hof-Stämme 0,8 mm als bewährt (Probedruck) |
 | Kassettenwahl je Gebäude als Tabelle in `params.py` | V1RS und V2R als druckfertige Teile (Streifendicke 2,2 mm messen, Adernweg, Verkettung) |
 | Hof-Einführfase 0,4 bis 0,5 mm | Fuß 14,2 mm als bewährt (Führung, Kippen) |
@@ -98,3 +98,8 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 - `generate.py`: Maßstab 1:1300 gehört zu den Standard-Maßstäben; `readme.py` und `preview.py` zeigen 1:1300 im Maßstäbe-Block.
 - Wände: Paulinum v4 nur 0,8 mm (Mindestmaß), alle anderen 1,2 mm. Die Mulde-Fase (1 mm) am Rand reicht bei Hörsaal- und Seminargebäude um wenige mm² über den Grundriss; unkritisch, bei Hohlkörper-Gebäuden prüfen.
 - Noch nicht umgesetzt: Gebäude mit Fuß und Schacht (Hohlkörper, anderer Chat), Kabelführung zwischen den Docks, Faden-Lasche.
+
+### Korrektur 2026-10-16 (Nutzer: Umrisse erkennbar, Hof zu flach)
+
+- **Gebäude werden um die 4 mm nach unten verlängert:** Der volle Gebäudeumriss (Laserscan-Grundriss) reicht 4 mm unter die Plattenoberfläche (`OUTLINE_CLR_T` 0,1 Spiel), darunter folgt wie getestet die Fußmulde mit 10,2 mm (um 4 mm nach unten verschoben, auf die Umriss-Aussparung begrenzt). Gesamttiefe F bleibt 14,2, Platte 20,2. Auf der Platte sind so die Gebäudeumrisse zu sehen. Die erste Umsetzung (reine 4 mm Führungslänge im Fuß) war ein Missverständnis. Der Gebäude-Generator (Fuß und Körper 4 mm länger) bleibt To-do im Hohlkörper-Chat.
+- **Hof-Einsatz tiefer:** statt 1 mm jetzt `HOF_DEPTH_T = 3,0` mm unter der Oberfläche (Annahme, nicht die 4 mm der Gebäude), Fuge `HOF_CLR_T` 0,1, Einführfase unten 0,4 (Einsatz); Aussparung ohne Fase oben, damit die Wand zur Gebäude-Aussparung 0,4 mm bleibt. `innenhof.model(s, fps, tiefe, spiel)`, Einsatz als `stl/steckmodul_campus/hof_einsatz_1zu1300.stl`.

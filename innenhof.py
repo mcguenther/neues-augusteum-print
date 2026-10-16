@@ -190,12 +190,15 @@ def hub(data, s):
     return (data["boden_z"] - data["sockel_z"]) * s
 
 
-def model(s, building_fps_mm):
+def model(s, building_fps_mm, tiefe=None, spiel=0.0):
     """(Volumenkörper mm, Grundriss mm, Info): Platte von -POCKET_DEPTH bis zum Hofboden (hub),
-    Objekte darauf."""
+    Objekte darauf. tiefe: andere Tiefe unter der Oberfläche (Steckplatte, plug/campus.py); spiel: Einsatz so viel kleiner
+    als die Aussparung (Fuge je Seite)."""
     data = load()
     fp = flaeche_mm(building_fps_mm, s)
-    T = G.POCKET_DEPTH
+    if spiel:
+        fp = G.clean(fp.buffer(-spiel, join_style=2))
+    T = G.POCKET_DEPTH if tiefe is None else tiefe
     H = hub(data, s)
     # Pflaster aus getrennten Feldern, damit die Dreiecke an den Farbgrenzen enden
     felder = [G.scale_geom(Polygon(data["flaechen"][k]), s) for k in ("denkmalplatz", "platz")]

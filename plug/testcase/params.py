@@ -31,13 +31,17 @@ BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
 # ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
 # Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
-# Die Zusatztiefe ist reine Führungslänge im Fuß (Pins, Buchse und Kassette bleiben wie getestet).
+# Die 4 mm sind der Gebäudekörper in voller Umrissform unter der Plattenoberfläche (Umriss-Aussparung in der Platte, auf der Platte erkennbar);
+# darunter folgt der Fuß mit der getesteten Mulde von 10,2 mm (Pins, Buchse und Kassette bleiben wie getestet).
 MULDE_EXTRA_T = 4.0
 SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchstens 230 × 230 mm)
 # Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
 CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
             "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
-HOF_CH_T = 0.4          # Einführfase am Hof-Einsatz (unten) und an der Aussparung (oben), wie bei den Gebäuden; keine Zusatztiefe (Hof 1 mm unter der Oberfläche)
+HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
+HOF_DEPTH_T = 3.0       # Hof-Einsatz: so tief unter der Oberfläche (nicht die 4 mm der Gebäude; vorher 1 mm war zu flach, Annahme, offen)
+HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite; die Wand zwischen Hof- und Gebäude-Aussparung bleibt 0,4 mm (Fuge Hof zu Gebäude 0,5 minus 0,1)
+OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
 
 # ---- Fasen
 ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)

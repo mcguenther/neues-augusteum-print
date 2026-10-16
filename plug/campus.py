@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Steckplatte des Campus: Grundplatte mit Mulde und Dock (Winkelleiste) je Gebäude und Aussparung für den Innenhof-Einsatz.
+"""Steckplatte des Campus: Grundplatte mit Umriss-Aussparung (4 mm), Fuß-Mulde und Dock (Winkelleiste) je Gebäude und Aussparung für den Innenhof-Einsatz.
 
 Festlegung (plug/logbook/scale.md): Maßstab 1:1300, Mulde überall 4 mm tiefer (F 14,2, Platte 20,2 mm), Kassette je Gebäude aus
 params.CASSETTE (v4, V1RS, V2R). Die Lage der Mulde im Grundriss wird gesucht (Rechteck um den Schacht, beliebige Drehung, höchste Dachhöhe
@@ -36,7 +36,6 @@ OUT = os.path.join(HERE, "stl", "steckmodul_campus")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_campus")
 CACHE = os.path.join(HERE, "plug", "scale1176", "placements_%d.json")
 WALL_PREF = (1.2, 0.8)          # Wand um den Schacht: bevorzugt, Mindestmaß
-HOF_CLR = 0.15                  # Fuge des Hof-Einsatzes in der Aussparung je Seite (Fugen zu den Gebäuden 0,5, Fase oben darf nicht darüber hinaus)
 
 
 def shaft_size(var):
@@ -107,12 +106,12 @@ def place_all(models, scale, replace=False):
 
 
 def local_cuts(var, wall, d):
-    """Mulde und Dock im Gebäudesystem (z = 0 Plattenoberseite)."""
+    """Fuß-Mulde (getestete Tiefe 10,2, um die Umrisstiefe nach unten verschoben) und Dock im Gebäudesystem (z = 0 Plattenoberseite)."""
     cs = I.hcs(foot_local(var, wall))
     old = sd.CLR
     sd.CLR = P.MULDE_CLR_T
     try:
-        mulde = list(I.pocket_cuts(cs, d["F"]))
+        mulde = [c.translate([0.0, 0.0, -P.MULDE_EXTRA_T]) for c in I.pocket_cuts(cs, P.dims()["F"])]
     finally:
         sd.CLR = old
     return mulde + TB.dock_cuts_b(d)
@@ -135,12 +134,13 @@ def build(scale=P.SCALE_PLAN, replace=False):
     s = 1000.0 / scale
     G.FAST = True
     models = G.source_models("laserscan", s)
-    models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()])
+    models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T)
     places = place_all({k: v for k, v in models.items() if k in P.CASSETTE}, scale, replace)
     d = P.dims_plan()
     T = d["plate_t"]
     fps = {k: v[1] for k, v in models.items()}
     outline = G.plate_outline(unary_union(list(fps.values())))
+    hof_solid = models[G.HOF["slug"]][0]
     plate = G.extrude(outline, 0.0, T)
     plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan")
     # Hohlräume je Gebäude; Spiegelung (180°) so, dass die Löträume möglichst frei und innerhalb der Platte bleiben
@@ -161,14 +161,15 @@ def build(scale=P.SCALE_PLAN, replace=False):
         report.append((slug, p["var"], wall, flip, bad))
         for c in cuts:
             cut_all.append(to_world(c, p, yc, flip).translate([0, 0, T]))
-    # Hof-Aussparung: 1 mm tief (POCKET_DEPTH), Fuge HOF_CLR, Einführfase oben
-    hof = fps[G.HOF["slug"]]
-    ch, layer = P.HOF_CH_T, 0.2
-    cut_all.append(G.extrude(hof.buffer(HOF_CLR, join_style=2), T - G.POCKET_DEPTH, T + 0.01))
-    for k in range(int(round(ch / layer))):
-        cut_all.append(G.extrude(hof.buffer(HOF_CLR + ch - layer * (k + 0.5), join_style=2), T - layer * (k + 1), T - layer * k + 0.01))
+    # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Wand
+    # zu den Umriss-Aussparungen der Gebäude 0,4 mm bleibt
+    hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s)
+    cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + 0.01))
+    # Umriss-Aussparungen der Gebäude, MULDE_EXTRA_T tief: auf der Platte sind die Umrisse erkennbar, der Gebäudekörper reicht so weit hinein
+    for slug in P.CASSETTE:
+        cut_all.append(G.extrude(fps[slug].buffer(P.OUTLINE_CLR_T, join_style=2), T - P.MULDE_EXTRA_T, T + 0.01))
     plate = diff(plate, *cut_all)
-    return plate, report, models, places, outline
+    return plate, report, models, places, outline, hof_solid
 
 
 def main():
@@ -178,14 +179,18 @@ def main():
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     os.makedirs(PREV, exist_ok=True)
-    plate, report, models, places, outline = build(a.scale, a.replace)
+    plate, report, models, places, outline, hof_solid = build(a.scale, a.replace)
     tm = to_tm(plate)
     path = os.path.join(OUT, "steckplatte_1zu%d.stl" % a.scale)
     tm.export(path)
     b = outline.bounds
     print("Platte %.1f × %.1f × %.1f mm, dicht=%s, Mulde %.1f, Plattendicke %.1f" % (
         b[2] - b[0], b[3] - b[1], P.dims_plan()["plate_t"], tm.is_watertight, P.dims_plan()["F"], P.dims_plan()["plate_t"]))
-    ok = tm.is_watertight
+    hof_tm = to_tm(hof_solid)
+    hof_path = os.path.join(OUT, "hof_einsatz_1zu%d.stl" % a.scale)
+    hof_tm.export(hof_path)
+    print("Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s, %.1f mm unter der Oberfläche" % (*hof_tm.extents, hof_tm.is_watertight, P.HOF_DEPTH_T))
+    ok = tm.is_watertight and hof_tm.is_watertight
     for slug, var, wall, flip, bad in report:
         print("  %-22s %-5s Wand %.1f, Dock-Drehung %d°, Überlappung/außerhalb %.2f mm²" % (slug, var, wall, flip, bad))
         ok &= bad < 0.05
