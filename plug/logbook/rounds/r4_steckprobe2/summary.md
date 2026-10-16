@@ -34,3 +34,15 @@ Der Nutzer hat die Karten noch nicht beantwortet. Erst nach dem Abnicken: Werte 
 ## Lehre aus dieser Planung
 
 L29: Bei Verbindungsmitteln den ganzen Weg abfragen (Eintritt, Austritt, welche Seite zugänglich), statt Löcher durchgehend anzunehmen.
+
+## Nachtrag: Kassetten-Varianten V1 und V2 (Planung)
+
+Anlass (Nutzer): Die Kassette v4 passt nicht in alle Gebäude, z. B. nicht in das Seminargebäude und das City-Hochhaus. Gewünscht: V1 = Streifen gekippt, steht auf der langen Kante und klebt auf einer Wand;
+V2 für das City-Hochhaus = Streifen hochkant, schlanker, nur die Buchse, Streifen an einer flacheren Wand. Konzepte als HTML mit Grafik.
+
+- Seite `plug/testcase/plan3.html` (`python3 -m plug.testcase.build_plan3`), Geometrie `plug/testcase/variants.py`, Passstudie `plug/testcase/fit_study.py` (`variants_fit.json`). **Konzept, keine STL, nicht abgenickt.**
+- Passstudie (Wand 1,2 um den Schacht, Schnitt 2 mm über dem Boden): bei 1:1500 passt v4 nicht in Paulinum, Seminargebäude, City-Hochhaus, im Institutsgebäude nur 0,4 Wand; bei 1:1000 überall. V1 und V2 passen überall in den Grundriss.
+- Höhen: V1 braucht Gebäude ab 17,3 mm (Hörsaalgebäude 16,4: zu niedrig; Seminargebäude 18,8: 1,5 Reserve), V2 ab 24,5 mm (Hochhaus, Paulinum, knapp Neues Augusteum).
+- Aufbau: gleicher Unterbau wie v4 (Dock, Pins, Einpressen bleiben gültig), darüber ein Blatt (1,2) als Fortsetzung der hinteren Taschenwand, Streifen davor, LED blickt nach vorn.
+  V1 17,2 × 5,3 × 26,4 (Adern seitlich zum Pad-Ende), V2 13,0 × 5,3 × 33,5 (Adern gerade nach oben).
+- Offene Karten: Varianten (A: drei Kassetten), Lichtrichtung, Blattdicke V2 (Empfehlung 1,6), LED-Höhe V2, Unterbaubreite V1, Streifenbreite, Probedruck.
