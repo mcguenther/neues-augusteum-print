@@ -43,7 +43,7 @@ Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Pl
 | Zapfen | Höhe 2,5 statt 1,5, Löcher entsprechend tiefer | r4 U |
 | Schachttiefe | Kassette + 0,35 | r4 E |
 | Support | im Plan ausweisen, wo Support nötig ist; Brückenregel L04 gelockert | r4 W |
-| Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L33) | r4 leer |
+| Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L35) | r4 leer |
 
 Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
 
@@ -75,6 +75,10 @@ Die große Platte ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4
 gesetzt, Kassette passt dort in 4 von 6 Gebäuden, Dock frei an 3). Der Nutzer hat den Bau freigegeben: Steckprobe 2 (STL, README, ZIP, Prüfbericht in `stl/steckmodul_testcase2/`, Testbogen `plug/testcase/feedback2.html`) im Zwei-Lagen-Aufbau drucken (Mini-Oberplatte 12,6 + Mini-Unterkasten mit
 Steg-Anschlag 1,2 Luft, Zentrierzapfen Ø 4 / Loch 4,3, Kabelnische hinter den Lötenden, **zwei Faden-V mit 53° und 40°**, Gebäude mit Fußfase 0,8); eine
 **Fachprobe Powerbank** ist **nicht** mitgebaut (eigene Runde, siehe oben). Das Kassetten-Redesign läuft in einem separaten Chat und kann die Kassette ersetzen. Werte: `plug/power/params.py`.
+
+## Kassetten-Varianten V1/V2 (Plan `plug/testcase/plan3.html`, wartet auf das Abnicken)
+
+Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die Gebäude zurückgestellt, bis der Maßstab feststeht. Danach: Probedruck (Kassetten V1/V2 plus Mini-Gebäude auf dem bisherigen L-Fuß), Werte nach `params.py`, STL, Testbogen. Offene Punkte: Adernweg V1, Blattdicke V2, Licht (Hotspot im schmalen Gebäude), Anschlagleiste im Schacht.
 
 ## Priorität 2
 

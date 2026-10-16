@@ -23,7 +23,7 @@ Vorgaben des Nutzers: **keine Taste und kein Stößel** (der Mikrocontroller fra
 3. **Steckerraum 35 mm** für den geraden USB-A-Stecker (Schätzung). Schritt S.
 4. **Luft über der Powerbank** 0,6 mm (Worst-Case bei 13,0 mm Dicke: 0,2 mm). Schritt D.
 5. **Sitz im Zaun** (Spiel 0,5 je Seite) und die **Länge 90 mm** (mit dem Lineal). Schritt P.
-6. **ZIP-Version:** im Ergebnistext von Steckprobe 2 fehlte sie (L33). Nach der Version fragen, falls sie fehlt.
+6. **ZIP-Version:** im Ergebnistext von Steckprobe 2 fehlte sie (L35). Nach der Version fragen, falls sie fehlt.
 
 ## Vorgehen (Arbeitsmodus des Repos)
 
