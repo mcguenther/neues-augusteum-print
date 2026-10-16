@@ -170,7 +170,7 @@ def table(jobs=None):
     return {"%s|%.1f" % (t[0], t[1]): r for t, r in zip(tasks, res)}
 
 
-def pill_table(airs=(3.0, 4.5)):
+def pill_table(airs=(3.0, 4.0, 4.5)):
     """Längste gerade Nadel um den Steg der halben Pille (Schlüssel „pille<Luft>|<Nadel-Ø>“)."""
     out = {}
     for air in airs:

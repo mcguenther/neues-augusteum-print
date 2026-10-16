@@ -54,6 +54,14 @@ def pill(air=None):
     return d
 
 
+CHOSEN_AIR = 4.0         # E  Luft über dem Steg nach dem Test der Eckmuster P3 (3,0) und P45 (4,5): Kompromiss 4,0 (Nutzer, 2026-10-16); noch nicht gedruckt
+
+
+def pill_chosen():
+    """Maße der gewählten Tasche (Luft CHOSEN_AIR)."""
+    return pill(CHOSEN_AIR)
+
+
 # ---- B: halboffene Rinne an der Seitenwand (Λ-Nut, nach außen offen)
 B = dict(groove_w=4.0, depth=2.4, apex=5.5, slope=0.75)
 # ---- C: zwei gerade Schrägbohrungen, die Scheitelstrecke liegt in einer Rille außen an der Seitenwand

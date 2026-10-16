@@ -60,7 +60,7 @@ def table():
         outline, blocked = plate(scale)
         row = {"plate": [round(outline.bounds[2] - outline.bounds[0], 1), round(outline.bounds[3] - outline.bounds[1], 1)]}
         for name, (l, w) in (("alt", (2 * (BC.V["slope"] * BC.V["apex"] + BC.V["entry_r"]), 2 * BC.V["entry_r"])),
-                             ("pille3", (P.pill(3.0)["mouth_l"], P.pill(3.0)["mouth_w"])), ("pille45", (P.pill(4.5)["mouth_l"], P.pill(4.5)["mouth_w"]))):
+                             ("pille3", (P.pill(3.0)["mouth_l"], P.pill(3.0)["mouth_w"])), ("pille4", (P.pill(4.0)["mouth_l"], P.pill(4.0)["mouth_w"])), ("pille45", (P.pill(4.5)["mouth_l"], P.pill(4.5)["mouth_w"]))):
             row[name] = place(outline, blocked, l, w)
         out["1:%d" % scale] = row
     return out
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     t = table()
     for k, row in t.items():
         print(k, "Platte", row["plate"])
-        for name in ("alt", "pille3", "pille45"):
+        for name in ("alt", "pille3", "pille4", "pille45"):
             print("   %-8s %s" % (name, [("–" if r is None else "%s mm von der Ecke" % r["shift"]) for r in row[name]]))
     if "--write" in sys.argv:
         with open(JSON, "w") as f:

@@ -11,6 +11,7 @@ Berührt nicht: `plug/testcase/build2.py`, Dock-Nische, Zapfen, Schachttiefe, `p
 | `reach.py`, `reach.json` | Einfädelprobe im Schnitt: längste gerade Nadel, die durch einen V-Kanal bzw. um den Steg der Pille kommt (`python3 -m plug.thread.reach [--write]`, `--pill` nur die Pille, je ca. 30 s bis 1 min) |
 | `build.py`, `stl/`, `vorschau/` | **Eckmuster P3 und P45** (je Plattenecke + Unterkasten-Ecke): `python3 -m plug.thread.build` (ca. 2,5 min) schreibt STL, `README.txt`, `pruefbericht.txt`, `faden_eckmuster_v1.zip` nach `plug/thread/stl/` und Bilder nach `plug/thread/vorschau/` |
 | `build_feedback.py`, `feedback.template.html`, `feedback.html` | Testbogen zu den Eckmustern (`python3 -m plug.thread.build_feedback`), Ergebnistext zum Kopieren |
+| `round/r5_eckmuster/` | vorläufiger Rundeneintrag (Auswertung, Ergebnistext wörtlich) für `plug/logbook/rounds/` |
 | `build_plan1.py`, `plan1.html` | Archiv: Plan Stand 1 (Vergleich A bis D, Empfehlung C); nicht mehr aktuell |
 
 ## Plan-Artifact
@@ -28,6 +29,8 @@ Testbogen: https://claude.ai/artifact/9qinNK1GZiZTRRZJeqjXTx (privat)
 - Einfädeln: gerade Nadel kommt nur etwa 10 mm (Luft 3,0) bzw. 12 mm (Luft 4,5) um den Steg; Nadel bringt den Faden über den Steg, Haken oder Pinzette zieht ihn herunter, oder ganz ohne Nadel mit Haken.
 - Abgenickt am 2026-10-16: Fase A (2,0 / 1,0), Luft beide (P3 und P45), ohne Support, Werkzeug nur Faden (kein Haken, keine Nadel), Freigabe zum Bauen.
 - Gebaut: `plug/thread/stl/` (vier STL, alle dicht, keine Kollisionen, 16 g, etwa 1 h auf dem Drucker des Nutzers). Prüfbericht misst im Modell: Luft über dem Steg 3,00 bzw. 4,50, Eingang und Ausgang 10,4 bzw. 11,9 mm weit an der Unterseite.
+
+- **Ergebnis der Eckmuster (2026-10-16):** Decke glatt, Faden geht bei beiden durch. Nutzer wählt als Kompromiss **4,0 mm Luft** (`params.CHOSEN_AIR`, `pill_chosen()`); Widerspruch im Ergebnistext (ZIP „nicht gedruckt“); Zugprobe noch offen. Auswertung: `round/r5_eckmuster/summary.md`, `result.txt`.
 
 ## Neue Lehre für `plug/logbook/lessons.md` (beim Merge nachtragen)
 
