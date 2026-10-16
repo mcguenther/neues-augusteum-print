@@ -1,0 +1,73 @@
+NACHTDRUCK 2 · ERGEBNIS (2026-10-15)
+
+[0] Vorbereiten
+- Sind die Kontakte an der Buchse gecrimpt (Adern dran)?: ja, alle 4
+- Multimeter mit Durchgangsprüfung vorhanden?: ja
+
+[1] Druckqualität ansehen
+- Welche Dateien wurden gedruckt?: alles soweit
+- Decke über der Nut bei Platte N A: leicht durchgehängt
+- Thick bridges in Bambu Studio eingeschaltet?: weiß nicht
+- Schieber N und Plättchen K: flach?: flach
+- Pin-Löcher (K, N, D) mit Fase: alle offen, Fase gut
+- Erhabene Schrift: gut lesbar
+- Kerben als Rang: gut zu fühlen und zu sehen
+- Elefantenfuß an der Unterseite: leichter Wulst
+- Druckzeit insgesamt in Stunden: so 2 h
+- Drucker und Filament: bambu a1 schwarzes pls
+- Notizen: vlt fase auf 0,4 mm testen
+
+[K] Kontakt-Tiefe
+- Plättchen 0,4 mm (E = 5,28 mm): Durchgang: alle 4 Kontakte stabil, auch beim Wackeln
+- Plättchen 0,6 mm (E = 5,08 mm): Durchgang: alle 4 Kontakte stabil, auch beim Wackeln
+- Plättchen 0,8 mm (E = 4,88 mm): Durchgang: mit Aussetzern beim Wackeln
+- Plättchen 1,0 mm (E = 4,68 mm): Durchgang: mit Aussetzern beim Wackeln
+- Plättchen 0,4 mm: Halt der Buchse: hält, lässt sich leicht abziehen
+- Plättchen 0,6 mm: Halt der Buchse: Buchse fällt fast von selbst ab
+- Plättchen 0,8 mm: Halt der Buchse: Buchse fällt fast von selbst ab
+- Plättchen 1,0 mm: Halt der Buchse: Buchse fällt fast von selbst ab
+- Notizen: am liebsten die 0,4 mm, buchse hält auch da nur kaum; ist bestimmt aber ok, weil gebäude ja fest gesteckt wird
+Stabil bei Plättchen: 0,4, 0,6 (E 5,28, 5,08 mm)
+→ K: dickstes stabiles Plättchen 0,6 mm (E 5,08); Muldenboden + Trichterplatte dürfen zusammen höchstens 0,6 mm dick sein (bisher 1,8)
+
+[C] Kassette v2 bestücken
+- Buchse in der Tasche: 3 · geht mit Fingerdruck, kein spürbares Spiel
+- Buchse liegt ganz an den Schultern an: ja, ganz hinein
+- Halt der Buchse ohne Werkzeug: fest
+- Adern über die runde Kante: knicken stark
+- LED-Streifen 10 mm auf der Oberseite: passt gut
+- LED-Streifen 12 mm auf der Oberseite: passt gut
+- Abstand Tasche zu LED-Streifen (1 mm mehr als in Nacht 1): passt jetzt
+- Rastfenster-Seite der Buchse frei: ja
+- Oberseite als LED-Fläche: eben, gut
+- Notizen: wir solten die fläche für die LED tatsächlich mal 2mm höher machen, damit der knick nicht so stark ist. als so eine art podest
+
+[N] Schieber noch einmal
+- Notizen: wir sollten den schieber weglassen. das nimmt nur weitere kontakt-länge der pins weg. siehe mein punkt zu E!
+
+[E] Kassette einpressen
+- Notizen: wir bruachen den zusätzlichen trichterbofen nicht.
+aber, bei E 0,06 lässt es sich gut rein drücken und sittz dann fest. der anschlagsrand nimmt ja keine pin-länge weg, weil es auf der anderen seite einfach ein tiefenanschlag wäre, richtig? dann können wir das so machen, wenn es beim gebäudedruck auch gut passt.
+
+[D] Passprobe v7
+- Dreieck (2,0): Körper liegt flach in der Tasche: ja
+- Dreieck (2,0): Lötende auf der Stufe: liegt flach auf
+- Quadrat (1,8): Körper liegt flach in der Tasche: ja
+- Quadrat (1,8): Lötende auf der Stufe: liegt flach auf
+- Kreis (1,6): Körper liegt flach in der Tasche: leicht schief
+- Kreis (1,6): Lötende auf der Stufe: leicht schief
+- Pins treten gerade aus den Löchern: ja, alle vier
+- Körper in der Tasche: Spiel: 4 · geht leicht, minimales Spiel
+- Notizen: lass einfach 1,8 nehmen
+
+[FM] Fuß-Lehre im Mulden-Ring (optional)
+- Ring 0,10 mm: 4 · geht leicht, minimales Spiel
+- Ring 0,15 mm: 4 · geht leicht, minimales Spiel
+- Ring 0,20 mm: 5 · wackelt deutlich
+- Notizen: wir können 0,10 nehmen, dann brauchen wir vlt auch einfach keine fderzunge. wenn es sich anbietet, können wir die mal mitdrucken, aber hat keine prio.
+Bewertungen FM (CLR): 0,10=4 · 0,15=4 · 0,20=5
+→ FM (CLR): ENG 0,10 · WEIT 0,15 (Spiel je Seite in mm)
+
+[Σ] Abschluss
+- Halt der Kassette im Gebäude: Einpressen (E)
+- Notizen: fasse den plan zusammen!

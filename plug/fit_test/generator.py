@@ -42,7 +42,8 @@ PP_SLOT_X = abs(sd.pin_x()[0]) + sd.PIN_SQ / 2 + 0.8   # halbe Breite von Schach
 PP_WALL = 1.8
 PP_BACK = sd.HDR_T / 2 + PP_CLR + sd.RA_TAIL + 0.9   # Lötendenschlitz reicht so weit hinter die Körpermitte (-y)
 PP_FWD = PP_YOFF + sd.PIN_SQ / 2 + 0.8                # Schacht reicht so weit vor die Körpermitte (+y)
-PP_TXT = 3.4                                # Schrifthöhe (fett, dazu 0,15 mm Verbreiterung, 0,6 mm tief graviert)
+PP_TXT = 4.0                                # Schrifthöhe (fett, dazu 0,3 mm Verbreiterung, 0,8 mm tief graviert)
+PP_DEPTH = 0.8                              # Gravurtiefe der Beschriftung
 _lab = 1.4 + PP_TXT / 2                      # Beschriftung ganz unten
 _yb = _lab + PP_TXT / 2 + 1.5 + PP_BACK
 PP_L = round(_yb + PP_FWD + 1.4, 1)
@@ -84,16 +85,28 @@ def _passprobe_con():
         for px_ in sd.pin_x():
             cuts.append(cyl(PP_HOLE / 2, zb - 0.01, PP_H + 0.01, cx=x + px_, cy=yb + PP_YOFF, n=32))
             cuts.append(cone(PP_HOLE, x + px_, yb + PP_YOFF))
+            cuts.append(m3d.Manifold.cylinder(PP_HCH + 0.01, PP_HOLE / 2 + PP_HCH + 0.01, PP_HOLE / 2, 32).translate([x + px_, yb + PP_YOFF, zb - 0.01]))   # Fase auch auf der Taschenseite
     try:
         import generate
 
         def label(text, x, y, size=PP_TXT):
             cs = generate.text_cross_section(text, size, 0.0, -size / 2, anchor="center")
             if cs is not None:
-                cs = cs.offset(0.15, m3d.JoinType.Round).translate((x, y))     # fetter
-                cuts.append(m3d.Manifold.extrude(cs, 0.7).translate([0, 0, PP_H - 0.6]))
-        for h, x in zip(PP_VAR, PP_X):
-            label(pp_label(h), x, PP_LAB)
+                cs = cs.offset(0.3, m3d.JoinType.Round).translate((x, y))      # fett
+                cuts.append(m3d.Manifold.extrude(cs, PP_DEPTH + 0.1).translate([0, 0, PP_H - PP_DEPTH]))
+
+        def symbol(kind, x, y, r=1.25):                  # leicht erkennbares Zeichen je Feld: Dreieck, Quadrat, Kreis
+            if kind == 0:
+                pts = [(x - r * 1.15, y - r * 0.8), (x + r * 1.15, y - r * 0.8), (x, y + r * 1.25)]
+                cs = m3d.CrossSection([pts])
+            elif kind == 1:
+                cs = m3d.CrossSection.square((2 * r, 2 * r), center=True).translate((x, y))
+            else:
+                cs = m3d.CrossSection.circle(r * 1.1, 32).translate((x, y))
+            cuts.append(m3d.Manifold.extrude(cs, PP_DEPTH + 0.1).translate([0, 0, PP_H - PP_DEPTH]))
+        for k, (h, x) in enumerate(zip(PP_VAR, PP_X)):
+            label(pp_label(h), x - 1.4, PP_LAB)
+            symbol(k, x + 5.0, PP_LAB + 0.3)
     except Exception as e:
         print("  (Beschriftung übersprungen: %s)" % e)
     return diff(blk, *cuts)
