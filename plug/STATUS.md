@@ -280,6 +280,8 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Plan Fachprobe Powerbank | `plug/power/plan_fach.html` | https://claude.ai/artifact/JgTgE5ckNHmt56F3igkXhK |
 | Testbogen Fachprobe Powerbank | `plug/power/feedback_fach.html` | https://claude.ai/artifact/FKLje3Pq8eSphqzvaohz7W |
 | Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
+| Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
+| Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
@@ -315,14 +317,14 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; Federzunge und Kräfte sind
    berechnet, nicht gemessen (Zielwerte: Einstecken unter 10 N, Herausziehen 3 bis 8 N). Der Nutzer will das später testen.
 6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
-7. Stand: Nachtdruck 1 und 2 und Steckprobe 1 sind gedruckt und ausgewertet (`plug/logbook/rounds/r1` bis `r3`). Als Nächstes: Steckprobe 2 (Plan liegt vor,
-   `plug/logbook/rounds/r4_steckprobe2/summary.md`, Entscheidungskarten offen). Werte in `plug/parts.py` erst nach bewährter Runde übernehmen und dann Probestück,
+7. Stand: Nachtdruck 1 und 2 und Steckprobe 1 sind gedruckt und ausgewertet (`plug/logbook/rounds/r1` bis `r3`). Steckprobe 2 (r4) und Fachprobe Powerbank (r5) sind ausgewertet; als Nächstes Plan Steckprobe 3 (`plug/logbook/next.md`). Werte in `plug/parts.py` erst nach bewährter Runde übernehmen und dann Probestück,
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,4 (27,0 mm), Werte der Steckprobe in `plug/power/params.py`.
+9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
    Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab 1:1300 (Nutzer, Platzgründe; Platte 114 × 223 mm, 8,5 mm Rand auf dem 24-cm-Hut). Die Kassette passt nur
    in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus; Seminar und Institut notfalls zusammenlegen, Kassetten-Redesign im separaten Chat); bei 1:1300 und der halben Nische (12 × 9,5 mm, eine Öffnung, Nutzer) sind
    4 Docks frei, Elektronik 60 × 35 mm (mit der alten Nische 24 × 19 mm waren es 3 und 50 × 30). Dock mit Steg-Anschlag, keine Taste, kein Stößel; Powerbank-Lage Süd (4 Docks, nicht unter
    dem Hof) oder Nord (3 Docks). Faden-V 40° statt 53°. **Steckprobe 2 ist gebaut** (`python3 -m plug.testcase.build2` → `stl/steckmodul_testcase2/`, Prüfbericht dicht und keine Kollisionen; Testbogen
    `python3 -m plug.testcase.build_feedback2` → `plug/testcase/feedback2.html`, Artifact https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB); Fachprobe als eigene Runde mitgebaut. **Steckprobe 2 gedruckt und ausgewertet:** passt bis auf Faden-V (Kanal zu eng), Zapfen (zu kurz), Nische (jetzt eine, 12 × 9,5), Schachttiefe + 0,35; Support erlaubt (`rounds/r4_steckprobe2/`). Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
+   **Fachprobe Powerbank (r5) gedruckt und ausgewertet:** Powerbank minimal dicker als 12,6, Luft über der Powerbank 0,6 → 0,8 (`PB_CLR_Z`, Fachhöhe 13,4, Unterkasten 14,6, Gesamthöhe 27,2 mm), Deckplatte wackelte, Zaun nur als Ausschnitt gedruckt, übrige Punkte ohne Rückmeldung (`plug/logbook/rounds/r5_fachprobe/`).

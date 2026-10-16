@@ -1,6 +1,6 @@
 # Nächste Drucke und offene Punkte
 
-Stand: nach Steckprobe 2 (r4, 2026-10-16, ausgewertet); Fachprobe Powerbank gebaut und wartet auf den Druck. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
+Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
 ## Geklärt (2026-10-16)
@@ -24,6 +24,16 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 `plug/power/params.py`: `NICHE = dict(w=12.0, l=6.46)` (12 × 9,5 mm ab der Körpertasche, eine Öffnung, keine Stege), `ROD` und die Taste aus `PB_PORT_V` entfernt; `build_concept.dock_windows` liefert eine Öffnung, `fach_parts` ohne `rod`; Konzeptseite, Plan und Testbogen der Fachprobe ohne Stößel und ohne Schablone. `plug/testcase/build2.py` baut mit der neuen Nische (der gedruckte Stand r4 liegt eingefroren in `rounds/r4_steckprobe2/`). Fadenführung bleibt unverändert (anderer Chat, wird später gemerged).
 
+## Festgelegt am 2026-10-16 (Planung): siehe [`scale.md`](scale.md)
+
+Maßstab **1:1300** (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14,2, Platte 20,2), Kassette v4 (Paulinum, Neues Augusteum, Hörsaal), V1RS (Seminar, Institut), V2R (Hochhaus). Offen: V1RS und V2R sind Konzepte ohne Test, Fuß 14,2 mm ungetestet, Hof bei 1:1300 neu rechnen. Steckprobe 2 muss die tiefere Mulde (14,2 mm) prüfen, wenn sie gedruckt wird.
+
+**Ungetestet:** alle Planwerte der Festlegung stehen mit Test in [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“; `plug/parts.py` erst nach bestandenem Test ändern.
+
+**Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
+
+**To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.
+
 ### Befund Lösungsfindung 1:1300 (`plug/power/layout.html`, 2026-10-16)
 
 Mit der halben Nische (12 × 9,5 mm) gibt der Generator bei 1:1300 an der Südkante **4 freie Docks** (Paulinum, Neues Augusteum, Hörsaalgebäude, Institut) und Elektronik 60 × 35; vorher mit 24 × 19 mm waren es 3 und 50 × 30. Offen bleiben Seminargebäude und City-Hochhaus: die Kassette (Schacht 13,62) ist zu breit; das Seminargebäude passt ab etwa 10,6 mm Schacht, das Hochhaus selbst bei 10,0 nicht. Weitere Hebel in der Seite: Ohr (Hut 240 breit, Platte 114), zweite Etage (+14 mm), kürzerer Steckerraum.
@@ -36,7 +46,7 @@ Ergänzung (Nutzer): eine **Auflage für die Lötenden** einplanen, damit Löten
 
 **Test-Dock gebaut, wartet auf den Druck (`stl/steckmodul_testdock/`, Testbogen `plug/power/feedback_dock.html`; Plan abgenickt vom Nutzer: „ok, passt“). Prüfbericht: alle Teile dicht, keine Kollisionen, kein Support nötig, ≈ 10 g.** Plan `plug/power/plan_dock.html`, Stand nach der Vereinfachung des Nutzers (2026-10-16): alles auf gleicher Höhe, keine Tasche, keine Stufe, kein Support.** Mini-Oberplatte 40 × 50,4 × 10,6 mm mit Mulde und vier Pin-Löchern, flache Unterseite; der Körper der Leiste (2,0) liegt unter der Platte und wird aufgeklebt (Sekundenkleber, dann Heißkleber testen); Draht und Lötstelle bis etwa 2,9 unter der Platte; Luft zur Powerbank 3,5 (Gesamthöhe etwa 27,9 mm, wie vorher); zwei Füße-Sätze 3,5 und 2,5 mm mit Zapfen 2,5; Gebäude und Kassette aus Steckprobe 2. Hauptrisiko: der Kleber hält das Aufstecken (Druck zieht die Leiste von der Platte weg).
 
-## Priorität 1 neu: Steckprobe 3 (r5, nach r4)
+## Priorität 1 neu: Steckprobe 3 (r6, nach r4 und r5)
 
 Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Plan mit Grafiken):
 
@@ -49,9 +59,18 @@ Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Pl
 | Support | im Plan ausweisen, wo Support nötig ist; Brückenregel L04 gelockert | r4 W |
 | Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L35) | r4 leer |
 
-Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
+Fachprobe Powerbank (r5) ist gedruckt und ausgewertet: Luft über der Powerbank 0,8 statt 0,6 (`PB_CLR_Z`), Deckplatte wackelte, Zaun nur als Ausschnitt, übrige Punkte ohne Rückmeldung (`rounds/r5_fachprobe/summary.md`).
 
-**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten, Fachprobe Powerbank auswerten).
+**Offen nach r5 (Priorität 2, vor oder mit der großen Platte):**
+
+| Thema | Idee | Bedingung |
+|---|---|---|
+| Dicke der Powerbank | mit der Schieblehre messen und in `PB_T` eintragen (dann `PB_CLR_Z` prüfen) | Nutzer |
+| Fachprobe wiederholen? | nur mit vollem Zaun und Luft 0,8, Testbogen fragt Zaun, Seitenspiel, Länge, Kabelkanal, Fenster, Steckerraum, Wackeln einzeln ab und die ZIP-Version (L35, L38) | Nutzer entscheidet, ob nötig |
+| Halt der Oberplatte | Zapfen oder Faden, damit sie nicht wackelt | Plan der großen Platte |
+| Konzeptseite | Stößel und Taste entfernt, Seite mit Luft 0,8 neu veröffentlicht (Version 6) | erledigt (2026-10-16) |
+
+**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten; `fachprobe-auswerten.md` ist erledigt, r5).
 
 ## Priorität 1 (erledigt): Steckprobe 2 (r4)
 
@@ -71,7 +90,7 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 
 ### Fachprobe Powerbank gebaut, wartet auf den Druck (`stl/steckmodul_fachprobe/`, Testbogen `plug/power/feedback_fach.html`)
 
-Abgenickt: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 26 g), Deckplatte 2 mm, **ohne Schablone, Taste und Stößel** (Nutzer: die Taste braucht es nicht, später fragt der Mikrocontroller alle 5 s kurz Strom ab). Der Ladeanschluss muss durch das Fenster erreichbar bleiben, die USB-A-Buchse samt geradem Stecker ist eingeplant. Kabelkanal nur 4,4 mm frei neben dem Zaun (Kabel bis etwa 4 mm). Im Konzept (`plug/power/concept.html`, `build_concept.fach_parts`) steht der Stößel noch und müsste entfernt werden.
+Abgenickt: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 26 g), Deckplatte 2 mm, **ohne Schablone, Taste und Stößel** (Nutzer: die Taste braucht es nicht, später fragt der Mikrocontroller alle 5 s kurz Strom ab). Der Ladeanschluss muss durch das Fenster erreichbar bleiben, die USB-A-Buchse samt geradem Stecker ist eingeplant. Kabelkanal nur 4,4 mm frei neben dem Zaun (Kabel bis etwa 4 mm). Im Konzept (`plug/power/concept.html`) ist der Stößel inzwischen entfernt (nach r5).
 
 ### Steckprobe 2 gebaut, wartet auf den Druck (Powerbank-Konzept Stand 5, 1:1300)
 
@@ -94,6 +113,8 @@ Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die G
 | Elefantenfuß | Fase 0,6 oder kleine Kompensation im Slicer | wenn 0,5 nicht reicht |
 
 ## Priorität 3
+
+- **Steckprobe 3 (Reserve-Druck, wenn der Drucker frei ist; Nutzer: nicht so wichtig, weil schon viel geklappt hat):** Kassette v4 in Mulde 14,2 mm (Führung, Kippen); Hof-Einsatz bei 1:1300 mit Einführfase und 0,8-mm-Stämmen (1 mm als Rückfall); V1RS (Seminar, Institut) und V2R (Hochhaus) als Probestücke mit Adernweg, Verkettung und Streifendicke 2,2 mm; Paulinum mit v4 (0,9 mm Wand) gegen V1RS. Plan als HTML erst, wenn der Nutzer den Druck anstößt.
 
 - Federzunge in der Mulde: bei CLR 0,10 vielleicht unnötig; „wenn es sich anbietet, mitdrucken, keine Priorität“.
 - Heißkleber als Ausweg dokumentieren: Klecks Heißkleber auf die Winkelleiste, Stempel weglassen oder nachträglich abschneiden.
