@@ -14,6 +14,8 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L05 | Muldenboden 0,4 mm über der Körpertasche (etwa 11 × 6 mm) mit Pin-Löchern: stark durchgehängt, Löcher zu; Kabelraum-Decke 15 × 15 hing durch, trotz Thick bridges | Löcher nie in dünne Brücken legen. Entweder mit Support drucken oder Hohlräume als 45°-Böschung bauen (Platte B: 37°, 0,15 Überhang je Schicht) | r3 |
 | L06 | Freistehende Stempel am Deckel (1,35 × 2 mm, 3,6 hoch) brachen sofort ab | Freistehende Teile mindestens etwa 2,5 × 1,7 mm Querschnitt, mit Streben (45°); besser das Konzept vermeiden (Heißkleber als Ausweg) | r3 |
 | L07 | Teile ohne Blick auf die Druckausrichtung entworfen | je Teil festlegen, welche Seite am Bett liegt, und die Überhänge dazu zeigen | r0, r3 |
+| L30 | Faden-V (Kanal Ø 2,2, 53° und 40°): Faden geht durch keins; Öffnungen gut, der untertauchende Kanal zu eng | Kanal mindestens 1 mm weiter (Ø 3,2 oder mehr), Fadenwege großzügig; der Nutzer druckt ohne Rücksicht auf kleine Überhänge mit **Support** | r4 |
+| L31 | Nische mit drei Fenstern und Stegen nur, um Brücken zu vermeiden; Nutzer: unnötig und zu groß | Der Nutzer druckt mit Support (einmal bereinigen): Konstruktionen, die nur Brücken vermeiden, vereinfachen. Eine mittelgroße Nische statt drei Fenstern | r4 |
 
 ## Passung und Maße
 
@@ -25,6 +27,8 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L11 | Test mit 7 mm Berührungslänge sagte nichts über 17 mm im echten Aufbau | Passungen in der echten Länge und Druckrichtung testen | r2, r3 |
 | L12 | Kassette ragt nach dem Einpressen etwa 0,2 mm unten heraus | Schachttiefe = Kassettenhöhe + mindestens 0,3 | r3 |
 | L13 | Buchse sitzt in Tasche 14,15 nicht (keine passt), in 14,45 steht sie noch minimal heraus | Taschenhöhe aus der **gemessenen** Buchsenhöhe plus Spiel; mindestens 14,55 bis zur Messung | r3 |
+| L32 | Zapfen Ø 4 / Loch 4,3, nur 1,5 mm hoch: wackelt deutlich (5) | Zapfen und Loch mindestens 1 mm länger (2,5), Gleitspiel 0,15 bleibt | r4 |
+| L34 | Schachttiefe Kassette + 0,30: Kassette sitzt, aber Nutzer wünscht noch 0,05 Luft | Kassette + 0,35 | r4 |
 | L14 | Ein Schieber in einer Schwalbenschwanz-Nut klemmte bei allen Spielen (0,05 bis 0,20), Nut durch die Wand | Schieber und Trichterplatte entfallen; sie kosten Pin-Länge | r1 |
 
 ## Kontakt
@@ -55,6 +59,7 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L26 | Ein Generatorlauf überschreibt die Dateien in `stl/` | getesteten Satz einfrieren (ZIP im Rundenordner, Commit-Hash) | r3 |
 | L28 | Schrauben nicht vorhanden; Befestigung des Bodens am Hut ist genäht | Deckel und Platte mit Löchern für Fäden planen, keine Schrauben; vor der Planung fragen, welche Verbindungsmittel vorhanden sind | r3 |
 | L29 | Faden zunächst durch Löcher geplant, die oben austreten würden; gemeint war ein Austritt an der Unterseite durch eine Lasche | Bei Verbindungsmitteln den Weg des Fadens oder Teils ganz abfragen (Eintritt, Austritt, welche Seite zugänglich) und im Plan als Schnitt zeigen | r3 Nachtrag |
+| L33 | Im Ergebnistext von Steckprobe 2 fehlte, welche ZIP gedruckt wurde (L25 noch einmal); zwischen erstem Bau und Neubau lag eine Änderung (eine statt zwei Kassetten) | Der Testbogen fragt Datum oder Kommit der ZIP ab und trägt es in den Ergebnistext; Neubau nach Rückmeldung nur mit neuer Versionsnummer in README und Dateinamen | r4 |
 | L27 | Wertänderungen in `plug/parts.py` würden Probestück und Institut brechen (sie rechnen mit Schieber) | neue Werte in `plug/<paket>/params.py`; `parts.py` erst nach bewährter Runde ändern | r3 |
 
 ## Vorab-Checkliste vor jeder STL

@@ -14,7 +14,7 @@ gepflegte Sicht darauf: Was hat geklappt, was nicht, was kommt als Nächstes.
 Runden: [r0 Passproben und Probestück](rounds/r0_fitprobes/summary.md) ·
 [r1 Nachtdruck 1](rounds/r1_night1/summary.md) · [r2 Nachtdruck 2](rounds/r2_night2/summary.md) ·
 [r3 Steckprobe 1](rounds/r3_steckprobe1/summary.md) ·
-[r4 Steckprobe 2 (Planung, Zwischenstand)](rounds/r4_steckprobe2/summary.md)
+[r4 Steckprobe 2 (gedruckt, ausgewertet)](rounds/r4_steckprobe2/summary.md)
 
 ## Begriffe
 

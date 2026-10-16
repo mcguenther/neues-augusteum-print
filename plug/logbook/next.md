@@ -1,6 +1,6 @@
 # Nächste Drucke und offene Punkte
 
-Stand: nach Steckprobe 1 (r3, 2026-10-16); Plan Steckprobe 2 liegt vor (`plug/testcase/plan2.html`), wartet auf das Abnicken. Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
+Stand: nach Steckprobe 2 (r4, 2026-10-16, ausgewertet); Fachprobe Powerbank gebaut und wartet auf den Druck. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
 ## Geklärt (2026-10-16)
@@ -20,7 +20,22 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
 2. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D); alle Karten warten auf das Abnicken.
 
-## Priorität 1: Steckprobe 2 (r4)
+## Priorität 1 neu: Steckprobe 3 (r5, nach r4)
+
+Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Plan mit Grafiken):
+
+| Thema | Änderung | Grund |
+|---|---|---|
+| Faden-V | Kanal mindestens 1 mm weiter (Ø 3,2 oder mehr), Trichter und Scheitel anpassen; mit Support gedruckt; Winkel 53° und 40° erneut nebeneinander | r4 F: Faden kommt nicht durch den untertauchenden Kanal |
+| Kabelnische | eine mittelgroße Nische statt 24 × 19 mm mit drei Fenstern und Stegen; Größe als Entscheidungskarte | r4 W |
+| Zapfen | Höhe 2,5 statt 1,5, Löcher entsprechend tiefer | r4 U |
+| Schachttiefe | Kassette + 0,35 | r4 E |
+| Support | im Plan ausweisen, wo Support nötig ist; Brückenregel L04 gelockert | r4 W |
+| Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L33) | r4 leer |
+
+Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
+
+## Priorität 1 (erledigt): Steckprobe 2 (r4)
 
 Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass er mit einem Controller leuchtet.
 
