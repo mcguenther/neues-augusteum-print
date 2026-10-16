@@ -24,7 +24,7 @@ def steps():
     add = BF.add
     add("a", "Aufbau ansehen (vor dem Druck)", "0", "Was gedruckt wird: ein Ausschnitt vom Anschlussende des Fachs und eine Deckplatte. Die Powerbank ragt hinten heraus.",
         ["Oben die zwei Teile in Druckausrichtung, darunter der Zusammenbau mit Powerbank, USB-A-Stecker (dunkel) und Kabel (rot).",
-         "Die Taste und ein Stößel fehlen mit Absicht. Der Ladeanschluss (micro-USB, USB-C) liegt hinter dem Fenster in der Vorderwand.",
+         "Die Taste wird nicht gebraucht (der Mikrocontroller fragt alle 5 s kurz Strom ab). Der Ladeanschluss (micro-USB, USB-C) liegt hinter dem Fenster in der Vorderwand.",
          "Das Kabel läuft vom Stecker seitlich in einen Kanal neben dem Zaun und hinten heraus. Der Kanal ist 4,4 mm frei."],
         [("img", PREV + "/teile.png", "Die zwei Teile: Fach (blaugrau) und Deckplatte (hellblau)."),
          ("img", PREV + "/zusammenbau.png", "Links schräg mit abgehobener Deckplatte, rechts von oben; die Powerbank (hell) ragt nach rechts heraus.")],
@@ -101,7 +101,7 @@ def main():
   <p class="kicker">Steckmechanismus · Fachprobe Powerbank · Variante B</p>
   <h1>Testbogen Fachprobe Powerbank</h1>
   <p class="lead">Der Bogen führt Schritt für Schritt durch die Probe: Powerbank einlegen, Deckplatte, Fenster und Ladeanschluss, USB-A-Stecker und Kabel. Je Schritt ein kurzes Formular; alles, was du ausfüllst, wird unten zu einem Text für mich zusammengesetzt. Was fehlt, bleibt weg.</p>
-  <p class="lead">Es geht nur darum, ob alles zusammenpasst und wie es sitzt. Beurteilt wird mit der Hand: <b>1</b> geht nicht, <b>2</b> nur mit Gewalt, <b>3</b> mit Fingerdruck ohne spürbares Spiel (ideal), <b>4</b> leicht mit minimalem Spiel, <b>5</b> locker. Taste und Stößel gibt es nicht mehr.</p>
+  <p class="lead">Es geht nur darum, ob alles zusammenpasst und wie es sitzt. Beurteilt wird mit der Hand: <b>1</b> geht nicht, <b>2</b> nur mit Gewalt, <b>3</b> mit Fingerdruck ohne spürbares Spiel (ideal), <b>4</b> leicht mit minimalem Spiel, <b>5</b> locker. Die Taste wird nicht gebraucht.</p>
 </header>'''
     page = page[:i] + head + page[j:]
     page = page.replace("<title>Testbogen Steckprobe 2</title>", "<title>Testbogen Fachprobe Powerbank</title>")

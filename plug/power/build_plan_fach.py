@@ -156,7 +156,6 @@ CSS_EXTRA = """
 .fig .pbk.b { fill: var(--c-pb); }
 .fig .fence { fill: var(--c-plate); stroke: var(--edge); stroke-width: .6; }
 .fig .rail { fill: var(--c-plate); stroke: var(--edge); stroke-width: .6; }
-.fig .rod { fill: var(--accent-fill); stroke: var(--edge); stroke-width: .8; }
 .fig .win { fill: color-mix(in srgb, var(--c-niche) 35%, var(--panel)); stroke: var(--c-niche); stroke-width: 1; stroke-dasharray: 3 2; }
 .fig .plug { fill: color-mix(in srgb, var(--c-port) 18%, transparent); stroke: var(--c-port); stroke-width: 1; }
 .fig .port { fill: var(--c-port); stroke: none; }
@@ -196,10 +195,10 @@ def page():
   <div class="answer">
     <div class="rec"><span class="lbl">Umfang</span><span class="big">Variante B</span>
       <span class="small">Nur das Anschlussende des Fachs, <span class="num">{de(sB[0])} × {de(sB[1])} × {de(FA.TOP)} mm</span>. Die Powerbank steckt {de(FA.LB, 0)} mm tief im Fach, der Rest ragt hinten heraus. Das reicht für Fenster, Stecker, Kabel und die Luft nach oben. Die Länge von 90 mm prüfst du am Gerät mit dem Lineal.</span></div>
-    <div><span class="lbl">Teile</span><span class="big">3 Stück</span>
-      <span class="small">Fach (Unterkasten-Ausschnitt), Deckplatte 2 mm und die kleine Messschablone für die Lage der Anschlüsse. Einen Stößel gibt es nicht.</span></div>
-    <div><span class="lbl">Aufwand</span><span class="big">≈ {de(gB + 3, 0)} g</span>
-      <span class="small">Etwa {de(tB + 0.2)} h auf deinem Drucker. Variante A (ganzes Fach, <span class="num">{de(sA[0])} × {de(sA[1])} mm</span>) wären ≈ {de(gA + 3, 0)} g und {de(tA + 0.2)} h.</span></div>
+    <div><span class="lbl">Teile</span><span class="big">2 Stück</span>
+      <span class="small">Fach (Unterkasten-Ausschnitt) und Deckplatte 2 mm. Keine Schablone (entschieden).</span></div>
+    <div><span class="lbl">Aufwand</span><span class="big">≈ {de(gB, 0)} g</span>
+      <span class="small">Etwa {de(tB + 0.2)} h auf deinem Drucker. Variante A (ganzes Fach, <span class="num">{de(sA[0])} × {de(sA[1])} mm</span>) wären ≈ {de(gA, 0)} g und {de(tA + 0.2)} h.</span></div>
     <div><span class="lbl">Du brauchst</span><span class="big">Powerbank + Kabel</span>
       <span class="small">Die Intenso XS5000 und das USB-A-Kabel mit geradem Stecker, das später dranhängt. Messen musst du nichts; alles wird gefühlt oder mit ja/nein beantwortet.</span></div>
   </div>
@@ -239,17 +238,14 @@ def page():
       <div class="opts">
         <div class="opt pick"><b>B: Anschlussende (empfohlen)</b><span class="num">{de(sB[0])} × {de(sB[1])} mm, ≈ {de(gB, 0)} g</span><span>Prüft alles, was geschätzt ist. Die Powerbank ragt hinten heraus.</span></div>
         <div class="opt"><b>A: ganzes Fach</b><span class="num">{de(sA[0])} × {de(sA[1])} mm, ≈ {de(gA, 0)} g</span><span>Zusätzlich Länge, Zaun hinten, Kabelkanal bis zum Ende. Doppelt so viel Material.</span></div>
-        <div class="opt"><b>C: nur Schablone</b><span class="num">≈ 3 g</span><span>Du liest die Lage der Anschlüsse ab; das Fach bleibt ungetestet.</span></div>
       </div></div>
-    <div class="card rec"><h3><span class="tag">B</span>Messschablone</h3>
+    <div class="card"><h3><span class="tag">B</span>Messschablone</h3>
       <div class="opts">
-        <div class="opt pick"><b>Mitdrucken (empfohlen)</b><span class="num">≈ 3 g, 20 min</span><span>Dünne Platte, die du an die Anschlussseite hältst. Eine Skala in Millimetern zeigt, wo LEDs, Taste, micro-USB und USB-C liegen. Ablesen statt messen.</span></div>
-        <div class="opt"><b>Weglassen</b><span>Dann sagst du nur, ob etwas nicht erreichbar ist; die Verschiebung müssten wir schätzen.</span></div>
+        <div class="opt pick"><b>Entfällt (entschieden)</b><span>Das Fach muss nur zusammenpassen und gut sitzen; Anschlusslagen müssen nicht abgelesen werden.</span></div>
       </div></div>
-    <div class="card rec"><h3><span class="tag">C</span>Taste der Powerbank</h3>
+    <div class="card"><h3><span class="tag">C</span>Taste der Powerbank</h3>
       <div class="opts">
-        <div class="opt pick"><b>Kein Stößel, Lage der Taste erst lesen (empfohlen)</b><span>Das Fenster bleibt über LEDs, micro-USB und USB-C. Die Schablone zeigt auch die Taste, falls sie an der Anschlussseite sitzt. Sitzt sie woanders, sagst du mir wo, und die nächste Runde bekommt dort eine Öffnung.</span></div>
-        <div class="opt"><b>Taste ganz weglassen</b><span>Die Probe prüft nur Fenster, Stecker und Kabel; die Taste bleibt offen.</span></div>
+        <div class="opt pick"><b>Entfällt (entschieden)</b><span>Der Mikrocontroller zieht alle 5 s kurz Strom, damit die Powerbank anbleibt. Das Fenster bleibt über LEDs, micro-USB und USB-C.</span></div>
       </div></div>
     <div class="card"><h3><span class="tag">D</span>Deckplatte</h3>
       <div class="opts">
@@ -266,7 +262,6 @@ def page():
     <tbody>
     <tr><td>Fach</td><td>Boden auf dem Bett, offen nach oben, Fenster oben offen</td><td>Keine Brücke. Bettkanten mit Fase {de(PP.CH_BED)}. Der Zaun {de(PP.FENCE[0])} × {de(PP.FENCE[1], 0)} ist eine lange Wand auf dem Boden, kein freistehender Stift (L06).</td></tr>
     <tr><td>Deckplatte</td><td>flach</td><td>Fase {de(PP.CH_BED)} am Bett. Keine Löcher.</td></tr>
-    <tr><td>Messschablone</td><td>flach, Skala erhaben</td><td>1,2 mm dick, Strichmarken 0,5 mm erhaben, Ziffern alle 5 mm (L01).</td></tr>
     </tbody>
   </table></div>
   <p class="small muted">Berücksichtigte Lehren: L04 keine Brücke, L06 keine freistehenden Stifte, L07 Druckausrichtung je Teil, L08 ungemessene Werte sind markiert, L24 nur fühlbare oder ja/nein-Felder, L25 die Variante steht im Ergebnistext, L27 neue Werte nur in <code>plug/power/params.py</code>.</p>
@@ -278,15 +273,13 @@ def page():
     <li>Powerbank ins Fach legen: sitzt sie ohne Zwang, wackelt sie, schleift sie am Zaun?</li>
     <li>Deckplatte auflegen: liegt sie flach, berührt sie die Powerbank?</li>
     <li>Fenster: sind die LEDs sichtbar, kommst du an micro-USB und USB-C?</li>
-    <li>Wo sitzt die Taste, und kommst du mit dem Finger heran?</li>
     <li>USB-A-Stecker einstecken: passt er in den Steckerraum, liegt das Kabel im Kanal ohne Knick?</li>
-    <li>Schablone an die Anschlussseite halten: Zahlen für LEDs, micro-USB, USB-C und USB-A ablesen.</li>
   </ul>
 </section>
 
 <section>
   <h2>Nächster Schritt</h2>
-  <p>Wenn dir die Empfehlung passt (A: B, B: ja, C: ohne Stößel, D: volle Platte), baue ich STL, README, ZIP, Prüfbericht und den Testbogen. Sonst nenne mir die Änderungen.</p>
+  <p>Wenn dir die Empfehlung passt (A: B, B: keine Schablone, C: Taste entfällt, D: volle Platte), baue ich STL, README, ZIP, Prüfbericht und den Testbogen. Sonst nenne mir die Änderungen.</p>
 </section>
 </div>
 """

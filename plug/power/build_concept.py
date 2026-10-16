@@ -129,7 +129,7 @@ BU0 = U0 + PP.PB_PLUG + PP.PB_CLR            # Anschlussseite der Powerbank
 BV0 = V0 + PP.PB_CLR
 BVC = BV0 + PP.PB_W / 2                      # Mitte der Powerbank quer
 KV0 = V1 - PP.PB_CABLE                       # Kabelkanal
-PORT_HALF = dict(usb_a=6.25, usb_c=4.5, micro=3.75, taste=2.0, leds=5.0)   # S  halbe Breite je Anschluss
+PORT_HALF = dict(usb_a=6.25, usb_c=4.5, micro=3.75, leds=5.0)   # S  halbe Breite je Anschluss
 WIN = [BVC + PP.PB_PORT_V["leds"] - PORT_HALF["leds"] - PP.WINDOW_PAD,
        BVC + PP.PB_PORT_V["usb_c"] + PORT_HALF["usb_c"] + PP.WINDOW_PAD]
 
@@ -143,12 +143,10 @@ def fach_parts(f):
     inner = f.rect(BU0 - PP.PB_CLR, U1, V0, KV0)
     fence = inner.buffer(PP.FENCE[0], join_style=2).difference(inner) \
         .difference(f.rect(U0 - 5, BU0 + 2, V0 - 5, V1 + 5)).difference(f.rect(BU0, U1 + 5, KV0 - 0.1, V1 + 5))
-    tv = BVC + PP.PB_PORT_V["taste"]
     return dict(
         fach=f.rect(U0, U1, V0, V1), body=f.rect(BU0, BU0 + PP.PB_L, BV0, BV0 + PP.PB_W),
         niche=f.rect(U0, BU0 - PP.PB_CLR, V0, V1), channel=f.rect(BU0 - PP.PB_CLR, U1, KV0, V1),
         plug=f.rect(plug_end, BU0, ua - 7.5, ua + 7.5),
-        rod=f.rect(U0 - PP.UK_WALL, BU0, tv - PP.ROD / 2, tv + PP.ROD / 2),
         window=f.rect(U0 - PP.UK_WALL - 1, U0 + 0.5, WIN[0], WIN[1]), fence=fence,
         cable=[np.round(p, 2).tolist() for p in cable], far=f.pt(U1, kc))
 
@@ -293,10 +291,10 @@ DK = dock_numbers()
 
 
 def dock_windows(dk=DK):
-    """Fenster der Kabelnische in lokalen Koordinaten (zwischen den Stegen)."""
-    w2, rb, rx = dk["niche_w"] / 2, PP.NICHE["rib"], PP.NICHE["rib_x"]
+    """Die eine Kabelnische in lokalen Koordinaten (ohne Fenster und Stege, Support erlaubt)."""
+    w2 = dk["niche_w"] / 2
     y0, y1 = dk["niche_end"], dk["slot_end"] + 1.0
-    return [box(-w2, y0, -rx - rb / 2, y1), box(-rx + rb / 2, y0, rx - rb / 2, y1), box(rx + rb / 2, y0, w2, y1)]
+    return [box(-w2, y0, w2, y1)]
 
 
 def dock_zone(dk=DK):
@@ -630,7 +628,7 @@ def variant(scale, h=H0, dk=DK):
         hof=coords(hof_fp, sh), hof_w=round(hof_fp.area / (hof_fp.bounds[3] - hof_fp.bounds[1]), 1),
         hub=round(innenhof.hub(innenhof.load(), s), 2),
         fach_poly=coords(fp["fach"], sh), body=coords(fp["body"], sh), niche=coords(fp["niche"], sh),
-        channel=coords(fp["channel"], sh), plug=coords(fp["plug"], sh), rod=coords(fp["rod"], sh),
+        channel=coords(fp["channel"], sh), plug=coords(fp["plug"], sh),
         window=coords(fp["window"], sh), cable=[[p[0] + sh[0], p[1] + sh[1]] for p in fp["cable"]],
         elec=coords(elec, sh), esp=list(esp), posts=[dict(r=coords(r, sh)[0], pin=i in pins) for i, r in enumerate(posts)],
         vs=[dict(c=[v["c"][0] + sh[0], v["c"][1] + sh[1]], axis=v["axis"],
@@ -658,8 +656,8 @@ def fit_rows(dk=DK):
         ["Halt der Winkelleiste von unten", "Steg unter dem Körper mit %.1f mm Luft, dazu Heißkleber" % PP.STAMP_AIR,
          "Vorschlag", "Plan Steckprobe 2, Karten D und K; L06, L21"],
         ["Kabel hinter den Lötenden", "Nische %.0f mm breit, %.0f mm lang ab Körpertasche (Schlitz bis %.1f), Decke %.1f über dem Bett, "
-         "Stege %.1f; darunter Unterkasten %.1f mm frei" % (dk["niche_w"], dk["y_slot"] - dk["niche_end"], dk["slot_end"],
-                                                          h["z_slot"] - h["z_bb"], PP.NICHE["rib"], h["uk_t"]),
+         "eine Nische ohne Stege (Support erlaubt); darunter Unterkasten %.1f mm frei" % (dk["niche_w"], dk["y_slot"] - dk["niche_end"], dk["slot_end"],
+                                                          h["z_slot"] - h["z_bb"], h["uk_t"]),
          "Vorschlag", "L20, Nutzer Stand 4"],
         ["Oberplatte auf Unterkasten", "Zapfen Ø %.1f × %.1f mit Fase %.1f, Loch Ø %.1f (%.2f Gleitspiel), Fase %.1f am Bett" % (
             pin["d"], pin["h"], PP.CH_PIN, pin["d"] + 2 * pin["clr"], pin["clr"], PP.CH_BED), "Vorschlag", "L10 (0,15 gleitet)"],
@@ -668,8 +666,7 @@ def fit_rows(dk=DK):
          "Vorschlag, flacher als Plan", "Plan Steckprobe 2 (53°), Nutzer Stand 4"],
         ["Powerbank im Zaun", "%.1f je Seite, %.1f Luft oben" % (PP.PB_CLR, PP.PB_CLR_Z), "geschätzt, ungemessen", "Fachprobe"],
         ["Stecker vor der Powerbank", "%.0f mm Steckerraum, Kabelkanal %.0f mm" % (PP.PB_PLUG, PP.PB_CABLE), "geschätzt, ungemessen", "Fachprobe"],
-        ["Stößel zur Taste", "%.0f × %.0f mm, Führung mit 0,15 Spiel, Einführfase %.1f" % (PP.ROD, PP.ROD, PP.CH_BED), "Vorschlag", "L10"],
-        ["Decken und Brücken", "höchstens 10 mm, keine Löcher in dünnen Brücken, sonst Böschung; Nische mit Stegen", "Regel", "L04, L05"],
+        ["Decken und Brücken", "Support ist erlaubt (Nutzer); trotzdem keine Löcher in dünnen Brücken ohne Support", "Regel", "L04, L05"],
     ]
 
 
@@ -690,7 +687,7 @@ def fasen_rows():
         ["Zentrierzapfen oben", "%.1f Einführfase" % PP.CH_PIN, "im Modell", "L10"],
         ["Innenhof-Teil unten (Bett)", "%.1f" % PP.CH_HOF, "im Konzept; `innenhof.py` hat sie noch nicht", "L03"],
         ["Stoßflächen beim Teilen (Bett)", "%.1f an den Schnittkanten" % PP.CH_HOF, "Generator-Aufgabe (`split_tiles`)", "L03"],
-        ["Stößelführung, Fenster", "%.1f an den Mündungen" % c, "in der Fachprobe zu prüfen", "L02"],
+        ["Fenster in der Kante", "%.1f an den Mündungen" % c, "in der Fachprobe zu prüfen", "L02"],
     ]
 
 
@@ -703,7 +700,7 @@ def main():
         heights=h, dock=dk, variants=variants, scales=list(PP.SCALES), rec=1300,
         pb=dict(L=PP.PB_L, W=PP.PB_W, T=PP.PB_T, g=PP.PB_G, wh=PP.PB_WH, imax=PP.PB_IMAX, sleep=PP.PB_SLEEP_S,
                 keep=PP.PB_KEEP_MA, ports=PP.PB_PORTS, port_v=PP.PB_PORT_V, clr=PP.PB_CLR, clr_z=PP.PB_CLR_Z, plug=PP.PB_PLUG,
-                cable=PP.PB_CABLE, rod=PP.ROD),
+                cable=PP.PB_CABLE),
         fach=dict(L=FACH_L, W=FACH_W, H=FACH_H, u0=U0, bu0=BU0, bv0=BV0, kv0=KV0, win=WIN),
         uk=dict(floor=PP.UK_FLOOR, wall=PP.UK_WALL, fence=PP.FENCE, post=PP.POST, pin=PP.PIN, anschlag=PP.ANSCHLAG),
         v=V, v_hs=V_HS, v_angle=round(V_ANGLE, 1),

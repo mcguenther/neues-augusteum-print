@@ -20,6 +20,10 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
 2. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D); alle Karten warten auf das Abnicken.
 
+### Umgestellt (2026-10-16): halbe Nische und kein Stößel
+
+`plug/power/params.py`: `NICHE = dict(w=12.0, l=6.46)` (12 × 9,5 mm ab der Körpertasche, eine Öffnung, keine Stege), `ROD` und die Taste aus `PB_PORT_V` entfernt; `build_concept.dock_windows` liefert eine Öffnung, `fach_parts` ohne `rod`; Konzeptseite, Plan und Testbogen der Fachprobe ohne Stößel und ohne Schablone. `plug/testcase/build2.py` baut mit der neuen Nische (der gedruckte Stand r4 liegt eingefroren in `rounds/r4_steckprobe2/`). Fadenführung bleibt unverändert (anderer Chat, wird später gemerged).
+
 ### Befund Lösungsfindung 1:1300 (`plug/power/layout.html`, 2026-10-16)
 
 Mit der halben Nische (12 × 9,5 mm) gibt der Generator bei 1:1300 an der Südkante **4 freie Docks** (Paulinum, Neues Augusteum, Hörsaalgebäude, Institut) und Elektronik 60 × 35; vorher mit 24 × 19 mm waren es 3 und 50 × 30. Offen bleiben Seminargebäude und City-Hochhaus: die Kassette (Schacht 13,62) ist zu breit; das Seminargebäude passt ab etwa 10,6 mm Schacht, das Hochhaus selbst bei 10,0 nicht. Weitere Hebel in der Seite: Ohr (Hut 240 breit, Platte 114), zweite Etage (+14 mm), kürzerer Steckerraum.

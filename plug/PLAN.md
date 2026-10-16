@@ -564,8 +564,8 @@ Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäu
 
 ### 6.3 Dock: Platz hinter den Lötenden
 
-- Kabelnische hinter der Körpertasche: 24 mm breit, 19 mm lang, Decke 1,6 mm über dem Bett (Stufe der Steckprobe), drei Fenster mit zwei Stegen 1,6 mm
-  (Spannweite höchstens etwa 8 mm, L04). Die Decke liegt 0,8 mm unter dem Muldenboden. Alle Mündungen am Bett mit 0,5 Fase.
+- Kabelnische hinter der Körpertasche: **eine** Nische, 12 mm breit, 9,5 mm lang (halb so groß wie in Steckprobe 2, Nutzer), ohne Fenster und Stege, Support erlaubt; Decke 1,6 mm über dem Bett (Stufe der Steckprobe).
+  Die Decke liegt 0,8 mm unter dem Muldenboden. Alle Mündungen am Bett mit 0,5 Fase.
 - Darunter ist der Unterkasten 14,4 mm hoch hohl. Die Dockzone (28 × 27 mm) bleibt frei von Stützen, Zaun, Elektronik und Powerbank (die Powerbank hat nur 0,6 mm
   Luft nach oben, ein Dock darüber ließe den Adern keinen Raum).
 - Anschlag: Steg 18 × 1,8 mm unter dem Körper mit 1,2 mm Luft und zwei Streben nach vorn, Kabelseite offen (statt Block und Stempel; L06, L21). Dazu Heißkleber.
@@ -574,7 +574,7 @@ Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäu
 ### 6.4 Powerbank Intenso XS5000
 
 - 90 × 63 × 12,6 mm (Datenblatt, ungemessen), Anschlüsse an einer Schmalseite. Anschlussseite zur Plattenkante, 35 mm Steckerraum für einen geraden USB-A-Stecker,
-  Kabelkanal 6 mm an der Längsseite, Fach 126 × 70 × 13,2 mm, Fenster in der Kante (46 mm), Stößel 4 × 4 zur Taste, Zaun 1,6 × 5, Spiel 0,5 je Seite, 0,6 Luft oben.
+  Kabelkanal 6 mm an der Längsseite, Fach 126 × 70 × 13,2 mm, Fenster in der Kante (46 mm), keine Taste, kein Stößel (der Mikrocontroller fragt alle 5 s kurz Strom ab), Zaun 1,6 × 5, Spiel 0,5 je Seite, 0,6 Luft oben.
 - Lage: Bei 1:1000 Nordkante, 48 % unter dem Innenhof, alle 6 Docks frei. Bei 1:1200 Nordkante 34 % unter dem Hof, aber ohne freies Dock für das Paulinum
   (3 von 4); Südkante 0 % unter dem Hof, alle 4 Docks frei. Bei 1:1250 gleich (Nord 31 %, Süd 1 %). Bei 1:1300 Südkante 3 Docks (Paulinum, Neues Augusteum, Institut; Elektronik nur 50 × 30), Nordkante nur das Hörsaalgebäude. Die Suche nimmt die Lage mit den meisten freien Docks.
 - Strom und Schaltplan: eigener Chat (5 V / 2,1 A gesamt, Standby nach 30 s unter etwa 50 mA).
@@ -590,13 +590,13 @@ Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäu
 
 Im Modell: Gebäudefuß unten 0,8 (`institute.foot_solid`), Mulde oben 1,0 (`institute.pocket_cuts`), Bettkanten 0,5 an Oberplatte, Unterkasten, Eckaussparungen,
 Taschen, Nische und Zapfenlöchern, Pinlöcher 0,15, Zapfenspitze 0,5, Innenhof-Teil unten 0,4. Noch nicht im Generator: Schachteingang der Kassette (0,5), `innenhof.py`
-(0,4), Stoßkanten beim Teilen (`split_tiles`, 0,4); Stößelführung und Fenster in der Fachprobe prüfen.
+(0,4), Stoßkanten beim Teilen (`split_tiles`, 0,4); Fenster in der Fachprobe prüfen.
 
 ### 6.7 Nächster Druck (Vorschlag, nicht abgenickt)
 
-- **T1 Steckprobe 2 im neuen Aufbau:** Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4, Gebäude mit Fußfase. Prüft Dock mit Nische (hängen die Adern frei, hält die Decke),
+- **T1 Steckprobe 2 im neuen Aufbau:** Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4, Gebäude mit Fußfase. Prüfte Dock mit Nische (hängen die Adern frei, hält die Decke; gedruckt war die große Nische mit drei Fenstern, jetzt gilt die halbe),
   Steg-Anschlag, Zapfen, Faden an zwei Ecken (**53° gegen 40°**) und die Fasen.
-- **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt etwa 135 × 79 mm mit Zaun, Fenster, Stößel, Kanal und Deckplatte.
+- **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt etwa 135 × 79 mm mit Zaun, Fenster, Kanal und Deckplatte (gebaut als Variante B, `stl/steckmodul_fachprobe/`).
 - Später T3: Stoß der Druckteile.
 - Offene Entscheidungen: Kassette für die schlanken Gebäude (separater Chat), Hörsaalgebäude oder drei andere Docks an der Powerbank-Kante, Elektronik 50 × 30, Faden-Neigung (T1 in Steckprobe 2 testet 53° und 40°), Fachprobe nicht mitgebaut,
   Doktorhut messen (24 cm ist angenommen).

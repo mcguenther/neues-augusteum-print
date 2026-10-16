@@ -53,7 +53,7 @@ Muldenboden direkt in die Buchse.
 | Oberplatte 12,6 auf Unterkasten 14,4, Auflage | rundum flach, kein Spalt, bleibt beim Aufstecken liegen | bewährt | r4 U, S | `PP.UK_*` |
 | Zapfen Ø 4, Loch 4,3, Höhe 1,5 | wackelt deutlich (5); **Höhe 2,5** | verworfen (zu kurz) | r4 U | `PP.PIN` |
 | Faden-V (Kanal Ø 2,2, Scheitel 3,4, Trichter R 2,0), 53° und 40° | Faden geht durch keines; Kanal mindestens 1 mm weiter | verworfen (Maße), Winkel offen | r4 F | `P.V_*`, `PP.V` |
-| Kabelnische 24 × 19 mm mit drei Fenstern und Stegen | zu groß, drei Fenster unnötig; **eine Nische 12 × 9,5 mm (halb so groß in beide Richtungen)**, Nutzer druckt mit Support | verworfen | r4 W | `PP.NICHE`, `BC.dock_cuts` |
+| Kabelnische 24 × 19 mm mit drei Fenstern und Stegen | zu groß, drei Fenster unnötig; **eine Nische 12 × 9,5 mm (halb so groß in beide Richtungen)**, Nutzer druckt mit Support; umgestellt in `plug/power/params.py` (`NICHE`) und `build_concept.dock_windows` | verworfen, ersetzt | r4 W | `PP.NICHE`, `BC.dock_cuts` |
 | Support | vom Nutzer erlaubt (einmal bereinigen) | Vorgabe | r4 W | – |
 | Rippen und Steg-Anschlag an der Winkelleiste | keine Rückmeldung | offen | r4 W | `PP.ANSCHLAG`, `build2.top_plate` |
 | Fase 0,5 an Bettkanten | kein Feld ausgefüllt | vorläufig | r4 q | `EF_CH_T`, `ENTRY_CH_T` |

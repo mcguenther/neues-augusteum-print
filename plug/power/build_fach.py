@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fachprobe Powerbank, Variante B (Anschlussende): STL, README, ZIP, Prüfbericht und Vorschaubilder nach stl/steckmodul_fachprobe/.
 
-Plan: plug/power/plan_fach.html (vom Nutzer abgenickt: Variante B, ohne Schablone, ohne Taste und Stößel, Deckplatte voll).
+Plan: plug/power/plan_fach.html (vom Nutzer abgenickt: Variante B, ohne Schablone, ohne Taste, Deckplatte voll).
 Teile:
   F_fach.stl       Unterkasten-Ausschnitt: Boden, Wände, Fenster in der Vorderwand, Zaun; hinten offen, die Powerbank ragt heraus
   F_deckplatte.stl Deckplatte 2 mm, steht für die Oberplatte
@@ -172,7 +172,7 @@ def write_readme(info, tot):
 Ein Ausschnitt des Unterkastens der großen Grundplatte, nur das Anschlussende des Fachs. Die Powerbank (Intenso XS5000) steckt {de(FA.LB, 0)} mm tief im Fach,
 der Rest ragt hinten heraus. Geprüft wird, ob sie hineinpasst, wie sie sitzt, ob der gerade USB-A-Stecker samt Kabel in den Steckerraum passt,
 ob der Ladeanschluss (micro-USB, USB-C) durch das Fenster erreichbar ist und ob die Luft über der Powerbank reicht.
-Keine Taste, kein Stößel, keine Schablone.
+Keine Taste, keine Schablone.
 
 Dateien (Druckausrichtung, keine Stützen)
   F_fach.stl         Fach {de(sx, 1)} × {de(sy, 1)} × {de(FA.TOP, 1)} mm: Boden {de(FA.ZF, 1)}, Wand {de(FA.WALL, 1)}, Fenster in der Vorderwand (oben offen), Zaun {de(PP.FENCE[0])} × {de(PP.FENCE[1], 0)}

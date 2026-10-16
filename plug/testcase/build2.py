@@ -8,7 +8,9 @@ Teile (Plan plug/testcase/plan2.html, Empfehlungen A, dazu der Aufbau aus plug/p
   S2_under_box.stl     Mini-Unterkasten 14,4 mm: hohl, Steg-Anschlag unter der Winkelleiste, Zapfen, Eckaussparungen, Kabelfenster
 
 Maße kommen aus plug/testcase/params.py (Steckprobe-Werte) und plug/power/params.py (Aufbau); die Geometrie der Docks, V-Kanäle und
-Fasen ist die des Konzepts (plug/power/build_concept.py). Aufruf (aus dem Repo-Wurzelverzeichnis):
+Fasen ist die des Konzepts (plug/power/build_concept.py). Seit der Auswertung von r4 gilt die halbe Nische (`PP.NICHE`, 12 × 9,5 mm, eine Öffnung): ein neuer Lauf baut sie; der gedruckte Stand
+r4 (24 × 19 mm, drei Fenster) liegt eingefroren in `plug/logbook/rounds/r4_steckprobe2/steckprobe2.zip`.
+Aufruf (aus dem Repo-Wurzelverzeichnis):
     python3 -m plug.testcase.build2       # STL, README.txt, ZIP, Prüfbericht, Vorschau nach vorschau/steckmodul_testcase2/
 """
 import os
@@ -324,7 +326,7 @@ Dateien
                        Anschlagrand {de(P.STOP_T, 1)}, Fußfase {de(sd.CH_F, 1)}, Fase {de(P.ENTRY_CH_T, 1)} am Schachteingang.   ≈ {de(g['S2_building'], 1)} g
   S2_top_plate.stl     Mini-Oberplatte {de(pw, 0)} × {de(pl_, 0)} × {de(-DECK, 1)} mm: Mulde {de(D['F'], 1)} tief (Spiel {de(P.MULDE_CLR_T)}, Muldenfase {de(sd.CH_P, 1)}), Muldenboden {de(P.CEIL_T, 1)},
                        Dock wie Platte B (Trichter um die Pins, nach unten offene Körpertasche, Schlitz bis {de(P.SLOT_END_T, 1)}) plus <b>Kabelnische</b> {de(DK['niche_w'], 0)} × {de(DK['y_slot'] - DK['niche_end'], 0)} mm
-                       mit Stegen, Rippen an der Körpertasche, zwei Zapfenlöcher, vier Faden-V.   ≈ {de(g['S2_top_plate'], 1)} g
+                       ohne Fenster und Stege (der gedruckte Stand r4 hatte drei Fenster mit zwei Stegen, siehe `plug/logbook/rounds/r4_steckprobe2/steckprobe2.zip`), Rippen an der Körpertasche, zwei Zapfenlöcher, vier Faden-V.   ≈ {de(g['S2_top_plate'], 1)} g
                        Faden-V: <b>linke Ecken 53°</b> (Beschriftung „53“), <b>rechte Ecken 40°</b> (Beschriftung „40“).
   S2_under_box.stl     Mini-Unterkasten {de(pw, 0)} × {de(pl_, 0)} × {de(H['uk_t'], 1)} mm, innen hohl: Steg-Anschlag unter dem Körper der Winkelleiste ({de(PP.STAMP_AIR, 1)} Luft),
                        vier Stützen, zwei Zapfen, vier Eckaussparungen für den Faden, Kabelfenster in der Vorderwand.   ≈ {de(g['S2_under_box'], 1)} g
@@ -334,8 +336,8 @@ Kaufteile: Winkelleiste (4 Pins), Dupont-Buchse mit gecrimpten Adern, LED-Streif
   ein Tropfen Heißkleber. Keine Schrauben.
 
 Slicer wie bisher (Bambu, PLA, 0,2 mm, 3 Wände, 15 % Füllung), ohne Stützen, „Thick bridges“ an.
-  Oberplatte: Unterseite liegt auf dem Bett (Mulde oben). Alle Hohlräume sind Böschung, kurze Decke oder Fenster mit Steg; die Decke der Kabelnische liegt
-  1,6 mm über dem Bett und ist in drei Fenster geteilt. Die Faden-V haben 0,15 (links, 53°) bzw. 0,24 mm Überhang je Schicht (rechts, 40°): das ist der Test.
+  Oberplatte: Unterseite liegt auf dem Bett (Mulde oben). Alle Hohlräume sind Böschung, kurze Decke oder die eine Kabelnische (mit Support); die Decke der Kabelnische liegt
+  1,6 mm über dem Bett. Die Faden-V haben 0,15 (links, 53°) bzw. 0,24 mm Überhang je Schicht (rechts, 40°): das ist der Test.
   Unterkasten: offen nach oben gedruckt, Boden auf dem Bett.
   Die Fasen ({de(P.EF_CH_T, 1)} an den Bettkanten) gleichen den Elefantenfuß aus.
 

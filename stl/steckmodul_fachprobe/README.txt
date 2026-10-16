@@ -4,7 +4,7 @@ FACHPROBE POWERBANK, Variante B (Plan: plug/power/plan_fach.html)
 Ein Ausschnitt des Unterkastens der großen Grundplatte, nur das Anschlussende des Fachs. Die Powerbank (Intenso XS5000) steckt 30 mm tief im Fach,
 der Rest ragt hinten heraus. Geprüft wird, ob sie hineinpasst, wie sie sitzt, ob der gerade USB-A-Stecker samt Kabel in den Steckerraum passt,
 ob der Ladeanschluss (micro-USB, USB-C) durch das Fenster erreichbar ist und ob die Luft über der Powerbank reicht.
-Keine Taste, kein Stößel, keine Schablone.
+Keine Taste, keine Schablone.
 
 Dateien (Druckausrichtung, keine Stützen)
   F_fach.stl         Fach 67,9 × 74,8 × 14,4 mm: Boden 1,2, Wand 2,4, Fenster in der Vorderwand (oben offen), Zaun 1,60 × 5
