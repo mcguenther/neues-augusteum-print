@@ -1,0 +1,56 @@
+{
+ "01_paulinum": {
+  "dmax_mit": 1.2000000000000002,
+  "L_mit_0.8": 29.56,
+  "L_mit_1.2": 29.56,
+  "dmax_ohne": 1.2000000000000002,
+  "L_ohne_0.8": 29.56,
+  "L_ohne_1.2": 29.56,
+  "kmin": 0.75
+ },
+ "02_neues_augusteum": {
+  "dmax_mit": 4.2,
+  "L_mit_0.8": 29.56,
+  "L_mit_1.2": 29.56,
+  "dmax_ohne": 6.0,
+  "L_ohne_0.8": 29.56,
+  "L_ohne_1.2": 29.56,
+  "kmin": 0.5609375
+ },
+ "03_hoersaalgebaeude": {
+  "dmax_mit": 6.0,
+  "L_mit_0.8": 29.56,
+  "L_mit_1.2": 29.56,
+  "dmax_ohne": 6.0,
+  "L_ohne_0.8": 29.56,
+  "L_ohne_1.2": 29.56,
+  "kmin": 0.5015625
+ },
+ "04_seminargebaeude": {
+  "dmax_mit": 0.8,
+  "L_mit_0.8": 29.56,
+  "L_mit_1.2": 17.56,
+  "dmax_ohne": 1.0,
+  "L_ohne_0.8": 29.56,
+  "L_ohne_1.2": 17.06,
+  "kmin": 0.775
+ },
+ "05_institutsgebaeude": {
+  "dmax_mit": 0.2,
+  "L_mit_0.8": 28.56,
+  "L_mit_1.2": 27.56,
+  "dmax_ohne": 2.0,
+  "L_ohne_0.8": 29.56,
+  "L_ohne_1.2": 29.56,
+  "kmin": 0.8265625000000001
+ },
+ "06_city_hochhaus": {
+  "dmax_mit": null,
+  "L_mit_0.8": 22.56,
+  "L_mit_1.2": 20.56,
+  "dmax_ohne": null,
+  "L_ohne_0.8": 24.06,
+  "L_ohne_1.2": 22.56,
+  "kmin": 0.9078125
+ }
+}

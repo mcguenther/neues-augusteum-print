@@ -43,7 +43,7 @@ farben.py              Farben und Filament-Profile (3/4/15) → data/farben.json
 fassaden.py            Fassaden-Zonen, Prüfansichten (`python3 fassaden.py <slug>`)
 farbmessung.py kamera.py skyline.py registrierung.py szene.py vergleich.py   Fotomessung der Fassadenfarben
 data/                  Rohdaten-Ausschnitte, Zonen je Gebäude (data/fassaden/), Katalog der Messfotos
-stl/<quelle>/1zu1000|1zu1500/   Ausgabe (osm, lod2, laserscan) + stl/steckmodul_*   (erzeugt, eingecheckt)
+stl/<quelle>/1zu1000|1zu1300|1zu1500/   Ausgabe (osm, lod2, laserscan) + stl/steckmodul_*   (erzeugt, eingecheckt)
 vorschau/              Ausgabe-Bilder (erzeugt, eingecheckt); vorschau/readme/ für die README
 stl-fast/ vorschau-fast/   Ausgabe von `--fast` (gitignored)
 plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/)
@@ -53,7 +53,7 @@ README.md FOTOQUELLEN.md   README (Blöcke AUTO), Foto-Urheber und Lizenzen
 ```
 
 Gebäude und ihre Slugs: `BUILDINGS` in `generate.py` (Paulinum, Neues Augusteum, Hörsaal-, Seminar-, Institutsgebäude, City-Hochhaus „Uniriese“,
-Innenhof; Moritzbastei in `ARCHIV`). Quellen: `osm`, `lod2`, `laserscan`; Maßstäbe 1:1000 und 1:1500.
+Innenhof; Moritzbastei in `ARCHIV`). Quellen: `osm`, `lod2`, `laserscan`; Maßstäbe 1:1000, 1:1300 und 1:1500.
 
 ## Setup
 

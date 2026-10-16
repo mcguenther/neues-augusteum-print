@@ -42,6 +42,12 @@ Muldenboden direkt in die Buchse.
 | Muldenboden und Kabelraum als Brücken (Platte A, erster Druck) | Muldenboden stark durchgehängt oder Löcher zu, Decke des Kabelraums stark durchgehängt (Thick bridges an) | verworfen für den Druck ohne Support | r3 | `plate("A")` |
 | Platte B (Trichter, ohne Support) | Pin-Löcher offen, Pins treten gerade aus, Kontakt vorhanden; Körper kippt ohne Halt von unten; Platz für Kabel hinter den Lötenden durch die Fasen zu klein | **Basis**, mit Mängeln | r3 W, S | `plate("B")` |
 
+## 2b. Festlegung Maßstab und Mulde (Planung, ungetestet)
+
+**Alle Werte dieses Abschnitts sind noch nicht getestet** (Liste: [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“); bewährt sind nur die Werte der Tabelle in Abschnitt 2.
+
+Maßstab 1:1250, Mulde 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, City-Hochhaus V2R: siehe [`scale.md`](scale.md). Die Maßkette unten gilt für die getestete Steckprobe 1 (F 10,2).
+
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 
 | Größe | Wert |

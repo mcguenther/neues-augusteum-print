@@ -7,7 +7,7 @@ der Universität Leipzig – aus drei Datenquellen zum Vergleich:
     laserscan  Laserscan-Punktwolke GeoSN 2023 (dl-de/by-2-0), siehe laserscan.py
 
 Aufruf:
-    python3 generate.py                 # alle Quellen, Maßstäbe 1:1000 und 1:1500
+    python3 generate.py                 # alle Quellen, Maßstäbe 1:1000, 1:1300 und 1:1500
     python3 generate.py --quelle lod2   # nur eine Quelle (mehrfach angebbar)
     python3 generate.py --scale 750     # beliebiger Maßstab
     python3 generate.py --fetch         # Quelldaten vorher neu herunterladen
@@ -840,7 +840,7 @@ FAST_RASTER = 0.6  # m, Laserscan-Höhenraster im Schnelllauf (Standard 0.3)
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, action="append",
-                    help="Maßstab 1:N (mehrfach möglich, Standard: 1000 und 1500)")
+                    help="Maßstab 1:N (mehrfach möglich, Standard: 1000, 1300 und 1500)")
     ap.add_argument("--quelle", action="append", choices=QUELLEN,
                     help="Datenquelle (mehrfach möglich, Standard: alle)")
     ap.add_argument("--filamente", type=int, action="append", choices=[3, 4],
@@ -881,7 +881,7 @@ def main():
         laserscan.fetch()
     with parallel.phase("Farben messen (nur bei Änderung)"):
         refresh_colours()
-    scales = args.scale or ([1500] if args.fast else [1000, 1500])
+    scales = args.scale or ([1500] if args.fast else [1000, 1300, 1500])
     tasks = [(q, sc, os.path.join(args.out, q, "1zu%d" % sc)) for q in quellen for sc in scales]
     with parallel.phase("Modelle bauen, färben, exportieren"):
         results = parallel.starmap(build_scale, tasks)
