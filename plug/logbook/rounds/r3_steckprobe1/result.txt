@@ -1,0 +1,67 @@
+TESTFALL KASSETTE · ERGEBNIS (2026-10-16)
+
+[0] Vorbereiten
+- Sind die Kontakte an der Buchse gecrimpt (Adern dran)?: ja, alle 4
+- Multimeter mit Durchgangsprüfung vorhanden?: ja
+- Vier Schrauben M3 vorhanden?: nein, Deckel provisorisch
+- Notizen: das ganze soll dann mit bspw 4 fäden an den ecken an einen doktorhut genäht werden. dafür sollten wir ösen vorsehen, dass wir da eine schlaufe in den boden reinlegen können von unten. das sollte auch genügen um die den deckel des bodens ranzudrücken, weil der ganze boden ja nach unten genäht wird.
+
+[1] Druckqualität ansehen
+- Welche Dateien wurden gedruckt?: alle
+- Muldenboden 0,4 über der Winkelleiste (Platte von unten): stark durchgehängt oder Löcher zu
+- Decke des Kabelraums: stark durchgehängt
+- Thick bridges eingeschaltet?: ja
+- Elefantenfuß am Schachteingang und an der Fußunterkante: leichter Wulst
+- Erhabene Schrift und Kerben: gut lesbar und fühlbar
+- Pin-Löcher offen: einzelne zu
+- Druckzeit insgesamt in Stunden: 2 ca + 1h nachdruck
+- Drucker und Filament: wie gehabt
+
+[K] Kassette bestücken
+- Passt eine Buchse in Kassette 2?: keine, zu hoch
+- Kassette 1 über die Buchse stülpen: 3 · geht mit Fingerdruck, kein spürbares Spiel
+- Kassette 1: Buchse unten bündig: bündig
+- Kassette 1: Halt der Buchse in der Tasche: fest
+- Notizen: 1 ist besser. da auch noch 0.1 mm mehr platz nach oben für die buchse lassen, sie steht gang gang minimal heraus
+
+[E] Kassette einpressen
+- Gebäude A (0,06 durchgehend): Sitz der Kassette: 3 · kräftiger Daumendruck, sitzt fest (ideal)
+- Gebäude A: Halt beim Umdrehen und Schütteln: hält beim Umdrehen und Schütteln
+- Gebäude A: Herausdrücken: nur mit kräftigem Druck
+- Gebäude B (Passzone 8 mm): Sitz der Kassette: 5 · lose, wackelt oder fällt heraus
+- Gebäude B: Halt beim Umdrehen und Schütteln: hält, rutscht beim Schütteln etwas
+- Gebäude B: Herausdrücken: mit dem Daumen leicht
+- Notizen: also die kassette ragt noch ca. 0.2 mm nach unten heraus, da mehr luft einplanen
+Einpressen brauchbar (Sitz 3 oder 4 und hält fest) bei Gebäude: A
+→ E: Einpressen funktioniert im echten Aufbau (nur Gebäude A)
+
+[M] Gebäude in die Mulde
+- Fuß in der Mulde: 3 · geht mit Fingerdruck, kein spürbares Spiel
+- Nur eine Lage möglich (gedreht geht es nicht): ja, nur eine Lage
+- Sitz bis zum Boden: sinkt bis zum Boden
+- Wackeln des Gebäudes in der Mulde: kein spürbares Wackeln
+- Notizen: top
+
+[W] Winkelleiste und Platte
+- Körper in der Tasche: kippt oder wackelt
+- Pins treten gerade aus den Löchern: ja, alle vier
+- Deckel schließt mit vier Schrauben: geht nicht
+- Platz hinter den Lötenden: zu wenig
+- Notizen: im prinzip könnte da drunter ja alles frei sein damit kabel laufen können. durch das chamfern bzw die fase ist fast kein platz für die kabel. für das teil hier ist das ok, später für den echten boden muss da unten so viel wie möglichfrei sein. der deckel ist falsch geplant. die stützen stoßen schnell an, mehr als einen milimeter luft beim draufsetzen --- das muss nochmal geplant werden. wir sollten uns aber auch merken, dass wir im zweifel einfach einen klecks heißkleber draufmachen können und die stützen weglassen und trotzdem drucken und nachträglich abschneiden könnten -- das hat also niedrige prio erstmal
+
+[S] Stecken
+- Pins treffen die Buchse: ohne Kraft, alle vier gleichzeitig
+- Kraft zum Aufstecken: leicht
+- Kassette 2: Abstand Buchsenunterkante zur Fußunterkante in mm (bündig = 0): wie soll man das bitte messen? keine ahnung
+- Kassette 1: Abstand Buchsenunterkante zur Fußunterkante in mm (bündig = 0): steckt da halt jetzt drin
+- Gebäude nach dem Aufstecken: sitzt fest, kein Wackeln
+- Notizen: durchgepiepst, elektr. kontakt ist da!
+
+[D] Durchgang und Abziehen
+- Notizen: passt alles, gebäude geht sehr leicht, da die pins nicht so weit in die buchse eintauchen. kontakt ist dennoch da. wenn es die stärke hergibt, könnten wir auch gern nochmal die bodendicke da am kunststoffkörper bzw allgemein für die pinleiste minimal düner machen.
+
+[L] Adern, LED und Licht (optional)
+- Notizen: noch nicht getestet, können wir später machen. kabel lassen sich aber rund biegen, schön
+
+[Σ] Abschluss
+- Notizen: entnimm das meinem feedback. soweit alles klar?

@@ -10,6 +10,9 @@ Stand: nach dem Umbau auf die Entscheidungen der Passprobe-Runde 4 (Körperhöhe
 gebracht. Die Abweichungen aus der ersten Fassung (Abschnitt 3.3) sind geschlossen. Das Probestück ist gedruckt (Ergebnis: Abschnitt 4); Passprobe v6 ist nicht gedruckt. Die Dateien liegen seit der
 Umstrukturierung im Paket `plug/` (Abschnitt 5).
 
+**Testdrucke seit Nachtdruck 1:** Ergebnisse, bewährte Werte, Lehren und der Fahrplan stehen im Logbuch `plug/logbook/` (Einstieg `README.md`, Stand `current.md`,
+Fehlerkatalog `lessons.md`, Backlog `next.md`, je Runde `rounds/`). Diese Datei bleibt die Chronologie der Passproben und der Konstanten.
+
 ## Festgelegte Maße (merken)
 
 - **Körper der Winkelleiste: 2,0 mm** in beiden Richtungen, `HDR_T` (Dicke in Pin-Richtung) und `HDR_BODY` (Höhe quer zur
@@ -185,6 +188,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/sample.py` | Generator | Probestück (22 × 36 mm), `README.txt`, ZIP; ruft die Passprobe auf |
 | `plug/fit_test/` | Passprobe | `generator.py` (Geometrie), `build_page.py`, `page.template.html`, `page.html`, `angled_pin.html` (Maße der Winkelleiste) |
 | `plug/roadmap/` | Fahrplan Testdrucke | `build.py` (Maße aus `dims()`, Tabelle `PARTS` mit Material und Zeit je Test), `template.html`, `page.html`; Abhängigkeiten, Zeitplan, Karten je Test, Änderungsradius der Konstanten |
+| `plug/logbook/` | Logbuch | `README.md` (Arbeitsmodus), `current.md` (bewährter Stand), `lessons.md` (Fehlerkatalog, Checkliste), `next.md` (Backlog), `rounds/r0` bis `r3` (Zusammenfassung, Ergebnistext wörtlich, eingefrorene ZIP) |
 | `plug/series.py` | Generator | Passungsserien für den ersten Nachtdruck (K Kontakt-Plättchen, N Schieber, S Boden-Platten, R Buchsenhülsen, FM Mulden-Ringe, dazu C Kassette und D Passprobe) nach `stl/steckmodul_night1/` (STL, `README.txt`, ZIP), Bilder nach `vorschau/steckmodul_night1/`; Spiel je Teil als Gravur, Beurteilung nach Gefühl, weil Spalte unter 0,5 mm nicht messbar sind |
 | `plug/decision/` | Entscheidungen | `build.py` (Zeichnungen mit Maßen aus `plug/series2.py`), `template.html`, `page.html`; Befund, Deutung, Vorschlag und das nach der Antwort Umgesetzte je Entscheidung |
 | `plug/feedback/build_night2.py` | Testbogen | `template_night2.html` → `page_night2.html`; Schritte K, C v2, N (Platte A/B), E (Einpressen), D v7, FM; Ableitung von ENG/WEIT und dickstem stabilen Plättchen im Ergebnistext |

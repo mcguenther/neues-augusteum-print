@@ -149,6 +149,17 @@ Namenskonvention: neue Dateien und Ordner bekommen englische Namen, soweit sinnv
 `view`, `check`); Seitentexte, Kommentare und Chat bleiben deutsch. Die Ausgabeordner `stl/steckmodul_*` und
 `vorschau/steckmodul_*` und die STL-Dateinamen sind noch deutsch (Umbenennen ist ein offener Schritt, siehe STATUS).
 
+## Testdruck-Modus und Logbuch (Steckmechanismus)
+
+Einstieg: `plug/logbook/README.md`. Ablauf jeder Runde: **Plan als HTML mit Grafiken** (Entscheidungskarten, Maßkette, Risiken) → der Nutzer nickt ab →
+**STL, README, ZIP** mit Prüfbericht (dicht, keine Kollisionen, Überhänge) → der Nutzer druckt → **Testbogen als HTML-Formular** → der Nutzer fügt den
+Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen und bewerten, Unklarheiten benennen, dann ins Logbuch eintragen und committen.
+
+- Vor jedem Plan `plug/logbook/lessons.md` und `current.md` lesen; vor jeder STL die Vorab-Checkliste in `lessons.md` durchgehen.
+- Ohne abgenickten Plan keine STL. Maßkette im Plan mit Worst-Case rechnen. Formularfelder nur fühlbar oder ja/nein, Variante (A/B) immer abfragen.
+- Nach jeder Auswertung: `rounds/rN_*/summary.md` und `result.txt` (wörtlich), `current.md`, `lessons.md`, `next.md` und `plug/STATUS.md` nachziehen; den getesteten Satz einfrieren.
+- `plug/parts.py` erst ändern, wenn ein Wert bewährt ist; neue Werte stehen bis dahin in `plug/<paket>/params.py`.
+
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.
