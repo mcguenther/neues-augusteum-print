@@ -74,13 +74,25 @@ def _reach_labels(poly, length, needle_d, step_mm=0.35):
     return lab, xs, zs
 
 
-def check(leg_d, apex, slope, entry_r, length, needle_d):
-    """True, wenn sich eine gerade Nadel (Länge, Durchmesser in mm) mit der Spitze von einer Mündung des V zur anderen führen lässt."""
-    lab, xs, zs = _reach_labels(tunnel(leg_d, apex, slope, entry_r), length, needle_d)
-    hs = apex * slope
+def pill_free(air, steg_w=None, steg_top=None):
+    """Freie Fläche der „halben Pille mit Steg“ im Schnitt: Halbstadion mit Viertelkreis-Enden, abzüglich des Stegs mit runder Kante."""
+    d = P.pill(air)
+    sw = steg_w or d["steg_w"]
+    st = steg_top or d["steg_top"]
+    r, hf = d["r"], sw / 2.0
+    from shapely.geometry import box
+    base = unary_union([box(-hf, 0.0, hf, d["ceil"]), Point(-hf, 0.0).buffer(r, 64).intersection(box(-hf - r, 0, -hf, r)),
+                        Point(hf, 0.0).buffer(r, 64).intersection(box(hf, 0, hf + r, r))])
+    steg = unary_union([box(-hf, -1.0, hf, st - hf), Point(0.0, st - hf).buffer(hf, 32)])
+    return base.difference(steg), -(hf + d["gap0"] / 2), hf + d["gap0"] / 2
+
+
+def check_poly(poly, x_left, x_right, length, needle_d):
+    """True, wenn sich die Nadelspitze von der Mündung bei x_left zu der bei x_right führen lässt (Schnittebene, Spitze bleibt in z ≥ 0)."""
+    lab, xs, zs = _reach_labels(poly, length, needle_d)
     j = np.where((zs >= 0.0) & (zs <= 1.0))[0]
     ends = []
-    for xc in (-hs, hs):
+    for xc in (x_left, x_right):
         i = np.where(np.abs(xs - xc) <= 0.8)[0]
         sub = lab[:, i[0]:i[-1] + 1, j[0]:j[-1] + 1]
         ends.append(set(np.unique(sub[sub > 0]).tolist()))
@@ -95,6 +107,22 @@ def check(leg_d, apex, slope, entry_r, length, needle_d):
         if a and b:
             parent[find(a)] = find(b)
     return bool({find(i) for i in ends[0]} & {find(i) for i in ends[1]})
+
+
+def check(leg_d, apex, slope, entry_r, length, needle_d):
+    """True, wenn sich eine gerade Nadel (Länge, Durchmesser in mm) mit der Spitze von einer Mündung des V zur anderen führen lässt."""
+    hs = apex * slope
+    return check_poly(tunnel(leg_d, apex, slope, entry_r), -hs, hs, length, needle_d)
+
+
+def max_length_poly(poly, x_left, x_right, needle_d, lengths=(2, 3, 4, 6, 8, 10, 12, 15, 20, 30, 45)):
+    best = 0
+    for L in lengths:
+        if check_poly(poly, x_left, x_right, L, needle_d):
+            best = L
+        elif best:
+            break
+    return best
 
 
 def max_length(leg_d, apex, slope, entry_r, needle_d, lengths=(2, 3, 4, 6, 8, 10, 12, 15, 20, 30, 45)):
@@ -128,11 +156,28 @@ def table(jobs=None):
     return {"%s|%.1f" % (t[0], t[1]): r for t, r in zip(tasks, res)}
 
 
+def pill_table(airs=(3.0, 4.5)):
+    """Längste gerade Nadel um den Steg der halben Pille (Schlüssel „pille<Luft>|<Nadel-Ø>“)."""
+    out = {}
+    for air in airs:
+        poly, xl, xr = pill_free(air)
+        for _, nd in P.NEEDLES:
+            out["pille%.1f|%.1f" % (air, nd)] = max_length_poly(poly, xl, xr, nd)
+    return out
+
+
 if __name__ == "__main__":
     import json
+    import os
     import sys
     import time
     t0 = time.time()
+    if "--pill" in sys.argv:
+        old = json.load(open(JSON)) if os.path.exists(JSON) else {}
+        old.update(pill_table())
+        json.dump(old, open(JSON, "w"), indent=1)
+        print({k: v for k, v in old.items() if k.startswith("pille")}, "%.0f s" % (time.time() - t0))
+        sys.exit(0)
     out = table()
     for key, name, v in ROWS:
         print("%-20s Ø %.1f  Scheitel %.1f  Schenkel %2d°  längste Nadel: %s" % (name, v["leg_d"], v["apex"], round(P.slope_deg(v["slope"])),

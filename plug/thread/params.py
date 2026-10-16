@@ -31,6 +31,24 @@ OLD = dict(leg_d=2.2, apex=3.4, slope=0.75, entry_r=2.0, wall=1.4)
 
 # ---- A: V-Kanal weiter, mit Support (geschlossener Tunnel)
 A = dict(leg_d=4.0, apex=5.5, slope=0.75, entry_r=3.0, wall=1.4)
+# ---- A2: Stand 2 nach Rückmeldung des Nutzers: Variante A als „halbe Pille mit Steg“ (offene Tasche statt Tunnel; der Faden war zugeschmoddert)
+PILL = dict(steg_w=5.0, steg_top=4.5, width=10.0, fillet=3.0, air=3.0)   # Steg: Breite, Höhe; Tasche: Breite quer zum Steg, Rundung Decke/Wand; Luft über dem Steg
+
+
+def pill(air=None):
+    """Maße der Tasche: Decke so hoch wie Steg + Luft, Endrundung R = Deckenhöhe (Viertelkreis bis zum Boden), Länge = 2 R + Stegbreite."""
+    d = dict(PILL)
+    if air is not None:
+        d["air"] = air
+    d["ceil"] = d["steg_top"] + d["air"]
+    d["r"] = d["ceil"]
+    d["length"] = 2 * d["r"] + d["steg_w"]
+    d["roof"] = PLATE_T - d["ceil"]                  # Material über der Decke
+    d["gap0"] = (d["length"] - d["steg_w"]) / 2      # Luft links und rechts vom Steg am Boden der Tasche
+    d["gap_top"] = d["gap0"] - d["r"] + math.sqrt(max(0.0, d["r"] ** 2 - d["steg_top"] ** 2))   # Luft seitlich in Höhe der Stegkante
+    return d
+
+
 # ---- B: halboffene Rinne an der Seitenwand (Λ-Nut, nach außen offen)
 B = dict(groove_w=4.0, depth=2.4, apex=5.5, slope=0.75)
 # ---- C: zwei gerade Schrägbohrungen, die Scheitelstrecke liegt in einer Rille außen an der Seitenwand
