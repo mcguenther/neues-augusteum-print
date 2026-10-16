@@ -36,4 +36,4 @@ Ob die Powerbank (Intenso XS5000, laut Datenblatt 90 × 63 × 12,6 mm, ungemesse
 - Ursache des Wackelns der Deckplatte.
 - Ob der Zaun fehlte oder nur am Anschlussende steht; Sitz im Zaun, Seitenspiel, Länge.
 - Kabelkanal, Fenster mit Anschlüssen, Steckerraum 35 mm.
-- Stößel und Taste sind danach (Folgeauftrag, gleicher Tag) aus der Konzeptseite entfernt: `PP.ROD`, `PB_PORT_V["taste"]`, `PORT_HALF["taste"]` und die Stößelzeilen in `build_concept.py` und `concept.template.html` gestrichen, der Text sagt jetzt „Eine Taste gibt es nicht“.
+- Stößel und Taste sind danach (Folgeauftrag, gleicher Tag) aus der Konzeptseite entfernt: `PP.ROD`, `PB_PORT_V["taste"]`, `PORT_HALF["taste"]` und die Stößelzeilen in `build_concept.py` und `concept.template.html` gestrichen, auch `Taste` in `PB_PORTS` und der Satz zur Taste im Text der Seite gestrichen (Fachprobe-Plan, Testbogen und Generator-Texte nennen die Taste weiter als historische Entscheidung).

@@ -33,8 +33,8 @@ PB_WH = 5.0 * 3.7         # A  18,5 Wh
 PB_IMAX = 2.1             # B  5 V / 2,1 A gesamt für USB-A und USB-C
 PB_SLEEP_S = 30           # B  Standby nach etwa 30 s ohne Verbraucher
 PB_KEEP_MA = 50           # S  bleibt an ab etwa 50 mA (Forum)
-PB_PORTS = ("LEDs", "Taste", "microUSB in", "USB-C in/out", "USB-A out")   # B  an einer Schmalseite (Bild der Anleitung)
-PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen (Taste entfällt, Nutzer)
+PB_PORTS = ("LEDs", "microUSB in", "USB-C in/out", "USB-A out")   # B  an einer Schmalseite (Bild der Anleitung)
+PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, leds=-24.0)   # S  Lage quer zur Schmalseite ab Mitte; ungemessen
 
 # ---- Fach im Unterkasten
 PB_CLR = 0.5              # S  Spiel je Seite (Kaufteil ungemessen; Fachprobe klärt es)
