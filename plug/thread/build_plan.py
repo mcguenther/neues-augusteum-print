@@ -39,7 +39,7 @@ FIT = load("fit.json")
 
 
 _RT = load("reach.json")
-NEEDLE = {a: _RT.get("pille%.1f|1.2" % a, d) for a, d in ((3.0, 10), (4.5, 12))}   # längste gerade Nadel, Ø 1,2 (Rechnung: `python3 -m plug.thread.reach --pill`)
+NEEDLE = {a: _RT.get("pille%.1f|1.2" % a, d) for a, d in ((3.0, 10), (4.0, 12), (4.5, 12))}   # längste gerade Nadel, Ø 1,2 (Rechnung: `python3 -m plug.thread.reach --pill`)
 
 
 # --------------------------------------------------------------------------
@@ -167,7 +167,7 @@ def frames_thread(air=3.0):
 # Seite
 # --------------------------------------------------------------------------
 def head():
-    return ('<header class="top"><p class="kicker">Steckmechanismus · Fadenführung · Stand 2</p><h1>Fadenführung an den Plattenecken</h1>'
+    return ('<header class="top"><p class="kicker">Steckmechanismus · Fadenführung · Stand 2, Nachtrag: Luft 4,0 gewählt</p><h1>Fadenführung an den Plattenecken</h1>'
             '<p class="lead">Nach deiner Rückmeldung: Der Faden ließ sich nicht einschieben, weil der Kanal zugeschmoddert war. Du willst Variante A probieren und sie robust bauen: '
             'eine Tasche wie eine halbe Pille mit einem Steg in der Mitte, die Decke schön rund, etwa 3 mm Luft über dem Steg. Hier steht die Form, ob sie ins Modell passt und wie der Faden hineinkommt. '
             '<b>Es gibt noch keine STL.</b> Der erste Plan (Vergleich der Varianten A bis D) liegt als Archiv in <code>plug/thread/plan1.html</code>.</p>'
@@ -177,9 +177,28 @@ def head():
             '<li><b>Passt ins Modell:</b> ja. Die Tasche samt Fase braucht in der Platte %s × %s mm und %s mm Decke; die Platte ist %s mm dick. An allen vier Ecken der echten Platte frei, bei 1:1000 und 1:1300.</li>'
             '<li><b>Einfädeln:</b> Eine gerade Nadel kommt auch hier nur etwa %s mm weit um den Steg. Dafür ist alles offen: Nadel hinauf, Haken oder Pinzette zieht den Faden über den Steg.</li>'
             '<li><b>Test:</b> zwei Eckmuster in einem Druck, Luft 3,0 und 4,5 mm. Neue Werte nur in <code>plug/thread/params.py</code>.</li></ul></header>'
-            % (de(P.pill()["length"], 0), de(P.PILL["width"], 0), de(P.pill()["ceil"], 1), de(P.PILL["steg_w"], 0), de(P.PILL["steg_top"], 1), de(P.PILL["air"], 1),
-               de(P.PILL["chamfer"], 1), de(P.PILL["steg_chamfer"], 1), de(P.pill()["gap_mouth"], 1), de(P.pill()["gap0"], 1),
-               de(P.pill()["mouth_l"] + 2 * P.WALL_MIN, 1), de(P.pill()["mouth_w"] + 2 * P.WALL_MIN, 1), de(P.pill()["roof"], 1), de(P.PLATE_T, 1), NEEDLE[3.0]))
+            % (de(P.pill(3.0)["length"], 0), de(P.PILL["width"], 0), de(P.pill(3.0)["ceil"], 1), de(P.PILL["steg_w"], 0), de(P.PILL["steg_top"], 1), de(3.0, 1),
+               de(P.PILL["chamfer"], 1), de(P.PILL["steg_chamfer"], 1), de(P.pill(3.0)["gap_mouth"], 1), de(P.pill(3.0)["gap0"], 1),
+               de(P.pill(3.0)["mouth_l"] + 2 * P.WALL_MIN, 1), de(P.pill(3.0)["mouth_w"] + 2 * P.WALL_MIN, 1), de(P.pill(3.0)["roof"], 1), de(P.PLATE_T, 1), NEEDLE[3.0]))
+
+
+def sec_stand3():
+    d = P.pill()
+    fit = FIT.get("1:1300", {}).get("pille4"), FIT.get("1:1000", {}).get("pille4")
+    fit_txt = "an allen vier Ecken frei bei 1:1000 und 1:1300" if all(f and all(r is not None for r in f) for f in fit) else "Passprüfung: siehe fit.json"
+    rows = [("Luft über dem Steg", de(d["air"], 1), "Kompromiss aus P3 (3,0) und P45 (4,5), beide gingen"),
+            ("Decke, Endrundung R", "%s, R %s" % (de(d["ceil"], 1), de(d["r"], 1)), "Steg %s + Luft %s" % (de(d["steg_top"], 1), de(d["air"], 1))),
+            ("Tasche am Boden", "%s × %s" % (de(d["length"], 0), de(d["width"], 0)), "Mündung mit Fase %s × %s" % (de(d["mouth_l"], 0), de(d["mouth_w"], 0))),
+            ("Fase Taschenrand, Steg-Fuß", "%s und %s × 45°" % (de(d["chamfer"], 1), de(d["steg_chamfer"], 1)), "Eingang und Ausgang je %s mm weit" % de(d["gap_mouth"], 1)),
+            ("Material über der Decke", de(d["roof"], 1), "Plattendicke %s, Regel mindestens 2,0" % de(P.PLATE_T, 1)),
+            ("Eckaussparung im Unterkasten", "%s × %s" % (de(d["notch_l"], 0), de(d["notch_w"], 0)), "Mündung + %s mm ringsum, nach außen offen" % de(P.NOTCH_PAD, 0)),
+            ("Passt ins Modell", fit_txt, "Platzbedarf in der Platte %s × %s mm" % (de(d["mouth_l"] + 2 * P.WALL_MIN, 1), de(d["mouth_w"] + 2 * P.WALL_MIN, 1))),
+            ("Gerade Nadel um den Steg (Ø 1,2)", "etwa %s mm" % NEEDLE[4.0], "gefädelt wird ohne Nadel, nur mit Faden (ging bei P3 und P45)")]
+    trs = "".join('<tr><td><b>%s</b></td><td class="n">%s</td><td>%s</td></tr>' % r for r in rows)
+    return ('<section class="sec"><h2>Nachtrag nach dem Test der Eckmuster</h2>'
+            '<p class="note">Ergebnis (2026-10-16): Decke der Tasche glatt, Faden geht bei P3 und P45 durch. Der Nutzer wählt als Kompromiss <b>%s mm Luft</b>; mehr wird nicht getestet. '
+            'Dieser Plan beschreibt unten den Stand 2 mit den Eckmustern (3,0 und 4,5); hier stehen die Maße der gewählten Tasche. Offen bleibt die Zugprobe (hält die Plattenecke bei kräftigem Ziehen?).</p>'
+            '<div class="tw"><table class="t"><thead><tr><th>Maß</th><th>Wert in mm</th><th>Bemerkung</th></tr></thead><tbody>%s</tbody></table></div></section>' % (de(d["air"], 1), trs))
 
 
 def sec_diag():
@@ -292,7 +311,7 @@ def sec_test():
             'Als „Hut“ dient ein Stück Filz oder Pappe unter dem Eckmuster. Material etwa 25 g, etwa 1,5 Stunden.</p>'
             '<div class="tw"><table class="t"><thead><tr><th>Teil</th><th>Plattenecke</th><th>Unterkasten</th></tr></thead><tbody>%s</tbody></table></div>'
             '<p class="note">Dazu <code>plug/thread/build.py</code> mit STL, README, ZIP und Prüfbericht (dicht, Überhänge, Luft unter der Decke gemessen) und ein Testbogen. Fragen im Testbogen: Faden mit Nadel und Haken über den Steg (ja, mit Mühe, nein); '
-            'ohne Nadel mit Haken; kräftig am Faden ziehen (hält?); Faden hakt an Steg oder Decke; Decke unten sauber oder durchgehängt; welche Luft (3,0 oder 4,5); welche ZIP (Datum, L33); Variante immer nennen (L25).</p></section>' % trs)
+            'ohne Nadel mit Haken; kräftig am Faden ziehen (hält?); Faden hakt an Steg oder Decke; Decke unten sauber oder durchgehängt; welche Luft (3,0 oder 4,5); welche ZIP (Datum, L35); Variante immer nennen (L25).</p></section>' % trs)
 
 
 def sec_risks():
@@ -300,7 +319,7 @@ def sec_risks():
              ("Decke hängt durch.", "Über dem Steg liegt eine Brücke von nur 5 mm, die Viertelkreise laufen in den letzten 2 bis 3 mm flach aus. Sinkt die Decke um 0,4 mm, bleiben 2,6 mm Luft. Der Prüfbericht rechnet die Überhänge; Support wird nicht gesetzt, weil er in der engen Luft selbst zuschmoddert."),
              ("Faden scheuert.", "Steg-Oberkante ist voll gerundet (R 2,5), die Decke rund. Wenn der Faden an Schichtstufen hakt, kurz mit einem Stück Faden oder Schleifpapier durchziehen."),
              ("Einfädeln bleibt Handarbeit.", "Die Nadel allein kommt nicht um den Steg; Haken oder Pinzette gehören dazu. Der Test fragt, ob das mit deinem Werkzeug geht."),
-             ("Eckaussparung schwächt die Ecke des Unterkastens.", "%s × %s mm bei Wand 2,4 mm; das Eckstück bleibt hohl und kann bei Bedarf verstärkt werden." % (de(P.pill()["notch_l"], 0), de(P.pill()["notch_w"], 0))),
+             ("Eckaussparung schwächt die Ecke des Unterkastens.", "%s × %s mm bei Wand 2,4 mm; das Eckstück bleibt hohl und kann bei Bedarf verstärkt werden." % (de(P.pill(3.0)["notch_l"], 0), de(P.pill(3.0)["notch_w"], 0))),
              ("Nadel, Faden und Zugang zum Hut ungemessen.", "Die Rechnung nimmt Stopfnadel 1,6 und doppelten Faden 0,8 an (L08); der Ablauf nimmt an, dass du den Faden im Hut verknoten kannst.")]
     return '<section class="sec"><h2>Risiken</h2>%s</section>' % "".join('<p class="risk"><b>%s</b> %s</p>' % r for r in risks)
 
@@ -325,7 +344,7 @@ DECISIONS = [
 
 
 def main():
-    sections = "".join([sec_diag(), sec_form(), sec_fit(), sec_thread(), sec_chain(), sec_test(), sec_risks()])
+    sections = "".join([sec_stand3(), sec_diag(), sec_form(), sec_fit(), sec_thread(), sec_chain(), sec_test(), sec_risks()])
     sections += '<section class="top"><h2>Entscheidungen</h2><p class="lead">Fünf kurze Karten. Mit den Empfehlungen ist der Plan rund.</p></section>'
     sections += "\n".join(decision_card(x) for x in DECISIONS)
     spec = [dict(id=x["id"], tag=x["tag"], title=x["title"]) for x in DECISIONS]

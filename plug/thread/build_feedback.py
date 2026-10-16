@@ -2,7 +2,7 @@
 """Testbogen für die Fadenführung (Eckmuster P3 und P45): baut plug/thread/feedback.html aus feedback.template.html.
 
 Führt durch die Teile aus plug/thread/build.py (plug/thread/stl/): Druckqualität, Aufbauen, Faden einfädeln, kräftig ziehen, Luft vergleichen. Zeichnungen aus
-plug/thread/build_plan.py, Vorschaubilder aus plug/thread/vorschau/. Formularfelder nur fühlbar oder ja/nein (L24); die ZIP-Version wird abgefragt (L25, L33).
+plug/thread/build_plan.py, Vorschaubilder aus plug/thread/vorschau/. Formularfelder nur fühlbar oder ja/nein (L24); die ZIP-Version wird abgefragt (L25, L35).
 
 Aufruf (aus dem Repo-Wurzelverzeichnis):
     python3 -m plug.thread.build_feedback      # schreibt plug/thread/feedback.html

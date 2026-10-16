@@ -30,7 +30,7 @@ Testbogen: https://claude.ai/artifact/9qinNK1GZiZTRRZJeqjXTx (privat)
 - Abgenickt am 2026-10-16: Fase A (2,0 / 1,0), Luft beide (P3 und P45), ohne Support, Werkzeug nur Faden (kein Haken, keine Nadel), Freigabe zum Bauen.
 - Gebaut: `plug/thread/stl/` (vier STL, alle dicht, keine Kollisionen, 16 g, etwa 1 h auf dem Drucker des Nutzers). Prüfbericht misst im Modell: Luft über dem Steg 3,00 bzw. 4,50, Eingang und Ausgang 10,4 bzw. 11,9 mm weit an der Unterseite.
 
-- **Ergebnis der Eckmuster (2026-10-16):** Decke glatt, Faden geht bei beiden durch. Nutzer wählt als Kompromiss **4,0 mm Luft** (`params.CHOSEN_AIR`, `pill_chosen()`); Widerspruch im Ergebnistext (ZIP „nicht gedruckt“); Zugprobe noch offen. Auswertung: `round/r5_eckmuster/summary.md`, `result.txt`.
+- **Ergebnis der Eckmuster (2026-10-16):** Decke glatt, Faden geht bei beiden durch. Nutzer wählt als Kompromiss **4,0 mm Luft** (`params.CHOSEN_AIR`, Standard von `pill()`); Widerspruch im Ergebnistext (ZIP „nicht gedruckt“); Zugprobe noch offen. Auswertung: `round/r5_eckmuster/summary.md`, `result.txt`.
 
 ## Neue Lehre für `plug/logbook/lessons.md` (beim Merge nachtragen)
 

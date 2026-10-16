@@ -31,7 +31,7 @@ PREV = os.path.join(HERE, "vorschau")
 L = 0.2                                           # Schichthöhe
 CH = PP.CH_BED                                    # Fase an Bettkanten der Außenkanten (0,5)
 SAMPLES = (("P3", 3.0), ("P45", 4.5))
-VERSION = "1"                                     # ZIP-Version (L33: im Ergebnistext nennen)
+VERSION = "1"                                     # ZIP-Version (L35: im Ergebnistext nennen)
 de = SR.de
 
 

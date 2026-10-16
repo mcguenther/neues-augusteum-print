@@ -311,10 +311,10 @@ def head():
 
 
 def sec_befund():
-    rows = [("Faden geht durch keines der V (53° und 40°)", "Kanal Ø 2,2 zu eng; Faden bleibt im untertauchenden Teil stecken", "L30"),
-            ("Trichter (Öffnungen) in Ordnung", "Trichter bleiben, werden eher größer", "L30"),
-            ("„Ist ja auch ein Overhang“: Einfädeln scheitert an der Decke des Kanals", "Support ist erlaubt; Böschungsrücksichten entfallen", "L30, L31"),
-            ("Nutzer: mindestens 1 mm mehr, besser Ø 3,2 oder mehr", "hier Ø 3,6 bis 4,0, plus die Frage, ob ein Tunnel überhaupt sein muss", "L30"),
+    rows = [("Faden geht durch keines der V (53° und 40°)", "Kanal Ø 2,2 zu eng; Faden bleibt im untertauchenden Teil stecken", "L32"),
+            ("Trichter (Öffnungen) in Ordnung", "Trichter bleiben, werden eher größer", "L32"),
+            ("„Ist ja auch ein Overhang“: Einfädeln scheitert an der Decke des Kanals", "Support ist erlaubt; Böschungsrücksichten entfallen", "L32, L33"),
+            ("Nutzer: mindestens 1 mm mehr, besser Ø 3,2 oder mehr", "hier Ø 3,6 bis 4,0, plus die Frage, ob ein Tunnel überhaupt sein muss", "L32"),
             ("Winkel 53° gegen 40° nicht entschieden", "entfällt als Frage: bei gerader Bohrung zählt der Winkel nicht für das Einfädeln", "–"),
             ("Faden zunächst oben austretend geplant", "Eintritt, Austritt und Zugänglichkeit im Schnitt zeigen (hier: Einfädel-Regler)", "L29"),
             ("Plan ohne Maßkette für den Einfädelvorgang", "Worst-Case-Tabelle unten, Nadel und Faden als Rückfrage", "L23, L24")]
@@ -479,7 +479,7 @@ def sec_test():
             'Unterlage: ein Stück Filz oder Pappe als „Hut“. Material insgesamt etwa 25 g, etwa 1,5 Stunden.</p>'
             '<div class="tw"><table class="t"><thead><tr><th>Teil</th><th>Inhalt</th><th>Besonderheit</th></tr></thead><tbody>%s</tbody></table></div>'
             '<p class="note">Dazu: <code>plug/thread/build.py</code> (STL, README, ZIP, Prüfbericht mit dicht, Kollisionen und Überhängen), Testbogen mit Zeichnungen, Reglern und Ergebnistext. '
-            'Fragen im Testbogen: Faden einfädeln (ja, mit Mühe, nein) je Schritt; kräftig am Faden ziehen (Ecke bleibt?); Faden verrutscht oder springt heraus; gefällt die sichtbare Rille; welche Variante; welche ZIP (Datum, L33). Variante immer abfragen (L25).</p></section>' % trs)
+            'Fragen im Testbogen: Faden einfädeln (ja, mit Mühe, nein) je Schritt; kräftig am Faden ziehen (Ecke bleibt?); Faden verrutscht oder springt heraus; gefällt die sichtbare Rille; welche Variante; welche ZIP (Datum, L35). Variante immer abfragen (L25).</p></section>' % trs)
 
 
 def sec_risks():
