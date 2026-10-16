@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Sammelt die Ergebnisse der Passungsrechnung für Maßstab 1:1176 (15 % kleiner als 1:1000) in data.json.
+"""Sammelt die Ergebnisse der Passungsrechnung (Maßstab 1:1250, Platte höchstens 230 × 230 mm) in data.json.
 
-Eingaben: fit.json (analysis_fit.py: größtes Wandmaß je Gebäude und Maßstab, kleinster Maßstabsfaktor) und die Lagen
-aus analysis_place.py (hier fest eingetragen, weil die Suche etwa 2 min dauert; Lage des Uniriesen wird hier gesucht).
-Aufruf aus dem Wurzelverzeichnis: python3 -m plug.scale1176.assemble
+Eingaben: fit.json (Maßstab 1:1176, analysis_fit.py), fit_1250.json (Maßstab 1:1250). Die Lage des Schachts wird hier gesucht,
+je Gebäude für „Standard“ (Kassette über der Oberfläche, Gebäude muss 8,75 mm hoch sein) und „versenkt“ (Kassette unter der
+Oberfläche, nur der Grundriss zählt). Start mit Wand und Länge aus fit_1250.json, bei Fehlschlag in 0,5-mm-Schritten kürzer.
+Aufruf aus dem Wurzelverzeichnis: python3 -m plug.scale1176.assemble   (dauert einige Minuten)
 """
 import json
 import math
@@ -12,7 +13,6 @@ import os
 import numpy as np
 from shapely import affinity
 from shapely.geometry import Point, Polygon, box
-from shapely.ops import unary_union
 from shapely.prepared import prep
 
 import generate as G
@@ -20,12 +20,12 @@ import innenhof
 from plug.testcase import params as P
 
 HERE = os.path.dirname(__file__)
-K = 1000 / 1176.47
-PLACE = {  # Winkel (Grad, gegen den Uhrzeigersinn, Schacht längs y), Mittelpunkt in m bei 1:1000, Wand 1,2 mm
-    "01_paulinum": (80, -53.744, 62.320), "02_neues_augusteum": (170, -55.172, 17.160),
-    "03_hoersaalgebaeude": (0, -117.575, -62.084), "04_seminargebaeude": (170, -130.163, 37.252),
-    "05_institutsgebaeude": (170, -118.812, 96.897)}
-UNI_KL = 25.56      # gekürzter Schacht des City-Hochhauses (analysis_place.py)
+SCALE = 1250
+K = 1000 / SCALE
+# (Wand, Länge) je Gebäude aus fit_1250.json
+STANDARD = {"01_paulinum": (1.2, None), "02_neues_augusteum": (1.2, None), "03_hoersaalgebaeude": (1.2, None),
+            "04_seminargebaeude": (0.8, None), "05_institutsgebaeude": (0.8, 28.56), "06_city_hochhaus": (0.8, 22.56)}
+VERSENKT = {"05_institutsgebaeude": (1.2, None), "06_city_hochhaus": (0.8, 24.06)}
 
 
 def rect(cx, cy, w, l, a):
@@ -48,13 +48,23 @@ def find(u, w, l, centre):
     pu, best = prep(u.buffer(1e-6)), None
     minx, miny, maxx, maxy = u.bounds
     for a in range(0, 180, 5):
-        for x in np.arange(minx, maxx, 0.25):
-            for y in np.arange(miny, maxy, 0.25):
+        for x in np.arange(minx, maxx, 0.5):
+            for y in np.arange(miny, maxy, 0.5):
                 if pu.contains(Point(x, y)) and pu.contains(rect(x, y, w, l, a)):
                     c = math.hypot(x - centre.x, y - centre.y)
                     if best is None or c < best[0]:
                         best = (c, a, x, y)
     return best
+
+
+def place(u, fp, KW, KL, wall, kl):
+    kl = kl or KL
+    while kl > 12:
+        best = find(u, KW + 2 * wall, kl + 2 * wall, fp.centroid)
+        if best:
+            return dict(angle=best[1], cx=best[2], cy=best[3], kl=kl, wall=wall)
+        kl -= 0.5
+    return None
 
 
 def main():
@@ -63,29 +73,21 @@ def main():
     d, kd = P.dims(), P.kass_dims()
     KW = kd["cw"] + 2 * P.KASS_CLR_T
     KL = d["y_kass1"] - d["y_kass0"] + 2 * P.KASS_CLR_T
-    tail = (d["y_kass0"] - P.KASS_CLR_T) - d["y_tail"]        # Lötende ragt so weit hinter das Schachtende
+    tail = (d["y_kass0"] - P.KASS_CLR_T) - d["y_tail"]
     hmin = d["box_top"] + 0.8
-    fit = json.load(open(os.path.join(HERE, "fit.json")))
+    fit = json.load(open(os.path.join(HERE, "fit_1250.json")))
     hof = innenhof.model(K, [v[1] for v in models.values()])[1]
-    out = dict(K=K, KW=KW, KL=KL, tail=tail, hmin=hmin, buildings={}, hof=coords(hof), hof_area=hof.area)
+    out = dict(scale=SCALE, K=K, KW=KW, KL=KL, tail=tail, hmin=hmin, F=d["F"], kass_top=d["kass_top"], plate_t=d["plate_t"],
+               buildings={}, hof=coords(hof), hof_area=hof.area)
     for slug, (solid, fp, _) in models.items():
         if slug.startswith("08"):
             continue
-        if slug in PLACE:
-            a, x, y = PLACE[slug]
-            cx, cy, kl, wall = x * K, y * K, KL, 1.2
-        else:
-            u = slice_poly(solid, hmin, fp)
-            kl, wall = UNI_KL, 0.8
-            while True:
-                best = find(u, KW + 1.6, kl + 1.6, fp.centroid)
-                if best:
-                    break
-                kl -= 0.5
-            _, a, cx, cy = best
-        out["buildings"][slug] = dict(fp=coords(fp), fit=fit[slug], angle=a, cx=cx, cy=cy, kl=kl, wall=wall,
-                                      area=fp.area, hmax=G.to_trimesh(solid).bounds[1][2])
-        print(slug, a, round(cx, 1), round(cy, 1))
+        b = dict(fp=coords(fp), fit=fit[slug], area=fp.area, hmax=G.to_trimesh(solid).bounds[1][2])
+        b["standard"] = place(slice_poly(solid, hmin / K * K, fp), fp, KW, KL, *STANDARD[slug])
+        if slug in VERSENKT:
+            b["versenkt"] = place(fp, fp, KW, KL, *VERSENKT[slug])
+        out["buildings"][slug] = b
+        print(slug, b["standard"], b.get("versenkt"), flush=True)
     json.dump(out, open(os.path.join(HERE, "data.json"), "w"))
 
 
