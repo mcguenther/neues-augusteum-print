@@ -74,17 +74,31 @@ def _reach_labels(poly, length, needle_d, step_mm=0.35):
     return lab, xs, zs
 
 
-def pill_free(air, steg_w=None, steg_top=None):
-    """Freie Fläche der „halben Pille mit Steg“ im Schnitt: Halbstadion mit Viertelkreis-Enden, abzüglich des Stegs mit runder Kante."""
+def pill_geom(air, steg_w=None, steg_top=None):
+    """Schnitt x–z der „halben Pille mit Steg“: freie Tasche ohne Steg (mit Fase am Rand), Steg (mit Fase am Fuß) und freie Fläche insgesamt."""
+    from shapely.geometry import box
     d = P.pill(air)
     sw = steg_w or d["steg_w"]
     st = steg_top or d["steg_top"]
-    r, hf = d["r"], sw / 2.0
-    from shapely.geometry import box
+    r, hf, c, cs = d["r"], sw / 2.0, d["chamfer"], d["steg_chamfer"]
     base = unary_union([box(-hf, 0.0, hf, d["ceil"]), Point(-hf, 0.0).buffer(r, 64).intersection(box(-hf - r, 0, -hf, r)),
                         Point(hf, 0.0).buffer(r, 64).intersection(box(hf, 0, hf + r, r))])
-    steg = unary_union([box(-hf, -1.0, hf, st - hf), Point(0.0, st - hf).buffer(hf, 32)])
-    return base.difference(steg), -(hf + d["gap0"] / 2), hf + d["gap0"] / 2
+
+    def xend(z):
+        return hf + math.sqrt(max(0.0, r * r - z * z))
+    for s_ in (-1, 1):                         # Fase am Taschenrand: 45° vom Rand bei z = 0 bis zur Wand bei z = c
+        zs_ = np.linspace(c, 0.0, 9)
+        ring = [(s_ * (xend(0.0) + c), 0.0), (s_ * xend(c), c)] + [(s_ * xend(z), z) for z in zs_[1:]]
+        base = base.union(Polygon(ring))
+    steg = unary_union([box(-hf, -0.5, hf, st - hf), Point(0.0, st - hf).buffer(hf, 32)])
+    steg = steg.difference(Polygon([(-hf - 1, -1), (-hf + cs + 1, -1), (-hf - 1, cs + 1)])).difference(Polygon([(hf + 1, -1), (hf - cs - 1, -1), (hf + 1, cs + 1)]))
+    return base, steg, base.difference(steg), -(hf + d["gap0"] / 2), hf + d["gap0"] / 2
+
+
+def pill_free(air, steg_w=None, steg_top=None):
+    """Freie Fläche der Pille und die x-Lagen der beiden Mündungen (für die Einfädelprobe)."""
+    _, _, free, xl, xr = pill_geom(air, steg_w, steg_top)
+    return free, xl, xr
 
 
 def check_poly(poly, x_left, x_right, length, needle_d):

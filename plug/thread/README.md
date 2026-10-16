@@ -13,13 +13,14 @@ Berührt nicht: `plug/testcase/build2.py`, Dock-Nische, Zapfen, Schachttiefe, `p
 
 ## Plan-Artifact
 
-https://claude.ai/artifact/PB7g6bhrdDhJx5oM7XRwax (privat; Version 2 = Stand 2; Entscheidungskarten L, D, N, F)
+https://claude.ai/artifact/PB7g6bhrdDhJx5oM7XRwax (privat; Version 3 = Stand 2 mit Fase; Entscheidungskarten M, L, D, N, F)
 
 ## Stand 2 in Kürze
 
 - Rückmeldung des Nutzers: Der Faden ließ sich nicht einschieben, weil der Kanal **zugeschmoddert** war (Druck), nicht nur wegen der Form. Variante A soll probiert werden, „super robust“: Tasche wie eine halbe Pille mit Steg in der Mitte, runde Decke, etwa 3 mm Luft über dem Steg, wenn es ins Modell passt.
 - Form: offene Tasche an der Plattenunterseite (Länge 20, Breite 10, Decke 7,5 hoch mit Viertelkreis-Enden R 7,5, Steg 5,0 × 4,5 mit runder Kante von Wand zu Wand, Luft 3,0). Zweite Größe mit 4,5 mm Luft (Decke 9,0) zum Vergleich. Kein Tunnel, kein Trichter, kein freies Maß unter 3 mm; ohne Support planbar.
-- Passt ins Modell: ja, an allen vier Ecken der echten Platte bei 1:1000 und 1:1300; Material über der Decke 5,1 bzw. 3,6 mm bei 12,6 mm Plattendicke; Eckaussparung im Unterkasten 26 × 16 bzw. 29 × 16 mm.
+- **Fase** (Wunsch des Nutzers, damit man Ein- und Ausgang gut trifft): 2,0 × 45° ringsum am Taschenrand, 1,0 × 45° am Steg-Fuß. Mündung an der Unterseite 24 × 14, Eingang und Ausgang je 10,5 mm weit (ohne Fase 7,5). 45° druckt ohne Support und gleicht den Elefantenfuß aus. Werte `chamfer` und `steg_chamfer` in `params.PILL`.
+- Passt ins Modell: ja, an allen vier Ecken der echten Platte bei 1:1000 und 1:1300; Material über der Decke 5,1 bzw. 3,6 mm bei 12,6 mm Plattendicke; Eckaussparung im Unterkasten (gefaste Mündung + 2 mm ringsum) 28 × 18 bzw. 31 × 18 mm; Platzbedarf in der Platte 26,8 × 16,8 mm.
 - Einfädeln: gerade Nadel kommt nur etwa 10 mm (Luft 3,0) bzw. 12 mm (Luft 4,5) um den Steg; Nadel bringt den Faden über den Steg, Haken oder Pinzette zieht ihn herunter, oder ganz ohne Nadel mit Haken.
 - Nächster Schritt nach dem Abnicken: `plug/thread/build.py` (zwei Eckmuster F2-P3 und F2-P45, je Plattenecke und Unterkasten-Ecke; STL, README, ZIP, Prüfbericht), dann Testbogen.
 

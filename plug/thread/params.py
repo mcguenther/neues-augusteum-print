@@ -32,7 +32,8 @@ OLD = dict(leg_d=2.2, apex=3.4, slope=0.75, entry_r=2.0, wall=1.4)
 # ---- A: V-Kanal weiter, mit Support (geschlossener Tunnel)
 A = dict(leg_d=4.0, apex=5.5, slope=0.75, entry_r=3.0, wall=1.4)
 # ---- A2: Stand 2 nach Rückmeldung des Nutzers: Variante A als „halbe Pille mit Steg“ (offene Tasche statt Tunnel; der Faden war zugeschmoddert)
-PILL = dict(steg_w=5.0, steg_top=4.5, width=10.0, fillet=3.0, air=3.0)   # Steg: Breite, Höhe; Tasche: Breite quer zum Steg, Rundung Decke/Wand; Luft über dem Steg
+PILL = dict(steg_w=5.0, steg_top=4.5, width=10.0, fillet=3.0, air=3.0, chamfer=2.0, steg_chamfer=1.0)   # Steg: Breite, Höhe; Tasche: Breite quer zum Steg, Rundung Decke/Wand; Luft über dem Steg; Fase 45° am Taschenrand (Ein- und Ausgänge) und am Steg-Fuß
+NOTCH_PAD = 2.0          # Eckaussparung im Unterkasten reicht so weit über die gefaste Mündung hinaus
 
 
 def pill(air=None):
@@ -45,6 +46,10 @@ def pill(air=None):
     d["length"] = 2 * d["r"] + d["steg_w"]
     d["roof"] = PLATE_T - d["ceil"]                  # Material über der Decke
     d["gap0"] = (d["length"] - d["steg_w"]) / 2      # Luft links und rechts vom Steg am Boden der Tasche
+    c, cs = d["chamfer"], d["steg_chamfer"]
+    d["mouth_l"], d["mouth_w"] = d["length"] + 2 * c, d["width"] + 2 * c          # Mündung an der Plattenunterseite samt Fase
+    d["gap_mouth"] = d["gap0"] + c + cs                                            # Weite jedes Eingangs am Bett (Rand bis Steg-Fuß)
+    d["notch_l"], d["notch_w"] = d["mouth_l"] + 2 * NOTCH_PAD, d["mouth_w"] + 2 * NOTCH_PAD   # Eckaussparung im Unterkasten
     d["gap_top"] = d["gap0"] - d["r"] + math.sqrt(max(0.0, d["r"] ** 2 - d["steg_top"] ** 2))   # Luft seitlich in Höhe der Stegkante
     return d
 

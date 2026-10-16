@@ -2,7 +2,7 @@
 """Passt die Fadentasche in die echte Oberplatte? Prüft an den vier Ecken der Grundplatte (Umriss und gesperrte Flächen wie in plug/power/build_concept.py).
 
 Gesperrt sind die Mulden der Gebäude (mit Spiel) und die Vertiefung des Innenhofs, jeweils mit `params.WALL_MIN` Wand. Die Tasche liegt mit der langen Seite
-parallel zur nächsten Kante, so nah an der Ecke wie möglich; Eckaussparung im Unterkasten = Taschengrundriss plus `NOTCH_PAD` ringsum, darf bis zum Rand offen sein.
+parallel zur nächsten Kante, so nah an der Ecke wie möglich; Maßgeblich ist die gefaste Mündung an der Unterseite (`pill()['mouth_l']` × `['mouth_w']`); die Eckaussparung im Unterkasten reicht `params.NOTCH_PAD` darüber hinaus und darf bis zum Rand offen sein.
 
 Aufruf (aus dem Repo-Wurzelverzeichnis):
     python3 -m plug.thread.fit [--write]        # Tabelle je Maßstab 1:1000 und 1:1300, ca. 1 min; --write schreibt fit.json
@@ -19,7 +19,6 @@ from plug.power import params as PP
 from plug.thread import params as P
 
 JSON = __file__.replace("fit.py", "fit.json")
-NOTCH_PAD = 3.0
 
 
 def plate(scale):
@@ -61,7 +60,7 @@ def table():
         outline, blocked = plate(scale)
         row = {"plate": [round(outline.bounds[2] - outline.bounds[0], 1), round(outline.bounds[3] - outline.bounds[1], 1)]}
         for name, (l, w) in (("alt", (2 * (BC.V["slope"] * BC.V["apex"] + BC.V["entry_r"]), 2 * BC.V["entry_r"])),
-                             ("pille3", (P.pill(3.0)["length"], P.PILL["width"])), ("pille45", (P.pill(4.5)["length"], P.PILL["width"]))):
+                             ("pille3", (P.pill(3.0)["mouth_l"], P.pill(3.0)["mouth_w"])), ("pille45", (P.pill(4.5)["mouth_l"], P.pill(4.5)["mouth_w"]))):
             row[name] = place(outline, blocked, l, w)
         out["1:%d" % scale] = row
     return out

@@ -25,7 +25,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 TEMPLATE = os.path.join(HERE, "plan.template.html")
 OUT = os.path.join(HERE, "plan.html")
-NOTCH_PAD = 3.0          # Eckaussparung im Unterkasten: Taschengrundriss plus so viel ringsum (wie plug/thread/fit.py)
 
 
 def load(name):
@@ -49,11 +48,8 @@ NEEDLE = {a: _RT.get("pille%.1f|1.2" % a, d) for a, d in ((3.0, 10), (4.5, 12))}
 def pill_polys(air):
     """Tasche (frei) und Steg im Schnitt x–z."""
     d = P.pill(air)
-    free, _, _ = R.pill_free(air)
-    hf = d["steg_w"] / 2
-    st = d["steg_top"]
-    steg = unary_union([sbox(-hf, -0.5, hf, st - hf), Point(0.0, st - hf).buffer(hf, 32)])
-    return d, free.union(steg), steg
+    base, steg, _, _, _ = R.pill_geom(air)
+    return d, base, steg
 
 
 def svg_pill_section(air=3.0, thread=True, needle=None, hook=None, hat=True, label="", loop=False):
@@ -84,11 +80,18 @@ def svg_pill_section(air=3.0, thread=True, needle=None, hook=None, hat=True, lab
     g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="dimn"/>' % (g.X(d["length"] / 2 + 1.5), g.Z(0), g.X(d["length"] / 2 + 1.5), g.Z(d["ceil"])))
     g.text(d["length"] / 2 + 1.8, d["ceil"] / 2, "Decke %s" % de(d["ceil"], 1), "dln", "start")
     g.text(0, 1.6, "Steg %s breit" % de(d["steg_w"], 1), "dls")
+    xm = d["length"] / 2 + d["chamfer"]
+    g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="dimn"/>' % (g.X(-xm), g.Z(-0.6), g.X(-hf + d["steg_chamfer"]), g.Z(-0.6)))
+    g.text((-xm - hf + d["steg_chamfer"]) / 2, -1.5, "Eingang A %s mm weit" % de(d["gap_mouth"], 1), "dln")
+    g.o.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="dimn"/>' % (g.X(hf - d["steg_chamfer"]), g.Z(-0.6), g.X(xm), g.Z(-0.6)))
+    g.text((xm + hf - d["steg_chamfer"]) / 2, -1.5, "Ausgang B %s mm weit" % de(d["gap_mouth"], 1), "dln")
+    g.text(-xm - 0.2, 2.4, "Fase %s × 45°" % de(d["chamfer"], 1), "dls", "end")
+    g.text(-hf - 0.3, 0.5 + 0.0, "Fase %s" % de(d["steg_chamfer"], 1), "dls", "end")
     g.text(0, P.PLATE_T - 2.3, "Material über der Decke: %s" % de(d["roof"], 1), "dls")
     g.text(-15.6, -3.0, "Eckaussparung", "dls", "start")
     g.text(-15.6, zb + 0.5, "Hut (Stoff)", "dls", "start")
-    g.text(xa, -0.9 - 0.0, "A", "dlb")
-    g.text(-xa, -0.9, "B", "dlb")
+    g.text(xa, 2.0, "A", "dlb")
+    g.text(-xa, 2.0, "B", "dlb")
     return g.svg(int(32 * S + 16), int((zt - zb) * S + 16), label or "Schnitt durch die Tasche mit Steg")
 
 
@@ -120,19 +123,22 @@ def svg_pill_below(air=3.0):
     S = 11.0
     d = P.pill(air)
     L, W = d["length"], d["width"]
+    ML, MW = d["mouth_l"], d["mouth_w"]
     wall = P.WALL_MIN
-    cw, ch = L + 2 * wall + 8.0, W + 2 * wall + 8.0
+    cw, ch = ML + 2 * wall + 8.0, MW + 2 * wall + 8.0
     g = G(S, 10, ch * S + 10)
     g.rect(0, cw, 0, ch, "d-slab")
-    cx, cy = wall + L / 2, wall + W / 2
-    nx0, ny0, nx1, ny1 = cx - L / 2 - NOTCH_PAD, cy - W / 2 - NOTCH_PAD, cx + L / 2 + NOTCH_PAD, cy + W / 2 + NOTCH_PAD
+    cx, cy = wall + ML / 2, wall + MW / 2
+    nx0, ny0, nx1, ny1 = cx - ML / 2 - P.NOTCH_PAD, cy - MW / 2 - P.NOTCH_PAD, cx + ML / 2 + P.NOTCH_PAD, cy + MW / 2 + P.NOTCH_PAD
     g.o.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%.1f" class="d-dash"/>' % (g.X(max(0.0, nx0)), g.Z(ny1), (nx1 - max(0.0, nx0)) * S, (ny1 - max(0.0, ny0)) * S))
+    g.rect(cx - ML / 2, cx + ML / 2, cy - MW / 2, cy + MW / 2, "d-open")
     g.rect(cx - L / 2, cx + L / 2, cy - W / 2, cy + W / 2, "d-void")
+    g.rect(cx - d["steg_w"] / 2 - d["steg_chamfer"], cx + d["steg_w"] / 2 + d["steg_chamfer"], cy - W / 2, cy + W / 2, "d-open")
     g.rect(cx - d["steg_w"] / 2, cx + d["steg_w"] / 2, cy - W / 2, cy + W / 2, "d-slab")
     xa = cx - d["steg_w"] / 2 - d["gap0"] / 2
     thread_line(g, [(xa, cy), (cx + d["steg_w"] / 2 + d["gap0"] / 2, cy)], "d-threads")
-    g.text(cx, cy + W / 2 + 0.8, "Tasche %s × %s" % (de(L, 0), de(W, 0)), "dls")
-    g.text(cx, ny1 + 0.9, "Eckaussparung im Unterkasten (gestrichelt) %s × %s" % (de(L + 2 * NOTCH_PAD, 0), de(W + 2 * NOTCH_PAD, 0)), "dls")
+    g.text(cx, cy + W / 2 + 0.6, "Tasche %s × %s, Mündung mit Fase (grün) %s × %s" % (de(L, 0), de(W, 0), de(ML, 0), de(MW, 0)), "dls")
+    g.text(cx, ny1 + 0.9, "Eckaussparung im Unterkasten (gestrichelt) %s × %s" % (de(d["notch_l"], 0), de(d["notch_w"], 0)), "dls")
     g.text(0.4, 0.5, "Ecke der Platte", "dls", "start")
     return g.svg(int(cw * S + 20), int((ch + 3.0) * S + 20), "Blick von unten auf die Plattenecke")
 
@@ -167,11 +173,13 @@ def head():
             '<b>Es gibt noch keine STL.</b> Der erste Plan (Vergleich der Varianten A bis D) liegt als Archiv in <code>plug/thread/plan1.html</code>.</p>'
             '<ul class="sum">'
             '<li><b>Form:</b> offene Tasche an der Plattenunterseite, %s × %s mm, Decke %s mm hoch, Steg %s breit und %s hoch, <b>%s mm Luft</b> darüber. Kein Tunnel mehr: Die Tasche ist von unten ganz offen, nichts kann zuschmoddern.</li>'
-            '<li><b>Passt ins Modell:</b> ja. Die Tasche braucht in der Platte %s × %s mm und %s mm Decke; die Platte ist %s mm dick. An allen vier Ecken der echten Platte frei, bei 1:1000 und 1:1300.</li>'
+            '<li><b>Fase:</b> ringsum am Taschenrand %s × 45° und am Steg-Fuß %s × 45°. Eingang und Ausgang sind dadurch an der Plattenunterseite %s mm weit (ohne Fase %s), die Nadelspitze findet sie von selbst.</li>'
+            '<li><b>Passt ins Modell:</b> ja. Die Tasche samt Fase braucht in der Platte %s × %s mm und %s mm Decke; die Platte ist %s mm dick. An allen vier Ecken der echten Platte frei, bei 1:1000 und 1:1300.</li>'
             '<li><b>Einfädeln:</b> Eine gerade Nadel kommt auch hier nur etwa %s mm weit um den Steg. Dafür ist alles offen: Nadel hinauf, Haken oder Pinzette zieht den Faden über den Steg.</li>'
             '<li><b>Test:</b> zwei Eckmuster in einem Druck, Luft 3,0 und 4,5 mm. Neue Werte nur in <code>plug/thread/params.py</code>.</li></ul></header>'
             % (de(P.pill()["length"], 0), de(P.PILL["width"], 0), de(P.pill()["ceil"], 1), de(P.PILL["steg_w"], 0), de(P.PILL["steg_top"], 1), de(P.PILL["air"], 1),
-               de(P.pill()["length"] + 2 * P.WALL_MIN, 1), de(P.PILL["width"] + 2 * P.WALL_MIN, 1), de(P.pill()["roof"], 1), de(P.PLATE_T, 1), NEEDLE[3.0]))
+               de(P.PILL["chamfer"], 1), de(P.PILL["steg_chamfer"], 1), de(P.pill()["gap_mouth"], 1), de(P.pill()["gap0"], 1),
+               de(P.pill()["mouth_l"] + 2 * P.WALL_MIN, 1), de(P.pill()["mouth_w"] + 2 * P.WALL_MIN, 1), de(P.pill()["roof"], 1), de(P.PLATE_T, 1), NEEDLE[3.0]))
 
 
 def sec_diag():
@@ -203,8 +211,12 @@ def sec_form():
             ("Deckenhöhe", de(d["ceil"], 1), "Steg %s + Luft %s" % (de(d["steg_top"], 1), de(d["air"], 1))),
             ("Steg", "%s × %s" % (de(d["steg_w"], 1), de(d["steg_top"], 1)), "oben voll gerundet (R %s), durchgehend von Wand zu Wand" % de(d["steg_w"] / 2, 1)),
             ("Taschenbreite", de(d["width"], 1), "Decke an den Wänden mit R %s gerundet" % de(d["fillet"], 0)),
+            ("Fase am Taschenrand (Ein- und Ausgänge)", "%s × 45°" % de(d["chamfer"], 1), "ringsum an der Mündung; gleicht auch den Elefantenfuß am Bett aus (L03)"),
+            ("Fase am Steg-Fuß", "%s × 45°" % de(d["steg_chamfer"], 1), "erweitert beide Eingänge zusätzlich"),
+            ("Eingang A und Ausgang B an der Mündung", "%s weit" % de(d["gap_mouth"], 1), "Rand bis Steg-Fuß; ohne Fase %s" % de(d["gap0"], 1)),
             ("Spalt links und rechts vom Steg", "%s am Boden, %s oben" % (de(d["gap0"], 1), de(d["gap_top"], 1)), "weit genug für Finger, Pinzette, Nadel"),
-            ("Eckaussparung im Unterkasten", "%s × %s" % (de(d["length"] + 2 * NOTCH_PAD, 0), de(d["width"] + 2 * NOTCH_PAD, 0)), "Tasche + %s mm ringsum, nach außen offen" % de(NOTCH_PAD, 0))]
+            ("Mündung samt Fase", "%s × %s" % (de(d["mouth_l"], 0), de(d["mouth_w"], 0)), "Tasche + 2 × Fase"),
+            ("Eckaussparung im Unterkasten", "%s × %s" % (de(d["notch_l"], 0), de(d["notch_w"], 0)), "Mündung + %s mm ringsum, nach außen offen" % de(P.NOTCH_PAD, 0))]
     trs = "".join('<tr><td><b>%s</b></td><td class="n">%s</td><td>%s</td></tr>' % r for r in rows)
     return ('<section class="sec"><h2>Die halbe Pille mit Steg</h2><div class="two">%s%s</div>%s'
             '<p class="note">Der Faden ruht oben auf dem Steg und zieht ihn nach unten; das ist der Keil aus dem ersten Plan, jetzt als Steg von Wand zu Wand mit %s mm × %s mm Querschnitt. '
@@ -232,12 +244,12 @@ def sec_fit():
     chain = [("Plattendicke", "%s" % de(P.PLATE_T, 1), ""),
              ("Decke der Tasche, Luft 3,0 / 4,5", "%s / %s" % (de(d3["ceil"], 1), de(d45["ceil"], 1)), ""),
              ("Material über der Decke", "%s / %s" % (de(d3["roof"], 1), de(d45["roof"], 1)), "Regel mindestens 2,0; die Oberseite trägt Gebäude und Mulden, nichts scheint durch"),
-             ("Platz im Grundriss (Tasche + Wand %s)" % de(P.WALL_MIN, 1), "%s × %s / %s × %s" % (de(d3["length"] + 2 * P.WALL_MIN, 1), de(P.PILL["width"] + 2 * P.WALL_MIN, 1), de(d45["length"] + 2 * P.WALL_MIN, 1), de(P.PILL["width"] + 2 * P.WALL_MIN, 1)), "an einer Ecke, lange Seite parallel zur Kante"),
-             ("Unterkasten", "Eckaussparung %s × %s / %s × %s" % (de(d3["length"] + 2 * NOTCH_PAD, 0), de(P.PILL["width"] + 2 * NOTCH_PAD, 0), de(d45["length"] + 2 * NOTCH_PAD, 0), de(P.PILL["width"] + 2 * NOTCH_PAD, 0)), "Wand 2,4 mm bleibt rundum; die Aussparung ist nach außen offen")]
+             ("Platz im Grundriss (gefaste Mündung + Wand %s)" % de(P.WALL_MIN, 1), "%s × %s / %s × %s" % (de(d3["mouth_l"] + 2 * P.WALL_MIN, 1), de(d3["mouth_w"] + 2 * P.WALL_MIN, 1), de(d45["mouth_l"] + 2 * P.WALL_MIN, 1), de(d45["mouth_w"] + 2 * P.WALL_MIN, 1)), "an einer Ecke, lange Seite parallel zur Kante; die Wand zählt ab dem Rand der Fase"),
+             ("Unterkasten", "Eckaussparung %s × %s / %s × %s" % (de(d3["notch_l"], 0), de(d3["notch_w"], 0), de(d45["notch_l"], 0), de(d45["notch_w"], 0)), "Wand 2,4 mm bleibt rundum; die Aussparung ist nach außen offen")]
     trs2 = "".join('<tr><td><b>%s</b></td><td class="n">%s</td><td>%s</td></tr>' % r for r in chain)
     return ('<section class="sec"><h2>Passt das ins Modell?</h2>'
             '<p class="note"><b>Ja.</b> Geprüft mit dem Umriss und den gesperrten Flächen der echten Platte (Mulden der Gebäude mit Spiel, Vertiefung des Innenhofs, je %s mm Wand), wie das Konzept die V-Kanäle setzt: '
-            'Die Tasche sitzt an allen vier Ecken frei, etwa 2 mm von der Ecke weg (Eckenrundung). Auch die große Variante mit 4,5 mm Luft passt. Code: <code>plug/thread/fit.py</code>.</p>'
+            'Die Tasche samt Fase sitzt an allen vier Ecken frei, etwa 2 bis 3,5 mm von der Ecke weg (Eckenrundung, an einer Ecke liegt ein Gebäude näher). Auch die große Variante mit 4,5 mm Luft passt. Code: <code>plug/thread/fit.py</code>.</p>'
             '<div class="tw"><table class="t"><thead><tr><th>Maßstab</th><th>Platte in mm</th><th>Form</th><th>Ecken der Platte</th></tr></thead><tbody>%s</tbody></table></div>'
             '<div class="tw"><table class="t"><thead><tr><th>Maß</th><th>Wert in mm</th><th>Bemerkung</th></tr></thead><tbody>%s</tbody></table></div></section>' % (de(P.WALL_MIN, 1), "".join(rows), trs2))
 
@@ -268,8 +280,12 @@ def sec_chain():
 
 
 def sec_test():
-    rows = [("F2-P3", "Plattenecke 40 × 30 × 12,6 mit Tasche, Luft 3,0 (Decke 7,5)", "Unterkasten-Ecke, hohl 14,4 hoch, Eckaussparung 26 × 16"),
-            ("F2-P45", "Plattenecke 43 × 30 × 12,6 mit Tasche, Luft 4,5 (Decke 9,0)", "Unterkasten-Ecke, hohl 14,4 hoch, Eckaussparung 29 × 16")]
+    rows = []
+    for name, air in (("F2-P3", 3.0), ("F2-P45", 4.5)):
+        d = P.pill(air)
+        pw, pl = math.ceil(d["mouth_l"] + 2 * P.WALL_MIN + 6), math.ceil(d["mouth_w"] + 2 * P.WALL_MIN + 6)
+        rows.append((name, "Plattenecke %d × %d × %s mit Tasche, Luft %s (Decke %s), Fase %s und %s" % (pw, pl, de(P.PLATE_T, 1), de(air, 1), de(d["ceil"], 1), de(d["chamfer"], 1), de(d["steg_chamfer"], 1)),
+                     "Unterkasten-Ecke, hohl 14,4 hoch, Eckaussparung %s × %s" % (de(d["notch_l"], 0), de(d["notch_w"], 0))))
     trs = "".join('<tr><td><b>%s</b></td><td>%s</td><td>%s</td></tr>' % r for r in rows)
     return ('<section class="sec"><h2>Was gedruckt würde (nach dem Abnicken)</h2>'
             '<p class="note">Ein Druck, zwei Eckmuster mit je zwei Teilen: Plattenecke (Unterseite am Druckbett, ohne Support, Thick bridges an) und Unterkasten-Ecke zum Daraufstellen. Kein Gebäude, kein Dock, keine Zapfen. '
@@ -280,15 +296,19 @@ def sec_test():
 
 
 def sec_risks():
-    risks = [("Decke hängt durch.", "Über dem Steg liegt eine Brücke von nur 5 mm, die Viertelkreise laufen in den letzten 2 bis 3 mm flach aus. Sinkt die Decke um 0,4 mm, bleiben 2,6 mm Luft. Der Prüfbericht rechnet die Überhänge; Support wird nicht gesetzt, weil er in der engen Luft selbst zuschmoddert."),
+    risks = [("Fase und Wand zum Plattenrand.", "Die Fase (%s mm) frisst Rand: Die Wand von %s mm zählt ab dem Rand der Fase, die Platte braucht deshalb etwas mehr Grundriss (gerechnet, passt). Am Steg-Fuß bleibt der Steg unten %s mm breit statt %s, seine Befestigung liegt an den Wänden und ist davon nicht betroffen." % (de(P.PILL["chamfer"], 1), de(P.WALL_MIN, 1), de(P.PILL["steg_w"] - 2 * P.PILL["steg_chamfer"], 1), de(P.PILL["steg_w"], 1))),
+             ("Decke hängt durch.", "Über dem Steg liegt eine Brücke von nur 5 mm, die Viertelkreise laufen in den letzten 2 bis 3 mm flach aus. Sinkt die Decke um 0,4 mm, bleiben 2,6 mm Luft. Der Prüfbericht rechnet die Überhänge; Support wird nicht gesetzt, weil er in der engen Luft selbst zuschmoddert."),
              ("Faden scheuert.", "Steg-Oberkante ist voll gerundet (R 2,5), die Decke rund. Wenn der Faden an Schichtstufen hakt, kurz mit einem Stück Faden oder Schleifpapier durchziehen."),
              ("Einfädeln bleibt Handarbeit.", "Die Nadel allein kommt nicht um den Steg; Haken oder Pinzette gehören dazu. Der Test fragt, ob das mit deinem Werkzeug geht."),
-             ("Eckaussparung schwächt die Ecke des Unterkastens.", "26 × 16 mm bei Wand 2,4 mm; das Eckstück bleibt hohl und kann bei Bedarf verstärkt werden."),
+             ("Eckaussparung schwächt die Ecke des Unterkastens.", "%s × %s mm bei Wand 2,4 mm; das Eckstück bleibt hohl und kann bei Bedarf verstärkt werden." % (de(P.pill()["notch_l"], 0), de(P.pill()["notch_w"], 0))),
              ("Nadel, Faden und Zugang zum Hut ungemessen.", "Die Rechnung nimmt Stopfnadel 1,6 und doppelten Faden 0,8 an (L08); der Ablauf nimmt an, dass du den Faden im Hut verknoten kannst.")]
     return '<section class="sec"><h2>Risiken</h2>%s</section>' % "".join('<p class="risk"><b>%s</b> %s</p>' % r for r in risks)
 
 
 DECISIONS = [
+    dict(id="M", tag="Fase", title="Größe der Fase an Ein- und Ausgang", rec="A",
+         text="Du wolltest ordentlich Fase, damit man gut trifft. 45° druckt ohne Support und gleicht den Elefantenfuß am Bett aus.",
+         opts=[("A", "2,0 mm am Taschenrand, 1,0 mm am Steg-Fuß (Empfehlung)"), ("B", "3,0 mm am Taschenrand, 1,5 mm am Steg-Fuß (Mündung 26 × 16, Eingang 12,0 mm weit)"), ("C", "1,5 mm und 0,5 mm (kleiner)")]),
     dict(id="L", tag="Luft", title="Luft über dem Steg", rec="C",
          text="Du hast etwa 3 mm genannt. Beide Größen passen ins Modell; der Test kann beide zeigen.",
          opts=[("A", "nur 3,0 mm (Decke 7,5)"), ("B", "nur 4,5 mm (Decke 9,0)"), ("C", "beide, ein Druck mit zwei Eckmustern (Empfehlung)")]),
@@ -306,7 +326,7 @@ DECISIONS = [
 
 def main():
     sections = "".join([sec_diag(), sec_form(), sec_fit(), sec_thread(), sec_chain(), sec_test(), sec_risks()])
-    sections += '<section class="top"><h2>Entscheidungen</h2><p class="lead">Vier kurze Karten. Mit den Empfehlungen ist der Plan rund.</p></section>'
+    sections += '<section class="top"><h2>Entscheidungen</h2><p class="lead">Fünf kurze Karten. Mit den Empfehlungen ist der Plan rund.</p></section>'
     sections += "\n".join(decision_card(x) for x in DECISIONS)
     spec = [dict(id=x["id"], tag=x["tag"], title=x["title"]) for x in DECISIONS]
     with open(TEMPLATE, encoding="utf-8") as f:
