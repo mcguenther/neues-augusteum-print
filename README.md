@@ -83,6 +83,16 @@ Paulinum und Neues Augusteum bilden in echt einen zusammenhängenden Baukörper;
 hier sind sie getrennt, passen aber Kante an Kante zusammen. Bei LoD2/Laserscan
 verläuft die Trennung entlang der OSM-Grundrisse (siehe `lod2.py`).
 
+## Hohlkörper für LED-Gebäude
+
+Für Gebäude mit LED (Steckmechanismus, siehe [`plug/`](plug/)) baut `generate.py` jedes Gebäude zusätzlich als **dünne Schale**: Wand und Dach 0,8 mm,
+unten offen, ohne Lichtfenster; das Licht der LED scheint durch die ganze Hülle. Flache Decken, die mehr als 10 mm frei spannen würden,
+bekommen unter sich ein 45°-Gewölbe, damit sie ohne Stützen druckbar bleiben. Die Dateien liegen in `einzeln_hohl/`:
+`NN_name.stl` (einfarbig, in einem hellen Filament drucken) und `NN_name_farbig.3mf` (Fassadenfarben wie die Komplettmodelle, Innenflächen
+in der häufigsten Wandfarbe). Komplettmodell, Grundplatte und 3MF-Objekte bleiben massiv; `python3 generate.py --no-hohl` lässt die Hohlkörper weg.
+Ein Fuß mit Schacht für die Kassette kommt aus dem Steckmechanismus und ist noch nicht Teil dieser Dateien. Verfahren: [`hohl.py`](hohl.py),
+Planung und Messwerte: `plug/hollow/plan.html`; Schnittbilder: `python3 werkzeuge/hohl_schnitt.py stl/laserscan/1zu1500/einzeln_hohl --out <ordner>`.
+
 ## Innenhof (Leibnizforum)
 
 Der Innenhof zwischen Paulinum/Neuem Augusteum, Seminar-, Hörsaal- und
@@ -153,6 +163,7 @@ Unter `stl/<quelle>/1zu1000/` und `stl/<quelle>/1zu1500/` liegen jeweils:
 | Datei | Inhalt |
 |-------|--------|
 | `einzeln/NN_name.stl` | Jedes Gebäude einzeln, flache Unterseite, zentriert (dazu `08_innenhof.stl`) |
+| `einzeln_hohl/NN_name.stl`, `einzeln_hohl/NN_name_farbig.3mf` | Jedes Gebäude als **Hohlkörper** (siehe [Hohlkörper für LED-Gebäude](#hohlkörper-für-led-gebäude)): einfarbig als STL, mit Fassadenfarben als 3MF |
 | `komplett_campus*.stl` | Alle Campusgebäude auf einer 2 mm Sockelplatte, in einem Stück |
 | `komplett_campus_mit_extras*.stl` | Dasselbe mit Uniriese |
 | `grundplatte_campus*.stl` | 3 mm Platte mit 1 mm tiefen Aussparungen (0,25 mm Spiel) für die Einzelgebäude |

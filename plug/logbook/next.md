@@ -40,17 +40,19 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 
 Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die Gebäude zurückgestellt, bis der Maßstab feststeht. Danach: Probedruck (Kassetten V1/V2 plus Mini-Gebäude auf dem bisherigen L-Fuß), Werte nach `params.py`, STL, Testbogen. Offene Punkte: Adernweg V1, Blattdicke V2, Licht (Hotspot im schmalen Gebäude), Anschlagleiste im Schacht.
 
-## Hohlkörper-Gebäude (Plan `plug/hollow/plan.html`, wartet auf das Abnicken)
+## Hohlkörper-Gebäude (beschlossen und im Generator umgesetzt, Plan `plug/hollow/plan.html`)
 
-Gebäude im Generator als Hohlkörper mit dünner Wand (Wand 0,8, Dach 0,8, unten offen, keine Lichtfenster). Studie in `plug/hollow/` (`shell.py`, `study.py`, `build_plan.py`), noch **nicht** in `generate.py`; keine STL, keine Prototypen, solange offen ist:
+Beschlossen (2026-10-16): Wand und Dach 0,8 mm, unten offen, keine Lichtfenster; Decke glatt, wo sie höchstens 10 mm frei spannt, sonst 45°-Gewölbe (für alle Gebäude, bei denen es nicht gut passt); Ausgabe zusätzlich in `einzeln_hohl/` (alle Quellen und Maßstäbe, `--no-hohl` lässt sie weg); Fuß und Kassette getrennt (kommen aus `plug/`); Licht wie die Kassette liegt; Farbe **beide Versionen**: STL einfarbig hell und `_farbig.3mf` mit Fassadenfarben.
+Umsetzung: `hohl.py` (Verfahren), `generate.py` (`hohl_models`, `colour_hohl`), `fassaden.colour_mesh(ref=…)`, `werkzeuge/hohl_schnitt.py`; Studie und Plan in `plug/hollow/`.
 
-1. Wandstärke 0,4 / 0,8 / 1,2: Lichtprobe mit Controller (Schritt L in Steckprobe 2), bis dahin Parameter 0,8.
-2. Decke des Hörsaalgebäudes (flaches Dach, Brücke 18 mm; alle anderen höchstens 11 mm): glatt, Gewölbe 45° oder Rippe; Brückenprobe 10 / 14 / 18 / 24 mm.
-3. Ausgabe: neuer Ordner `einzeln_hohl/` neben den massiven Dateien (Vorschlag) oder Ersatz.
-4. Fuß und Kassette: Schale ab Plattenoberseite, Fuß voll aus `plug/`; hängt an Kassettenwahl und Maßstab (zurückgestellt).
-5. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm), Farbe der Wand: ungetestet.
+Offen:
+1. **Lichtprobe** Wandstreifen 0,4 / 0,8 / 1,2 mit LED (Schritt L in Steckprobe 2): bestätigt oder ändert `hohl.WAND`.
+2. **Brückenprobe**: Mini-Gebäude mit Decke 10 mm Spannweite und einem Gewölbe, im selben Druck wie die Lichtprobe; die Gewölbe sind ungedruckt.
+3. **Fuß und Kassette in der Schale** (Schacht, Anschlag, Lage der Kassette): hängt an Kassettenwahl (v4, V1, V2) und Maßstab, beides zurückgestellt.
+4. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm) und durch farbige Wände: ungetestet.
+5. Slicer prüfen: 0,8-mm-Wände, `_farbig.3mf` mit bemalten Dreiecken (Innenflächen einfarbig).
 
-Ergebnis der Studie (Laserscan 1:1500): alle 6 Gebäude hohl und dicht, Schale 14 bis 21 % des Volumens; mit 0,8 statt 1,2 mm Wand kommt nur das Institutsgebäude bei 1:1000 mit V2 neu in die Passung.
+Zahlen (Laserscan 1:1500): alle sechs Hohlkörper dicht; freie Spannweite vorher bis 30 mm (Hörsaalgebäude), nachher höchstens etwa 10 mm; Gewölbe kostet im Hörsaalgebäude 33 % und im Neuen Augusteum 18 % des Hohlraums, bei OSM im Hörsaalgebäude 77 % (nur 9 mm hoch, Flachdach).
 
 ## Priorität 2
 

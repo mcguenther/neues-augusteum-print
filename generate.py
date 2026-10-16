@@ -14,6 +14,9 @@ Aufruf:
     python3 generate.py --filamente 3   # zusätzlich 3MF mit nur 3 (oder 4) Filamenten, siehe farben.PROFILE
                                         # (ohne die Option: nur Laserscan mit Extras, je 3 und 4 Filamente)
 
+Zusätzlich entstehen die Gebäude als Hohlkörper (hohl.py, Wand 0,8 mm, unten offen, flache Decken als Gewölbe) in
+<quelle>/<maßstab>/einzeln_hohl/ (STL einfarbig und 3MF mit Fassadenfarben); --no-hohl lässt sie weg.
+
 Danach werden automatisch Vorschaubilder nach vorschau/ gerendert (preview.py).
 """
 import argparse
@@ -466,6 +469,51 @@ def source_models(quelle, s):
     raise ValueError(quelle)
 
 
+def colour_hohl(slug, solid_tm, shell_tm, lay, s):
+    """Fassadenfarben für die Hohlschale (Koordinaten wie der massive Körper). Zonen und Seitenmaße kommen vom massiven Körper,
+    die Innenflächen des Hohlraums bekommen die häufigste Wandfarbe (kein Filamentwechsel innen). Liefert (Netz, Hex je Dreieck)."""
+    global _ROOF_CLASS
+    import fassaden
+    import hohl
+    farben, plate = colour_table()
+    e = farben.get(slug)
+    if not e:
+        return shell_tm, np.array([plate] * len(shell_tm.faces), dtype=object)
+    if _ROOF_CLASS is None:
+        import farben as F
+        _ROOF_CLASS = F.roof_classifier(farben)
+    mesh, hexes = fassaden.colour_mesh(shell_tm, slug, ((0, 0, 0), s), e, _ROOF_CLASS, ref=solid_tm)
+    if not mesh.is_watertight:
+        print("  Warnung: %s (hohl) nach dem Zerschneiden nicht dicht" % slug)
+    inner = hohl.inner_mask(mesh, lay)
+    walls = (np.abs(mesh.face_normals[:, 2]) <= ROOF_NZ) & ~inner
+    vals, cnt = np.unique(hexes[walls].astype(str), return_counts=True)
+    hexes[inner] = vals[cnt.argmax()]
+    return mesh, hexes
+
+
+def hohl_models(solids, buildings, outdir, s):
+    """Gebäude als Hohlkörper (hohl.py): einzeln_hohl/<slug>.stl (einfarbig, hell druckbar) und <slug>_farbig.3mf (Fassadenfarben),
+    zentriert mit flacher Unterseite auf z=0 wie einzeln/. Komplettmodell, Grundplatte und 3MF-Objekte bleiben massiv."""
+    import hohl
+    os.makedirs(os.path.join(outdir, "einzeln_hohl"), exist_ok=True)
+    for b in buildings:
+        if b["slug"] == HOF["slug"]:
+            continue
+        solid = solids[b["slug"]]
+        shell, lay = hohl.hohl(solid)
+        tm = to_trimesh(shell)
+        mesh, hexes = colour_hohl(b["slug"], to_trimesh(solid), tm, lay, s)
+        c = tm.bounds.mean(axis=0)
+        move = [-c[0], -c[1], -tm.bounds[0][2]]
+        tm.apply_translation(move)
+        export(tm, os.path.join(outdir, "einzeln_hohl", b["slug"] + ".stl"))
+        mesh.apply_translation(move)
+        path = os.path.join(outdir, "einzeln_hohl", b["slug"] + "_farbig.3mf")
+        export_3mf([(b["name"] + " (hohl)", mesh, hexes)], path)
+        print("  %s (farbig)" % os.path.relpath(path, HERE))
+
+
 def build_scale(quelle, scale, outdir):
     s = 1000.0 / scale  # mm pro m
     os.makedirs(outdir, exist_ok=True)
@@ -487,6 +535,9 @@ def build_scale(quelle, scale, outdir):
         c = tm.bounds.mean(axis=0)
         tm.apply_translation([-c[0], -c[1], -tm.bounds[0][2]])
         export(tm, os.path.join(outdir, "einzeln", b["slug"] + ".stl"))
+
+    if HOHL:
+        hohl_models(solids, buildings, outdir, s)
 
     for variant, groups in (("campus", {"campus"}), ("campus_mit_extras", {"campus", "extra"})):
         sel = [b for b in buildings if b["group"] in groups]
@@ -558,6 +609,7 @@ FILAMENTE_QUELLE, FILAMENTE_VARIANTE = "laserscan", "campus_mit_extras"
 VERGLEICH_FILAMENTE = ("laserscan", 1500, "campus_mit_extras")   # Quelle des Bildes filamente_vergleich.png
 FILAMENTE = None  # gesetzt in main (--filamente)
 FAST = False      # gesetzt in main (--fast)
+HOHL = True       # Hohlkörper nach einzeln_hohl/ schreiben (--no-hohl schaltet aus)
 
 
 def profile_for(quelle, variant):
@@ -853,12 +905,14 @@ def main():
                     help="Schnelllauf zum Testen: gleiche Daten, aber Laser-Raster 2x gröber, Vorschau ohne "
                          "Kantenglättung, nur Maßstab 1:1500 (außer --scale), keine README-/Fassaden-/Vergleichsbilder; "
                          "schreibt nach stl-fast/ und vorschau-fast/ (nicht eingecheckt)")
+    ap.add_argument("--no-hohl", action="store_true", help="keine Hohlkörper (einzeln_hohl/) bauen")
     ap.add_argument("--jobs", type=int, default=None, help="parallele Prozesse (Standard: alle Kerne, 1 = seriell)")
     args = ap.parse_args()
-    global RENDER_COLOUR, FILAMENTE, FAST
+    global RENDER_COLOUR, FILAMENTE, FAST, HOHL
     RENDER_COLOUR = not args.no_preview
     FILAMENTE = args.filamente
     FAST = args.fast
+    HOHL = not args.no_hohl
     import parallel
     import preview
     if args.jobs:

@@ -145,8 +145,8 @@ def flow_svg():
     s.append(box(10, 20, 190, 62, "Datenquelle", "osm · lod2 · laserscan"))
     s.append(box(250, 20, 220, 62, "Volumenkörper massiv", "building_solid() · models()"))
     s.append(box(10, 150, 200, 62, "bleibt wie heute", "komplett · Platte · 3MF"))
-    s.append(box(580, 20, 250, 62, "hohl(solid, wand, dach)", "neu, ca. 40 Zeilen · Manifold", "new"))
-    s.append(box(580, 150, 250, 62, "einzeln_hohl/*.stl", "neuer Ordner pro Quelle", "new"))
+    s.append(box(580, 20, 250, 62, "hohl.py: hohl(solid)", "Wand 0,8 · Dach 0,8 · Gewölbe", "new"))
+    s.append(box(580, 150, 250, 62, "einzeln_hohl/", "*.stl hell · *_farbig.3mf", "new"))
     s.append(box(250, 150, 220, 62, "einzeln/*.stl", "massiv, wie bisher"))
     s.append(box(580, 250, 370, 62, "später, im Steckmechanismus (plug/)", "Fuß 10,2 voll · Schacht · Kassette", "later"))
     arrows = [(200, 51, 250, 51, ""), (470, 51, 580, 51, "je 0,4 mm Höhe"), (705, 82, 705, 150, "Wand 0,8 · Dach 0,8"),
@@ -249,6 +249,31 @@ def roof_options_svg():
     return "".join(out)
 
 
+def vault_section_svg(name, key, title):
+    """Schnitt durch ein Gebäude (Außen, Hohlraum) aus study.json; key = 'sect0' (ohne Gewölbe) oder 'sect'."""
+    v = STUDY["laserscan/" + name]
+    sect = v[key]
+    step = 0.4
+    xs = [x for _, o, _ in sect for a, b in o for x in (a, b)]
+    xmin, xmax = min(xs) - 1, max(xs) + 1
+    H = v["H"]
+    k = 9.0
+    W, Hh = (xmax - xmin) * k, (H + 2) * k
+    X = lambda x: (x - xmin) * k
+    Y = lambda z: (H + 1 - z) * k
+    outer, cav = [], []
+    for z1, o, c in sect:
+        for a, b in o:
+            outer.append(rect_path(X(a), Y(z1), X(b), Y(z1 - step) + 0.3))
+        for a, b in c:
+            cav.append(rect_path(X(a), Y(z1), X(b), Y(z1 - step) + 0.3))
+    s_ = ['<svg viewBox="0 0 %s %s" role="img" aria-label="%s">' % (fmt(W), fmt(Hh), title)]
+    s_.append('<path class="shell" d="%s"/><path class="cav" d="%s"/>' % ("".join(outer), "".join(cav)))
+    s_.append('<path class="ground" d="M0 %sH%s"/>' % (fmt(Y(0)), fmt(W)))
+    s_.append("</svg>")
+    return "".join(s_)
+
+
 # --------------------------------------------------------------------------
 # Tabellen
 # --------------------------------------------------------------------------
@@ -256,12 +281,12 @@ def table_numbers():
     rows = []
     for n in NAMES:
         a, b = STUDY["laserscan/" + n], STUDY["osm/" + n]
-        big = a["bridge"]["area_cls"]["5.0"]
-        islands = a["islands"]["12.0"]
-        cls = ' class="warn"' if 2 * a["bridge"]["maxr"] > 10 else ""
-        rows.append("<tr><th scope=\"row\">%s</th><td>%s</td><td>%s</td><td>%s %%</td><td%s>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
-            TITLE[n], de(a["H"]), de(a["vol"] / 1000, 1), de(a["shell_pct"]), cls, de(2 * a["bridge"]["maxr"]),
-            ("%s mm²" % big) if big else "–", islands, de(2 * b["bridge"]["maxr"])))
+        loss = lambda d: 100 * (d["cav_ohne_gewoelbe"] - d["cav"]) / d["cav_ohne_gewoelbe"]
+        w0 = 2 * a["bridge"]["maxr_ohne_gewoelbe"]
+        cls = ' class="warn"' if w0 > 10 else ""
+        rows.append("<tr><th scope=\"row\">%s</th><td>%s</td><td>%s %%</td><td%s>%s</td><td>%s</td><td>%s %%</td><td>%s / %s %%</td></tr>" % (
+            TITLE[n], de(a["H"]), de(a["shell_pct"]), cls, de(w0), de(2 * a["bridge"]["maxr"]), de(loss(a), 0),
+            de(2 * b["bridge"]["maxr_ohne_gewoelbe"]), de(loss(b), 0)))
     return "\n".join(rows)
 
 
@@ -388,46 +413,49 @@ def card(num, title, status, kind, options, text):
 
 def page():
     hs = STUDY["laserscan/03_hoersaalgebaeude"]
+    loss_osm = lambda n: 100 * (STUDY["osm/" + n]["cav_ohne_gewoelbe"] - STUDY["osm/" + n]["cav"]) / STUDY["osm/" + n]["cav_ohne_gewoelbe"]
+    sp0 = lambda n: 2 * STUDY["laserscan/" + n]["bridge"]["maxr_ohne_gewoelbe"]
+    loss = lambda n: 100 * (STUDY["laserscan/" + n]["cav_ohne_gewoelbe"] - STUDY["laserscan/" + n]["cav"]) / STUDY["laserscan/" + n]["cav_ohne_gewoelbe"]
     heat = []
     for n in NAMES:
         v = STUDY["laserscan/" + n]
-        heat.append('<figure>%s<figcaption><b>%s</b><br>%s mm hoch · größte Brücke %s mm</figcaption></figure>' % (
+        heat.append('<figure>%s<figcaption><b>%s</b><br>%s mm hoch · größte Spannweite %s mm</figcaption></figure>' % (
             heat_svg(n), TITLE[n], de(v["H"]), de(2 * v["bridge"]["maxr"])))
     cards = [
-        card("1", "Wandstärke", "wartet auf Lichtprobe", "warn",
+        card("1", "Wandstärke", "beschlossen: 0,8 mm", "ok",
              [("0,4 mm", "eine Linie, am meisten Licht, in der Hand empfindlich", False),
               ("0,8 mm", "zwei Linien, stabil, Licht mit heller LED wahrscheinlich ausreichend", True),
               ("1,2 mm", "drei Linien, wie die bisherige Lichtkammer; Licht ungewiss", False)],
-             "Das Licht der LED muss durch die Wand. Ob 0,8 mm reicht, zeigt erst die Funktionsprobe mit Controller in Steckprobe 2 (Schritt L, drei Wandstreifen). Bis dahin ist die Wand ein Parameter."),
-        card("2", "Decke über dem Hohlraum", "Entscheidung nötig", "warn",
-             [("A  glatt", "Decke als Brücke, keine Zusatzteile; geht bei allen Gebäuden bis etwa 11 mm Spannweite", True),
-              ("B  Gewölbe 45°", "Hörsaalgebäude braucht etwa 4 mm Gewölbehöhe, sonst nichts", False),
-              ("C  Rippe", "eine 0,8-mm-Wand im Hohlraum des Hörsaalgebäudes; sie schattet das Licht ab", False)],
-             "Nur das Hörsaalgebäude (flaches Dach) überspannt mehr als 11 mm. Die Brücke ist Dachunterseite, kein Passmaß; Durchhängen schadet dort kaum."),
-        card("3", "Ausgabe", "Vorschlag", "neutral",
-             [("Zusätzlich", "neuer Ordner <code>einzeln_hohl/</code>; komplett, Grundplatte, 3MF bleiben massiv", True),
-              ("Ersatz", "<code>einzeln/</code> wird hohl, die massive Variante entfällt", False),
-              ("Nur Laserscan", "hohl nur für die Quelle, die gedruckt wird", False)],
-             "Die Komplettmodelle sind Schaustücke ohne LED und brauchen keinen Hohlraum. Hohl ist für die Gebäude mit Steckmechanismus."),
-        card("4", "Fuß und Kassette", "offen, nicht blockierend", "neutral",
+             "Umgesetzt als Parameter <code>WAND</code> in <code>hohl.py</code>. Die Lichtprobe mit Controller (Steckprobe 2, Schritt L) bestätigt oder ändert den Wert."),
+        card("2", "Decke über dem Hohlraum", "beschlossen: Gewölbe bei Bedarf", "ok",
+             [("A  glatt", "Decke als Brücke, wo sie höchstens 10 mm frei spannt", True),
+              ("B  Gewölbe 45°", "überall, wo die Decke mehr als 10 mm frei spannt, nicht nur im Hörsaalgebäude", True),
+              ("C  Rippe", "verworfen: schattet das Licht ab", False)],
+             "Nach deiner Vorgabe gilt das Gewölbe für jedes Gebäude, bei dem die glatte Decke nicht gut passt. Im Laserscan trifft es vier von sechs Gebäuden, sehr unterschiedlich stark."),
+        card("3", "Ausgabe", "beschlossen: zusätzlich", "ok",
+             [("Zusätzlich", "neuer Ordner <code>einzeln_hohl/</code> je Quelle und Maßstab; komplett, Grundplatte, 3MF bleiben massiv", True),
+              ("Ersatz", "verworfen", False),
+              ("Nur Laserscan", "verworfen: es entsteht für alle Quellen", False)],
+             "<code>python3 generate.py</code> schreibt sie mit; <code>--no-hohl</code> lässt sie weg."),
+        card("4", "Fuß und Kassette", "beschlossen: getrennt", "ok",
              [("Hohlraum und Fuß getrennt", "Generator liefert nur die Schale ab Plattenoberseite; der Fuß kommt aus <code>plug/</code>", True),
-              ("Alles im Generator", "Fuß, Schacht und Kassettenaufnahme schon in <code>generate.py</code>", False)],
-             "Welche Kassette (v4, V1, V2) und welcher Maßstab gelten, ist zurückgestellt. Die Schale hängt davon nicht ab, solange der Fuß unter ihr liegt."),
-        card("5", "Licht in hohen Gebäuden", "ungemessen", "neutral",
+              ("Alles im Generator", "verworfen", False)],
+             "Welche Kassette (v4, V1, V2) und welcher Maßstab gelten, bleibt zurückgestellt. Die Schale hängt davon nicht ab, solange der Fuß unter ihr liegt."),
+        card("5", "Licht in hohen Gebäuden", "beschlossen: wie die Kassette liegt", "neutral",
              [("Wie die Kassette liegt", "LED sitzt unten, die Spitze bleibt dunkler; sie reicht bei V2 bis etwa 15 mm über die Platte", True),
-              ("Innen hell lassen", "helles Filament, Hohlraum innen unbehandelt; Licht streut weiter nach oben", False),
-              ("Längerer Streifen", "144 LED/m (13,9 × 12) oder zweiter Streifen, Kassette wird größer", False)],
-             "Der Hohlraum ist ein zusammenhängender Raum, Licht erreicht alle Flügel. Das City-Hochhaus (96 mm) und das Paulinum (39 mm) sind aber viel höher als die LED."),
-        card("6", "Farbe", "offen", "neutral",
-             [("Hellfarbig, einfarbig", "ein helles Filament je Gebäude, Fassadenfarbe aus dem Filament", True),
-              ("Wie die 3MF-Farben", "Zonen farbig, Licht färbt sich mit", False)],
-             "Die 3MF-Zonenfarben gelten für die massiven Komplettmodelle. Wie farbige Wände Licht durchlassen, ist ungetestet."),
+              ("Innen hell lassen", "nicht gewählt", False),
+              ("Längerer Streifen", "nicht gewählt", False)],
+             "Das Licht wurde noch nicht gemessen. Das City-Hochhaus (96 mm) und das Paulinum (39 mm) sind viel höher als die LED."),
+        card("6", "Farbe", "beschlossen: beide Versionen", "ok",
+             [("Hell, einfarbig", "<code>einzeln_hohl/&lt;gebäude&gt;.stl</code>, in einem hellen Filament drucken", True),
+              ("Mit Fassadenfarben", "<code>einzeln_hohl/&lt;gebäude&gt;_farbig.3mf</code>, Zonenfarben wie die Komplettmodelle; Innenflächen in der häufigsten Wandfarbe", True)],
+             "Wie farbige Wände Licht durchlassen, ist ungetestet; die helle Version ist die sichere für die Lichtprobe."),
     ]
     steps = [
-        ("Studie: Schale rechnen und Brücken messen", "Zahlen und Bilder auf dieser Seite, 12 Hohlkörper dicht", "erledigt", "ok", "Basis"),
-        ("Lichtprobe: Wandstreifen 0,4 / 0,8 / 1,2 mit LED", "Teil des Funktionstests in Steckprobe 2 (Schritt L); legt die Wandstärke fest", "wartet", "warn", "blockiert 1"),
-        ("Brückenprobe Dach: 10, 14, 18, 24 mm unter 0,8 mm Decke", "Mini-Gebäude, im selben Druck wie die Lichtprobe möglich", "vorgeschlagen", "neutral", "blockiert 2"),
-        ("Generator: <code>hohl()</code>, Option, Ausgabeordner, Prüfzeile <code>dicht=True</code>", "Studie aus <code>plug/hollow/shell.py</code> übernehmen; Laufzeit etwa 20 s für das größte Gebäude", "nach Abnicken", "neutral", "Prototyp"),
+        ("Studie: Schale rechnen und Brücken messen", "Zahlen und Bilder auf dieser Seite", "erledigt", "ok", "Basis"),
+        ("Generator: <code>hohl.py</code>, <code>einzeln_hohl/</code>, Gewölbe, Farbversion", "alle Hohlkörper <code>dicht=True</code>, Spannweite höchstens 10 mm; <code>generate.py --no-hohl</code> lässt sie weg", "erledigt", "ok", "umgesetzt"),
+        ("Lichtprobe: Wandstreifen 0,4 / 0,8 / 1,2 mit LED", "Teil des Funktionstests in Steckprobe 2 (Schritt L); bestätigt die Wandstärke 0,8", "wartet", "warn", "ändert <code>WAND</code>"),
+        ("Brückenprobe: Decke mit 10 mm Spannweite und Gewölbe", "ein Mini-Gebäude, im selben Druck wie die Lichtprobe möglich", "vorgeschlagen", "neutral", "prüft den Druck"),
         ("Schale mit Fuß und Kassette koppeln", "Fuß unter der Schale, Schacht, Anschlag; erst wenn Kassette und Maßstab feststehen", "später", "neutral", "Steckmechanismus"),
         ("Testdruck Hohlgebäude mit Licht", "ein Gebäude (Neues Augusteum oder Institutsgebäude) mit LED auf Platte B", "später", "neutral", "Auswertung"),
     ]
@@ -440,16 +468,16 @@ def page():
 <style>{CSS}</style>
 <main>
 <header>
-  <div class="eyebrow">Planung · Generator · Steckmechanismus</div>
+  <div class="eyebrow">Plan und Stand · Generator · Steckmechanismus</div>
   <h1>Gebäude als Hohlkörper mit dünner Wand</h1>
-  <p class="lead">Statt Lichtfenster bekommt jedes Gebäude eine durchgehende dünne Wand. Die LED in der Kassette leuchtet durch die ganze Hülle. Diese Seite legt fest, wie der Generator die Schale baut, und zeigt mit den echten Gebäuden, was dabei herauskommt.</p>
+  <p class="lead">Statt Lichtfenster bekommt jedes Gebäude eine durchgehende dünne Wand. Die LED in der Kassette leuchtet durch die ganze Hülle. Die Entscheidungen sind gefallen und im Generator umgesetzt; offen bleiben die Lichtprobe und der Druck.</p>
 </header>
 
 <section>
   <div class="summary">
-    <div class="card"><h3>Machbar <span class="pill ok">gerechnet</span></h3><p>Alle 6 Gebäude lassen sich aus dem massiven Volumenkörper aushöhlen (Wand 0,8, Dach 0,8, unten offen), alle Ergebnisse sind dicht. Die Schale hat {de(min(STUDY['laserscan/'+n]['shell_pct'] for n in NAMES),0)} bis {de(max(STUDY['laserscan/'+n]['shell_pct'] for n in NAMES),0)} % des Volumens.</p></div>
-    <div class="card"><h3>Die Decke <span class="pill ok">meist unkritisch</span></h3><p>Nur das Hörsaalgebäude überspannt mit flachem Dach mehr als 11 mm ({de(2*hs['bridge']['maxr'],0)} mm). Alle anderen liegen zwischen 2 und 11 mm.</p></div>
-    <div class="card"><h3>Prototypen <span class="pill warn">noch nicht</span></h3><p>Wandstärke, Decke des Hörsaalgebäudes und Ausgabeform sind offen, dazu Fuß, Kassette und das Licht in hohen Gebäuden. Deshalb gibt es hier noch keine überarbeiteten Gebäude, nur die Studie und den Plan.</p></div>
+    <div class="card"><h3>Im Generator <span class="pill ok">umgesetzt</span></h3><p><code>generate.py</code> schreibt jedes Gebäude zusätzlich als Hohlkörper nach <code>einzeln_hohl/</code>, einfarbig als STL und mit Fassadenfarben als 3MF. Alle Dateien sind dicht. Wand und Dach 0,8 mm, unten offen.</p></div>
+    <div class="card"><h3>Gewölbe <span class="pill ok">wo nötig</span></h3><p>Flache Decken, die mehr als 10 mm frei spannen, bekommen ein 45°-Gewölbe. Im Laserscan trifft das das Hörsaalgebäude stark ({de(sp0('03_hoersaalgebaeude'),0)} auf 10 mm, {de(loss('03_hoersaalgebaeude'),0)} % weniger Hohlraum) und das Neue Augusteum ({de(sp0('02_neues_augusteum'),0)} auf 10 mm, {de(loss('02_neues_augusteum'),0)} %), Seminar- und Institutsgebäude kaum.</p></div>
+    <div class="card"><h3>Noch offen <span class="pill warn">Licht und Druck</span></h3><p>Wandstärke 0,8 mm ist festgelegt, das Licht dadurch aber ungemessen. Ebenso ungedruckt: Gewölbe und 10-mm-Brücken, Fuß und Kassette in der Schale.</p></div>
   </div>
 </section>
 
@@ -467,12 +495,13 @@ def page():
   <h2>Wo der Generator ansetzt</h2>
   <figure><div class="fig">{flow_svg()}</div>
   <figcaption>Der Hohlraum entsteht aus dem fertigen Volumenkörper, unabhängig von der Datenquelle. Das ist möglich, weil der Querschnitt aller Gebäude nach oben nur kleiner wird.</figcaption></figure>
-  <h3 style="margin-top:18px">Verfahren in vier Schritten</h3>
+  <h3 style="margin-top:18px">Verfahren in fünf Schritten</h3>
   <ul class="plain">
     <li>Den Volumenkörper alle 0,4 mm in der Höhe schneiden.</li>
     <li>Jeden Schnitt um die Wandstärke nach innen versetzen. Was dünner als 1,6 mm ist, bleibt voll.</li>
     <li>Die Decke folgt dem Dach: Die Wand einer Lage richtet sich nach dem Querschnitt 0,8 mm weiter oben, so bleibt das Dach überall 0,8 mm dick.</li>
-    <li>Die Schnitte zu ineinanderliegenden Prismen vereinigen, nach unten offen machen und vom Volumenkörper abziehen.</li>
+    <li>Gewölbe: Liegt Material einer Lage weiter als 5 mm vom Material der Lage darunter (freie Spannweite über 10 mm), wird der Hohlraum darunter von der Wand her mit 45° eingezogen, bis es höchstens 5 mm sind.</li>
+    <li>Die Lagen zu Platten vereinigen, nach unten offen machen und vom Volumenkörper abziehen.</li>
   </ul>
   <p class="note">Die Wand ist in Millimetern fest, nicht im Maßstab: 0,8 mm sind bei 1:1500 eine Wand von 1,2 m, bei 1:1000 von 0,8 m.</p>
 </section>
@@ -493,39 +522,43 @@ def page():
 
 <section>
   <h2>Die Decke: wo sie über Luft liegt</h2>
-  <p>Gedruckt wird von unten. Die Decke des Hohlraums liegt dort über Luft. Schräge Dächer tragen sich selbst, flache Dächer sind Brücken. Die Bilder zeigen die Gebäude von oben; die Farbe sagt, wie weit die Decke an der Stelle frei spannt (Laserscan, 1:1500, Wand und Dach 0,8).</p>
+  <p>Gedruckt wird von unten. Die Decke des Hohlraums liegt dort über Luft. Schräge Dächer tragen sich selbst, flache Dächer sind Brücken. Die Bilder zeigen die Gebäude von oben nach dem Gewölbe; die Farbe sagt, wie weit die Decke an der Stelle noch frei spannt (Laserscan, 1:1500, Wand und Dach 0,8). Ab 10 mm (Orange) bleibt höchstens ein Rand.</p>
   <div class="fig"><div class="heat">{''.join(heat)}</div>
   <div class="legend"><span><i style="background:var(--fp)"></i>getragen, unter 1 mm</span><span><i style="background:var(--s1)"></i>ab 1 mm</span><span><i style="background:var(--s2)"></i>ab 5 mm</span><span><i style="background:var(--s3)"></i>ab 10 mm</span><span><i style="background:var(--s4)"></i>ab 20 mm</span></div></div>
+
+  <h3 style="margin-top:20px">Das Gewölbe am Hörsaalgebäude</h3>
+  <div class="pair">
+    <figure><div class="fig"><span class="tag">glatte Decke, Spannweite bis {de(sp0('03_hoersaalgebaeude'),0)} mm</span>{vault_section_svg('03_hoersaalgebaeude', 'sect0', 'Schnitt Hörsaalgebäude ohne Gewölbe')}</div></figure>
+    <figure><div class="fig"><span class="tag">mit Gewölbe, Spannweite etwa 10 mm</span>{vault_section_svg('03_hoersaalgebaeude', 'sect', 'Schnitt Hörsaalgebäude mit Gewölbe')}</div></figure>
+  </div>
+  <figure><figcaption style="margin-top:10px">Echter Schnitt durch die breiteste Decke des Hörsaalgebäudes. Das Gewölbe zieht den Hohlraum nur unter den flachen Decken ein; die Seitenwände bleiben senkrecht.</figcaption></figure>
+
   <div class="tblw" style="margin-top:14px"><table>
-    <thead><tr><th>Gebäude</th><th>Höhe mm</th><th>Volumen massiv cm³</th><th>Schale</th><th>größte Brücke mm</th><th>Decke ab 10 mm</th><th>getrennte Räume auf 12 mm</th><th>Brücke bei OSM mm</th></tr></thead>
+    <thead><tr><th>Gebäude</th><th>Höhe mm</th><th>Schale</th><th>Spannweite ohne Gewölbe mm</th><th>mit Gewölbe mm</th><th>Hohlraum weg</th><th>OSM: Spannweite ohne / Hohlraum weg</th></tr></thead>
     <tbody>
 {table_numbers()}
     </tbody></table></div>
-  <figure><figcaption style="margin-top:8px">Spalten 2 bis 7 Laserscan 1:1500, letzte Spalte OSM 1:1500. „Getrennte Räume“: Der Hohlraum teilt sich oben in Nischen, bleibt unten aber zusammenhängend. OSM hat nur Flachdächer, deshalb sind dort die Brücken größer (Hörsaalgebäude 41 mm). Das ist ein Grund, die Hohlkörper aus dem Laserscan zu bauen.</figcaption></figure>
-
-  <h3 style="margin-top:20px">Drei Wege für das Hörsaalgebäude</h3>
-  <figure><div class="fig">{roof_options_svg()}</div>
-  <figcaption>Schnitt durch einen Flügel mit 18 mm Hohlraumbreite. A lässt die Decke wie sie ist. B schließt den Hohlraum oben mit 45° auf 10 mm, kostet etwa 4 mm Hohlraumhöhe. C teilt die Spannweite mit einer 0,8-mm-Wand, die das Licht abschattet.</figcaption></figure>
-  <p class="note">Verworfen: Stützmaterial im Hohlraum (nicht entfernbar), Dach als getrenntes Teil (Fuge, Lichtspalt, noch ein Teil zum Kleben).</p>
+  <figure><figcaption style="margin-top:8px">Laserscan 1:1500; letzte Spalte OSM 1:1500. „Schale“ ist der Anteil des Volumens, der Material bleibt. OSM hat nur Flachdächer: Dort frisst das Gewölbe viel Hohlraum (Hörsaalgebäude {de(loss_osm('03_hoersaalgebaeude'),0)} %, das Gebäude ist nur 9 mm hoch). Das ist ein Grund, die Hohlkörper aus dem Laserscan zu drucken.</figcaption></figure>
+  <p class="note">Verworfen: Stützmaterial im Hohlraum (nicht entfernbar), Dach als getrenntes Teil (Fuge, Lichtspalt), Rippen (schatten das Licht ab).</p>
 </section>
 
 <section>
-  <h2>Entscheidungen</h2>
+  <h2>Beschlossen</h2>
   <div class="cards">{''.join(cards)}</div>
 </section>
 
 <section>
   <h2>Vorgehen</h2>
-  <p>Prototypen erst, wenn die Entscheidungen 1 und 2 gefallen sind. Die beiden Proben sind klein und passen in den Druck von Steckprobe 2.</p>
+  <p>Die Hohlkörper sind gebaut. Was bis zum Druck bleibt: die beiden kleinen Proben, die in den Druck von Steckprobe 2 passen.</p>
   <div class="card"><ol class="steps">{steps_html}</ol></div>
 </section>
 
 <section>
   <h2>Grundlage</h2>
   <ul class="plain">
-    <li>Studie: <code>python3 -m plug.hollow.study</code> (Laserscan und OSM, 1:1500, etwa 5 s), Ergebnis <code>plug/hollow/study.json</code>, Verfahren in <code>plug/hollow/shell.py</code>.</li>
+    <li>Studie: <code>python3 -m plug.hollow.study</code> (Laserscan und OSM, 1:1500, etwa 5 s), Ergebnis <code>plug/hollow/study.json</code>, Verfahren in <code>hohl.py</code> (Wurzel), Messung der Brücken in <code>plug/hollow/shell.py</code>; Schnittbilder: <code>werkzeuge/hohl_schnitt.py</code>.</li>
     <li>Fuß und Platte: <code>plug/logbook/current.md</code>; Kassetten und Passstudie: <code>plug/logbook/cassettes.md</code>.</li>
-    <li>Nicht geprüft: Slicer-Verhalten bei 0,8-mm-Wänden, Lichtdurchgang, Durchhang der Decken im Druck.</li>
+    <li>Nicht geprüft: Slicer-Verhalten bei 0,8-mm-Wänden, Lichtdurchgang, Druck der Gewölbe und Brücken, farbige 3MF im Slicer (Innenflächen in einer Wandfarbe).</li>
   </ul>
 </section>
 </main>
