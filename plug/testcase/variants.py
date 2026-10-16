@@ -26,7 +26,7 @@ STRIP_W, STRIP_L, STRIP_T = sd.LED_W, sd.LED_L, sd.LED_T     # 10 × 16,7 × 2,2
 STRIP_TOL = 0.25        # Spiel je Seite um den Streifen
 FPC = sd.LED_FPC        # Folie ohne Chip
 CHIP = 5.0              # Chip 5 × 5
-ROOM = dict(V1=1.0, V2=1.5, V2R=1.5)     # Luft zwischen Schulterfläche und Streifenunterkante für die Adern
+ROOM = dict(V1=1.0, V2=1.5, V2R=1.5, V1R=1.5)     # Luft zwischen Schulterfläche und Streifenunterkante für die Adern
 EF = 0.5                # Fase am Bett
 
 # ---- V2R: V2 mit zweitem Streifen auf dem Rücken (Blatt in der Mitte, oben nach vorn versetzt)
@@ -34,6 +34,8 @@ R_DEPTH = 6.4           # Tiefe des Unterbaus (alt 5,34): front Chip + Blatt + R
 R_BLADE_Y = 2.6         # Vorderseite des oberen Blatts (Blatt 2,6 bis 3,8, Mitte = Mitte des Unterbaus)
 R_STEP_Z = 0.8          # das Blatt steigt zuerst 0,8 an der hinteren Wand, dann 45° nach vorn
 R_JUMP = 2.5            # Blatt ragt so weit über die Streifen hinaus (Brücke der Verkettungsadern)
+
+RVARS = ("V1R", "V2R")      # Varianten mit zweitem Streifen auf dem Rücken
 
 
 def base():
@@ -49,7 +51,7 @@ def base():
 def dims(var):
     b = base()
     room = ROOM[var]
-    if var == "V1":
+    if var in ("V1", "V1R"):
         w, sh = STRIP_L + 2 * STRIP_TOL, STRIP_W            # Streifen quer: Länge waagerecht, Breite senkrecht
     else:
         w, sh = max(b["pk_w"] + 2 * sd.WALL, STRIP_W + 2 * STRIP_TOL), STRIP_L    # hochkant
@@ -57,8 +59,8 @@ def dims(var):
     z_top = z0 + sh + STRIP_TOL             # Oberkante des Blatts
     y_face = b["y1"] - STRIP_T              # Vorderseite des Streifens (Chip)
     d = dict(b, var=var, w=w, sh=sh, z0=z0, top=z_top, y_face=y_face, y_fpc=b["y1"] - FPC, room=room,
-             strip_w=(STRIP_L if var == "V1" else STRIP_W), strip_h=sh, yb=b["y1"])
-    if var == "V2R":
+             strip_w=(STRIP_L if var in ("V1", "V1R") else STRIP_W), strip_h=sh, yb=b["y1"])
+    if var in RVARS:
         jog = b["y1"] - R_BLADE_Y                                  # Versatz des Blatts nach vorn (45°, also gleiche Höhe)
         z_j = b["z_b"] + R_STEP_Z
         z0 = z_j + jog
@@ -79,7 +81,7 @@ def outlines():
 def min_height(k, floor=None):
     """Kleinste Gebäudehöhe über der Platte: Kassettenoberkante über der Platte (Fuß F) plus Dach (Anschlagrand)."""
     F = P.dims()["F"]
-    top = base()["z_b"] + P.PODEST_T if k == "v4" else outlines()[k]["h"]
+    top = base()["z_b"] + P.PODEST_T if k == "v4" else dims(k)["top"]
     return top - F + P.STOP_T
 
 
@@ -91,7 +93,7 @@ def kassette(var):
             N2.chamfer_hole(d["pk_w"], d["pk_d"], 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
             box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], d["zp"] - 0.01, zb + 0.01)]
     m = diff(body, *cuts)
-    if var != "V2R":
+    if var not in RVARS:
         blatt = box(-w / 2, w / 2, d["y1"], d["y1"] + BLATT_T, zb - 0.01, d["top"])
         return union([m, blatt])
     y1, yb, zj = d["y1"], d["yb"], d["z_j"]
@@ -108,11 +110,11 @@ def housing(var):
 
 def strip(var):
     d = dims(var)
-    sw, sh, z0, y1 = d["strip_w"], d["strip_h"], d["z0"], d["yb"] if var == "V2R" else d["y1"]
+    sw, sh, z0, y1 = d["strip_w"], d["strip_h"], d["z0"], d["yb"] if var in RVARS else d["y1"]
     zc = z0 + sh / 2
     parts = [box(-sw / 2, sw / 2, y1 - FPC, y1, z0, z0 + sh),
              box(-CHIP / 2, CHIP / 2, y1 - STRIP_T, y1 - FPC, zc - CHIP / 2, zc + CHIP / 2)]
-    if var == "V2R":                                               # zweiter Streifen auf dem Rücken, um 180° gedreht (DIN oben)
+    if var in RVARS:                                               # zweiter Streifen auf dem Rücken, um 180° gedreht (DIN oben bzw. am anderen Ende)
         yr = y1 + BLATT_T
         parts += [box(-sw / 2, sw / 2, yr, yr + FPC, z0, z0 + sh), box(-CHIP / 2, CHIP / 2, yr + FPC, yr + STRIP_T, zc - CHIP / 2, zc + CHIP / 2)]
     return union(parts)
@@ -124,6 +126,11 @@ def wire_path(var, i):
     x = sd.pin_x()[i]
     wr = sd.WIRE_D / 2
     ya, yp = d["ypin"], d["y_fpc"] - wr - 0.1       # Ader in der Tasche, Ader auf dem Pad
+    if var == "V1R":                                               # wie V1, aber das Blatt springt nach vorn: Adern laufen vor dem Versatz seitlich zum Pad-Ende
+        xe = -STRIP_L / 2 + 1.4
+        z_pad = d["z0"] + 2.0 + 1.6 * i
+        yw = 1.9
+        return [(x, ya, d["zp"]), (x, ya, d["z_b"] + 0.4), (x, yw, d["z_b"] + 1.5), (xe + 1.5 - 0.3 * i, yw, d["z_b"] + 1.5), (xe + 0.3 * i, yp, d["z0"] + 0.6), (xe, yp, z_pad)]
     if var == "V2R":                                               # erst gerade hoch, dann vor das Blatt (y klein), dann gerade zu den Pads
         z_pad = d["z0"] + 1.5 + 0.9 * i
         return [(x, ya, d["zp"]), (x, ya, d["z_b"] + 0.4), (x * 0.55, yp, d["z_j"] + d["jog"] * 0.8), (x * 0.55, yp, z_pad)]
@@ -140,12 +147,16 @@ def wires(var):
     for i in range(4):
         pts = wire_path(var, i)
         out += [capsule(a, b, sd.WIRE_D / 2) for a, b in zip(pts, pts[1:])]
-    if var == "V2R":                                               # Verkettung: vom oberen Ende des vorderen Streifens über die Blattkante zum hinteren
+    if var in RVARS:                                               # Verkettung: vom freien Ende des vorderen Streifens über die Blattkante zum hinteren
         d = dims(var)
         wr = sd.WIRE_D / 2
         for k in range(3):
-            x = sd.pin_x()[k] * 0.55
-            zt = d["z0"] + d["sh"] - 1.5 - 0.9 * k
+            if var == "V1R":                                       # Pads am rechten Ende, quer zur Streifenbreite
+                x = STRIP_L / 2 - 1.4 - 0.3 * k
+                zt = d["z0"] + 2.0 + 1.6 * k
+            else:
+                x = sd.pin_x()[k] * 0.55
+                zt = d["z0"] + d["sh"] - 1.5 - 0.9 * k
             pts = [(x, d["y_fpc"] - wr - 0.1, zt), (x, d["y_fpc"] - wr - 0.1, d["top"] + 0.3), (x, d["yb"] + BLATT_T / 2, d["top"] + 0.4),
                    (x, d["yb_back"] + FPC + wr + 0.1, d["top"] + 0.3), (x, d["yb_back"] + FPC + wr + 0.1, zt)]
             out += [capsule(a, b, wr) for a, b in zip(pts, pts[1:])]
@@ -166,7 +177,7 @@ def main():
     os.makedirs(PREV, exist_ok=True)
     from PIL import Image
     ok = True
-    for var in ("V1", "V2", "V2R"):
+    for var in ("V1", "V2", "V2R", "V1R"):
         k = kassette(var)
         tm = to_tm(k)
         d = dims(var)
@@ -192,7 +203,10 @@ def main():
     r1, rb = render_set("V2R", px=px)
     r2, _ = render_set("V2R", px=px, azim=130)
     sheet_of([r1, r2, rb], "variante_v2r.png")
-    print("Bild: vorschau/steckmodul_testcase/variante_v2r.png")
+    q1, qb = render_set("V1R", px=px)
+    q2, _ = render_set("V1R", px=px, azim=130)
+    sheet_of([q1, q2, qb], "variante_v1r.png")
+    print("Bild: vorschau/steckmodul_testcase/variante_v2r.png, variante_v1r.png")
     print("Bild: vorschau/steckmodul_testcase/varianten_v1_v2.png")
     return 0 if ok else 1
 

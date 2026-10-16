@@ -28,7 +28,7 @@ TEMPLATE = os.path.join(HERE, "plan.template.html")
 OUT = os.path.join(HERE, "plan3.html")
 FIT = json.load(open(os.path.join(HERE, "variants_fit.json"), encoding="utf-8"))
 META = FIT["_meta"]
-LABEL = {"v4": "Kassette v4", "V1": "V1 (quer)", "V2": "V2 (hochkant)", "V2R": "V2 mit Rücken-LED"}
+LABEL = {"v4": "Kassette v4", "V1": "V1 (quer)", "V2": "V2 (hochkant)", "V2R": "V2 mit Rücken-LED", "V1R": "V1 mit Rücken-LED"}
 WALL = META["wall_min"]
 F = P.dims()["F"]                      # Fußhöhe: Plattenoberseite liegt F über der Kassettenunterkante
 BUCHSE = 14.55
@@ -150,10 +150,11 @@ def svg_section(var):
 def svg_rueck(kind):
     """Schnitt längs y mit Schachtwänden (gestrichelt): kind = "bad" (Rücken-Streifen am hinteren Blatt) oder "V2R" (Blatt in der Mitte, oben nach vorn versetzt)."""
     S = 11.0
-    var = "V2R" if kind == "V2R" else "V2"
+    rk = kind in V.RVARS
+    var = kind if rk else "V2"
     d = V.dims(var)
     depth, zb, zp = d["depth"], d["z_b"], d["zp"]
-    top = d["top"] if kind == "V2R" else d["top"] + V.R_JUMP
+    top = d["top"] if rk else d["top"] + V.R_JUMP
     zmax = top + 3.0
     g = G(S, 70, 12 + zmax * S)
     c = 0.06
@@ -162,7 +163,7 @@ def svg_rueck(kind):
     g.rect(0.0, depth, 0.0, zb, "d-kass")
     g.rect(d["y_p0"], d["y1"], -0.01, zb + 0.01, "d-void")
     g.rect(d["ypin"] - sd.HSG_T / 2, d["ypin"] + sd.HSG_T / 2, 0.0, BUCHSE, "d-hsg")
-    if kind == "V2R":
+    if rk:
         zj, jog, yb = d["z_j"], d["jog"], d["yb"]
         g.rect(d["y1"], d["y1"] + V.BLATT_T, zb - 0.01, zj + 0.01, "d-kass")
         g.poly([(d["y1"], zj), (d["y1"] + V.BLATT_T, zj), (yb + V.BLATT_T, zj + jog), (yb, zj + jog)], "d-kass")
@@ -189,10 +190,11 @@ def svg_rueck(kind):
     else:
         for y, lab in ((yf - V.STRIP_T, "vorderer Chip"), (yb_chip, "hinterer Chip")):
             pass
-        pts = V.wire_path("V2R", 1)
+        pts = V.wire_path(kind, 1)
         g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(q[1]), g.Z(q[2])) for q in pts))
         wr = sd.WIRE_D / 2
-        jp = [(yf - V.FPC - wr - 0.1, z0 + sh - 1.5), (yf - V.FPC - wr - 0.1, top + 0.3), (yf + V.BLATT_T / 2, top + 0.4), (yr + V.FPC + wr + 0.1, top + 0.3), (yr + V.FPC + wr + 0.1, z0 + sh - 1.5)]
+        zt0 = z0 + 2.0 if kind == "V1R" else z0 + sh - 1.5
+        jp = [(yf - V.FPC - wr - 0.1, zt0), (yf - V.FPC - wr - 0.1, top + 0.3), (yf + V.BLATT_T / 2, top + 0.4), (yr + V.FPC + wr + 0.1, top + 0.3), (yr + V.FPC + wr + 0.1, zt0)]
         g.o.append('<polyline points="%s" fill="none" class="d-wire"/>' % " ".join("%.1f,%.1f" % (g.X(a), g.Z(b)) for a, b in jp))
         g.text(yf + V.BLATT_T / 2, top + 1.6, "Verkettung über die Kante", "dls")
         g.text(depth + 0.8, zj + jog / 2 + 0.2, "Versatz 45°", "dls", "start")
@@ -201,6 +203,12 @@ def svg_rueck(kind):
         g.text(depth + 0.8, zc - 0.4, "Luft %s vorn und hinten" % de(min(yf - V.STRIP_T, depth - yb_chip), 1), "dls", "start")
     g.text(depth / 2, zb / 2, "Unterbau %s tief" % de(depth, 2), "dlb")
     return g.svg(int(70 + (depth + 3.0) * S + 160), int(12 + zmax * S + 18), "Schnitt: Schachtwände gestrichelt, %s" % ("Rücken-LED ragt aus dem Schacht" if kind == "bad" else "Blatt versetzt, beide Streifen im Schacht"))
+
+
+def bridge_around_height():
+    """V1R, Verkettung am rechten Blattrand vorbei statt über die Oberkante: Blatthöhe ohne die Brücke."""
+    d = V.dims("V1R")
+    return d["top"] - V.R_JUMP
 
 
 # --------------------------------------------------------------------------
@@ -214,6 +222,7 @@ def head():
             '<ul class="sum"><li><b>Höhe:</b> V2 braucht Gebäude ab %s mm. Bei 1:1500 reicht das nur für City-Hochhaus und Paulinum; bei 1:1000 kommt Neues Augusteum dazu (Institutsgebäude knapp nicht, 0,9 mm Wand). Seminar- und Hörsaalgebäude sind zu niedrig.</li>'
             '<li><b>Rücken-LED:</b> Du hast recht, so wie V2 jetzt gezeichnet ist, schiebt sie sich von unten nicht durch den Schacht (der hintere Chip ragt %s mm heraus). Dein Vorschlag, das Blatt oben nach vorn zu versetzen, geht, wenn der Unterbau auf %s mm Tiefe wächst.</li>'
             '<li><b>Mit zweiter LED:</b> %s × %s × %s mm, Gebäude ab %s mm hoch: bei 1:1500 nur das City-Hochhaus, bei 1:1000 Paulinum, Neues Augusteum und Hochhaus.</li>'
+            '<li><b>V1R:</b> V1 mit zweiter LED auf dem Rücken, gleiches Prinzip (Blatt in der Mitte, oben nach vorn versetzt, Unterbau 6,4 tief). Abschnitt „V1 mit Rücken-LED“. Der Fit in die Gebäude folgt, sobald der Maßstab feststeht.</li>'
             '<li><b>Seminargebäude</b> (1:1500) ist ein eigenes Problem: Dach nur etwa 16,4 mm hoch und schmal; dafür braucht es eine niedrige Variante (siehe Karte „Seminargebäude“).</li></ul></header>'
             % (de(need_height("V2"), 1), de(bad_out(), 1), de(V.R_DEPTH, 1),
                de(o["V2R"]["w"], 1), de(o["V2R"]["d"], 1), de(o["V2R"]["h"], 1), de(need_height("V2R"), 1)))
@@ -266,6 +275,34 @@ def sec_rueck():
             % (de(F, 1), de(d2["y1"] + V.BLATT_T, 1), de(d2["y1"] + V.BLATT_T + V.STRIP_T, 1), f1, f2, de(V.BLATT_T + 2 * V.STRIP_T, 1), de(d2["depth"], 2), de((V.BLATT_T + 2 * V.STRIP_T) - d2["depth"], 2),
                de(V.R_DEPTH, 1), de(V.R_DEPTH - d2["depth"], 2), de(o["V2R"]["w"], 1), de(o["V2R"]["d"], 1), trs,
                de(dr["top"] - d2["top"], 1), de(need_height("V2R"), 1), BP.img_uri("variante_v2r.png", 1000)))
+
+
+def sec_v1r():
+    d1, dr, dv = V.dims("V1"), V.dims("V1R"), V.dims("V2R")
+    h_over = need_height("V1R")
+    h_side = bridge_around_height() - F + P.STOP_T
+    rows = [("Grundfläche außen", "%s × %s" % (de(d1["w"], 1), de(d1["depth"], 1)), "%s × %s" % (de(dr["w"], 1), de(dr["depth"], 1)), "%s × %s" % (de(dv["w"], 1), de(dv["depth"], 1))),
+            ("Höhe der Kassette", de(d1["top"], 1), de(dr["top"], 1), de(dv["top"], 1)),
+            ("Gebäude mindestens", de(need_height("V1"), 1), de(h_over, 1), de(need_height("V2R"), 1)),
+            ("LED-Mitte über der Platte", de(d1["z0"] + d1["sh"] / 2 - F, 1), de(dr["z0"] + dr["sh"] / 2 - F, 1), de(dv["z0"] + dv["sh"] / 2 - F, 1)),
+            ("Streifen", "quer, 1", "quer, 2 (vorn und hinten)", "hochkant, 2 (vorn und hinten)"),
+            ("Adernweg zur Buchse", "seitlich unter dem Streifen", "seitlich, vor dem Versatz", "gerade nach oben")]
+    trs = "".join('<tr><td><b>%s</b></td>%s</tr>' % (r[0], "".join('<td class="n">%s</td>' % c for c in r[1:])) for r in rows)
+    fig = ('<figure class="fig"><div class="figbox s460">%s</div><figcaption>Schnitt durch die Mitte: Blatt in der Mitte, oben nach vorn versetzt, Streifen quer auf beiden Seiten, Verkettung über die Oberkante. '
+           'Die Schachtwände (rot gestrichelt) bleiben frei.</figcaption></figure>' % svg_rueck("V1R"))
+    return ('<section class="sec"><h2>V1 mit Rücken-LED (V1R)</h2>'
+            '<p>Gleiches Prinzip wie V2R: Das Blatt wandert oben in die Mitte, damit beide Streifen durch den Schacht passen. Unterbau %s tief, das Blatt bleibt %s breit wie bei V1. '
+            'Der zweite Streifen klebt um 180° gedreht auf dem Rücken (Pads am rechten Ende); die drei Verkettungsadern gehen am rechten Ende über die Blattoberkante. '
+            'Die Adern von der Buchse laufen wie bei V1 seitlich zum linken Pad-Ende, jetzt aber vor dem Versatz, damit sie nicht am Blatt anstoßen.</p>'
+            '%s<div class="tw"><table class="t"><thead><tr><th></th><th>V1</th><th>V1R</th><th>V2R</th></tr></thead><tbody>%s</tbody></table></div>'
+            '<p class="note">Kein Fit in die Gebäude gerechnet: Das folgt, sobald der Maßstab feststeht.</p>'
+            '<p class="note">Verkettung seitlich statt über die Kante: Das Blatt wäre am rechten Ende etwa 2 mm breiter (%s statt %s), dafür etwa %s mm niedriger (Gebäude ab %s statt %s mm). '
+            'Das steht als Karte unten.</p>'
+            '<p class="risk"><b>Zu beachten:</b> V1R teilt die Risiken von V1 (Adernweg seitlich, Verdrillen zu den Pads) und von V2R (Versatz als 45°-Überhang, Streifendicke 2,2 nicht belegt, Blatt trägt zwei Streifen). '
+            'Das Blatt ist hier %s breit und %s hoch über dem Versatz, damit steifer als bei V2R.</p>'
+            '<figure class="fig"><img alt="V1 mit Rücken-LED: vorn, hinten, im Schnitt" src="%s"><figcaption>V1R, Konzept: von vorn, von hinten, im Schnitt.</figcaption></figure></section>'
+            % (de(V.R_DEPTH, 1), de(dr["w"], 1), fig, trs, de(dr["w"] + 2.0, 1), de(dr["w"], 1), de(V.R_JUMP, 1), de(h_side, 1), de(h_over, 1),
+               de(dr["w"], 1), de(dr["top"] - dr["z_j"] - dr["jog"], 1), BP.img_uri("variante_v1r.png", 1000)))
 
 
 def sec_verstanden():
@@ -410,6 +447,10 @@ DECISIONS = [
                ("B", "Blatt bleibt hinten, Unterbau wird %s tief (einfach, aber 1,4 mm mehr Grundfläche, kein Versatz)" % de(V.dims("V2")["y1"] + V.BLATT_T + V.STRIP_T + 0.4, 1)),
                ("C", "Blatt nur 0,8 dick, Unterbau bleibt 5,34 (Luft nur 0,26, Blatt zu dünn, nicht empfohlen)"),
                ("D", "keine zweite LED")]),
+    dict(id="Q", tag="V1R", title="Verkettung bei V1 mit Rücken-LED", rec="A", text="Der Streifen ist quer, die Pads liegen am Ende.",
+         opts=[("A", "über die Blattoberkante am rechten Ende (Blatt 2,5 höher, Gebäude ab %s mm)" % de(need_height("V1R"), 1)),
+               ("B", "seitlich am Blattrand vorbei (Blatt 2 mm breiter, Gebäude ab %s mm)" % de(bridge_around_height() - F + P.STOP_T, 1)),
+               ("C", "Fenster im Blatt neben dem Streifenende")]),
     dict(id="K", tag="Verkettung", title="Wie wird der zweite Streifen gespeist?", rec="A", text="Der WS2812B-Streifen hat an beiden Enden Pads.",
          opts=[("A", "Verkettung: DOUT des vorderen Streifens über die Blattkante zu DIN des hinteren (um 180° gedreht), nur ein Satz Adern"),
                ("B", "Fenster im Blatt statt über die Kante (Blatt %s niedriger, aber am Fenster schwächer)" % de(V.R_JUMP, 1)),
@@ -436,7 +477,7 @@ DECISIONS = [
 
 
 def main():
-    sections = "".join([sec_height(), sec_rueck(), sec_befund(), sec_verstanden(), sec_base(), sec_images(), sec_var("V2"), sec_var("V1"), sec_compare(), sec_chain(), sec_risks(), sec_test()])
+    sections = "".join([sec_height(), sec_rueck(), sec_v1r(), sec_befund(), sec_verstanden(), sec_base(), sec_images(), sec_var("V2"), sec_var("V1"), sec_compare(), sec_chain(), sec_risks(), sec_test()])
     sections += '<section class="top"><h2>Entscheidungen</h2><p class="lead">Mit den Empfehlungen ist der Plan rund. Danach erzeuge ich die STL.</p></section>'
     sections += "\n".join(decision_card(x) for x in DECISIONS)
     spec = [dict(id=x["id"], tag=x["tag"], title=x["title"]) for x in DECISIONS]

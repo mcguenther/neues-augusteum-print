@@ -56,3 +56,9 @@ Nutzer: V2 ist besser; passt es von der Höhe? Zweite LED auf der Rückseite geg
 - Rücken-LED: Streifen am hinteren Blatt ragt 2,1 mm hinter die Schachtwand, kommt von unten nicht durch. V2R: Blatt in der Mitte, oben 45° nach vorn versetzt, Unterbau 6,4 tief (Chip zu Chip 5,6, Luft 0,4), Verkettung DOUT → DIN über die Blattkante,
   Kassette 13,0 × 6,4 × 36,9, Gebäude ab 27,9. Streifendicke 2,2 ist nicht belegt (vor der STL messen).
 - Seite jetzt als Artifact: https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe. Neue Vorgabe: HTML-Seiten immer als Artifact präsentieren (CLAUDE.md).
+
+## Nachtrag 3: V1R (V1 mit Rücken-LED)
+
+Nutzer: auch für V1 eine Rückenvariante; der Fit in die Gebäude folgt, sobald der Maßstab ganz genau feststeht (V1R ist daher nicht in der Fit-Tabelle).
+V1R: Unterbau 17,2 × 6,4, Kassette 30,2 hoch (Gebäude ab 21,2 mm), Blatt in der Mitte und oben 45° nach vorn versetzt wie V2R, Streifen quer auf beiden Seiten, Verkettung über die Oberkante am rechten Ende
+(Alternative am rechten Rand vorbei: Blatt 2 mm breiter, Gebäude ab 18,7). Generator `plug/testcase/variants.py` (`V1R`), Bild `vorschau/steckmodul_testcase/variante_v1r.png`, Abschnitt und Karte „V1R“ in `plan3.html`.
