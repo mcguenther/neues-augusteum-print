@@ -1,0 +1,33 @@
+Fadenführung, Eckmuster (Plan Stand 2, plug/thread/plan.html): halbe Pille mit Steg, Fase 2,0 am Rand, 1,0 am Steg-Fuß
+
+Teile (Druckausrichtung, Bett z = 0, ohne Stützen):
+  F2_P3_plate.stl     33.0 ×  23.6 ×  12.6 mm    8.3 cm³  ≈  5.0 g  dicht=True
+      waagerechte Decken: z=0.2: 35 mm² (32.6 × 22.6); z=0.4: 34 mm² (33.0 × 23.0); z=7.5: 34 mm² (6.9 × 5.2)   Überhang flacher als 45° zur Senkrechten: 82 mm²
+  F2_P3_under.stl     33.0 ×  23.0 ×  14.4 mm    2.1 cm³  ≈  2.8 g  dicht=True
+      waagerechte Decken: z=0.4: 22 mm² (33.0 × 23.0); z=0.2: 21 mm² (32.6 × 22.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  F2_P45_plate.stl    36.0 ×  23.6 ×  12.6 mm    8.7 cm³  ≈  5.5 g  dicht=True
+      waagerechte Decken: z=0.2: 37 mm² (35.6 × 22.6); z=0.4: 37 mm² (36.0 × 23.0); z=9.0: 34 mm² (6.8 × 5.0)   Überhang flacher als 45° zur Senkrechten: 97 mm²
+  F2_P45_under.stl    36.0 ×  23.0 ×  14.4 mm    2.3 cm³  ≈  2.9 g  dicht=True
+      waagerechte Decken: z=0.4: 23 mm² (36.0 × 23.0); z=0.2: 22 mm² (35.6 × 22.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+
+Maße im gebauten Modell (gemessen mit einem dünnen Prüfquader):
+  P3   Luft über dem Steg 3.00 (Soll 3.0) · Material über der Decke 5.10 (Soll 5.1) · Spalt neben dem Steg bei z = 3: links 6.80, rechts 6.80 (Soll ≥ 5.9)
+       Eingang A 10.4 mm weit, Ausgang B 10.4 mm weit an der Unterseite (bei z = 0,05; Soll 10.5 mit Fase, 7.5 ohne)
+  P45  Luft über dem Steg 4.50 (Soll 4.5) · Material über der Decke 3.60 (Soll 3.6) · Spalt neben dem Steg bei z = 3: links 8.42, rechts 8.42 (Soll ≥ 7.7)
+       Eingang A 11.9 mm weit, Ausgang B 11.9 mm weit an der Unterseite (bei z = 0,05; Soll 12.0 mit Fase, 9.0 ohne)
+
+Prüfung der Wege (Überschneidungsvolumen, mm³; muss 0 sein):
+  P3: Plattenecke auf der Unterkasten-Ecke (nur Auflage)                                          0.000  ok
+  P3: Faden Ø 0,8 von A über den Steg nach B                                                      0.000  ok
+  P3: Nadel Ø 1,6 von unten durch den linken Spalt, Spitze über dem Steg                          0.000  ok
+  P3: Kontrolle: Nadelspitze 0,6 über der Decke stößt an                                          0.000  ok
+  P3: Faden im Unterkasten (Eckaussparung lässt den Weg frei)                                     0.000  ok
+  P45: Plattenecke auf der Unterkasten-Ecke (nur Auflage)                                         0.000  ok
+  P45: Faden Ø 0,8 von A über den Steg nach B                                                     0.000  ok
+  P45: Nadel Ø 1,6 von unten durch den linken Spalt, Spitze über dem Steg                         0.000  ok
+  P45: Kontrolle: Nadelspitze 0,6 über der Decke stößt an                                         0.000  ok
+  P45: Faden im Unterkasten (Eckaussparung lässt den Weg frei)                                    0.000  ok
+  -> keine Kollisionen
+Material ≈ 16 g, Zeit normal ≈ 2.3 h
+Material ≈ 16 g, Zeit schnell ≈ 0.9 h
+Bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 0.9 h
