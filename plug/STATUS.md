@@ -312,9 +312,8 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Stromversorgung und Doktorhut (Konzept, Stand 2): Powerbank Intenso XS5000 (90 × 63 × 12,6 mm). Oberplatte nur noch 12,6 mm
-   (Mulde + Muldenboden + Leistenkörper) über einem hohlen Unterkasten (14,4 mm, ersetzt den Deckel), zusammen 27,0 statt 31,2 mm,
-   Material bei 1:1000 etwa 278 statt 397 g. Powerbank 35 mm hinter der Kante (gerader USB-A-Stecker, Kabelkanal an der Längsseite),
-   Fenster und Tastenstößel. Vier Ösen zum Annähen an einen Doktorhut (Faden zieht die Oberplatte auf den Unterkasten). Ganz unter
-   den Innenhof passt die Powerbank erst ab 1:403. Offen: Hut und Powerbank messen, Abschaltschwelle, Maßstab entscheiden.
+9. Grundplatte mit Powerbank (Konzept, Stand 3, 1:1000): 144 × 283 × 27,0 mm, Oberplatte 12,6 (Maßkette der Steckprobe: Mulde 10,2,
+   Muldenboden 0,4, Spiel 0,10) über hohlem Unterkasten 14,4 mit Stützen, Zentrierzapfen und Anschlag (1,2 Luft). Powerbank XS5000 im
+   Unterkasten, 35 mm hinter der Nordkante, Fenster und Stößel. Faden: V-Kanal aus Plan Steckprobe 2 in den Ecken der Oberplatte,
+   Eckaussparungen im Unterkasten. Werte in `plug/power/params.py`. Vorschlag nächster Druck: Steckprobe 2 im Zwei-Lagen-Aufbau + Fachprobe.
    Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.

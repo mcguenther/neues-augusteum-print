@@ -523,7 +523,7 @@ Alle Aufrufe aus dem Repo-Wurzelverzeichnis.
 | `python3 -m plug.sample` | rund 15 s | `stl/steckmodul_probe/` (Probestück, `0_passprobe.stl`, `README.txt`, `probedruck_kassette.zip`), `vorschau/steckmodul_probe/` |
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | | `plug/views/dupont/view.html`, `plug/build/institute/view.html` |
 | `python3 -m plug.fit_test.build_page` | | `plug/fit_test/page.html` (Anleitung der Passprobe) |
-| `python3 -m plug.power.build_concept` | rund 20 s | `plug/power/concept.html` (Konzept Powerbank, Unterkasten, Ösen, Kapitel 6) |
+| `python3 -m plug.power.build_concept` | rund 5 s | `plug/power/concept.html` (Grundplatte mit Powerbank, Unterkasten, Faden, Kapitel 6) |
 | `python3 -m plug.build_all [--skip-institute]` | | alles oben in der richtigen Reihenfolge |
 | `python3 -m plug.check [--skip-institute]` | | prüft, dass alle STL `dicht=True` melden und „keine Kollisionen“ gemeldet wird |
 
@@ -534,70 +534,52 @@ Chronologie, Passprobe-Ergebnisse und offene Aufgaben: `plug/STATUS.md`.
 
 Die Ausgabe von `plug.dupont`, `plug.institute` und `plug.sample` muss je Teil `dicht=True` und „keine Kollisionen“ zeigen.
 
-## 6. Stromversorgung mit Powerbank und Doktorhut (Konzept, Stand 2)
+## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 3)
 
-Stand: Konzept, nichts davon ist im Generator der Platte gebaut. Seite: `plug/power/concept.html`
-(`python3 -m plug.power.build_concept`, rund 20 s: Draufsicht mit Maßen, 3D, Schnitt, Öse, Materialschätzung, Laufzeitrechner).
-Konstanten `PB_*`, `UK_*`, `OESE`, `HUT`, `HOF_LEDGE`, `ESP_BOX` in `plug/parts.py`. Artifact: siehe `plug/STATUS.md` 5.4.
+Stand: Konzept für 1:1000, nichts davon ist im Generator der Platte gebaut. Seite `plug/power/concept.html`
+(`python3 -m plug.power.build_concept`, rund 5 s: Draufsicht mit Maßen, 3D, Schnitt, Ecke, Passmaße, Testdrucke). Werte in
+`plug/power/params.py`; was aus der Steckprobe kommt, liest diese Datei aus `plug/testcase/params.py` und `build_plan2.PROP`
+(Regel 8 im Logbuch: neue Werte nicht in `parts.py`). Stand 3 übernimmt PR #11 (Steckprobe 1, Plan Steckprobe 2).
 
-### 6.1 Powerbank Intenso XS5000
+### 6.1 Aufbau 1:1000: 144 × 283 × 27,0 mm
 
-| Größe | Wert | Quelle |
-|---|---|---|
-| Außenmaße | 90 × 63 × 12,6 mm (Anleitung: 13), 103 g | B Datenblatt |
-| Energie | 5000 mAh bei 3,7 V = 18,5 Wh; nutzbar bei 5 V etwa 3,1 Ah (Wirkungsgrad 85 %, S) | A |
-| Ausgang | 5 V / 2,1 A gesamt für USB-A und USB-C, kein PD (Händlerangaben 3,1 A gehören zur XS10000) | B Anleitung |
-| Eingang | USB-C oder microUSB, 5 V / 2,1 A | B Anleitung |
-| Anschlussseite | LEDs, Taste, microUSB, USB-C, USB-A an einer Schmalseite (Lage quer `PB_PORT_V`, S) | B Bild der Anleitung, nachmessen |
-| Abschaltung | Standby etwa 30 s nach dem letzten Verbraucher, Taste weckt. Bleibt an bei etwa 50 mA (100 Ω), nicht bei 10 bis 20 mA | B Anleitung / S TonUINO-Forum |
+- **Oberplatte 12,6 mm** = Mulde 10,2 + Muldenboden 0,4 + Körper der Winkelleiste 2,0 (Maßkette der Steckprobe, E 5,28).
+  Mulde mit 0,10 Spiel je Seite (bewährt). Dock wie Platte B, die Tasche der Leiste ist nach unten offen; der Kabelraum ist der
+  Unterkasten (L20). Unterseite am Bett, nur Böschungen und kurze Decken (L04, L05).
+- **Unterkasten 14,4 mm** (ersetzt den Deckel): Boden 1,2, Wand 2,4, Stützen 6 × 6 im Raster 40, sechs davon mit Zentrierzapfen
+  Ø 4 × 1,5 (Loch Ø 4,3, Gleitspiel 0,15 nach L10) an den Enden und beidseits des Stoßes der Oberplatte. Anschlag unter jeder
+  Winkelleiste mit 1,2 mm Luft (Plan Steckprobe 2, Karte D) und Heißkleber (Karte K). Offen nach oben gedruckt.
+- Druckbett: Oberplatte und Unterkasten je 2 Teile, Stöße versetzt (y = 134 bzw. 109 mm), die Zapfen halten beide Seiten.
+- Material geschätzt (1 mm Hülle, 15 % Füllung): Oberplatte 173 g, Unterkasten 98 g, zusammen etwa 271 g.
 
-### 6.2 Aufbau: Oberplatte und hohler Unterkasten
+### 6.2 Powerbank Intenso XS5000
 
-- **Oberplatte** nur so dick wie nötig: Mulde 9,8 + Muldenboden 0,8 + Körper der Winkelleiste 2,0 = **12,6 mm** (bisher 16,2).
-  Die Leiste steckt in einer nach unten offenen Tasche, ihre Lötenden zeigen frei in den Unterkasten; gegen den Steckdruck ein
-  Tropfen Heißkleber. Glatte Unterseite, keine Brücken.
-- **Unterkasten** (ersetzt den Deckel), 14,4 mm: Boden 1,2, Außenwand 2,4, Stützen 6 × 6 mm im Raster 40 mm unter der Oberplatte,
-  Zaun (1,6 × 5 mm) um die Powerbank, Elektronik 60 × 35 mm (S), Ösenblöcke. Innen hohl, Kabel liegen frei. Keine Stempel
-  (Steckprobe 1: Stempel stießen an, Kabelraum-Decken hingen durch).
-- Zusammen **27,0 mm** statt 31,2. Material bei 1:1000 geschätzt (1 mm Hülle, 15 % Füllung): Oberplatte 173 g (bisher 203),
-  Unterkasten 105 g (bisher 194), zusammen **278 g statt 397 g (−30 %)**. Mit Muldenboden 0,4 (Steckprobe 1) 0,4 mm weniger.
-- Druckbett 250 mm: Oberplatte und Unterkasten werden an verschiedenen Stellen geteilt (1:1000: y = 134 bzw. 109 mm), die Teile
-  überbrücken sich gegenseitig.
+- 90 × 63 × 12,6 mm (Datenblatt, ungemessen), alle Anschlüsse an einer Schmalseite. Anschlussseite zur Nordkante, 35 mm
+  Steckerraum für einen geraden USB-A-Stecker, Kabel in einem 6-mm-Kanal an der Längsseite. Fach 126 × 70 × 13,2 mm.
+- Zaun 1,6 × 5 mm, Spiel 0,5 je Seite, 0,6 Luft oben (geschätzt). Fenster in der Kante (46 mm) für LEDs, microUSB und USB-C,
+  Stößel 4 × 4 mm zur Taste. 48 % der Powerbank liegen unter dem Innenhof, der Rest unter Institut, Seminargebäude, Paulinum.
+- Strom und Schaltplan: eigener Chat. Für die Platte zählt: 5 V / 2,1 A gesamt, Standby nach 30 s unter etwa 50 mA.
 
-### 6.3 Powerbank weiter innen
+### 6.3 Faden zum Doktorhut
 
-- Anschlussseite zur Plattenkante, dahinter **35 mm Steckerraum** (S) für einen geraden USB-A-Stecker (Griff etwa 25 mm) samt Biegung.
-  Das Kabel biegt zur Längsseite und läuft in einem **Kabelkanal 6 mm** neben der Powerbank zurück zur Elektronik.
-- Fach 126 × 70 × 13,2 mm (Spiel 0,5 je Seite, 0,6 oben).
-- Fenster in der Kante für USB-C, microUSB und die LEDs; die Taste (35 mm tief) über einen gedruckten Stößel 4 × 4 mm.
-- 1:1000: Anschlussseite an der Nordkante, Powerbank zu 48 % unter dem Innenhof, sonst unter Institutsgebäude, Seminargebäude und
-  Paulinum; deren Docks müssen neben dem Fach sitzen. 1:1500 (100 × 196 × 27 mm): 19 % unter dem Hof.
-- Ganz unter dem Innenhof (Hof-Teil als Deckel) passt das längere Fach erst ab **1:403**, gerundet 1:400: Platte 342 × 671 × 17,8 mm.
+- V-Kanal aus dem Plan Steckprobe 2 in jeder Ecke der Oberplatte: Ø 2,2, Scheitel 3,4 über der Unterseite, Böschung 0,15 je Schicht,
+  Trichter R 2,0, Wände ≥ 1,4, Achse senkrecht zur nächsten Kante, Mitte 6,0 von der Kante. Bei 1:1000 liegen alle vier direkt in den Ecken.
+- Der Unterkasten ist an jeder Ecke ausgespart (7,3 × 11,4 mm); der Faden hängt dort frei vom Trichter zum Hut. Festgezogen drückt er
+  die Oberplatte auf den Unterkasten und beides auf den Hut. Keine Schrauben (feste Vorgabe).
+- Doktorhut mit 24 cm angenommen (ungemessen): Die Platte steht in der Länge 2,1 cm je Seite über.
 
-### 6.4 Ösen für den Doktorhut
+### 6.4 Zusammenbau
 
-- Vier Ösen, je so nah an einer Ecke wie Mulden, Innenhof, Fach und Elektronik es zulassen (Suche längs oder quer).
-- Je Öse ein Block im Unterkasten (14 × 7 mm) mit zwei Fadenlöchern 3 mm im Abstand 7 mm. Sein Zapfen (1,5 mm) greift in eine
-  Aufnahme der Oberplatte und richtet beide Teile aus. In der Oberplatte verbindet ein Tunnel (3 × 3 mm, 4 mm über dem Zapfen) die Löcher.
-- Faden vom Hut durch ein Loch hinauf, durch den Tunnel, durch das andere hinunter. Festgezogen drückt die Oberplatte den Unterkasten
-  auf den Hut; Schrauben entfallen. Einfädeln an der umgedrehten Oberplatte (gebogene Nadel oder Draht), dann Unterkasten aufsetzen.
-- Doktorhut mit 24 cm Kantenlänge angenommen (S): Bei 1:1000 (144 × 283 mm) steht die Platte 2,1 cm je Seite über, bei 1:1500 passt sie.
-  Der Knopf in der Hutmitte braucht vielleicht eine Mulde im Boden des Unterkastens.
+1. Winkelleisten von unten in die Oberplatte, Heißkleber, Adern anlöten.
+2. Oberplatte umdrehen, Fäden durch die V-Kanäle ziehen.
+3. Unterkasten bestücken: Elektronik, Sammelleitung, Powerbank mit USB-A-Kabel, Stößel.
+4. Oberplatte aufsetzen (Zapfen), Fadenenden durch die Eckaussparungen.
+5. Auf den Hut nähen und festziehen. 6. Innenhof einlegen, Gebäude stecken.
 
-### 6.5 Elektrik
+### 6.5 Nächster Druck (Vorschlag, nicht abgenickt)
 
-- Gerades USB-A-Kabel, am Ende abgeschnitten, 5 V und GND auf die Sammelleitung; Schiebeschalter neben dem Fenster.
-- ESP32 an 5 V, 1000 µF, 2 × 74AHCT125 für sechs Docks, DETECT mit Pull-up (Abschnitt 2.7).
-- Haltelast 100 Ω (0,25 W) über Logik-MOSFET, nur zugeschaltet, wenn die LEDs aus sind (etwa 1 s alle 10 bis 20 s).
-  Ohne sie schaltet die Powerbank nach 30 s ab, sobald der ESP schläft; das kann als automatisches Ausschalten gewollt sein.
-- Laufzeit (S): ESP 100 mA plus 8 LEDs bei 30 % etwa 12,6 h; Vollweiß (8 × 60 mA) etwa 5,4 h.
-- Laden bei ausgeschaltetem Modell; Durchladen (laden und versorgen zugleich) ist nicht belegt.
-
-### 6.6 Offen
-
-1. Doktorhut messen (Kantenlänge, Knopf in der Mitte: Höhe, Durchmesser); danach Maßstab entscheiden.
-2. Powerbank nachmessen (Maße, Lage von Taste, LEDs und Buchsen) und die Länge des USB-A-Steckers am vorhandenen Kabel.
-3. Abschaltschwelle messen (ESP32 mit WLAN, Modem-Sleep, mit und ohne 100 Ω); wacht sie bei neuer Last von selbst auf?
-4. Lage der Docks je Gebäude festlegen (nicht über dem Fach), dann Oberplatte und Unterkasten im Generator bauen, zuerst als
-   Probestück: eine Ecke mit Öse, Fenster, Stößel und Fach.
-5. Werte aus Steckprobe 1 (Zweig `claude/practical-keller-jnebos`, u. a. Muldenboden 0,4) übernehmen, sobald gemergt.
+- **T1 Steckprobe 2 im neuen Aufbau:** Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4 (38 × 52 mm) statt Platte B 16,2 + Deckel 2,0;
+  dazu Gebäude und Kassette aus dem Plan Steckprobe 2. Prüft zusätzlich Anschlag, Zapfen und Faden an zwei Ecken.
+- **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt um das Fach (etwa 135 × 79 mm) mit Zaun, Fenster, Stößel, Kanal, dazu eine
+  Deckplatte 2 mm mit Zapfenlöchern. Prüft Spiel, Fenster, Stößel, Steckerraum.
+- Später T3: Stoß der Druckteile. Vorher offen: Karten aus dem Plan Steckprobe 2, Doktorhut und Powerbank messen, Lage der Docks.

@@ -1,28 +1,24 @@
-"""Konzept Stromversorgung: Powerbank Intenso XS5000 in der Grundplatte des Campusmodells, Ösen für den Doktorhut.
+"""Konzept Grundplatte mit Powerbank (Stand 3, 1:1000): Oberplatte, hohler Unterkasten, Powerbank Intenso XS5000, Faden zum Doktorhut.
 
-Aufbau (Stand 2): Oberplatte + hohler Unterkasten.
+Stand 3 übernimmt die Maßkette und Passungen der Steckprobe (`plug/testcase/params.py`, Plan Steckprobe 2), siehe
+`plug/power/params.py`:
 
-- Oberplatte: nur so dick wie nötig, also Mulde (Fußhöhe F) + Muldenboden (CEIL) + Körper der Winkelleiste (HDR_BODY).
-  Die Leiste sitzt in einer nach unten offenen Tasche, die Lötenden zeigen in den Unterkasten. Glatte Unterseite, keine Brücken.
-- Unterkasten (ersetzt den Deckel): Boden, Außenwand, Stützen unter der Oberplatte, Zaun um die Powerbank, Elektronik.
-  Innen hohl: Kabel liegen frei. Wird offen nach oben gedruckt.
-- Powerbank: Anschlussseite zur Plattenkante, davor Platz für einen geraden USB-A-Stecker, das Kabel läuft in einem Kanal
-  an der Längsseite zurück. Taste und Ladebuchsen durch ein Fenster in der Kante (Taste über einen Stößel).
-- Ösen: vier Blöcke im Unterkasten mit je zwei Fadenlöchern; ihr Zapfen greift in die Oberplatte, darüber ein Tunnel
-  (Öse). Die Fadenschlaufe läuft von unten durch den Unterkasten über die Öse und wieder hinunter zum Doktorhut; so
-  zieht der Faden die Oberplatte auf den Unterkasten.
+- Oberplatte: Mulde F (10,2) + Muldenboden (0,4) + Körper der Winkelleiste (2,0) = 12,6 mm. Dock wie Platte B, die Tasche der
+  Leiste ist nach unten offen; der Kabelraum ist der Unterkasten (Lehre L20). Mulde mit 0,10 Spiel je Seite.
+- Unterkasten (ersetzt den Deckel): Boden, Außenwand, Stützen, einige davon mit Zentrierzapfen für die Oberplatte, Zaun um die
+  Powerbank, Fenster in der Kante, Stößel zur Taste, Eckaussparungen für den Faden. Offen nach oben gedruckt, keine Brücken.
+- Faden: V-Kanal mit Trichtern in jeder Ecke der Oberplatte (Zwischenstand Steckprobe 2). Der Faden kommt vom Hut durch die
+  Eckaussparung des Unterkastens, läuft schräg durch die Lasche und wieder hinunter; festgezogen drückt er die Oberplatte auf den
+  Unterkasten und beides auf den Hut.
 
-Varianten: Unterkasten bei 1:1000 und 1:1500, Hof-Fach (Powerbank ganz unter dem Innenhof, Hof als Deckel) beim
-kleinsten Maßstab, bei dem das Fach in den Hof passt. Dazu der bisherige Stand (Oberplatte 16,2 + Unterkasten 15,0)
-zum Vergleich des Materials.
-
-Aufruf aus dem Repo-Wurzelverzeichnis: `python3 -m plug.power.build_concept` (rund 15 s).
+Aufruf aus dem Repo-Wurzelverzeichnis: `python3 -m plug.power.build_concept` (rund 15 s), schreibt `plug/power/concept.html`.
 """
 import json
 import math
 import os
 import sys
 
+import manifold3d as m3d
 import numpy as np
 import shapely
 from shapely import affinity
@@ -35,96 +31,28 @@ import generate as G  # noqa: E402
 import innenhof  # noqa: E402
 from plug import dupont as sd  # noqa: E402
 from plug.geom import encode  # noqa: E402
-from plug.parts import (CEIL, CLR, ESP_BOX, HDR_BODY, HOF_LEDGE, HUT, OESE, PB_CABLE, PB_CLR, PB_CLR_Z,  # noqa: E402
-                        PB_EFF, PB_G, PB_IMAX, PB_KEEP_MA, PB_L, PB_PLUG, PB_PORT_V, PB_PORTS, PB_SLEEP_S, PB_T,
-                        PB_W, PB_WH, UK_CABLE_H, UK_FLOOR, UK_WALL)
+from plug.power import params as PP  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(HERE, "concept.template.html")
 OUT = os.path.join(HERE, "concept.html")
+SCALE = 1000
 
-FACH_L = PB_PLUG + PB_L + 2 * PB_CLR       # Fach entlang der Powerbank: Steckerraum + Powerbank
-FACH_W = PB_W + 2 * PB_CLR + PB_CABLE      # quer: Powerbank + Kabelkanal
-FACH_H = sd.layer_up(PB_T + PB_CLR_Z)
-FENCE = (1.6, 5.0)       # Zaun um die Powerbank: Breite, Höhe über dem Boden
-POST = (6.0, 40.0)       # Stützen unter der Oberplatte: Kante, Raster
-PLA = 1.24               # g/cm³
-SHELL, INFILL = 1.0, 0.15   # Schätzung Material: 1 mm Hülle (3 Wände, 4 Decken-/Bodenschichten), 15 % Füllung
-
-# bisheriger Stand (erste Fassung des Konzepts), nur für den Materialvergleich
-OLD = dict(ober=16.2, fach_h=13.4, floor=1.6)
+FACH_L = PP.PB_PLUG + PP.PB_L + 2 * PP.PB_CLR       # Fach entlang der Powerbank: Steckerraum + Powerbank
+FACH_W = PP.PB_W + 2 * PP.PB_CLR + PP.PB_CABLE      # quer: Powerbank + Kabelkanal
+FACH_H = sd.layer_up(PP.PB_T + PP.PB_CLR_Z)
+OLD = dict(stand1=31.2, ober1=16.2, uk1=15.0)        # Stand 1 des Konzepts (für den Vergleich)
 
 
 def heights():
-    """z-Lagen (Plattenoberseite = 0)."""
-    d = sd.dims()
-    deck = -(d["F"] + CEIL + HDR_BODY)                 # Unterseite Oberplatte = Unterkante Leistenkörper
-    uk_bot = deck - FACH_H - UK_FLOOR
-    hof_bot = min(deck - UK_CABLE_H, -G.POCKET_DEPTH - FACH_H) - UK_FLOOR
-    return dict(F=d["F"], ceil=CEIL, body=HDR_BODY, z_hb=d["z_hb"], z_bb=d["z_bb"], z_tip=d["z_tip"],
-                deck=deck, fach_h=FACH_H, floor=UK_FLOOR, uk_bot=uk_bot, total_uk=-uk_bot, uk_t=deck - uk_bot,
-                hof_bot=hof_bot, total_hof=-hof_bot, pocket=G.POCKET_DEPTH,
-                old_ober=OLD["ober"], old_total=OLD["ober"] + OLD["fach_h"] + OLD["floor"])
-
-
-# --------------------------------------------------------------------------
-# Einpassen
-# --------------------------------------------------------------------------
-def fit_rect(poly, L, W, res=0.5, step=2):
-    """Rechteck L × W in poly (beliebig gedreht): (Winkel der L-Achse in Grad, Mitte) der mittigsten Lage oder None."""
-    c = poly.centroid
-    best = None
-    for th in range(0, 180, step):
-        p = affinity.rotate(poly, -th, origin=c)
-        x0, y0, x1, y1 = p.bounds
-        xs = np.arange(x0, x1, res) + res / 2
-        ys = np.arange(y0, y1, res) + res / 2
-        X, Y = np.meshgrid(xs, ys)
-        M = shapely.contains_xy(p, X, Y).astype(np.int32)
-        S = np.zeros((M.shape[0] + 1, M.shape[1] + 1), np.int64)
-        S[1:, 1:] = M.cumsum(0).cumsum(1)
-        for a, b, rot in ((L, W, 0), (W, L, 90)):
-            nx, ny = int(math.ceil(a / res)), int(math.ceil(b / res))
-            if nx >= M.shape[1] or ny >= M.shape[0]:
-                continue
-            win = S[ny:, nx:] - S[:-ny, nx:] - S[ny:, :-nx] + S[:-ny, :-nx]
-            ok = np.argwhere(win == nx * ny)
-            if not len(ok):
-                continue
-            k = ((ok - ok.mean(0)) ** 2).sum(1).argmin()
-            j, i = ok[k]
-            ctr = affinity.rotate(shapely.Point(xs[i] + (nx - 1) * res / 2, ys[j] + (ny - 1) * res / 2), th, origin=c)
-            if best is None or len(ok) > best[2]:
-                best = ((th + rot) % 180, (ctr.x, ctr.y), len(ok))
-    return best
-
-
-def hof_limit(lo=300, hi=1000, tol=5):
-    """Kleinster Maßstab (größte Zahl), bei dem das Fach mit Auflage ganz in den Innenhof passt."""
-    while hi - lo > tol:
-        mid = (lo + hi) / 2
-        s = 1000.0 / mid
-        fps = {k: v[1] for k, v in G.osm_models(s).items()}
-        ok = fit_rect(innenhof.flaeche_mm(fps.values(), s).buffer(-HOF_LEDGE, join_style=2), FACH_L, FACH_W,
-                      step=3) is not None
-        print("  1:%d %s" % (mid, "passt" if ok else "zu klein"), flush=True)
-        lo, hi = (mid, hi) if ok else (lo, mid)
-    return int(lo), int(lo // 10 * 10)
-
-
-def hof_width(hof_fp):
-    """Breite des Innenhofs quer zur Hofachse (mm): Median, Minimum über die mittleren 80 % der Länge, Länge."""
-    d, n = innenhof.achse(innenhof.load())
-    c = np.array(hof_fp.centroid.coords[0])
-    proj = [float(np.dot(np.array(q) - c, d)) for q in hof_fp.exterior.coords]
-    lo, hi = min(proj), max(proj)
-    ws = []
-    for t in np.linspace(lo + 0.1 * (hi - lo), hi - 0.1 * (hi - lo), 60):
-        p = c + t * d
-        cut = shapely.LineString([p - 500 * n, p + 500 * n]).intersection(hof_fp)
-        if not cut.is_empty:
-            ws.append(cut.length)
-    return float(np.median(ws)), float(min(ws)), hi - lo
+    """z-Lagen (Plattenoberseite = 0), Maßkette der Steckprobe."""
+    d = PP.stack()
+    deck = d["z_bb"]                                    # Unterseite Oberplatte = Unterkante Leistenkörper
+    uk_bot = deck - FACH_H - PP.UK_FLOOR
+    return dict(F=d["F"], E=d["E"], ceil=PP.CEIL, body=sd.HDR_BODY, z_hb=d["z_hb"], z_bb=d["z_bb"], z_tip=d["z_tip"],
+                z_bm=d["z_bm"], deck=deck, fach_h=FACH_H, floor=PP.UK_FLOOR, uk_bot=uk_bot, total=-uk_bot, uk_t=deck - uk_bot,
+                stamp_top=d["z_bb"] - PP.STAMP_AIR, pocket=G.POCKET_DEPTH, old=OLD["stand1"], old_ober=OLD["ober1"],
+                tc_plate=d["plate_t"])
 
 
 class Frame:
@@ -144,37 +72,39 @@ class Frame:
         return Polygon([self.pt(u0, v0), self.pt(u1, v0), self.pt(u1, v1), self.pt(u0, v1)]).buffer(0)
 
 
-# Lage im Fach (u, v): Steckerraum, Powerbank, Kabelkanal
 U0, U1 = -FACH_L / 2, FACH_L / 2
 V0, V1 = -FACH_W / 2, FACH_W / 2
-BU0 = U0 + PB_PLUG + PB_CLR                 # Anschlussseite der Powerbank
-BV0 = V0 + PB_CLR
-BVC = BV0 + PB_W / 2                         # Mitte der Powerbank quer
-KV0 = V1 - PB_CABLE                          # Kabelkanal
+BU0 = U0 + PP.PB_PLUG + PP.PB_CLR            # Anschlussseite der Powerbank
+BV0 = V0 + PP.PB_CLR
+BVC = BV0 + PP.PB_W / 2                      # Mitte der Powerbank quer
+KV0 = V1 - PP.PB_CABLE                       # Kabelkanal
+PORT_HALF = dict(usb_a=6.25, usb_c=4.5, micro=3.75, taste=2.0, leds=5.0)   # S  halbe Breite je Anschluss
+WIN = [BVC + PP.PB_PORT_V["leds"] - PORT_HALF["leds"] - PP.WINDOW_PAD,
+       BVC + PP.PB_PORT_V["usb_c"] + PORT_HALF["usb_c"] + PP.WINDOW_PAD]
 
 
 def fach_parts(f):
-    port = {k: f.pt(BU0, BVC + v).round(2).tolist() for k, v in PB_PORT_V.items()}
-    ua = BVC + PB_PORT_V["usb_a"]
+    ua = BVC + PP.PB_PORT_V["usb_a"]
     plug_end = BU0 - 25.0
-    kc = KV0 + PB_CABLE / 2
+    kc = KV0 + PP.PB_CABLE / 2
     cable = [f.pt(BU0, ua), f.pt(plug_end, ua), f.pt(plug_end - 5, (ua + kc) / 2), f.pt(plug_end, kc),
              f.pt(U1, kc), f.pt(U1 + 12, kc)]
-    inner = f.rect(BU0 - PB_CLR, U1, V0, KV0)
-    fence = inner.buffer(FENCE[0], join_style=2).difference(inner) \
+    inner = f.rect(BU0 - PP.PB_CLR, U1, V0, KV0)
+    fence = inner.buffer(PP.FENCE[0], join_style=2).difference(inner) \
         .difference(f.rect(U0 - 5, BU0 + 2, V0 - 5, V1 + 5)).difference(f.rect(BU0, U1 + 5, KV0 - 0.1, V1 + 5))
+    tv = BVC + PP.PB_PORT_V["taste"]
     return dict(
-        fach=f.rect(U0, U1, V0, V1), body=f.rect(BU0, BU0 + PB_L, BV0, BV0 + PB_W),
-        niche=f.rect(U0, BU0 - PB_CLR, V0, V1), channel=f.rect(BU0 - PB_CLR, U1, KV0, V1),
+        fach=f.rect(U0, U1, V0, V1), body=f.rect(BU0, BU0 + PP.PB_L, BV0, BV0 + PP.PB_W),
+        niche=f.rect(U0, BU0 - PP.PB_CLR, V0, V1), channel=f.rect(BU0 - PP.PB_CLR, U1, KV0, V1),
         plug=f.rect(plug_end, BU0, ua - 7.5, ua + 7.5),
-        rod=f.rect(U0 - UK_WALL, BU0, BVC + PB_PORT_V["taste"] - 2, BVC + PB_PORT_V["taste"] + 2),
-        window=f.rect(U0 - UK_WALL - 1, U0 + 0.5, V0 + 2, KV0 - 2), fence=fence,
-        cable=[np.round(p, 2).tolist() for p in cable], port=port, far=f.pt(U1, kc))
+        rod=f.rect(U0 - PP.UK_WALL, BU0, tv - PP.ROD / 2, tv + PP.ROD / 2),
+        window=f.rect(U0 - PP.UK_WALL - 1, U0 + 0.5, WIN[0], WIN[1]), fence=fence,
+        cable=[np.round(p, 2).tolist() for p in cable], far=f.pt(U1, kc))
 
 
 def place_edge(outline, hof_fp):
-    """Unterkasten: Anschlussseite an einer Plattenkante, Powerbank möglichst weit unter dem Innenhof."""
-    inner = outline.buffer(-UK_WALL, join_style=2)
+    """Anschlussseite an einer Plattenkante, Powerbank möglichst weit unter dem Innenhof."""
+    inner = outline.buffer(-PP.UK_WALL, join_style=2)
     x0, y0, x1, y1 = inner.bounds
     hc = hof_fp.centroid
     best = None
@@ -212,48 +142,97 @@ def place_box(inner, blocked, near, size):
     return best[1]
 
 
-def eyelets(outline, blocked):
-    """Vier Ösen, je so nah an der Ecke wie möglich (Block längs oder quer), frei von Mulden, Hof, Fach und Elektronik."""
+# --------------------------------------------------------------------------
+# Fadenführung: V-Kanal in der Oberplatte, Eckaussparung im Unterkasten
+# --------------------------------------------------------------------------
+V = PP.V
+V_HS = V["apex"] * V["slope"]                 # Abstand Eintritt bis Scheitel entlang der Achse
+
+
+def v_geom(cx, cy, axis):
+    """Ein V: Mitte (Scheitel) bei (cx, cy), Achse 'y' oder 'x'. Eintritte, Fußabdruck mit Wänden, Trichterbereich."""
+    if axis == "y":
+        ent = [(cx, cy - V_HS), (cx, cy + V_HS)]
+    else:
+        ent = [(cx - V_HS, cy), (cx + V_HS, cy)]
+    r = V["entry_r"]
+    funnels = unary_union([shapely.Point(p).buffer(r, 24) for p in ent])
+    foot = funnels.buffer(V["wall"], join_style=2).envelope
+    return ent, funnels, foot
+
+
+def place_vs(outline, blocked):
+    """Je Ecke ein V so nah an der Ecke wie möglich (Achse senkrecht zur nächsten Kante), Wände ≥ 1,4, frei von Mulden und Hof."""
     x0, y0, x1, y1 = outline.bounds
-    inner = outline.buffer(-1.0, join_style=2)
     out = []
-    for sx, sy, cx, cy in ((1, 1, x0, y0), (-1, 1, x1, y0), (1, -1, x0, y1), (-1, -1, x1, y1)):
+    for sx, sy, cxo, cyo in ((1, 1, x0, y0), (-1, 1, x1, y0), (1, -1, x0, y1), (-1, -1, x1, y1)):
         best = None
-        for L, B, along_x in ((OESE["L"], OESE["B"], True), (OESE["B"], OESE["L"], False)):
-            for dx in np.arange(1.5, 90, 0.5):
-                for dy in np.arange(1.5, 90, 0.5):
-                    if best is not None and math.hypot(dx, dy) >= best[0]:
+        for axis in ("y", "x"):
+            for da in np.arange(0, 60, 0.5):         # entlang der Achse ab V["y"]
+                for db in np.arange(0, 60, 0.5):     # quer
+                    if best is not None and da + db >= best[0]:
                         break
-                    px, py = cx + sx * (dx + L / 2), cy + sy * (dy + B / 2)
-                    r = box(px - L / 2, py - B / 2, px + L / 2, py + B / 2)
-                    if inner.contains(r) and not r.buffer(1.2).intersects(blocked):
-                        best = (math.hypot(dx, dy), r, (px, py), along_x)
-        out.append(dict(rect=best[1], c=best[2], x=best[3]))
+                    if axis == "y":
+                        cx = cxo + sx * (V["entry_r"] + V["wall"] + db)
+                        cy = cyo + sy * (V["y"] + da)
+                    else:
+                        cx = cxo + sx * (V["y"] + da)
+                        cy = cyo + sy * (V["entry_r"] + V["wall"] + db)
+                    ent, fun, foot = v_geom(cx, cy, axis)
+                    if outline.contains(foot) and not foot.intersects(blocked):
+                        best = (da + db, cx, cy, axis, ent, fun, foot)
+        _, cx, cy, axis, ent, fun, foot = best
+        # Eckaussparung: Trichter + Rand, bis zur Kante entlang der Achse und, wenn nah, auch quer
+        nb = fun.buffer(PP.NOTCH_PAD, join_style=2).bounds
+        nx0, ny0, nx1, ny1 = nb
+        if axis == "y":
+            ny0, ny1 = (y0 - 1, ny1) if sy > 0 else (ny0, y1 + 1)
+            if (nx0 - x0 if sx > 0 else x1 - nx1) < 6:
+                nx0, nx1 = (x0 - 1, nx1) if sx > 0 else (nx0, x1 + 1)
+        else:
+            nx0, nx1 = (x0 - 1, nx1) if sx > 0 else (nx0, x1 + 1)
+            if (ny0 - y0 if sy > 0 else y1 - ny1) < 6:
+                ny0, ny1 = (y0 - 1, ny1) if sy > 0 else (ny0, y1 + 1)
+        out.append(dict(c=(cx, cy), axis=axis, ent=ent, funnels=fun, foot=foot, notch=box(nx0, ny0, nx1, ny1)))
     return out
 
 
-def oese_holes(o):
-    """Die zwei Fadenlöcher (Mitte) und der Tunnel einer Öse als Rechtecke."""
-    (cx, cy), p, hh = o["c"], OESE["pitch"] / 2, OESE["hole"] / 2
-    if o["x"]:
-        hs = [box(cx + d - hh, cy - hh, cx + d + hh, cy + hh) for d in (-p, p)]
-        tun = box(cx - p - hh, cy - hh, cx + p + hh, cy + hh)
-    else:
-        hs = [box(cx - hh, cy + d - hh, cx + hh, cy + d + hh) for d in (-p, p)]
-        tun = box(cx - hh, cy - p - hh, cx + hh, cy + p + hh)
-    return hs, tun
+def v_solid(v, deck):
+    """Hohlraum eines V (Schenkel als Prismen, Trichter als Kegel) für die Oberplatte."""
+    ld, r = V["leg_d"], V["entry_r"]
+    apex_z = deck + V["apex"]
+    parts = []
+    # Schenkel in (t, z): von Eintritt (t = ∓V_HS, z = deck − 0,5) zum Scheitel (t = 0, z = apex)
+    for s in (-1, 1):
+        t0, z0, t1, z1 = s * V_HS * (1 + 0.5 / V["apex"]), deck - 0.5, 0.0, apex_z
+        n = np.array([-(z1 - z0), (t1 - t0)])
+        n = n / np.linalg.norm(n) * ld / 2
+        poly = [(t0 + n[0], z0 + n[1]), (t1 + n[0], z1 + n[1]), (t1 - n[0], z1 - n[1]), (t0 - n[0], z0 - n[1])]
+        if s > 0:
+            poly = poly[::-1]
+        cs = m3d.CrossSection([poly])
+        leg = m3d.Manifold.extrude(cs, ld).rotate([90, 0, 0]).translate([0, ld / 2, 0])
+        parts.append(leg)
+    cap = m3d.Manifold.cylinder(ld, ld / 2, ld / 2, 16).rotate([90, 0, 0]).translate([0, ld / 2, apex_z])
+    parts.append(cap)
+    core = G.union(parts)
+    if v["axis"] == "y":
+        core = core.rotate([0, 0, 90])
+    core = core.translate([v["c"][0], v["c"][1], 0])
+    cones = [m3d.Manifold.cylinder(1.5, r, ld / 2, 24).translate([p[0], p[1], deck - 0.01]) for p in v["ent"]]
+    return G.union([core] + cones)
 
 
 def unterkasten_cut(length, deck_cuts, avoid):
-    """Schnitte des Unterkastens (y), versetzt zu denen der Oberplatte, nicht durch Fach, Elektronik, Ösen."""
-    if length <= G.BED_SIZE:
+    """Schnitte des Unterkastens (y), versetzt zu denen der Oberplatte, nicht durch Fach, Elektronik, Aussparungen."""
+    if length <= PP.BED:
         return []
-    n = math.ceil(length / G.BED_SIZE)
+    n = math.ceil(length / PP.BED)
     cuts = []
     for k in range(1, n):
         target = length * k / n
         best = None
-        for y in np.arange(length - (n - k) * G.BED_SIZE + 3, k * G.BED_SIZE - 3, 0.5):
+        for y in np.arange(length - (n - k) * PP.BED + 3, k * PP.BED - 3, 0.5):
             if any(abs(y - c) < 25 for c in deck_cuts):
                 continue
             line = shapely.LineString([(-1e4, y), (1e4, y)])
@@ -266,7 +245,7 @@ def unterkasten_cut(length, deck_cuts, avoid):
 
 
 # --------------------------------------------------------------------------
-# Geometrie für Seite und 3D
+# Ausgabe
 # --------------------------------------------------------------------------
 def coords(geom, sh):
     out = []
@@ -280,18 +259,17 @@ def mesh(man, sh):
 
 
 def grams(man):
-    """(Material in g bei SHELL mm Hülle und INFILL Füllung, Volumen in cm³); Schätzung."""
+    """[g bei SHELL mm Hülle und INFILL Füllung, Volumen cm³]; Schätzung."""
     tm = G.to_trimesh(man)
-    V = float(abs(tm.volume))
-    shell = min(V, float(tm.area) * SHELL)
-    return [round((shell + INFILL * (V - shell)) / 1000 * PLA), round(V / 1000, 1)]
+    vol = float(abs(tm.volume))
+    shell = min(vol, float(tm.area) * PP.SHELL)
+    return [round((shell + PP.INFILL * (vol - shell)) / 1000 * PP.PLA), round(vol / 1000, 1)]
 
 
 def section(outline, fps, hof_fp, f):
     """Schnitt entlang der Powerbank-Mitte: Abschnitte (t0, t1) ab der Plattenkante auf der Anschlussseite."""
     p_mid = f.pt(0, BVC)
-    far = 2000.0
-    line = shapely.LineString([p_mid - far * f.u, p_mid + far * f.u])
+    line = shapely.LineString([p_mid - 2000 * f.u, p_mid + 2000 * f.u])
     seg = line.intersection(outline)
     p0 = np.array(seg.coords[0])
     if np.dot(p0 - p_mid, f.u) > 0:
@@ -308,8 +286,36 @@ def section(outline, fps, hof_fp, f):
     return dict(len=round(seg.length, 1), items=sorted(items, key=lambda i: i["t0"]), u0=round(t(f.pt(U0, BVC)), 1))
 
 
-def variant(key, scale, mode, h, hof_scale=None):
-    s = 1000.0 / scale
+def fit_rows():
+    """Passmaße: Fuge, Wert, Status, Herkunft."""
+    d = PP.stack()
+    pin = PP.PIN
+    return [
+        ["Fuß in der Mulde", "Spiel %.2f je Seite, Mulde %.1f tief" % (PP.MULDE_CLR, d["F"]), "bewährt", "Steckprobe 1 (r2 FM, r3 M)"],
+        ["Muldenboden über der Winkelleiste", "%.1f mm, Pinlöcher %.1f mit Fase, E %.2f" % (PP.CEIL, sd.HOLE, d["E"]), "vorläufig",
+         "r2 K, r3 S"],
+        ["Winkelleiste in der Tasche", "Spiel %.1f, Tasche +1,5 zum Lötende, Stufe für 1,8" % sd.SNUG_HDR, "bewährt, Kippen offen",
+         "r2 D, r3 W"],
+        ["Halt der Winkelleiste von unten", "Anschlag aus dem Unterkasten mit %.1f mm Luft, dazu Heißkleber" % PP.STAMP_AIR,
+         "Vorschlag", "Plan Steckprobe 2, Karten D und K; L06, L21"],
+        ["Kabel hinter den Lötenden", "Tasche nach unten offen, Unterkasten %.1f mm hoch frei" % (heights()["uk_t"]), "Vorschlag", "L20"],
+        ["Oberplatte auf Unterkasten", "Zapfen Ø %.1f × %.1f, Loch Ø %.1f (%.2f Gleitspiel), Fase %.1f" % (
+            pin["d"], pin["h"], pin["d"] + 2 * pin["clr"], pin["clr"], PP.EF_CH), "Vorschlag", "L10 (0,15 gleitet)"],
+        ["Faden", "V-Kanal Ø %.1f, Scheitel %.1f, Böschung 0,15 je Schicht, Trichter R %.1f, Wände ≥ %.1f; Eckaussparung im Unterkasten" % (
+            V["leg_d"], V["apex"], V["entry_r"], V["wall"]), "Zwischenstand", "Plan Steckprobe 2, Karte F; L29"],
+        ["Powerbank im Zaun", "%.1f je Seite, %.1f Luft oben" % (PP.PB_CLR, PP.PB_CLR_Z), "geschätzt, ungemessen", "Fachprobe"],
+        ["Stecker vor der Powerbank", "%.0f mm Steckerraum, Kabelkanal %.0f mm" % (PP.PB_PLUG, PP.PB_CABLE), "geschätzt, ungemessen",
+         "Fachprobe"],
+        ["Stößel zur Taste", "%.0f × %.0f mm, Führung mit 0,15 Spiel" % (PP.ROD, PP.ROD), "Vorschlag", "L10"],
+        ["Bettkanten, Löcher am Bett", "Fase %.1f" % PP.EF_CH, "Vorschlag", "L02, L03, Plan Steckprobe 2"],
+        ["Decken und Brücken", "höchstens 10 mm, keine Löcher in dünnen Brücken, sonst Böschung", "Regel", "L04, L05"],
+    ]
+
+
+def main():
+    h = heights()
+    print("Höhen:", {k: round(v, 2) for k, v in h.items()})
+    s = 1000.0 / SCALE
     m = G.osm_models(s)
     fps = {k: v[1] for k, v in m.items()}
     hof_solid, hof_fp, _ = innenhof.model(s, list(fps.values()))
@@ -320,119 +326,88 @@ def variant(key, scale, mode, h, hof_scale=None):
     minx, miny, maxx, maxy = outline.bounds
     sh = (-minx, -miny)
     W, L = maxx - minx, maxy - miny
-    deck_cuts = [round(c - miny, 1) for c in G.tile_cuts(outline, fp_all)]
-    inner = outline.buffer(-UK_WALL, join_style=2)
-    mulden_fp = foot_fp.buffer(CLR, join_style=2)
+    deck_cuts = [round(float(c - miny), 1) for c in G.tile_cuts(outline, fp_all)]
+    inner = outline.buffer(-PP.UK_WALL, join_style=2)
+    mulden_fp = foot_fp.buffer(PP.MULDE_CLR, join_style=2)
     pocket_fp = hof_fp.buffer(G.POCKET_CLEARANCE, join_style=2)
-    deck_z = h["deck"]
+    deck, bot = h["deck"], h["uk_bot"]
 
-    if mode == "unterkasten":
-        side, f = place_edge(outline, hof_fp)
-        bot, thick = h["uk_bot"], h["total_uk"]
-    else:
-        ang, ctr, _ = fit_rect(hof_fp.buffer(-HOF_LEDGE, join_style=2), FACH_L, FACH_W)
-        f = Frame(ctr[0], ctr[1], ang)
-        side = None
-        bot, thick = h["hof_bot"], h["total_hof"]
+    side, f = place_edge(outline, hof_fp)
     fp = fach_parts(f)
-    elec = place_box(inner.buffer(-1), fp["fach"].buffer(4.0, join_style=2), fp["far"], ESP_BOX)
-    oes = eyelets(outline, unary_union([mulden_fp.buffer(1.0), pocket_fp, fp["fach"].buffer(2), elec.buffer(2)]))
-    oe_rects = [o["rect"] for o in oes]
+    elec = place_box(inner.buffer(-1), fp["fach"].buffer(4.0, join_style=2), fp["far"], PP.ESP_BOX)
+    vs = place_vs(outline, unary_union([mulden_fp.buffer(V["wall"]), pocket_fp.buffer(V["wall"]),
+                                        fp["fach"].buffer(3), elec.buffer(3)]))
+    notches = [v["notch"] for v in vs]
 
-    # Stützen unter der Oberplatte
-    free = inner.buffer(-POST[0]).difference(unary_union([fp["fach"].buffer(3), elec.buffer(3)] +
-                                                          [r.buffer(3) for r in oe_rects]))
+    # Stützen und Zapfen
+    free = inner.buffer(-PP.POST[0]).difference(unary_union([fp["fach"].buffer(3), elec.buffer(3)] +
+                                                             [n.buffer(3) for n in notches]))
     posts = []
-    for x in np.arange(minx + POST[1] / 2, maxx, POST[1]):
-        for y in np.arange(miny + POST[1] / 2, maxy, POST[1]):
-            r = box(x - POST[0] / 2, y - POST[0] / 2, x + POST[0] / 2, y + POST[0] / 2)
+    for x in np.arange(minx + PP.POST[1] / 2, maxx, PP.POST[1]):
+        for y in np.arange(miny + PP.POST[1] / 2, maxy, PP.POST[1]):
+            r = box(x - PP.POST[0] / 2, y - PP.POST[0] / 2, x + PP.POST[0] / 2, y + PP.POST[0] / 2)
             if free.contains(r):
                 posts.append(r)
+    targets = [(minx + 0.3 * W, miny + 15), (maxx - 0.3 * W, maxy - 15)]
+    for c in deck_cuts:
+        for fx in (0.3, 0.7):
+            for dy in (-12, 12):
+                targets.append((minx + fx * W, miny + c + dy))
+    pins = set()
+    for tx, ty in targets:
+        cand = [(math.hypot(r.centroid.x - tx, r.centroid.y - ty), i) for i, r in enumerate(posts) if i not in pins]
+        if cand:
+            pins.add(min(cand)[1])
 
     # --- Oberplatte ---
-    pin, up, hole = OESE["pin"], OESE["up"], OESE["hole"]
-    deck = G.extrude(outline, deck_z, 0.0) - G.extrude(mulden_fp, -h["F"], 1.0) \
-        - G.extrude(pocket_fp, -G.POCKET_DEPTH, 1.0)
-    cuts = []
-    for o in oes:
-        hs, tun = oese_holes(o)
-        cuts.append(G.extrude(o["rect"].buffer(0.25, join_style=2), deck_z - 1, deck_z + pin + 0.2))
-        cuts += [G.extrude(r, deck_z - 1, deck_z + pin + up) for r in hs]
-        cuts.append(G.extrude(tun, deck_z + pin + up - hole, deck_z + pin + up))
-    if mode == "hof":
-        cuts.append(G.extrude(fp["fach"], bot + UK_FLOOR, 1.0))
-    deck = deck - G.union(cuts)
+    pin = PP.PIN
+    ober = G.extrude(outline, deck, 0.0) - G.extrude(mulden_fp, -h["F"], 1.0) - G.extrude(pocket_fp, -G.POCKET_DEPTH, 1.0)
+    cuts = [v_solid(v, deck) for v in vs]
+    for i in pins:
+        c = posts[i].centroid
+        cuts.append(G.extrude(shapely.Point(c.x, c.y).buffer(pin["d"] / 2 + pin["clr"], 24), deck - 1, deck + pin["h"] + 0.3))
+    ober = ober - G.union(cuts)
 
     # --- Unterkasten ---
-    solids = [G.extrude(outline, bot, bot + UK_FLOOR),
-              G.extrude(outline.difference(outline.buffer(-UK_WALL, join_style=2)), bot, deck_z)]
-    solids += [G.extrude(r, bot, deck_z) for r in posts]
-    solids += [G.extrude(r, bot, deck_z + pin) for r in oe_rects]
-    if mode == "unterkasten":
-        solids.append(G.extrude(fp["fence"], bot, bot + UK_FLOOR + FENCE[1]))
-    uk = G.union(solids)
-    holes = []
-    for o in oes:
-        holes += [G.extrude(r, bot - 1, deck_z + pin + 1) for r in oese_holes(o)[0]]
-    if mode == "unterkasten":
-        holes.append(G.extrude(fp["window"], bot + UK_FLOOR, deck_z + 0.5))
-    uk = uk - G.union(holes)
+    solids = [G.extrude(outline, bot, bot + PP.UK_FLOOR),
+              G.extrude(outline.difference(outline.buffer(-PP.UK_WALL, join_style=2)), bot, deck),
+              G.extrude(fp["fence"], bot, bot + PP.UK_FLOOR + PP.FENCE[1])]
+    solids += [G.extrude(r, bot, deck) for r in posts]
+    solids += [G.extrude(shapely.Point(posts[i].centroid.x, posts[i].centroid.y).buffer(pin["d"] / 2, 24), deck - 0.01,
+                         deck + pin["h"]) for i in pins]
+    uk = G.union(solids) - G.union([G.extrude(n, bot - 1, deck + 2) for n in notches] +
+                                   [G.extrude(fp["window"], bot + PP.UK_FLOOR, deck + 0.5)])
 
-    uk_cuts = unterkasten_cut(L, deck_cuts, [affinity.translate(g, *sh) for g in [fp["fach"], elec] + oe_rects])
+    uk_cuts = unterkasten_cut(L, deck_cuts, [affinity.translate(g, *sh) for g in [fp["fach"], elec] + notches])
     bld = {b["slug"]: mesh(m[b["slug"]][0] + G.extrude(fps[b["slug"]], -h["F"], 0.01), sh) for b in sel}
-    mat = dict(deck=grams(deck), uk=grams(uk))
-    if key == "uk1000":
-        old_deck = G.extrude(outline, -OLD["ober"], 0.0) - G.extrude(mulden_fp, -h["F"], 1.0) \
-            - G.extrude(pocket_fp, -G.POCKET_DEPTH, 1.0)
-        z_t = -OLD["ober"]
-        z_b = z_t - OLD["fach_h"] - OLD["floor"]
-        old_uk = G.extrude(outline, z_b, z_t) - G.extrude(fp["fach"], z_t - OLD["fach_h"], z_t + 1) \
-            - G.extrude(elec, z_b + OLD["floor"], z_t + 1)
-        mat.update(old_deck=grams(old_deck), old_uk=grams(old_uk))
+    mat = dict(ober=grams(ober), uk=grams(uk))
+    print("Platte %.1f × %.1f × %.1f mm, Kante %s, Powerbank %d %% unter dem Hof, Schnitte %s / %s, Material %s, Zapfen %d"
+          % (W, L, h["total"], side, fp["body"].intersection(hof_fp).area / fp["body"].area * 100, deck_cuts, uk_cuts, mat,
+             len(pins)))
 
-    return dict(
-        key=key, scale=scale, mode=mode, s=s, plate=[round(W, 1), round(L, 1)], thick=round(thick, 1), bot=bot,
-        outline=coords(outline, sh), deck_cuts=deck_cuts, uk_cuts=uk_cuts, x_cuts=math.ceil(W / G.BED_SIZE),
-        tiles=math.ceil(W / G.BED_SIZE) * (len(deck_cuts) + 1),
+    data = dict(
+        heights=h, scale=SCALE, plate=[round(W, 1), round(L, 1)], thick=round(h["total"], 1),
+        outline=coords(outline, sh), deck_cuts=deck_cuts, uk_cuts=uk_cuts,
         buildings=[dict(slug=b["slug"], title=b["title"], poly=coords(fps[b["slug"]], sh),
                         h=round(float(G.to_trimesh(m[b["slug"]][0]).bounds[1][2]), 1)) for b in sel],
-        hof=coords(hof_fp, sh), hof_w=[round(x, 1) for x in hof_width(hof_fp)],
-        hub=round(innenhof.hub(innenhof.load(), s), 2),
-        fach=coords(fp["fach"], sh), body=coords(fp["body"], sh), niche=coords(fp["niche"], sh),
+        hof=coords(hof_fp, sh), hub=round(innenhof.hub(innenhof.load(), s), 2),
+        fach_poly=coords(fp["fach"], sh), body=coords(fp["body"], sh), niche=coords(fp["niche"], sh),
         channel=coords(fp["channel"], sh), plug=coords(fp["plug"], sh), rod=coords(fp["rod"], sh),
-        cable=[[p[0] + sh[0], p[1] + sh[1]] for p in fp["cable"]],
-        ports={k: [p[0] + sh[0], p[1] + sh[1]] for k, p in fp["port"].items()},
-        elec=coords(elec, sh), posts=[coords(r, sh)[0] for r in posts],
-        oesen=[dict(rect=coords(o["rect"], sh)[0], c=[o["c"][0] + sh[0], o["c"][1] + sh[1]], x=o["x"]) for o in oes],
+        window=coords(fp["window"], sh), cable=[[p[0] + sh[0], p[1] + sh[1]] for p in fp["cable"]],
+        elec=coords(elec, sh), posts=[dict(r=coords(r, sh)[0], pin=i in pins) for i, r in enumerate(posts)],
+        vs=[dict(c=[v["c"][0] + sh[0], v["c"][1] + sh[1]], axis=v["axis"],
+                 ent=[[p[0] + sh[0], p[1] + sh[1]] for p in v["ent"]], notch=coords(v["notch"], sh)[0]) for v in vs],
         frame=dict(ang=f.ang, sgn=f.sgn, c=[f.c[0] + sh[0], f.c[1] + sh[1]]), side=side,
         under_hof=round(fp["body"].intersection(hof_fp).area / fp["body"].area * 100),
-        hut=dict(size=HUT, fits=bool(W <= HUT and L <= HUT)),
-        section=section(outline, fps, hof_fp, f), material=mat, hof_scale=hof_scale,
-        meshes=dict(deck=mesh(deck, sh), uk=mesh(uk, sh), buildings=bld, hof=mesh(hof_solid, sh)),
-    )
-
-
-def main():
-    h = heights()
-    print("Höhen:", {k: round(v, 2) for k, v in h.items()})
-    print("Suche den Maßstab, bei dem das Fach ganz unter den Innenhof passt …")
-    lim_exact, lim = hof_limit()
-    print("  Grenze: 1:%d, gerundet 1:%d" % (lim_exact, lim))
-    variants = [variant("uk1000", 1000, "unterkasten", h), variant("uk1500", 1500, "unterkasten", h),
-                variant("hof", lim, "hof", h, hof_scale=lim)]
-    for v in variants:
-        print("  %s 1:%d Platte %.1f × %.1f × %.1f mm, Druckteile %d, Powerbank %d %% unter dem Hof, Kante %s, "
-              "Schnitte Oberplatte %s / Unterkasten %s, Material %s"
-              % (v["key"], v["scale"], *v["plate"], v["thick"], v["tiles"], v["under_hof"], v["side"],
-                 v["deck_cuts"], v["uk_cuts"], v["material"]))
-    data = dict(
-        heights=h, variants=variants,
-        pb=dict(L=PB_L, W=PB_W, T=PB_T, g=PB_G, wh=PB_WH, eff=PB_EFF, imax=PB_IMAX, sleep=PB_SLEEP_S, keep=PB_KEEP_MA,
-                ports=PB_PORTS, port_v=PB_PORT_V, clr=PB_CLR, clr_z=PB_CLR_Z, plug=PB_PLUG, cable=PB_CABLE),
-        fach=dict(L=FACH_L, W=FACH_W, H=FACH_H, ledge=HOF_LEDGE, u0=U0, bu0=BU0, bv0=BV0, kv0=KV0),
-        uk=dict(floor=UK_FLOOR, wall=UK_WALL, cable_h=UK_CABLE_H, fence=FENCE, post=POST), oese=OESE, hut=HUT,
-        esp=ESP_BOX, hof_limit=lim, hof_limit_exact=lim_exact, mat=dict(shell=SHELL, infill=INFILL, pla=PLA),
-        led_buildings=[b["title"] for b in G.BUILDINGS],
+        hut=dict(size=PP.HUT, fits=bool(W <= PP.HUT and L <= PP.HUT)),
+        section=section(outline, fps, hof_fp, f), material=mat, fits=fit_rows(),
+        meshes=dict(ober=mesh(ober, sh), uk=mesh(uk, sh), buildings=bld, hof=mesh(hof_solid, sh)),
+        pb=dict(L=PP.PB_L, W=PP.PB_W, T=PP.PB_T, g=PP.PB_G, wh=PP.PB_WH, imax=PP.PB_IMAX, sleep=PP.PB_SLEEP_S,
+                keep=PP.PB_KEEP_MA, ports=PP.PB_PORTS, port_v=PP.PB_PORT_V, clr=PP.PB_CLR, clr_z=PP.PB_CLR_Z, plug=PP.PB_PLUG,
+                cable=PP.PB_CABLE, rod=PP.ROD),
+        fach=dict(L=FACH_L, W=FACH_W, H=FACH_H, u0=U0, bu0=BU0, bv0=BV0, kv0=KV0, win=WIN),
+        uk=dict(floor=PP.UK_FLOOR, wall=PP.UK_WALL, fence=PP.FENCE, post=PP.POST, pin=PP.PIN), v=V, v_hs=V_HS,
+        esp=PP.ESP_BOX, bed=PP.BED, mat=dict(shell=PP.SHELL, infill=PP.INFILL, pla=PP.PLA),
     )
     tpl = open(TEMPLATE, encoding="utf-8").read()
     html = tpl.replace("/*DATA*/", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
