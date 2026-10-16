@@ -31,8 +31,8 @@ BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
 # ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
 # Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
-# Die 4 mm sind der Gebäudekörper in voller Umrissform unter der Plattenoberfläche (Umriss-Aussparung in der Platte, auf der Platte erkennbar);
-# darunter folgt der Fuß mit der getesteten Mulde von 10,2 mm (Pins, Buchse und Kassette bleiben wie getestet).
+# Die Mulde ist eine einzige Ebene: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (F 14,2); keine Stufe, keine zweite Ebene in Form der
+# Kassette. Die Kassette sitzt im Gebäudekörper und schließt unten bündig mit ihm ab; die Umrisse der Gebäude sind auf der Platte erkennbar.
 MULDE_EXTRA_T = 4.0
 SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchstens 230 × 230 mm)
 # Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)

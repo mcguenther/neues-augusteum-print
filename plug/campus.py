@@ -16,6 +16,7 @@ import os
 
 import manifold3d as m3d
 import numpy as np
+import shapely
 from shapely import affinity
 from shapely.geometry import Polygon, box as sbox
 from shapely.ops import unary_union
@@ -49,8 +50,21 @@ def shaft_size(var):
     return w + 2 * P.KASS_CLR_T, d + 2 * P.KASS_CLR_T
 
 
+def led_local(var):
+    """LED (Mitte) im Gebäudesystem (Pin-Reihe y = 0): (x, y). Bei zwei LEDs (V2R, V1RS) die Mitte zwischen beiden."""
+    d = P.dims()
+    if var == "v4":
+        k = P.kass_dims()
+        return 0.0, (k["seat0"] + k["seat1"]) / 2 + d["y_kass0"]
+    v = V.dims(var)
+    yf = v["y_face"] + 0.95
+    if var in V.RVARS:
+        yf = (yf + v["yb_back"] + V.FPC + 0.95) / 2
+    return v["x_off"], yf + d["y_kass0"]
+
+
 def foot_local(var, wall):
-    """Fuß (Schacht plus Wand) im Gebäudesystem: Pin-Reihe bei y = 0, Kassette ab y_kass0; Rechteck."""
+    """Schacht plus Wand im Gebäudesystem (Pin-Reihe bei y = 0); Rechteck. Nur für die Wandprüfung und die Lage."""
     d = P.dims_plan()
     w, dep = shaft_size(var)
     y0 = d["y_kass0"] - P.KASS_CLR_T
@@ -65,21 +79,21 @@ def slice_poly(solid, z, fp):
     return None if g is None else g.buffer(0).intersection(fp.buffer(0.01))
 
 
-def led_local(var):
-    """Lage der LED im Gebäudesystem (x, y; Pin-Reihe bei y = 0): v4 Mitte der LED-Auflage, V-Varianten Chip auf dem Blatt (R-Varianten zwischen beiden)."""
-    y0 = P.dims()["y_kass0"]
-    if var == "v4":
-        k = P.kass_dims()
-        return 0.0, y0 + (k["seat0"] + k["seat1"]) / 2
-    d = V.dims(var)
-    y = d["yb"] + V.BLATT_T / 2 if var in V.RVARS else d["y_face"] + 0.95
-    return d["x_off"], y0 + y
+def target_point(fp):
+    """Mitte der Grundfläche: Schwerpunkt, sonst (liegt er außerhalb) die Stelle mit dem größten Abstand zum Rand."""
+    c = fp.centroid
+    if fp.contains(c):
+        return c
+    from shapely.ops import polylabel
+    big = max(fp.geoms, key=lambda g: g.area) if hasattr(fp, "geoms") else fp
+    return polylabel(big, 0.1)
 
 
-def candidates(poly, A, B, off, target, astep=5, gstep=0.5, keep=400):
-    """Alle Lagen des Rechtecks A × B (Drehung 0 bis 355°) im Polygon, sortiert nach dem Abstand der LED (Versatz off zur Rechteckmitte) vom Ziel."""
-    import shapely
-    er = poly.buffer(-min(A, B) / 2)
+def candidates(u, A, B, led_dxy, tgt, astep=5, gstep=0.5):
+    """Alle Lagen des Rechtecks A × B (Drehung 0 bis 355°) im Polygon u, sortiert nach Abstand der LED zur Zielmitte.
+    led_dxy: LED relativ zur Rechteckmitte (x quer, y längs). Liefert Liste (Abstand, Winkel, cx, cy)."""
+    r = min(A, B) / 2
+    er = u.buffer(-r)
     if er.is_empty:
         return []
     x0, y0, x1, y1 = er.bounds
@@ -87,146 +101,136 @@ def candidates(poly, A, B, off, target, astep=5, gstep=0.5, keep=400):
     X, Y = X.ravel(), Y.ravel()
     ins = shapely.contains_xy(er, X, Y)
     X, Y = X[ins], Y[ins]
-    shapely.prepare(poly)
+    shapely.prepare(u)
     corners = np.array([[-A / 2, -B / 2], [A / 2, -B / 2], [A / 2, B / 2], [-A / 2, B / 2], [-A / 2, -B / 2]])
     out = []
     for ang in range(0, 360, astep):
         a = math.radians(ang)
         rot = np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
-        coords = np.stack([X[:, None] + (corners @ rot.T)[None, :, 0], Y[:, None] + (corners @ rot.T)[None, :, 1]], axis=2)
-        ok = shapely.contains(poly, shapely.polygons(coords))
+        off = corners @ rot.T
+        coords = np.stack([X[:, None] + off[None, :, 0], Y[:, None] + off[None, :, 1]], axis=2)
+        ok = shapely.contains(u, shapely.polygons(coords))
         if ok.any():
-            lx, ly = rot @ np.asarray(off)
-            dist = np.hypot(X[ok] + lx - target.x, Y[ok] + ly - target.y)
-            out += [(float(dd), ang, float(xx), float(yy)) for dd, xx, yy in zip(dist, X[ok], Y[ok])]
+            lx, ly = rot @ np.array(led_dxy)
+            dist = np.hypot(X[ok] + lx - tgt.x, Y[ok] + ly - tgt.y)
+            out += list(zip(dist.tolist(), [ang] * int(ok.sum()), X[ok].tolist(), Y[ok].tolist()))
     out.sort()
-    return out[:keep]
+    return out
 
 
-def roof_local(solid, fp, rect_poly, hmax):
-    """Dachhöhe über dem Schacht: größte Höhe, bei der das Schachtrechteck noch im Querschnitt des Gebäudes liegt."""
-    z, best = 0.5, 0.0
-    while z < hmax:
-        u = slice_poly(solid, z, fp)
-        if u is None or u.is_empty or not u.buffer(1e-6).contains(rect_poly):
-            break
-        best, z = z, z + 0.5
-    return best
+def roof_over(solid, fp, rect, hmax):
+    """Dachhöhe über dem Schacht: größte Höhe, bei der das Rechteck noch ganz im Gebäudeschnitt liegt."""
+    lo, hi = 0.3, hmax - 0.2
+    for _ in range(8):
+        mid = (lo + hi) / 2
+        u = slice_poly(solid, mid, fp)
+        if u is not None and not u.is_empty and u.buffer(1e-6).contains(rect):
+            lo = mid
+        else:
+            hi = mid
+    return lo
 
 
-def place_all(models, scale, outline, replace=False):
-    """Lage je Gebäude: die LED möglichst nahe der Gebäudemitte (Schwerpunkt), Schacht mit Wand 1,2 (sonst 0,8) im Gebäude an einer Stelle,
-    die hoch genug ist; Dock und Lötraum innerhalb der Platte und ohne Überlappung mit anderen Docks."""
+def mulde_body(slug_fp, d):
+    """Mulde: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (eine Ebene, keine Stufen)."""
+    return G.extrude(slug_fp.buffer(P.OUTLINE_CLR_T, join_style=2), -d["F"] - 0.0, 0.01)
+
+
+def dock_local(var, wall, d):
+    """Dock (Winkelleiste, Lötraum, Kabelraum) im Gebäudesystem und sein Grundriss (shapely)."""
+    cuts = TB.dock_cuts_b(d)
+    cs = union(cuts).project()
+    env = unary_union([Polygon(r) for r in cs.to_polygons()])
+    return cuts, env
+
+
+def place_all(models, scale, replace=False):
     path = CACHE % scale
     if os.path.exists(path) and not replace:
         return json.load(open(path))
     F0, dl = P.dims()["F"], P.MULDE_EXTRA_T
     d = P.dims_plan()
-    res, others = {}, []
-    for slug, (solid, fp, _) in models.items():
-        if slug not in P.CASSETTE:
-            continue
+    res, placed_env = {}, []
+    order = ["06_city_hochhaus", "05_institutsgebaeude", "04_seminargebaeude", "01_paulinum", "02_neues_augusteum", "03_hoersaalgebaeude"]
+    for slug in order:
+        solid, fp, _ = models[slug]
         var = P.CASSETTE[slug]
-        t, led_h = W.top_led(var)
+        t, _led = W.top_led(var)
         need = t - F0 - dl + P.STOP_T                       # Mindesthöhe des Gebäudes über der Platte
         w, dep = shaft_size(var)
         hmax = float(G.to_trimesh(solid).bounds[1][2])
-        u = slice_poly(solid, max(need - 0.2, 0.3), fp)
-        target = fp.centroid if fp.buffer(-1.0).contains(fp.centroid) else fp.representative_point()
         lx, ly = led_local(var)
+        yc = foot_local(var, 0.0).centroid.y
+        led_dxy = (lx, ly - yc)
+        tgt = target_point(fp)
+        _, env_local = dock_local(var, 0.0, d)
         best = None
         for wall in WALL_PREF:
-            A, B = w + 2 * wall, dep + 2 * wall
-            yc = foot_local(var, wall).centroid.y
-            cuts = local_cuts(var, wall, d)
-            env0 = unary_union([Polygon(r) for r in union(cuts).project().to_polygons()])
-            for dist, ang, cx, cy in candidates(u, A, B, (lx, ly - yc), target):
-                p = dict(var=var, wall=wall, cx=cx, cy=cy, angle=ang)
-                env = affinity.translate(affinity.rotate(affinity.translate(env0, 0.0, -yc), ang, origin=(0, 0)), cx, cy)
-                bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in others)
-                if bad < 0.05:
-                    shaft = affinity.translate(affinity.rotate(sbox(-w / 2, -dep / 2, w / 2, dep / 2), ang, origin=(0, 0)), cx, cy)
-                    roof = roof_local(solid, fp, shaft, hmax)
-                    p.update(dist=round(dist, 1), roof=round(roof, 1), need=round(need, 2), luft=round(roof - (led_h - F0 - dl), 1))
-                    best = (p, env)
-                    break
+            u = slice_poly(solid, max(need - 0.2, 0.3), fp)
+            if u is None or u.is_empty:
+                continue
+            cand = candidates(u, w + 2 * wall, dep + 2 * wall, led_dxy, tgt)
+            for dist, ang, cx, cy in cand[:4000]:
+                env = affinity.translate(affinity.rotate(affinity.translate(env_local, 0, -yc), ang, origin=(0, 0)), cx, cy)
+                if not outline_ok(env) or any(env.intersection(o).area > 0.01 for o in placed_env):
+                    continue
+                best = dict(var=var, wall=wall, cx=cx, cy=cy, angle=ang, led_dist=round(dist, 1))
+                rect = affinity.translate(affinity.rotate(sbox(-w / 2, -dep / 2, w / 2, dep / 2), ang, origin=(0, 0)), cx, cy)
+                best["roof"] = round(roof_over(solid, fp, rect, hmax), 1)
+                best["need"] = round(need, 2)
+                placed_env.append(env)
+                break
             if best:
                 break
         if best is None:
             raise SystemExit("%s: kein Platz für %s (Wand %.1f)" % (slug, var, WALL_PREF[-1]))
-        res[slug] = best[0]
-        others.append(best[1])
-        print("  %-22s %-5s Wand %.1f, LED %.1f mm von der Gebäudemitte, Dach %.1f, Luft %.1f" % (
-            slug, var, best[0]["wall"], best[0]["dist"], best[0]["roof"], best[0]["luft"]), flush=True)
+        res[slug] = best
+        print("  %-22s %-5s Wand %.1f, LED %.1f mm von der Mitte, Dach %.1f (nötig %.1f)" % (
+            slug, var, best["wall"], best["led_dist"], best["roof"], best["need"]), flush=True)
     json.dump(res, open(path, "w"), indent=1)
     return res
 
 
-def local_cuts(var, wall, d):
-    """Fuß-Mulde (gerade Wände, Spiel MULDE_CLR_T, 45°-Fase oben, Tiefe F − MULDE_EXTRA_T = 10,2, um die Umrisstiefe nach unten verschoben)
-    und Dock im Gebäudesystem (z = 0 Plattenoberseite). Keine Stufen in der Mulde."""
-    cs = I.rounded(I.hcs(foot_local(var, wall)))
-    ex, ch, clr = P.MULDE_EXTRA_T, P.MULDE_CH_T, P.MULDE_CLR_T
-    zt = -ex
-    body = ext(cs.offset(clr, m3d.JoinType.Round), -d["F"], zt - ch + 0.01)
-    fase = m3d.Manifold.batch_hull([ext(cs.offset(clr, m3d.JoinType.Round), zt - ch, zt - ch + 0.01),
-                                    ext(cs.offset(clr + ch, m3d.JoinType.Round), zt - 0.01, zt + 0.01)])
-    return [body, fase] + TB.dock_cuts_b(d)
+OUTLINE = None
 
 
-def to_world(man, p, yc, flip):
-    return man.translate([0.0, -yc, 0.0]).rotate([0.0, 0.0, p["angle"] + flip]).translate([p["cx"], p["cy"], 0.0])
-
-
-def envelope(cuts, p, yc, flip):
-    """Grundriss aller Hohlräume (shapely) in Weltlage."""
-    cs = union(cuts).project()
-    poly = unary_union([Polygon(r) for r in cs.to_polygons()])
-    poly = affinity.translate(poly, 0.0, -yc)
-    poly = affinity.rotate(poly, p["angle"] + flip, origin=(0, 0))
-    return affinity.translate(poly, p["cx"], p["cy"])
+def outline_ok(env):
+    return OUTLINE is None or env.within(OUTLINE.buffer(-1.0))
 
 
 def build(scale=P.SCALE_PLAN, replace=False):
+    global OUTLINE
     s = 1000.0 / scale
     G.FAST = True
     models = G.source_models("laserscan", s)
     models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T)
     fps = {k: v[1] for k, v in models.items()}
     outline = G.plate_outline(unary_union(list(fps.values())))
-    places = place_all({k: v for k, v in models.items() if k in P.CASSETTE}, scale, outline, replace)
+    OUTLINE = outline
+    places = place_all({k: v for k, v in models.items() if k in P.CASSETTE}, scale, replace)
     d = P.dims_plan()
     T = d["plate_t"]
     hof_solid = models[G.HOF["slug"]][0]
     plate = G.extrude(outline, 0.0, T)
     plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan")
-    # Hohlräume je Gebäude; Spiegelung (180°) so, dass die Löträume möglichst frei und innerhalb der Platte bleiben
-    others = []
-    cut_all, report = [], []
+    cut_all, report, envs = [], [], []
     for slug, p in places.items():
-        wall = p["wall"]
-        cuts = local_cuts(p["var"], wall, d)
-        yc = foot_local(p["var"], wall).centroid.y
-        best = None
-        for flip in (0.0,):                      # die Drehung 0 bis 355° steckt im Winkel; die LED-Lage hängt daran
-            env = envelope(cuts, p, yc, flip)
-            bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in others)
-            if best is None or bad < best[0]:
-                best = (bad, flip, env)
-        bad, flip, env = best
-        others.append(env)
-        report.append((slug, p["var"], wall, flip, bad))
-        clip = G.extrude(fps[slug].buffer(P.OUTLINE_CLR_T, join_style=2), T - d["F"] - 1.0, T + 1.0)
-        for i, c in enumerate(cuts):
-            w = to_world(c, p, yc, flip).translate([0, 0, T])
-            cut_all.append(w ^ clip if i < 2 else w)              # Mulde und Fase nicht über die Umriss-Aussparung hinaus
+        w, dep = shaft_size(p["var"])
+        yc = foot_local(p["var"], 0.0).centroid.y
+        cuts, env_local = dock_local(p["var"], p["wall"], d)
+        for c in cuts:
+            cut_all.append(c.translate([0.0, -yc, 0.0]).rotate([0.0, 0.0, p["angle"]]).translate([p["cx"], p["cy"], T]))
+        env = affinity.translate(affinity.rotate(affinity.translate(env_local, 0, -yc), p["angle"], origin=(0, 0)), p["cx"], p["cy"])
+        bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in envs)
+        envs.append(env)
+        report.append((slug, p["var"], p["wall"], p["led_dist"], bad))
+        # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante
+        cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
+        # Muldenboden bleibt 0,4 mm; Pin-Löcher kommen aus dock_cuts_b
     # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Wand
-    # zu den Umriss-Aussparungen der Gebäude 0,4 mm bleibt
+    # zu den Gebäude-Aussparungen 0,4 mm bleibt
     hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s)
     cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + 0.01))
-    # Umriss-Aussparungen der Gebäude, MULDE_EXTRA_T tief: auf der Platte sind die Umrisse erkennbar, der Gebäudekörper reicht so weit hinein
-    for slug in P.CASSETTE:
-        cut_all.append(G.extrude(fps[slug].buffer(P.OUTLINE_CLR_T, join_style=2), T - P.MULDE_EXTRA_T, T + 0.01))
     plate = diff(plate, *cut_all)
     return plate, report, models, places, outline, hof_solid
 
@@ -251,7 +255,7 @@ def main():
     print("Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s, %.1f mm unter der Oberfläche" % (*hof_tm.extents, hof_tm.is_watertight, P.HOF_DEPTH_T))
     ok = tm.is_watertight and hof_tm.is_watertight
     for slug, var, wall, flip, bad in report:
-        print("  %-22s %-5s Wand %.1f, Dock-Drehung %d°, Überlappung/außerhalb %.2f mm²" % (slug, var, wall, flip, bad))
+        print("  %-22s %-5s Wand %.1f, LED %.1f mm von der Mitte, Dock außerhalb/überlappt %.2f mm²" % (slug, var, wall, flip, bad))
         ok &= bad < 0.05
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
     import preview

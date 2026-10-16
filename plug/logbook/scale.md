@@ -109,3 +109,21 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 - **Mulde ohne Stufen:** gerade Wände mit Spiel 0,1 (`MULDE_CLR_T`) über die ganze Tiefe von 10,2 mm, oben eine 45°-Fase von 0,5 mm (`MULDE_CH_T`). Weggefallen sind Entlastung (`RELIEF`), Führungsband (`BAND`) und die Treppenfase aus `institute.pocket_cuts`. Das ist eine Abweichung vom getesteten Aufbau der Steckprobe 1 (dort mit diesen Stufen), also in Steckprobe 3 zu prüfen (Einstecken, Wackeln, Kippen). Die einzige Stufe, die bleibt, ist der Boden der 4 mm tiefen Umriss-Aussparung.
 - **Lage der Kassette:** `plug/campus.py` sucht jetzt die Lage, bei der die LED möglichst nahe am Flächenschwerpunkt des Gebäudes sitzt (LED-Lage je Kassette in `led_local`: v4 Mitte der Auflage, V-Varianten Chip auf dem Blatt). Bedingungen: Schacht mit Wand 1,2 (sonst 0,8), Gebäude an der Stelle hoch genug, Dock und Lötraum innerhalb der Platte ohne Überlappung. Ergebnis (1:1300): LED 0,0 bis 0,3 mm von der Gebäudemitte (Paulinum, Neues Augusteum, Hörsaal, Seminar, Hochhaus), Institutsgebäude 4,0 mm.
 - **Preis der Mitte (Luft LED bis Dach an dieser Stelle):** Paulinum 18,1 mm, Neues Augusteum **4,1** (Dach in der Mitte nur 7,0 mm hoch), Hörsaal **7,6**, Seminar 10,3, Institut 10,3, Hochhaus 80,9. Neues Augusteum und Hörsaal liegen unter dem Richtwert von 8 mm (Annahme, ungetestet). Möglichkeiten dort: Kassette außermittig (früher: Luft 9,1 bzw. 11,2), nur dort tiefere Mulde, oder v4 mit tieferer LED-Fläche.
+
+### Korrektur 2 (Nutzer, 2026-10-16): eine Ebene, LED mittig
+
+- **Keine Stufen in den Mulden.** Die Mulde ist nur noch der **volle Gebäudeumriss, durchgehend bis F 14,2** (Spiel `OUTLINE_CLR_T` 0,1, keine Fase oben, damit die Wand zum Hof 0,4 mm bleibt). Die zweite Ebene in Form der Kassette (Fußmulde 10,2) entfällt. Der Gebäudekörper hat unten eine durchgehende Fläche, die Kassette sitzt eingesetzt darin und ragt nicht heraus (bündig). Die alte „Fußmulde“ der Steckprobe 1 (L-Fuß, 10,2 mm) gilt für die Probe weiter, nicht für die Campus-Platte.
+- **Das ändert Annahmen:** Der Gebäudefuß ist der ganze Körper, 14,2 mm lang, mit ganzer Grundfläche; Führung und Kippen sind damit anders als in Steckprobe 1 und müssen in Steckprobe 3 geprüft werden (große Mulde, Brücke 0,4 mm Muldenboden über dem Dock bleibt). Die Wand um den Schacht (0,8 bis 1,2 mm) betrifft jetzt die Wand des Körpers um die Kassette.
+- **LED mittig in der Grundfläche:** `plug/campus.py` sucht für jedes Gebäude die Lage (Drehung 0 bis 355°) mit der LED am nächsten zur Mitte der Grundfläche (Schwerpunkt, sonst Stelle mit größtem Randabstand), bei Wand mindestens 0,8 (bevorzugt 1,2) und Dock innerhalb der Platte ohne Überlappung mit anderen Docks. Zwei LEDs (V1RS, V2R): Mitte zwischen beiden.
+- Ergebnis bei 1:1300 (Dach = Höhe über dem Schacht, Luft = Dach minus LED-Höhe über der Platte bei Mulde +4):
+
+| Gebäude | Kassette | Wand | LED von der Mitte | Dach mm | Luft mm |
+|---|---|---|---|---|---|
+| Paulinum | v4 | 0,8 | 0,3 | 21,2 | 18,3 |
+| Neues Augusteum | v4 | 1,2 | 0,0 | 7,0 | **4,1** |
+| Hörsaalgebäude | v4 | 1,2 | 0,0 | 10,9 | 8,0 |
+| Seminargebäude | V1RS | 1,2 | 0,1 | 18,6 | 10,4 |
+| Institutsgebäude | V1RS | 1,2 | 4,0 | 18,5 | 10,3 |
+| City-Hochhaus | V2R | 1,2 | 0,1 | 92,4 | 80,8 |
+
+  Mittig kostet Luft: Im Neuen Augusteum liegt die LED jetzt unter dem niedrigen Mitteltrakt (Dach 7,0 mm, Luft 4,1 mm); vorher, in der Ecke unter dem höheren Dach, waren es 9,6 mm. Im Institutsgebäude begrenzt der L-Grundriss die Mitte (LED 4,0 mm daneben).
