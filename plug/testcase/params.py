@@ -41,6 +41,7 @@ CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeud
 HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
 HOF_DEPTH_T = 3.0       # Hof-Einsatz: so tief unter der Oberfläche (nicht die 4 mm der Gebäude; vorher 1 mm war zu flach, Annahme, offen)
 HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite; die Wand zwischen Hof- und Gebäude-Aussparung bleibt 0,4 mm (Fuge Hof zu Gebäude 0,5 minus 0,1)
+MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
 OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
 
 # ---- Fasen
