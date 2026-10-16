@@ -1,0 +1,307 @@
+<title>Testdruck-Fahrplan Kassette</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Abbildungen in voller Breite (auf dem Handy seitlich scrollbar), Karten im Raster.
+   Gleiches Farbsystem wie die anderen Steckmechanismus-Seiten; Teilefarben wie in den Vorschaubildern
+   (Kassette orange, Schieber grün, Platte blaugrau, Gebäude sandfarben, LED gelb). */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6; --ink: rgba(27,34,32,.5);
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300; --ok: #2f7d4f; --warn: #b5471f;
+  --d-kass: #d9781a; --d-key: #2f8a4f; --d-plate: #3f6f9e; --d-bld: #8a7640; --d-led: #c9a21c; --d-meas: #6b7570;
+  --on-warm: #1b1300; --on-cool: #ffffff;
+  --f-plate: #c9d6e2; --f-lid: #aebfcf; --f-bld: #e9e1c9; --f-kass: #f0b576; --f-key: #8ccf9a; --f-hsg: #f7f5ee;
+  --f-term: #d9b24a; --f-led: #f3dc7a; --f-wire: #c8423b;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431; --ink: rgba(229,234,231,.5);
+    --accent: #f2b441; --accent-fill: #f2b441; --on-accent: #1b1300; --ok: #5cc287; --warn: #ff8d62;
+    --d-kass: #f0953a; --d-key: #5cc287; --d-plate: #6fa8dc; --d-bld: #c8b27a; --d-led: #e8c75a; --d-meas: #99a5a0;
+    --on-warm: #0f1311; --on-cool: #0f1311;
+    --f-plate: #2a3a4a; --f-lid: #22303d; --f-bld: #4a4430; --f-kass: #8a521f; --f-key: #2f6a41; --f-hsg: #cfd3cb;
+    --f-term: #b8923a; --f-led: #b8a040; --f-wire: #e0675f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431; --ink: rgba(229,234,231,.5);
+  --accent: #f2b441; --accent-fill: #f2b441; --on-accent: #1b1300; --ok: #5cc287; --warn: #ff8d62;
+  --d-kass: #f0953a; --d-key: #5cc287; --d-plate: #6fa8dc; --d-bld: #c8b27a; --d-led: #e8c75a; --d-meas: #99a5a0;
+  --on-warm: #0f1311; --on-cool: #0f1311;
+  --f-plate: #2a3a4a; --f-lid: #22303d; --f-bld: #4a4430; --f-kass: #8a521f; --f-key: #2f6a41; --f-hsg: #cfd3cb;
+  --f-term: #b8923a; --f-led: #b8a040; --f-wire: #e0675f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55;
+  padding-block: 28px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1040px; margin-inline: auto; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 2.8rem); font-weight: 700; }
+h2 { font-size: 1.45rem; font-weight: 650; }
+h3 { font-size: 1.08rem; font-weight: 650; }
+p { margin: 0; max-width: 70ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lead { font-size: 1.12rem; color: var(--muted); max-width: 64ch; }
+.muted { color: var(--muted); } .small { font-size: 0.88rem; }
+code { font-family: var(--mono); font-size: 0.86em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; overflow-wrap: anywhere; }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.top { display: flex; flex-direction: column; gap: 12px; }
+
+/* Kurzfassung */
+.summary ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; max-width: 78ch; counter-reset: s; }
+.summary li { counter-increment: s; padding-left: 2.5em; position: relative; }
+.summary li::before { content: counter(s); position: absolute; left: 0; top: 0.1em; width: 1.7em; height: 1.7em; border-radius: 50%;
+  background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: 0.8rem; display: grid; place-items: center; }
+
+/* Abbildungen */
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; }
+.fig svg { display: block; margin-inline: auto; width: 100%; height: auto; }
+.fig svg.graph { min-width: 820px; } .fig svg.time { min-width: 780px; } .fig svg.sec { min-width: 600px; max-width: 760px; }
+figcaption { font-size: 0.9rem; color: var(--muted); max-width: 78ch; }
+svg text { font-family: var(--font); fill: var(--fg); }
+svg .mono { font-family: var(--mono); }
+
+/* Abhängigkeitsgraph */
+.graph .colh { font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; fill: var(--muted); }
+.graph .node a { cursor: pointer; }
+.graph .node rect { fill: color-mix(in srgb, var(--dom) 15%, var(--panel)); stroke: var(--dom); stroke-width: 1.6; }
+.graph .node .bd { fill: var(--dom); stroke: none; }
+.graph .node .bdt { font: 600 12px var(--mono); fill: var(--on); } .graph .node .bdt.sm { font-size: 10px; }
+.graph .nt { font: 600 12.5px var(--font); } .graph .ns { font: 400 11px var(--font); fill: var(--muted); } .graph .ns.mono { font: 500 10.5px var(--mono); fill: var(--fg); }
+.graph .ns.dim2 { fill: var(--muted); }
+.graph .kass { --dom: var(--d-kass); --on: var(--on-warm); } .graph .key { --dom: var(--d-key); --on: var(--on-cool); }
+.graph .plate { --dom: var(--d-plate); --on: var(--on-cool); } .graph .bld { --dom: var(--d-bld); --on: var(--on-cool); }
+.graph .led { --dom: var(--d-led); --on: var(--on-warm); } .graph .meas { --dom: var(--d-meas); --on: var(--on-cool); }
+.graph .gate { --dom: var(--fg); --on: var(--bg); }
+.graph .gate rect { fill: var(--fg); stroke: var(--fg); } .graph .gate .nt { fill: var(--bg); } .graph .gate .ns { fill: color-mix(in srgb, var(--bg) 82%, var(--fg)); }
+.graph .gate .ns.mono { fill: var(--bg); } .graph .gate .bd { fill: var(--accent-fill); } .graph .gate .bdt { fill: var(--on-accent); }
+.graph .join { --dom: var(--fg); --on: var(--bg); }
+.graph .join rect { fill: var(--panel); stroke: var(--fg); stroke-width: 2.6; }
+.graph .node.neu rect { stroke-dasharray: 6 3.5; }
+.graph .legneu { fill: var(--panel); stroke: var(--fg); stroke-width: 1.4; stroke-dasharray: 5 3; }
+.graph .edge { fill: none; stroke: var(--fg); stroke-width: 1.6; }
+.graph .edge.soft { stroke-dasharray: 5 4; stroke: var(--muted); }
+.graph .ahp { fill: var(--fg); } .graph .edge.soft + .x { }
+.graph.hl .node:not(.on), .graph.hl .edge:not(.on) { opacity: .22; }
+.graph.hl .edge.on { stroke: var(--accent); stroke-width: 2.6; }
+.graph a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Schnittbild */
+.sec rect, .sec polygon { stroke: var(--ink); stroke-width: .7; }
+.sec .p-plate { fill: var(--f-plate); } .sec .p-lid { fill: var(--f-lid); } .sec .p-bld { fill: var(--f-bld); }
+.sec .p-kass { fill: var(--f-kass); } .sec .p-key { fill: var(--f-key); } .sec .p-hsg { fill: var(--f-hsg); }
+.sec .p-term { fill: var(--f-term); } .sec .p-led { fill: var(--f-led); } .sec .p-pin { fill: var(--fg); stroke: none; }
+.sec .hole { fill: var(--panel); stroke: none; }
+.sec .p-wire { stroke: var(--f-wire); stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.sec .lead { stroke: var(--fg); stroke-width: 1; } .sec .dot { fill: var(--fg); }
+.sec .tagc { fill: var(--panel); stroke: var(--fg); stroke-width: 1.6; }
+.sec .tagt { font: 600 12px var(--mono); } .sec .tagt.sm { font-size: 10px; }
+.sec .lab { font: 500 12px var(--font); } .sec .lab.sm { font-size: 10.5px; }
+.sec .dim { stroke: var(--fg); stroke-width: 1; } .sec .dimt { font: 500 11px var(--mono); }
+
+/* Zeitplan */
+.time .colh { font: 500 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; fill: var(--muted); }
+.time .tick { font: 400 10.5px var(--mono); fill: var(--muted); } .time .grid { stroke: var(--line); stroke-width: 1; }
+.time .lane { font: 600 13px var(--font); } .time .brk { font: 500 10px var(--mono); fill: var(--muted); letter-spacing: .06em; }
+.time .b-print { fill: color-mix(in srgb, var(--accent-fill) 38%, var(--panel)); stroke: var(--accent); stroke-width: 1.4; }
+.time .b-print.night { fill: color-mix(in srgb, var(--accent-fill) 58%, var(--panel)); }
+.time .b-you { fill: color-mix(in srgb, var(--d-plate) 26%, var(--panel)); stroke: var(--d-plate); stroke-width: 1.4; }
+.time .b-off { fill: color-mix(in srgb, var(--muted) 13%, var(--panel)); stroke: var(--line); stroke-width: 1.2; }
+.time .b-opt { fill: var(--panel); stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 5 3; }
+.time .b-hat { fill: url(#hat); stroke: none; } .time .hatl { stroke: var(--accent); stroke-width: 1; opacity: .5; }
+.time .bl { font: 500 12px var(--font); } .time .bl.sm { font: 600 11px var(--mono); }
+.time .note { font: 400 12px var(--font); fill: var(--muted); } .time .dia { fill: var(--accent); }
+.time .brkband { fill: color-mix(in srgb, var(--muted) 9%, var(--panel)); stroke: none; }
+.time .conn { stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 3 3; }
+
+/* Montagefolge */
+.assembly { margin: 0; padding: 0; list-style: none; counter-reset: a; display: grid; gap: 8px; max-width: 80ch; }
+.assembly li { counter-increment: a; display: grid; grid-template-columns: 1.7em 1fr auto; gap: 10px; align-items: baseline; }
+.assembly li::before { content: counter(a); font-family: var(--mono); font-size: .82rem; width: 1.7em; height: 1.7em; border-radius: 50%; background: var(--line); display: grid; place-items: center; }
+.tags { display: inline-flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.tag { font-family: var(--mono); font-size: .76rem; font-weight: 600; min-width: 1.9em; text-align: center; padding: 1px 6px; border-radius: 999px; background: var(--dom, var(--muted)); color: var(--on, var(--bg)); text-decoration: none; }
+.tag.kass { --dom: var(--d-kass); --on: var(--on-warm); } .tag.key { --dom: var(--d-key); --on: var(--on-cool); }
+.tag.plate { --dom: var(--d-plate); --on: var(--on-cool); } .tag.bld { --dom: var(--d-bld); --on: var(--on-cool); }
+.tag.led { --dom: var(--d-led); --on: var(--on-warm); } .tag.gate, .tag.join { --dom: var(--fg); --on: var(--bg); }
+.tag.meas { --dom: var(--d-meas); --on: var(--on-cool); }
+
+/* Karten */
+.stagehead { font-family: var(--mono); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); align-items: start; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; scroll-margin-top: 16px; }
+.card:target { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card header { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.card header h3 { flex: 1 1 auto; min-width: 0; }
+.card .bd { font-family: var(--mono); font-weight: 600; font-size: .85rem; min-width: 2.1em; height: 2.1em; padding-inline: .4em; border-radius: 999px; display: grid; place-items: center; background: var(--dom); color: var(--on); }
+.card.kass { --dom: var(--d-kass); --on: var(--on-warm); } .card.key { --dom: var(--d-key); --on: var(--on-cool); }
+.card.plate { --dom: var(--d-plate); --on: var(--on-cool); } .card.bld { --dom: var(--d-bld); --on: var(--on-cool); }
+.card.led { --dom: var(--d-led); --on: var(--on-warm); } .card.gate, .card.join { --dom: var(--fg); --on: var(--bg); }
+.card.meas { --dom: var(--d-meas); --on: var(--on-cool); }
+.card .stage { font-family: var(--mono); font-size: .74rem; color: var(--muted); }
+.card .q { font-weight: 500; }
+.card dl { margin: 0; display: grid; grid-template-columns: 6.2em 1fr; gap: 8px 12px; font-size: .92rem; }
+.card dt { font-family: var(--mono); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: .2em; }
+.card dd { margin: 0; min-width: 0; }
+.card .known { font-size: .88rem; color: var(--muted); max-width: none; border-top: 1px solid var(--line); padding-top: 8px; }
+.card footer { display: flex; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap; align-items: baseline; font-size: .85rem; }
+.chips { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-family: var(--mono); font-size: .74rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+.chip.neu { border-style: dashed; border-color: var(--accent); color: var(--accent); }
+.chip.ok { border-color: var(--ok); color: var(--ok); }
+.waits { color: var(--muted); }
+
+/* Tabelle */
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: .74rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+.limits { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; max-width: 78ch; }
+@media (max-width: 520px) { .card dl { grid-template-columns: 1fr; gap: 2px; } .card dt { padding-top: 6px; } .assembly li { grid-template-columns: 1.7em 1fr; } .assembly .tags { grid-column: 2; justify-content: flex-start; } }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <p class="kicker">Steckmechanismus · Kassette</p>
+  <h1>Testdruck-Fahrplan Kassette</h1>
+  <p class="lead">Welche Passung zuerst, welche unabhängig, was erst im Verbund. Ausgangslage: Passprobe und Probestück sind gedruckt (<code>plug/STATUS.md</code>). Jetzt kommen die Fugen der Kassette dran, einzeln, dann im Verbund, zuletzt mit Pins.</p>
+</header>
+
+<section class="summary">
+  <h2>Kurzfassung</h2>
+  <ol>
+    <li><b>Nach Unabhängigkeit testen, nicht nach Montagereihenfolge.</b> Kassette innen (C), Schieber und Nut (N), Podest mit Deckel (D), Fuß und Mulde (FM) und Licht (L) brauchen kein Ergebnis voneinander. Nur der Schacht (S) braucht das Außenmaß aus C, nur die Verbundtests V1 und V2 brauchen alles.</li>
+    <li><b>Spalte unter 0,5 mm lassen sich nicht messen.</b> Darum tragen die Testteile ihr Spiel als Gravur, und die Hand ist das Messgerät: je Serie die engste Variante, die ohne Gewalt passt, und die weiteste, die nicht merklich wackelt. Das Probestück war laut STATUS schon einmal ganz gedruckt („wackelt überall“), aber ohne Zahlen. Bauteile (Buchse, Streifen, Pins) lassen sich messen und werden vorher gemessen.</li>
+    <li><b>Ein Gate: Kontakt-Tiefe K.</b> Sie ändert nur Höhen (Fußhöhe {{F}} mm, Schieberdicke), nie eine seitliche Passung. Sie kostet etwa 1 g und 10 Minuten und kommt vor alles, was eine Höhe festschreibt (N, V1, V2).</li>
+    <li><b>Die Lücke vor den Pins:</b> S und N einzeln, dann V1 (Kassette und Schieber im Gebäude, ohne Pins), erst danach V2 mit Platte und Stiften.</li>
+    <li><b>Eine Nacht reicht für alle unabhängigen Serien.</b> Der Kern (K, N, S, C) braucht etwa {{G_CORE}} g und {{H_CORE}} h (schneller Drucker {{H_CORE_FAST}} h), mit den optionalen Teilen R, D und FM etwa {{G_ALL}} g und {{H_ALL}} h. Gedruckt wird in die Breite (je Fuge vier Spielwerte), nicht in die Tiefe (V1 und V2 mit ungeprüften Fugen).</li>
+  </ol>
+</section>
+
+<section id="abhaengigkeiten">
+  <h2>Abhängigkeiten</h2>
+  <p>Ein Pfeil heißt: Das Ergebnis des Vorgängers kann die Geometrie des Nachfolgers ändern. Was keinen Pfeil zueinander hat, lässt sich gleichzeitig drucken und einzeln auswerten. Mit der Maus oder Tab auf einen Kasten zeigen hebt Vorgänger und Nachfolger hervor, ein Klick springt zur Karte.</p>
+  <figure>
+    <div class="fig">{{FIG_GRAPH}}</div>
+    <figcaption>Fünf Tests laufen ohne Abhängigkeit voneinander (C, N, D, FM, L). K hängt nur über die Höhen an N und damit an V1 und V2. S wartet auf das Außenmaß aus C, V1 auf C, N und S, V2 auf V1, D und FM. Die Zahlen unter den Namen sind Material und Zeit für einen normalen Drucker (Schätzung, siehe Grenzen).</figcaption>
+  </figure>
+</section>
+
+<section id="fugen">
+  <h2>Wo die Fugen liegen</h2>
+  <p>Jede Fuge hat genau einen Test, der sie allein prüft. Die Buchstaben im Schnitt sind die Test-IDs.</p>
+  <figure>
+    <div class="fig">{{FIG_SECTION}}</div>
+    <figcaption>Schnitt längs durch die Pin-Reihe des Probestücks (Ausschnitt des Institutsgebäudes, 1:1000), Maße aus dem Generator. Schematisch: Federzunge, Fasen, Crush-Rippen, Querrinne und Kodierecke fehlen.</figcaption>
+  </figure>
+  <h3>Montagefolge der Kassette</h3>
+  <ol class="assembly">
+    <li><span>Buchse in die Kassettentasche, Spiel {{SNUG}} je Seite plus Rippen {{RIB}}</span><span class="tags"><a class="tag kass" href="#t-C">C</a></span></li>
+    <li><span>Adern in den Aderschlitz und über die Wand zur LED, DETECT-Brücke in die Querrinne</span><span class="tags"><a class="tag kass" href="#t-C">C</a></span></li>
+    <li><span>LED-Streifen in die Ablage {{SEAT}}</span><span class="tags"><a class="tag kass" href="#t-C">C</a></span></li>
+    <li><span>Kassette von unten in den Schacht des Gebäudes, Spiel {{KASS_CLR}} je Seite</span><span class="tags"><a class="tag kass" href="#t-S">S</a></span></li>
+    <li><span>Schieber in die Schwalbenschwanz-Nut (Spiel {{KEY_CLR}}). Er hält die Kassette und trägt die Trichter.</span><span class="tags"><a class="tag key" href="#t-N">N</a></span></li>
+    <li><span>Gebäude in die Mulde: Fuß mit {{CLR}} im Führungsband, Stifte durch die Trichter in die Buchse, Einstecktiefe E = {{E}} mm</span><span class="tags"><a class="tag bld" href="#t-FM">FM</a><a class="tag gate" href="#t-K">K</a><a class="tag plate" href="#t-D">D</a><a class="tag join" href="#t-V2">V2</a></span></li>
+  </ol>
+  <p class="muted">Montagefolge und Testfolge sind verschieden. Die Nut (5) lässt sich vor der Kassette (1) prüfen, weil sie nur Schieber und Nut sieht. Für die Testfolge zählt, was ein Ergebnis an anderen Teilen ändert.</p>
+</section>
+
+<section id="zeitplan">
+  <h2>Zeitplan: erste Nacht</h2>
+  <p>Alle unabhängigen Serien kommen in einen Druck. Jede Serie trägt ihre Spielwerte als Gravur, damit morgen für jede Fuge ein Wert feststeht statt nur „passt“ oder „passt nicht“. Die STL liegen in <code>stl/steckmodul_night1/</code> (<code>python3 -m plug.series</code>), die Anleitung zu den Teilen in der <code>README.txt</code> dort.</p>
+  <figure>
+    <div class="fig">{{FIG_TIME}}</div>
+    <figcaption>Kern der Nachtplatte (K, N, S, C): etwa {{G_CORE}} g, {{H_CORE}} h, fertig gegen {{CORE_END}}. R und D sind schon teilweise getestet (Passprobe Runde 1 bis 4) und nur Zugabe, die Mulden-Ringe (FM) sind das schwerste Teil. Zeigt der Slicer mehr Zeit, als du hast, zuerst FM streichen, dann R und D.</figcaption>
+  </figure>
+</section>
+
+<section id="tests">
+  <h2>Die Tests</h2>
+  <p>Jede Karte nennt Ziel, Teile, Messung, Erfolgskriterium und den Stand der bisherigen Versuche aus <code>plug/STATUS.md</code>. Gestrichelte Marke „STL neu“: Die Datei gibt es noch nicht.</p>
+  <div class="cards">
+{{CARDS}}
+  </div>
+</section>
+
+<section id="aenderungsradius">
+  <h2>Wenn ein Test scheitert: Änderungsradius</h2>
+  <p>Welche Konstante in <code>plug/parts.py</code> was im Generator verschiebt und welche Tests danach noch gelten. Aus dem Code abgeleitet (<code>dims()</code> in <code>plug/dupont.py</code> und <code>plug/institute.py</code>).</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Konstante</th><th>Wirkt auf</th><th>Neu testen</th></tr></thead>
+    <tbody>
+      <tr><td><code>CEIL</code>, <code>FUNNEL_T</code>, <code>HDR_UP</code></td><td>Einstecktiefe E, Fußhöhe F, Schieberdicke und Nuttiefe, Kassettenhöhe, Plattendicke</td><td>K, N, V1, V2 (D und FM nur in der Höhe)</td></tr>
+      <tr><td><code>SEAT_W</code>, <code>SEAT_L</code>, <code>WALL</code></td><td>Umriss der Kassette, Schieberbreite</td><td>C, S, N, V1</td></tr>
+      <tr><td><code>SNUG</code>, <code>RIB</code>, <code>HSG_*</code></td><td>Buchsentasche und Sockel, damit Kassettenlänge und Schieberbreite um Zehntel</td><td>C, danach S, N, V1</td></tr>
+      <tr><td><code>KASS_CLR</code></td><td>Schacht, Sockeldurchbruch, Lage der Nut</td><td>S, V1</td></tr>
+      <tr><td><code>KEY_CLR</code></td><td>Schieberbreite</td><td>N, V1</td></tr>
+      <tr><td><code>HOLE</code>, <code>FUNNEL_D</code></td><td>Trichter im Schieber, Löcher im Muldenboden</td><td>N, D, V2</td></tr>
+      <tr><td><code>CLR</code>, <code>RELIEF</code>, <code>BAND</code>, <code>TONGUE</code></td><td>Fuß in der Mulde, Rast</td><td>FM, V2</td></tr>
+      <tr><td><code>SNUG_HDR</code>, <code>STEP_CLR</code>, <code>HDR_*</code></td><td>Dock A: Körpertasche, Stufe, Lötendenschlitz</td><td>D, V2</td></tr>
+      <tr><td><code>SHELL</code>, <code>WIN_T</code></td><td>Wand und Restwand an den Lichtfenstern</td><td>L</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Nach jeder Änderung: <code>python3 -m plug.build_all</code>, dann Seiten neu veröffentlichen und <code>plug/STATUS.md</code> nachziehen.</p>
+</section>
+
+<section id="grenzen">
+  <h2>Grenzen dieses Fahrplans</h2>
+  <ul class="limits">
+    <li><b>Zeiten und Mengen sind Schätzungen.</b> Material: Voxelmodell der vorhandenen STL (3 Wände, 15 % Füllung, 4 Deck- und Bodenschichten), für neue Teile ein Grobentwurf. Zeit: 9 g/h plus 5 s je Schicht und 5 min Start (normaler Drucker) bzw. 25 g/h, 2 s, 3 min (schneller Drucker). Die Slicer-Zeit hat Vorrang.</li>
+    <li><b>Die Serien K, N, S, C, R, FM und D</b> kommen aus <code>plug/series.py</code> und sind auf Kollisionen und Dichtheit geprüft, aber noch nicht gedruckt. Das Licht (L), Federzunge und Rast sowie die Rippen-Serie sind noch Entwurf, ohne STL.</li>
+    <li><b>Stand der Versuche</b> stammt aus <code>plug/STATUS.md</code>. Was darüber hinaus im Chat gemessen wurde, steht hier nicht.</li>
+    <li><b>Nicht Teil dieses Fahrplans:</b> die Druckpause als Hauptlösung (Pausenprobe), Dock B und C, und die Kassette bei 1:1500 (Hauptbalken 14,7 mm, Kassette 15,7 mm breit, siehe <code>plug/PLAN.md</code> 3.3).</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var g = document.querySelector('svg.graph');
+  if (!g) return;
+  var edges = Array.prototype.slice.call(g.querySelectorAll('.edge[data-from]'));
+  var nodes = Array.prototype.slice.call(g.querySelectorAll('.node[data-id]'));
+  function chain(id) {
+    var on = {}; on[id] = true;
+    [true, false].forEach(function (down) {
+      var stack = [id];
+      while (stack.length) {
+        var cur = stack.pop();
+        edges.forEach(function (e) {
+          var a = e.getAttribute('data-from'), b = e.getAttribute('data-to');
+          var next = down ? (a === cur ? b : null) : (b === cur ? a : null);
+          if (next && !on[next]) { on[next] = true; stack.push(next); }
+        });
+      }
+    });
+    return on;
+  }
+  function show(id) {
+    var on = chain(id);
+    g.classList.add('hl');
+    nodes.forEach(function (n) { n.classList.toggle('on', !!on[n.getAttribute('data-id')]); });
+    edges.forEach(function (e) { e.classList.toggle('on', !!(on[e.getAttribute('data-from')] && on[e.getAttribute('data-to')])); });
+  }
+  function clear() {
+    g.classList.remove('hl');
+    nodes.concat(edges).forEach(function (n) { n.classList.remove('on'); });
+  }
+  nodes.forEach(function (n) {
+    var id = n.getAttribute('data-id');
+    n.addEventListener('pointerenter', function () { show(id); });
+    n.addEventListener('pointerleave', clear);
+    n.addEventListener('focusin', function () { show(id); });
+    n.addEventListener('focusout', clear);
+  });
+})();
+</script>

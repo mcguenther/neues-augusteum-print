@@ -124,6 +124,16 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.sample` (ca. 15 s) | Probestück 22 × 36 mm mit Kassette, Schieber, Mini-Platte, Deckel, dazu die Passprobe `0_passprobe.stl`, `README.txt` und `probedruck_kassette.zip` nach `stl/steckmodul_probe/`, Bilder nach `vorschau/steckmodul_probe/` |
 | `python3 -m plug.views.build_views [dupont\|institute\|all]` | 3D-Seiten `plug/views/dupont/view.html` bzw. `plug/build/institute/view.html` aus Vorlage und `data.json` |
 | `python3 -m plug.fit_test.build_page` | Anleitungsseite der Passprobe `plug/fit_test/page.html` |
+| `python3 -m plug.roadmap.build` | Fahrplan der Testdrucke (Abhängigkeiten, Zeitplan, Karten) `plug/roadmap/page.html` |
+| `python3 -m plug.feedback.build` | Testbogen zu den Serien (Schritte, Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page.html` |
+| `python3 -m plug.series` (ca. 6 min) | Passungsserien mit Spielgravur für Nachtdrucke: `stl/steckmodul_night1/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night1/` |
+| `python3 -m plug.decision.build` | Entscheidungsdokument nach Nacht 1 (Vorher/Nachher-Zeichnungen, Umgesetztes) `plug/decision/page.html` |
+| `python3 -m plug.feedback.build_night2` | Testbogen zu Nacht 2 (K, C v2, N, E, D, FM; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page_night2.html` |
+| `python3 -m plug.testcase.build_plan` | Planungsseite für den kompletten Testfall (Kassette v4, Mini-Gebäude, Mini-Grundplatte; Schnitt mit Regler, Draufsicht, Maßkette, Entscheidungen) `plug/testcase/plan.html`; Sollwerte in `plug/testcase/params.py`, Kassette v4 mit `python3 -m plug.testcase.kassette` |
+| `python3 -m plug.testcase.build_plan2` | Planungsseite Steckprobe 2 (Faden-Lasche mit V-Kanal und Trichter an der Unterseite, Kassette 14,60, Schacht 17,40, Entscheidungskarten) `plug/testcase/plan2.html`; Vorschläge in `PROP` der Datei, nach dem Abnicken nach `params.py` |
+| `python3 -m plug.testcase.build_feedback` | Testbogen zum Testfall (Kassette bestücken, Einpressen, Mulde, Winkelleiste, Stecken, Durchgang, Abziehen; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/testcase/feedback.html` |
+| `python3 -m plug.testcase.build` (ca. 2 min) | STL, README und ZIP des Testfalls (2 Kassetten v4, Mini-Gebäude A/B, Mini-Grundplatte, Mini-Deckel) nach `stl/steckmodul_testcase/`, Bilder nach `vorschau/steckmodul_testcase/` |
+| `python3 -m plug.series2` (ca. 2 min) | zweiter Nachtdruck (K, C v2, N Schieber, E Einpressen, D v7, FM): `stl/steckmodul_night2/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night2/` |
 | `python3 -m plug.power.build_concept` (ca. 20 s) | Konzeptseite Powerbank, Unterkasten und Ösen für den Doktorhut `plug/power/concept.html` (Maße `PB_*`, `UK_*`, `OESE`, `HUT` in `plug/parts.py`, Plan Kapitel 6) |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
@@ -140,6 +150,17 @@ nicht 2,54; er sitzt neben den senkrechten Pins, siehe `plug/fit_test/angled_pin
 Namenskonvention: neue Dateien und Ordner bekommen englische Namen, soweit sinnvoll (README statt LIESMICH, `build_*`,
 `view`, `check`); Seitentexte, Kommentare und Chat bleiben deutsch. Die Ausgabeordner `stl/steckmodul_*` und
 `vorschau/steckmodul_*` und die STL-Dateinamen sind noch deutsch (Umbenennen ist ein offener Schritt, siehe STATUS).
+
+## Testdruck-Modus und Logbuch (Steckmechanismus)
+
+Einstieg: `plug/logbook/README.md`. Ablauf jeder Runde: **Plan als HTML mit Grafiken** (Entscheidungskarten, Maßkette, Risiken) → der Nutzer nickt ab →
+**STL, README, ZIP** mit Prüfbericht (dicht, keine Kollisionen, Überhänge) → der Nutzer druckt → **Testbogen als HTML-Formular** → der Nutzer fügt den
+Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen und bewerten, Unklarheiten benennen, dann ins Logbuch eintragen und committen.
+
+- Vor jedem Plan `plug/logbook/lessons.md` und `current.md` lesen; vor jeder STL die Vorab-Checkliste in `lessons.md` durchgehen.
+- Ohne abgenickten Plan keine STL. Maßkette im Plan mit Worst-Case rechnen. Formularfelder nur fühlbar oder ja/nein, Variante (A/B) immer abfragen.
+- Nach jeder Auswertung: `rounds/rN_*/summary.md` und `result.txt` (wörtlich), `current.md`, `lessons.md`, `next.md` und `plug/STATUS.md` nachziehen; den getesteten Satz einfrieren.
+- `plug/parts.py` erst ändern, wenn ein Wert bewährt ist; neue Werte stehen bis dahin in `plug/<paket>/params.py`.
 
 ## Prüfen vor dem Commit
 
