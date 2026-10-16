@@ -2,7 +2,7 @@
 """Steckprobe 2: Zwei-Lagen-Aufbau im Kleinen nach stl/steckmodul_testcase2/.
 
 Teile (Plan plug/testcase/plan2.html, Empfehlungen A, dazu der Aufbau aus plug/power/concept.html):
-  S2_cassette_x2.stl   2 × Kassette (Tasche 14,60, Fase 0,5), eine bestücken, eine Reserve
+  S2_cassette.stl      1 × Kassette (Tasche 14,60, Fase 0,5)
   S2_building.stl      Mini-Gebäude mit L-Fuß, Schacht 0,06 durchgehend, 17,40 tief, Anschlagrand 1,2, Fußfase 0,8
   S2_top_plate.stl     Mini-Oberplatte 12,6 mm: Mulde, Dock (Platte B) mit Kabelnische und Rippen, vier Faden-V (links 53°, rechts 40°), Zapfenlöcher
   S2_under_box.stl     Mini-Unterkasten 14,4 mm: hohl, Steg-Anschlag unter der Winkelleiste, Zapfen, Eckaussparungen, Kabelfenster
@@ -167,11 +167,11 @@ def main():
     k = P.kass_dims()
     vs = vs_placed()
     bld, tp, uk = building(), top_plate(vs), under_box(vs)
-    kc1, kc2 = cassette(1), cassette(2)
+    kc = cassette(1)
     rep("Steckprobe 2: Kassette %.2f × %.2f × %.2f (Tasche %.2f), Gebäude %.0f × %.0f × %.2f (Schacht %.2f), Oberplatte %.1f × %.1f × %.1f, Unterkasten %.1f hoch (gesamt %.1f)" % (
         k["cw"], k["L"], k["top"], k["zp"], P.BOX_W, P.BOX_L, D["kass_h"] + P.SHAFT_EXTRA_T + P.STOP_T, D["kass_h"] + P.SHAFT_EXTRA_T, 2 * PX, PY1 - PY0, -DECK, H["uk_t"], H["total"]))
     rep("V-Kanäle: %s" % ["(%.1f, %.1f) %s %.0f°" % (v["c"][0], v["c"][1], v["axis"], BC.math.degrees(BC.math.atan2(1.0, v["slope"]))) for v in vs])
-    parts = {"S2_cassette_x2": N2.row([kc1, kc2], 6.0), "S2_building": to_bed(bld), "S2_top_plate": to_bed(tp), "S2_under_box": to_bed(uk)}
+    parts = {"S2_cassette": to_bed(kc), "S2_building": to_bed(bld), "S2_top_plate": to_bed(tp), "S2_under_box": to_bed(uk)}
     rep("\nTeile (Druckausrichtung, Bett z = 0):")
     info = {}
     for name, man in parts.items():
@@ -192,9 +192,8 @@ def main():
         ok = v <= limit
         bad += (not ok)
         rep("  %-70s %8.3f  %s" % (txt, v, "ok" if ok else "KOLLISION"))
-    kw, kw2, bw, hd = kass_world(1), kass_world(2), buchse_world(True), TB.header()
-    chk("Kassette 1 im Mini-Gebäude", vol_int(kw, bld))
-    chk("Kassette 2 (Reserve) im Mini-Gebäude", vol_int(kw2, bld))
+    kw, bw, hd = kass_world(1), buchse_world(True), TB.header()
+    chk("Kassette im Mini-Gebäude", vol_int(kw, bld))
     chk("Buchse (Nennmaß) bündig in der Kassette", vol_int(bw, kw))
     chk("Buchse (Nennmaß) an den Schultern der Kassette", vol_int(buchse_world(False), kw))
     chk("Mini-Gebäude in der Mulde der Oberplatte", vol_int(bld, tp))
@@ -259,7 +258,7 @@ def top_plate_norib(vs):
 def previews(parts, bld, tp, uk, kw, bw, hd, vs):
     import preview
     from PIL import Image
-    col = dict(S2_cassette_x2="#e3862a", S2_building="#e9e1c9", S2_top_plate="#b6cde0", S2_under_box="#8fa3b8")
+    col = dict(S2_cassette="#e3862a", S2_building="#e9e1c9", S2_top_plate="#b6cde0", S2_under_box="#8fa3b8")
     tms = {n: to_tm(m) for n, m in parts.items()}
     pos, need = SR.pack([(n, float(t.extents[0]), float(t.extents[1])) for n, t in tms.items()], bed=(130.0, 400.0))
     items = []
@@ -319,8 +318,8 @@ Der komplette Steckmechanismus im Kleinen, jetzt im Zwei-Lagen-Aufbau der große
 Unterkasten. Gedruckt wird alles in einem Lauf. Alle Dateien liegen in Druckausrichtung, keine Stützen.
 
 Dateien
-  S2_cassette_x2.stl   2 × Kassette ({de(k['cw'], 1)} × {de(k['L'], 1)} × {de(k['top'], 2)} mm), Tasche {de(k['zp'], 2)} hoch (Luft über der Buchse etwa 0,05), Fase {de(P.EF_CH_T, 1)}.
-                       Eine bestücken, eine ist Reserve (Kerben: 1 bzw. 2).   ≈ {de(g['S2_cassette_x2'], 1)} g
+  S2_cassette.stl      1 × Kassette ({de(k['cw'], 1)} × {de(k['L'], 1)} × {de(k['top'], 2)} mm), Tasche {de(k['zp'], 2)} hoch (Luft über der Buchse etwa 0,05), Fase {de(P.EF_CH_T, 1)}.
+                       Nur diese eine Kassette, keine Reserve.   ≈ {de(g['S2_cassette'], 1)} g
   S2_building.stl      Mini-Gebäude, L-Fuß {de(P.BOX_W, 0)} × {de(P.BOX_L, 0)}, Schacht {de(P.KASS_CLR_T)} durchgehend, {de(D['kass_h'] + P.SHAFT_EXTRA_T, 2)} tief (Kassette + {de(P.SHAFT_EXTRA_T, 1)}),
                        Anschlagrand {de(P.STOP_T, 1)}, Fußfase {de(sd.CH_F, 1)}, Fase {de(P.ENTRY_CH_T, 1)} am Schachteingang.   ≈ {de(g['S2_building'], 1)} g
   S2_top_plate.stl     Mini-Oberplatte {de(pw, 0)} × {de(pl_, 0)} × {de(-DECK, 1)} mm: Mulde {de(D['F'], 1)} tief (Spiel {de(P.MULDE_CLR_T)}, Muldenfase {de(sd.CH_P, 1)}), Muldenboden {de(P.CEIL_T, 1)},
@@ -340,7 +339,7 @@ Slicer wie bisher (Bambu, PLA, 0,2 mm, 3 Wände, 15 % Füllung), ohne Stützen, 
   Unterkasten: offen nach oben gedruckt, Boden auf dem Bett.
   Die Fasen ({de(P.EF_CH_T, 1)} an den Bettkanten) gleichen den Elefantenfuß aus.
 
-Vorab: Höhe der Buchsengehäuse messen (Soll 14,0, nach Steckprobe 1 etwa 14,5 bis 14,6). Die Tasche ist {de(k['zp'], 2)} hoch; höhere Buchsen gehen nicht hinein.
+Die Höhe der Buchsengehäuse muss nicht mehr gemessen werden (Tasche {de(k['zp'], 2)} hoch, bewährt aus Steckprobe 1).
 
 Zusammenbau
   1. Winkelleiste von unten in die Oberplatte schieben (Oberplatte mit der Unterseite nach oben): Pins durch den Muldenboden, Körper in die Tasche, Lötenden nach hinten
