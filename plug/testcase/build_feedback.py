@@ -203,11 +203,13 @@ def steps():
          fld("p-mm", "Multimeter mit Durchgangsprüfung vorhanden?", "select", R_YN("ja", "nein")),
          fld("p-scr", "Vier Schrauben M3 vorhanden?", "select", R_YN("ja", "nein, Deckel provisorisch"))])
     add("q", "Druckqualität ansehen", "1", "Bevor etwas gesteckt wird: die gedruckten Teile kurz prüfen. Diese Befunde gehören zum Ergebnis.",
-        ["Jedes Teil von oben, unten und von der Seite ansehen. Mit dem Fingernagel die <b>Kanten am Bett</b> fühlen, besonders am <b>Schachteingang</b> der Gebäude (Fase 0,4).",
+        ["<b>Neu:</b> Platte <code>B</code> (ohne Support, konische Schächte) und ein verstärkter Deckel. Platte <code>A</code> ist die Version mit Support.",
+         "Jedes Teil von oben, unten und von der Seite ansehen. Mit dem Fingernagel die <b>Kanten am Bett</b> fühlen, besonders am <b>Schachteingang</b> der Gebäude (Fase 0,4).",
          "<b>Platte</b> von unten ansehen: der Muldenboden (0,4 mm, zwei Schichten) und die Decke des Kabelraums sind Brücken. Glatt oder durchgehängt?",
          "Erhabene Schrift und Kerben prüfen, die Pin-Löcher im Muldenboden und in den Kassetten (Fase beidseitig) mit einem Pin oder einer Nadel antasten."],
         [],
         [fld("q-all", "Welche Dateien wurden gedruckt?", "text", ph="z. B. alles"),
+         fld("q-plate", "Welche Platte wurde gedruckt?", "select", GOOD3("B ohne Support, sauber", "B ohne Support, mit Mängeln", "A mit Support", "beide")),
          fld("q-floor", "Muldenboden 0,4 über der Winkelleiste (Platte von unten)", "select", GOOD3("glatt, Löcher offen", "leicht durchgehängt", "stark durchgehängt oder Löcher zu", "Fehldruck")),
          fld("q-room", "Decke des Kabelraums", "select", GOOD3("glatt", "leicht durchgehängt", "stark durchgehängt", "Fehldruck")),
          fld("q-thick", "Thick bridges eingeschaltet?", "select", R_YN("ja", "nein", "weiß nicht")),
@@ -263,6 +265,7 @@ def steps():
          fld("W-step", "Lötende unter der Stufe", "select", GOOD3("liegt frei und flach", "streift die Stufe", "klemmt")),
          fld("W-lid", "Deckel schließt mit vier Schrauben", "select", GOOD3("ja, ohne Probleme", "mit Nacharbeit", "geht nicht")),
          fld("W-room", "Platz hinter den Lötenden", "select", GOOD3("genug, Kabel gehen nach unten weg", "knapp", "zu wenig")),
+         fld("W-stamp", "Stempel des Deckels (neu: stärker mit Streben)", "select", GOOD3("halten, nichts gebrochen", "verbogen", "abgebrochen")),
          fld("W-hold", "Winkelleiste hält beim Hin- und Herwackeln", "select", GOOD3("fest", "leichtes Spiel", "locker"))])
     add("S", "Stecken", "S", "Der Kern des Tests: Treffen die Pins die Buchse ohne Trichter, und wie weit rutscht die Buchse dabei nach oben?",
         ["Bestückte Kassette ins Gebäude drücken (Schritt E), Gebäude auf die Platte setzen, bis es unten anliegt. Im Bild den Regler ziehen.",

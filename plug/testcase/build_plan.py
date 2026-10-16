@@ -32,7 +32,7 @@ PREV = os.path.join(ROOT, "vorschau", "steckmodul_testcase")
 LOETRAUM_Y0 = -12.0     # Kabelraum und Lötenden-Schlitz reichen so weit nach −y (kein Wand-Ende direkt hinter den Spitzen)
 KABEL_Y1 = 3.0          # Kabelraum nach +y (reicht bis hinter den Knick der Pins)
 KABEL_HX = 7.5          # halbe Breite des Kabelraums (weniger Brücke über dem Bett als 9,0)
-LID_WIN = (-12.0, -4.0)  # Fenster im Deckel über den Lötenden (y), in x ±(KABEL_HX − 0.5)
+LID_WIN = (-10.0, -3.9)  # Fenster im Deckel über den Lötenden (y), in x ±(KABEL_HX − 0.5)
 
 
 def de(x, n=2):
@@ -247,7 +247,7 @@ def est_weights():
     v_p = (pw * pl * d["plate_t"]) / 1000.0 - mulde - 18 * 21 * 3.6 / 1000.0
     g_p = v_p * 1.24 * 0.55
     g_l = pw * pl * P.LID_T_T / 1000.0 * 1.24 * 0.9
-    return dict(kass=g_k, bld=g_b, plate=g_p, lid=g_l, total=2 * g_k + 2 * g_b + g_p + g_l)
+    return dict(kass=g_k, bld=g_b, plate=g_p, lid=g_l, total=2 * g_k + 2 * g_b + 2 * g_p + g_l)
 
 
 def head():
@@ -314,12 +314,12 @@ def sec_parts():
          "Fuß am Bett, Schacht öffnet zum Bett", "%s g" % de(w["bld"], 0)),
         ("Mini-Gebäude B", "1 ×", "wie A", "Schacht nur die ersten %s mm mit %s, dahinter %s Luft (Einpresskraft bei 17 mm Tiefe)" % (de(P.KASS_FIT_LEN, 0), de(P.KASS_CLR_T), de(P.KASS_RELIEF)),
          "wie A", "%s g" % de(w["bld"], 0)),
-        ("Mini-Grundplatte", "1 ×", "%s × %s × %s" % (de(pw, 0), de(pl, 0), de(d["plate_t"], 1)),
-         "L-Mulde %s tief mit Fase 1,0, Muldenboden %s mit 4 Stiftlöchern, Dock A (Körpertasche +%s, Stufe für %s), Kabelraum offen, 4 Schraublöcher" % (
+        ("Mini-Grundplatte A und B", "2 ×", "%s × %s × %s" % (de(pw, 0), de(pl, 0), de(d["plate_t"], 1)),
+         "A: Kasten-Hohlräume, mit Support drucken. B: dieselbe Platte mit Trichtern und konischen Pin-Schächten, ohne Support. L-Mulde %s tief mit Fase 1,0, Muldenboden %s mit 4 Stiftlöchern, Dock A (Körpertasche +%s, Stufe für %s), Kabelraum offen, 4 Schraublöcher" % (
              de(d["F"], 1), de(P.CEIL_T, 1), de(P.BODY_EXT_T, 1), de(P.STEP_H_T, 1)),
          "Mulde oben, Unterseite am Bett (Muldenboden als Brücke)", "%s g" % de(w["plate"], 0)),
         ("Mini-Deckel", "1 ×", "%s × %s × %s" % (de(pw, 0), de(pl, 0), de(P.LID_T_T, 1)),
-         "Stempel gegen den Steckdruck, Fenster über den Lötenden, 4 Schrauben M3", "flach", "%s g" % de(w["lid"], 0)),
+         "Zwei kräftige Stempel mit 45°-Streben und Quersteg, Fenster über den Lötenden, 4 Schrauben M3", "flach", "%s g" % de(w["lid"], 0)),
     ]
     trs = "".join("<tr><td><b>%s</b></td><td class=\"n\">%s</td><td class=\"n\">%s</td><td>%s</td><td>%s</td><td class=\"n\">%s</td></tr>" % r for r in rows)
     buy = ("Kaufteile: Winkelleiste (4 Pins), Dupont-Buchse mit gecrimpten Adern, LED-Streifen 10 mm, 4 Schrauben M3. "
