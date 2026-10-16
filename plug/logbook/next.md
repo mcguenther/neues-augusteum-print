@@ -30,6 +30,8 @@ Statt Tasche, Schlitz, Nische, Steg und Rippen: Leiste nur 1 mm tief in der Plat
 
 Ergänzung (Nutzer): eine **Auflage für die Lötenden** einplanen, damit Lötenden und Kunststoffkörper gemeinsam flach aufliegen (wie die bewährte Stufe aus r2 D). Gedruckt mit **vollflächigem Support unten, ausgenommen der Auflage-Steg**. Unsere Lesart: Oberplatte mit der Unterseite auf dem Bett; die 1 mm tiefe Tasche und die Rille für die Lötenden sind der einzige Hohlraum unter dem Muldenboden (0,4 mm) und werden vom Support gefüllt, der Steg bleibt massiv. Geklärt (Nutzer): der Steg ist eine **Stufe auf der Unterseite der Platte, wo die Gebäude eintauchen**, die Auflage für die Lötenden der Stiftleisten wie schon früher (nicht im Unterkasten).
 
+**Plan Test-Dock liegt vor (`plug/power/plan_dock.html`, wartet auf das Abnicken):** Mini-Oberplatte 40 × 53 × 11,6 mm mit Tasche 1,0 tief, Stufe für die Lötenden, vier Pin-Löchern und Support unter dem Muldenboden; zwei Sätze Füße 3,4 und 2,4 mm mit Zapfen 2,5; Gebäude und Kassette aus Steckprobe 2. Entscheidungen A (Halt der Leiste: erst Rippen, dann Kleber), B (zwei Füße-Sätze), C (Stufe ohne Nische).
+
 ## Priorität 1 neu: Steckprobe 3 (r5, nach r4)
 
 Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Plan mit Grafiken):

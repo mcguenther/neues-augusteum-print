@@ -141,6 +141,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.power.build_fach` (ca. 1 min) | Fachprobe Powerbank, Variante B (Fach, Deckplatte; ohne Taste, Stößel, Schablone), Prüfbericht, README, ZIP nach `stl/steckmodul_fachprobe/`, Bilder nach `vorschau/steckmodul_fachprobe/` |
 | `python3 -m plug.power.build_feedback_fach` | Testbogen Fachprobe (Powerbank einlegen, Deckplatte, Fenster, Stecker und Kabel) `plug/power/feedback_fach.html` |
 | `python3 -m plug.power.build_layout [--collect]` (`--collect` ca. 2 min, sonst Sekunden) | Lösungsfindung 1:1300: interaktive Platte, Powerbank-Fach ziehen und drehen, freie Docks, Karte, Ohr, zweite Etage `plug/power/layout.html` (Daten `layout_data.json`, Vorlage `layout.template.html`) |
+| `python3 -m plug.power.build_plan_dock` (ca. 5 s) | Plan Test-Dock mit durchgehendem Steckerraum (Schnitt, Unterseite, Maßkette, Entscheidungskarten) `plug/power/plan_dock.html`; Werte in `PROP` der Datei, STL erst nach dem Abnicken |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 
