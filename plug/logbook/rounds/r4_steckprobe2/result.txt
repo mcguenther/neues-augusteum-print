@@ -1,0 +1,6 @@
+Ergebnis Steckprobe 2 (Chat, 2026-10-16, kein Testbogen-Text):
+
+"es gab ja noch eine zu druckende steckprobe2 von heute. das habe ich gemacht. passt alles super."
+
+Gedruckt: der Satz aus stl/steckmodul_testcase2/ (S2_cassette, S2_building, S2_top_plate, S2_under_box), Stand 3ccceeb.
+Einzelwerte aus dem Formular (Faden-V 53°/40°, Kabelnische, Muldenboden, Licht, Durchgang) liegen nicht vor.

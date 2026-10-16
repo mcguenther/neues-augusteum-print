@@ -1,4 +1,4 @@
-# Bewährter Stand (nach Steckprobe 1, 2026-10-16)
+# Bewährter Stand (nach Steckprobe 2, 2026-10-16)
 
 Status: **bewährt** = im Testbogen mit „passt“ bewertet · **vorläufig** = funktioniert, mit Einschränkung oder noch nicht ganz belegt ·
 **verworfen** = getestet, gestrichen · **offen** = nicht geklärt. Belege stehen in `rounds/`. Werte im Code: `plug/testcase/params.py`
@@ -66,3 +66,20 @@ Bambu A1, schwarzes PLA, Düse 0,4, Schichthöhe 0,2, 3 Wände, 15 % Füllung, T
 
 `rounds/r3_steckprobe1/` enthält die ZIP (Stand `69fb76f`: 2 Kassetten v4, Gebäude A und B, Platte A mit Support, Platte B ohne Support, Deckel mit Streben)
 und die Update-ZIP. Die erste ZIP (Platte nur A, erster Deckel) steht im Commit `f4a995c`. Generator: `python3 -m plug.testcase.build`.
+
+## 6. Steckprobe 2 (r4, 2026-10-16): Zwei-Lagen-Aufbau, Gesamturteil „passt alles“
+
+Beleg: [`rounds/r4_steckprobe2/`](rounds/r4_steckprobe2/summary.md). Das Urteil ist **pauschal** (Chat, kein Testbogen-Text); Einzelwerte, die der Nutzer nicht genannt hat, stehen als offen.
+Werte im Code: `plug/testcase/params.py` und `plug/power/params.py`, **noch nicht in `plug/parts.py`**.
+
+| Größe | Wert | Status | Code |
+|---|---|---|---|
+| Zwei-Lagen-Aufbau | Oberplatte 12,6 (Mulde, Dock, Faden-V) auf hohlem Unterkasten 14,4, zwei Zapfen, Steg-Anschlag 1,2 Luft unter dem Körper | bewährt (pauschal) | `plug/testcase/build2.py` |
+| Kassette | Tasche 14,60, Fase 0,5, Gesamthöhe 17,10, nur eine Variante | bewährt (pauschal), ersetzt die Aussage „vorläufig“ zur Taschenhöhe aus r3 | `kass_dims()` |
+| Schacht im Gebäude | 0,06 durchgehend, 17,40 tief (Kassette + 0,3), Anschlagrand 1,2, Fußfase 0,8 | bewährt (pauschal) | `building()` |
+| Dock | Körpertasche mit Rippen, Schlitz bis -8,0, Kabelnische 24 × 19 mit Stegen | bewährt (pauschal), Kippen nicht gemeldet; Heißkleber-Frage offen | `plate()` |
+| Faden-V 53° (links) und 40° (rechts) | beide beim Zusammenbau ohne Beanstandung; welcher besser ist, nicht gewählt | vorläufig, Winkel offen | `build_plan2.PROP` |
+| Licht der LED, Durchgang, zehnfaches Abziehen, Muldenboden 0,4 | nicht genannt | offen | – |
+
+Folgen: Die Punkte „Körper kippt“, „Platz hinter den Lötenden“, „Schachttiefe“ und „Taschenhöhe“ aus Abschnitt 2 sind durch Steckprobe 2 voraussichtlich erledigt; wir tragen sie erst dort um,
+wenn der Nutzer die Einzelfelder bestätigt. Danach: Werte nach `plug/parts.py` übernehmen (siehe `next.md`).

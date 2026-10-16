@@ -1,6 +1,6 @@
 # Nächste Drucke und offene Punkte
 
-Stand: nach Steckprobe 1 (r3, 2026-10-16); Plan Steckprobe 2 liegt vor (`plug/testcase/plan2.html`), wartet auf das Abnicken. Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
+Stand: nach Steckprobe 2 (r4, 2026-10-16: gedruckt, „passt alles“, Einzelfelder offen). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
 ## Geklärt (2026-10-16)
@@ -20,7 +20,12 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
 2. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D); alle Karten warten auf das Abnicken.
 
-## Priorität 1: Steckprobe 2 (r4)
+## Nach Steckprobe 2 (r4, gedruckt: „passt alles“)
+
+1. **Einzelfelder nachtragen** (kurz im Chat reicht): Faden-V 53° oder 40°, Licht der LED, Durchgang und Abziehen, Kippen/Heißkleber, Muldenboden 0,4 ausreichend, was als Nächstes.
+2. Danach die bewährten Werte nach `plug/parts.py` übernehmen und Probestück und Institut umbauen (Priorität 3 unten), oder Fachprobe Powerbank, oder Kassetten-Redesign (V1/V2): je nach Wunsch.
+
+## Priorität 1 (Stand vor dem Druck, erledigt durch r4): Steckprobe 2
 
 Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass er mit einem Controller leuchtet.
 
@@ -39,6 +44,17 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 ## Kassetten-Varianten V1/V2 (Plan `plug/testcase/plan3.html`, wartet auf das Abnicken)
 
 Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die Gebäude zurückgestellt, bis der Maßstab feststeht. Danach: Probedruck (Kassetten V1/V2 plus Mini-Gebäude auf dem bisherigen L-Fuß), Werte nach `params.py`, STL, Testbogen. Offene Punkte: Adernweg V1, Blattdicke V2, Licht (Hotspot im schmalen Gebäude), Anschlagleiste im Schacht.
+
+### Fachprobe Powerbank gebaut, wartet auf den Druck (`stl/steckmodul_fachprobe/`, Testbogen `plug/power/feedback_fach.html`)
+
+Abgenickt: Variante B (nur Anschlussende, 67,9 × 74,8 × 14,4 mm, ≈ 26 g), Deckplatte 2 mm, **ohne Schablone, Taste und Stößel** (Nutzer: die Taste braucht es nicht, später fragt der Mikrocontroller alle 5 s kurz Strom ab). Der Ladeanschluss muss durch das Fenster erreichbar bleiben, die USB-A-Buchse samt geradem Stecker ist eingeplant. Kabelkanal nur 4,4 mm frei neben dem Zaun (Kabel bis etwa 4 mm). Im Konzept (`plug/power/concept.html`, `build_concept.fach_parts`) steht der Stößel noch und müsste entfernt werden.
+
+### Steckprobe 2 gedruckt, Gesamturteil „passt alles“ (Powerbank-Konzept Stand 5, 1:1300)
+
+Die große Platte ist als Oberplatte 12,6 mm über einem hohlen Unterkasten 14,4 mm geplant (`plug/power/concept.html`, PLAN Kapitel 6; Maßstab 1:1300 vom Nutzer
+gesetzt, Kassette passt dort in 4 von 6 Gebäuden, Dock frei an 3). Der Nutzer hat den Bau freigegeben: Steckprobe 2 (STL, README, ZIP, Prüfbericht in `stl/steckmodul_testcase2/`, Testbogen `plug/testcase/feedback2.html`) im Zwei-Lagen-Aufbau drucken (Mini-Oberplatte 12,6 + Mini-Unterkasten mit
+Steg-Anschlag 1,2 Luft, Zentrierzapfen Ø 4 / Loch 4,3, Kabelnische hinter den Lötenden, **zwei Faden-V mit 53° und 40°**, Gebäude mit Fußfase 0,8); eine
+**Fachprobe Powerbank** ist **nicht** mitgebaut (eigene Runde, siehe oben). Das Kassetten-Redesign läuft in einem separaten Chat und kann die Kassette ersetzen. Werte: `plug/power/params.py`.
 
 ## Priorität 2
 

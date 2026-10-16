@@ -57,6 +57,7 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L26 | Ein Generatorlauf überschreibt die Dateien in `stl/` | getesteten Satz einfrieren (ZIP im Rundenordner, Commit-Hash) | r3 |
 | L28 | Schrauben nicht vorhanden; Befestigung des Bodens am Hut ist genäht | Deckel und Platte mit Löchern für Fäden planen, keine Schrauben; vor der Planung fragen, welche Verbindungsmittel vorhanden sind | r3 |
 | L29 | Faden zunächst durch Löcher geplant, die oben austreten würden; gemeint war ein Austritt an der Unterseite durch eine Lasche | Bei Verbindungsmitteln den Weg des Fadens oder Teils ganz abfragen (Eintritt, Austritt, welche Seite zugänglich) und im Plan als Schnitt zeigen | r3 Nachtrag |
+| L32 | Steckprobe 2 war gebaut und gedruckt, ohne dass das im Hauptbranch stand (Stand lag auf einem Nebenbranch); Rückmeldung kam nur als „passt alles“ ohne Testbogen | Vor dem Auswerten alle Branches auf gebaute Runden prüfen (`git branch -a --contains`); ein pauschales „passt“ als pauschal eintragen und die Einzelfelder (Winkel, Licht, Durchgang) ausdrücklich als offen führen | r4 |
 | L27 | Wertänderungen in `plug/parts.py` würden Probestück und Institut brechen (sie rechnen mit Schieber) | neue Werte in `plug/<paket>/params.py`; `parts.py` erst nach bewährter Runde ändern | r3 |
 
 ## Vorab-Checkliste vor jeder STL

@@ -1,6 +1,27 @@
-# r4: Steckprobe 2 (Planung, Zwischenstand 2026-10-16)
+# r4: Steckprobe 2 (gedruckt, Gesamturteil „passt alles“, 2026-10-16)
 
-**Status: Planung. Plan noch nicht abgenickt, keine STL erzeugt, nichts gedruckt.** Dieser Eintrag hält den Zwischenstand fest, damit er nicht verloren geht.
+Wörtlicher Ergebnistext: [`result.txt`](result.txt). Eingefrorener Satz: [`steckprobe2.zip`](steckprobe2.zip) (Stand `3ccceeb`).
+
+**Ergebnis (2026-10-16): gedruckt, Nutzer: „passt alles super“.** Das ist ein **pauschales Urteil im Chat, kein ausgefüllter Testbogen**. Es gilt für den ganzen Satz
+(Kassette, Mini-Gebäude, Oberplatte, Unterkasten): Zwei-Lagen-Aufbau, Kabelnische, Faden-V und Steckmechanismus haben beim Zusammenbau keine Beanstandung ergeben.
+Daraus lässt sich ableiten (als Gesamturteil, nicht je Fuge belegt):
+
+| Thema | Wert | Status |
+|---|---|---|
+| Kassette Tasche 14,60, Fase 0,5, nur eine Kassette | passt | bewährt (pauschal) |
+| Gebäude: Schacht 0,06 durchgehend, 17,40 tief, Fußfase 0,8 | passt | bewährt (pauschal) |
+| Zwei-Lagen-Aufbau: Oberplatte 12,6 auf hohlem Unterkasten 14,4, Zapfen, Steg-Anschlag | passt | bewährt (pauschal) |
+| Dock mit Kabelnische 24 × 19, Rippen an der Körpertasche, Schlitz bis -8,0 | passt, kein Kippen gemeldet | bewährt (pauschal) |
+| Faden-V (53° links, 40° rechts) | kein Problem gemeldet; **Winkel nicht gewählt** | vorläufig, Vergleich offen |
+| Steckprobe als Ganzes (Stecken, Durchgang) | „passt alles“ | bewährt (pauschal) |
+
+**Nicht belegt (Nutzer hat dazu nichts gesagt):** welcher Faden-Winkel besser druckt und läuft (Feld F-best), ob die Faden-V wirklich mit Faden und Nadel probiert wurden, Licht der LED
+(Schritt L), ob Heißkleber nötig war (W-glue), Durchgang mit dem Multimeter und zehnfaches Abziehen (Schritt D), Muldenboden 0,4 (z-boden), Wunsch für den nächsten Schritt (z-next).
+Diese Werte bleiben in `current.md` „vorläufig“ oder „offen“, bis der Nutzer sie nennt.
+
+**Vorgeschichte (Nachtrag 2026-10-16): gebaut, danach gedruckt (Ergebnis oben).** Der Nutzer hat den Bau freigegeben („lass die Steckprobe 2 jetzt bauen“). Nur **eine** Kassette, keine Reserve; die Buchsenhöhe wird nicht mehr gemessen (Nutzer). Zwei-Lagen-Aufbau statt Platte mit Deckel: Mini-Oberplatte 12,6 + hohler Mini-Unterkasten 14,4, Dock mit Kabelnische, Steg-Anschlag, zwei Zapfen, vier Faden-V (links 53°, rechts 40°). STL, README, ZIP, Prüfbericht: `stl/steckmodul_testcase2/` (`python3 -m plug.testcase.build2`; alle Teile dicht, keine Kollisionen, Material ≈ 40 g, ≈ 2,2 h auf dem Drucker des Nutzers). Testbogen: `plug/testcase/feedback2.html`, Artifact https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB. Neue Werte stehen in `plug/testcase/params.py` und `plug/power/params.py`, nicht in `plug/parts.py`. Auswertung, `result.txt` und eingefrorene ZIP: siehe oben.
+
+**Ursprünglicher Planstand (davor):** Plan noch nicht abgenickt, keine STL erzeugt.
 Plan als Seite: `plug/testcase/plan2.html` (Generator `python3 -m plug.testcase.build_plan2`), Artifact https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 (privat).
 Commits: Plan `ce47e6e`, Zeichnungskorrektur `e2dbb03`.
 
