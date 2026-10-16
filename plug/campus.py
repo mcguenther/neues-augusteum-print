@@ -236,7 +236,7 @@ def build(scale=P.SCALE_PLAN, replace=False):
         env = affinity.translate(affinity.rotate(affinity.translate(env_local, 0, -yc), p["angle"], origin=(0, 0)), p["cx"], p["cy"])
         bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in envs)
         envs.append(env)
-        report.append((slug, p["var"], p["wall"], p.get("led_dist", 0.0), bad))
+        report.append((slug, p["var"], p["wall"], p.get("led_dist"), bad))
         # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante
         cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
         # Muldenboden bleibt 0,4 mm; Pin-Löcher kommen aus dock_cuts_b
@@ -268,7 +268,8 @@ def main():
     print("Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s, %.1f mm unter der Oberfläche" % (*hof_tm.extents, hof_tm.is_watertight, P.HOF_DEPTH_T))
     ok = tm.is_watertight and hof_tm.is_watertight
     for slug, var, wall, flip, bad in report:
-        print("  %-22s %-5s Wand %.1f, LED %.1f mm von der Mitte, Dock außerhalb/überlappt %.2f mm²" % (slug, var, wall, flip, bad))
+        print("  %-22s %-5s Wand %.1f, %s, Dock außerhalb/überlappt %.2f mm²" % (
+            slug, var, wall, "LED %.1f mm von der Mitte" % flip if flip is not None else "Lage aus der Platzierungs-App", bad))
         ok &= bad < 0.05
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
     import preview

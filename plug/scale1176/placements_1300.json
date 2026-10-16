@@ -1,62 +1,44 @@
 {
- "06_city_hochhaus": {
-  "var": "V2R",
-  "wall": 1.2,
-  "cx": -52.23153046187302,
-  "cy": -46.145839192300265,
-  "angle": 0,
-  "led_dist": 0.1,
-  "roof": 92.4,
-  "need": 23.89
- },
- "05_institutsgebaeude": {
-  "var": "V1RS",
-  "wall": 1.2,
-  "cx": -75.08596962915678,
-  "cy": 78.63457932651866,
-  "angle": 350,
-  "led_dist": 4.0,
-  "roof": 18.5,
-  "need": 14.69
- },
- "04_seminargebaeude": {
-  "var": "V1RS",
-  "wall": 1.2,
-  "cx": -101.38610884133085,
-  "cy": 25.229025844140658,
-  "angle": 90,
-  "led_dist": 0.1,
-  "roof": 18.6,
-  "need": 14.69
- },
  "01_paulinum": {
   "var": "v4",
-  "wall": 0.8,
-  "cx": -44.79972768526114,
-  "cy": 48.932655223908995,
-  "angle": 260,
-  "led_dist": 0.3,
-  "roof": 21.2,
-  "need": 4.1
+  "wall": 1.2,
+  "cx": -38.648,
+  "cy": 47.82,
+  "angle": 258.0
  },
  "02_neues_augusteum": {
   "var": "v4",
-  "wall": 1.2,
-  "cx": -41.88815179862095,
-  "cy": 10.726486852019708,
-  "angle": 350,
-  "led_dist": 6.7,
-  "roof": 12.0,
-  "need": 4.1
+  "wall": 4.8,
+  "cx": -47.454,
+  "cy": 12.077,
+  "angle": 350
  },
  "03_hoersaalgebaeude": {
   "var": "v4",
-  "wall": 1.2,
-  "cx": -86.98382852569354,
-  "cy": -49.34293484017705,
-  "angle": 65,
-  "led_dist": 0.0,
-  "roof": 10.9,
-  "need": 4.1
+  "wall": 6.6,
+  "cx": -90.176,
+  "cy": -48.499,
+  "angle": 350
+ },
+ "04_seminargebaeude": {
+  "var": "V1RS",
+  "wall": 4.1,
+  "cx": -101.375,
+  "cy": 24.722,
+  "angle": 79
+ },
+ "05_institutsgebaeude": {
+  "var": "V1RS",
+  "wall": 1.5,
+  "cx": -71.356,
+  "cy": 78.128,
+  "angle": 348
+ },
+ "06_city_hochhaus": {
+  "var": "V2R",
+  "wall": 4.7,
+  "cx": -53.91,
+  "cy": -46.821,
+  "angle": 53
  }
 }
