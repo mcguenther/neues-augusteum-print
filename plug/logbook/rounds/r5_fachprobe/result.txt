@@ -1,0 +1,10 @@
+FACHPROBE POWERBANK, VARIANTE B · RÜCKMELDUNG (2026-10-16)
+
+Hinweis: Der Nutzer hat den Testbogen nicht als Ergebnistext eingefügt, sondern im Chat geantwortet. Die Sätze stehen hier wörtlich (Groß-/Kleinschreibung und Rechtschreibung unverändert), in der Reihenfolge der Chat-Nachrichten.
+
+[1] "also das einzige was mich gestört hat: wir müssen ca. 0.2 mm mehr höhe für die powerbank einplanen."
+
+[2] (auf die Rückfrage, ob die Powerbank dicker ist, wie das Wackeln zustande kam und ob der Zaun mitgedruckt wurde)
+"die powerbank ist tatsächlich minimal dicker. deckel hat gewackelt. zaun wurde ja nicht mitgedruckt, nur der ausschnitt"
+
+Nicht angegeben: ZIP-Version oder Commit (L35), Zahlen zur Dicke, Rückmeldung zu Kabelkanal, Fenster mit Anschlüssen, Steckerraum 35 mm, Länge 90 mm.
