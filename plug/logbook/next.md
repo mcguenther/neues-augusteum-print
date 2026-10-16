@@ -26,14 +26,16 @@ Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Pl
 
 | Thema | Änderung | Grund |
 |---|---|---|
-| Faden-V | Kanal mindestens 1 mm weiter (Ø 3,2 oder mehr), Trichter und Scheitel anpassen; mit Support gedruckt; Winkel 53° und 40° erneut nebeneinander | r4 F: Faden kommt nicht durch den untertauchenden Kanal |
-| Kabelnische | eine mittelgroße Nische statt 24 × 19 mm mit drei Fenstern und Stegen; Größe als Entscheidungskarte | r4 W |
+| Faden-V | **eigene Aufgabe für einen anderen Chat**: `plug/logbook/tasks/faden-v-ueberarbeiten.md` (nicht in Steckprobe 3 dieses Chats); bis dahin Kanal mindestens 1 mm weiter, Support erlaubt | r4 F: Faden kommt nicht durch den untertauchenden Kanal |
+| Kabelnische | **eine** Nische ohne Fenster und Stege, **halb so groß in beide Richtungen: 12 × 9,5 mm** statt 24 × 19 mm (Nutzer, 2026-10-16); mit Support gedruckt | r4 W |
 | Zapfen | Höhe 2,5 statt 1,5, Löcher entsprechend tiefer | r4 U |
 | Schachttiefe | Kassette + 0,35 | r4 E |
 | Support | im Plan ausweisen, wo Support nötig ist; Brückenregel L04 gelockert | r4 W |
 | Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L33) | r4 leer |
 
 Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
+
+**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten).
 
 ## Priorität 1 (erledigt): Steckprobe 2 (r4)
 

@@ -63,7 +63,7 @@ Im Prinzip hat alles gepasst; der Nutzer fand vier Dinge, die geändert werden m
 - **Faden-V:** Kanal mindestens 1 mm weiter (Ø 2,2 → 3,2 oder mehr), Eintritt und Austritt großzügig. Die Neigung 53° gegen 40° bleibt offen; mit Support lässt sich der Kanal auch steiler oder offener bauen.
 - **Zapfen:** 1 mm länger (Höhe 1,5 → 2,5), Lochtiefe entsprechend.
 - **Schachttiefe:** Kassettenhöhe + 0,35.
-- **Kabelnische:** eine mittelgroße Nische statt 24 × 19 mm mit drei Fenstern. Die Größe ist offen und wird im nächsten Plan als Karte vorgeschlagen.
+- **Kabelnische:** eine mittelgroße Nische statt 24 × 19 mm mit drei Fenstern. Größe nach Rückfrage: **halb so groß in beide Richtungen, also 12 × 9,5 mm** statt 24 × 19 mm. Die Fadenführung wird in einem anderen Chat überarbeitet: `plug/logbook/tasks/faden-v-ueberarbeiten.md`.
 - Werte bleiben in `plug/testcase/params.py` und `plug/power/params.py` (Regel 8), bis die nächste Runde sie bestätigt.
 
 ## Was die Runde nicht klärte
@@ -71,5 +71,4 @@ Im Prinzip hat alles gepasst; der Nutzer fand vier Dinge, die geändert werden m
 - Ob Rippen und Steg den Körper der Winkelleiste halten (keine Antwort).
 - 53° gegen 40°.
 - Elefantenfuß mit Fase 0,5 (kein Feld ausgefüllt).
-- Die Größe der einen Nische (der Nutzer sagt nur „mittelgroß“).
 - Licht der LED und Adern (Schritt L, später).
