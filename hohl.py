@@ -20,6 +20,8 @@ Die Kegelfläche wird auf einem Raster von `PX` mm gerechnet (OpenCV-Distanztran
 """
 import cv2
 import numpy as np
+
+cv2.setNumThreads(0)   # keine OpenCV-Threads: generate.py rechnet in per fork gestarteten Prozessen (Threads darin blockieren)
 import manifold3d as m3d
 from shapely.geometry import MultiPolygon, Polygon
 from shapely.ops import unary_union
