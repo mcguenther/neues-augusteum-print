@@ -27,7 +27,7 @@ def stack():
 
 
 # ---- Powerbank Intenso XS5000 (weiß 7313522). Quellen: Intenso-Datenblatt (2026), Bedienungsanleitung v1.10, TonUINO-Forum
-PB_L, PB_W, PB_T = 90.0, 63.0, 12.6   # B  Außenmaße (Anleitung rundet auf 13); ungemessen
+PB_L, PB_W, PB_T = 90.0, 63.0, 12.6   # B  Außenmaße (Anleitung rundet auf 13); ungemessen. Fachprobe r5: "tatsächlich minimal dicker" (ohne Zahl), Luft darüber um 0,2 erhöht (PB_CLR_Z)
 PB_G = 103                # B  Gewicht in g
 PB_WH = 5.0 * 3.7         # A  18,5 Wh
 PB_IMAX = 2.1             # B  5 V / 2,1 A gesamt für USB-A und USB-C
@@ -38,7 +38,7 @@ PB_PORT_V = dict(usb_a=22.0, usb_c=8.0, micro=-5.0, taste=-16.0, leds=-24.0)   #
 
 # ---- Fach im Unterkasten
 PB_CLR = 0.5              # S  Spiel je Seite (Kaufteil ungemessen; Fachprobe klärt es)
-PB_CLR_Z = 0.6            # S  Luft über der Powerbank bis zur Oberplatte
+PB_CLR_Z = 0.8            # S  Luft über der Powerbank bis zur Oberplatte; war 0,6, Fachprobe r5: Powerbank minimal dicker, "ca. 0,2 mm mehr Höhe" (Nutzer), Deckplatte wackelte
 PB_PLUG = 35.0            # S  Platz vor der Anschlussseite: gerader USB-A-Stecker (Griff etwa 25 mm) plus Biegung; ungemessen
 PB_CABLE = 6.0            # S  Kabelkanal entlang der Längsseite (USB-Kabel bis 4,5 mm)
 FENCE = (1.6, 5.0)        # E  Zaun um die Powerbank: Breite, Höhe über dem Boden

@@ -1,4 +1,4 @@
-# Bewährter Stand (nach Steckprobe 2, 2026-10-16)
+# Bewährter Stand (nach Steckprobe 2 und Fachprobe Powerbank, 2026-10-16)
 
 Status: **bewährt** = im Testbogen mit „passt“ bewertet · **vorläufig** = funktioniert, mit Einschränkung oder noch nicht ganz belegt ·
 **verworfen** = getestet, gestrichen · **offen** = nicht geklärt. Belege stehen in `rounds/`. Werte im Code: `plug/testcase/params.py`
@@ -60,6 +60,19 @@ Muldenboden direkt in die Buchse.
 | LED und Adern über das Podest | später | offen | r4 L | – |
 
 Eingefroren: `rounds/r4_steckprobe2/steckprobe2.zip` (Stand Commit `46d1e0a`).
+
+## 2c. Nach der Fachprobe Powerbank (r5, Variante B)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Luft über der Powerbank | **0,8** (war 0,6); Powerbank „minimal dicker“ als 12,6, Nutzer: ca. 0,2 mm mehr Höhe | vorläufig (Dicke ungemessen) | r5 | `PB_CLR_Z` (`plug/power/params.py`) |
+| Dicke der Powerbank | 12,6 laut Datenblatt, echt etwas mehr, **keine Zahl** | offen (Schieblehre) | r5 | `PB_T` |
+| Fachhöhe, Unterkasten, Gesamthöhe | 13,4 / 14,6 / 27,2 (vorher 13,2 / 14,4 / 27,0) | vorläufig, rechnerisch | r5 | `build_concept.FACH_H` |
+| Deckplatte nur aufgelegt | wackelt (Ursache offen: Auflage auf der Powerbank oder fehlender Halt) | offen | r5 | `F_deckplatte.stl` |
+| Zaun, Seitenspiel 0,5, Länge 90 mm | Zaun nach Nutzer nur als Ausschnitt gedruckt; keine Rückmeldung zu Sitz und Länge | offen | r5 | `PB_CLR`, `FENCE` |
+| Kabelkanal 4,4 frei, Fenster mit LEDs, micro-USB, USB-C, Steckerraum 35 | keine Rückmeldung (nicht beanstandet) | offen | r5 | `PB_CABLE`, `PB_PLUG`, `WINDOW_PAD` |
+
+Eingefroren: `rounds/r5_fachprobe/fachprobe.zip` (Stand Commit `3ccceeb`, Luft 0,6).
 
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 

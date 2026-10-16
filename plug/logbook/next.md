@@ -1,6 +1,6 @@
 # Nächste Drucke und offene Punkte
 
-Stand: nach Steckprobe 2 (r4, 2026-10-16, ausgewertet); Fachprobe Powerbank gebaut und wartet auf den Druck. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
+Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
 ## Geklärt (2026-10-16)
@@ -20,7 +20,7 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
 2. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D); alle Karten warten auf das Abnicken.
 
-## Priorität 1 neu: Steckprobe 3 (r5, nach r4)
+## Priorität 1 neu: Steckprobe 3 (r6, nach r4 und r5)
 
 Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Plan mit Grafiken):
 
@@ -33,9 +33,18 @@ Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Pl
 | Support | im Plan ausweisen, wo Support nötig ist; Brückenregel L04 gelockert | r4 W |
 | Unklar aus r4 | Rippen und Steg an der Winkelleiste, Fase 0,5, Elefantenfuß: im Testbogen ausdrücklich abfragen; ZIP-Version abfragen (L33) | r4 leer |
 
-Fachprobe Powerbank (Variante B) ist unabhängig davon gebaut und wartet auf den Druck.
+Fachprobe Powerbank (r5) ist gedruckt und ausgewertet: Luft über der Powerbank 0,8 statt 0,6 (`PB_CLR_Z`), Deckplatte wackelte, Zaun nur als Ausschnitt, übrige Punkte ohne Rückmeldung (`rounds/r5_fachprobe/summary.md`).
 
-**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten, Fachprobe Powerbank auswerten).
+**Offen nach r5 (Priorität 2, vor oder mit der großen Platte):**
+
+| Thema | Idee | Bedingung |
+|---|---|---|
+| Dicke der Powerbank | mit der Schieblehre messen und in `PB_T` eintragen (dann `PB_CLR_Z` prüfen) | Nutzer |
+| Fachprobe wiederholen? | nur mit vollem Zaun und Luft 0,8, Testbogen fragt Zaun, Seitenspiel, Länge, Kabelkanal, Fenster, Steckerraum, Wackeln einzeln ab und die ZIP-Version (L33, L36) | Nutzer entscheidet, ob nötig |
+| Halt der Oberplatte | Zapfen oder Faden, damit sie nicht wackelt | Plan der großen Platte |
+| Konzeptseite | Stößel und Taste entfernen (`build_concept.fach_parts`, `concept.template.html`), Seite neu veröffentlichen | offen; in r5 nicht gemacht |
+
+**Aufgaben für andere Chats:** `plug/logbook/tasks/` (Faden-V überarbeiten; `fachprobe-auswerten.md` ist erledigt, r5).
 
 ## Priorität 1 (erledigt): Steckprobe 2 (r4)
 
