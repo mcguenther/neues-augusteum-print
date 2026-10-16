@@ -1,0 +1,114 @@
+# Variante B: ESP32-C3 SuperMini, eine gemeinsame Datenleitung für alle LEDs (parallel),
+# je Gebäude ein DETECT-Eingang. Alle LEDs zeigen dasselbe; steckt ein Gebäude,
+# flackern alle kurz zusammen an (dabei bekommt die neue LED ihre Daten).
+esphome:
+  name: campus-augustusplatz
+  friendly_name: Campus Augustusplatz
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+packages:
+  common: !include common.yaml
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: alle
+    name: "Gebäude"
+    pin: GPIO10
+    num_leds: 1              # jede LED glaubt, sie sei die erste und einzige
+    channel_colors: GRB
+    chipset: ws2812
+    rmt_symbols: 48
+    default_transition_length: 0s
+    restore_mode: ALWAYS_OFF
+
+binary_sensor:
+  - platform: gpio
+    id: steckt_1
+    name: "Gebäude 1 steckt"
+    pin: {number: GPIO0, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_2
+    name: "Gebäude 2 steckt"
+    pin: {number: GPIO1, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_3
+    name: "Gebäude 3 steckt"
+    pin: {number: GPIO3, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_4
+    name: "Gebäude 4 steckt"
+    pin: {number: GPIO4, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_5
+    name: "Gebäude 5 steckt"
+    pin: {number: GPIO5, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_6
+    name: "Gebäude 6 steckt"
+    pin: {number: GPIO6, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+  - platform: gpio
+    id: steckt_7
+    name: "Gebäude 7 steckt"
+    pin: {number: GPIO7, mode: {input: true, pullup: true}, inverted: true}
+    filters: [delayed_on: 100ms, delayed_off: 50ms]
+    trigger_on_initial_state: true
+    on_press: {script.execute: neon}
+    on_release: {script.execute: pruefen}
+
+script:
+  - id: neon
+    mode: restart
+    then:
+      - light.turn_on: {id: alle, brightness: 70%, red: 100%, green: 78%, blue: 50%, transition_length: 0s}
+      - delay: 50ms
+      - light.turn_off: {id: alle, transition_length: 0s}
+      - delay: 180ms
+      - light.turn_on: {id: alle, brightness: 35%, red: 100%, green: 78%, blue: 50%, transition_length: 0s}
+      - delay: 30ms
+      - light.turn_off: {id: alle, transition_length: 0s}
+      - delay: 400ms
+      - light.turn_on: {id: alle, brightness: 100%, red: 100%, green: 78%, blue: 50%, transition_length: 1500ms}
+  # Licht aus, wenn kein Gebäude mehr steckt
+  - id: pruefen
+    then:
+      - if:
+          condition:
+            and:
+              - binary_sensor.is_off: steckt_1
+              - binary_sensor.is_off: steckt_2
+              - binary_sensor.is_off: steckt_3
+              - binary_sensor.is_off: steckt_4
+              - binary_sensor.is_off: steckt_5
+              - binary_sensor.is_off: steckt_6
+              - binary_sensor.is_off: steckt_7
+          then:
+            - script.stop: neon
+            - light.turn_off: {id: alle, transition_length: 0s}

@@ -1,0 +1,20 @@
+# Variante A: klassischer ESP32, je Gebäude eine eigene Datenleitung und ein DETECT-Eingang.
+# 7 Docks = 14 GPIOs, 7 RMT-Kanäle (ESP32 hat 8). Jedes Gebäude flackert einzeln an.
+esphome:
+  name: campus-augustusplatz
+  friendly_name: Campus Augustusplatz
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+packages:
+  common: !include common.yaml
+  dock1: !include {file: dock.yaml, vars: {n: "1", din: GPIO16, det: GPIO13}}
+  dock2: !include {file: dock.yaml, vars: {n: "2", din: GPIO17, det: GPIO14}}
+  dock3: !include {file: dock.yaml, vars: {n: "3", din: GPIO18, det: GPIO25}}
+  dock4: !include {file: dock.yaml, vars: {n: "4", din: GPIO19, det: GPIO26}}
+  dock5: !include {file: dock.yaml, vars: {n: "5", din: GPIO21, det: GPIO27}}
+  dock6: !include {file: dock.yaml, vars: {n: "6", din: GPIO22, det: GPIO32}}
+  dock7: !include {file: dock.yaml, vars: {n: "7", din: GPIO23, det: GPIO33}}

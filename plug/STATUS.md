@@ -235,6 +235,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Institutsgebäude | `plug/build/institute/view.html` | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
 | Passprobe | `plug/fit_test/page.html` | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
 | Winkelpin Maße | `plug/fit_test/angled_pin.html` | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
+| Elektronik (Schaltplan-Varianten, Entwurf) | `plug/electronics/wiring.html`, ESPHome unter `plug/electronics/esphome/` | https://claude.ai/artifact/UaRXo2mV42DCD8du1SvKaJ |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
