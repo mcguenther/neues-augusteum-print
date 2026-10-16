@@ -1,13 +1,59 @@
 # Hinweise für Claude
 
-Repo: 3D-Druckmodelle des Campus Augustusplatz (Uni Leipzig) aus OSM-Daten.
+Repo: 3D-Druckmodelle des Campus Augustusplatz (Uni Leipzig) aus OSM-Daten, LoD2 und Laserscan.
 Antworten im Chat auf Deutsch.
+
+Diese Datei ist bewusst kurz und gilt für alles. Details stehen in Unterordner-`CLAUDE.md`, die automatisch geladen werden,
+sobald man dort Dateien liest:
+
+| Datei | Inhalt |
+|---|---|
+| `plug/CLAUDE.md` | Steckmechanismus (LED-Gebäude): Befehlstabelle, Maße, Testdruck-Modus, Logbuch, Artifact-Regeln |
+| `data/CLAUDE.md` | Rohdaten, Farben, Fassaden-Zonen, Filament-Profile |
+| `werkzeuge/farbmessung/CLAUDE.md` | Fassadenfarben aus Fotos (Registrierung, Messung, Alt/neu-Berichte) |
+| `vorschau/CLAUDE.md` | Bildkatalog: welches Vorschaubild man wozu im Chat zeigt |
 
 ## Arbeitsweise
 
 Teilaufgaben wie Recherche, Datenquellen prüfen oder viele Dateien/Fotos
 durchsuchen an Sonnet-Subagents (`model: "sonnet"`) abgeben, wo das sinnvoll ist;
-Geometrie- und Generatorarbeit selbst machen.
+Geometrie- und Generatorarbeit selbst machen. Fertige Agents in `.claude/agents/`:
+
+| Agent | Wofür |
+|---|---|
+| `quellen-recherche` | Datenquellen, Fotos, Lizenzen im Netz suchen und prüfen (ändert nichts) |
+| `vorschau-pruefer` | `generate.py --fast` bzw. `preview.py` laufen lassen, `dicht=True` auswerten, Bilder sichten, knapp berichten |
+| `foto-registrierung` | Fotos am Modell ausrichten, Überlagerungen sichten, `geprueft`/`verworfen` im Katalog setzen |
+| `plug-pruefer` | Generatoren in `plug/` laufen lassen, dicht/Kollisionen/Überhänge auswerten |
+| `logbuch-pfleger` | bestätigte Auswertung einer Testdruck-Runde ins Logbuch eintragen |
+
+Den Agents gibt man Ziel, betroffene Dateien und was schon ausgeschlossen ist mit; ihre Berichte sind kurz gehalten (Logs und
+Bilder bleiben im Agent). Auswertung und Entscheidungen bleiben im Hauptchat.
+
+## Projektkarte
+
+```
+generate.py            Hauptskript: Modelle bauen (STL, 3MF), Platten, Farben, Vorschauen; Optionen unten
+preview.py             Software-Renderer, Standard-Vorschauen, README-Bilder (`python3 preview.py datei.stl`)
+readme.py              schreibt die AUTO-Blöcke der README
+parallel.py            Mehrprozess-Hilfe (`--jobs`), Laufzeit je Phase
+laserscan.py lod2.py   Geometrie je Datenquelle (Quelle osm steckt in generate.py)
+innenhof.py            Innenhof als eigenes Druckteil
+farben.py              Farben und Filament-Profile (3/4/15) → data/farben.json
+fassaden.py            Fassaden-Zonen, Prüfansichten (`python3 fassaden.py <slug>`)
+farbmessung.py kamera.py skyline.py registrierung.py szene.py vergleich.py   Fotomessung der Fassadenfarben
+data/                  Rohdaten-Ausschnitte, Zonen je Gebäude (data/fassaden/), Katalog der Messfotos
+stl/<quelle>/1zu1000|1zu1500/   Ausgabe (osm, lod2, laserscan) + stl/steckmodul_*   (erzeugt, eingecheckt)
+vorschau/              Ausgabe-Bilder (erzeugt, eingecheckt); vorschau/readme/ für die README
+stl-fast/ vorschau-fast/   Ausgabe von `--fast` (gitignored)
+plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/)
+werkzeuge/             Hilfsskripte: farbmessung/, performance/ (Messung der Laufzeit), innenhof_messen.py, rosette_kamera.py
+archiv/                zurückgestellte Gebäude (moritzbastei/)
+README.md FOTOQUELLEN.md   README (Blöcke AUTO), Foto-Urheber und Lizenzen
+```
+
+Gebäude und ihre Slugs: `BUILDINGS` in `generate.py` (Paulinum, Neues Augusteum, Hörsaal-, Seminar-, Institutsgebäude, City-Hochhaus „Uniriese“,
+Innenhof; Moritzbastei in `ARCHIV`). Quellen: `osm`, `lod2`, `laserscan`; Maßstäbe 1:1000 und 1:1500.
 
 ## Setup
 
@@ -28,12 +74,49 @@ Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: ~5 min 
 
 - **Zum Testen/Iterieren: `python3 generate.py --fast`** – gleiche Daten, aber Laser-Raster
   0,6 statt 0,3 m, Vorschau ohne Kantenglättung, nur Maßstab 1:1500, keine
-  README-/Fassaden-/Vergleichsbilder (~1,5 min). Schreibt nach `stl-fast/` und
+  README-/Fassaden-/Vergleichsbilder (~100 s). Schreibt nach `stl-fast/` und
   `vorschau-fast/` (nicht eingecheckt, fasst `stl/` und `vorschau/` nicht an). Mit
   `--quelle laserscan` / `--scale 1000` weiter eingrenzbar. Für Bilder im Chat reicht das.
 - Vor dem Commit der echten Ausgaben (`stl/`, `vorschau/`, README) den vollen Lauf ohne `--fast`.
 - `--jobs N` begrenzt die Prozesse (Standard: alle Kerne, `--jobs 1` seriell); am Ende
   druckt `generate.py` die Laufzeit je Phase.
+
+### Noch schneller: den kleinsten Lauf wählen
+
+| Ich will … | Aufruf | Dauer (4 Kerne) |
+|---|---|---|
+| nur prüfen, ob die Geometrie baut und `dicht=True` ist | `generate.py --fast --quelle <q> --no-preview` | osm ca. 20 s, laserscan ca. 46 s (gemessen 16.10.2026) |
+| ein Bild einer Quelle | `generate.py --fast --quelle <q>` | osm kürzer (ohne Bilder 20 s), laserscan ca. 100 s |
+| alles im Schnelllauf | `generate.py --fast` | ca. 100 s (der Laserscan bestimmt die Zeit, `--quelle laserscan` spart nichts) |
+| **eine** Datei/Ansicht rendern | `python3 preview.py datei.stl [--azim -90 --elev 40] --out <ordner>` | Sekunden |
+| ein Gebäude farblich prüfen | `python3 fassaden.py <slug>` | ca. 10 s |
+| die bestehenden Bilder nur ansehen | `Read` auf `vorschau/…` (kein Lauf nötig) | – |
+
+Regeln dazu:
+
+- Nur so viel bauen, wie die Änderung berührt: `--quelle` und `--scale` immer eingrenzen; `--no-preview`, wenn kein Bild gebraucht wird.
+- Der Laserscan ist die teure Quelle (500 000 Dreiecke, vor allem beim Rendern); die Änderung betrifft meist `osm`/`lod2` nicht, und
+  umgekehrt. Für Änderungen an gemeinsamem Code (`BUILDINGS`, Farben, Platte) reicht `--fast --quelle osm` als Funktionstest und
+  `--fast --quelle laserscan` für das Bild.
+- Lange Läufe (voller Lauf, `plug.series`, `plug.build_all`) mit `run_in_background` starten und währenddessen weiterarbeiten
+  (z. B. Texte schreiben); nicht pollen, die Benachrichtigung kommt. Mehrere unabhängige Läufe nicht gleichzeitig auf den 4 Kernen
+  laufen lassen, wenn man ihre Zeiten vergleichen will (`parallel.JOBS` teilt sich die Kerne).
+- Bildprüfung und Logauswertung an den Agent `vorschau-pruefer` bzw. `plug-pruefer` geben: der Hauptchat bekommt dann 10 Zeilen statt des Logs.
+- Neue Beschleunigungen (z. B. Cache, weniger Rendering) in `werkzeuge/performance/README.md` mit Messung festhalten; sie müssen
+  dasselbe Ergebnis liefern (STL byte-gleich bzw. Fläche/Volumen gleich und dicht).
+
+## Token sparen
+
+- Nicht lesen (groß, erzeugt oder binär): `stl/**`, `data/*.laz`, `data/*.gml`, `data/*.osm`, `plug/**/*.html` (Seiten, 80 KB bis 430 KB),
+  `plug/views/**/data.json`, `vorschau/farbvergleich_runde2/index.html` (3,3 MB), `data/messung.json` (70 KB). Gesucht wird mit `Grep`,
+  gelesen wird gezielt mit `offset`/`limit`. Quellen der HTML-Seiten sind die `build*.py` und `*.template.html`.
+- Große Skripte nicht ganz lesen: `generate.py` (900 Zeilen; Optionen und `main()` ab Zeile ~840, Gebäudetabelle ab ~39),
+  `farbmessung.py` (930), `plug/dupont.py` (950), `plug/series2.py` (600). Erst `grep -n "^def \|^class "`, dann den Abschnitt lesen.
+- Lange Dokumente nur abschnittsweise: `README.md` (26 KB; Blöcke `AUTO` sind erzeugt), `plug/STATUS.md` (30 KB), `plug/PLAN.md` (40 KB).
+  Für den Steckmechanismus zuerst `plug/logbook/README.md`, `current.md`, `lessons.md`.
+- Bilder nur ansehen, wenn sie gezeigt oder beurteilt werden müssen (siehe unten); ein Bild kostet viele Tokens. Eine Ansicht reicht
+  meist, `vorschau/vergleich_*.png` statt aller Einzelbilder.
+- Dateien nicht „zur Sicherheit“ erneut lesen, die man gerade bearbeitet hat; erzeugte Dateien (`stl/`, `vorschau/`) nie per `Read` auf Text prüfen.
 
 ## Vorschaubilder im Chat – immer
 
@@ -43,20 +126,12 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    ausführen. Das erzeugt die STL/3MF-Dateien und rendert automatisch alle
    Vorschaubilder nach `vorschau/` (und `vorschau.png` für die README).
    Nur Vorschauen neu erzeugen: `python3 preview.py`.
+   (Zum Iterieren genügt `--fast`, siehe oben; der volle Lauf kommt vor dem Commit der echten Ausgaben.)
 2. Die passenden PNGs **im Chat mit `SendUserFile` (display: "render") zeigen**,
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
    - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
-   - README-Bilder (farbig, transparent, ohne Beschriftung): `vorschau/readme/`
-   - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
-     OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
-     `vorschau/vergleich_farbig_ost.png`
-   - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
-   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
-   - Farben: `vorschau/farben.png`, Gegenüberstellung Foto | alt | neu `vorschau/farbvergleich/index.html`
-     (und die Bilder darin)
-   - Profile mit 3/4 Filamenten: `vorschau/filamente_vergleich.png` (alle Farben | 4 | 3, je
-     Gesamtmodell, Seminargebäude-Bänder, Paulinum-Fenster), `vorschau/laserscan/1zu1500/komplett_campus_mit_extras_farbig_ost_<N>filamente.png`
+   - Welches Bild wozu (README-Bilder, Quellenvergleich, Einzelgebäude, Farben, Filament-Profile): Katalog in `vorschau/CLAUDE.md`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -66,108 +141,36 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
 
 Die gerenderten Bilder in `vorschau/` werden mit committet.
 
-## Datenquellen
-
-`generate.py` erzeugt jede Quelle in `stl/<quelle>/` (`--quelle osm|lod2|laserscan`,
-Standard: alle). Die Rohdaten-Ausschnitte liegen in `data/`; `--fetch` lädt sie neu
-(LoD2: 130 MB Stadtmodell, Laserscan: 240 MB Kachel – nur bei Bedarf).
-Farben: je Gebäude `data/fassaden/<slug>.json` (handgesetzte Zonen + Rückfallfarben als `hex`;
-die alten Messfelder stehen als `proben_alt`). Die Fassadenfarben von Paulinum, Neuem Augusteum,
-Institutsgebäude und City-Hochhaus (Seminargebäude: nur einzelne Zonen) kommen aus der **Fotoprojektion**: `python3 farbmessung.py messen`
-(liest `data/messfotos.json`, schreibt `data/messung.json`). Neue Fotos aufnehmen und ausrichten:
-`registrierung.py suche [--seeds=3] <id>` (Pose per Himmelslinie plus Kantenabgleich), Überlagerung ansehen
-(`registrierung.py pruefen <id>`, vollständig ansehen, nicht nur im Kontaktbogen), bei Passung `"geprueft": true` im
-Katalog setzen, sonst `"verworfen": "<Grund>"`. Eine gemessene Farbe lässt sich in `data/fassaden/<slug>.json` mit
-`"beibehalten": "<Grund>"` auf dem Wert der Handmessung festhalten (so bleiben die weißen Platten von Hörsaal-, Seminar- und
-Institutsgebäude hell, das Mittel über Platten und Fenster wurde zu grau); Flächen darüber gelten nur ab ΔE 25 (`HALTEN_MIN_DE`). Fotos aus einer Recherche (Flickr/Commons über Openverse) übernimmt
-`werkzeuge/farbmessung/katalog_recherche.py <katalog.json> <nr> …`. Panoramax lieferte nur beschattete Fassaden. Wikimedia drosselt geteilte IPs (die Commons-API
-liefert 429; Seiten und `thumb.wikimedia.org` mit ≤ Originalbreite gehen). `farben.py` setzt
-`data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).
-Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
-Rotbraun) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Blaugrau) und `PROFIL_DACH_BLAU`
-(nur Paulinum, Neues Augusteum, Uniriese dürfen blaugraue Dächer haben, sonst Beige);
-`generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf` (ohne `--filamente` nur Laserscan mit Extras,
-mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am Profil das Vergleichsbild zeigen.
-Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
-(Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Fotos der Messung).
-Alt/neu aus der Foto-Kamera: `werkzeuge/farbmessung/vergleich_bilder.py <alte farben.json>`, dann
-`werkzeuge/farbmessung/bericht.py <alte farben.json>` (HTML nach `vorschau/farbvergleich/`, Runde 1).
-Runde 2 (vorher/nachher mit interaktivem 3D-Modell, three.js über CDN): `vergleich_bilder.py <alte farben.json> <ordner>
---fotos id,id,…`, dann `bericht_runde2.py <alte farben.json>` (liest daneben `messung.json` und `vorschau_laserscan/` des
-alten Stands; Texte in `bericht_runde2_texte.json`; HTML nach `vorschau/farbvergleich_runde2/`).
-Bei Farbänderungen zeigen: `vorschau/vergleich_farbig_ost.png`,
-`vorschau/<quelle>/einzelgebaeude_farbig_1zu1000.png`, `vorschau/fassaden/`.
-
 ## README
 
-`README.md` ist normaler Text und darf von Hand bearbeitet werden – nur die Blöcke
-zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Quellenvergleich,
-Maßstäbe, Gebäudegalerie mit Maßen, Grundplatte) werden von `readme.py` überschrieben.
-`generate.py`/`preview.py` rufen es nach dem Rendern auf; die Bilder dafür
-(`preview.readme_assets`) entstehen farbig aus den `*_objekte.3mf`. Titel und
-Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäude
-erscheinen automatisch in der Galerie. Nach Änderungen die README mit
+`README.md` darf von Hand bearbeitet werden, nur die Blöcke zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` überschreibt
+`readme.py` (Ablauf und Quellen der Bilder: Docstring dort; Titel und Kurzbeschreibung der Gebäude: `BUILDINGS` in `generate.py`,
+neue Gebäude erscheinen automatisch in der Galerie). `generate.py`/`preview.py` rufen es nach dem Rendern auf. Nach Änderungen die README mit
 Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
-## Steckmechanismus (LED-Gebäude), Paket `plug/`
+## HTML-Seiten präsentieren
 
-Gebäude mit WS2812B-LED werden in eine Grundplatte gesteckt (Plan B mit dem Dupont-Set). Alles dazu liegt im Paket `plug/`.
-Einstieg: `plug/STATUS.md` (Stand, Chronologie, Konstanten mit Herkunft, Passprobe-Runden, Offenes, Repo-Ablage) und
-`plug/PLAN.md` (Plan B Dupont, Institutsgebäude mit Kassette, JST-Variante als Archiv).
+Plan-, Test- und Ansichtsseiten (HTML) immer mit dem **Artifact-Tool** veröffentlichen (privat), damit sie sich in der Claude-Code-App öffnen; `SendUserFile` allein reicht nicht. Bei einer Änderung dieselbe Datei erneut veröffentlichen (gleiche URL). Link in der Antwort nennen und in `plug/STATUS.md` (Tabelle der Artifacts) eintragen. Vorher den Skill `artifact-design` laden.
 
-Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „keine Kollisionen“ zeigen):
+## Git-Konventionen (aus dem bisherigen Verlauf)
 
-| Befehl | Erzeugt |
-|---|---|
-| `python3 -m plug.dupont` (ca. 20 s) | Platte mit Docks A/B/C, Deckel, Würfel, Kassette, Schieber, Proben nach `stl/steckmodul_dupont/`, Bilder nach `vorschau/steckmodul_dupont/`, `plug/views/dupont/data.json` |
-| `python3 -m plug.institute` (ca. 45 s) | Institutsgebäude mit Fuß, Kassette, Schieber, Platte, Deckel; kleine Teile nach `stl/steckmodul_institut/`, große Dateien (`gebaeude.stl`, `data.json`, `view.html`) nach `plug/build/institute/` (gitignored) |
-| `python3 -m plug.sample` (ca. 15 s) | Probestück 22 × 36 mm mit Kassette, Schieber, Mini-Platte, Deckel, dazu die Passprobe `0_passprobe.stl`, `README.txt` und `probedruck_kassette.zip` nach `stl/steckmodul_probe/`, Bilder nach `vorschau/steckmodul_probe/` |
-| `python3 -m plug.views.build_views [dupont\|institute\|all]` | 3D-Seiten `plug/views/dupont/view.html` bzw. `plug/build/institute/view.html` aus Vorlage und `data.json` |
-| `python3 -m plug.fit_test.build_page` | Anleitungsseite der Passprobe `plug/fit_test/page.html` |
-| `python3 -m plug.roadmap.build` | Fahrplan der Testdrucke (Abhängigkeiten, Zeitplan, Karten) `plug/roadmap/page.html` |
-| `python3 -m plug.feedback.build` | Testbogen zu den Serien (Schritte, Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page.html` |
-| `python3 -m plug.series` (ca. 6 min) | Passungsserien mit Spielgravur für Nachtdrucke: `stl/steckmodul_night1/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night1/` |
-| `python3 -m plug.decision.build` | Entscheidungsdokument nach Nacht 1 (Vorher/Nachher-Zeichnungen, Umgesetztes) `plug/decision/page.html` |
-| `python3 -m plug.feedback.build_night2` | Testbogen zu Nacht 2 (K, C v2, N, E, D, FM; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/feedback/page_night2.html` |
-| `python3 -m plug.testcase.build_plan` | Planungsseite für den kompletten Testfall (Kassette v4, Mini-Gebäude, Mini-Grundplatte; Schnitt mit Regler, Draufsicht, Maßkette, Entscheidungen) `plug/testcase/plan.html`; Sollwerte in `plug/testcase/params.py`, Kassette v4 mit `python3 -m plug.testcase.kassette` |
-| `python3 -m plug.testcase.build_plan2` | Planungsseite Steckprobe 2 (Faden-Lasche mit V-Kanal und Trichter an der Unterseite, Kassette 14,60, Schacht 17,40, Entscheidungskarten) `plug/testcase/plan2.html`; Vorschläge in `PROP` der Datei, nach dem Abnicken nach `params.py` |
-| `python3 -m plug.testcase.build_feedback` | Testbogen zum Testfall (Kassette bestücken, Einpressen, Mulde, Winkelleiste, Stecken, Durchgang, Abziehen; Zeichnungen mit Regler, Formulare, Ergebnistext) `plug/testcase/feedback.html` |
-| `python3 -m plug.testcase.build` (ca. 2 min) | STL, README und ZIP des Testfalls (2 Kassetten v4, Mini-Gebäude A/B, Mini-Grundplatte, Mini-Deckel) nach `stl/steckmodul_testcase/`, Bilder nach `vorschau/steckmodul_testcase/` |
-| `python3 -m plug.series2` (ca. 2 min) | zweiter Nachtdruck (K, C v2, N Schieber, E Einpressen, D v7, FM): `stl/steckmodul_night2/` (STL, README.txt, ZIP), Bilder nach `vorschau/steckmodul_night2/` |
-| `python3 -m plug.power.build_concept` (ca. 30 s) | Konzeptseite Grundplatte mit Powerbank (Maßstäbe 1:1000 und 1:1300, Oberplatte + hohler Unterkasten, Dock mit Kabelnische, Faden-V, Fasen-Check, Passmaße, Testdrucke) `plug/power/concept.html`; Werte in `plug/power/params.py` (liest die Steckprobe-Werte aus `plug/testcase/`), Plan Kapitel 6 |
-| `python3 -m plug.testcase.build2` (ca. 2 min) | Steckprobe 2 (Zwei-Lagen-Aufbau: 1 Kassette v5, keine Reserve, Mini-Gebäude, Mini-Oberplatte mit Dock/Nische und 4 Faden-V 53°/40°, Mini-Unterkasten hohl), Prüfbericht, README, ZIP nach `stl/steckmodul_testcase2/`, Bilder nach `vorschau/steckmodul_testcase2/` |
-| `python3 -m plug.testcase.build_feedback2` | Testbogen Steckprobe 2 mit Aufbau-Zeichnungen (Regler), 13 Schritten, Formularen und Ergebnistext `plug/testcase/feedback2.html` |
-| `python3 -m plug.power.build_plan_fach` (ca. 20 s) | Plan der Fachprobe Powerbank (Draufsicht, Schnitt, Maßkette, Entscheidungskarten) `plug/power/plan_fach.html`; Geometrie in `plug/power/fachprobe.py` |
-| `python3 -m plug.power.build_fach` (ca. 1 min) | Fachprobe Powerbank, Variante B (Fach, Deckplatte; ohne Taste, Stößel, Schablone), Prüfbericht, README, ZIP nach `stl/steckmodul_fachprobe/`, Bilder nach `vorschau/steckmodul_fachprobe/` |
-| `python3 -m plug.power.build_feedback_fach` | Testbogen Fachprobe (Powerbank einlegen, Deckplatte, Fenster, Stecker und Kabel) `plug/power/feedback_fach.html` |
-| `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
-| `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
-
-Aufbau: `plug/parts.py` ist die einzige Quelle für Kaufteil-Maße und Passungen (Quelle B belegt, M gemessen, A abgeleitet,
-S geschätzt, E Entscheidung); `plug/geom.py` enthält die Geometriewerkzeuge; `plug/dupont.py` wird von den anderen Modulen
-als `sd` importiert (dort nichts umbenennen); `plug/fit_test/generator.py` ist die Passprobe-Geometrie. Die JST-Variante
-liegt archiviert unter `plug/archive/jst/` (nicht gepflegt).
-
-Festgelegte Maße der Winkelleiste (nicht ändern ohne neue Messung): Körper **2,0 mm** hoch (`HDR_BODY`) und dick (`HDR_T`),
-nicht 2,54; er sitzt neben den senkrechten Pins, siehe `plug/fit_test/angled_pin.html`. Nach jeder Konstantenänderung
-`python3 -m plug.build_all` laufen lassen, Seiten (Artifacts) neu veröffentlichen und `plug/STATUS.md` nachziehen.
-
-Namenskonvention: neue Dateien und Ordner bekommen englische Namen, soweit sinnvoll (README statt LIESMICH, `build_*`,
-`view`, `check`); Seitentexte, Kommentare und Chat bleiben deutsch. Die Ausgabeordner `stl/steckmodul_*` und
-`vorschau/steckmodul_*` und die STL-Dateinamen sind noch deutsch (Umbenennen ist ein offener Schritt, siehe STATUS).
-
-## Testdruck-Modus und Logbuch (Steckmechanismus)
-
-Einstieg: `plug/logbook/README.md`. Ablauf jeder Runde: **Plan als HTML mit Grafiken** (Entscheidungskarten, Maßkette, Risiken) → der Nutzer nickt ab →
-**STL, README, ZIP** mit Prüfbericht (dicht, keine Kollisionen, Überhänge) → der Nutzer druckt → **Testbogen als HTML-Formular** → der Nutzer fügt den
-Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen und bewerten, Unklarheiten benennen, dann ins Logbuch eintragen und committen.
-
-- Vor jedem Plan `plug/logbook/lessons.md` und `current.md` lesen; vor jeder STL die Vorab-Checkliste in `lessons.md` durchgehen.
-- Ohne abgenickten Plan keine STL. Maßkette im Plan mit Worst-Case rechnen. Formularfelder nur fühlbar oder ja/nein, Variante (A/B) immer abfragen.
-- Nach jeder Auswertung: `rounds/rN_*/summary.md` und `result.txt` (wörtlich), `current.md`, `lessons.md`, `next.md` und `plug/STATUS.md` nachziehen; den getesteten Satz einfrieren.
-- `plug/parts.py` erst ändern, wenn ein Wert bewährt ist; neue Werte stehen bis dahin in `plug/<paket>/params.py`.
+- **Branches:** `claude/<name>-<zufall>` (Cloud-Sessions vergeben den Namen); nie direkt auf `main`. PR nur auf ausdrückliche Bitte.
+  Frühere PRs wurden vom Nutzer selbst zusammengeführt (Merge-Commit „Merge pull request #N from …“, kein Squash); main bei Konflikten in den Zweig mergen,
+  nicht rebasen.
+- **Commit-Nachrichten:** deutsch, eine lange Zeile, kein Präfix („feat:“ o. Ä.), sagt *was* gebaut/geändert wurde und nennt die Dateien oder das Paket,
+  Aufzählungen mit Kommas, am Ende ggf. „…; Logbuch, STATUS und CLAUDE.md nachgezogen“. Beispiele: „Weiße Plattenfassaden bleiben hell: Plattenfarben von
+  Hörsaal-, Seminar- und Institutsgebäude behalten den Wert der Handmessung“; „Testbogen zum Testfall Kassette (plug/testcase/build_feedback.py)“.
+  Danach die Attribution-Zeilen aus dem Systemhinweis.
+- **Ein Commit pro abgeschlossenem Schritt**, Dokumentation (Logbuch, STATUS, CLAUDE.md, README) im selben Commit oder direkt dahinter nachziehen.
+  Erzeugte Dateien (`stl/`, `vorschau/`, HTML-Seiten) gehören mit in den Commit.
+- **PR-Beschreibung** (deutsch): `## Worum es geht` (bzw. `## Was`) · `## Inhalt`/`## Änderungen` (Dateien, Befehle in Backticks) · `## Ergebnis`
+  (falls Zahlen) · `## Prüfung` (welche Läufe, `dicht=True`, welche Bilder angesehen, was *nicht* geprüft wurde) · `## Hinweise`/`## Offene Punkte`/`## Grenzen`.
+  Bei Messungen eine Tabelle Vorher/Nachher.
+- Namen neuer Dateien: Python-Module und Ordner englisch bzw. sprechend (`build_*`, `check`), Seitentexte, Kommentare, Docstrings und Chat deutsch.
 
 ## Prüfen vor dem Commit
 
 - Ausgabe von `generate.py`: alle STL-Zeilen müssen `dicht=True` zeigen.
 - Vorschaubilder ansehen (siehe oben).
+- Steckmechanismus: `python3 -m plug.check` (`dicht=True` und „keine Kollisionen“), siehe `plug/CLAUDE.md`.
+- Ist `CLAUDE.md` oder eine Unterordner-`CLAUDE.md` durch die Änderung veraltet (neue Befehle, Dateien, Maße)? Mit nachziehen.
