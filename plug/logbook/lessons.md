@@ -53,6 +53,7 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L24 | Messfeld „Abstand der Buchse in mm“ war nicht ausfüllbar („wie soll man das messen?“) | Nur Felder, die der Nutzer fühlen oder ja/nein beantworten kann | r3 |
 | L25 | Im Ergebnistext fehlte, welche Platte (A oder B) gedruckt wurde | Variante immer abfragen und im Ergebnistext nennen; Version der ZIP nennen | r3 |
 | L26 | Ein Generatorlauf überschreibt die Dateien in `stl/` | getesteten Satz einfrieren (ZIP im Rundenordner, Commit-Hash) | r3 |
+| L28 | Schrauben nicht vorhanden; Befestigung des Bodens am Hut ist genäht | Deckel und Platte mit Löchern für Fäden planen, keine Schrauben; vor der Planung fragen, welche Verbindungsmittel vorhanden sind | r3 |
 | L27 | Wertänderungen in `plug/parts.py` würden Probestück und Institut brechen (sie rechnen mit Schieber) | neue Werte in `plug/<paket>/params.py`; `parts.py` erst nach bewährter Runde ändern | r3 |
 
 ## Vorab-Checkliste vor jeder STL

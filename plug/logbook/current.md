@@ -27,7 +27,7 @@ Muldenboden direkt in die Buchse.
 | Mulde (Fuß in der Mulde) | CLR 0,10 je Seite, L-förmiger Fuß, nur eine Lage, kein Wackeln | bewährt | r2 FM, r3 M | `MULDE_CLR_T` |
 | Buchsentasche | 0,20 Spiel je Seite, ohne Rippen, Sitz 3 | bewährt | r1 R, r2 C, r3 K | `SNUG2` (`series2.py`) |
 | Taschenhöhe der Kassette | **14,45 (Luft 0,45) passt**, die Buchse steht aber noch etwa 0,1 mm unten heraus: Tasche auf mindestens **14,55**; 14,15 passt keine Buchse (verworfen) | vorläufig | r3 K | `HSG_TOL_SAFE` |
-| Höhe der echten Buchse | etwa 14,5 bis 14,6 mm (aus r3 K abgeleitet, nicht gemessen; Nennwert 14,0 stimmt nicht) | offen | r3 K | `HSG_H` |
+| Höhe der echten Buchse | etwa 14,5 bis 14,6 mm; Nachmessen entfällt, das Delta (Tasche mindestens 0,1 über 14,45) reicht; Nennwert 14,0 stimmt nicht | bewährt als Delta | r3 K | `HSG_H` |
 | Buchse bündig einsetzen | Buchse mit der Steckseite auf einen flachen Tisch, Kassette von oben darüberstülpen | bewährt | r3 K | – |
 | Podest der Kassette | Oberseite 2,5 mm über der Tasche (0,5 + 2,0), Rundung R 2,5; Adern lassen sich rund biegen | vorläufig (Licht nicht getestet) | r3 L | `PODEST_T`, `FILLET_T` |
 | LED-Fläche | flach, ohne Tasche; 10-mm-Streifen passt, 12 mm passt nicht durchs Fenster des Mini-Gebäudes | vorläufig | r2 C, r3 | – |
@@ -38,8 +38,9 @@ Muldenboden direkt in die Buchse.
 | Winkelleiste im Dock | Pins treten gerade aus; **Körper kippt oder wackelt** | offen | r3 W | `plate()` |
 | Platz hinter den Lötenden | für diese Probe zu wenig (Fasen und Trichter); im echten Boden soll darunter so viel wie möglich frei sein | offen | r3 W | `LOETRAUM_Y0`, `SLOT_END` |
 | Deckel mit Stempeln | passt nicht (Stempel stoßen beim Aufsetzen an, mehr als 1 mm Luft nötig); Konzept neu | verworfen | r3 W | `lid()` |
-| Muldenboden und Kabelraum als Brücken (Platte A) | Muldenboden stark durchgehängt oder Löcher zu, Decke des Kabelraums stark durchgehängt (Thick bridges an) | verworfen für ohne Support | r3 | `plate("A")` |
-| Platte B (Trichter, ohne Support) | Ergebnis nicht eindeutig zugeordnet (siehe `next.md`, offene Fragen) | offen | r3 | `plate("B")` |
+| Befestigung | **keine Schrauben**; Löcher in Deckel und Platte, ein Faden (Doktorhut, vier Fäden an den Ecken) zieht beides zusammen; Ösen von unten für Schlaufen | beschlossen, Ausführung offen | r3 Nachtrag | `SCREW_X`, `lid()` |
+| Muldenboden und Kabelraum als Brücken (Platte A, erster Druck) | Muldenboden stark durchgehängt oder Löcher zu, Decke des Kabelraums stark durchgehängt (Thick bridges an) | verworfen für den Druck ohne Support | r3 | `plate("A")` |
+| Platte B (Trichter, ohne Support) | Pin-Löcher offen, Pins treten gerade aus, Kontakt vorhanden; Körper kippt ohne Halt von unten; Platz für Kabel hinter den Lötenden durch die Fasen zu klein | **Basis**, mit Mängeln | r3 W, S | `plate("B")` |
 
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 

@@ -40,6 +40,12 @@ und B (Trichter, ohne Support), Mini-Deckel (zuerst mit dünnen Stempeln, dann m
 - Ösen für Fadenschlaufen (Doktorhut, vier Fäden an den Ecken, der Boden wird nach unten genäht; das soll den Deckel andrücken).
 - Muldenboden eventuell minimal dünner.
 
-## Was die Runde nicht klärte
+## Nachtrag (2026-10-16, Antworten des Nutzers)
 
-Welche Platte (A oder B) die Mängel hatte (Feld fehlte im Ergebnistext); Buchsenhöhe und Pin-Länge nicht gemessen; Licht der LED nicht getestet; Heißkleber-Weg nicht geprüft. Siehe `next.md`.
+- **Platte B war die getestete Platte** für Winkelleiste, Stecken und Durchgang (Schritte W, S, D; der Hinweis „durch die Fase kaum Platz für die Kabel“ passt nur zu B). Die Druckmängel im Schritt „Druckqualität“
+  (durchgehängter Muldenboden, durchgehängte Kabelraum-Decke, zugequollene Löcher) stammen vom ersten Druck mit Platte A. Bei B waren alle vier Pin-Löcher offen und der Kontakt vorhanden. Platte A ist damit für
+  den Druck ohne Support verworfen, **B ist die Basis**.
+- **Schrauben entfallen ganz.** Deckel und Platte bekommen Löcher; ein Faden wird durch beide gefädelt und drückt sie zusammen (die Platte wird an einen Doktorhut genäht, vier Fäden an den Ecken).
+- **Buchsen nachmessen entfällt:** das Delta ist bekannt (Tasche der Kassette 1 braucht mindestens 0,1 mm mehr als 14,45).
+- Offen bleiben Licht der LED und der Heißkleber-Weg (siehe `next.md`).
+
