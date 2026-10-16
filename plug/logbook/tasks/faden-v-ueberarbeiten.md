@@ -25,7 +25,7 @@ Der Faden soll **nicht an der Oberseite** austreten. Er soll von unten durch ein
 - Werte: `plug/testcase/params.py` (`V_LEG_D`, `V_APEX`, `V_ENTRY_R`, `V_WALL`, `V_SLOPE_A`, `V_SLOPE_B`) und `plug/power/params.py` (`V`, `V_PLAN2`, `NOTCH_PAD`).
 - Geometrie: `plug/power/build_concept.py` (`v_hs`, `v_geom`, `place_vs`, `v_solid`, `mouth_ch`) und `plug/testcase/build2.py` (`top_plate`, `under_box`, `vs_placed`).
 - Zeichnungen: `plug/testcase/build_feedback2.py` (`svg_faden`), Plan: `plug/testcase/build_plan2.py` (`PROP`), Konzept: `plug/power/concept.template.html` (Faden-Ecke).
-- Logbuch: `plug/logbook/README.md` (Arbeitsmodus), `lessons.md` (L02, L05, L29, L30), `current.md` (Abschnitt 2b), `rounds/r4_steckprobe2/summary.md`.
+- Logbuch: `plug/logbook/README.md` (Arbeitsmodus), `lessons.md` (L02, L05, L29, L32), `current.md` (Abschnitt 2b), `rounds/r4_steckprobe2/summary.md`.
 
 ## Vorgehen (Arbeitsmodus des Repos)
 

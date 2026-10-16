@@ -1,6 +1,6 @@
 # r5: Fachprobe Powerbank (gedruckt und ausgewertet, 2026-10-16)
 
-**Status: gedruckt und ausgewertet (2026-10-16), Rückmeldung dünn.** Wörtliche Antworten des Nutzers: [`result.txt`](result.txt) (kein Ergebnistext des Testbogens, sondern Chat-Sätze). Eingefrorener Satz: [`fachprobe.zip`](fachprobe.zip) (Stand Commit `3ccceeb`: Bau und Testbogen; Plan `fed8228`). Welche ZIP-Version gedruckt wurde, steht nicht in der Rückmeldung (L33); es gab nur diesen Stand, die Variante war B.
+**Status: gedruckt und ausgewertet (2026-10-16), Rückmeldung dünn.** Wörtliche Antworten des Nutzers: [`result.txt`](result.txt) (kein Ergebnistext des Testbogens, sondern Chat-Sätze). Eingefrorener Satz: [`fachprobe.zip`](fachprobe.zip) (Stand Commit `3ccceeb`: Bau und Testbogen; Plan `fed8228`). Welche ZIP-Version gedruckt wurde, steht nicht in der Rückmeldung (L35); es gab nur diesen Stand, die Variante war B.
 
 ## Ziel und Teile
 
@@ -28,7 +28,7 @@ Ob die Powerbank (Intenso XS5000, laut Datenblatt 90 × 63 × 12,6 mm, ungemesse
 
 - `plug/power/params.py`: **`PB_CLR_Z` 0,6 → 0,8** (Luft über der Powerbank, +0,2 nach Nutzer). `PB_T` bleibt 12,6 (ungemessen); kein Zahlenwert für die tatsächliche Dicke. Fachhöhe 13,2 → 13,4, Unterkasten 14,4 → 14,6, Gesamthöhe der Grundplatte 27,0 → 27,2 mm (`python3 -m plug.power.build_concept`, Seite `plug/power/concept.html` neu erzeugt und als Artifact https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS neu veröffentlicht, Version 6).
 - `plug/parts.py` unverändert. Der gedruckte Satz (`stl/steckmodul_fachprobe/`) bleibt auf Luft 0,6 stehen und wurde nicht neu gebaut.
-- Neue Lehre L35 (Powerbank ungemessen, Luft im Worst-Case rechnen: Prüfbericht hatte 13,0 → 0,2 mm Luft noch als „ok“ gemeldet) in `lessons.md`.
+- Neue Lehre L37 (Powerbank ungemessen, Luft im Worst-Case rechnen: Prüfbericht hatte 13,0 → 0,2 mm Luft noch als „ok“ gemeldet) in `lessons.md`.
 
 ## Was die Runde nicht klärte
 

@@ -7,4 +7,4 @@ Hinweis: Der Nutzer hat den Testbogen nicht als Ergebnistext eingefügt, sondern
 [2] (auf die Rückfrage, ob die Powerbank dicker ist, wie das Wackeln zustande kam und ob der Zaun mitgedruckt wurde)
 "die powerbank ist tatsächlich minimal dicker. deckel hat gewackelt. zaun wurde ja nicht mitgedruckt, nur der ausschnitt"
 
-Nicht angegeben: ZIP-Version oder Commit (L33), Zahlen zur Dicke, Rückmeldung zu Kabelkanal, Fenster mit Anschlüssen, Steckerraum 35 mm, Länge 90 mm.
+Nicht angegeben: ZIP-Version oder Commit (L35), Zahlen zur Dicke, Rückmeldung zu Kabelkanal, Fenster mit Anschlüssen, Steckerraum 35 mm, Länge 90 mm.

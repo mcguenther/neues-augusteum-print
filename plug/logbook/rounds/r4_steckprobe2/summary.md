@@ -1,6 +1,6 @@
 # r4: Steckprobe 2 (gedruckt und ausgewertet, 2026-10-16)
 
-**Status: gedruckt und ausgewertet (2026-10-16).** Wörtlicher Ergebnistext: [`result.txt`](result.txt). Eingefrorener Satz: [`steckprobe2.zip`](steckprobe2.zip) (Stand Commit `46d1e0a`, nur eine Kassette). Frühere Stände: erster Bau `5c91a0e` mit zwei Kassetten. Welche der beiden ZIP gedruckt wurde, steht nicht im Ergebnistext (L33); der Befund ist von der Kassette unabhängig.
+**Status: gedruckt und ausgewertet (2026-10-16).** Wörtlicher Ergebnistext: [`result.txt`](result.txt). Eingefrorener Satz: [`steckprobe2.zip`](steckprobe2.zip) (Stand Commit `46d1e0a`, nur eine Kassette). Frühere Stände: erster Bau `5c91a0e` mit zwei Kassetten. Welche der beiden ZIP gedruckt wurde, steht nicht im Ergebnistext (L35); der Befund ist von der Kassette unabhängig.
 
 Bau (Stand vor dem Druck): Der Nutzer hat den Bau freigegeben („lass die Steckprobe 2 jetzt bauen“). Nur **eine** Kassette, keine Reserve; die Buchsenhöhe wird nicht mehr gemessen (Nutzer). Zwei-Lagen-Aufbau statt Platte mit Deckel: Mini-Oberplatte 12,6 + hohler Mini-Unterkasten 14,4, Dock mit Kabelnische, Steg-Anschlag, zwei Zapfen, vier Faden-V (links 53°, rechts 40°). STL, README, ZIP, Prüfbericht: `stl/steckmodul_testcase2/` (`python3 -m plug.testcase.build2`; alle Teile dicht, keine Kollisionen, Material ≈ 40 g, ≈ 2,2 h auf dem Drucker des Nutzers). Testbogen: `plug/testcase/feedback2.html`, Artifact https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB. Neue Werte stehen in `plug/testcase/params.py` und `plug/power/params.py`, nicht in `plug/parts.py`. Ergebnis des Drucks fehlt noch; danach Auswertung, `result.txt` und Einfrieren.
 
@@ -72,3 +72,36 @@ Im Prinzip hat alles gepasst; der Nutzer fand vier Dinge, die geändert werden m
 - 53° gegen 40°.
 - Elefantenfuß mit Fase 0,5 (kein Feld ausgefüllt).
 - Licht der LED und Adern (Schritt L, später).
+
+## Nachtrag: Kassetten-Varianten V1 und V2 (Planung)
+
+Anlass (Nutzer): Die Kassette v4 passt nicht in alle Gebäude, z. B. nicht in das Seminargebäude und das City-Hochhaus. Gewünscht: V1 = Streifen gekippt, steht auf der langen Kante und klebt auf einer Wand;
+V2 für das City-Hochhaus = Streifen hochkant, schlanker, nur die Buchse, Streifen an einer flacheren Wand. Konzepte als HTML mit Grafik.
+
+- Seite `plug/testcase/plan3.html` (`python3 -m plug.testcase.build_plan3`), Geometrie `plug/testcase/variants.py`, Passstudie `plug/testcase/fit_study.py` (`variants_fit.json`). **Konzept, keine STL, nicht abgenickt.**
+- Passstudie (Wand 1,2 um den Schacht, Schnitt 2 mm über dem Boden): bei 1:1500 passt v4 nicht in Paulinum, Seminargebäude, City-Hochhaus, im Institutsgebäude nur 0,4 Wand; bei 1:1000 überall. V1 und V2 passen überall in den Grundriss.
+- Höhen: V1 braucht Gebäude ab 17,3 mm (Hörsaalgebäude 16,4: zu niedrig; Seminargebäude 18,8: 1,5 Reserve), V2 ab 24,5 mm (Hochhaus, Paulinum, knapp Neues Augusteum).
+- Aufbau: gleicher Unterbau wie v4 (Dock, Pins, Einpressen bleiben gültig), darüber ein Blatt (1,2) als Fortsetzung der hinteren Taschenwand, Streifen davor, LED blickt nach vorn.
+  V1 17,2 × 5,3 × 26,4 (Adern seitlich zum Pad-Ende), V2 13,0 × 5,3 × 33,5 (Adern gerade nach oben).
+- Offene Karten: Varianten (A: drei Kassetten), Lichtrichtung, Blattdicke V2 (Empfehlung 1,6), LED-Höhe V2, Unterbaubreite V1, Streifenbreite, Probedruck.
+
+## Nachtrag 2: V2 bevorzugt, Höhe und Rücken-LED
+
+Nutzer: V2 ist besser; passt es von der Höhe? Zweite LED auf der Rückseite gegenüber; geht das von unten? Idee: Blatt nach oben verlängern und oben nach vorn zur Mitte versetzen.
+
+- Höhe V2: Gebäude ab 24,5 mm. Grundriss und Höhe zusammen (Schnitt in der nötigen Höhe): 1:1500 nur City-Hochhaus und Paulinum; 1:1000 Paulinum, Neues Augusteum, Hochhaus (Institutsgebäude 0,9 Wand, knapp nicht).
+  Seminargebäude: geschlossene Dachfläche nur etwa 16,4 mm (die 18,8 sind eine kleine Aufsicht), V1 (17,3) und V2 passen nicht, v4 passt nicht in den Grundriss; V3 (flach neben der Buchse, etwa 31 × 10,5) käme auf 1,0 Wand. Offen.
+- Rücken-LED: Streifen am hinteren Blatt ragt 2,1 mm hinter die Schachtwand, kommt von unten nicht durch. V2R: Blatt in der Mitte, oben 45° nach vorn versetzt, Unterbau 6,4 tief (Chip zu Chip 5,6, Luft 0,4), Verkettung DOUT → DIN über die Blattkante,
+  Kassette 13,0 × 6,4 × 36,9, Gebäude ab 27,9. Streifendicke 2,2 ist nicht belegt (vor der STL messen).
+- Seite jetzt als Artifact: https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe. Neue Vorgabe: HTML-Seiten immer als Artifact präsentieren (CLAUDE.md).
+
+## Nachtrag 3: V1R (V1 mit Rücken-LED)
+
+Nutzer: auch für V1 eine Rückenvariante; der Fit in die Gebäude folgt, sobald der Maßstab ganz genau feststeht (V1R ist daher nicht in der Fit-Tabelle).
+V1R: Unterbau 17,2 × 6,4, Kassette 30,2 hoch (Gebäude ab 21,2 mm), Blatt in der Mitte und oben 45° nach vorn versetzt wie V2R, Streifen quer auf beiden Seiten, Verkettung über die Oberkante am rechten Ende
+(Alternative am rechten Rand vorbei: Blatt 2 mm breiter, Gebäude ab 18,7). Generator `plug/testcase/variants.py` (`V1R`), Bild `vorschau/steckmodul_testcase/variante_v1r.png`, Abschnitt und Karte „V1R“ in `plan3.html`.
+
+## Nachtrag 4: V1R in zwei Varianten
+
+Nutzer: zwei Varianten für V1R, eine mit den Leitungen oben vorbei, eine seitlich vorbei. `V1R` (oben, Blatt 2,5 über den Streifen, Kassette 17,2 × 6,4 × 30,2, Gebäude ab 21,2) und `V1RS` (seitlich: Unterbau 19,2 breit, Blatt samt Streifen 1 mm nach links,
+2,0 Platz rechts für die drei Adern, Kassette 19,2 × 6,4 × 27,7, Gebäude ab 18,7). Bilder `variante_v1r.png`, `variante_v1rs.png`; Karte Q fragt, welche in den Probedruck kommt (Empfehlung: beide).

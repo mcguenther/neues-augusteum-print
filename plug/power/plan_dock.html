@@ -1,0 +1,283 @@
+<title>Plan Test-Dock Steckerraum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Textspalte mit Antwort oben, darunter Varianten-Umschalter für Draufsicht, 3D und Schnitt; Maße in Monospace.
+   Gleiches System wie plug/views/dupont/view.template.html, dazu Farben für Powerbank, Unterkasten und Innenhof. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
+  --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
+  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-niche: #d97a1f; --c-hut: #2b2f33;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+    --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+header { display: flex; flex-direction: column; gap: 14px; }
+.small { font-size: 0.88rem; }
+.muted { color: var(--muted); }
+ul, ol { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+
+/* Antwort */
+.answer { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.answer > div { background: var(--panel); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.answer .big { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.answer .lbl { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.answer .rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+
+/* Umschalter */
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.seg label .num { font-size: 0.85rem; color: var(--muted); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+.seg input:checked + label .num { color: var(--on-accent); }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sticky { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; display: flex; flex-direction: column; gap: 6px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.vnote { font-size: 0.92rem; color: var(--muted); max-width: 80ch; }
+
+/* Draufsicht + 3D */
+.views { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .views { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 0.95rem; }
+#plan { width: 100%; height: auto; max-height: 78vh; display: block; }
+#plan text { font-family: var(--font); fill: var(--fg); }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.ctrl input[type=range] { width: 160px; accent-color: var(--accent); }
+.ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.ctrl button:focus-visible, .ctrl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+
+/* Schnitt */
+.scroll { overflow-x: auto; }
+#sect { width: 100%; min-width: 640px; height: auto; display: block; }
+#sect text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#sect .mut { fill: var(--muted); }
+#sect .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+
+/* Tabellen */
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent); }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
+.src { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+
+/* Rechner */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 720px) { .calc { grid-template-columns: 1fr; } }
+.field { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+.field label { font-size: 0.92rem; }
+.field input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.result { display: flex; flex-direction: column; gap: 8px; }
+.result .big { font-family: var(--mono); font-size: 2.2rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent-fill); }
+.flag { font-size: 0.9rem; padding: 8px 12px; border-radius: 6px; border: 1px solid; }
+.flag.warn { color: var(--warn); border-color: currentColor; }
+.flag.ok { color: var(--ok); border-color: currentColor; }
+
+#wiring { width: 100%; min-width: 640px; height: auto; display: block; }
+#wiring text { font-family: var(--font); font-size: 13px; fill: var(--fg); }
+#wiring .mut { fill: var(--muted); font-size: 11.5px; }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--fg); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.seg label .dims { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.seg input:checked + label .dims { color: var(--on-accent); }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.cmp .card .big { font-family: var(--mono); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+#oese { width: 100%; max-width: 560px; height: auto; display: block; }
+#oese text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#oese .mut { fill: var(--muted); }
+.tests { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.tests .card { gap: 8px; }
+.tests .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.tests h3 { font-size: 1.05rem; }
+.tests ul { font-size: 0.93rem; }
+.meta { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.parts .card { gap: 4px; }
+.parts .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+#corner { width: 100%; max-width: 640px; height: auto; display: block; }
+#corner text { font-family: var(--font); font-size: 11px; fill: var(--fg); }
+#corner .mut { fill: var(--muted); }
+.pill.no { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips .pill { font-size: 0.7rem; padding: 0 6px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+#dock, #chfig { width: 100%; height: auto; display: block; }
+#dock text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+#chfig text { font-family: var(--font); font-size: 10.5px; fill: var(--fg); }
+#dock .mut, #chfig .mut { fill: var(--muted); }
+.inv { fill: var(--panel) !important; }
+#dock .dim, #chfig .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.legend .sw2::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--sw); }
+
+.fig { width: 100%; height: auto; display: block; min-width: 560px; }
+.fig text { font-family: var(--font); fill: var(--fg); font-size: 11.5px; }
+.fig .mut { fill: var(--muted); } .fig .ok { fill: var(--ok); font-weight: 600; } .fig .inv { fill: var(--panel); } .fig .wirec { fill: var(--c-thread); }
+.fig .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .8; }
+.fig .foot { fill: var(--c-bld); stroke: var(--edge); stroke-width: .6; }
+.fig .void { fill: var(--panel); stroke: var(--edge); stroke-width: .6; stroke-dasharray: 3 2; }
+.fig .body { fill: var(--c-port); stroke: var(--edge); stroke-width: .6; }
+.fig .tail { stroke: var(--accent-fill); stroke-width: 3; stroke-linecap: round; fill: none; }
+.fig .wire { stroke: var(--c-thread); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fig .table { stroke: var(--fg); stroke-width: 1.4; }
+.fig .dimn { stroke: var(--ok); stroke-width: 1.8; }
+.fig .mulde { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 5 3; }
+.fig .bodyo { fill: color-mix(in srgb, var(--c-port) 30%, transparent); stroke: var(--c-port); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.fig .tailo { stroke: var(--accent-fill); stroke-width: 1.4; }
+.fig .hole { fill: var(--panel); stroke: var(--edge); stroke-width: .8; }
+.fig .post { fill: var(--panel); stroke: var(--edge); stroke-width: .8; }
+#sect text { font-size: 7.4px; } #below text { font-size: 5.4px; } #below { min-width: 0; max-width: 560px; }
+.dec { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.dec .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.dec h3 .tag { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .06em; margin-right: 8px; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; font-size: .92rem; }
+.opt.pick { border-color: var(--accent-fill); background: color-mix(in srgb, var(--accent-fill) 12%, transparent); }
+.opt b { font-weight: 600; }
+.opt .num { color: var(--muted); font-size: .8rem; }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Steckmechanismus · Test-Dock · Plan, noch nicht abgenickt</div>
+  <h1>Test-Dock mit flacher Unterseite</h1>
+  <p class="lead">Alles auf einer Höhe, ohne Tasche, Stufe, Schlitz, Nische und Steg: Die Unterseite der Platte ist flach, die Winkelleiste liegt mit dem Körper einfach daran und wird aufgeklebt. Darunter gibt es nur einen offenen Raum, in dem später auch die Powerbank liegt. Dieser Plan beschreibt ein kleines Test-Dock dafür. Erst nach deinem Okay entstehen STL.</p>
+</header>
+
+<section aria-labelledby="h-ans">
+  <h2 id="h-ans">Empfehlung</h2>
+  <div class="answer">
+    <div class="rec"><span class="lbl">Teile</span><span class="big">1 Platte + 8 Füße</span>
+      <span class="small">Mini-Oberplatte <span class="num">40,0 × 50,4 × 10,6 mm</span> mit Mulde und vier Pin-Löchern, dazu zwei Sätze Füße (3,5 und 2,5 mm) mit Zapfen. Gebäude und Kassette bleiben die aus Steckprobe 2.</span></div>
+    <div><span class="lbl">Ohne Support</span><span class="big">Platte nur flach</span>
+      <span class="small">Der Muldenboden (0,4 mm) sind die ersten Schichten auf dem Bett, nichts hängt frei. Brücke und Support entfallen ganz.</span></div>
+    <div><span class="lbl">Der Tisch ist die Powerbank</span><span class="big">Luft 3,5 mm</span>
+      <span class="small">Die Platte steht auf den Füßen über dem Tisch. Der Tisch steht für die Oberkante der Powerbank. So prüfst du Leiste, Lötstelle und Draht, ohne die Powerbank zu brauchen.</span></div>
+    <div><span class="lbl">Aufwand</span><span class="big">≈ 10 g</span>
+      <span class="small">Etwa 0,5 h auf deinem Drucker (überschlagen). Die Platte ist 2,0 mm dünner als in Steckprobe 2.</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-fig">
+  <h2 id="h-fig">So sieht das Dock aus</h2>
+  <div class="card"><h3>Längsschnitt durch die Pin-Reihe</h3><div class="scroll"><svg id="sect" viewBox="0 0 608 454" role="img" aria-label="Längsschnitt durch das neue Dock" class="fig"><rect x="16.0" y="52.0" width="576.0" height="254.4" class="plate" /><rect x="137.2" y="52.0" width="454.8" height="244.8" class="foot" /><rect x="221.9" y="306.4" width="52.8" height="48.0" class="body" /><line x1="152.3" y1="330.4" x2="304.0" y2="330.4" class="tail"/><line x1="304.0" y1="330.4" x2="304.0" y2="170.1" class="tail"/><polyline points="152.3,330.4 128.3,376.0 40.0,376.0" class="wire"/><line x1="16.0" y1="390.4" x2="592.0" y2="390.4" class="table"/><text x="23.2" y="404.4" class="lab mut" text-anchor="start">Tisch, steht für die Oberkante der Powerbank</text><line x1="532.0" y1="306.4" x2="532.0" y2="390.4" class="dimn"/><text x="522.4" y="352.4" class="lab ok" text-anchor="end">Luft 3,5</text><text x="582.4" y="47.0" class="lab mut" text-anchor="end">Plattenoberseite</text><text x="332.8" y="148.0" class="lab" text-anchor="start">Gebäudefuß in der Mulde</text><text x="25.6" y="172.0" class="lab mut" text-anchor="start">Platte 10,6</text><text x="25.6" y="200.8" class="lab mut" text-anchor="start">Muldenboden 0,4</text><text x="320.3" y="338.2" class="lab" text-anchor="start">Körper 2,0, aufgeklebt</text><text x="140.3" y="389.0" class="lab wirec" text-anchor="end">Draht</text><text x="152.3" y="324.4" class="lab" text-anchor="end">Lötende</text></svg></div>
+    <p class="small muted">Der Körper (dunkel) hängt mit seiner ganzen Höhe von 2,0 mm unter der flachen Plattenunterseite. Die Lötenden (orange) laufen auf halber Körperhöhe nach links, der Draht (rot) hängt in die Luft. Die senkrechten Pins gehen durch den 0,4 mm dicken Muldenboden in die Buchse im Gebäudefuß. Die Füße stehen vor und hinter dem Schnitt.</p></div>
+  <div class="card"><h3>Ansicht der Plattenunterseite (wie im Slicer)</h3><div class="scroll"><svg id="below" viewBox="0 0 392 485" role="img" aria-label="Ansicht der Plattenunterseite mit Pin-Löchern und aufgeklebtem Körper" class="fig"><rect x="16.0" y="16.0" width="360.0" height="453.3" class="plate" /><rect x="88.0" y="88.0" width="216.0" height="342.0" class="mulde" /><rect x="147.1" y="378.4" width="97.7" height="19.8" class="bodyo" /><circle cx="161.7" cy="367.4" r="6.3" class="hole"/><circle cx="184.6" cy="367.4" r="6.3" class="hole"/><circle cx="207.4" cy="367.4" r="6.3" class="hole"/><circle cx="230.3" cy="367.4" r="6.3" class="hole"/><line x1="161.7" y1="367.4" x2="161.7" y2="424.3" class="tailo"/><line x1="184.6" y1="367.4" x2="184.6" y2="424.3" class="tailo"/><line x1="207.4" y1="367.4" x2="207.4" y2="424.3" class="tailo"/><line x1="230.3" y1="367.4" x2="230.3" y2="424.3" class="tailo"/><circle cx="119.5" cy="295.4" r="19.3" class="post"/><circle cx="272.5" cy="295.4" r="19.3" class="post"/><circle cx="119.5" cy="97.4" r="19.3" class="post"/><circle cx="272.5" cy="97.4" r="19.3" class="post"/><text x="253.9" y="392.3" class="lab" text-anchor="start">Körper 10,9 × 2,2 (aufgeklebt)</text><text x="253.9" y="371.4" class="lab" text-anchor="start">4 Pin-Löcher Ø 1,4</text><text x="253.9" y="428.3" class="lab" text-anchor="start">Lötenden</text><text x="196.0" y="187.4" class="lab mut" text-anchor="middle">Mulde (oben)</text><text x="196.0" y="465.3" class="lab mut" text-anchor="middle">Plattenrand (vorn)</text><text x="119.5" y="281.4" class="lab" text-anchor="middle">Zapfenloch</text></svg></div>
+    <p class="small muted">Die Unterseite ist eben. Die gestrichelte Fläche zeigt, wo der Körper der Leiste aufgeklebt wird; die vier Pin-Löcher sind die einzigen Öffnungen, dazu vier Zapfenlöcher für die Füße.</p></div>
+</section>
+
+<section aria-labelledby="h-chain">
+  <h2 id="h-chain">Maßkette im Worst-Case</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Maß</th><th>Soll</th><th>Worst-Case</th><th>Ergebnis</th><th>Quelle</th></tr></thead>
+    <tbody>
+    <tr><td>Plattendicke</td><td class="num">Mulde 10,2 + Muldenboden 0,4 = 10,6</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill ok">2,0 dünner</span></td><td class="src">bewährt (F, Boden)</td></tr>
+    <tr><td>Einstecktiefe E</td><td class="num">5,28 (Körper oben liegt an der Platte, z -10,6)</td><td class="num">Muldenboden 0,4 bis 0,5: E ≥ 5,18</td><td><span class="pill ok">wie Steckprobe 2</span></td><td class="src">bewährt (r4 S, D)</td></tr>
+    <tr><td>Körper der Leiste</td><td class="num">2,0 ganz unter der Platte, aufgeklebt</td><td class="num">Kleber 0,0 bis 0,3 Spalt: E bis 5,28 − 0,3 = 4,98</td><td><span class="pill mid">Kleber dünn halten</span></td><td class="src">bewährt (HDR_BODY), Kleber neu</td></tr>
+    <tr><td>Lötenden</td><td class="num">auf halber Körperhöhe, z -11,60, frei</td><td class="num">keine Stufe, kein Spiel nötig</td><td><span class="pill ok">frei</span></td><td class="src">neu</td></tr>
+    <tr><td>Draht und Lötstelle</td><td class="num">bis etwa 2,9 unter der Plattenunterseite</td><td class="num">Luft 3,5: 0,6 Reserve; 2,5: Draht liegt auf</td><td><span class="pill mid">Test mit zwei Füßen</span></td><td class="src">S geschätzt, ungemessen</td></tr>
+    <tr><td>Gesamthöhe der Platte (hochgerechnet)</td><td class="num">10,6 + 3,5 + Powerbank 12,6 + Boden 1,2 = 27,9</td><td class="num">Steckprobe 2: 27,0</td><td><span class="pill ok">etwa gleich</span></td><td class="src">A abgeleitet</td></tr>
+    <tr><td>Zapfen</td><td class="num">Ø 4,0, Höhe 2,5, Loch Ø 4,3, 2,8 tief</td><td class="num">Gleitspiel 0,15 (bewährt), 1 mm länger</td><td><span class="pill mid">zu prüfen</span></td><td class="src">E, r4 U: 1,5 wackelte</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="h-dec">
+  <h2 id="h-dec">Entscheidungen</h2>
+  <div class="dec">
+    <div class="card rec"><h3><span class="tag">A</span>Halt der Leiste</h3>
+      <div class="opts">
+        <div class="opt pick"><b>Aufkleben, erst Sekundenkleber, dann Heißkleber (empfohlen)</b><span>Ohne Tasche hält nur der Kleber. Beim Aufstecken schiebt der Druck die Leiste von der Platte weg, deshalb muss er das halten. Der Testbogen fragt beides nacheinander ab.</span></div>
+        <div class="opt"><b>Doppelseitiges Klebeband</b><span>Sauber und dünn, aber weich: E könnte beim Aufstecken nachgeben.</span></div>
+        <div class="opt"><b>Flache Tasche (0,4 mm) als Ausrichtung</b><span>Gibt Lage und seitlichen Halt, aber wieder Support unter dem Muldenboden. Erst, wenn die Lage der Leiste ein Problem wird.</span></div>
+      </div></div>
+    <div class="card rec"><h3><span class="tag">B</span>Füße und Luft</h3>
+      <div class="opts">
+        <div class="opt pick"><b>Zwei Sätze Füße: 3,5 und 2,5 mm (empfohlen)</b><span>Je vier Füße 6 × 6 mm mit Zapfen 2,5. Du probierst erst 3,5, dann 2,5, und siehst, ab wann der Draht am Tisch aufliegt.</span></div>
+        <div class="opt"><b>Nur 3,5 mm</b><span>Weniger Teile, aber die untere Grenze der Luft bliebe ungeprüft.</span></div>
+      </div></div>
+    <div class="card"><h3><span class="tag">C</span>Alles auf gleicher Höhe</h3>
+      <div class="opts">
+        <div class="opt pick"><b>Keine Tasche, keine Stufe, keine Nische (entschieden)</b><span>Die Leiste liegt flach an der Unterseite. Mehr Luft darunter (Körper 2,0 statt 1,0 sichtbar), dafür 1 mm dünnere Platte und kein Support.</span></div>
+      </div></div>
+    <div class="card"><h3><span class="tag">D</span>Was nicht zum Test gehört</h3>
+      <div class="opts">
+        <div class="opt pick"><b>Faden-V und Powerbank-Fach</b><span>Fadenführung macht der andere Chat, das Fach steht in der Fachprobe. Dieses Dock zeigt nur Leiste, Lötenden, Kleber und Zapfen.</span></div>
+      </div></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-risk">
+  <h2 id="h-risk">Druck und Risiken</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Teil</th><th>Ausrichtung</th><th>Hinweise</th></tr></thead>
+    <tbody>
+    <tr><td>Mini-Oberplatte</td><td>Unterseite auf dem Bett, Mulde oben</td><td>Kein Support, keine Brücke. Muldenboden = erste zwei Schichten. Die vier Pin-Löcher (Ø 1,4) brauchen am Bett eine Fase von 0,15 gegen den Elefantenfuß (L02). Bettkanten mit Fase 0,5.</td></tr>
+    <tr><td>Füße (2 × 4)</td><td>stehend, Zapfen oben</td><td>6 × 6 mm Querschnitt (L06), Zapfen Ø 4,0 × 2,5; Satz 3,5 mit einer Kerbe, Satz 2,5 mit zwei.</td></tr>
+    <tr><td>Gebäude, Kassette</td><td>aus Steckprobe 2</td><td>unverändert wiederverwenden, kein Neudruck.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">Hauptrisiko: die Leiste lässt sich beim zehnmaligen Aufstecken und Abziehen vom Kleber lösen. Berücksichtigte Lehren: L02 Lochmündungen, L05 keine Brücke (hier gar keine Hohlräume), L06 keine freistehenden Stifte, L07 Druckausrichtung je Teil, L08 ungemessene Werte markiert, L24 nur fühlbare oder ja/nein-Felder, L25 Variante und ZIP-Version im Ergebnistext, L27 neue Werte nur in <code>plug/power/params.py</code>.</p>
+</section>
+
+<section aria-labelledby="h-test">
+  <h2 id="h-test">Was der Testbogen danach abfragt</h2>
+  <ul>
+    <li>Platte ansehen: Muldenboden glatt, vier Pin-Löcher offen (Fase gewirkt)?</li>
+    <li>Leiste mit Sekundenkleber an die flache Unterseite kleben, Pins durch die Löcher: liegt sie flach, sitzt sie gerade?</li>
+    <li>Gebäude aufstecken und abziehen, zehn Mal: hält der Kleber? Dann dasselbe mit Heißkleber.</li>
+    <li>Draht anlöten und die Platte auf die Füße 3,5 und dann 2,5 setzen: hängt etwas am Tisch an?</li>
+    <li>Zapfen in den Löchern: Sitz 1 bis 5.</li>
+    <li>Durchgang für alle vier Pins mit dem Multimeter.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Nächster Schritt</h2>
+  <p>Wenn dir die Empfehlung passt (A: aufkleben, B: zwei Füße-Sätze, C: alles auf gleicher Höhe), baue ich STL, README, ZIP, Prüfbericht und den Testbogen. Sonst nenne mir die Änderungen.</p>
+</section>
+</div>
