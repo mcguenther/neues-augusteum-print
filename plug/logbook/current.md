@@ -1,4 +1,4 @@
-# Bewährter Stand (nach Steckprobe 1, 2026-10-16)
+# Bewährter Stand (nach Steckprobe 2 und Fachprobe Powerbank, 2026-10-16)
 
 Status: **bewährt** = im Testbogen mit „passt“ bewertet · **vorläufig** = funktioniert, mit Einschränkung oder noch nicht ganz belegt ·
 **verworfen** = getestet, gestrichen · **offen** = nicht geklärt. Belege stehen in `rounds/`. Werte im Code: `plug/testcase/params.py`
@@ -42,7 +42,39 @@ Muldenboden direkt in die Buchse.
 | Muldenboden und Kabelraum als Brücken (Platte A, erster Druck) | Muldenboden stark durchgehängt oder Löcher zu, Decke des Kabelraums stark durchgehängt (Thick bridges an) | verworfen für den Druck ohne Support | r3 | `plate("A")` |
 | Platte B (Trichter, ohne Support) | Pin-Löcher offen, Pins treten gerade aus, Kontakt vorhanden; Körper kippt ohne Halt von unten; Platz für Kabel hinter den Lötenden durch die Fasen zu klein | **Basis**, mit Mängeln | r3 W, S | `plate("B")` |
 
-## 2b. Festlegung Maßstab und Mulde (Planung, ungetestet)
+## 2b. Nach Steckprobe 2 (r4, Zwei-Lagen-Aufbau)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Taschenhöhe der Kassette | 14,60, alle Buchsen passen, „alles super“ | **bewährt** | r4 K | `HSG_TOL_SAFE` |
+| Schachttiefe | Kassette + 0,30 gut; **+ 0,35 gewünscht** | bewährt, Korrektur + 0,05 | r4 E | `SHAFT_EXTRA_T` |
+| Mulde, Fußfase 0,8, Muldenfase 1,0 | passt alles | bewährt | r4 M | `MULDE_CLR_T`, `sd.CH_F`, `sd.CH_P` |
+| Stecken, Einstecktiefe E | 5,28; Pins treffen ohne Kraft, Gebäude sitzt fest, Durchgang | bewährt | r4 S, D | `dims()["E"]` |
+| Oberplatte 12,6 auf Unterkasten 14,4, Auflage | rundum flach, kein Spalt, bleibt beim Aufstecken liegen | bewährt | r4 U, S | `PP.UK_*` |
+| Zapfen Ø 4, Loch 4,3, Höhe 1,5 | wackelt deutlich (5); **Höhe 2,5** | verworfen (zu kurz) | r4 U | `PP.PIN` |
+| Faden-V (Kanal Ø 2,2, Scheitel 3,4, Trichter R 2,0), 53° und 40° | Faden geht durch keines; Kanal mindestens 1 mm weiter | verworfen (Maße), Winkel offen | r4 F | `P.V_*`, `PP.V` |
+| Kabelnische 24 × 19 mm mit drei Fenstern und Stegen | zu groß, drei Fenster unnötig; **eine Nische 12 × 9,5 mm (halb so groß in beide Richtungen)**, Nutzer druckt mit Support | verworfen | r4 W | `PP.NICHE`, `BC.dock_cuts` |
+| Support | vom Nutzer erlaubt (einmal bereinigen) | Vorgabe | r4 W | – |
+| Rippen und Steg-Anschlag an der Winkelleiste | keine Rückmeldung | offen | r4 W | `PP.ANSCHLAG`, `build2.top_plate` |
+| Fase 0,5 an Bettkanten | kein Feld ausgefüllt | vorläufig | r4 q | `EF_CH_T`, `ENTRY_CH_T` |
+| LED und Adern über das Podest | später | offen | r4 L | – |
+
+Eingefroren: `rounds/r4_steckprobe2/steckprobe2.zip` (Stand Commit `46d1e0a`).
+
+## 2c. Nach der Fachprobe Powerbank (r5, Variante B)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Luft über der Powerbank | **0,8** (war 0,6); Powerbank „minimal dicker“ als 12,6, Nutzer: ca. 0,2 mm mehr Höhe | vorläufig (Dicke ungemessen) | r5 | `PB_CLR_Z` (`plug/power/params.py`) |
+| Dicke der Powerbank | 12,6 laut Datenblatt, echt etwas mehr, **keine Zahl** | offen (Schieblehre) | r5 | `PB_T` |
+| Fachhöhe, Unterkasten, Gesamthöhe | 13,4 / 14,6 / 27,2 (vorher 13,2 / 14,4 / 27,0) | vorläufig, rechnerisch | r5 | `build_concept.FACH_H` |
+| Deckplatte nur aufgelegt | wackelt (Ursache offen: Auflage auf der Powerbank oder fehlender Halt) | offen | r5 | `F_deckplatte.stl` |
+| Zaun, Seitenspiel 0,5, Länge 90 mm | Zaun nach Nutzer nur als Ausschnitt gedruckt; keine Rückmeldung zu Sitz und Länge | offen | r5 | `PB_CLR`, `FENCE` |
+| Kabelkanal 4,4 frei, Fenster mit LEDs, micro-USB, USB-C, Steckerraum 35 | keine Rückmeldung (nicht beanstandet) | offen | r5 | `PB_CABLE`, `PB_PLUG`, `WINDOW_PAD` |
+
+Eingefroren: `rounds/r5_fachprobe/fachprobe.zip` (Stand Commit `3ccceeb`, Luft 0,6).
+
+## 2d. Festlegung Maßstab und Mulde (Planung, ungetestet)
 
 **Alle Werte dieses Abschnitts sind noch nicht getestet** (Liste: [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“); bewährt sind nur die Werte der Tabelle in Abschnitt 2.
 

@@ -201,6 +201,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/views/` | 3D-Seiten | `build_views.py`; `dupont/` (`view.template.html`, `data.json`, `view.html`), `institute/view.template.html` |
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
+| `plug/power/` | Konzept | `build_concept.py`, `concept.template.html`, `concept.html`: Powerbank Intenso XS5000 in der Platte (PLAN Kapitel 6) |
 | `plug/PLAN.md`, `plug/STATUS.md` | handgeschrieben | Plan (Dupont, Institut, JST-Archiv) und diese Datei |
 | `plug/archive/jst/` | archiviert | JST-Variante: `jst.py`, `PLAN.md`, `view.template.html`, `build_view.py`, `view.html`, `data.json`, `stl/`, `preview/` (nicht gepflegt) |
 | `stl/steckmodul_dupont/`, `stl/steckmodul_institut/`, `stl/steckmodul_probe/` | Ausgabe, eingecheckt | STL, `README.txt` und ZIP des Probestücks (`gebaeude.stl` des Instituts nicht) |
@@ -272,6 +273,13 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
 | Planung Steckprobe 2 | `plug/testcase/plan2.html` | https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 |
+| Powerbank-Konzept | `plug/power/concept.html` | https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS |
+| Testbogen Test-Dock | `plug/power/feedback_dock.html` | https://claude.ai/artifact/M6RLKVRrrSKpCS3MNzTkCS |
+| Plan Test-Dock Steckerraum | `plug/power/plan_dock.html` | https://claude.ai/artifact/WrQfVpQH5XAjDYszFyB2rY |
+| Lösungsfindung 1:1300 (Powerbank-Lage, Docks) | `plug/power/layout.html` | https://claude.ai/artifact/Nqphvm7DBGD2fTSJWYiY5x |
+| Plan Fachprobe Powerbank | `plug/power/plan_fach.html` | https://claude.ai/artifact/JgTgE5ckNHmt56F3igkXhK |
+| Testbogen Fachprobe Powerbank | `plug/power/feedback_fach.html` | https://claude.ai/artifact/FKLje3Pq8eSphqzvaohz7W |
+| Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 
@@ -309,8 +317,14 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
 5. Kontaktpunkt der Buchse (`CONTACT` 1,5 mm, `TERM_OFF` 0,5 mm, `HSG_HOLE` 1,0) ist geschätzt; Federzunge und Kräfte sind
    berechnet, nicht gemessen (Zielwerte: Einstecken unter 10 N, Herausziehen 3 bis 8 N). Der Nutzer will das später testen.
 6. Entscheidung zu Umstrukturierung und großen Dateien: getroffen, siehe Abschnitt 6.
-7. Stand: Nachtdruck 1 und 2 und Steckprobe 1 sind gedruckt und ausgewertet (`plug/logbook/rounds/r1` bis `r3`). Als Nächstes: Steckprobe 2 (Plan liegt vor,
-   `plug/logbook/rounds/r4_steckprobe2/summary.md`, Entscheidungskarten offen). Werte in `plug/parts.py` erst nach bewährter Runde übernehmen und dann Probestück,
+7. Stand: Nachtdruck 1 und 2 und Steckprobe 1 sind gedruckt und ausgewertet (`plug/logbook/rounds/r1` bis `r3`). Steckprobe 2 (r4) und Fachprobe Powerbank (r5) sind ausgewertet; als Nächstes Plan Steckprobe 3 (`plug/logbook/next.md`). Werte in `plug/parts.py` erst nach bewährter Runde übernehmen und dann Probestück,
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
+9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
+   Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab 1:1300 (Nutzer, Platzgründe; Platte 114 × 223 mm, 8,5 mm Rand auf dem 24-cm-Hut). Die Kassette passt nur
+   in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus; Seminar und Institut notfalls zusammenlegen, Kassetten-Redesign im separaten Chat); bei 1:1300 bleiben
+   nur 3 Docks frei, Elektronik 50 × 30 mm. Dock mit Kabelnische 24 × 19 mm, Steg-Anschlag; Powerbank-Lage Süd (3 Docks, nicht unter
+   dem Hof) oder Nord (nur Hörsaal-Dock). Faden-V 40° statt 53°. **Steckprobe 2 ist gebaut** (`python3 -m plug.testcase.build2` → `stl/steckmodul_testcase2/`, Prüfbericht dicht und keine Kollisionen; Testbogen
+   `python3 -m plug.testcase.build_feedback2` → `plug/testcase/feedback2.html`, Artifact https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB); Fachprobe als eigene Runde mitgebaut. **Steckprobe 2 gedruckt und ausgewertet:** passt bis auf Faden-V (Kanal zu eng), Zapfen (zu kurz), Nische (eine mittelgroße, drei Fenster unnötig), Schachttiefe + 0,35; Support erlaubt (`rounds/r4_steckprobe2/`). Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
+   **Fachprobe Powerbank (r5) gedruckt und ausgewertet:** Powerbank minimal dicker als 12,6, Luft über der Powerbank 0,6 → 0,8 (`PB_CLR_Z`, Fachhöhe 13,4, Unterkasten 14,6, Gesamthöhe 27,2 mm), Deckplatte wackelte, Zaun nur als Ausschnitt gedruckt, übrige Punkte ohne Rückmeldung (`plug/logbook/rounds/r5_fachprobe/`).
