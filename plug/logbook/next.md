@@ -57,6 +57,8 @@ Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die G
 
 ## Priorität 3
 
+- **Steckprobe 3 (Reserve-Druck, wenn der Drucker frei ist; Nutzer: nicht so wichtig, weil schon viel geklappt hat):** Kassette v4 in Mulde 14,2 mm (Führung, Kippen); Hof-Einsatz bei 1:1300 mit Einführfase und 0,8-mm-Stämmen (1 mm als Rückfall); V1RS (Seminar, Institut) und V2R (Hochhaus) als Probestücke mit Adernweg, Verkettung und Streifendicke 2,2 mm; Paulinum mit v4 (0,9 mm Wand) gegen V1RS. Plan als HTML erst, wenn der Nutzer den Druck anstößt.
+
 - Federzunge in der Mulde: bei CLR 0,10 vielleicht unnötig; „wenn es sich anbietet, mitdrucken, keine Priorität“.
 - Heißkleber als Ausweg dokumentieren: Klecks Heißkleber auf die Winkelleiste, Stempel weglassen oder nachträglich abschneiden.
 - Nach bewährter Steckprobe: Werte in `plug/parts.py` übernehmen, Probestück und Institutsgebäude umbauen (kein Schieber mehr, Einpress-Kassette, Podest), Seiten neu veröffentlichen.

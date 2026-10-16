@@ -77,3 +77,15 @@ Bis 1:1350 trägt der Plan, wenn auch das Paulinum V1RS bekommt (Hochhaus bei 1:
 | Hof-Einsatz | `generate.py`/`innenhof.py`: `POCKET_DEPTH` | 1,0 | 1,0 (unverändert), neu: Einführfase 0,4 bis 0,5 | ohne Zusatztiefe, aber einsetzen wie die Gebäude |
 | Kassettenwahl je Gebäude | neue Tabelle in `params.py` | – | v4 überall, V2R für City-Hochhaus | Festlegung oben |
 | `plug/parts.py` | Kaufteil-Maße und alte Werte | | **bleibt**, bis die Steckprobe 3 die 14,2 mm bestätigt | Regel aus CLAUDE.md |
+
+## Umstellen: jetzt oder erst nach Test
+
+Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil schon viel geklappt hat. Deshalb alles, was nur Planung und Parameter ist, **jetzt** in `plug/testcase/params.py` und im Generator; `plug/parts.py` und alles, was gedruckte Teile festlegt, erst nach Test.
+
+| Jetzt (Parameter, Planung, Generator) | Erst nach Test |
+|---|---|
+| `MULDE_EXTRA_T = 4.0` in `params.py` (F 14,2, Platte 20,2 und alle abgeleiteten Lagen) | `GUIDE` 3,0 → 7,0 in `plug/parts.py` (gleiche Wirkung, aber Quelle der bewährten Werte) |
+| Maßstab 1300 im Generator (`--scale 1300`), README-Block Maßstäbe | Hof-Stämme 0,8 mm als bewährt (Probedruck) |
+| Kassettenwahl je Gebäude als Tabelle in `params.py` | V1RS und V2R als druckfertige Teile (Streifendicke 2,2 mm messen, Adernweg, Verkettung) |
+| Hof-Einführfase 0,4 bis 0,5 mm | Fuß 14,2 mm als bewährt (Führung, Kippen) |
+| Neue Platte mit Docks im Generator (statt 3 mm Grundplatte) | Paulinum v4 mit 0,9 mm Wand |
