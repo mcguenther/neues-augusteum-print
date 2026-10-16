@@ -534,12 +534,12 @@ Chronologie, Passprobe-Ergebnisse und offene Aufgaben: `plug/STATUS.md`.
 
 Die Ausgabe von `plug.dupont`, `plug.institute` und `plug.sample` muss je Teil `dicht=True` und „keine Kollisionen“ zeigen.
 
-## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 4)
+## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 5)
 
 Stand: Konzept, nichts davon ist im Generator der Platte gebaut. Seite `plug/power/concept.html` (`python3 -m plug.power.build_concept`,
-rund 50 s: drei Maßstäbe mit Draufsicht, 3D, Schnitten, Dock, Ecke, Fasen, Passmaßen, Testdrucken). Werte in `plug/power/params.py`; was aus der
+rund 30 s: zwei Maßstäbe mit Draufsicht, 3D, Schnitten, Dock, Ecke, Fasen, Passmaßen, Testdrucken). Werte in `plug/power/params.py`; was aus der
 Steckprobe kommt, liest diese Datei aus `plug/testcase/params.py` und `build_plan2.PROP` (Regel 8 im Logbuch: neue Werte nicht in `parts.py`).
-Stand 4 folgt auf die Rückmeldung zu Stand 3 (Fasen, Maßstab, Lötenden, Faden).
+Stand 4 folgte auf die Rückmeldung zu Stand 3 (Fasen, Maßstab, Lötenden, Faden). Stand 5: **Maßstab 1:1300 gesetzt** (Nutzer, aus Platzgründen; Seminargebäude und Institut notfalls zusammenlegen, kleinere Kassette im separaten Chat), Steckprobe 2 ist gebaut (`python3 -m plug.testcase.build2`, Testbogen `build_feedback2`).
 
 ### 6.1 Aufbau
 
@@ -554,12 +554,13 @@ Stand 4 folgt auf die Rückmeldung zu Stand 3 (Fasen, Maßstab, Lötenden, Faden
 | Maßstab | Platte B × T | Hut | Kassette passt in | Material (geschätzt) |
 |---|---|---|---|---|
 | 1:1000 | 144 × 283 mm | 21,3 mm je Seite über | alle 6 | etwa 274 g |
-| **1:1200** | 122 × 240 mm | passt knapp (239,5 mm, 0,2 mm Rand je Seite) | 4 von 6 (nicht Seminargebäude, City-Hochhaus) | etwa 202 g |
+| 1:1200 | 122 × 240 mm | passt knapp (239,5 mm, 0,2 mm Rand je Seite) | 4 von 6 (nicht Seminargebäude, City-Hochhaus) | etwa 202 g |
 | 1:1250 | 118 × 231 mm | 4,5 mm Rand je Seite | 4 von 6 | etwa 189 g |
+| **1:1300** (gesetzt) | 114 × 223 mm | 8,5 mm Rand je Seite | 4 von 6, Dock frei nur an 3 (Paulinum, Neues Augusteum, Institut) | etwa 178 g |
 
 1:1200 ist der erste runde Maßstab, bei dem die Platte auf den Hut passt (15 % kleiner als 1:1000 ergäbe 1:1176 mit 244 mm, zu lang). Ab 1:1100 passt die
 Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäude und das City-Hochhaus; größte Breite des Seminargebäudes 20,5 mm (1:1000),
-17,1 mm (1:1200). Offene Entscheidung: 1:1200 mit vier LED-Gebäuden, 1:1000 mit sechs und einer Platte über dem Hut, oder eine schmalere Kassette.
+17,1 mm (1:1200). Entscheidung des Nutzers: **1:1300**. Dort bleibt bei der besten Lage (Südkante, 3 % unter dem Hof) nur an Paulinum, Neuem Augusteum und Institut ein freies Dock; das Hörsaalgebäude verliert seines an die Powerbank (Nordkante: nur Hörsaal), und die Elektronik muss auf 50 × 30 mm statt 60 × 35 mm schrumpfen (`ESP_BOXES` in `plug/power/params.py`). Auflösung: Seminargebäude und Institut zusammenlegen, schmalere Kassette (separater Chat).
 
 ### 6.3 Dock: Platz hinter den Lötenden
 
@@ -575,7 +576,7 @@ Kassette (13,6 × 29,6 mit 1,2 mm Wand) nicht mehr in das schlanke Seminargebäu
 - 90 × 63 × 12,6 mm (Datenblatt, ungemessen), Anschlüsse an einer Schmalseite. Anschlussseite zur Plattenkante, 35 mm Steckerraum für einen geraden USB-A-Stecker,
   Kabelkanal 6 mm an der Längsseite, Fach 126 × 70 × 13,2 mm, Fenster in der Kante (46 mm), Stößel 4 × 4 zur Taste, Zaun 1,6 × 5, Spiel 0,5 je Seite, 0,6 Luft oben.
 - Lage: Bei 1:1000 Nordkante, 48 % unter dem Innenhof, alle 6 Docks frei. Bei 1:1200 Nordkante 34 % unter dem Hof, aber ohne freies Dock für das Paulinum
-  (3 von 4); Südkante 0 % unter dem Hof, alle 4 Docks frei. Bei 1:1250 gleich (Nord 31 %, Süd 1 %). Die Suche nimmt die Lage mit den meisten freien Docks.
+  (3 von 4); Südkante 0 % unter dem Hof, alle 4 Docks frei. Bei 1:1250 gleich (Nord 31 %, Süd 1 %). Bei 1:1300 Südkante 3 Docks (Paulinum, Neues Augusteum, Institut; Elektronik nur 50 × 30), Nordkante nur das Hörsaalgebäude. Die Suche nimmt die Lage mit den meisten freien Docks.
 - Strom und Schaltplan: eigener Chat (5 V / 2,1 A gesamt, Standby nach 30 s unter etwa 50 mA).
 
 ### 6.5 Faden zum Doktorhut
@@ -597,5 +598,5 @@ Taschen, Nische und Zapfenlöchern, Pinlöcher 0,15, Zapfenspitze 0,5, Innenhof-
   Steg-Anschlag, Zapfen, Faden an zwei Ecken (**53° gegen 40°**) und die Fasen.
 - **T2 Fachprobe Powerbank:** Unterkasten-Ausschnitt etwa 135 × 79 mm mit Zaun, Fenster, Stößel, Kanal und Deckplatte.
 - Später T3: Stoß der Druckteile.
-- Offene Entscheidungen: Maßstab und Kassette für die schlanken Gebäude, Powerbank-Lage (Süd oder Nord), Faden-Neigung, Fachprobe jetzt oder nach dem Nachmessen,
-  Doktorhut messen (bestimmt 1:1200 oder 1:1250).
+- Offene Entscheidungen: Kassette für die schlanken Gebäude (separater Chat), Hörsaalgebäude oder drei andere Docks an der Powerbank-Kante, Elektronik 50 × 30, Faden-Neigung (T1 in Steckprobe 2 testet 53° und 40°), Fachprobe nicht mitgebaut,
+  Doktorhut messen (24 cm ist angenommen).

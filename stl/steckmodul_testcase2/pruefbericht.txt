@@ -1,0 +1,35 @@
+Steckprobe 2: Kassette 13.50 × 29.44 × 17.10 (Tasche 14.60), Gebäude 24 × 38 × 18.60 (Schacht 17.40), Oberplatte 40.0 × 67.4 × 12.6, Unterkasten 14.4 hoch (gesamt 27.0)
+V-Kanäle: ['(-15.6, -21.4) y 53°', '(15.6, -19.9) y 40°', '(-16.1, 31.6) y 53°', '(16.1, 30.1) y 40°']
+
+Teile (Druckausrichtung, Bett z = 0):
+  S2_cassette_x2.stl   33.0 ×   29.4 ×  17.1 mm   12.4 cm³  ≈  7.6 g  dicht=True
+      waagerechte Decken: z=14.6: 8 mm² (30.1 × 2.9)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  S2_building.stl    24.0 ×   38.6 ×  18.6 mm    9.0 cm³  ≈  7.2 g  dicht=True
+      waagerechte Decken: z=17.4: 98 mm² (13.6 × 29.6); z=0.6: 24 mm² (23.8 × 37.8); z=0.4: 24 mm² (23.4 × 37.4); z=0.2: 24 mm² (23.0 × 37.0)   Überhang flacher als 45° zur Senkrechten: 3 mm²
+  S2_top_plate.stl   40.0 ×   68.0 ×  12.6 mm   23.6 cm³  ≈ 14.3 g  dicht=True
+      waagerechte Decken: z=1.6: 382 mm² (24.0 × 25.1); z=0.2: 76 mm² (39.6 × 67.0); z=0.4: 76 mm² (40.0 × 67.4); z=6.6: 37 mm² (24.8 × 38.8)   Überhang flacher als 45° zur Senkrechten: 30 mm²
+  S2_under_box.stl   40.0 ×   68.0 ×  15.9 mm    9.0 cm³  ≈ 11.3 g  dicht=True
+      waagerechte Decken: z=0.4: 43 mm² (40.0 × 67.4); z=0.2: 42 mm² (39.6 × 67.0)   Überhang flacher als 45° zur Senkrechten: 1 mm²
+
+Prüfung der Passungen (Überschneidungsvolumen, mm³; muss 0 sein):
+  Kassette 1 im Mini-Gebäude                                                0.000  ok
+  Kassette 2 (Reserve) im Mini-Gebäude                                      0.000  ok
+  Buchse (Nennmaß) bündig in der Kassette                                   0.000  ok
+  Buchse (Nennmaß) an den Schultern der Kassette                            0.000  ok
+  Mini-Gebäude in der Mulde der Oberplatte                                 -0.000  ok
+  Winkelleiste in der Oberplatte (ohne die Crush-Rippen)                    0.000  ok
+  Winkelleiste und Buchse (Pins in den Kammern)                             0.000  ok
+  Winkelleiste und Kassette                                                 0.000  ok
+  Winkelleiste und Unterkasten (Steg bleibt unter dem Körper)               0.000  ok
+  Oberplatte auf dem Unterkasten (nur Auflage)                              0.000  ok
+  Kassette und Unterkasten                                                  0.000  ok
+  Dockzone hinter dem Steg ist frei (Nische: nichts steht im Weg)           0.000  ok
+  Kontrolle: Winkelleiste 1,25 mm tiefer stößt an den Steg an               0.000  ok
+  Zapfen im Zapfenloch der Oberplatte (Gleitspiel 0,15)                     0.000  ok
+  Kontrolle: Zapfen um 0,4 versetzt stößt an der Lochwand an                0.000  ok
+  Kontrolle: Schacht mit Spiel −0,05 stößt an der Kassette an               0.000  ok
+  Buchse bündig: unten bei z=-10.20 (Fußunterkante -10.20), Pin-Spitze bei z=-4.92, E = 5.28 mm; an den Schultern (Luft 0.05) E = 5.23 mm
+  -> keine Kollisionen
+Material ≈ 40 g, Zeit normal ≈ 5.0 h
+Material ≈ 40 g, Zeit schnell ≈ 1.8 h
+Bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 2.2 h

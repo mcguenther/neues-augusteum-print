@@ -4,7 +4,7 @@ Stand 4 gegenüber Stand 3 (Rückmeldung des Nutzers):
 
 - Fasen: Gebäudefuß unten 0,8 (`institute.foot_solid`) und Mulde oben 1,0 (`institute.pocket_cuts`) wie im Probestück, dazu Bettkanten 0,5
   an Oberplatte, Unterkasten, Eckaussparungen, Mündungen und Zapfenlöchern; Zapfen oben 0,5; Innenhof-Teil unten 0,4.
-- Maßstab: drei Varianten (1:1000 Referenz, 1:1200, 1:1250); der Doktorhut (24 cm, ungemessen) soll die Platte tragen, nicht umgekehrt.
+- Maßstab: zwei Varianten (1:1000 Referenz, 1:1300 gewählt); der Doktorhut (24 cm, ungemessen) soll die Platte tragen, nicht umgekehrt.
 - Dock: hinter den Lötenden eine Kabelnische in der Oberplatte (24 mm breit, 8 + 16 mm lang, mit Stegen), darunter freier Unterkasten
   ohne Zaun und Stützen; die Docks liegen nicht über der Powerbank. Der Anschlag ist ein Steg unter dem Körper der Leiste.
 - Faden: V-Kanal 40° statt 53° zur Waagerechten (Böschung 1,2 statt 0,75).
@@ -84,8 +84,7 @@ def n_layers(ch):
 def slab_ch(poly, z0, z1, ch):
     """Platte poly von z0 bis z1, untere Kante (am Bett) mit Fase ch in Schichtstufen (wie institute.foot_solid)."""
     n = n_layers(ch)
-    parts = [G.extrude(poly.buffer(-(ch - L * (k + 0.5))), z0 + L * k - (0.01 if k == 0 else 0), z0 + L * (k + 1) + 0.01)
-             for k in range(n)]
+    parts = [G.extrude(poly.buffer(-(ch - L * (k + 0.5))), z0 + L * k, z0 + L * (k + 1) + 0.01) for k in range(n)]
     parts.append(G.extrude(poly, z0 + L * n, z1))
     return G.union(parts)
 
@@ -198,21 +197,30 @@ def place_box(inner, blocked, near, size, step=1.0):
 # Fadenführung: V-Kanal in der Oberplatte, Eckaussparung im Unterkasten
 # --------------------------------------------------------------------------
 V = PP.V
-V_HS = V["apex"] * V["slope"]                 # Abstand Eintritt bis Scheitel entlang der Achse
+V_HS = V["apex"] * V["slope"]                 # Abstand Eintritt bis Scheitel entlang der Achse (Standard)
 V_ANGLE = math.degrees(math.atan2(1.0, V["slope"]))
 
 
-def v_geom(cx, cy, axis):
-    ent = [(cx, cy - V_HS), (cx, cy + V_HS)] if axis == "y" else [(cx - V_HS, cy), (cx + V_HS, cy)]
+def v_hs(slope=None):
+    """Abstand Eintritt bis Scheitel entlang der Achse für die Böschung slope (Standard: V["slope"])."""
+    return V["apex"] * (V["slope"] if slope is None else slope)
+
+
+def v_geom(cx, cy, axis, slope=None):
+    hs = v_hs(slope)
+    ent = [(cx, cy - hs), (cx, cy + hs)] if axis == "y" else [(cx - hs, cy), (cx + hs, cy)]
     funnels = unary_union([Point(p).buffer(V["entry_r"], 24) for p in ent])
     return ent, funnels, funnels.buffer(V["wall"], join_style=2).envelope
 
 
-def place_vs(outline, blocked):
-    """Je Ecke ein V so nah an der Ecke wie möglich (Achse senkrecht zur nächsten Kante), Wände ≥ 1,4, frei von Mulden und Hof."""
+def place_vs(outline, blocked, slopes=None):
+    """Je Ecke ein V so nah an der Ecke wie möglich (Achse senkrecht zur nächsten Kante), Wände ≥ 1,4, frei von Mulden und Hof.
+    slopes: Böschung je Ecke (Reihenfolge SW, SO, NW, NO); Standard V["slope"]."""
     x0, y0, x1, y1 = outline.bounds
     out = []
-    for sx, sy, cxo, cyo in ((1, 1, x0, y0), (-1, 1, x1, y0), (1, -1, x0, y1), (-1, -1, x1, y1)):
+    for i, (sx, sy, cxo, cyo) in enumerate(((1, 1, x0, y0), (-1, 1, x1, y0), (1, -1, x0, y1), (-1, -1, x1, y1))):
+        sl = V["slope"] if slopes is None else slopes[i]
+        yv = v_hs(sl) + V["entry_r"] + V["wall"]       # Mitte des V von der Kante: Trichter mit Wand zur Kante
         best = None
         for axis in ("y", "x"):
             for da in np.arange(0, 60, 0.5):
@@ -220,10 +228,10 @@ def place_vs(outline, blocked):
                     if best is not None and da + db >= best[0]:
                         break
                     if axis == "y":
-                        cx, cy = cxo + sx * (V["entry_r"] + V["wall"] + db), cyo + sy * (V["y"] + da)
+                        cx, cy = cxo + sx * (V["entry_r"] + V["wall"] + db), cyo + sy * (yv + da)
                     else:
-                        cx, cy = cxo + sx * (V["y"] + da), cyo + sy * (V["entry_r"] + V["wall"] + db)
-                    ent, fun, foot = v_geom(cx, cy, axis)
+                        cx, cy = cxo + sx * (yv + da), cyo + sy * (V["entry_r"] + V["wall"] + db)
+                    ent, fun, foot = v_geom(cx, cy, axis, sl)
                     if outline.contains(foot) and not foot.intersects(blocked):
                         best = (da + db, cx, cy, axis, ent, fun, foot)
         _, cx, cy, axis, ent, fun, foot = best
@@ -236,17 +244,18 @@ def place_vs(outline, blocked):
             nx0, nx1 = (x0 - 1, nx1) if sx > 0 else (nx0, x1 + 1)
             if (ny0 - y0 if sy > 0 else y1 - ny1) < 6:
                 ny0, ny1 = (y0 - 1, ny1) if sy > 0 else (ny0, y1 + 1)
-        out.append(dict(c=(cx, cy), axis=axis, ent=ent, funnels=fun, foot=foot, notch=box(nx0, ny0, nx1, ny1)))
+        out.append(dict(c=(cx, cy), axis=axis, ent=ent, funnels=fun, foot=foot, notch=box(nx0, ny0, nx1, ny1), slope=sl))
     return out
 
 
 def v_solid(v, deck):
-    """Hohlraum eines V: zwei Schenkel (40°), runder Scheitel, Trichter am Bett."""
+    """Hohlraum eines V: zwei Schenkel (Böschung v["slope"]), runder Scheitel, Trichter am Bett."""
     ld, r = V["leg_d"], V["entry_r"]
     apex_z = deck + V["apex"]
+    hs = v_hs(v.get("slope"))
     parts = []
     for s in (-1, 1):
-        t0, z0, t1, z1 = s * V_HS * (1 + 0.5 / V["apex"]), deck - 0.5, 0.0, apex_z
+        t0, z0, t1, z1 = s * hs * (1 + 0.5 / V["apex"]), deck - 0.5, 0.0, apex_z
         n = np.array([-(z1 - z0), (t1 - t0)])
         n = n / np.linalg.norm(n) * ld / 2
         poly = [(t0 + n[0], z0 + n[1]), (t1 + n[0], z1 + n[1]), (t1 - n[0], z1 - n[1]), (t0 - n[0], z0 - n[1])]
@@ -515,17 +524,23 @@ def variant(scale, h=H0, dk=DK):
         fp_c = fach_parts(f_c)
         docks_c = place_docks(cands, unary_union([fp_c["fach"].buffer(1.0), v_zone]), inner.buffer(-0.5), dk)
         zones_c = [d["zone"].buffer(2.0) for d in docks_c if d["ok"]]
-        try:                                # Elektronik zuletzt, in den Platz, den Fach, V und Docks lassen
-            elec_c = place_box(inner.buffer(-1), unary_union([fp_c["fach"].buffer(4.0, join_style=2), v_zone] + zones_c), fp_c["far"], PP.ESP_BOX, 2.0)
-        except (TypeError, IndexError):
+        elec_c = esp_c = None               # Elektronik zuletzt, in den Platz, den Fach, V und Docks lassen; erst Soll-, dann kleineres Maß
+        for sz in PP.ESP_BOXES:
+            try:
+                elec_c = place_box(inner.buffer(-1), unary_union([fp_c["fach"].buffer(4.0, join_style=2), v_zone] + zones_c), fp_c["far"], sz, 2.0)
+                esp_c = sz
+                break
+            except (TypeError, IndexError):
+                continue
+        if elec_c is None:
             continue
         ok = sum(1 for d in docks_c if d["ok"])
         fails = [d["title"] for d in docks_c if not d["ok"] and not d["why"].startswith("Kassette")]
         if side_c not in sides or ok > sides[side_c]["ok"]:
             sides[side_c] = dict(ok=ok, fail=fails, under_hof=round(ov / fp_c["body"].area * 100))
-        if best is None or ok > best[0]:
-            best = (ok, side_c, f_c, fp_c, elec_c, docks_c, ov)
-    _, side, f, fp, elec, docks, _ = best
+        if best is None or ok > best[0] or (ok == best[0] and esp_c[0] > best[7][0]):
+            best = (ok, side_c, f_c, fp_c, elec_c, docks_c, ov, esp_c)
+    _, side, f, fp, elec, docks, _, esp = best
 
     # Stützen und Zapfen
     zones = [d["zone"].buffer(3) for d in docks if d["ok"]]
@@ -617,7 +632,7 @@ def variant(scale, h=H0, dk=DK):
         fach_poly=coords(fp["fach"], sh), body=coords(fp["body"], sh), niche=coords(fp["niche"], sh),
         channel=coords(fp["channel"], sh), plug=coords(fp["plug"], sh), rod=coords(fp["rod"], sh),
         window=coords(fp["window"], sh), cable=[[p[0] + sh[0], p[1] + sh[1]] for p in fp["cable"]],
-        elec=coords(elec, sh), posts=[dict(r=coords(r, sh)[0], pin=i in pins) for i, r in enumerate(posts)],
+        elec=coords(elec, sh), esp=list(esp), posts=[dict(r=coords(r, sh)[0], pin=i in pins) for i, r in enumerate(posts)],
         vs=[dict(c=[v["c"][0] + sh[0], v["c"][1] + sh[1]], axis=v["axis"],
                  ent=[[p[0] + sh[0], p[1] + sh[1]] for p in v["ent"]], notch=coords(v["notch"], sh)[0]) for v in vs],
         docks=[dock_out(d) for d in docks], frame=dict(ang=f.ang, sgn=f.sgn, c=[f.c[0] + sh[0], f.c[1] + sh[1]]), side=side,
@@ -685,7 +700,7 @@ def main():
     print("Dock:", {k: round(v, 2) for k, v in dk.items()})
     variants = [variant(sc, h, dk) for sc in PP.SCALES]
     data = dict(
-        heights=h, dock=dk, variants=variants, scales=list(PP.SCALES), rec=1200,
+        heights=h, dock=dk, variants=variants, scales=list(PP.SCALES), rec=1300,
         pb=dict(L=PP.PB_L, W=PP.PB_W, T=PP.PB_T, g=PP.PB_G, wh=PP.PB_WH, imax=PP.PB_IMAX, sleep=PP.PB_SLEEP_S,
                 keep=PP.PB_KEEP_MA, ports=PP.PB_PORTS, port_v=PP.PB_PORT_V, clr=PP.PB_CLR, clr_z=PP.PB_CLR_Z, plug=PP.PB_PLUG,
                 cable=PP.PB_CABLE, rod=PP.ROD),
@@ -694,7 +709,7 @@ def main():
         v=V, v_hs=V_HS, v_angle=round(V_ANGLE, 1),
         v_plan2=dict(PP.V_PLAN2, angle=round(math.degrees(math.atan2(1.0, PP.V_PLAN2["slope"])), 1)),
         niche=PP.NICHE, ch=dict(bed=PP.CH_BED, foot=sd.CH_F, pocket=sd.CH_P, hof=PP.CH_HOF, pin=PP.CH_PIN),
-        hut=PP.HUT, esp=PP.ESP_BOX, bed=PP.BED, mat=dict(shell=PP.SHELL, infill=PP.INFILL, pla=PP.PLA),
+        hut=PP.HUT, esp=PP.ESP_BOX, esp_boxes=[list(b) for b in PP.ESP_BOXES], bed=PP.BED, mat=dict(shell=PP.SHELL, infill=PP.INFILL, pla=PP.PLA),
         fits=fit_rows(dk), fasen=fasen_rows(),
     )
     tpl = open(TEMPLATE, encoding="utf-8").read()

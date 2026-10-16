@@ -66,10 +66,11 @@ CH_PIN = 0.5                                        # Spitze der Zentrierzapfen
 
 # ---- Elektronik, Doktorhut
 ESP_BOX = (60.0, 35.0)    # S  ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter
+ESP_BOXES = (ESP_BOX, (50.0, 30.0))   # Rückfall bei knappem Platz (1:1300): nur ESP32-DevKit 51 × 28 mm ohne Beiwerk (S)
 HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemessen
 
 # ---- Druck und Material
 BED = 250.0               # Druckbett Bambu A1 (256, mit Rand)
-SCALES = (1000, 1200, 1250)   # 1000 zur Referenz; 1200: erster runder Maßstab, bei dem die Platte auf den Hut passt
+SCALES = (1000, 1300)   # 1000 zur Referenz; 1300 aus Platzgründen gewählt (Nutzer), Platte passt dann mit Rand auf den Hut
 PLA = 1.24                # g/cm³
 SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken/Böden), 15 % Füllung

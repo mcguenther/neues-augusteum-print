@@ -272,6 +272,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
 | Planung Steckprobe 2 | `plug/testcase/plan2.html` | https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 |
 | Powerbank-Konzept | `plug/power/concept.html` | https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS |
+| Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
@@ -312,8 +313,9 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Grundplatte mit Powerbank (Konzept, Stand 4): Oberplatte 12,6 über hohlem Unterkasten 14,4 (27,0 mm), Werte der Steckprobe in `plug/power/params.py`.
-   Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab für den 24-cm-Hut: 1:1200 (122 × 240 mm), dort passt die Kassette nur
-   in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus). Dock mit Kabelnische 24 × 19 mm, Steg-Anschlag; Powerbank-Lage Süd (alle Docks frei, nicht unter
-   dem Hof) oder Nord (34 % unter dem Hof, Paulinum ohne Dock). Faden-V 40° statt 53°. Vorschlag nächster Druck: T1 Steckprobe 2 im Zwei-Lagen-Aufbau,
-   T2 Fachprobe. Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.
+9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,4 (27,0 mm), Werte der Steckprobe in `plug/power/params.py`.
+   Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab 1:1300 (Nutzer, Platzgründe; Platte 114 × 223 mm, 8,5 mm Rand auf dem 24-cm-Hut). Die Kassette passt nur
+   in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus; Seminar und Institut notfalls zusammenlegen, Kassetten-Redesign im separaten Chat); bei 1:1300 bleiben
+   nur 3 Docks frei, Elektronik 50 × 30 mm. Dock mit Kabelnische 24 × 19 mm, Steg-Anschlag; Powerbank-Lage Süd (3 Docks, nicht unter
+   dem Hof) oder Nord (nur Hörsaal-Dock). Faden-V 40° statt 53°. **Steckprobe 2 ist gebaut** (`python3 -m plug.testcase.build2` → `stl/steckmodul_testcase2/`, Prüfbericht dicht und keine Kollisionen; Testbogen
+   `python3 -m plug.testcase.build_feedback2` → `plug/testcase/feedback2.html`, Artifact https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB); Fachprobe nicht mitgebaut. Details: `plug/PLAN.md` Kapitel 6, Seite `plug/power/concept.html`.

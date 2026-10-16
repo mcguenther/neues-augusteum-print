@@ -157,10 +157,10 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 4</div>
+  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 5</div>
   <h1>Powerbank in der Grundplatte</h1>
-  <p class="lead">Stand 4 prüft die Fasen, setzt den Maßstab so, dass die Platte auf den Doktorhut passt, gibt den Lötenden eine große Kabelnische und
-    führt den Faden flacher durch die Ecken. Die Zahlen kommen aus den OSM-Grundrissen und den Werten der Steckprobe.</p>
+  <p class="lead">Stand 5 setzt den Maßstab auf 1:1300 (Platte passt mit Rand auf den Doktorhut), prüft, welche Docks dort noch frei bleiben, und hält die Fasen, die große Kabelnische und den flacheren Faden. Stand 4 prüfte die Fasen, gab den Lötenden eine große Kabelnische und
+    führte den Faden flacher durch die Ecken. Die Zahlen kommen aus den OSM-Grundrissen und den Werten der Steckprobe.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -348,13 +348,13 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   set('fachTxt', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm'); set('pbDims', fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1) + ' mm');
   set('imaxTxt', fmt(PB.imax, 1) + ' A'); set('keepTxt', PB.keep + ' mA'); set('sleepTxt', PB.sleep + ' s');
 
+  const nOk = (v) => v.docks.filter((d) => d.ok).length;
   const nFit = (v) => Object.values(v.cand).filter((c) => c > 0).length;
   const gsum = (v) => v.material.ober[0] + v.material.uk[0];
   const v1 = V[1000];
   $('answer').innerHTML =
     `<div class="rec"><span class="lbl">Maßstab für den Hut</span><span class="big">1:${rec.scale}</span>
-      <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt knapp auf den 24-cm-Hut (${fmt(-rec.hut.over, 2)} mm Rand je Seite); 1:1250 lässt
-      ${fmt(-V[1250].hut.over, 1)} mm. Bei 1:1000 stünde die Platte ${fmt(v1.hut.over, 1)} mm über. <b>Preis:</b> Die Kassette passt nur noch in ${nFit(rec)} von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus).</span></div>
+      <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt mit ${fmt(-rec.hut.over, 1)} mm Rand je Seite auf den 24-cm-Hut (bei 1:1000 stünde sie ${fmt(v1.hut.over, 1)} mm über). <b>Preis:</b> LED-Docks sind nur an ${nOk(rec)} von 6 Gebäuden frei (${rec.docks.filter((d) => d.ok).map((d) => short[d.slug]).join(', ')}); ${rec.docks.filter((d) => !d.ok).map((d) => short[d.slug] + (d.why.startsWith('Kassette') ? ' (Kassette passt nicht in den Fuß)' : ' (Powerbank liegt im Weg)')).join(', ')} bleiben ohne. Die Elektronik schrumpft auf ${rec.esp[0]} × ${rec.esp[1]} mm (Soll ${D.esp[0]} × ${D.esp[1]}).</span></div>
     <div><span class="lbl">Fasen</span><span class="big">geprüft</span>
       <span class="small">Fußfase ${fmt(CHD.foot)} und Muldenfase ${fmt(CHD.pocket)} sind jetzt im Modell, dazu ${fmt(CHD.bed)} an allen Bettkanten und Mündungen. Drei Stellen liegen im Generator und fehlen noch (Tabelle unten).</span></div>
     <div><span class="lbl">Lötenden</span><span class="big">${fmt(NI.w, 0)} × ${fmt(DK.y_slot - DK.niche_end, 0)} mm Nische</span>
@@ -368,7 +368,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   const NOTE = (v) => {
     const parts = [];
     if (v.scale === 1000) parts.push('Referenz, wie bisher. Die Kassette passt in alle sechs Gebäude und die Powerbank liegt an der Nordkante zu ' + v.under_hof + ' % unter dem Innenhof, aber die Platte ist ' + fmt(v.plate[1], 0) + ' mm lang und steht ' + fmt(v.hut.over, 1) + ' mm je Seite über den Hut.');
-    else parts.push('Die Platte passt auf den 24-cm-Hut (' + fmt(v.plate[1], 1) + ' mm lang). Die Kassette passt in ' + nFit(v) + ' von 6 Gebäuden; ' + v.docks.filter((d) => !d.ok && d.why.startsWith('Kassette')).map((d) => short[d.slug]).join(' und ') + ' bleiben ohne LED-Dock.');
+    else parts.push('Die Platte passt auf den 24-cm-Hut (' + fmt(v.plate[1], 1) + ' mm lang). Die Kassette passt in ' + nFit(v) + ' von 6 Gebäuden (' + v.docks.filter((d) => !d.ok && d.why.startsWith('Kassette')).map((d) => short[d.slug]).join(' und ') + ' zu eng); ein Dock ist an ' + nOk(v) + ' Gebäuden frei' + (v.esp[0] < D.esp[0] ? '; die Elektronik hat nur ' + v.esp[0] + ' × ' + v.esp[1] + ' mm statt ' + D.esp[0] + ' × ' + D.esp[1] + ' mm' : '') + '.');
     parts.push('Die Powerbank liegt an der ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side] + 'kante, zu ' + v.under_hof + ' % unter dem Innenhof.');
     const alt = Object.entries(v.sides).filter(([k]) => k !== v.side).map(([k, q]) => 'Alternative ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[k] + 'kante: ' + q.ok + ' von ' + v.n_possible + ' Docks frei' + (q.fail.length ? ' (kein Platz für ' + q.fail.map((t) => t.split(' ')[0]).join(', ') + ')' : '') + ', ' + q.under_hof + ' % unter dem Hof.');
     parts.push(...alt);
@@ -607,11 +607,11 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     ['', 'T3 · später: Stoß der Druckteile', 'Streifen über den Stoß von Oberplatte und Unterkasten', ['Versetzte Stöße und Zapfen: bleibt die Platte eben?', 'erst nach T1']]
   ].map(([c, t, m, l]) => `<div class="card ${c}"><h3>${t}</h3><span class="meta">${m}</span><ul>${l.map((x) => '<li>' + x + '</li>').join('')}</ul></div>`).join('');
   $('decide').innerHTML = [
-    '<b>Maßstab:</b> 1:1200 mit nur vier LED-Gebäuden (Seminargebäude und City-Hochhaus ohne Dock), oder 1:1000 mit allen sechs und einer Platte, die über den Hut ragt? Dritter Weg: eine schmalere Kassette für die schlanken Gebäude (eigene Planung).',
-    '<b>Powerbank-Lage bei 1:1200:</b> Südkante (alle vier möglichen Docks frei, Powerbank liegt nicht unter dem Innenhof) oder Nordkante (unter dem Innenhof, aber Institut und Paulinum ohne freies Dock)?',
+    '<b>Maßstab 1:1300</b> (gesetzt): Seminargebäude und City-Hochhaus nehmen die Kassette nicht auf; das Hörsaalgebäude verliert sein Dock an die Powerbank. Seminargebäude und Institut zusammenlegen (ein Dock) und die Kassette für die schlanken Gebäude neu entwerfen (eigener Chat), oder die Powerbank in die Nordkante und das Hörsaalgebäude statt drei anderer anschließen?',
+    '<b>Elektronik:</b> bei 1:1300 bleiben nur 50 × 30 mm statt 60 × 35 mm. Reicht ein ESP32-DevKit ohne Beiwerk, oder muss das Zubehör (Pegelwandler, Kondensator, Schalter) auf eine Huckepack-Platine?',
     '<b>Faden-Neigung:</b> 40° (flacher, mehr Überhang) in T1 gegen 53° testen, ja?',
     'Fachprobe T2 mitdrucken oder erst Powerbank und USB-Stecker nachmessen?',
-    'Doktorhut messen (Kantenlänge, Knopf in der Mitte): bestimmt, ob 1:1200 oder 1:1250.'
+    'Doktorhut messen (Kantenlänge, Knopf in der Mitte): 24 cm ist angenommen; bestimmt den Rand der Platte bei 1:1300.'
   ].map((x) => '<li>' + x + '</li>').join('');
 
   /* ---------- 3D ---------- */
