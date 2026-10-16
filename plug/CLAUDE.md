@@ -73,5 +73,4 @@ Ergebnistext im Chat ein → **Auswertung**: erst Erkenntnisse zusammenfassen un
 
 ## HTML-Seiten präsentieren
 
-Plan-, Test- und Ansichtsseiten (HTML) immer mit dem **Artifact-Tool** veröffentlichen (privat), damit sie sich in der Claude-Code-App öffnen; `SendUserFile` allein reicht nicht. Bei einer Änderung dieselbe Datei erneut veröffentlichen (gleiche URL). Link in der Antwort nennen und in `plug/STATUS.md` (Tabelle der Artifacts) eintragen. Vorher den Skill `artifact-design` laden.
-
+Plan-, Test- und Ansichtsseiten immer als privates Artifact veröffentlichen, Link in `plug/STATUS.md` (Tabelle der Artifacts) eintragen; Regel und Skill `artifact-design`: Wurzel-`CLAUDE.md`.

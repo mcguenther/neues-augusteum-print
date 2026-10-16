@@ -11,6 +11,7 @@ sobald man dort Dateien liest:
 | `plug/CLAUDE.md` | Steckmechanismus (LED-Gebäude): Befehlstabelle, Maße, Testdruck-Modus, Logbuch, Artifact-Regeln |
 | `data/CLAUDE.md` | Rohdaten, Farben, Fassaden-Zonen, Filament-Profile |
 | `werkzeuge/farbmessung/CLAUDE.md` | Fassadenfarben aus Fotos (Registrierung, Messung, Alt/neu-Berichte) |
+| `vorschau/CLAUDE.md` | Bildkatalog: welches Vorschaubild man wozu im Chat zeigt |
 
 ## Arbeitsweise
 
@@ -130,16 +131,7 @@ Der Nutzer will in jedem Chat einen visuellen Eindruck bekommen. Deshalb:
    nicht nur Pfade nennen. Vorher selbst mit `Read` ansehen und prüfen, ob die
    Darstellung plausibel ist.
    - Überblick: `vorschau.png` (Gesamtmodell 1:1500, Laserscan-Variante, farbig)
-   - README-Bilder (farbig, transparent, ohne Beschriftung): `vorschau/readme/`
-   - Vergleich der Datenquellen: `vorschau/vergleich_1zu1000.png` (alle Einzelgebäude,
-     OSM | LoD2 | Laserscan nebeneinander), `vorschau/vergleich/<name>_1zu1000.png`,
-     `vorschau/vergleich_farbig_ost.png`
-   - Alle Einzelgebäude einer Quelle: `vorschau/<quelle>/einzelgebaeude_1zu1000.png`
-   - Geändertes Gebäude bzw. geänderte Datei: `vorschau/<quelle>/<maßstab>/<name>.png`
-   - Farben: `vorschau/farben.png`, Gegenüberstellung Foto | alt | neu `vorschau/farbvergleich/index.html`
-     (und die Bilder darin)
-   - Profile mit 3/4 Filamenten: `vorschau/filamente_vergleich.png` (alle Farben | 4 | 3, je
-     Gesamtmodell, Seminargebäude-Bänder, Paulinum-Fenster), `vorschau/laserscan/1zu1500/komplett_campus_mit_extras_farbig_ost_<N>filamente.png`
+   - Welches Bild wozu (README-Bilder, Quellenvergleich, Einzelgebäude, Farben, Filament-Profile): Katalog in `vorschau/CLAUDE.md`
    - Bei Änderungen nach Möglichkeit Vorher/Nachher zeigen (alte Version vor der
      Änderung rendern, z. B. nach `$SCRATCHPAD` mit `--out`).
 3. Auch bei reinen Fragen zu einem Modell das zugehörige Vorschaubild zeigen.
@@ -151,13 +143,9 @@ Die gerenderten Bilder in `vorschau/` werden mit committet.
 
 ## README
 
-`README.md` ist normaler Text und darf von Hand bearbeitet werden – nur die Blöcke
-zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` (Titelbild, Quellenvergleich,
-Maßstäbe, Gebäudegalerie mit Maßen, Grundplatte) werden von `readme.py` überschrieben.
-`generate.py`/`preview.py` rufen es nach dem Rendern auf; die Bilder dafür
-(`preview.readme_assets`) entstehen farbig aus den `*_objekte.3mf`. Titel und
-Kurzbeschreibung der Gebäude stehen in `BUILDINGS` (`generate.py`), neue Gebäude
-erscheinen automatisch in der Galerie. Nach Änderungen die README mit
+`README.md` darf von Hand bearbeitet werden, nur die Blöcke zwischen `<!-- AUTO:name -->` und `<!-- /AUTO:name -->` überschreibt
+`readme.py` (Ablauf und Quellen der Bilder: Docstring dort; Titel und Kurzbeschreibung der Gebäude: `BUILDINGS` in `generate.py`,
+neue Gebäude erscheinen automatisch in der Galerie). `generate.py`/`preview.py` rufen es nach dem Rendern auf. Nach Änderungen die README mit
 Chromium/Playwright (hell und dunkel) rendern und ansehen.
 
 ## HTML-Seiten präsentieren

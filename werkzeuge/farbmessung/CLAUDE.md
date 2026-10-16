@@ -1,6 +1,6 @@
 # Hinweise für `werkzeuge/farbmessung/` (Fassadenfarben aus Fotos)
 
-Wird geladen, sobald Dateien in diesem Ordner gelesen werden. Die Skripte der Messung selbst liegen im Repo-Wurzelverzeichnis:
+Wird geladen, sobald Dateien in diesem Ordner gelesen werden. Allgemeines: `CLAUDE.md` im Repo-Wurzelverzeichnis; Zonen, Farben, Profile: `data/CLAUDE.md`; Bildkatalog: `vorschau/CLAUDE.md`. Die Skripte der Messung selbst liegen im Repo-Wurzelverzeichnis:
 `farbmessung.py` (Messung, 45 KB), `registrierung.py` (Katalog und Ausrichtung), `skyline.py` und `kamera.py` (Pose, Projektion),
 `szene.py` (Modell, Sonne), `vergleich.py`, `fassaden.py` (Zonen), `farben.py` (Zusammenführung). Daten: `data/messfotos.json`
 (Katalog), `data/messung.json` (Ergebnis), `data/fassaden/<slug>.json` (Zonen und Farben), `FOTOQUELLEN.md` (Urheber, Lizenzen).

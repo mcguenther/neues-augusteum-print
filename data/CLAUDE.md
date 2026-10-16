@@ -1,6 +1,6 @@
 # Hinweise für `data/` (Rohdaten, Farben, Fassaden-Zonen)
 
-Wird geladen, sobald Dateien unter `data/` gelesen werden. Allgemeines steht in der `CLAUDE.md` im Repo-Wurzelverzeichnis.
+Wird geladen, sobald Dateien unter `data/` gelesen werden. Allgemeines steht in der `CLAUDE.md` im Repo-Wurzelverzeichnis. Querverweise: Fotomessung `werkzeuge/farbmessung/CLAUDE.md`, Bildkatalog `vorschau/CLAUDE.md`, Steckmechanismus `plug/CLAUDE.md`.
 
 ## Inhalt
 
