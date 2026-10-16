@@ -126,7 +126,7 @@ def svg_kassette():
     """Höhen: Kassette, Buchse bündig, Schacht und Anschlagrand (längs durch die Tasche, z nach oben)."""
     S = 11.0
     top, tol, depth = kass_top(), PROP["HSG_TOL"], shaft_depth()
-    g = G(S, 70, 20 + 19.5 * S)
+    g = G(S, 134, 20 + 19.5 * S)
     stop = P.STOP_T
     w = 13.5
     g.rect(-2.2, 0.0, 0.0, depth, "d-bld")
@@ -146,7 +146,7 @@ def svg_kassette():
     g.text(w + 3.9, top + 0.15 - 0.35, "Luft %s" % de(PROP["SHAFT_EXTRA"]), "dlb", "start")
     g.text(w / 2, depth + stop / 2 - 0.35, "Anschlagrand %s" % de(stop, 1), "dls")
     g.text(w / 2, -0.9, "bündig mit der Fußunterkante", "dls")
-    return g.svg(440, int(20 + 19.5 * S + 24), "Kassette im Schacht mit Höhen")
+    return g.svg(500, int(20 + 19.5 * S + 24), "Kassette im Schacht mit Höhen")
 
 
 # --------------------------------------------------------------------------
