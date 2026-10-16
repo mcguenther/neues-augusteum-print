@@ -24,6 +24,8 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 Maßstab 1:1250, Platte höchstens 230 × 230 mm, Mulde überall 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, City-Hochhaus V2R. Offen: Institutsgebäude nur 4,4 mm Luft über der LED, Seminargebäude Wand 0,9 mm, Fuß 14,2 mm ungetestet. Steckprobe 2 muss die tiefere Mulde (14,2 mm) prüfen, wenn sie gedruckt wird.
 
+**To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.
+
 ## Priorität 1: Steckprobe 2 (r4)
 
 Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass er mit einem Controller leuchtet.

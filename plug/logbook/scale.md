@@ -13,6 +13,9 @@ Entscheidungen des Nutzers im Chat; Rechnung und Grafiken: `plug/scale1176/page.
 | Standard-Kassette | **v4** (LED strahlt nach oben), überall wo sie passt | Nutzer |
 | City-Hochhaus | **V2R** (zwei LEDs, hochkant, Konzept aus `cassettes.md`), weil v4 dort nicht passt | Nutzer |
 | Innenhof | eigenes Einsteckteil, Bäume angedruckt (bestätigt: „Bäume andrucken ist super“) | Nutzer, Seite Abschnitt Innenhof |
+| Maßstab (bestätigt) | **1:1250 bleibt** (1:1200 ergäbe eine Platte von etwa 237 × 124 mm, über der 230-mm-Grenze); 1,3 mm Reserve auf 230 mm sind in Ordnung; Drehen der Platte (auch diagonal) bringt nichts | Nutzer |
+| LED-Streifen | nur der 10-mm-Streifen, wie immer geplant; Kassettenwahl je Gebäude bleibt (v4 überall, V2R Hochhaus) | Nutzer |
+| Hof-Einsatz | **ohne die 4 mm Zusatztiefe** (1 mm unter, 1,9 mm über der Oberfläche wie bisher), aber **einsetzen wie die Gebäude: mit Einführfase** (0,4 bis 0,5 mm wie `ENTRY_CH_T`/`EF_CH_T`); Stämme erst mit 0,8 mm im Probedruck testen, 1 mm als Rückfall | Nutzer |
 | Institutsgebäude | **v4 beibehalten und testen** (Luft 4,4 mm über der LED wird im Test beurteilt) | Nutzer |
 | Seminargebäude | **v4 beibehalten und ausprobieren** (Wand 0,9 mm) | Nutzer |
 
@@ -42,3 +45,21 @@ Größte Wand um den Schacht bei Grundriss und Höhe zusammen und Luft von der L
 - **Platte 20,2 mm dick und 230 mm lang:** Druckzeit und Material, Auflage auf dem A1-Bett mit Reserve 1,3 mm; Verzug bei der langen Seite.
 - **Steckprobe für 1:1250:** Kassette v4 mit Podest in Mulde 14,2 mm; Mini-Gebäude im neuen Maßstab; Probedruck V2R fürs Hochhaus.
 - **Werte umstellen:** nach bewährtem Test `params.py` und `parts.py` auf F 14,2 setzen, Generator für den Fuß mit Mulde 14,2 und für die Platte mit allen Docks.
+- **To-do (anderer Chat): Gebäude als Hohlkörper.** Jedes Gebäude braucht einen Hohlraum, in dem die Aufnahme für die Kassette (Schacht im Fuß, Lichtfenster, Dachanschlag) sitzt; heute erzeugt `generate.py` Vollkörper.
+
+## Werte, die für die Festlegung umzustellen sind (noch nicht umgesetzt)
+
+| Wert | Wo | alt | neu | Warum |
+|---|---|---|---|---|
+| Zusatztiefe der Mulde | neue Konstante `MULDE_EXTRA_T` in `plug/testcase/params.py`, geht in `F = layer_up(g1 + GUIDE + CH_F + CH_P + MULDE_EXTRA_T)` ein (gleichwertig: `GUIDE` 3,0 → 7,0, erst nach bewährtem Test in `parts.py`) | 0 | 4,0 | LED sitzt 4 mm tiefer unter dem Dach |
+| Fußhöhe / Muldentiefe F | abgeleitet, `dims()["F"]` | 10,2 | 14,2 | folgt aus der Zusatztiefe |
+| Plattendicke | abgeleitet, `dims()["plate_t"]` | 16,2 | 20,2 | Dock und Kabelraum rücken mit nach unten |
+| Lage von Winkelleiste, Pin-Spitze, Kabelraum | abgeleitet (`z_hb`, `z_bb`, `z_tip`, `z_lt`) | −10,6 / −12,6 / −4,92 / −16,2 | −14,6 / −16,6 / −8,92 / −20,2 | alles unter dem Muldenboden hängt an F |
+| Kassettenoberkante über der Platte | abgeleitet, `kass_top` | 6,75 | 2,75 | gleiche Kassette, Fuß 4 mm länger |
+| Dach über der Kassette (Gebäudehöhe mindestens) | abgeleitet, `box_top` | 7,95 | 3,95 | wie oben; die Gebäude brauchen weniger Höhe |
+| Einstecktiefe E, Muldenboden, Kassettenmaße, Schachtspiel, Fasen | `E` 5,28, `CEIL_T` 0,4, `KASS_CLR_T` 0,06, `ENTRY_CH_T` 0,4 | | **unverändert** | bewährte Werte gelten weiter; `box_h` (Fußunterkante bis Dach) bleibt 18,15 |
+| Maßstab | `python3 generate.py --scale 1250`, README-Block Maßstäbe | 1000 und 1500 | 1250 zusätzlich | neue Vorgabe 230 × 230 mm |
+| Plattendicke im Generator | `generate.py`: `PLATE_THICKNESS` | 3,0 | 20,2 (aus `params.dims()`), neue Platte mit Docks | die heutige Grundplatte hat weder Muldentiefe noch Docks |
+| Hof-Einsatz | `generate.py`/`innenhof.py`: `POCKET_DEPTH` | 1,0 | 1,0 (unverändert), neu: Einführfase 0,4 bis 0,5 | ohne Zusatztiefe, aber einsetzen wie die Gebäude |
+| Kassettenwahl je Gebäude | neue Tabelle in `params.py` | – | v4 überall, V2R für City-Hochhaus | Festlegung oben |
+| `plug/parts.py` | Kaufteil-Maße und alte Werte | | **bleibt**, bis die Steckprobe 3 die 14,2 mm bestätigt | Regel aus CLAUDE.md |
