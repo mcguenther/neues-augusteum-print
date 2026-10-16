@@ -22,7 +22,7 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 ## Festgelegt am 2026-10-16 (Planung): siehe [`scale.md`](scale.md)
 
-Maßstab 1:1250, Platte höchstens 230 × 230 mm, Mulde überall 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, City-Hochhaus V2R. Offen: Institutsgebäude nur 4,4 mm Luft über der LED, Seminargebäude Wand 0,9 mm, Fuß 14,2 mm ungetestet. Steckprobe 2 muss die tiefere Mulde (14,2 mm) prüfen, wenn sie gedruckt wird.
+Maßstab **1:1300** (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14,2, Platte 20,2), Kassette v4 (Paulinum, Neues Augusteum, Hörsaal), V1RS (Seminar, Institut), V2R (Hochhaus). Offen: V1RS und V2R sind Konzepte ohne Test, Fuß 14,2 mm ungetestet, Hof bei 1:1300 neu rechnen. Steckprobe 2 muss die tiefere Mulde (14,2 mm) prüfen, wenn sie gedruckt wird.
 
 **To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.
 

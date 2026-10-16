@@ -82,8 +82,21 @@ svg .gok { stroke: var(--ok); } svg .gwarn { stroke: var(--warn); } svg .gno { s
 <section aria-labelledby="fest">
   <h2 id="fest">Festgelegt (Stand der Planung)</h2>
   <div class="note" style="background:var(--ok-soft)">
-    <p><b>Maßstab 1:1250</b>, Platte höchstens 230 × 230 mm (119,7 × 228,7 mm). <b>Mulde überall 4 mm tiefer</b> (14,2 statt 10,2 mm, Platte 20,2 mm). <b>Kassette v4</b> als Standard, weil die LED nach oben strahlt, wo sie passt. <b>City-Hochhaus: V2R</b>, weil v4 dort nicht passt.</p>
-    <p><b>Institutsgebäude</b> (nur 4,4 mm Luft über der LED, Richtwert 8 mm ist eine Annahme) und <b>Seminargebäude</b> (nur 0,9 mm Wand) bleiben mit v4 und werden im Test beurteilt. Der <b>Innenhof</b> kommt als eigenes Einsteckteil mit angedruckten Bäumen, ohne die 4 mm Zusatztiefe, aber mit Einführfase wie die Gebäude (Stämme zuerst mit 0,8 mm im Probedruck). Maßstab 1:1250 bestätigt, nur der 10-mm-Streifen. Alles ist Planung, nichts gedruckt. Eintrag im Logbuch: <span class="mono">plug/logbook/scale.md</span>.</p>
+    <p><b>Maßstab 1:1300</b> (zuletzt geändert von 1:1250), Platte 115,6 × 220,8 mm, einteilig. <b>Mulde überall 4 mm tiefer</b> (14,2 statt 10,2 mm, Platte 20,2 mm). <b>Kassetten:</b> v4 im Paulinum, Neuen Augusteum und Hörsaalgebäude (die LED strahlt nach oben), <b>V1RS</b> im Seminar- und Institutsgebäude, <b>V2R</b> im City-Hochhaus. <b>Innenhof</b> als eigenes Einsteckteil mit angedruckten Bäumen, ohne die 4 mm Zusatztiefe, aber mit Einführfase wie die Gebäude; Stämme zuerst mit 0,8 mm im Probedruck. Nur der 10-mm-Streifen.</p>
+    <p>Alles ist Planung, nichts gedruckt. V1RS und V2R sind Konzepte ohne Test. <b>Die Abschnitte darunter rechnen noch mit 1:1250</b> (Plattenmaße, Tabellen, Schnitt). Für 1:1300 gilt die Tabelle unten. Logbuch: <span class="mono">plug/logbook/scale.md</span>.</p>
+  </div>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Plan bei 1:1300" style="margin-top:14px">
+  <table style="min-width:560px">
+    <thead><tr><th>Gebäude bei 1:1300</th><th>Kassette</th><th class="num">Wand mm</th><th class="num">Luft LED bis Dach mm</th><th>Urteil</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Paulinum</th><td>v4 (oder V1RS)</td><td class="num">0,9</td><td class="num">18,3</td><td><span class="pill warn">knapp</span></td></tr>
+      <tr><th scope="row">Neues Augusteum</th><td>v4</td><td class="num">≥ 3,0</td><td class="num">9,1</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Hörsaalgebäude</th><td>v4</td><td class="num">≥ 3,0</td><td class="num">11,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Seminargebäude</th><td>V1RS (v4: 0,6 mm, passt nicht)</td><td class="num">≥ 3,0</td><td class="num">10,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Institutsgebäude</th><td>V1RS (v4: Luft 4,1 mm)</td><td class="num">≥ 3,0</td><td class="num">10,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">City-Hochhaus</th><td>V2R</td><td class="num">≥ 3,0</td><td class="num">80,4</td><td><span class="pill ok">passt</span></td></tr>
+    </tbody>
+  </table>
   </div>
 </section>
 

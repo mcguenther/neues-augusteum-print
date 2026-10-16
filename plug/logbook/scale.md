@@ -1,4 +1,4 @@
-# Maßstab, Mulden und Kassettenwahl (festgelegt am 2026-10-16)
+# Maßstab, Mulden und Kassettenwahl (festgelegt am 2026-10-16, Maßstab am Ende auf 1:1300 geändert)
 
 Entscheidungen des Nutzers im Chat; Rechnung und Grafiken: `plug/scale1176/page.html` (Artifact https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx, Ordnername von der ersten Fassung bei 1:1176).
 **Alles Planung, nichts gedruckt, keine STL.** Werte in `plug/parts.py` und `plug/testcase/params.py` sind noch nicht umgestellt.
@@ -10,16 +10,17 @@ Entscheidungen des Nutzers im Chat; Rechnung und Grafiken: `plug/scale1176/page.
 | Größe der Platte | höchstens 230 × 230 mm (Druckbett mit Reserve) | Nutzer |
 | Maßstab | **1:1250** (Grenze für 230 mm ist 1:1242); Platte 119,7 × 228,7 mm, einteilig | `plug/scale1176/page.html`, Abschnitt Maßstab |
 | Muldentiefe | **überall 4 mm tiefer**: F 14,2 statt 10,2 mm, Platte 20,2 statt 16,2 mm; die LED liegt dadurch 4 mm tiefer gegenüber dem Dach | Nutzer, Vorschlag aus dem senkrechten Schnitt |
-| Standard-Kassette | **v4** (LED strahlt nach oben), überall wo sie passt | Nutzer |
+| Standard-Kassette | **v4** (LED strahlt nach oben), überall wo sie passt (bei 1:1300: Neues Augusteum, Hörsaalgebäude, Paulinum; Paulinum nur 0,9 mm Wand, knapp, Wechsel auf V1RS möglich) | Nutzer |
 | City-Hochhaus | **V2R** (zwei LEDs, hochkant, Konzept aus `cassettes.md`), weil v4 dort nicht passt | Nutzer |
 | Innenhof | eigenes Einsteckteil, Bäume angedruckt (bestätigt: „Bäume andrucken ist super“) | Nutzer, Seite Abschnitt Innenhof |
-| Maßstab (bestätigt) | **1:1250 bleibt** (1:1200 ergäbe eine Platte von etwa 237 × 124 mm, über der 230-mm-Grenze); 1,3 mm Reserve auf 230 mm sind in Ordnung; Drehen der Platte (auch diagonal) bringt nichts | Nutzer |
+| **Maßstab (aktuell)** | **1:1300**, Platte 115,6 × 220,8 mm einteilig; dafür V1RS in Institutsgebäude und Seminargebäude | Nutzer, nach Rechnung V1RS bei 1:1300 |
+| Maßstab (überholt) | 1:1250 war zwischenzeitlich bestätigt (Platte 119,7 × 228,7 mm); (1:1200 ergäbe eine Platte von etwa 237 × 124 mm, über der 230-mm-Grenze); 1,3 mm Reserve auf 230 mm sind in Ordnung; Drehen der Platte (auch diagonal) bringt nichts | Nutzer |
 | LED-Streifen | nur der 10-mm-Streifen, wie immer geplant; Kassettenwahl je Gebäude bleibt (v4 überall, V2R Hochhaus) | Nutzer |
 | Hof-Einsatz | **ohne die 4 mm Zusatztiefe** (1 mm unter, 1,9 mm über der Oberfläche wie bisher), aber **einsetzen wie die Gebäude: mit Einführfase** (0,4 bis 0,5 mm wie `ENTRY_CH_T`/`EF_CH_T`); Stämme erst mit 0,8 mm im Probedruck testen, 1 mm als Rückfall | Nutzer |
-| Institutsgebäude | **v4 beibehalten und testen** (Luft 4,4 mm über der LED wird im Test beurteilt) | Nutzer |
-| Seminargebäude | **v4 beibehalten und ausprobieren** (Wand 0,9 mm) | Nutzer |
+| Institutsgebäude | **V1RS** (Wand ≥ 3,0 mm, Luft 10,2 mm bei 1:1300); Rückfall v4 nur bei 1:1250 (Luft 4,4 mm) | Nutzer, ersetzt „v4 testen“ |
+| Seminargebäude | **V1RS** (Wand ≥ 3,0 mm, Luft 10,2 mm bei 1:1300); v4 hätte bei 1:1300 nur 0,6 mm Wand und passt nicht | Nutzer, ersetzt „v4 ausprobieren“ |
 
-## Rechnung für diese Festlegung (Maßstab 1:1250, Mulde +4 mm, Wand 0,8 mm Mindestmaß)
+## Rechnung bei 1:1250 (Stand vor der Änderung auf 1:1300; Mulde +4 mm, Wand 0,8 mm Mindestmaß)
 
 Größte Wand um den Schacht bei Grundriss und Höhe zusammen und Luft von der LED-Mitte bis zum Dach an der höchsten Stelle, an der der Schacht passt. LED v4: 2,9 mm über der Platte (6,9 − 4).
 
@@ -32,10 +33,23 @@ Größte Wand um den Schacht bei Grundriss und Höhe zusammen und Luft von der L
 | Institutsgebäude | v4 | 1,9 | 7,3 | **4,4** |
 | City-Hochhaus | V2R | ≥ 3,0 | 95,7 | 84,1 |
 
+## Rechnung bei 1:1300 (aktuell, Mulde +4 mm, Wand 0,8 mm Mindestmaß)
+
+| Gebäude | Kassette | Wand mm | Luft LED bis Dach mm |
+|---|---|---|---|
+| Paulinum | v4 (Alternative V1RS: ≥ 3,0 / 22,4) | 0,9 (knapp) | 18,3 |
+| Neues Augusteum | v4 | ≥ 3,0 | 9,1 |
+| Hörsaalgebäude | v4 | ≥ 3,0 | 11,2 |
+| Seminargebäude | **V1RS** (v4: 0,6, passt nicht) | ≥ 3,0 | 10,2 |
+| Institutsgebäude | **V1RS** (v4: 1,6 / Luft 4,1) | ≥ 3,0 | 10,2 |
+| City-Hochhaus | V2R | ≥ 3,0 | 80,4 |
+
+Bis 1:1350 trägt der Plan, wenn auch das Paulinum V1RS bekommt (Hochhaus bei 1:1350 nicht geprüft). **V1RS**: Streifen quer, zwei LEDs (vorn und hinten), Unterbau 19,2 × 6,4 mm, 27,7 mm hoch, Verkettung am Blattrand vorbei; die LED strahlt seitlich; Konzept, Adernweg und Streifendicke 2,2 mm ungetestet. Der Hof (Maße, Stämme 0,8 mm) ist bei 1:1300 neu zu rechnen; die Zahlen der Seite für Hof, Platte und Tabellen gelten bei 1:1250.
+
 ## Offen aus dieser Festlegung
 
-- **Institutsgebäude (v4 wird getestet, Rückfall V1 oder tiefer):** nur 4,4 mm Luft über der LED, der Schacht darf nur unter dem niedrigen Dachteil (7,3 mm hoch) liegen. Richtwert 8 mm ist eine Annahme, ungetestet. Möglichkeiten: Kassette dort anders legen, V1 (Luft 12,3 mm bei +4 mm, LED dort 6,9 mm über der Platte, strahlt aber seitlich), oder nur dort tiefer.
-- **Seminargebäude (v4 wird ausprobiert):** Wand nur 0,9 mm (knapp).
+- **Institutsgebäude (jetzt V1RS; Hinweis galt für v4):** nur 4,4 mm Luft über der LED, der Schacht darf nur unter dem niedrigen Dachteil (7,3 mm hoch) liegen. Richtwert 8 mm ist eine Annahme, ungetestet. Möglichkeiten: Kassette dort anders legen, V1 (Luft 12,3 mm bei +4 mm, LED dort 6,9 mm über der Platte, strahlt aber seitlich), oder nur dort tiefer.
+- **Seminargebäude (jetzt V1RS; Hinweis galt für v4):** Wand nur 0,9 mm (knapp).
 - **Hochhaus V2R:** Konzept, Streifendicke 2,2 mm nicht gemessen, Adern und Verkettung ungetestet; das Hochhaus braucht eine Kassette V2R mit Schacht 12,96 × 6,4 mm und Gebäude mindestens 23,9 mm hoch (es ist 116 mm hoch). Die LED blickt dort seitlich, nicht nach oben.
 - **Fuß 14,2 mm** statt 10,2 mm ist nicht getestet (Führung in der Mulde, Kippen). Dock, Kabelraum, Muldenboden und Platte rücken 4 mm tiefer; Platte 20,2 mm dick.
 - Schächte sind noch Vollkörper im Generator (kein Hohlraum, kein Lichtfenster im Gebäude).
