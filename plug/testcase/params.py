@@ -29,6 +29,16 @@ MULDE_CLR_T = 0.10      # Fuß in der Mulde (Fuß-Lehre: 0,10 und 0,15 gut, 0,20
 STEP_H_T = 1.8          # Stufe für das Lötende wie für Körperhöhe 1,8 (2,0 und 1,8 liegen flach)
 BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
+# ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
+# Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
+# Die Zusatztiefe ist reine Führungslänge im Fuß (Pins, Buchse und Kassette bleiben wie getestet).
+MULDE_EXTRA_T = 4.0
+SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchstens 230 × 230 mm)
+# Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
+CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
+            "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
+HOF_CH_T = 0.4          # Einführfase am Hof-Einsatz (unten) und an der Aussparung (oben), wie bei den Gebäuden; keine Zusatztiefe (Hof 1 mm unter der Oberfläche)
+
 # ---- Fasen
 ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)
 EF_CH_T = 0.4           # Fase an Bettkanten von Steckteilen (0,3 ließ einen leichten Wulst)
@@ -64,10 +74,11 @@ def kass_dims(tol=None):
     return k
 
 
-def dims():
-    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0."""
+def dims(extra=0.0):
+    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0.
+    extra: Zusatztiefe der Mulde (mm); 0 = getestete Steckprobe 1, MULDE_EXTRA_T = Planwert (dims_plan())."""
     g1 = sd.HDR_UP - CEIL_T
-    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P)
+    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P + extra)
     z_hb = -F - CEIL_T                       # Oberkante Winkelleistenkörper
     z_bb = z_hb - sd.HDR_BODY                # Unterkante
     z_tip = z_hb + sd.HDR_UP
@@ -86,6 +97,11 @@ def dims():
                 y_off=y_off, yb=yb, y_tail=y_tail, y_kass0=y_kass0, y_kass1=y_kass1, yc=yc, kass_top=top,
                 kass_h=k["top"], box_top=top + STOP_T, box_h=F + top + STOP_T,
                 guide=F - g1 - sd.CH_F - sd.CH_P, step=sd.step_z(z_hb, STEP_H_T, sd.STEP_CLR))
+
+
+def dims_plan():
+    """Maßkette mit der festgelegten Zusatztiefe (F 14,2, Platte 20,2 mm)."""
+    return dims(MULDE_EXTRA_T)
 
 
 def footprint():

@@ -89,3 +89,12 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 | Kassettenwahl je Gebäude als Tabelle in `params.py` | V1RS und V2R als druckfertige Teile (Streifendicke 2,2 mm messen, Adernweg, Verkettung) |
 | Hof-Einführfase 0,4 bis 0,5 mm | Fuß 14,2 mm als bewährt (Führung, Kippen) |
 | Neue Platte mit Docks im Generator (statt 3 mm Grundplatte) | Paulinum v4 mit 0,9 mm Wand |
+
+### Umgesetzt am 2026-10-16 (linke Spalte)
+
+- `plug/testcase/params.py`: `MULDE_EXTRA_T = 4.0`, `dims(extra)` und `dims_plan()` (F 14,2, Platte 20,2; `dims()` ohne Argument bleibt unverändert, die eingefrorene Steckprobe 1 ist damit identisch, STL geprüft), `SCALE_PLAN = 1300`, `CASSETTE` (v4: Paulinum, Neues Augusteum, Hörsaal; V1RS: Seminar, Institut; V2R: Hochhaus), `HOF_CH_T = 0.4`.
+- `plug/campus.py` (`python3 -m plug.campus`, etwa 20 s): neue Steckplatte 115,6 × 220,8 × 20,2 mm mit Mulde und Dock je Gebäude und Hof-Aussparung (1 mm tief, Fuge 0,15, Einführfase oben 0,4) nach `stl/steckmodul_campus/steckplatte_1zu1300.stl`, Bilder nach `vorschau/steckmodul_campus/`; Lagen in `plug/scale1176/placements_1300.json`. Ausgabe: dicht, keine Kollisionen (Löträume liegen frei und in der Platte).
+- `innenhof.py`: Einführfase 0,4 mm an der Unterkante des Hof-Einsatzes; keine Zusatztiefe.
+- `generate.py`: Maßstab 1:1300 gehört zu den Standard-Maßstäben; `readme.py` und `preview.py` zeigen 1:1300 im Maßstäbe-Block.
+- Wände: Paulinum v4 nur 0,8 mm (Mindestmaß), alle anderen 1,2 mm. Die Mulde-Fase (1 mm) am Rand reicht bei Hörsaal- und Seminargebäude um wenige mm² über den Grundriss; unkritisch, bei Hohlkörper-Gebäuden prüfen.
+- Noch nicht umgesetzt: Gebäude mit Fuß und Schacht (Hohlkörper, anderer Chat), Kabelführung zwischen den Docks, Faden-Lasche.
