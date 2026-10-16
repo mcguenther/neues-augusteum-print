@@ -40,6 +40,18 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 
 Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die Gebäude zurückgestellt, bis der Maßstab feststeht. Danach: Probedruck (Kassetten V1/V2 plus Mini-Gebäude auf dem bisherigen L-Fuß), Werte nach `params.py`, STL, Testbogen. Offene Punkte: Adernweg V1, Blattdicke V2, Licht (Hotspot im schmalen Gebäude), Anschlagleiste im Schacht.
 
+## Hohlkörper-Gebäude (Plan `plug/hollow/plan.html`, wartet auf das Abnicken)
+
+Gebäude im Generator als Hohlkörper mit dünner Wand (Wand 0,8, Dach 0,8, unten offen, keine Lichtfenster). Studie in `plug/hollow/` (`shell.py`, `study.py`, `build_plan.py`), noch **nicht** in `generate.py`; keine STL, keine Prototypen, solange offen ist:
+
+1. Wandstärke 0,4 / 0,8 / 1,2: Lichtprobe mit Controller (Schritt L in Steckprobe 2), bis dahin Parameter 0,8.
+2. Decke des Hörsaalgebäudes (flaches Dach, Brücke 18 mm; alle anderen höchstens 11 mm): glatt, Gewölbe 45° oder Rippe; Brückenprobe 10 / 14 / 18 / 24 mm.
+3. Ausgabe: neuer Ordner `einzeln_hohl/` neben den massiven Dateien (Vorschlag) oder Ersatz.
+4. Fuß und Kassette: Schale ab Plattenoberseite, Fuß voll aus `plug/`; hängt an Kassettenwahl und Maßstab (zurückgestellt).
+5. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm), Farbe der Wand: ungetestet.
+
+Ergebnis der Studie (Laserscan 1:1500): alle 6 Gebäude hohl und dicht, Schale 14 bis 21 % des Volumens; mit 0,8 statt 1,2 mm Wand kommt nur das Institutsgebäude bei 1:1000 mit V2 neu in die Passung.
+
 ## Priorität 2
 
 | Thema | Idee | Bedingung |
@@ -54,5 +66,5 @@ Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die G
 - Federzunge in der Mulde: bei CLR 0,10 vielleicht unnötig; „wenn es sich anbietet, mitdrucken, keine Priorität“.
 - Heißkleber als Ausweg dokumentieren: Klecks Heißkleber auf die Winkelleiste, Stempel weglassen oder nachträglich abschneiden.
 - Nach bewährter Steckprobe: Werte in `plug/parts.py` übernehmen, Probestück und Institutsgebäude umbauen (kein Schieber mehr, Einpress-Kassette, Podest), Seiten neu veröffentlichen.
-- Licht durch die Wand (Lichtfenster) mit LED prüfen, sobald die LED sitzt.
+- Licht durch die Wand (Lichtfenster bzw. dünne Wand des Hohlkörpers) mit LED prüfen, sobald die LED sitzt.
 - Paket `plug/testcase/` in `plug/steckprobe/` umbenennen (nur, wenn gewünscht).
