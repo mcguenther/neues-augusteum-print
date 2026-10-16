@@ -54,6 +54,7 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L25 | Im Ergebnistext fehlte, welche Platte (A oder B) gedruckt wurde | Variante immer abfragen und im Ergebnistext nennen; Version der ZIP nennen | r3 |
 | L26 | Ein Generatorlauf überschreibt die Dateien in `stl/` | getesteten Satz einfrieren (ZIP im Rundenordner, Commit-Hash) | r3 |
 | L28 | Schrauben nicht vorhanden; Befestigung des Bodens am Hut ist genäht | Deckel und Platte mit Löchern für Fäden planen, keine Schrauben; vor der Planung fragen, welche Verbindungsmittel vorhanden sind | r3 |
+| L29 | Faden zunächst durch Löcher geplant, die oben austreten würden; gemeint war ein Austritt an der Unterseite durch eine Lasche | Bei Verbindungsmitteln den Weg des Fadens oder Teils ganz abfragen (Eintritt, Austritt, welche Seite zugänglich) und im Plan als Schnitt zeigen | r3 Nachtrag |
 | L27 | Wertänderungen in `plug/parts.py` würden Probestück und Institut brechen (sie rechnen mit Schieber) | neue Werte in `plug/<paket>/params.py`; `parts.py` erst nach bewährter Runde ändern | r3 |
 
 ## Vorab-Checkliste vor jeder STL

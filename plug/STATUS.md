@@ -246,6 +246,7 @@ plug/check.py, plug/build_all.py   rufen die Module per `python3 -m` auf
 | `python3 -m plug.series2` (rund 2 min) | `stl/steckmodul_night2/*` (alte STL dort werden gelöscht), `vorschau/steckmodul_night2/*` |
 | `python3 -m plug.decision.build` | `plug/decision/page.html` |
 | `python3 -m plug.testcase.build_plan` | `plug/testcase/plan.html`, `vorschau/steckmodul_testcase/kassette_v4.png` (über `plug.testcase.kassette`) |
+| `python3 -m plug.testcase.build_plan2` | `plug/testcase/plan2.html` (Plan Steckprobe 2: Faden-Lasche, Kassette, Schacht, Entscheidungen) |
 | `python3 -m plug.feedback.build_night2` | `plug/feedback/page_night2.html` |
 | `python3 -m plug.build_all` | alles obige nacheinander |
 
@@ -266,6 +267,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Nachtdruck 2 | `plug/feedback/page_night2.html` | https://claude.ai/artifact/BFNzrL5xcJZBBbW3ULtvzz |
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
+| Planung Steckprobe 2 | `plug/testcase/plan2.html` | https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

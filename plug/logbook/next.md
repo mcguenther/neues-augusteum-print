@@ -1,6 +1,6 @@
 # Nächste Drucke und offene Punkte
 
-Stand: nach Steckprobe 1 (r3, 2026-10-16). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
+Stand: nach Steckprobe 1 (r3, 2026-10-16); Plan Steckprobe 2 liegt vor (`plug/testcase/plan2.html`), wartet auf das Abnicken. Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
 ## Geklärt (2026-10-16)
@@ -8,12 +8,16 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 - **Platte B** ist die getestete Platte (W, S, D); die Druckmängel gehören zu Platte A. Basis ist B.
 - **Schrauben entfallen**; Deckel und Platte bekommen Löcher für den Faden, der beides andrückt.
 - **Buchsen nachmessen entfällt**; das Delta reicht (Tasche mindestens 0,1 über 14,45).
+- **Faden:** tritt **nicht an der Oberseite** aus. An der Unterseite eine breite Einführung (Trichter); der Faden läuft von unten **schräg durch eine Lasche** der Platte und
+  **schräg nach unten wieder heraus** (V-Kanal an den vier Ecken). Umsetzung im Plan Steckprobe 2: Kanal Ø 2,2 mit 0,15 mm Überhang je Schicht (Platte-B-Böschung, etwa 53° zur
+  Waagerechten), Scheitel 3,4 mm über der Unterseite, Trichter Radius 2,0, Mitte x ±15,6, Wände mindestens 1,4 mm, Ausschnitte im Deckel über den Trichtern
+  (`plug/testcase/build_plan2.py`, `PROP`). Noch abzunicken: Ausschnitte im Deckel in Ordnung? Lasche wie verstanden?
 
-## Offene Fragen an den Nutzer (vor dem Plan klären)
+## Offene Fragen an den Nutzer (im Plan Steckprobe 2 als Entscheidungskarten)
 
-1. **Faden:** Läuft er durch Löcher an den vier Ecken von Deckel **und** Platte (durchgehend, 16,2 mm), und wo tritt er oben aus (Muldenrand, Gebäude steht dazwischen)? Oder sind „Körper“ die Gebäudewände?
-2. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Ist das mit dem Faden-Deckel erledigt, oder soll die Tasche ihn auch ohne Deckel halten?
-3. **Name** „Steckprobe“ in Ordnung?
+1. **Körper der Winkelleiste kippt** (Platte B, ohne Halt von unten): Rippen an der hinteren Taschenwand, Heißkleber oder beides (Karte K)?
+2. **Name** „Steckprobe“ in Ordnung?
+3. Deckel-Ausschnitte an den Ecken (Karte F) und Stempel nur als Anschlag mit 1,2 mm Luft (Karte D).
 
 ## Priorität 1: Steckprobe 2 (r4)
 
@@ -24,10 +28,10 @@ Ziel: die in r3 gefundenen Mängel beheben und den Aufbau so weit bringen, dass 
 | Kassette | Taschenhöhe 14,55 bis 14,60 (Delta aus r3 K, kein Nachmessen); die Variante mit 14,15 entfällt; Gesamthöhe so anpassen, dass die Schachttiefe passt | r3 K: Buchse steht minimal heraus; 14,15 passt keine Buchse |
 | Gebäude | nur Schacht A (0,06 durchgehend), Schachttiefe + mindestens 0,3; Variante B (Passzone) entfällt | r3 E: A Sitz 3, B Sitz 5; Kassette ragt 0,2 heraus |
 | Fase | Bettkanten und Schachteingang 0,5 statt 0,4 | leichter Wulst bleibt |
-| Platte | B (Trichter, ohne Support) weiterentwickeln; Kabelraum unter den Lötenden so frei wie möglich (kein Trichter-Anschnitt im Bereich der Kabel); Fadenlöcher an den Ecken | r3 W: zu wenig Platz hinter den Lötenden |
+| Platte | B (Trichter, ohne Support) weiterentwickeln; Kabelraum unter den Lötenden so frei wie möglich (kein Trichter-Anschnitt im Bereich der Kabel); V-Kanäle für den Faden an den Ecken (siehe oben) | r3 W: zu wenig Platz hinter den Lötenden |
 | Halt der Winkelleiste | Körper darf nicht kippen: Tasche und Rippen überprüfen (Körper in der +1,5 langen Tasche hat zu viel Spiel?), Alternative Heißkleber | r3 W: Körper kippt oder wackelt |
-| Deckel und Befestigung | ohne Schrauben: Löcher in Deckel und Platte für den Faden; Stempel entfallen oder bekommen mehr als 1 mm Luft beim Aufsetzen | r3 W: Deckel passt nicht, Stempel stoßen an; Schrauben nicht vorhanden |
-| Ösen | 4 Ösen für Fadenschlaufen an den Ecken, von unten zugänglich | Doktorhut, Gebäude wird an vier Fäden angenäht |
+| Deckel und Befestigung | ohne Schrauben: Ausschnitte im Deckel über den Trichtern, Faden durch den V-Kanal der Platte; Stempel entfallen oder bekommen mehr als 1 mm Luft beim Aufsetzen | r3 W: Deckel passt nicht, Stempel stoßen an; Schrauben nicht vorhanden |
+| Ösen | entfallen: die V-Kanäle mit Trichter übernehmen die Aufgabe (Faden von unten hinein, schräg durch die Lasche, nach unten heraus) | Doktorhut, vier Fäden an den Ecken |
 | Funktionstest | Adern und LED bestücken, Controller anschließen (Schritt L im Testbogen): Licht, Wackeln, Zehnfach-Abziehen | r3 L: noch nicht getestet, Adern biegen rund |
 | Testbogen | Feld „Luft unter der Buchse“ ersetzen durch ja/nein; Feld „Platte A oder B“ und Formular-Version aufnehmen | L24, L25 |
 
