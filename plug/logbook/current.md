@@ -74,6 +74,12 @@ Eingefroren: `rounds/r4_steckprobe2/steckprobe2.zip` (Stand Commit `46d1e0a`).
 
 Eingefroren: `rounds/r5_fachprobe/fachprobe.zip` (Stand Commit `3ccceeb`, Luft 0,6).
 
+## 2d. Festlegung Maßstab und Mulde (Planung, ungetestet)
+
+**Alle Werte dieses Abschnitts sind noch nicht getestet** (Liste: [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“); bewährt sind nur die Werte der Tabelle in Abschnitt 2.
+
+Maßstab 1:1250, Mulde 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, City-Hochhaus V2R: siehe [`scale.md`](scale.md). Die Maßkette unten gilt für die getestete Steckprobe 1 (F 10,2).
+
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 
 | Größe | Wert |

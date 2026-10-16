@@ -72,10 +72,13 @@ def block_quellen():
 
 
 def block_massstaebe():
-    """Beste Quelle in beiden Maßstäben nebeneinander."""
+    """Beste Quelle in allen vorhandenen Maßstäben nebeneinander."""
     q = sources()[-1][0]
     heads, pics, facts = "", "", ""
-    for sc, label, sub in (("1zu1500", "1:1500", "kompakt"), ("1zu1000", "1:1000", "groß, mehr Detail")):
+    for sc, label, sub in (("1zu1500", "1:1500", "kompakt"), ("1zu1300", "1:1300", "Maßstab der Steckplatte, Platte ≤ 230 mm"),
+                           ("1zu1000", "1:1000", "groß, mehr Detail")):
+        if not os.path.isdir(os.path.join(STL_DIR, q, sc)):
+            continue
         parts = len(glob.glob(os.path.join(STL_DIR, q, sc, "komplett_campus_mit_extras_teil*.stl")))
         note = "in %d Teile geteilt" % parts if parts > 1 else "passt auf ein Druckbett"
         d = dims(os.path.join(STL_DIR, q, sc, "komplett_campus_mit_extras_objekte.3mf"))

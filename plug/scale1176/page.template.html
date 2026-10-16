@@ -1,0 +1,305 @@
+<title>Passprüfung Maßstab 1:1176</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Ergebnis zuerst, dann Beleg (Tabelle, Grundrisse), dann Entscheidungskarten */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2630; --muted: #5a6877; --line: #d5dce3;
+  --accent: #1f5f8b; --accent-soft: #e2eef6;
+  --ok: #1f7a4d; --ok-soft: #e0f1e8; --warn: #9a6200; --warn-soft: #fbf0d6; --no: #b3261e; --no-soft: #fbe3e1;
+  --fp: #e6ebf0; --fp-line: #8a97a5; --hof: #cfe6d3; --shaft: #1f5f8b; --foot: #9cc3de; --sol: #e9c46a;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --fp: #27303a; --fp-line: #5f6d7b; --hof: #25402d; --shaft: #6db3e0; --foot: #2f5974; --sol: #8a6d1f; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.55;
+  padding-block: 32px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 1.3rem; margin: 0 0 12px; text-wrap: balance; }
+h3 { font-size: 1.02rem; margin: 0; }
+p { margin: 0 0 10px; max-width: 68ch; } p:last-child { margin-bottom: 0; }
+.kicker { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.lead { font-size: 1.1rem; color: var(--fg); max-width: 70ch; }
+.muted { color: var(--muted); } .mono { font-family: var(--mono); font-size: 0.92em; }
+section { min-width: 0; }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.ans { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ans .tag { font: 500 0.75rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ans .big { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.no { background: var(--no-soft); color: var(--no); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.93rem; }
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { font: 500 0.74rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; font-family: var(--mono); font-size: 0.9em; } thead th.num { text-align: right; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+figure { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figcaption { display: flex; flex-direction: column; font-size: 0.88rem; } figcaption span { color: var(--muted); }
+.plan svg, .big-plan svg { width: 100%; height: auto; display: block; max-height: 360px; }
+.big-plan { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.big-plan svg { max-height: 640px; }
+svg .fp { fill: var(--fp); stroke: var(--fp-line); stroke-width: 0.35; } svg .hof { fill: var(--hof); stroke: var(--ok); stroke-width: 0.3; }
+svg .sol { fill: var(--sol); fill-opacity: 0.55; stroke: none; } svg .foot { fill: var(--foot); fill-opacity: 0.8; stroke: var(--shaft); stroke-width: 0.25; }
+svg .shaft { fill: var(--shaft); } svg .sc { stroke: var(--fg); stroke-width: 0.5; } svg .sct { fill: var(--fg); font: 2.2px var(--mono); }
+svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stroke: var(--bg); stroke-width: 0.7px; } svg .hofl { fill: var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.86rem; color: var(--muted); margin-top: 10px; }
+.legend i { display: inline-block; width: 14px; height: 14px; border-radius: 2px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--line); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card.rec { border: 2px solid var(--accent); }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 4px; font-size: 0.92rem; }
+.card .head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.badge { font: 500 0.72rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 3px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.facts div { background: var(--surface); padding: 10px 12px; } .facts b { display: block; font: 500 1.05rem var(--mono); } .facts span { font-size: 0.82rem; color: var(--muted); }
+.note { background: var(--warn-soft); border-radius: 6px; padding: 14px 16px; font-size: 0.93rem; }
+.q { background: var(--accent-soft); border-radius: 6px; padding: 14px 16px; } .q ol { margin: 6px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 12px 0; } .ctrl fieldset { border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px 10px; display: flex; flex-wrap: wrap; gap: 6px 16px; min-width: 0; } .ctrl legend { font: 500 0.74rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 0 6px; } .ctrl label { font-size: 0.92rem; white-space: nowrap; }
+svg .bar { fill: var(--fp); stroke: none; } svg .hm { stroke: var(--fp-line); stroke-width: 0.4; stroke-dasharray: 1.5 1; } svg .ground { stroke: var(--fg); stroke-width: 0.6; } svg .muld { fill: var(--foot); fill-opacity: 0.45; } svg .kas { fill: var(--shaft); } svg .led { fill: var(--sol); stroke: var(--fg); stroke-width: 0.25; }
+svg .gok { stroke: var(--ok); } svg .gwarn { stroke: var(--warn); } svg .gno { stroke: var(--no); } svg .gl { font: 600 3.3px var(--sans); } svg .gl.ok { fill: var(--ok); } svg .gl.warn { fill: var(--warn); } svg .gl.no { fill: var(--no); } svg .ax { fill: var(--muted); font: 2.6px var(--mono); } svg .nm { fill: var(--fg); font: 600 3.1px var(--sans); }
+#vtab th.num { text-align: left; } td.cellw { line-height: 1.35; } td.cellw small { display: block; color: var(--muted); font-size: 0.8rem; }
+</style>
+<main>
+<header>
+  <div class="kicker">Steckmechanismus · Prüfung zum Maßstab</div>
+  <h1>Welche Kassette passt bei 1:1250, und wie tief sollen die Mulden sein?</h1>
+  <p class="lead" style="margin-top:12px">Plattengröße höchstens 230 × 230 mm, Maßstab 1:1250. Neu: die Kassetten-Varianten V1, V1R, V1RS, V2 und V2R aus dem Hauptzweig (Konzepte, nichts gedruckt) gegen die Grundrisse und Höhen der Gebäude geprüft, dazu der senkrechte Platz zwischen LED und Dach.</p>
+</header>
+
+<section aria-labelledby="fest">
+  <h2 id="fest">Festgelegt (Stand der Planung)</h2>
+  <div class="note" style="background:var(--ok-soft)">
+    <p><b>Maßstab 1:1300</b> (zuletzt geändert von 1:1250), Platte 115,6 × 220,8 mm, einteilig. <b>Mulde überall 4 mm tiefer</b> (14,2 statt 10,2 mm, Platte 20,2 mm). <b>Kassetten:</b> v4 im Paulinum, Neuen Augusteum und Hörsaalgebäude (die LED strahlt nach oben), <b>V1RS</b> im Seminar- und Institutsgebäude, <b>V2R</b> im City-Hochhaus. <b>Innenhof</b> als eigenes Einsteckteil mit angedruckten Bäumen, ohne die 4 mm Zusatztiefe, aber mit Einführfase wie die Gebäude; Stämme zuerst mit 0,8 mm im Probedruck. Nur der 10-mm-Streifen.</p>
+    <p>Alles ist Planung, nichts gedruckt. V1RS und V2R sind Konzepte ohne Test. <b>Die Abschnitte darunter rechnen noch mit 1:1250</b> (Plattenmaße, Tabellen, Schnitt). Für 1:1300 gilt die Tabelle unten. Logbuch: <span class="mono">plug/logbook/scale.md</span>.</p>
+  </div>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Plan bei 1:1300" style="margin-top:14px">
+  <table style="min-width:560px">
+    <thead><tr><th>Gebäude bei 1:1300</th><th>Kassette</th><th class="num">Wand mm</th><th class="num">Luft LED bis Dach mm</th><th>Urteil</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Paulinum</th><td>v4 (oder V1RS)</td><td class="num">0,9</td><td class="num">18,3</td><td><span class="pill warn">knapp</span></td></tr>
+      <tr><th scope="row">Neues Augusteum</th><td>v4</td><td class="num">≥ 3,0</td><td class="num">9,1</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Hörsaalgebäude</th><td>v4</td><td class="num">≥ 3,0</td><td class="num">11,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Seminargebäude</th><td>V1RS (v4: 0,6 mm, passt nicht)</td><td class="num">≥ 3,0</td><td class="num">10,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">Institutsgebäude</th><td>V1RS (v4: Luft 4,1 mm)</td><td class="num">≥ 3,0</td><td class="num">10,2</td><td><span class="pill ok">passt</span></td></tr>
+      <tr><th scope="row">City-Hochhaus</th><td>V2R</td><td class="num">≥ 3,0</td><td class="num">80,4</td><td><span class="pill ok">passt</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section aria-labelledby="ergebnis">
+  <h2 id="ergebnis">Ergebnis</h2>
+  <div class="answers">
+    <div class="ans">
+      <span class="tag">1 · Vertikaler Platz heute</span>
+      <span class="big">Bei der flachen Kassette v4 sitzt die LED im Institutsgebäude fast unter dem Dach.</span>
+      <p>Die LED liegt bei v4 6,9 mm über der Platte. Die höchste Stelle, an der der Schacht noch in den Grundriss passt, hat im Institutsgebäude nur 7,3 mm Dachhöhe (Luft 0,4 mm), im Neuen Augusteum 12,5 mm (Luft 5,6), im Hörsaalgebäude 14,6 mm (7,7). Nur Paulinum (17,0) und Seminargebäude (12,3) haben mehr als 10 mm.</p>
+      <p class="muted">Gebäudehöhen bei 1:1250: Hörsaal 20 mm, Seminar 23, Institut 25, Neues Augusteum 30, Paulinum 47, Hochhaus 116.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">2 · Neue Varianten</span>
+      <span class="big">V1 (Streifen quer) passt schon ohne tiefere Mulde in alle sechs Gebäude.</span>
+      <p>V1 braucht nur 17,2 × 5,3 mm Grundfläche, ist aber 26,4 mm hoch. Wand mindestens 1,9 mm (Hörsaal), im Hochhaus und Institut 3 mm und mehr. V1RS und V1R (zwei LEDs) folgen mit 4 mm tieferer Mulde, V2 (hochkant, bisher bevorzugt) erst mit 8 mm. V2R passt in Hörsaal, Seminar und Institut auch dann nicht.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">3 · Mulde tiefer</span>
+      <span class="big">Vorschlag: überall 4 mm tiefer (14,2 statt 10,2 mm), Platte 20,2 statt 16,2 mm.</span>
+      <p>Jeder Millimeter Tiefe senkt die LED um 1 mm gegenüber dem Dach. Mit V1 und 4 mm mehr Tiefe liegt die LED 6,9 mm über der Platte und hat in allen Gebäuden mindestens 10,9 mm Luft bis zum Dach. Die Wand bleibt überall ≥ 1,9 mm.</p>
+      <p class="muted">Kosten: längerer Fuß (getestet nur mit 10,2 mm), dickere Platte, Dock und Kabelraum rücken tiefer. Die Platte bleibt bei 1:1250 in 230 × 230 mm.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">4 · Maßstab und Platte</span>
+      <span class="big">1:1250, Platte 119,7 × 228,7 mm.</span>
+      <p>Aus der letzten Prüfung unverändert: Die Grenze für 230 mm liegt bei 1:1242. Mit der flachen Kassette v4 passen Institutsgebäude und City-Hochhaus bei 1:1250 nicht (Details weiter unten).</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="vert">
+  <h2 id="vert">Senkrechter Platz: LED bis Dach</h2>
+  <p>Gezeichnet ist je Gebäude die höchste Stelle, an der der Schacht der gewählten Kassette (Wand 0,8 mm) noch in den Grundriss passt, und die LED darunter. Die Balken zeigen die Dachhöhe dort (hell) und die höchste Stelle des Gebäudes (Strich). Unter der Plattenoberfläche liegt die Mulde. Mit „Mulde tiefer“ rutscht die Kassette samt LED nach unten.</p>
+  <div class="ctrl" role="group" aria-label="Auswahl">
+    <fieldset><legend>Kassette</legend>
+      <label><input type="radio" name="var" value="v4" checked> v4 (flach, heute)</label>
+      <label><input type="radio" name="var" value="V1"> V1 quer</label>
+      <label><input type="radio" name="var" value="V1R"> V1R</label>
+      <label><input type="radio" name="var" value="V1RS"> V1RS</label>
+      <label><input type="radio" name="var" value="V2"> V2 hochkant</label>
+      <label><input type="radio" name="var" value="V2R"> V2R</label>
+    </fieldset>
+    <fieldset><legend>Mulde tiefer um</legend>
+      <label><input type="radio" name="dl" value="0" checked> 0 mm</label>
+      <label><input type="radio" name="dl" value="4"> 4 mm</label>
+      <label><input type="radio" name="dl" value="8"> 8 mm</label>
+    </fieldset>
+  </div>
+  <div class="big-plan"><svg id="vsvg" role="img" aria-label="Senkrechter Platz je Gebäude"></svg></div>
+  <div class="legend" id="vinfo"></div>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wand und Luft je Variante" style="margin-top:14px">
+    <table id="vtab"></table>
+  </div>
+  <p class="muted" style="margin-top:10px">Zellen: größte Wand um den Schacht bei Grundriss und Höhe zusammen (grün ab 1,2 mm, gelb ab 0,8 mm, rot darunter oder kein Platz), darunter die Luft von der LED-Mitte bis zum Dach. Luft unter 5 mm ist rot, unter 8 mm gelb. Der Richtwert von 8 mm ist eine Annahme und noch nicht mit LED getestet. Die Rechnung nimmt für jede Variante die Lage mit der höchsten Dachhöhe; zwei LEDs (V1R, V1RS, V2R) sind wie eine behandelt, die LED-Mitte ist die des vorderen Streifens. Die Maße der Varianten sind Konzepte (Streifendicke 2,2 mm nicht gemessen).</p>
+</section>
+
+<section aria-labelledby="beleg">
+  <h2 id="beleg">Kassette v4: Wandmaß je Gebäude bei 1:1250</h2>
+  <p>Gesucht ist das Rechteck des Schachts in beliebiger Drehung, das samt Wand in den Grundriss passt. „Standard“ heißt: Die Oberkante der Kassette liegt 6,75 mm über der Oberfläche, das Gebäude muss dort mindestens 8,75 mm hoch sein. „Versenkt“ heißt: Die Kassette liegt unter der Oberfläche, es zählt nur der Grundriss. Die Wand soll mindestens 0,8 mm (MIN_FEATURE) betragen, besser 1,2 mm.</p>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wandmaß je Gebäude">
+  <table>
+    <thead><tr><th>Gebäude</th><th class="num">Fläche mm²</th><th class="num">Höhe mm</th><th class="num">Wand Standard mm</th><th>Urteil Standard</th><th class="num">Schachtlänge bei 0,8 Wand</th><th class="num">Wand versenkt mm</th><th>Urteil versenkt</th><th class="num">Grenzmaßstab Standard</th></tr></thead>
+    <tbody>
+@TABLE@
+    </tbody>
+  </table>
+  </div>
+  <p class="muted" style="margin-top:10px">Urteil: passt ab 1,2 mm Wand, knapp ab 0,8 mm, darunter passt nicht. Die Schachtlänge bei 0,8 mm Wand ist die längste Kassette, die in diesem Gebäude noch Platz hat (volle Länge @KL@ mm). Der Grenzmaßstab gilt für den vollen Schacht und 0,8 mm Wand im Standard. Die Suche arbeitet mit 0,2-mm-Raster und 5°-Schritten, die Werte sind auf etwa 0,2 mm genau. Beim Hörsaalgebäude endet sie bei 6 mm Wand.</p>
+</section>
+
+<section aria-labelledby="plaene">
+  <h2 id="plaene">So sitzt der Schacht in jedem Grundriss (Standard)</h2>
+  <div class="grid">
+@GRID@
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--shaft)"></i>Schacht der Kassette</span>
+    <span><i style="background:var(--foot)"></i>Fuß mit Wand</span>
+    <span><i style="background:var(--sol)"></i>Raum für die Lötenden unter der Platte (3,6 mm hinter dem Schacht)</span>
+    <span><i style="background:var(--fp)"></i>Grundriss</span>
+  </div>
+  <h3 style="margin:24px 0 12px">Mit versenkter Kassette (nur die zwei Gebäude, die sich ändern)</h3>
+  <div class="grid">
+@GRIDV@
+  </div>
+</section>
+
+<section aria-labelledby="uni">
+  <h2 id="uni">City-Hochhaus mit v4: Kassette unter der Oberfläche</h2>
+  <div class="cards">
+    <article class="card">
+      <div class="head"><h3>Was dafür nötig ist</h3></div>
+      <ul>
+        <li>Die Kassette ist 16,95 mm hoch, ihre LED-Fläche liegt 6,75 mm über der Oberfläche. Soll sie 0,4 mm darunter liegen, wird der Fuß um 7,15 mm länger: Mulde @FV@ statt @F@ mm.</li>
+        <li>Muldenboden, Winkelleiste und Kabelraum rücken mit nach unten. Die Platte wird @PTV@ statt @PT@ mm dick, und zwar überall, weil sie mit dem Kabelraum auf dem Bett gedruckt wird. Das sind rund 44 % mehr Höhe und deutlich mehr Material.</li>
+        <li>Der Fuß wird 7 mm länger. Getestet ist die Führung in der Mulde nur mit 10,2 mm Tiefe.</li>
+        <li>Das Gebäude braucht im Fuß einen Lichtkanal von der LED-Fläche in den Hohlraum des Turms.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <div class="head"><h3>Was es bringt</h3></div>
+      <ul>
+        <li>Die Höhenbedingung (8,75 mm) entfällt. Das rettet das Institutsgebäude: Wand 2,0 statt 0,2 mm. Beim Hochhaus bringt sie nur 2 mm Schachtlänge (23,6 statt 21,6 mm).</li>
+        <li>Der Grundriss des Hochhauses ist die Grenze, nicht seine Höhe. Der Fuß ist ein gerades Prisma und endet an der Oberfläche in der Gebäudekontur. Die Kassette samt 0,8 mm Wand braucht 15,2 × 31,2 mm, der Turm hat etwa 27 × 27 mm.</li>
+        <li class="muted">Ein breiterer Fuß unter der Oberfläche (Hinterschnitt) geht nicht: Er käme nicht durch die schmalere Mulde.</li>
+      </ul>
+    </article>
+    <article class="card rec">
+      <div class="head"><h3>Wege für das Hochhaus</h3><span class="badge">Zur Wahl</span></div>
+      <ul>
+        <li><b>H1</b> Standard, Kassette auf 21,6 mm gekürzt (8 mm kürzer). Keine Änderung an der Platte.</li>
+        <li><b>H2</b> Versenkt und auf 23,6 mm gekürzt. Teuer für wenig Gewinn, weil die ganze Platte dicker wird.</li>
+        <li><b>H3</b> Voller Schacht, der Fuß ragt etwa 1,3 bis 2,0 mm über den Grundriss hinaus. Ein Sockel des Turms (0,4 bis 0,6 mm hoch) deckt die Mulde ab. Der Turm steht dann auf einem kleinen Podest, wie es das echte Gebäude auch hat. Der Sockel müsste an den Nachbarn vorbeikommen, die Überlappung mit dem Hörsaalgebäude liegt in der Rechnung bei 0,2 mm².</li>
+      </ul>
+      <p class="muted">Empfehlung: H1 oder H3. Versenken lohnt nur, wenn das Institutsgebäude nicht anders zu retten ist.</p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="gesamt">
+  <h2 id="gesamt">Gesamtplan mit Innenhof</h2>
+  <div class="big-plan">@OVERVIEW@</div>
+  <p class="muted" style="margin-top:10px">Der Hof liegt zwischen den Gebäuden und enthält keinen Schacht. Die Fuge zu den Gebäuden beträgt 0,5 mm. Der Raum für die Lötenden liegt unter der Plattenoberfläche (unterhalb von 10,6 mm Tiefe), der Hofeinsatz reicht nur 1 mm unter die Oberfläche. Die beiden stoßen sich deshalb senkrecht nicht. Ob die Löträume der Nachbarn zusammenstoßen, ist noch nicht gerechnet.</p>
+</section>
+
+<section aria-labelledby="hof">
+  <h2 id="hof">Innenhof: Einsteckteil, Bäume angedruckt (unverändert)</h2>
+  <div class="facts" style="margin-bottom:16px">
+    <div><b>@HOFW@ × @HOFL@ mm</b><span>Hof bei 1:1250, Fläche @HOFA@ mm²</span></div>
+    <div><b>3 Bäume</b><span>Krone Ø 7,2 bis 7,5 mm, 7,4 bis 9,0 mm hoch</span></div>
+    <div><b>Stamm Ø 0,8 mm</b><span>Mindestbreite, maßstäblich wären 0,3 mm</span></div>
+    <div><b>+1,9 mm</b><span>Hof liegt 2,34 m über der Straße</span></div>
+  </div>
+  <p>Die Empfehlung aus der ersten Prüfung bleibt: Der Hof ist ein eigenes Podest in einer Aussparung der Platte, die drei Bäume sind angedruckt. Bei diesem Maßstab ist der Stamm gegenüber dem echten Baum noch stärker übertrieben. Ein Steckstift im Stamm (mindestens 1,2 mm) bleibt deshalb ausgeschlossen. Ein Fehldruck trifft nur den kleinen Einsatz, nicht die 229-mm-Platte, und die Farbwechsel fallen nur am Hof an. Gegen das Aufdrucken auf die Platte spricht, dass jede Änderung am Hof die ganze Platte kostet.</p>
+</section>
+
+<section aria-labelledby="offen">
+  <h2 id="offen">Was noch fehlt</h2>
+  <div class="note">
+    <p><b>Nicht geprüft:</b> Die Gebäude des Generators sind heute Vollkörper. Für die Kassette braucht jedes Gebäude einen Hohlraum und ein Lichtfenster. Das Licht durch die Wand wurde noch nicht mit eingebauter LED gesehen. Ob bei 1:1250 die 0,8 mm dicken Stämme und die feinen Fassadenteile noch sauber drucken, zeigt erst ein Probedruck. Die Rechnung nimmt die Grundrisse des Modells, nicht die Erdgeschossgrundrisse.</p>
+  </div>
+  <div class="q" style="margin-top:16px">
+    <b>Fragen an dich</b>
+    <ol>
+      <li>Ist 1:1250 gesetzt (1,3 mm Reserve auf 230 mm), oder soll es knapp bei 1:1242 bleiben?</li>
+      <li>Institutsgebäude: Kassette bei 0,8 mm Wand um 1,5 mm kürzen (28,1 mm), oder wollen wir wegen der Höhenbedingung versenken?</li>
+      <li>City-Hochhaus: H1 (Kassette 21,6 mm), H2 (versenkt) oder H3 (voller Schacht mit Sockel)?</li>
+    </ol>
+  </div>
+</section>
+</main>
+<script>
+var VD = @VDATA@;
+var NM = {"01_paulinum":"Paulinum","02_neues_augusteum":"Neues Augusteum","03_hoersaalgebaeude":"Hörsaalgebäude","04_seminargebaeude":"Seminargebäude","05_institutsgebaeude":"Institutsgebäude","06_city_hochhaus":"City-Hochhaus"};
+function de(x, n) { return x.toFixed(n === undefined ? 1 : n).replace(".", ","); }
+function sel(n) { var e = document.querySelector('input[name="' + n + '"]:checked'); return e ? e.value : null; }
+function cls(w) { return w === null ? "no" : (w >= 1.2 ? "ok" : (w >= 0.8 ? "warn" : "no")); }
+function gcls(g) { return g < 5 ? "no" : (g < 8 ? "warn" : "ok"); }
+function draw() {
+  var v = sel("var"), dl = +sel("dl"), V = VD.vars[v], keys = Object.keys(VD.buildings);
+  var F = VD.F0 + dl, YMAX = 36, YMIN = -(VD.F0 + 8) - 2, colW = 34, x0 = 14, W = x0 + colW * keys.length + 4, H = 100;
+  var sy = function (z) { return 6 + (YMAX - z) * (H - 18) / (YMAX - YMIN); };
+  var o = '';
+  for (var z = -10; z <= 30; z += 10) { o += '<text class="ax" x="' + (x0 - 2) + '" y="' + (sy(z) + 1) + '" text-anchor="end">' + z + '</text><line x1="' + x0 + '" x2="' + (W - 2) + '" y1="' + sy(z) + '" y2="' + sy(z) + '" stroke="var(--line)" stroke-width="0.2"/>'; }
+  o += '<rect class="muld" x="' + x0 + '" y="' + sy(0) + '" width="' + (W - x0 - 2) + '" height="' + (sy(YMIN) - sy(0)) + '" opacity="0.35"/>';
+  o += '<line class="ground" x1="' + x0 + '" x2="' + (W - 2) + '" y1="' + sy(0) + '" y2="' + sy(0) + '"/>';
+  var rows = '';
+  keys.forEach(function (k, i) {
+    var b = VD.buildings[k], cx = x0 + colW * i + colW / 2, rb = b.roof_best[v], w = b.walls[v][String(dl)];
+    var bw = 18;
+    o += '<text class="nm" x="' + cx + '" y="' + (H - 1) + '" text-anchor="middle">' + NM[k] + '</text>';
+    var hm = Math.min(b.hmax, YMAX), clip = b.hmax > YMAX;
+    o += '<line class="hm" x1="' + (cx - bw / 2 - 2) + '" x2="' + (cx + bw / 2 + 2) + '" y1="' + sy(hm) + '" y2="' + sy(hm) + '"/><text class="ax" x="' + (cx + bw / 2 + 2.5) + '" y="' + (sy(hm) + 1) + '">' + (clip ? '≈' : '') + de(b.hmax, 0) + '</text>';
+    if (rb === null) { o += '<text class="gl no" x="' + cx + '" y="' + sy(8) + '" text-anchor="middle">passt nicht</text>'; return; }
+    var rt = Math.min(rb, YMAX);
+    o += '<rect class="bar" x="' + (cx - bw / 2) + '" y="' + sy(rt) + '" width="' + bw + '" height="' + (sy(0) - sy(rt)) + '"/>';
+    var kw = 7, kb = -F, kt = V.top - F, led = V.led - F;
+    o += '<rect class="kas" x="' + (cx - kw / 2) + '" y="' + sy(kt) + '" width="' + kw + '" height="' + (sy(kb) - sy(kt)) + '"/>';
+    o += '<rect class="led" x="' + (cx - 3) + '" y="' + sy(led + 1.5) + '" width="6" height="' + (sy(led - 1.5) - sy(led + 1.5)) + '"/>';
+    var gap = rb - led, g = gcls(gap);
+    o += '<line class="g' + g + '" x1="' + (cx + 4.5) + '" x2="' + (cx + 4.5) + '" y1="' + sy(led) + '" y2="' + sy(rt) + '" stroke-width="0.8"/>';
+    o += '<text class="gl ' + g + '" x="' + (cx - 14) + '" y="' + (sy((led + rt) / 2) + 1) + '">' + de(gap) + '</text>';
+    o += '<text class="ax" x="' + cx + '" y="' + (sy(rt) - 1.2) + '" text-anchor="middle">' + (rb > YMAX ? '≈' : '') + de(rb, 1) + '</text>';
+  });
+  var svg = document.getElementById("vsvg");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.innerHTML = o;
+  document.getElementById("vinfo").innerHTML = '<span><i style="background:var(--shaft)"></i>Kassette ' + v + ' (Oberkante ' + de(V.top - F) + ' mm über der Platte)</span><span><i style="background:var(--sol)"></i>LED, Mitte ' + de(V.led - F) + ' mm über der Platte</span><span><i style="background:var(--fp)"></i>Dachhöhe an der Schachtstelle</span><span>Zahl links: Luft LED bis Dach in mm. Mulde ' + de(F) + ' mm tief, Platte ' + de(VD.plate_t + dl) + ' mm dick.</span>';
+  var t = '<thead><tr><th>Gebäude</th>';
+  ["v4","V1","V1R","V1RS","V2","V2R"].forEach(function (c) { t += '<th class="num">' + c + (c === v ? ' ◂' : '') + '</th>'; });
+  t += '</tr></thead><tbody>';
+  keys.forEach(function (k) {
+    var b = VD.buildings[k]; t += '<tr><th scope="row">' + NM[k] + '</th>';
+    ["v4","V1","V1R","V1RS","V2","V2R"].forEach(function (c) {
+      var w = b.walls[c][String(dl)], rb = b.roof_best[c], Vc = VD.vars[c];
+      var gap = rb === null ? null : rb - (Vc.led - VD.F0 - dl);
+      t += '<td class="cellw"><span class="pill ' + cls(w) + '">' + (w === null ? 'kein Platz' : (w >= 3 ? '≥ 3,0' : de(w))) + '</span>' + (gap === null || w === null ? '' : '<small>Luft ' + de(gap) + '</small>') + '</td>';
+    });
+    t += '</tr>';
+  });
+  document.getElementById("vtab").innerHTML = t + '</tbody>';
+}
+Array.prototype.forEach.call(document.querySelectorAll('input[name="var"],input[name="dl"]'), function (e) { e.addEventListener("change", draw); });
+draw();
+</script>
+
