@@ -67,38 +67,74 @@ svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stro
 .note { background: var(--warn-soft); border-radius: 6px; padding: 14px 16px; font-size: 0.93rem; }
 .q { background: var(--accent-soft); border-radius: 6px; padding: 14px 16px; } .q ol { margin: 6px 0 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 12px 0; } .ctrl fieldset { border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px 10px; display: flex; flex-wrap: wrap; gap: 6px 16px; min-width: 0; } .ctrl legend { font: 500 0.74rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 0 6px; } .ctrl label { font-size: 0.92rem; white-space: nowrap; }
+svg .bar { fill: var(--fp); stroke: none; } svg .hm { stroke: var(--fp-line); stroke-width: 0.4; stroke-dasharray: 1.5 1; } svg .ground { stroke: var(--fg); stroke-width: 0.6; } svg .muld { fill: var(--foot); fill-opacity: 0.45; } svg .kas { fill: var(--shaft); } svg .led { fill: var(--sol); stroke: var(--fg); stroke-width: 0.25; }
+svg .gok { stroke: var(--ok); } svg .gwarn { stroke: var(--warn); } svg .gno { stroke: var(--no); } svg .gl { font: 600 3.3px var(--sans); } svg .gl.ok { fill: var(--ok); } svg .gl.warn { fill: var(--warn); } svg .gl.no { fill: var(--no); } svg .ax { fill: var(--muted); font: 2.6px var(--mono); } svg .nm { fill: var(--fg); font: 600 3.1px var(--sans); }
+#vtab th.num { text-align: left; } td.cellw { line-height: 1.35; } td.cellw small { display: block; color: var(--muted); font-size: 0.8rem; }
 </style>
 <main>
 <header>
   <div class="kicker">Steckmechanismus · Prüfung zum Maßstab</div>
-  <h1>Maßstab für 23 × 23 cm, und passt die Kassette noch hinein?</h1>
-  <p class="lead" style="margin-top:12px">Neue Vorgabe: Die Platte darf höchstens 230 × 230 mm groß sein. Geprüft wurde mit dem Stand aus Steckprobe 1 (Kassette v4, Schacht, Mulde) an den Grundrissen und Höhen der Laserscan-Gebäude, nicht gedruckt. Dazu die Frage, ob die Kassette im City-Hochhaus unter die Oberfläche sinken kann.</p>
+  <h1>Welche Kassette passt bei 1:1250, und wie tief sollen die Mulden sein?</h1>
+  <p class="lead" style="margin-top:12px">Plattengröße höchstens 230 × 230 mm, Maßstab 1:1250. Neu: die Kassetten-Varianten V1, V1R, V1RS, V2 und V2R aus dem Hauptzweig (Konzepte, nichts gedruckt) gegen die Grundrisse und Höhen der Gebäude geprüft, dazu der senkrechte Platz zwischen LED und Dach.</p>
 </header>
 
 <section aria-labelledby="ergebnis">
   <h2 id="ergebnis">Ergebnis</h2>
   <div class="answers">
     <div class="ans">
-      <span class="tag">1 · Maßstab</span>
-      <span class="big">1:1242 ist die Grenze, 1:1250 der runde Wert.</span>
-      <p>Die Platte (Gebäude plus 6 mm Rand und 12 mm Beschriftungsband) ist bei 1:1176 noch 126,5 × 241,5 mm. Die lange Seite muss von 241,5 auf 230 mm. Das geht bis 1:1242 (120,4 × 230,0 mm). Bei <b>1:1250</b> misst sie 119,7 × 228,7 mm, es bleibt 1,3 mm Reserve. Drehen der Platte im Quadrat bringt nichts.</p>
+      <span class="tag">1 · Vertikaler Platz heute</span>
+      <span class="big">Bei der flachen Kassette v4 sitzt die LED im Institutsgebäude fast unter dem Dach.</span>
+      <p>Die LED liegt bei v4 6,9 mm über der Platte. Die höchste Stelle, an der der Schacht noch in den Grundriss passt, hat im Institutsgebäude nur 7,3 mm Dachhöhe (Luft 0,4 mm), im Neuen Augusteum 12,5 mm (Luft 5,6), im Hörsaalgebäude 14,6 mm (7,7). Nur Paulinum (17,0) und Seminargebäude (12,3) haben mehr als 10 mm.</p>
+      <p class="muted">Gebäudehöhen bei 1:1250: Hörsaal 20 mm, Seminar 23, Institut 25, Neues Augusteum 30, Paulinum 47, Hochhaus 116.</p>
     </div>
     <div class="ans">
-      <span class="tag">2 · Passt die Kassette?</span>
-      <span class="big">Vier Gebäude ja, zwei nicht ohne Änderung.</span>
-      <p>Der Schacht misst @KW@ × @KL@ mm. Paulinum, Neues Augusteum und Hörsaalgebäude haben Platz mit 1,2 mm Wand, das Seminargebäude nur knapp mit 0,8 mm. Das <b>Institutsgebäude</b> passt bei 1:1250 nicht mehr (Grenze 1:1210), wenn das Gebäude an der Schachtstelle 8,75 mm hoch sein muss. Das <b>City-Hochhaus</b> hat nur etwa 27 × 27 mm Grundfläche und passt auch gekürzt nur knapp.</p>
-      <p class="muted">Die erste Prüfung bei 1:1176 war für das Institutsgebäude noch positiv. Bei 1:1250 reicht das nicht mehr.</p>
+      <span class="tag">2 · Neue Varianten</span>
+      <span class="big">V1 (Streifen quer) passt schon ohne tiefere Mulde in alle sechs Gebäude.</span>
+      <p>V1 braucht nur 17,2 × 5,3 mm Grundfläche, ist aber 26,4 mm hoch. Wand mindestens 1,9 mm (Hörsaal), im Hochhaus und Institut 3 mm und mehr. V1RS und V1R (zwei LEDs) folgen mit 4 mm tieferer Mulde, V2 (hochkant, bisher bevorzugt) erst mit 8 mm. V2R passt in Hörsaal, Seminar und Institut auch dann nicht.</p>
     </div>
     <div class="ans">
-      <span class="tag">3 · Kassette versenkt</span>
-      <span class="big">Möglich, hilft beim Institutsgebäude, beim Hochhaus nur wenig.</span>
-      <p>Muldentiefe und Platte müssten um 7,2 mm wachsen (Mulde @F@ → @FV@ mm, Platte @PT@ → @PTV@ mm). Dann zählt nur der Grundriss, nicht mehr die Gebäudehöhe. Das Institutsgebäude passt dann mit 2,0 mm Wand. Der volle Schacht passt im Hochhaus auch versenkt nicht, nur gekürzt auf 23,6 statt 29,6 mm (ohne Versenken 21,6 mm).</p>
+      <span class="tag">3 · Mulde tiefer</span>
+      <span class="big">Vorschlag: überall 4 mm tiefer (14,2 statt 10,2 mm), Platte 20,2 statt 16,2 mm.</span>
+      <p>Jeder Millimeter Tiefe senkt die LED um 1 mm gegenüber dem Dach. Mit V1 und 4 mm mehr Tiefe liegt die LED 6,9 mm über der Platte und hat in allen Gebäuden mindestens 10,9 mm Luft bis zum Dach. Die Wand bleibt überall ≥ 1,9 mm.</p>
+      <p class="muted">Kosten: längerer Fuß (getestet nur mit 10,2 mm), dickere Platte, Dock und Kabelraum rücken tiefer. Die Platte bleibt bei 1:1250 in 230 × 230 mm.</p>
+    </div>
+    <div class="ans">
+      <span class="tag">4 · Maßstab und Platte</span>
+      <span class="big">1:1250, Platte 119,7 × 228,7 mm.</span>
+      <p>Aus der letzten Prüfung unverändert: Die Grenze für 230 mm liegt bei 1:1242. Mit der flachen Kassette v4 passen Institutsgebäude und City-Hochhaus bei 1:1250 nicht (Details weiter unten).</p>
     </div>
   </div>
 </section>
 
+<section aria-labelledby="vert">
+  <h2 id="vert">Senkrechter Platz: LED bis Dach</h2>
+  <p>Gezeichnet ist je Gebäude die höchste Stelle, an der der Schacht der gewählten Kassette (Wand 0,8 mm) noch in den Grundriss passt, und die LED darunter. Die Balken zeigen die Dachhöhe dort (hell) und die höchste Stelle des Gebäudes (Strich). Unter der Plattenoberfläche liegt die Mulde. Mit „Mulde tiefer“ rutscht die Kassette samt LED nach unten.</p>
+  <div class="ctrl" role="group" aria-label="Auswahl">
+    <fieldset><legend>Kassette</legend>
+      <label><input type="radio" name="var" value="v4" checked> v4 (flach, heute)</label>
+      <label><input type="radio" name="var" value="V1"> V1 quer</label>
+      <label><input type="radio" name="var" value="V1R"> V1R</label>
+      <label><input type="radio" name="var" value="V1RS"> V1RS</label>
+      <label><input type="radio" name="var" value="V2"> V2 hochkant</label>
+      <label><input type="radio" name="var" value="V2R"> V2R</label>
+    </fieldset>
+    <fieldset><legend>Mulde tiefer um</legend>
+      <label><input type="radio" name="dl" value="0" checked> 0 mm</label>
+      <label><input type="radio" name="dl" value="4"> 4 mm</label>
+      <label><input type="radio" name="dl" value="8"> 8 mm</label>
+    </fieldset>
+  </div>
+  <div class="big-plan"><svg id="vsvg" role="img" aria-label="Senkrechter Platz je Gebäude"></svg></div>
+  <div class="legend" id="vinfo"></div>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wand und Luft je Variante" style="margin-top:14px">
+    <table id="vtab"></table>
+  </div>
+  <p class="muted" style="margin-top:10px">Zellen: größte Wand um den Schacht bei Grundriss und Höhe zusammen (grün ab 1,2 mm, gelb ab 0,8 mm, rot darunter oder kein Platz), darunter die Luft von der LED-Mitte bis zum Dach. Luft unter 5 mm ist rot, unter 8 mm gelb. Der Richtwert von 8 mm ist eine Annahme und noch nicht mit LED getestet. Die Rechnung nimmt für jede Variante die Lage mit der höchsten Dachhöhe; zwei LEDs (V1R, V1RS, V2R) sind wie eine behandelt, die LED-Mitte ist die des vorderen Streifens. Die Maße der Varianten sind Konzepte (Streifendicke 2,2 mm nicht gemessen).</p>
+</section>
+
 <section aria-labelledby="beleg">
-  <h2 id="beleg">Beleg: Wandmaß je Gebäude bei 1:1250</h2>
+  <h2 id="beleg">Kassette v4: Wandmaß je Gebäude bei 1:1250</h2>
   <p>Gesucht ist das Rechteck des Schachts in beliebiger Drehung, das samt Wand in den Grundriss passt. „Standard“ heißt: Die Oberkante der Kassette liegt 6,75 mm über der Oberfläche, das Gebäude muss dort mindestens 8,75 mm hoch sein. „Versenkt“ heißt: Die Kassette liegt unter der Oberfläche, es zählt nur der Grundriss. Die Wand soll mindestens 0,8 mm (MIN_FEATURE) betragen, besser 1,2 mm.</p>
   <div class="tablewrap" tabindex="0" role="region" aria-label="Tabelle Wandmaß je Gebäude">
   <table>
@@ -129,7 +165,7 @@ svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stro
 </section>
 
 <section aria-labelledby="uni">
-  <h2 id="uni">City-Hochhaus: Kassette unter der Oberfläche</h2>
+  <h2 id="uni">City-Hochhaus mit v4: Kassette unter der Oberfläche</h2>
   <div class="cards">
     <article class="card">
       <div class="head"><h3>Was dafür nötig ist</h3></div>
@@ -192,3 +228,57 @@ svg .lbl { fill: var(--fg); font: 600 3px var(--sans); paint-order: stroke; stro
   </div>
 </section>
 </main>
+<script>
+var VD = @VDATA@;
+var NM = {"01_paulinum":"Paulinum","02_neues_augusteum":"Neues Augusteum","03_hoersaalgebaeude":"Hörsaalgebäude","04_seminargebaeude":"Seminargebäude","05_institutsgebaeude":"Institutsgebäude","06_city_hochhaus":"City-Hochhaus"};
+function de(x, n) { return x.toFixed(n === undefined ? 1 : n).replace(".", ","); }
+function sel(n) { var e = document.querySelector('input[name="' + n + '"]:checked'); return e ? e.value : null; }
+function cls(w) { return w === null ? "no" : (w >= 1.2 ? "ok" : (w >= 0.8 ? "warn" : "no")); }
+function gcls(g) { return g < 5 ? "no" : (g < 8 ? "warn" : "ok"); }
+function draw() {
+  var v = sel("var"), dl = +sel("dl"), V = VD.vars[v], keys = Object.keys(VD.buildings);
+  var F = VD.F0 + dl, YMAX = 36, YMIN = -(VD.F0 + 8) - 2, colW = 34, x0 = 14, W = x0 + colW * keys.length + 4, H = 100;
+  var sy = function (z) { return 6 + (YMAX - z) * (H - 18) / (YMAX - YMIN); };
+  var o = '';
+  for (var z = -10; z <= 30; z += 10) { o += '<text class="ax" x="' + (x0 - 2) + '" y="' + (sy(z) + 1) + '" text-anchor="end">' + z + '</text><line x1="' + x0 + '" x2="' + (W - 2) + '" y1="' + sy(z) + '" y2="' + sy(z) + '" stroke="var(--line)" stroke-width="0.2"/>'; }
+  o += '<rect class="muld" x="' + x0 + '" y="' + sy(0) + '" width="' + (W - x0 - 2) + '" height="' + (sy(YMIN) - sy(0)) + '" opacity="0.35"/>';
+  o += '<line class="ground" x1="' + x0 + '" x2="' + (W - 2) + '" y1="' + sy(0) + '" y2="' + sy(0) + '"/>';
+  var rows = '';
+  keys.forEach(function (k, i) {
+    var b = VD.buildings[k], cx = x0 + colW * i + colW / 2, rb = b.roof_best[v], w = b.walls[v][String(dl)];
+    var bw = 18;
+    o += '<text class="nm" x="' + cx + '" y="' + (H - 1) + '" text-anchor="middle">' + NM[k] + '</text>';
+    var hm = Math.min(b.hmax, YMAX), clip = b.hmax > YMAX;
+    o += '<line class="hm" x1="' + (cx - bw / 2 - 2) + '" x2="' + (cx + bw / 2 + 2) + '" y1="' + sy(hm) + '" y2="' + sy(hm) + '"/><text class="ax" x="' + (cx + bw / 2 + 2.5) + '" y="' + (sy(hm) + 1) + '">' + (clip ? '≈' : '') + de(b.hmax, 0) + '</text>';
+    if (rb === null) { o += '<text class="gl no" x="' + cx + '" y="' + sy(8) + '" text-anchor="middle">passt nicht</text>'; return; }
+    var rt = Math.min(rb, YMAX);
+    o += '<rect class="bar" x="' + (cx - bw / 2) + '" y="' + sy(rt) + '" width="' + bw + '" height="' + (sy(0) - sy(rt)) + '"/>';
+    var kw = 7, kb = -F, kt = V.top - F, led = V.led - F;
+    o += '<rect class="kas" x="' + (cx - kw / 2) + '" y="' + sy(kt) + '" width="' + kw + '" height="' + (sy(kb) - sy(kt)) + '"/>';
+    o += '<rect class="led" x="' + (cx - 3) + '" y="' + sy(led + 1.5) + '" width="6" height="' + (sy(led - 1.5) - sy(led + 1.5)) + '"/>';
+    var gap = rb - led, g = gcls(gap);
+    o += '<line class="g' + g + '" x1="' + (cx + 4.5) + '" x2="' + (cx + 4.5) + '" y1="' + sy(led) + '" y2="' + sy(rt) + '" stroke-width="0.8"/>';
+    o += '<text class="gl ' + g + '" x="' + (cx - 14) + '" y="' + (sy((led + rt) / 2) + 1) + '">' + de(gap) + '</text>';
+    o += '<text class="ax" x="' + cx + '" y="' + (sy(rt) - 1.2) + '" text-anchor="middle">' + (rb > YMAX ? '≈' : '') + de(rb, 1) + '</text>';
+  });
+  var svg = document.getElementById("vsvg");
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.innerHTML = o;
+  document.getElementById("vinfo").innerHTML = '<span><i style="background:var(--shaft)"></i>Kassette ' + v + ' (Oberkante ' + de(V.top - F) + ' mm über der Platte)</span><span><i style="background:var(--sol)"></i>LED, Mitte ' + de(V.led - F) + ' mm über der Platte</span><span><i style="background:var(--fp)"></i>Dachhöhe an der Schachtstelle</span><span>Zahl links: Luft LED bis Dach in mm. Mulde ' + de(F) + ' mm tief, Platte ' + de(VD.plate_t + dl) + ' mm dick.</span>';
+  var t = '<thead><tr><th>Gebäude</th>';
+  ["v4","V1","V1R","V1RS","V2","V2R"].forEach(function (c) { t += '<th class="num">' + c + (c === v ? ' ◂' : '') + '</th>'; });
+  t += '</tr></thead><tbody>';
+  keys.forEach(function (k) {
+    var b = VD.buildings[k]; t += '<tr><th scope="row">' + NM[k] + '</th>';
+    ["v4","V1","V1R","V1RS","V2","V2R"].forEach(function (c) {
+      var w = b.walls[c][String(dl)], rb = b.roof_best[c], Vc = VD.vars[c];
+      var gap = rb === null ? null : rb - (Vc.led - VD.F0 - dl);
+      t += '<td class="cellw"><span class="pill ' + cls(w) + '">' + (w === null ? 'kein Platz' : (w >= 3 ? '≥ 3,0' : de(w))) + '</span>' + (gap === null || w === null ? '' : '<small>Luft ' + de(gap) + '</small>') + '</td>';
+    });
+    t += '</tr>';
+  });
+  document.getElementById("vtab").innerHTML = t + '</tbody>';
+}
+Array.prototype.forEach.call(document.querySelectorAll('input[name="var"],input[name="dl"]'), function (e) { e.addEventListener("change", draw); });
+draw();
+</script>
+

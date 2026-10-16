@@ -123,8 +123,9 @@ GRID_V = "\n".join("<figure><div class=plan>%s</div><figcaption><b>%s, versenkt<
     svg_building(s, "versenkt"), NAMES[s], com(KW), com(v["versenkt"]["kl"]), com(v["versenkt"]["wall"]),
     ", gekürzt" if v["versenkt"]["kl"] < KL - 0.1 else "") for s, v in B.items() if "versenkt" in v)
 hb = HOF.bounds
+VDATA = json.load(open(os.path.join(HERE, "variants1250.json")))
 html = open(os.path.join(HERE, "page.template.html")).read()
-for k, val in {"@TABLE@": TABLE, "@GRID@": GRID, "@GRIDV@": GRID_V, "@OVERVIEW@": svg_overview(), "@KW@": com(KW), "@KL@": com(KL),
+for k, val in {"@VDATA@": json.dumps(VDATA), "@TABLE@": TABLE, "@GRID@": GRID, "@GRIDV@": GRID_V, "@OVERVIEW@": svg_overview(), "@KW@": com(KW), "@KL@": com(KL),
                "@HOFW@": com(hb[2] - hb[0]), "@HOFL@": com(hb[3] - hb[1]), "@HOFA@": com(D["hof_area"], 0),
                "@F@": com(D["F"]), "@FV@": com(D["F"] + D["kass_top"] + 0.4), "@PT@": com(D["plate_t"]),
                "@PTV@": com(D["plate_t"] + D["kass_top"] + 0.4)}.items():
