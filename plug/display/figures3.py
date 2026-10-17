@@ -134,3 +134,55 @@ def plan(P, aux, d):
     v.text(-20.0, 0, "Kassette", "lab onfill", "middle")
     v.text(-9.0, 20.0, "Kopf", "mut", "middle")
     return v.svg("plan3", "Draufsicht auf den Körper E4")
+
+
+def foot_plan(P, aux, d):
+    """Fuß und Mulde von unten gesehen wie im Slicer nicht, sondern von oben (Norden oben, Osten rechts): Umriss auf halber Höhe, Fase unten, Mulde, Schacht."""
+    from plug.display import body4 as B4
+    v = View(-31.0, 9.0, -13.0, 13.0, 14.0)
+    mu = Polygon(B4.foot_poly(d)).buffer(D.CLR_MULDE, join_style=2)
+    v.fill(mu, "mulde4")
+    mid = slice_polys(P["body"], [0, 0, -7.0], [0, 0, 1], (0, 1))
+    v.fill(mid, "foot")
+    low = slice_polys(P["body"], [0, 0, d["foot"] + 0.15], [0, 0, 1], (0, 1))
+    v.fill(low, "foot2")
+    v.fill(slice_polys(P["cassette"], [0, 0, -7.0], [0, 0, 1], (0, 1)), "kass")
+    x0, x1 = d["x_bw"], d["x_fe"]
+    n = d["NW"] / 2
+    v.dim_h(x0, x1, -n - 2.4, "Fuß %s" % de(x1 - x0))
+    v.dim_v(x0 - 1.4, -n, n, "", -1)
+    v.text(x0 - 2.2, 0, "%s" % de(d["NW"]), "num", "end")
+    v.dim_h(d["x_be"], x1, n + 2.4, "Verlängerung %s" % de(D.FOOT_EXT))
+    v.text(x1 - D.KEY / 2 - 0.6, -n + D.KEY / 2 - 0.2, "Ecke %s" % de(D.KEY), "lab", "start", dx=6)
+    v.text(x1 + 0.8, 0, "vorn", "mut")
+    v.text(-d["pe"], 0.0, "Kassette", "lab onfill", "middle")
+    return v.svg("foot4", "Fuß, Mulde und Kodierecke von oben")
+
+
+def peg_section(P, aux, d):
+    """Schnitt durch einen Zapfen der Frontblende (y = Lochlage) mit Modul und Rückwand."""
+    y = D.DISP["hole_dx"] / 2
+    v = View(-12.0, 3.0, -1.0, 40.0, 11.0)
+    for name in ("body", "pcb", "glass", "blende"):
+        v.fill(slice_polys(P[name], [0, y, 0], [0, 1, 0], (0, 2)), CLASS[name])
+    v.dim_h(d["x_blende"], d["x_slot0"] - D.PEG_HOLE_T, 38.0, "Zapfen %s" % de(d["x_blende"] - d["x_slot0"] + D.PEG_HOLE_T))
+    return v.svg("peg4", "Schnitt durch einen Zapfen der Frontblende")
+
+
+def bump_cross():
+    """Querschnitt des Rückdeckels (y, v): Rastnasen in Nuten der Öffnung (Prinzip)."""
+    v = View(-12.0, 12.0, -1.5, 4.5, 20.0)
+    w, t = D.LID_W / 2, D.WALL
+    v.fill(Polygon([(-w - D.SPILL - 6, -1.2), (-w - D.SPILL, -1.2), (-w - D.SPILL, 3.4), (-w - D.SPILL - 6, 3.4)]), "foot")
+    v.fill(Polygon([(w + D.SPILL + 6, -1.2), (w + D.SPILL, -1.2), (w + D.SPILL, 3.4), (w + D.SPILL + 6, 3.4)]), "foot")
+    v0 = (t - D.BUMP["t"]) / 2
+    for sgn in (-1, 1):
+        gx = sgn * (w + D.SPILL)
+        v.fill(Polygon([(gx, v0 - 0.15), (gx + sgn * D.BUMP["groove"], v0 - 0.15), (gx + sgn * D.BUMP["groove"], v0 + D.BUMP["t"] + 0.15), (gx, v0 + D.BUMP["t"] + 0.15)]), "void2")
+    v.fill(Polygon([(-w, 0), (w, 0), (w, t), (-w, t)]), "lid")
+    for sgn in (-1, 1):
+        v.fill(Polygon([(sgn * w, v0), (sgn * (w + D.BUMP["h"]), v0), (sgn * (w + D.BUMP["h"]), v0 + D.BUMP["t"]), (sgn * w, v0 + D.BUMP["t"])]), "lid")
+    v.text(0, 0.6, "Rückdeckel %s dick" % de(t), "lab", "middle", dy=4)
+    v.text(w + 3.5, 1.4, "Nut", "mut", "middle")
+    v.text(w + 1.0, 3.9, "Nase %s" % de(D.BUMP["h"]), "mut", "start")
+    return v.svg("bump4", "Rastnasen am Rückdeckel im Querschnitt")

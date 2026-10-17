@@ -42,6 +42,8 @@ def dims():
     d["depth"] = -d["x_bw"]
     d["x_s0"], d["x_s1"] = -(d["pe"] + D.KASS_D / 2), -(d["pe"] - D.KASS_D / 2)             # Schacht
     d["foot"] = -14.2
+    d["x_fe"] = d["x_be"] + D.FOOT_EXT                         # vordere Kante des Fußes (nach Osten verlängert)
+    d["win_top"] = d["z_top"] - D.WIN_TOP_GAP                  # Oberkante des Kabelfensters (Rundbogen)
     d["z_cass"] = D.KASS_TOP
     d["z_rear"] = D.KASS_TOP + D.AIR + D.LID_T                # Oberkante hinten über der Kassette (4,5 Luft plus Deckel)
     d["z_pins"] = d["mb"] + P["hdr_edge"]
@@ -58,6 +60,45 @@ def profile_plan(d):
     """Grundriss in (x, y): Kopf in voller Breite, dahinter Kante für Kante schmaler bis zur Breite der Kassette."""
     w, n = d["W"] / 2, d["NW"] / 2
     return [(0.0, -w), (0.0, w), (d["x_back"], w), (d["x_be"], n), (d["x_bw"], n), (d["x_bw"], -n), (d["x_be"], -n), (d["x_back"], -w)]
+
+
+def foot_poly(d):
+    """Grundriss des Fußes (unter dem Kopf, in der Mulde): Schachtsäule plus Verlängerung nach vorn, Kodierecke vorn Süd."""
+    n = d["NW"] / 2
+    xb, xf, k = d["x_bw"], d["x_fe"], D.KEY
+    return [(xb, -n), (xf - k, -n), (xf, -n + k), (xf, n), (xb, n)]
+
+
+def chamfered_prism(pts, z0, z1, ch):
+    """Prisma über dem Grundriss `pts` (gegen den Uhrzeigersinn) mit Fase je Kante an der Unterkante z0 (45°)."""
+    base = g.ext(_cs(pts), z0, z1)
+    n = len(pts)
+    for i in range(n):
+        a, b, c = np.array(pts[i], float), np.array(pts[(i + 1) % n], float), ch[i]
+        if c <= 0:
+            continue
+        e = b - a
+        nrm = np.array([e[1], -e[0]]) / np.hypot(*e)               # Außennormale
+        n3 = np.array([nrm[0], nrm[1], -1.0]) / math.sqrt(2.0)
+        p0 = np.array([a[0] - nrm[0] * c, a[1] - nrm[1] * c, z0])
+        base = base.trim_by_plane((-n3).tolist(), float(np.dot(-n3, p0)))
+    return base
+
+
+def window_poly(d):
+    """Kabelfenster in (y, z): Langloch mit Rundbogen oben, unten Ecken R 1,5; vom Taschenboden bis fast unter das Kopfdach."""
+    hw = D.WIN_W / 2
+    z0, z1 = d["mb"], d["win_top"]
+    from shapely.geometry import Point
+    shape = sbox(-hw, z0, hw, z1 - hw).union(Point(0, z1 - hw).buffer(hw, quad_segs=16))
+    shape = shape.buffer(-1.5).buffer(1.5, quad_segs=8)
+    return shape
+
+
+def chamber_plan(d):
+    """Grundriss der Kammer: am Schacht so breit wie dieser, zum Kabelfenster hin bis WIN_W (bleibt innerhalb der Wand 1,2)."""
+    r, f = D.KASS_W / 2, D.CHAMBER_FRONT_W / 2
+    return [(d["x_bw"] - 1.0, -r), (d["x_be"], -r), (d["x_back"] + 0.05, -f), (d["x_back"] + 0.05, f), (d["x_be"], r), (d["x_bw"] - 1.0, r)]
 
 
 def chamber_poly(d, r=None):
@@ -94,6 +135,24 @@ def lid_poly(d):
     return pts, (nx, nz)
 
 
+def _xcyl(r, x0, x1, y, z, n=24):
+    """Zylinder mit Achse in x von x0 nach x1 (x1 < x0 möglich), Mitte (y, z)."""
+    lo, hi = min(x0, x1), max(x0, x1)
+    c = m3d.Manifold.cylinder(hi - lo, r, r, n).rotate([0, 90, 0])      # Achse nach +x? (z -> x)
+    bb = c.bounding_box()
+    return c.translate([lo - bb[0], y, z])
+
+
+def lid_frame(d):
+    """Punktfunktion P(u, v) in (x, z): u entlang der Schräge vom oberen Ende (Kopfdach) nach unten, v von außen (0) nach innen (Deckeldicke)."""
+    pts, (nx, nz) = lid_poly(d)
+    ax, az = pts[0]
+    bx, bz = pts[1]
+    L = math.hypot(bx - ax, bz - az)
+    dx, dz = (bx - ax) / L, (bz - az) / L
+    return (lambda u, v: (ax + u * dx - v * nx, az + u * dz - v * nz)), L
+
+
 def _cs(poly_pts):
     return m3d.CrossSection([g.ccw([(float(x), float(y)) for x, y in poly_pts])])
 
@@ -113,44 +172,68 @@ def parts(d=None):
     plan = g.ext(_cs(profile_plan(d)), d["z_hb"] - 0.01, d["z_top"] + 0.01)
     env = plan ^ side
     # Hals: Säule von der Fußunterkante mit Fase (wie bei den Gebäuden) bis in den Kopf
-    ch = D.FOOT_CH
+    fp = foot_poly(d)
     cx = (d["x_be"] + d["x_bw"]) / 2
-    foot = g.union([g.frustum(d["KD"] - 2 * ch, d["NW"] - 2 * ch, d["foot"], d["foot"] + ch, ch, cx=cx),
-                    g.box(d["x_bw"], d["x_be"], -d["NW"] / 2, d["NW"] / 2, d["foot"] + ch - 0.01, d["z_hb"] + 1.0)])
+    ch_edges = [D.FOOT_CH_SIDE, D.FOOT_CH_FRONT, D.FOOT_CH_FRONT, D.FOOT_CH_SIDE, D.FOOT_CH_SIDE]     # Süd, Kodierecke, Ost, Nord, West
+    foot = chamfered_prism(fp, d["foot"], d["z_hb"] + 1.0, ch_edges)
     body = env + foot
     # Modultasche: von vorn offen, Tiefe = Modul plus Spiel, Höhe bis unter das Kopfdach
     hw = P["pcb_w"] / 2 + D.CLR
     pocket = g.box(d["x_slot0"], 0.05, -hw, hw, d["mb"], d["mb"] + P["pcb_h"] + D.CLR)
     # Kabelfenster in der Rückwand mit gerundeten Ecken (Pins und Header gehen hindurch)
-    win = rounded_rect(-D.SLIT_W / 2, D.SLIT_W / 2, d["mb"], d["mb"] + 8.0, 1.5)
+    win = window_poly(d)
     window = g.prism_x(list(win.exterior.coords)[:-1], d["x_back"] - 0.05, d["x_slot0"] + 0.05)
     # Kammer: Profil gerundet, quer so breit wie der Schacht
     ch_poly = chamber_poly(d)
-    chamber = g.prism_y(list(ch_poly.exterior.coords)[:-1], -D.KASS_W / 2, D.KASS_W / 2)
+    chamber = g.prism_y(list(ch_poly.exterior.coords)[:-1], -D.CHAMBER_FRONT_W / 2, D.CHAMBER_FRONT_W / 2) ^ \
+        g.ext(_cs(chamber_plan(d)), d["z_hb"] - 1.0, d["z_top"] + 1.0)
     # Schacht für die Kassette mit Einführfase am Fuß und Anschlag oben
     sx = (d["x_s0"] + d["x_s1"]) / 2
     shaft = g.union([g.box(d["x_s0"], d["x_s1"], -D.KASS_W / 2, D.KASS_W / 2, d["foot"] - 0.01, d["z_cass"] + 0.3),
-                     g.frustum(D.KASS_D, D.KASS_W, d["foot"] - 0.01, d["foot"] + D.FOOT_CH * 0.5, D.FOOT_CH * 0.5, cx=sx)])
+                     g.frustum(D.KASS_D, D.KASS_W, d["foot"] - 0.01, d["foot"] + 0.5, 0.5, cx=sx)])
     # Öffnung für die Adern über dem Anschlag
     gap = g.box(d["x_s0"] + 1.2, d["x_s1"] - 1.2, -5.0, 5.0, d["z_cass"] - 0.9, d["z_cass"] + 1.0)
     # Rückdeckel: Öffnung im Körper (mit Spiel), Deckel selbst
     lid_pts, normal = lid_poly(d)
     lid = g.prism_y(lid_pts, -D.LID_W / 2, D.LID_W / 2)
     lid_cut = g.prism_y(lid_pts, -D.LID_W / 2 - D.SPILL, D.LID_W / 2 + D.SPILL)
+    # Rastnasen am Rand des Deckels und passende Nuten im Körper (je Seite zwei)
+    Pf, Lslope = lid_frame(d)
+    bu, bt, bh, bl = D.BUMP["u"], D.BUMP["t"], D.BUMP["h"], D.BUMP["len"]
+    v0 = (D.WALL - bt) / 2
+    bumps, grooves = [], []
+    for u0 in bu:
+        for sgn in (-1, 1):
+            q = [Pf(u0, v0), Pf(u0 + bl, v0), Pf(u0 + bl, v0 + bt), Pf(u0, v0 + bt)]
+            y0, y1 = sorted((sgn * (D.LID_W / 2 - 0.01), sgn * (D.LID_W / 2 + bh)))
+            bumps.append(g.prism_y(q, y0, y1))
+            qg = [Pf(u0 - 0.3, v0 - 0.15), Pf(u0 + bl + 0.3, v0 - 0.15), Pf(u0 + bl + 0.3, v0 + bt + 0.15), Pf(u0 - 0.3, v0 + bt + 0.15)]
+            yg0, yg1 = sorted((sgn * (D.LID_W / 2 + D.SPILL - 0.01), sgn * (D.LID_W / 2 + D.BUMP["groove"])))
+            grooves.append(g.prism_y(qg, yg0, yg1))
+    lid = lid + g.union(bumps)
+    lid_cut = lid_cut + g.union(grooves)
     # die Öffnung im Körper reicht von der Schrägwand bis in die Kammer (Kammer ist darunter schon frei)
     front_rebate = g.box(d["x_blende"], 0.1, -d["W"] / 2 - 0.1, d["W"] / 2 + 0.1, d["z_hb"] - 0.1, d["z_top"] + 0.1)      # die Frontblende steht vor dem Körper
-    body = body - pocket - window - chamber - shaft - gap - lid_cut - front_rebate
+    # Sacklöcher für die Zapfen der Frontblende (Lage der Befestigungslöcher des Moduls)
+    hz = [d["mb"] + P["hole_edge"], d["mb"] + P["hole_edge"] + P["hole_dy"]]
+    hy = [-P["hole_dx"] / 2, P["hole_dx"] / 2]
+    peg_holes = g.union([_xcyl(D.PEG_HOLE_D / 2, d["x_slot0"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T, y, z) for y in hy for z in hz])
+    body = body - pocket - window - chamber - shaft - gap - lid_cut - front_rebate - peg_holes
     lid = lid ^ env
     # Frontblende: liegt in Ost-Fläche, Fenster als Loch
     wb, wt = d["wb"], d["wt"]
     wy = P["aa_w"] / 2 + D.WINDOW_MARGIN
     blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"]) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, wb, wt)
+    pegs = g.union([_xcyl(D.PEG_D / 2, d["x_blende"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T + 0.2, y, z) for y in hy for z in hz])
+    blende = blende + pegs
     # Kassette (vereinfacht) und Modul
     cas = g.box(d["x_s0"] + 0.06, d["x_s1"] - 0.06, -D.KASS_W / 2 + 0.06, D.KASS_W / 2 - 0.06, d["foot"], d["z_cass"])
     mb = d["mb"]
     glass_z0 = mb + P["pcb_h"] - 3.3 - P["panel_h"]
     pcb = g.box(d["x_pcb0"], d["x_pcb1"], -P["pcb_w"] / 2, P["pcb_w"] / 2, mb, mb + P["pcb_h"]) - \
         g.box(d["x_pcb0"] - 0.05, d["x_pcb1"] + 0.05, -P["notch_w"] / 2, P["notch_w"] / 2, mb + P["pcb_h"] - P["notch_d"], mb + P["pcb_h"] + 0.1)
+    pcb = pcb - g.union([_xcyl(P["hole_d"] / 2, d["x_pcb0"] - 0.1, d["x_pcb1"] + 0.1, y, z) for y in (-P["hole_dx"] / 2, P["hole_dx"] / 2)
+                         for z in (mb + P["hole_edge"], mb + P["hole_edge"] + P["hole_dy"])])
     glass = g.box(d["x_mf"] - D.GLASS_T, d["x_mf"], -P["panel_w"] / 2, P["panel_w"] / 2, glass_z0, glass_z0 + P["panel_h"])
     aa = g.box(d["x_mf"] - 0.02, d["x_mf"] + 0.05, -P["aa_w"] / 2, P["aa_w"] / 2, mb + P["aa_bottom"], mb + P["aa_bottom"] + P["aa_h"])
     hdr = g.box(d["x_hdr"], d["x_pcb0"], -4 * P["hdr_pitch"] / 2, 4 * P["hdr_pitch"] / 2, d["z_pins"] - 1.27, d["z_pins"] + 1.27)
@@ -159,7 +242,8 @@ def parts(d=None):
     # Platte (Ausschnitt) mit Mulde, Pin-Löchern und Winkelleiste darunter
     pe = d["pe"]
     pl = g.box(-62.0, 4.1, -45.0, 45.0, -14.6, 0.0)
-    mulde = g.box(d["x_bw"] - 0.1, d["x_be"] + 0.1, -d["NW"] / 2 - 0.1, d["NW"] / 2 + 0.1, -14.2, 0.1)
+    mu_poly = Polygon(foot_poly(d)).buffer(D.CLR_MULDE, join_style=2)
+    mulde = g.ext(_poly_cs(mu_poly), -14.2, 0.1)
     holes = g.union([g.cyl(0.7, -15.0, -13.9, cx=-pe, cy=(i - 1.5) * 2.54) for i in range(4)])
     plate = pl - mulde - holes
     lei = g.box(-pe - 1.0, -pe + 1.0, -5.45, 5.45, -16.6, -14.6)

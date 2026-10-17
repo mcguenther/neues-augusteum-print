@@ -21,7 +21,8 @@ def env_at(xe, yc):
 
 
 def mulde_at(xe, yc):
-    return box(xe + D4["x_bw"] - 0.1, yc - D4["NW"] / 2 - 0.1, xe + D4["x_be"] + 0.1, yc + D4["NW"] / 2 + 0.1)
+    """Mulde in der Platte: Umriss des Fußes (mit Verlängerung nach vorn und Kodierecke) plus Spiel."""
+    return Polygon([(xe + x, yc + y) for x, y in body4.foot_poly(D4)]).buffer(D.CLR_MULDE, join_style=2)
 
 
 def zone_at(xe, yc, tail="W"):

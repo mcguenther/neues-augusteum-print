@@ -44,6 +44,15 @@ CSS3 = """
 .fig .pin3 { fill: var(--accent-fill); stroke: var(--accent); stroke-width: .5; }
 .fig .wire { stroke: var(--c-thread); stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .fig .inv { fill: var(--panel); } .fig text.inv { fill: var(--panel); } .fig text.onfill { fill: #fff; }
+.fig .mulde4 { fill: none; stroke: var(--c-niche); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.fig .void2 { fill: var(--panel); stroke: var(--edge); stroke-width: .5; }
+.done { display: flex; flex-direction: column; gap: 6px; }
+.done .it { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: .93rem; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.done .it:last-child { border-bottom: 0; }
+.done .ok { font-family: var(--mono); font-size: .74rem; color: var(--ok); letter-spacing: .06em; text-transform: uppercase; padding-top: 3px; }
+.chg { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.chg .card { gap: 6px; } .chg .card p { font-size: .93rem; }
+.chg .tag2 { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; }
 .view3 { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 16px; align-items: start; }
 @media (max-width: 900px) { .view3 { grid-template-columns: 1fr; } }
 .stage3 { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
@@ -207,7 +216,12 @@ function goTo(v) {
 const views = document.getElementById('views3');
 DATA.views.forEach((v, i) => {
   const b = document.createElement('button'); b.type = 'button'; b.textContent = v.name; b.setAttribute('aria-pressed', i === 0);
-  b.onclick = () => { [...views.children].forEach((c, j) => c.setAttribute('aria-pressed', j === i)); goTo(v); };
+  b.onclick = () => {
+    [...views.children].forEach((c, j) => c.setAttribute('aria-pressed', j === i));
+    ['plate', 'leiste'].forEach((id) => { document.getElementById('v_' + id).checked = !(v.hide || []).includes(id); });
+    if (v.pull !== undefined) { ui.pull.value = v.pull; ui.pull.dispatchEvent(new Event('input')); } else apply();
+    goTo(v);
+  };
   views.appendChild(b);
 });
 const plist = document.getElementById('plist');
@@ -256,7 +270,6 @@ def page(v):
     iv = sc["intervals"]
     ivs = ", ".join("y %s bis %s" % (de(a, 0), de(b, 0)) for a, b in iv)
     y_mid = (iv[0][0] + iv[0][1]) / 2 if iv else 47.0
-    # Kammer: größter Kreis und Luft
     ch = aux["chamber"]
     pt = polylabel(ch, tolerance=0.05)
     r_max = ch.exterior.distance(pt)
@@ -264,10 +277,14 @@ def page(v):
     xs = d["x_s0"] + 1.5
     seg = ch.intersection(LineString([(xs, d["z_cass"] - 1), (xs, d["z_top"] + 1)]))
     air_rear = seg.bounds[3] - d["z_cass"] if not seg.is_empty else 0.0
-    # Länge einer Ader bei Löten mit 35 mm Abstand vor der Ostfläche: Hals-Mitte bis Ostfläche plus 35 plus 5 für die Höhe
     solder_len = d["pe"] + 35.0 + 5.0
     straight = math.hypot(-d["x_tip"] + d["x_s0"] / 2 + d["x_s1"] / 2 + 0.6, d["z_pins"] - d["z_cass"])
     reserve = solder_len - straight
+    foot_len = d["x_fe"] - d["x_bw"]
+    mu_w, mu_l = d["NW"] + 2 * D.CLR_MULDE, foot_len + 2 * D.CLR_MULDE
+    win_h = d["win_top"] - d["mb"]
+    pillar = d["W"] / 2 - D.WIN_W / 2 - D.WALL
+    wide_w = D.KASS_W + 2 * (D.WALL + D.FOOT_CH_FRONT)
     head = open(CONCEPT_TEMPLATE, encoding="utf-8").read().split('<div class="wrap">')[0]
     head = head.replace("<title>Powerbank in der Grundplatte</title>", "<title>Plan 3 Display-Gebäude</title>\n<meta name=\"description\" content=\"Display-Körper mit Kopf über der Platte, Rückenkeil und 3D-Ansicht\">")
     head = head.replace("</style>", CSS_EXTRA + CSS3 + "</style>")
@@ -276,7 +293,7 @@ def page(v):
         body=("#e6dfcb", "#cfc7b0"), lid=("#f0a21a", "#f2b441"), blende=("#5b4a7a", "#8d73b8"), cassette=("#5f7086", "#7d8ea6"),
         pcb=("#2f7d4f", "#4c9a69"), glass=("#3a3f44", "#59616a"), aa=("#f4c36a", "#f2b441"), header=("#1f2326", "#8a9299"), pins=("#d4a017", "#e3b54a"),
         plate=("#8fa3b8", "#5d7087"), leiste=("#2d3236", "#8a9299"))
-    labels = dict(body="Körper", lid="Rückdeckel", blende="Frontblende", cassette="Kassette", pcb="Modul, Platine", glass="Modul, Glas", aa="aktive Fläche",
+    labels = dict(body="Körper", lid="Rückdeckel", blende="Frontblende mit Zapfen", cassette="Kassette", pcb="Modul, Platine", glass="Modul, Glas", aa="aktive Fläche",
                   header="Header", pins="Pins", plate="Platte (Ausschnitt)", leiste="Winkelleiste")
     dirs = dict(body=(0, 0, 0, 0), lid=(nx, 0, nz, 30.0), blende=(1, 0, 0, 30.0), cassette=(0, 0, -1, 28.0),
                 pcb=(1, 0, 0, 60.0), glass=(1, 0, 0, 60.0), aa=(1, 0, 0, 60.0), header=(1, 0, 0, 60.0), pins=(1, 0, 0, 60.0), plate=(0, 0, 0, 0), leiste=(0, 0, 0, 0))
@@ -288,20 +305,37 @@ def page(v):
                   colors=[["#d9423b", "#ff7a6e"], ["#2b2b2b", "#aab0b6"], ["#e3c030", "#f0d060"], ["#3b82d9", "#6aa5f0"]]),
         views=[dict(name="Schräg hinten", t=[-12, 0, 8], d=190, az=-140, el=26), dict(name="Schräg vorn", t=[-12, 0, 8], d=190, az=-38, el=24),
                dict(name="Vorn", t=[-12, 0, 12], d=170, az=0, el=6), dict(name="Seite, Schnitt", t=[-12, 0, 8], d=170, az=-90, el=2),
-               dict(name="Von oben", t=[-12, 0, 0], d=190, az=0, el=88)])
+               dict(name="Von oben", t=[-12, 0, 0], d=190, az=0, el=88), dict(name="Von unten (Fuß)", t=[-10, 0, 28], d=130, az=-70, el=-48, pull=100, hide=["plate", "leiste"])])
     sec = F3.section(parts, aux, d)
     plan = F3.plan(parts, aux, d)
+    foot = F3.foot_plan(parts, aux, d)
+    peg = F3.peg_section(parts, aux, d)
+    bump = F3.bump_cross()
     mini = mini_map(v, pl, L.EAST_XE, y_mid)
     html = f"""<div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 3, noch nicht abgenickt</div>
+  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 3, zweite Fassung, noch nicht abgenickt</div>
   <h1>Display-Gebäude: Kopf über der Platte</h1>
-  <p class="lead">Das Display sitzt jetzt ganz über der Platte, der Fuß in der Mulde ist nur noch der Halter der Kassette. Hinter dem Display wächst ein Rückenkeil mit rundem Kabelraum, den ein schräger Rückdeckel schließt. Die Pins bleiben am Modul. Dieser Plan hat eine 3D-Ansicht zum Auseinandernehmen und zum Aufschneiden. Erst nach deinem Okay entstehen STL.</p>
+  <p class="lead">Zweite Fassung nach deiner Rückmeldung: Das Kabelfenster geht hoch, der Fuß ist verdrehsicher, die Fase folgt <code>main</code>, und die dünnen Teile halten mit Zapfen und Rastnasen. Kopf über der Platte, Fenster ab 10 mm und der Rückenkeil mit schrägem Rückdeckel sind abgenickt. Erst nach deinem Okay entstehen STL.</p>
 </header>
+
+<section aria-labelledby="h-neu">
+  <h2 id="h-neu">Das hat sich geändert</h2>
+  <div class="chg">
+    <div class="card"><span class="tag2">Kabelfenster</span><h3>Bis weit nach oben, {de(D.WIN_W, 0)} mm breit</h3>
+      <p>Die Rückwand hinter dem Modul hat ein Langloch mit Rundbogen: {de(D.WIN_W)} mm breit, von {de(d['mb'])} bis {de(d['win_top'])} mm über der Platte ({de(win_h, 0)} mm hoch), vorher nur {de(D.SLIT_W)} × 8 mm. Die Kammer weitet sich zum Fenster von {de(D.KASS_W)} auf {de(D.CHAMBER_FRONT_W)} mm. Das Modul liegt hinten fast frei, die Reserve der Adern kann überall hinter dem Display liegen. Rechts und links bleiben Pfeiler von je {de(pillar, 0)} mm, die das Modul und die Zapfen halten.</p></div>
+    <div class="card"><span class="tag2">Verdrehsicher</span><h3>Fuß {de(D.FOOT_EXT, 0)} mm nach vorn, Ecke abgeschrägt</h3>
+      <p>Der Fuß ist zur Bildschirmfront hin um {de(D.FOOT_EXT)} mm verlängert und misst jetzt {de(d['NW'])} × {de(foot_len)} mm. Vorn auf der Südseite fehlt eine Ecke von {de(D.KEY)} mm, die Kodierecke aus <code>parts.py</code> (Steckprobe 1). Der Körper passt nur in einer Lage in die Mulde. Die Verlängerung liegt unter dem Kopf und stört weder Kammer noch Pins. Die Mulde in der Platte ist der Fußumriss plus {de(D.CLR_MULDE, 2)} mm: {de(mu_w)} × {de(mu_l)} mm.</p></div>
+    <div class="card"><span class="tag2">Fase</span><h3>Wie in main: 2,0 mm, Spiel 0,15</h3>
+      <p>Nach dem Merge von <code>main</code>: <code>FUSS_FASE_T</code> 2,0 mm ist in r8 bewährt (fängt das Gebäude, kein Wulst), das Spiel von 0,15 mm ist deine Vorgabe für den nächsten Probedruck. Der Hals bekommt vorn und an der Kodierecke die 2,0 mm. An den Längsseiten und hinten sind es {de(D.FOOT_CH_SIDE)} mm, weil die Wand um den Schacht nur {de(D.WALL)} mm dick ist; 2,0 mm würden dort in den Schacht schneiden. Wie das aussieht, zeigt der Abschnitt zum Fuß.</p></div>
+    <div class="card"><span class="tag2">Befestigung</span><h3>Zapfen und Rastnasen, Kleben als Rückfall</h3>
+      <p>Die Frontblende hat vier Zapfen (Ø {de(D.PEG_D)} mm). Sie gehen durch die vier Befestigungslöcher des Moduls in Sacklöcher der Rückwand und halten Blende und Modul zugleich. Der Rückdeckel hat je Längskante zwei Rastnasen ({de(D.BUMP['h'])} mm) in Nuten der Öffnung. Beide Teile sind mechanisch kaum belastet und dürfen dünn gedruckt werden. Im schlechtesten Fall klebst du sie an.</p></div>
+  </div>
+</section>
 
 <section aria-labelledby="h-3d">
   <h2 id="h-3d">3D-Ansicht zum Auseinandernehmen</h2>
-  <p>Ziehen dreht die Ansicht, Umschalt oder rechte Maustaste verschiebt sie, das Mausrad zoomt. Mit dem ersten Regler fasst du die Teile einzeln heraus (Kassette nach unten, Rückdeckel schräg, Frontblende und Modul nach vorn), mit dem zweiten ziehst du den ganzen Körper aus der Platte. Die Adern zeigen eine Schleife von etwa 32 mm als Beispiel; die Kammer hat Platz für mehr, die echte Lage entsteht beim Einschieben.</p>
+  <p>Ziehen dreht die Ansicht, Umschalt oder rechte Maustaste verschiebt sie, das Mausrad zoomt. Mit dem ersten Regler fasst du die Teile einzeln heraus (Kassette nach unten, Rückdeckel schräg, Frontblende mit Zapfen und Modul nach vorn), mit dem zweiten ziehst du den ganzen Körper aus der Platte. „Von unten“ zeigt den Fuß mit der Kodierecke. Die Adern zeigen eine Schleife von etwa 32 mm als Beispiel; die Kammer hat Platz für mehr, die echte Lage entsteht beim Einschieben.</p>
   <div class="view3">
     <div class="card"><div class="stage3" id="stage3"><canvas id="cv3" aria-label="3D-Ansicht des Display-Körpers"></canvas><div class="tag" id="tag3"></div></div></div>
     <div class="card side3">
@@ -314,45 +348,57 @@ def page(v):
   </div>
 </section>
 
-<section aria-labelledby="h-qa">
-  <h2 id="h-qa">Deine Punkte, kurz beantwortet</h2>
-  <div class="qa">
-    <div class="card"><span class="yes">sinnvoll</span><h3>Gehäuse ganz über die Platte, Fuß = Halter der Kassette</h3>
-      <p>Ja, das ist der Vorschlag E4. In die Platte taucht nur der Hals: Mulde <span class="num">{de(d['NW'] + 0.2)} × {de(d['KD'] + 0.2)}</span> statt {de(d['W'])} × 19,9. Der Unterbau bleibt wie bei den anderen Docks. Die Adern liegen höher und müssen sich kaum biegen. Der Preis: Der Kopf hängt in der Luft (Support beim Druck) und darf nicht über Hof, Gebäude und Schrift ragen. Er hält an der Kassette im Dock, wiegt aber nur wenige Gramm.</p></div>
-    <div class="card"><span class="yes">gelöst</span><h3>3 bis 4 cm Ader müssen irgendwohin</h3>
-      <p>In den Rückenkeil: Hinter der Rückwand des Moduls liegt eine Kammer, die nach oben mit der Schräge wächst. Der größte Kreis darin hat einen Radius von <span class="num">{de(r_max)} mm</span>. Eine Schleife mit Radius 6 mm nimmt 38 mm Ader auf, zwei Windungen also etwa 75 mm. Das reicht für die etwa {de(reserve, 0)} mm Reserve beim Anlöten mit 35 mm Abstand.</p></div>
-    <div class="card"><span class="yes">gelöst</span><h3>Alles rund, keine Kanten im Kanal</h3>
-      <p>Das Profil der Kammer in der Biegeebene ist mit Radius {de(D.ROUND_R, 0)} mm gerundet, die Ecken des Kabelfensters mit 1,5 mm. Die Adern biegen sich nur in dieser Ebene. Die Seitenwände sind eben und berühren die Adern nicht.</p></div>
-    <div class="card"><span class="yes">gelöst</span><h3>Schräge bis zur Oberkante</h3>
-      <p>Der Rückdeckel läuft von der Oberkante über der Kassette ({de(d['z_rear'])} mm über der Platte, {de(D.AIR)} mm Luft) schräg hoch bis zur Oberkante des Gehäuses ({de(d['z_top'])} mm). Die Luft über der Kassette beträgt am hinteren Ende der Kammer mindestens {de(air_rear)} mm und nimmt nach vorn zu.</p></div>
-    <div class="card"><span class="yes">umgesetzt</span><h3>Display höher</h3>
-      <p>Das Sichtfenster beginnt <span class="num">{de(d['wb'])} mm</span> über der Platte, die Unterkante der Platine {de(d['mb'])} mm. Weil unter dem Fenster noch {de(L.BELOW_WINDOW)} mm Platine liegen, ist das die tiefste Lage, bei der der Kopf ganz über der Platte bleibt. Fenster ab 5 mm hieße, dass der Kopf 4,7 mm in die Platte tauchen müsste, also wieder die große Mulde.</p></div>
-    <div class="card"><span class="yes">umgesetzt</span><h3>Breite nur am Display</h3>
-      <p>Der Kopf ist {de(d['W'])} mm breit. Dahinter verjüngt sich der Körper kantig in der Draufsicht bis auf die Breite der Kassette, {de(d['NW'])} mm. Der Keil hinter dem Kopf braucht deshalb keine {de(d['W'])} mm.</p></div>
-    <div class="card"><span class="yes">umgesetzt</span><h3>Pins am Modul bleiben</h3>
-      <p>Die Adern werden an die Pinenden gelötet. Die Stiftspitzen liegen laut Zeichnung des Schwestermoduls {de(D.PIN_TIP)} mm hinter der Glasfront, also {de(-d['x_tip'])} mm hinter der Frontblende. Die Kassette steht {de(D.PIN_CLEAR)} mm dahinter. <b>Die Pinlänge deines Moduls bitte prüfen</b>, sie ändert diese Lage.</p></div>
-    <div class="card"><span class="mid">gefunden</span><h3>Fase unten am Hals</h3>
-      <p>In <code>main</code> (<code>plug/buildings.py</code>, aus dem Zweig <code>claude/jolly-pascal-853ju9</code> über PR 23 eingegangen und in diesen Zweig gemergt): Fuß mit Fase <code>EF_CH_T</code> 0,5 an der Bettkante, Einführfase <code>ENTRY_CH_T</code> 0,5 am Schacht. Im Zweig <code>claude/gebaeude-fit-test-plan-39bfbt</code> steht eine Fuß-Fase von 2,0 mm für den Passform-Stummel (Patch <code>plug/footfit/buildings_fuss_fase.patch</code>), noch nicht in <code>main</code> und ungetestet. Für den Hals schlage ich {de(D.FOOT_CH)} mm vor.</p></div>
-  </div>
-</section>
-
 <section aria-labelledby="h-sec">
   <h2 id="h-sec">Schnitt und Draufsicht</h2>
   <div class="twofig">
     <div class="card"><h3>Längsschnitt durch die Mitte</h3><div class="scroll">{sec}</div>
-      <p class="small muted">Osten rechts. Der Kopf (Frontblende violett, Modul grün) hängt über der Platte, der Hals mit der Kassette (dunkelblau) steckt in der Mulde. Gelb der schräge Rückdeckel, rot eine mögliche Lage der Adern mit Schleife in der Kammer.</p></div>
+      <p class="small muted">Osten rechts. Der Kopf (Frontblende violett, Modul grün) hängt über der Platte, der Hals mit der Kassette (dunkelblau) steckt in der Mulde. Gelb der schräge Rückdeckel, rot eine mögliche Lage der Adern. Im Schnitt durch die Mitte ist die Rückwand offen: Dort liegt das hohe Kabelfenster.</p></div>
     <div class="card"><h3>Draufsicht</h3><div class="scroll">{plan}</div>
       <p class="small muted">Umrisse in 5 mm (ausgefüllt), 20 mm (gestrichelt) und im Fuß (blass). Der Kopf ist am breitesten, der Hals hinten so breit wie die Kassette.</p></div>
   </div>
 </section>
 
+<section aria-labelledby="h-fuss">
+  <h2 id="h-fuss">Fuß, Mulde und Kodierecke</h2>
+  <div class="twofig">
+    <div class="card"><h3>Fuß von oben, mit Mulde</h3><div class="scroll">{foot}</div>
+      <p class="small muted">Dunkel der Fuß auf halber Höhe, blass sein Umriss ganz unten (Fase), gestrichelt orange die Mulde in der Platte (Fuß plus {de(D.CLR_MULDE, 2)} mm). Vorn ist rechts, die abgeschrägte Ecke liegt vorn auf der Südseite.</p></div>
+    <div class="card"><h3>Fase je Kante an der Unterseite</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Kante</th><th>Fase</th><th>Grund</th></tr></thead>
+        <tbody>
+          <tr><td>vorn (Ost)</td><td class="num">{de(D.FOOT_CH_FRONT)}</td><td class="src">main, r8 bewährt; hier steht Material vor dem Schacht</td></tr>
+          <tr><td>Kodierecke</td><td class="num">{de(D.FOOT_CH_FRONT)}</td><td class="src">wie vorn</td></tr>
+          <tr><td>Süd- und Nordseite</td><td class="num">{de(D.FOOT_CH_SIDE)}</td><td class="src">Wand um den Schacht {de(D.WALL)}, bleibt unten {de(D.WALL - D.FOOT_CH_SIDE)}</td></tr>
+          <tr><td>hinten (West)</td><td class="num">{de(D.FOOT_CH_SIDE)}</td><td class="src">wie die Seiten</td></tr>
+          <tr><td>Schachteingang</td><td class="num">0,5</td><td class="src">ENTRY_CH_T, wie bei den Gebäuden</td></tr>
+        </tbody></table></div>
+      <p class="small">Die senkrechten Fußkanten bekommen im STL den Radius 0,5 mm (<code>FOOT_R</code> in <code>parts.py</code>), damit die Mulde sauber druckt. Wer rundum 2,0 mm will, braucht einen breiteren Hals: {de(wide_w)} statt {de(d['NW'])} mm, weil Wand und Fase zusammen {de(D.WALL + D.FOOT_CH_FRONT)} mm je Seite kosten. Das steht als Karte H unten.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-snap">
+  <h2 id="h-snap">Befestigung: Zapfen und Rastnasen</h2>
+  <div class="twofig">
+    <div class="card"><h3>Zapfen der Frontblende (Schnitt durch ein Loch des Moduls)</h3><div class="scroll">{peg}</div>
+      <p class="small muted">Violett die Blende mit dem Zapfen, grün die Platine mit dem Loch, rechts die Rückwand mit dem Sackloch ({de(D.PEG_HOLE_T)} mm tief). Der Zapfen ist Ø {de(D.PEG_D)} mm, das Loch im Modul etwa Ø {de(D.DISP['hole_d'])} mm und das Sackloch Ø {de(D.PEG_HOLE_D)} mm.</p></div>
+    <div class="card"><h3>Rastnasen am Rückdeckel (Querschnitt, Prinzip)</h3><div class="scroll">{bump}</div>
+      <p class="small muted">Zwei Nasen je Längskante ({de(D.BUMP['len'])} mm lang, {de(D.BUMP['h'])} mm hoch) rasten in Nuten ({de(D.BUMP['groove'])} mm tief) der Öffnung. Das Spiel des Deckels in der Öffnung ist {de(D.SPILL, 2)} mm.</p></div>
+  </div>
+  <ul>
+    <li><b>Vorteil der Zapfen durch die Modullöcher:</b> Sie zentrieren das Modul und halten es, ohne dass ein Teil über die Platine greift. Die Lochlage ({de(D.DISP['hole_dx'])} × {de(D.DISP['hole_dy'])} mm) kommt aus dem Foto und gilt ± 0,5 mm. Zwischen Zapfen (Ø {de(D.PEG_D)}) und Loch (Ø {de(D.DISP['hole_d'])}) bleiben je Seite etwa 0,3 mm. <b>Deshalb bitte die Lochlage nachmessen</b>, bevor die STL entstehen.</li>
+    <li><b>Dünn drucken:</b> Frontblende und Rückdeckel sind {de(D.BLENDE_T)} mm dick (drei Linien). Mit 0,8 mm (zwei Linien) gehen sie auch, wenn du sie biegsamer willst.</li>
+    <li><b>Rückfall:</b> Die Nasen und Zapfen weglassen und die Teile mit Sekundenkleber oder einem Klebepunkt befestigen. Dann lässt sich das Modul nur noch durch Abbrechen der Blende wechseln.</li>
+  </ul>
+</section>
+
 <section aria-labelledby="h-kab">
   <h2 id="h-kab">Kabelreserve</h2>
   <ul>
-    <li><b>Länge:</b> Du lötest mit etwa 35 mm Abstand vor der Ostfläche. Dann braucht jede Ader vom Schacht aus etwa {de(solder_len, 0)} mm, weil der Hals {de(d['pe'], 0)} mm hinter der Front sitzt. Zusammengebaut liegen Kassettenoberkante und Stiftspitzen nur etwa {de(straight, 0)} mm auseinander. Es bleiben etwa {de(reserve, 0)} mm Reserve in der Kammer, mehr als deine geschätzten 3 bis 4 cm. Lötest du mit 20 mm Abstand, sind es etwa {de(reserve - 15, 0)} mm.</li>
-    <li><b>Platz:</b> Die Kammer fasst sie als Schleife. Ein Radius von 6 mm liegt weit über dem Biegeradius von 28-AWG-Silikonlitze (etwa 3 mm).</li>
-    <li><b>Einschieben:</b> Beim Schieben des Moduls von vorn in die Tasche klappt die Reserve von selbst nach hinten durch das Kabelfenster in die Kammer. Du hilfst mit einem Stäbchen durch die offene Rückseite (Rückdeckel ab).</li>
-    <li><b>Rückdeckel:</b> Er liegt bündig in der Schräge, ist {de(D.LID_W)} mm breit und {de(D.WALL)} mm dick und wird liegend gedruckt. Zwei Haken am hinteren Ende und zwei Zapfen oben halten ihn, wie bei der Deckplatte der Fachprobe, die nur aufgelegt wackelte.</li>
+    <li><b>Länge:</b> Du lötest mit etwa 35 mm Abstand vor der Ostfläche. Dann braucht jede Ader vom Schacht aus etwa {de(solder_len, 0)} mm, weil der Hals {de(d['pe'], 0)} mm hinter der Front sitzt. Zusammengebaut liegen Kassettenoberkante und Stiftspitzen nur etwa {de(straight, 0)} mm auseinander. Es bleiben etwa {de(reserve, 0)} mm Reserve, mehr als deine geschätzten 3 bis 4 cm. Lötest du mit 20 mm Abstand, sind es etwa {de(reserve - 15, 0)} mm.</li>
+    <li><b>Platz:</b> Der größte Kreis in der Kammer hat {de(r_max)} mm Radius. Dazu kommt das große Kabelfenster: Die Reserve kann als Schleife hinter dem Modul bis fast unter das Kopfdach liegen. Ein Radius von 6 mm liegt weit über dem Biegeradius von 28-AWG-Silikonlitze (etwa 3 mm).</li>
+    <li><b>Einschieben:</b> Beim Schieben des Moduls von vorn in die Tasche klappt die Reserve durch das Fenster nach hinten in die Kammer. Du hilfst mit einem Stäbchen durch die offene Rückseite (Rückdeckel ab).</li>
+    <li><b>Rückdeckel:</b> Er liegt bündig in der Schräge, ist {de(D.LID_W)} mm breit und {de(D.BLENDE_T)} mm dick und wird liegend gedruckt.</li>
   </ul>
 </section>
 
@@ -361,8 +407,8 @@ def page(v):
   <div class="mapcol">
     <div class="card">{mini}<p class="small muted">Körper E4 am Ostrand bei y = {de(y_mid, 0)} mm.</p></div>
     <div class="card"><h3>Was am Ostrand geht</h3>
-      <p>Der Körper (Kopf {de(d['W'])} mm breit, {de(d['depth'])} mm tief) braucht {de(L4.AIR_MARGIN)} mm Abstand zu Gebäuden, Hof und Schrift, weil der Kopf in der Luft darüber liegt. Am Ostrand passt er bei <b class="num">{ivs}</b> (Mitte des Kopfs von der Südkante). Das ist mehr als beim versenkten Körper E2 (y 37 bis 46), weil nur der schmale Hals bis in die Nähe des Hochhaus-Bogens reicht.</p>
-      <p class="small muted">Die Mulde des Halses misst {de(d['NW'] + 0.2)} × {de(d['KD'] + 0.2)} mm, ihre Mitte liegt {de(d['pe'])} mm hinter der Ostfläche des Kopfs. Die Dockzone (14,9 × 11,1 mm) bleibt frei von Stützen. Die Südgrenze y = 37 kommt aus der Schrift (Kopf an der Unterkante 0,3 mm, Schrift 0,6 mm hoch) und der Fadenkerbe in der Ecke.</p></div>
+      <p>Der Körper (Kopf {de(d['W'])} mm breit, {de(d['depth'])} mm tief) braucht {de(L4.AIR_MARGIN)} mm Abstand zu Gebäuden, Hof und Schrift, weil der Kopf in der Luft darüber liegt. Am Ostrand passt er bei <b class="num">{ivs}</b> (Mitte des Kopfs von der Südkante). Die Verlängerung des Fußes ändert daran nichts, sie liegt unter dem Kopf.</p>
+      <p class="small muted">Die Mulde misst {de(mu_w)} × {de(mu_l)} mm, die Mitte der Kassette liegt {de(d['pe'])} mm hinter der Ostfläche des Kopfs. Die Dockzone (14,9 × 11,1 mm) bleibt frei von Stützen. Die Südgrenze y = 37 kommt aus der Schrift (Kopf an der Unterkante 0,3 mm, Schrift 0,6 mm hoch) und der Fadenkerbe in der Ecke.</p></div>
   </div>
 </section>
 
@@ -371,10 +417,10 @@ def page(v):
   <div class="scroll"><table>
     <thead><tr><th>Teil</th><th>Maße</th><th>Drucklage</th><th>Anmerkung</th></tr></thead>
     <tbody>
-      <tr><td><b>1 Körper</b></td><td class="num">{de(d['W'])} × {de(d['depth'])} × {de(d['z_top'] - d['foot'])}</td><td>stehend, Hals unten auf dem Bett, <b>mit Support</b> unter dem Kopf</td><td>Hals mit Fase {de(D.FOOT_CH)} unten (Schacht mit Einführfase), Tasche von vorn offen, Rückenkeil mit offener Kammer unter der Schräge (Wand lehnt höchstens 31° über Luft, kein Support nötig). Support nur unter dem Kopf: Tree-Support bis auf das Bett, Kontakt nur an der Kopfunterseite.</td></tr>
-      <tr><td><b>2 Rückdeckel</b></td><td class="num">{de(D.LID_W)} × 31,9 × {de(D.WALL)}</td><td>liegend</td><td>Schräge Wand, bündig im Körper, Haken und Zapfen noch zu zeichnen.</td></tr>
-      <tr><td><b>3 Frontblende</b></td><td class="num">{de(d['W'])} × {de(d['z_top'] - d['z_hb'])} × {de(D.BLENDE_T)}</td><td>liegend, Außenseite unten</td><td>Sichtfenster {de(P['aa_w'] + 2 * D.WINDOW_MARGIN)} × {de(P['aa_h'] + 2 * D.WINDOW_MARGIN)} als glattes Loch. Klickt von vorn in die Tasche.</td></tr>
-      <tr><td><b>4 Kassette</b></td><td class="num">{de(D.KASS_W)} × {de(D.KASS_D)} × 17,1</td><td>stehend</td><td>Unterbau der V2 ohne Blatt und Streifen, neu zu zeichnen.</td></tr>
+      <tr><td><b>1 Körper</b></td><td class="num">{de(d['W'])} × {de(d['depth'])} × {de(d['z_top'] - d['foot'])}</td><td>stehend, Fuß unten auf dem Bett, <b>mit Support</b> unter dem Kopf</td><td>Fuß {de(d['NW'])} × {de(foot_len)} mit Kodierecke und Fasen (2,0 vorn, {de(D.FOOT_CH_SIDE)} seitlich), Schacht mit Einführfase, Tasche von vorn offen, Kabelfenster mit Rundbogen, Rückenkeil mit offener Kammer unter der Schräge (Wand lehnt höchstens 31° über Luft). Support nur unter dem Kopf: Tree-Support bis auf das Bett, Kontakt nur an der Kopfunterseite.</td></tr>
+      <tr><td><b>2 Rückdeckel</b></td><td class="num">{de(D.LID_W)} × 31,9 × {de(D.BLENDE_T)}</td><td>liegend</td><td>Schräge Wand mit vier Rastnasen, bündig im Körper.</td></tr>
+      <tr><td><b>3 Frontblende</b></td><td class="num">{de(d['W'])} × {de(d['z_top'] - d['z_hb'])} × {de(D.BLENDE_T)}</td><td>liegend, Außenseite unten, Zapfen nach oben</td><td>Sichtfenster {de(P['aa_w'] + 2 * D.WINDOW_MARGIN)} × {de(P['aa_h'] + 2 * D.WINDOW_MARGIN)} als glattes Loch, vier Zapfen Ø {de(D.PEG_D)}.</td></tr>
+      <tr><td><b>4 Kassette</b></td><td class="num">{de(D.KASS_W)} × {de(D.KASS_D)} × 17,1</td><td>stehend</td><td>Unterbau der V2 (als Unterbau im Schacht bewährt, r8) ohne Blatt und Streifen, neu zu zeichnen.</td></tr>
       <tr><td>Kaufteile</td><td colspan="3">Modul mit Header, vier Silikon-Adern 28 AWG (etwa 60 mm), Dupont-Buchse 4-polig mit Kontakten, Winkelleiste für das Dock.</td></tr>
     </tbody></table></div>
   <ol class="todo">
@@ -382,8 +428,8 @@ def page(v):
     <li><b>Kassette von unten in den Hals schieben:</b> Die Adern kommen oben in die Kammer. Rückdeckel ist ab. Du ziehst die Adern durch das Kabelfenster in die Tasche und vorn heraus.</li>
     <li><b>Adern an die Pinenden löten:</b> Das Modul liegt etwa 35 mm vor dem Körper. Header bleibt, die Adern kommen an die Pinenden hinten.</li>
     <li><b>Modul von vorn in die Tasche schieben:</b> Die Reserve legt sich in der Kammer ab (Stäbchen von hinten).</li>
-    <li><b>Rückdeckel einsetzen und Frontblende von vorn einklicken.</b></li>
-    <li><b>Körper in die Mulde stecken</b> (Kassette auf die Pins der Winkelleiste), danach I²C-Scan.</li>
+    <li><b>Frontblende von vorn aufdrücken:</b> Die vier Zapfen gehen durch die Löcher des Moduls in die Sacklöcher. <b>Rückdeckel einsetzen:</b> Die Nasen rasten ein.</li>
+    <li><b>Körper in die Mulde stecken</b> (Kodierecke nach vorn Süd, Kassette auf die Pins der Winkelleiste), danach I²C-Scan.</li>
   </ol>
 </section>
 
@@ -393,47 +439,59 @@ def page(v):
     <thead><tr><th>Maß</th><th>Soll</th><th>Worst-Case</th><th>Ergebnis</th><th>Quelle</th></tr></thead>
     <tbody>
       <tr><td>Fenster über der Platte</td><td class="num">{de(d['wb'])} bis {de(d['wt'])}</td><td class="num">Platine ± 0,5: ± 0,5</td><td><span class="pill mid">Maße nachliefern</span></td><td class="src">Nutzer, Foto</td></tr>
-      <tr><td>Kopfunterkante</td><td class="num">{de(d['z_hb'])} über der Platte</td><td class="num">Schrift 0,6, Hof 1,9 hoch</td><td><span class="pill ok">nur außerhalb der Schriftzone</span></td><td class="src">A</td></tr>
+      <tr><td>Kabelfenster</td><td class="num">{de(D.WIN_W)} × {de(win_h, 0)}, Pfeiler {de(pillar, 0)}</td><td class="num">Brücke entfällt (Rundbogen)</td><td><span class="pill ok">frei</span></td><td class="src">E</td></tr>
+      <tr><td>Zapfen im Modulloch</td><td class="num">Ø {de(D.PEG_D)} in Ø {de(D.DISP['hole_d'])}</td><td class="num">Lochlage ± 0,5: Spiel 0,3 bleibt</td><td><span class="pill mid">Lochlage prüfen</span></td><td class="src">Foto</td></tr>
+      <tr><td>Fuß</td><td class="num">{de(d['NW'])} × {de(foot_len)}, Ecke {de(D.KEY)}</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill mid">ungetestet</span></td><td class="src">parts.py KEY</td></tr>
+      <tr><td>Mulde</td><td class="num">{de(mu_w)} × {de(mu_l)} × 14,2 (Spiel {de(D.CLR_MULDE, 2)})</td><td class="num">0,10 war an kleiner Lehre bewährt</td><td><span class="pill mid">Spiel 0,15 testen</span></td><td class="src">r8, Nutzer</td></tr>
+      <tr><td>Fase vorn</td><td class="num">{de(D.FOOT_CH_FRONT)}</td><td class="num">45°</td><td><span class="pill ok">bewährt</span></td><td class="src">r8</td></tr>
       <tr><td>Stiftspitzen bis Kassettensäule</td><td class="num">{de(D.PIN_CLEAR)}</td><td class="num">Pins 0,5 länger: 3,0</td><td><span class="pill mid">Pinlänge prüfen</span></td><td class="src">Zeichnung -79</td></tr>
       <tr><td>Luft über der Kassette</td><td class="num">{de(D.AIR)} (hinten ≥ {de(air_rear)})</td><td class="num">Kassettenoberkante ± 0,2</td><td><span class="pill ok">≥ 4</span></td><td class="src">Nutzer</td></tr>
-      <tr><td>Kammer, größter Kreis</td><td class="num">Radius {de(r_max)}</td><td class="num">Biegeradius der Ader etwa 3</td><td><span class="pill ok">frei</span></td><td class="src">A</td></tr>
-      <tr><td>Mulde des Halses</td><td class="num">{de(d['NW'] + 0.2)} × {de(d['KD'] + 0.2)} × 14,2</td><td class="num">Spiel 0,1 je Seite</td><td><span class="pill mid">Kippen ungetestet</span></td><td class="src">Plan Campus</td></tr>
-      <tr><td>Überhang Kopf</td><td class="num">{de(d['pe'] - d['KD'] / 2 + 0.0)} mm nach Osten über den Hals</td><td class="num">Support nötig</td><td><span class="pill mid">Support</span></td><td class="src">A</td></tr>
+      <tr><td>Kopfunterkante</td><td class="num">{de(d['z_hb'])} über der Platte</td><td class="num">Schrift 0,6, Hof 1,9 hoch</td><td><span class="pill ok">nur außerhalb der Schriftzone</span></td><td class="src">A</td></tr>
     </tbody></table></div>
 </section>
 
 <section aria-labelledby="h-dec">
   <h2 id="h-dec">Entscheidungen</h2>
+  <div class="card"><h3>Schon entschieden</h3><div class="done">
+    <div class="it"><span class="ok">ja</span><span><b>Kopf über der Platte</b> (E4), Hals als Halter der Kassette</span></div>
+    <div class="it"><span class="ok">ja</span><span><b>Fenster 10 mm über der Platte</b></span></div>
+    <div class="it"><span class="ok">ja</span><span><b>Rückenkeil mit schrägem Rückdeckel</b> bis zur Oberkante</span></div>
+    <div class="it"><span class="ok">ja</span><span><b>Druck stehend, Support nur unter dem Kopf</b>; Kopfunterkante 0,3 mm über der Platte</span></div>
+    <div class="it"><span class="ok">ja</span><span><b>Pins bleiben am Modul</b>, Adern an die Pinenden</span></div>
+    <div class="it"><span class="ok">ja</span><span><b>Fase nach main</b> (2,0 mm), Spiel 0,15 mm; Zapfen und Rastnasen, Kleben als Rückfall</span></div>
+  </div></div>
   <div class="dec">
-    <div class="card rec"><h3><span class="tag">A</span> Kopf über der Platte</h3><div class="opts">
-      <div class="opt pick"><b>Ja (E4)</b><span class="num2">Hals {de(d['NW'] + 0.2)} × {de(d['KD'] + 0.2)}, Support unter dem Kopf. Empfohlen.</span></div>
-      <div class="opt"><b>Nein, versenkt (E2b aus Plan 2)</b><span class="num2">Mulde {de(d['W'])} × 19,9 mm, kein Support.</span></div></div></div>
-    <div class="card rec"><h3><span class="tag">B</span> Fenster über der Platte</h3><div class="opts">
-      <div class="opt pick"><b>10 mm</b><span class="num2">Kopf ganz über der Platte. Empfohlen.</span></div>
-      <div class="opt"><b>12 bis 15 mm</b><span class="num2">höher, Körper wächst um das gleiche Maß.</span></div>
-      <div class="opt"><b>5 mm</b><span class="num2">Kopf taucht 4,7 mm ein, große Mulde.</span></div></div></div>
-    <div class="card rec"><h3><span class="tag">C</span> Rückenkeil mit schrägem Rückdeckel</h3><div class="opts">
-      <div class="opt pick"><b>Schräg bis zur Oberkante</b><span class="num2">Große runde Kammer, Rückdeckel zum Öffnen. Empfohlen.</span></div>
-      <div class="opt"><b>Flacher Deckel über der Kassette</b><span class="num2">Weniger Platz für die Reserve ({de(D.AIR)} mm Luft).</span></div></div></div>
-    <div class="card"><h3><span class="tag">D</span> Fase unten am Hals</h3><div class="opts">
-      <div class="opt"><b>0,5 mm</b><span class="num2">wie die Gebäude in main, bewährt (Steckprobe 2).</span></div>
-      <div class="opt pick"><b>1,0 mm</b><span class="num2">etwas leichteres Einführen. Vorschlag.</span></div>
-      <div class="opt"><b>2,0 mm</b><span class="num2">wie im Passform-Branch, ungetestet.</span></div></div></div>
-    <div class="card"><h3><span class="tag">E</span> Druck</h3><div class="opts">
-      <div class="opt pick"><b>Stehend, Support nur unter dem Kopf</b><span class="num2">Hals mit senkrechten Wänden passt in die Mulde. Empfohlen.</span></div>
-      <div class="opt"><b>Liegend auf der Seite</b><span class="num2">kein Support, aber der Hals bekommt Schichtlinien quer und Elefantenfuß an der Passfläche.</span></div></div></div>
-    <div class="card"><h3><span class="tag">F</span> Kopfunterkante</h3><div class="opts">
-      <div class="opt pick"><b>0,3 mm über der Platte</b><span class="num2">frei in der Luft.</span></div>
-      <div class="opt"><b>Zwei Füße auf der Platte</b><span class="num2">der Kopf stützt sich ab und kippt nicht, braucht Auflagen am Kopf.</span></div></div></div>
+    <div class="card rec"><h3><span class="tag">G</span> Verlängerung des Fußes nach vorn</h3><div class="opts">
+      <div class="opt pick"><b>{de(D.FOOT_EXT, 0)} mm</b><span class="num2">Ecke {de(D.KEY)} plus 3 mm gerade Fläche; Fuß {de(d['NW'])} × {de(foot_len)}. Empfohlen.</span></div>
+      <div class="opt"><b>4 mm</b><span class="num2">kürzer, nur eben die Ecke und die Fase.</span></div>
+      <div class="opt"><b>8 mm</b><span class="num2">stabiler gegen Kippen nach vorn, größere Mulde.</span></div></div></div>
+    <div class="card rec"><h3><span class="tag">H</span> Fase am Hals</h3><div class="opts">
+      <div class="opt pick"><b>Vorn 2,0, Seiten und hinten {de(D.FOOT_CH_SIDE)}</b><span class="num2">Hals bleibt {de(d['NW'])} breit. Empfohlen.</span></div>
+      <div class="opt"><b>Rundum 2,0</b><span class="num2">Hals {de(wide_w)} breit, Mulde entsprechend größer.</span></div>
+      <div class="opt"><b>Rundum 0,5</b><span class="num2">wie Steckprobe 2, fängt weniger.</span></div></div></div>
+    <div class="card"><h3><span class="tag">I</span> Spiel Fuß zur Mulde</h3><div class="opts">
+      <div class="opt pick"><b>{de(D.CLR_MULDE, 2)} mm</b><span class="num2">deine Vorgabe für den nächsten Probedruck (L43).</span></div>
+      <div class="opt"><b>0,10 mm</b><span class="num2">an der kleinen Lehre bewährt, bei großen Umrissen zu eng.</span></div></div></div>
+    <div class="card"><h3><span class="tag">J</span> Frontblende</h3><div class="opts">
+      <div class="opt pick"><b>Vier Zapfen durch die Modullöcher</b><span class="num2">Reibsitz in Sacklöchern. Empfohlen, braucht gemessene Lochlage.</span></div>
+      <div class="opt"><b>Zapfen plus Klebepunkt</b><span class="num2">falls der Reibsitz zu lose ist.</span></div>
+      <div class="opt"><b>Nur kleben</b><span class="num2">Rückfall, Modul nicht mehr wechselbar.</span></div></div></div>
+    <div class="card"><h3><span class="tag">K</span> Rückdeckel</h3><div class="opts">
+      <div class="opt pick"><b>Zwei Rastnasen je Längskante</b><span class="num2">0,4 mm hoch in 0,5 tiefen Nuten. Empfohlen.</span></div>
+      <div class="opt"><b>Kleben</b><span class="num2">einfach, Kammer danach nicht mehr offen.</span></div></div></div>
+    <div class="card"><h3><span class="tag">L</span> Kabelfenster</h3><div class="opts">
+      <div class="opt pick"><b>{de(D.WIN_W, 0)} breit, bis {de(d['win_top'])} mm hoch, Rundbogen</b><span class="num2">Pfeiler {de(pillar, 0)} mm. Empfohlen.</span></div>
+      <div class="opt"><b>Ganz offen bis zu den Zapfen</b><span class="num2">etwa 26 mm breit, Pfeiler nur noch um die Zapfenlöcher.</span></div>
+      <div class="opt"><b>Wie vorher</b><span class="num2">{de(D.SLIT_W)} × 8 mm.</span></div></div></div>
   </div>
 </section>
 
 <section aria-labelledby="h-open">
   <h2 id="h-open">Offen</h2>
   <ul>
-    <li><b>Du:</b> Modulmaße nachliefern (Pinlänge und Lage der Stiftspitzen, Dicke mit Header, Lochlage). Mit einem Lineal und einem seitlichen Foto reicht es auch.</li>
+    <li><b>Du:</b> Modulmaße nachliefern (Pinlänge, Dicke mit Header, vor allem die <b>Lochlage</b> für die Zapfen). Ein Lineal und ein seitliches Foto reichen.</li>
     <li><b>Kassette ohne Streifen</b> (Unterbau der V2) ist noch zu zeichnen. Der Anschlag im Schacht ist hier vereinfacht.</li>
-    <li><b>Rückdeckel:</b> Haken und Zapfen sind noch nicht gezeichnet, die Auflage um die Öffnung ist {de(D.SPILL)} mm Spiel.</li>
+    <li><b>Rastnasen und Zapfen</b> sind klein (0,4 bis 2,4 mm): Passung erst im Probedruck sicher.</li>
     <li>Die Adern der 3D-Ansicht sind nur ein Beispiel einer Schleife.</li>
   </ul>
   <p class="small muted">Alle Maße sind Planwerte, nichts ist gedruckt. Die Werte stehen in <code>plug/display/params.py</code>, die Körpergeometrie in <code>plug/display/body4.py</code>, die Lage in <code>plug/display/layout4.py</code>. Plan 1 (Lage am Ostrand) und Plan 2 (versenkter Körper E2b) bleiben stehen.</p>
