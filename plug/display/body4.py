@@ -214,13 +214,17 @@ def peg(d, y, z, dia=None):
     """Zapfen der Frontblende von der Rückseite der Blende bis kurz vor den Grund des Sacklochs, Spitze gefast."""
     r = (dia or D.PEG_D) / 2
     x_tip = d["x_slot0"] - D.PEG_HOLE_T + D.PEG_TIP_GAP
-    return _xcyl(r, d["x_blende"] + 0.05, x_tip + D.PEG_TIP_CH, y, z) + _xcone(r - D.PEG_TIP_CH, r, x_tip, x_tip + D.PEG_TIP_CH + 0.01, y, z)
+    return _xcyl(r, d["x_blende"] + 0.05, x_tip + D.PEG_TAPER_L, y, z) + _xcone(D.PEG_TIP_D / 2, r, x_tip, x_tip + D.PEG_TAPER_L + 0.01, y, z)
 
 
-def make_blende(d, dia=None):
+def make_blende(d, dia=None, kappe=False):
     """Frontblende (Weltlage) mit Sichtfenster und vier Zapfen vom Durchmesser dia (Standard PEG_D)."""
     wy = P["aa_w"] / 2 + D.WINDOW_MARGIN
     blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"]) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, d["wb"], d["wt"])
+    if kappe:
+        top = d["mb"] + P["pcb_h"] + D.CLR                      # Oberkante der Tasche
+        lip = g.box(d["x_slot0"] - 1.0, d["x_blende"] + 0.01, -d["W"] / 2, d["W"] / 2, top, top + D.LIP_T)
+        blende = blende - g.box(d["x_blende"] - 1, 1, -500, 500, top + D.LIP_T, 500) + lip      # Blende endet oben mit der Lippe
     return blende + g.union([peg(d, y, z, dia) for y, z in peg_centres(d)])
 
 

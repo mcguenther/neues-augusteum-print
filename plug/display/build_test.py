@@ -40,9 +40,10 @@ def aufnahme(d):
     xb = d["x_slot0"] - D.PEG_HOLE_T - SKIN
     w = d["W"] / 2
     pts = [(xb, -w), (d["x_blende"], -w), (d["x_blende"], w), (xb, w)]
-    blk = B.chamfered_prism(pts, d["z_hb"], d["z_top"], [TP.EF_CH_T] * 4)
+    z_pocket = d["mb"] + P["pcb_h"] + D.CLR                       # Aufnahme endet oben mit der Tasche (offen), das Dach ist die Lippe der Blende
+    blk = B.chamfered_prism(pts, d["z_hb"], z_pocket, [TP.EF_CH_T] * 4)
     hw = P["pcb_w"] / 2 + D.CLR_W
-    pocket = box(d["x_slot0"], 0.05, -hw, hw, d["mb"], d["mb"] + P["pcb_h"] + D.CLR)
+    pocket = box(d["x_slot0"], 0.05, -hw, hw, d["mb"], z_pocket + 1.0)
     window = prism_x(list(B.window_poly(d).exterior.coords)[:-1], xb - 0.05, d["x_slot0"] + 0.05)
     holes = union([B.peg_hole(d, y, z) for y, z in B.peg_centres(d)])
     return blk - pocket - window - holes, xb
@@ -97,28 +98,26 @@ def write_readme(info, d, skin):
     txt = f"""MODULPROBE DISPLAY-GEBÄUDE: AUFNAHME UND FRONTBLENDE MIT ZAPFEN
 ==============================================================
 
-Anlass: Probedruck 1 (stl/steckmodul_display/). Das Modul passte nicht in die Tasche (etwa 0,75 mm zu hoch), die Breite passte, die Zapfen griffen kaum und waren kurz.
-Diese Probe enthält nur die Aufnahme des Moduls und die Blende; die Kassette ist hier nicht dabei (sie kommt später in den Körper).
-Alle Werte sind Planwerte (plug/display/params.py), nichts davon ist gedruckt.
+Anlass: Modulprobe 1 (stl/steckmodul_display_modul/): Das Modul passt, die Decke über der Tasche löste sich vom Support, die Zapfen kamen nur etwa 0,5 mm ins Loch.
+Entscheidung des Nutzers nach Plan 4: Decke A (Kappe) und Zapfen P1, Loch Ø {de(D.PEG_HOLE_D, 2)}. Alle Werte sind Planwerte (plug/display/params.py), nichts davon ist gedruckt.
 
-Was sich gegenüber Probedruck 1 geändert hat
-  Tasche Höhe      {de(P['pcb_h'] + D.CLR)} mm (vorher {de(33.3)}): Modul als {de(P['pcb_h'])} hoch angenommen (alte Tasche 33,3 plus 0,75), oben {de(D.CLR)} Luft. Falls das Modul nur 33,75 hoch ist, bleibt 0,3 mehr Luft.
-  Tasche Breite    {de(P['pcb_w'] + 2 * D.CLR_W)} mm (vorher {de(P['pcb_w'] + 0.6)}): {de(D.CLR_W, 1)} Luft je Seite statt 0,3 (Wunsch des Nutzers: 0,1 mehr). Kopf damit {de(d['W'], 1)} breit.
-  Tasche Dicke     {de(d['slot_t'])} mm (unverändert; Modul 4,5 angenommen, Dicke blieb unbeanstandet).
-  Sackloch         Ø {de(D.PEG_HOLE_D, 1)} (vorher 2,6), {de(D.PEG_HOLE_T, 1)} tief (vorher 1,2), Einführfase {de(D.PEG_HOLE_CH, 1)}.
-  Zapfen           A: Ø {de(D.PEG_D, 1)} (0,05 Luft je Seite, wie die bewährte Kassette mit 0,06), B: Ø {de(D.PEG_D_B, 1)} (ohne Luft); Länge {de(d['x_blende'] - (d['x_slot0'] - D.PEG_HOLE_T + D.PEG_TIP_GAP) - 0.0)} mm von der Rückseite der Blende,
-                   im Sackloch {de(D.PEG_HOLE_T - D.PEG_TIP_GAP, 1)} tief (vorher 1,0), Spitze {de(D.PEG_TIP_CH, 1)} gefast. Im echten Körper bleibt hinter dem Sackloch mindestens {de(skin, 1)} mm Material.
+Was sich gegenüber Modulprobe 1 geändert hat
+  Aufnahme         Oben offen, keine Decke mehr, kein Support. Die Seitenwände und die Rückwand enden an der Oberkante der Tasche ({de(P['pcb_h'] + D.CLR)} über dem Boden).
+  Blende (Kappe)   Hat oben eine Lippe {de(D.LIP_T, 1)} mm dick, die über die Tasche und {de(1.0, 1)} mm über die Rückwand reicht und als Dach auf den Wänden liegt. Die Blende liegt flach, die Lippe steht als Rippe nach oben.
+  Tasche           Breite {de(P['pcb_w'] + 2 * D.CLR_W)} ({de(D.CLR_W, 2)} Luft je Seite), Höhe {de(P['pcb_h'] + D.CLR)} (Modul als {de(P['pcb_h'])} angenommen, oben {de(D.CLR)} Luft), Dicke {de(d['slot_t'])}.
+  Sackloch         Ø {de(D.PEG_HOLE_D, 2)} (Modulprobe 1: 2,5), {de(D.PEG_HOLE_T, 1)} tief, Einführfase {de(D.PEG_HOLE_CH, 1)}.
+  Zapfen P1        Spitze Ø {de(D.PEG_TIP_D, 1)}, Kegel über {de(D.PEG_TAPER_L, 1)} mm (11 Lagen) auf den vollen Durchmesser, dann zylindrisch. Blende M2: Enddurchmesser {de(D.PEG_D, 1)}, Blende M3: {de(D.PEG_D_B, 1)}
+                   (etwas fester). Im Sackloch {de(D.PEG_HOLE_T - D.PEG_TIP_GAP, 1)} tief. Im echten Körper bleibt hinter dem Sackloch mindestens {de(skin, 1)} mm Material.
 
 Teile
-  M1_aufnahme.stl             {info['M1_aufnahme']['ext']} mm  Kopf mit Tasche von vorn (offen), Kabelfenster in der Rückwand, vier Sacklöcher
-  M2_blende_A_zapfen_2_4.stl  {info['M2_blende_A_zapfen_2_4']['ext']} mm  Blende mit Fenster und vier Zapfen Ø {de(D.PEG_D, 1)}
-  M3_blende_B_zapfen_2_5.stl  {info['M3_blende_B_zapfen_2_5']['ext']} mm  Blende mit vier Zapfen Ø {de(D.PEG_D_B, 1)}
+  M1_aufnahme.stl             {info['M1_aufnahme']['ext']} mm  Kopf mit Tasche (oben und vorn offen), Kabelfenster in der Rückwand, vier Sacklöcher
+  M2_blende_A_zapfen_2_4.stl  {info['M2_blende_A_zapfen_2_4']['ext']} mm  Blende mit Lippe, Fenster und vier Zapfen, Ende Ø {de(D.PEG_D, 1)}
+  M3_blende_B_zapfen_2_5.stl  {info['M3_blende_B_zapfen_2_5']['ext']} mm  dieselbe Blende, Zapfen Ende Ø {de(D.PEG_D_B, 1)}
 
 Druckausrichtung (so liegen die Dateien schon)
-  M1  stehend auf der Kopfunterseite (wie der Körper im Probedruck 1; Tasche und Sacklöcher liegen waagerecht, so wie im echten Körper). Support in der Tasche für die Decke
-      (wie im Probedruck 1, von vorn herauszuziehen). Liegend auf der Rückseite geht es ohne Support, aber die Sacklöcher entstehen dann senkrecht und fallen anders aus.
-  M2, M3  flach, Außenfläche unten, Zapfen nach oben, kein Support. Eine Blende reicht, die zweite für den Vergleich.
-Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3, Thick bridges an, kein Brim. Druckzeit geschätzt (nicht kalibriert):
+  M1  stehend auf der Kopfunterseite (Tasche und Sacklöcher liegen waagerecht wie im echten Körper), kein Support nötig.
+  M2, M3  flach, Außenfläche unten, Zapfen und Lippe zeigen nach oben, kein Support. Eine Blende reicht, die zweite für den Vergleich.
+Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3, kein Brim. Druckzeit geschätzt (nicht kalibriert):
 M1 {t['M1_aufnahme']:.0f} min, M2 {t['M2_blende_A_zapfen_2_4']:.0f}, M3 {t['M3_blende_B_zapfen_2_5']:.0f} min.
 
 Ablauf und was zu melden ist
@@ -148,7 +147,7 @@ def main():
     d = B.dims()
     P3, aux = B.parts(d)
     auf, xb = aufnahme(d)
-    bA, bB = B.make_blende(d, D.PEG_D), B.make_blende(d, D.PEG_D_B)
+    bA, bB = B.make_blende(d, D.PEG_D, True), B.make_blende(d, D.PEG_D_B, True)
     parts = {"M1_aufnahme": place_bed(auf.translate([0, 0, -d["z_hb"]])),
              "M2_blende_A_zapfen_2_4": place_bed(bA.rotate([0, 90, 0])),
              "M3_blende_B_zapfen_2_5": place_bed(bB.rotate([0, 90, 0]))}
@@ -190,14 +189,14 @@ def main():
         gl = vol_int(bl, P3["glass"])
         rep("  Hinweis Blende %s und Modulglas (Lage des Glases nur aus dem Foto, ± 0,5): Überschneidung %.3f mm³ (obere Zapfen laufen an der Glaskante entlang)" % (nm, gl))
     rep("  Kontrollen (müssen stoßen):")
-    big = B.make_blende(d, D.PEG_HOLE_D + 0.1)
+    big = B.make_blende(d, D.PEG_HOLE_D + 0.1, True)
     chk("Zapfen Ø%.1f (0,05 größer als das Sackloch) stößt an die Aufnahme" % (D.PEG_HOLE_D + 0.1), vol_int(auf, big), must=True)
     chk("Blende A um 0,2 mm nach oben versetzt: Zapfen stoßen am Sackloch (Spiel 0,05)", vol_int(auf, bA.translate([0, 0, 0.2])), must=True)
     chk("Blende A um 0,04 mm nach oben versetzt: noch kein Anstoß (Spiel 0,05 je Seite)", vol_int(auf, bA.translate([0, 0, 0.04])))
     # Zapfen im Modulloch: Spiel und Lagetoleranz
     rep("\nAbstände (mm):")
     rep("  Zapfen Ø%.1f im Modulloch Ø%.1f: %.2f je Seite (Lochlage aus dem Foto ± 0,5; ab 0,3 Versatz stößt der Zapfen an der Platine)" % (D.PEG_D, P["hole_d"], (P["hole_d"] - D.PEG_D) / 2))
-    rep("  Zapfen A Ø%.1f im Sackloch Ø%.1f: %.2f je Seite, B Ø%.1f: %.2f je Seite; Tiefe im Sackloch %.1f (Probedruck 1: 1,0)" % (
+    rep("  Zapfen A Ende Ø%.1f im Sackloch Ø%.1f: %.2f je Seite, B Ø%.1f: %.2f je Seite; Tiefe im Sackloch %.1f (Probedruck 1: 1,0)" % (
         D.PEG_D, D.PEG_HOLE_D, (D.PEG_HOLE_D - D.PEG_D) / 2, D.PEG_D_B, (D.PEG_HOLE_D - D.PEG_D_B) / 2, D.PEG_HOLE_T - D.PEG_TIP_GAP))
     skin = hinten_material(d)
     rep("  Im echten Körper (Grundriss und Rückenkeil) bleibt hinter dem Grund des Sacklochs mindestens %.2f mm Material (Aufnahme: %.2f)" % (skin, SKIN))

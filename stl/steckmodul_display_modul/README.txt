@@ -1,29 +1,27 @@
 MODULPROBE DISPLAY-GEBÄUDE: AUFNAHME UND FRONTBLENDE MIT ZAPFEN
 ==============================================================
 
-Anlass: Probedruck 1 (stl/steckmodul_display/). Das Modul passte nicht in die Tasche (etwa 0,75 mm zu hoch), die Breite passte, die Zapfen griffen kaum und waren kurz.
-Diese Probe enthält nur die Aufnahme des Moduls und die Blende; die Kassette ist hier nicht dabei (sie kommt später in den Körper).
-Alle Werte sind Planwerte (plug/display/params.py), nichts davon ist gedruckt.
+Anlass: Modulprobe 1 (stl/steckmodul_display_modul/): Das Modul passt, die Decke über der Tasche löste sich vom Support, die Zapfen kamen nur etwa 0,5 mm ins Loch.
+Entscheidung des Nutzers nach Plan 4: Decke A (Kappe) und Zapfen P1, Loch Ø 2,55. Alle Werte sind Planwerte (plug/display/params.py), nichts davon ist gedruckt.
 
-Was sich gegenüber Probedruck 1 geändert hat
-  Tasche Höhe      34,35 mm (vorher 33,30): Modul als 34,05 hoch angenommen (alte Tasche 33,3 plus 0,75), oben 0,30 Luft. Falls das Modul nur 33,75 hoch ist, bleibt 0,3 mehr Luft.
-  Tasche Breite    36,10 mm (vorher 35,90): 0,4 Luft je Seite statt 0,3 (Wunsch des Nutzers: 0,1 mehr). Kopf damit 38,5 breit.
-  Tasche Dicke     5,10 mm (unverändert; Modul 4,5 angenommen, Dicke blieb unbeanstandet).
-  Sackloch         Ø 2,5 (vorher 2,6), 2,6 tief (vorher 1,2), Einführfase 0,3.
-  Zapfen           A: Ø 2,4 (0,05 Luft je Seite, wie die bewährte Kassette mit 0,06), B: Ø 2,5 (ohne Luft); Länge 7,50 mm von der Rückseite der Blende,
-                   im Sackloch 2,4 tief (vorher 1,0), Spitze 0,4 gefast. Im echten Körper bleibt hinter dem Sackloch mindestens 1,1 mm Material.
+Was sich gegenüber Modulprobe 1 geändert hat
+  Aufnahme         Oben offen, keine Decke mehr, kein Support. Die Seitenwände und die Rückwand enden an der Oberkante der Tasche (34,10 über dem Boden).
+  Blende (Kappe)   Hat oben eine Lippe 1,6 mm dick, die über die Tasche und 1,0 mm über die Rückwand reicht und als Dach auf den Wänden liegt. Die Blende liegt flach, die Lippe steht als Rippe nach oben.
+  Tasche           Breite 35,94 (0,32 Luft je Seite), Höhe 34,10 (Modul als 33,80 angenommen, oben 0,30 Luft), Dicke 5,10.
+  Sackloch         Ø 2,55 (Modulprobe 1: 2,5), 2,6 tief, Einführfase 0,3.
+  Zapfen P1        Spitze Ø 1,8, Kegel über 2,2 mm (11 Lagen) auf den vollen Durchmesser, dann zylindrisch. Blende M2: Enddurchmesser 2,4, Blende M3: 2,5
+                   (etwas fester). Im Sackloch 2,4 tief. Im echten Körper bleibt hinter dem Sackloch mindestens 1,0 mm Material.
 
 Teile
-  M1_aufnahme.stl             8,7 × 38,5 × 36,8 mm  Kopf mit Tasche von vorn (offen), Kabelfenster in der Rückwand, vier Sacklöcher
-  M2_blende_A_zapfen_2_4.stl  36,8 × 38,5 × 8,7 mm  Blende mit Fenster und vier Zapfen Ø 2,4
-  M3_blende_B_zapfen_2_5.stl  36,8 × 38,5 × 8,7 mm  Blende mit vier Zapfen Ø 2,5
+  M1_aufnahme.stl             8,7 × 38,3 × 35,3 mm  Kopf mit Tasche (oben und vorn offen), Kabelfenster in der Rückwand, vier Sacklöcher
+  M2_blende_A_zapfen_2_4.stl  36,9 × 38,3 × 8,7 mm  Blende mit Lippe, Fenster und vier Zapfen, Ende Ø 2,4
+  M3_blende_B_zapfen_2_5.stl  36,9 × 38,3 × 8,7 mm  dieselbe Blende, Zapfen Ende Ø 2,5
 
 Druckausrichtung (so liegen die Dateien schon)
-  M1  stehend auf der Kopfunterseite (wie der Körper im Probedruck 1; Tasche und Sacklöcher liegen waagerecht, so wie im echten Körper). Support in der Tasche für die Decke
-      (wie im Probedruck 1, von vorn herauszuziehen). Liegend auf der Rückseite geht es ohne Support, aber die Sacklöcher entstehen dann senkrecht und fallen anders aus.
-  M2, M3  flach, Außenfläche unten, Zapfen nach oben, kein Support. Eine Blende reicht, die zweite für den Vergleich.
-Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3, Thick bridges an, kein Brim. Druckzeit geschätzt (nicht kalibriert):
-M1 27 min, M2 14, M3 14 min.
+  M1  stehend auf der Kopfunterseite (Tasche und Sacklöcher liegen waagerecht wie im echten Körper), kein Support nötig.
+  M2, M3  flach, Außenfläche unten, Zapfen und Lippe zeigen nach oben, kein Support. Eine Blende reicht, die zweite für den Vergleich.
+Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3, kein Brim. Druckzeit geschätzt (nicht kalibriert):
+M1 25 min, M2 14, M3 14 min.
 
 Ablauf und was zu melden ist
   1. Modul in die Tasche schieben (Pins zuerst durch das Kabelfenster). Passt es jetzt in der Höhe? Wie viel Luft oben ungefähr (mm), und seitlich (leicht, saugend, klemmt)?
