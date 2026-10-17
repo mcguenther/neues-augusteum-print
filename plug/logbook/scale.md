@@ -108,6 +108,13 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 - **Gebäude werden um die 4 mm nach unten verlängert:** Der volle Gebäudeumriss (Laserscan-Grundriss) reicht 4 mm unter die Plattenoberfläche (`OUTLINE_CLR_T` 0,1 Spiel), darunter folgt wie getestet die Fußmulde mit 10,2 mm (um 4 mm nach unten verschoben, auf die Umriss-Aussparung begrenzt). Gesamttiefe F bleibt 14,2, Platte 20,2. Auf der Platte sind so die Gebäudeumrisse zu sehen. Die erste Umsetzung (reine 4 mm Führungslänge im Fuß) war ein Missverständnis. Der Gebäude-Generator (Fuß und Körper 4 mm länger) bleibt To-do im Hohlkörper-Chat.
 - **Hof-Einsatz tiefer:** statt 1 mm jetzt `HOF_DEPTH_T = 6,0` mm unter der Oberfläche (Nutzer; vorher 1 mm, dann 3 mm), Fuge `HOF_CLR_T` 0,1, Einführfase unten 0,4 (Einsatz); Aussparung ohne Fase oben, damit die Wand zur Gebäude-Aussparung 0,4 mm bleibt. `innenhof.model(s, fps, tiefe, spiel)`, Einsatz als `stl/steckmodul_campus/hof_einsatz_1zu1300.stl`.
 
+### Korrektur 2026-10-17 (Nutzer: Hof-Einsatz ein solider Klotz, Steg am Hörsaalgebäude weg)
+
+- **Befund:** Der Hof-Umriss (`innenhof.flaeche_mm`) hatte einen Spalt zwischen Hofgrenze und Terrasse (die beiden Treppen gehören im Scan zu keiner der Flächen) und dahinter einen Steg der Terrasse am Hörsaalgebäude (3,8 mm breit, rund 20 mm lang). In der Platte stand dort eine Rippe von 0,6 mm Breite und 6 mm Höhe, im Einsatz hing eine Zunge. Dazu kamen zwei Zungen an den Passagen (Nord, Ost), ein zweiter Spalt (Bucht am Nordende der Terrasse) und ein Splitterloch.
+- **Änderung (`innenhof.py`):** Spalte bis 6 m werden geschlossen (`HOF_SCHLIESSEN` 3 m je Seite), Zungen und Zähne unter `HOF_MIN_BREITE` 4 mm entfallen, Löcher unter 16 mm² gefüllt. Der Umriss rückt nie näher an ein Gebäude, die Wand von 0,4 mm zu den Gebäude-Mulden bleibt. Die Treppen liegen als Stufen auf dem Einsatz (`treppen_mm`, `TREPPE_STUFEN` 3, Terrasse 0,55 mm, Zwischenstufen 0,36 und 0,18 mm), nicht mehr als Ausschnitt in der Platte. Geländer sind nicht modelliert (unter 0,4 mm).
+- **Ergebnis bei 1:1300 (Laserscan):** Umfang 273 → 200 mm, schmale Stellen 5 → 0, Löcher 1 → 0, Einsatz 36,8 × 72,7 mm (vorher 40,9 × 72,8), dicht; alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher, Abstand zu Gebäuden 0,50). Vergleichsseite `plug/hof/page.html`, alter Stand in `plug/hof/alt/`.
+- **Ungetestet:** Sitz des Einsatzes mit dem durchgehenden Klotz (Steckprobe 3), Druck der Zwischenstufen (Slicer glättet oder druckt Absatz), an den Passagen bleibt Plattenfläche statt Hof (bis zu 5 mm).
+
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
 - **Mulde ohne Stufen:** gerade Wände mit Spiel 0,1 (`MULDE_CLR_T`) über die ganze Tiefe von 10,2 mm, oben eine 45°-Fase von 0,5 mm (`MULDE_CH_T`). Weggefallen sind Entlastung (`RELIEF`), Führungsband (`BAND`) und die Treppenfase aus `institute.pocket_cuts`. Das ist eine Abweichung vom getesteten Aufbau der Steckprobe 1 (dort mit diesen Stufen), also in Steckprobe 3 zu prüfen (Einstecken, Wackeln, Kippen). Die einzige Stufe, die bleibt, ist der Boden der 4 mm tiefen Umriss-Aussparung.
@@ -220,6 +227,7 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
 | Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
 | | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
+| | Blockiger Hof-Umriss (Spalte zu, Mindestbreite 4 mm, Treppen als Stufen 0,18 / 0,36 / 0,55 mm auf dem Einsatz) | ungetestet | Sitz ohne Steg, Druck der Stufen |
 | | Wand 0,4 mm zwischen Hof- und Gebäude-Aussparung | ungetestet | Druck, Stehenbleiben |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
 | | Halt des Einsatzes (Reibrippen oder Kleber) | nicht festgelegt | bleibt er ohne Halt liegen |
