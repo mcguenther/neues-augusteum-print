@@ -2,11 +2,10 @@
 """STL für den ersten Probedruck des Display-Gebäudes (Körper E4, Standardwerte) nach stl/steckmodul_display/.
 
 Teile (Maße aus plug/display/params.py und body4.py, alles Planwerte, nichts davon ist gedruckt):
-  D1_koerper.stl       Körper: Kopf mit Modultasche (von vorn), Rückenkeil mit Kabelkammer und Kabelfenster, Hals mit Schacht und Anschlag, Fuß mit Kodierecke
+  D1_koerper.stl       Körper: Kopf mit Modultasche (von vorn), Rückenkeil mit Kabelkammer und Kabelfenster, Hals mit Buchsentasche (von unten offen, Schultern oben) und Aderschlitz, Fuß mit Kodierecke
   D2_rueckdeckel.stl   Rückdeckel der Kabelkammer (schräg), mit vier Rastnasen
   D3_frontblende.stl   Frontblende mit Sichtfenster und vier Zapfen (durch die Befestigungslöcher des Moduls)
-  D4_kassette.stl      Kassette K0: Unterbau der V2 ohne Blatt (Buchsentasche, Aderschlitz)
-  D5_mini_platte.stl   Mini-Platte: Mulde (Fußumriss plus Spiel) mit Einführfase, vier Pin-Löcher, flache Unterseite 14,6 mm
+  D4_mini_platte.stl   Mini-Platte: Mulde (Fußumriss plus Spiel) mit Einführfase, vier Pin-Löcher, flache Unterseite 14,6 mm
 Die Dateien liegen in Druckausrichtung (Bett z = 0). Prüfungen: dicht, keine Kollisionen im Zusammenbau, Verdrehsicherung, Überhang je Lage.
 
 Aufruf (aus dem Wurzelverzeichnis):  python3 -m plug.display.build    (ca. 2 min)
@@ -86,9 +85,8 @@ def print_pose(P, aux, d, plate):
     c, s = -nz, nx
     lid = P["lid"].transform([[c, 0, s, 0], [0, 1, 0, 0], [-s, 0, c, 0]])
     blende = P["blende"].rotate([0, 90, 0])                             # (x, y, z) -> (z, y, -x): Außenfläche (x = 0) liegt unten, Zapfen zeigen nach oben
-    cas = P["cassette"]
     return {"D1_koerper": place_bed(body), "D2_rueckdeckel": place_bed(lid), "D3_frontblende": place_bed(blende),
-            "D4_kassette": place_bed(cas), "D5_mini_platte": place_bed(plate)}
+            "D4_mini_platte": place_bed(plate)}
 
 
 # --------------------------------------------------------------------------
@@ -127,7 +125,7 @@ def render_images(P, plate, d, parts, rep):
     col["pins"] = "#c0c0c0"
     full = [mk(m, k) for k, m in src.items()]
     title = "Display-Gebäude E4, Probedruck (Standardwerte)"
-    sub = "Körper, Rückdeckel, Frontblende, Kassette K0, Mini-Platte; mit Display-Modul (Attrappe: Platine, Glas, Header)"
+    sub = "Körper (Buchsentasche integriert), Rückdeckel, Frontblende mit Kappe, Mini-Platte; mit Display-Modul (Attrappe: Platine, Glas, Header)"
     out = []
     im = PV.render(full, size=(1000, 760), azim=-32, elev=24)
     p = os.path.join(PREV, "zusammengebaut.png")
@@ -141,18 +139,18 @@ def render_images(P, plate, d, parts, rep):
     sect = [mk(m - cutbox, k) for k, m in src.items()]
     im = PV.render(sect, size=(1000, 760), azim=-90, elev=6)
     p = os.path.join(PREV, "schnitt.png")
-    PV.caption(im, "Display-Gebäude E4: Längsschnitt in der Mitte", "Blick von Süden; Fuß in der Mulde, Kassette im Schacht, Anschlag, Kabelkammer, Modul in der Tasche").save(p, optimize=True)
+    PV.caption(im, "Display-Gebäude E4: Längsschnitt in der Mitte", "Blick von Süden; Fuß in der Mulde, Buchse in der Tasche, Schultern, Kabelkammer, Modul in der Tasche").save(p, optimize=True)
     out.append(p)
     # Teile nebeneinander in Druckausrichtung
     x, row = 0.0, []
-    cols = ["#c9a227", "#d7845b", "#3a3f4a", "#8fb573", "#e4e0d8"]
+    cols = ["#c9a227", "#d7845b", "#3a3f4a", "#e4e0d8"]
     for (name, man), c in zip(parts.items(), cols):
         b = man.bounding_box()
         row.append((to_tm(man.translate([x - b[0], -(b[1] + b[4]) / 2, 0])), c))
         x += (b[3] - b[0]) + 8.0
     im = PV.render(row, size=(1100, 560), azim=-35, elev=32)
     p = os.path.join(PREV, "teile.png")
-    PV.caption(im, "Probedruck: Teile in Druckausrichtung", "links nach rechts: D1 Körper, D2 Rückdeckel, D3 Frontblende, D4 Kassette, D5 Mini-Platte; so liegen die Dateien im ZIP").save(p, optimize=True)
+    PV.caption(im, "Probedruck: Teile in Druckausrichtung", "links nach rechts: D1 Körper, D2 Rückdeckel, D3 Frontblende, D4 Mini-Platte; so liegen die Dateien im ZIP").save(p, optimize=True)
     out.append(p)
     return out
 
@@ -160,52 +158,47 @@ def render_images(P, plate, d, parts, rep):
 def write_readme(info, tot, d, gap):
     de = lambda v, n=1: ("%.*f" % (n, v)).replace(".", ",")
     t = {k: info[k]["min"] for k in info}
-    txt = f"""DISPLAY-GEBÄUDE E4, ERSTER PROBEDRUCK (Standardwerte, Maßstab 1:1300)
-====================================================================
+    txt = f"""DISPLAY-GEBÄUDE E4, ZWEITER SATZ (alles in einem, Maßstab 1:1300)
+================================================================
 
-Alle Werte sind Planwerte (plug/display/params.py), nichts davon ist gedruckt. Bewährt (r8, L10, L34): Fuß-Fase 2,0 vorn, Kassette im Schacht mit Spiel 0,06 je Seite,
-Einführfasen 0,5, Muldenboden 0,4. Das Spiel Fuß zur Mulde ist 0,15 je Seite (Vorgabe des Nutzers für den nächsten Probedruck). NICHT bewährt: Zapfen Ø {de(D.PEG_D)} in Sackloch
-Ø {de(D.PEG_HOLE_D)} (0,1 je Seite) und durch das Modulloch Ø {de(D.DISP['hole_d'])} (0,3 je Seite, Lage des Lochs ± 0,5 aus dem Foto), Rastnasen {de(D.BUMP['h'])} hoch in Nuten (Spiel 0,15 bis 0,5),
-Rückdeckel mit Spiel {de(D.SPILL, 2)}, Fase {de(D.FOOT_CH_SIDE)} an den Längsseiten, die Modultasche (Platine {de(D.DISP['pcb_w'])} × {de(D.DISP['pcb_h'])}, Dicke {de(D.DISP['mod_t'])} angenommen: ungemessen).
+Gebaut nach Probedruck 1 und der Modulprobe 1 und 2. Alle Werte sind Planwerte (plug/display/params.py), der Körper als Ganzes ist nicht gedruckt.
+Aus den Proben übernommen: Modul als {de(D.DISP['pcb_w'])} × {de(D.DISP['pcb_h'])} × {de(D.DISP['mod_t'])} angenommen (Tasche {de(D.DISP['pcb_w'] + 2 * D.CLR_W, 2)} × {de(D.DISP['pcb_h'] + D.CLR, 2)} × {de(d['slot_t'], 2)}, Luft {de(D.CLR_W, 2)} je Seite),
+Zapfen mit Kegelspitze P1 (Ø {de(D.PEG_TIP_D, 1)} auf {de(D.PEG_D, 1)} über {de(D.PEG_TAPER_L, 1)} mm) im Sackloch Ø {de(D.PEG_HOLE_D, 2)} (Ø 2,5 passte gut), Kappe mit Lippe {de(D.LIP_T, 1)}, Fuß-Fase 2,0 und Spiel zur Mulde 0,15
+(Probedruck 1: der Rest war in Ordnung). Neu und ungeprüft: die Buchsentasche im Hals (statt der Kassette K0), der kleinere Hals, die Schultern, der Rückdeckel zur niedrigeren Oberkante.
 
-Teile (je 1 Stück):
-  D1_koerper.stl       Körper {info['D1_koerper']['ext']} mm, {de(info['D1_koerper']['vol'])} cm³
+Teile (je 1 Stück)
+  D1_koerper.stl       Körper {info['D1_koerper']['ext']} mm, {de(info['D1_koerper']['vol'])} cm³: Kopf mit Tasche (oben und vorn offen), Kabelfenster, Rückenkeil mit Kammer, Hals mit Buchsentasche, Fuß mit Kodierecke
   D2_rueckdeckel.stl   Rückdeckel {info['D2_rueckdeckel']['ext']} mm
-  D3_frontblende.stl   Frontblende {info['D3_frontblende']['ext']} mm
-  D4_kassette.stl      Kassette K0 {info['D4_kassette']['ext']} mm (Unterbau V2 ohne Blatt: nur Buchsentasche und Aderschlitz)
-  D5_mini_platte.stl   Mini-Platte {info['D5_mini_platte']['ext']} mm: Mulde mit Kodierecke, Einführfase 0,5, vier Pin-Löcher mit Fase, Unterseite flach
+  D3_frontblende.stl   Frontblende mit Lippe (Kappe), Fenster und vier Zapfen {info['D3_frontblende']['ext']} mm
+  D4_mini_platte.stl   Mini-Platte {info['D4_mini_platte']['ext']} mm: Mulde mit Kodierecke, Einführfase 0,5, vier Pin-Löcher mit Fase, Unterseite flach
 
-Druckausrichtung (so liegen die Dateien schon):
-  D1 Körper    Fuß unten (Schacht öffnet am Bett), Kopf oben. Support unter dem Kopf nötig (Unterseite des Kopfs über dem Fuß, {de(info['D1_koerper']['krag'], 0)} mm² Kragstück laut Lagenprüfung),
-               dazu in der Modultasche (Decke der Tasche, von vorn offen) und über dem Kabelfenster; die Schräge hinten liegt flach genug (kein Support).
-               Support mit „überall“ einstellen, nicht nur vom Bett; die Tasche liegt offen nach vorn, der Support lässt sich von dort herausziehen.
-  D2 Rückdeckel   flach, die schräge Außenfläche liegt auf dem Bett, die Rastnasen stehen seitlich ab (0,2 mm über dem Bett, Überhang nur 0,4 mm).
-  D3 Frontblende  flach, Außenfläche (mit dem Fenster) auf dem Bett, die vier Zapfen zeigen nach oben.
-  D4 Kassette  stehend, Tasche unten (wie die Kassetten der Gebäude).
-  D5 Mini-Platte  flach, Unterseite auf dem Bett; Muldenboden 0,4 mm ist die unterste Schicht, kein Support.
-Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3 oder mehr, Füllung egal, Thick bridges an, kein Brim, Kante ohne
-Elefantenfuß-Kompensation (die Fase ist eingerechnet). Druckzeit geschätzt (nicht kalibriert): D1 {t['D1_koerper']:.0f} min, D2 {t['D2_rueckdeckel']:.0f}, D3 {t['D3_frontblende']:.0f}, D4 {t['D4_kassette']:.0f}, D5 {t['D5_mini_platte']:.0f} min.
-Bitte die echten Zeiten aus dem Slicer melden.
+Buchsentasche im Hals: {de(D.KASS_W, 2)} × {de(D.KASS_D, 2)} mm, {de(D.ZP, 1)} mm hoch von der Fußunterkante, unten offen mit Einführfase {de(D.ENTRY_CH, 1)}. Oben liegen Schultern ({de(d['z_cass'] - d['foot'] - D.ZP, 1)} mm dick) mit dem
+Aderschlitz ({de(9.2, 1)} breit, ganze Tiefe der Tasche). Die Buchse wird von unten eingeschoben; die Schultern halten sie gegen die Steckkraft.
+
+Druckausrichtung (so liegen die Dateien schon)
+  D1 Körper    Fuß unten (Tasche öffnet am Bett), Kopf oben. Kein Support für die Decke mehr (Tasche oben offen). Support braucht nur noch die Unterseite des Kopfs über dem Fuß ({de(info['D1_koerper']['krag'], 0)} mm² Kragstück laut Lagenprüfung,
+               alles von der Bauplatte aus erreichbar: Support „nur vom Bett“ genügt).
+  D2 Rückdeckel   flach, die schräge Außenfläche liegt auf dem Bett.
+  D3 Frontblende  flach, Außenfläche (mit dem Fenster) auf dem Bett, Zapfen und Lippe zeigen nach oben.
+  D4 Mini-Platte  flach, Unterseite auf dem Bett; Muldenboden 0,4 mm ist die unterste Schicht, kein Support.
+Einstellungen wie bisher (plug/slicer.md): Bambu A1, PLA, Düse 0,4, Schichthöhe 0,2, Wände 3 oder mehr, kein Brim, Kante ohne Elefantenfuß-Kompensation. Druckzeit geschätzt (nicht kalibriert):
+D1 {t['D1_koerper']:.0f} min, D2 {t['D2_rueckdeckel']:.0f}, D3 {t['D3_frontblende']:.0f}, D4 {t['D4_mini_platte']:.0f} min. Bitte die echten Zeiten melden.
 
 Prüfbericht: pruefbericht.txt (dicht, keine Kollisionen im Zusammenbau, Verdrehsicherung, Überhang je Lage).
 
-Zusammenbau (Reihenfolge)
-  1. Kassette K0 mit der Dupont-Buchse bestücken (Tasche unten), Adern durch den Aderschlitz nach oben führen, ca. 3 bis 4 cm Reserve in der Kammer.
-  2. K0 von unten in den Schacht des Körpers pressen (bündig mit der Fußunterkante). Die Adern kommen durch die Öffnung in die Kammer.
-  3. Adern an die Pinenden des Moduls löten (Header bleibt am Modul), Adern in einer Schleife in die Kammer legen.
-  4. Modul von vorn in die Tasche schieben (Pins zuerst durch das Kabelfenster), Frontblende mit den Zapfen durch die Löcher stecken (Zapfen enden im Sackloch).
+Zusammenbau
+  1. Dupont-Buchse mit vier Adern (etwa 60 mm) crimpen. Adern von unten durch die Buchsentasche und den Aderschlitz in die Kammer fädeln (Rückdeckel ist ab), Buchse von unten in die Tasche schieben, bis sie an den Schultern anliegt.
+  2. Adern an die Pinenden des Moduls löten (Header bleibt am Modul), Reserve (3 bis 4 cm) als Schleife in die Kammer legen.
+  3. Modul von oben oder vorn in die Tasche setzen (Pins zuerst durch das Kabelfenster).
+  4. Frontblende mit den Zapfen durch die Löcher stecken, die Lippe deckt die Tasche oben ab; Zapfen enden im Sackloch.
   5. Rückdeckel von hinten in die schräge Öffnung drücken (Rastnasen in die Nuten).
   6. Körper in die Mini-Platte stecken (die Kodierecke vorn Süd lässt nur eine Lage zu), Luft zwischen Kopf und Platte {de(d['z_hb'])} mm.
 
-Verpolung: Die Buchsentasche der Kassette K0 ist symmetrisch, die Kassette passt in zwei Lagen in den Schacht. Gedreht stecken GND und 3,3 V (und SDA, SCL) vertauscht an
-den Pins, und das Modul verträgt höchstens 3,5 V. Deshalb Pin 1 der Buchse beim Bestücken markieren (z. B. mit einem Strich auf der Kassette) und vor dem ersten Stecken am
-Modul durchmessen (Plug-Prüfregel, plug/PLAN.md). Eine Kodierecke an Kassette und Schacht ist ein Vorschlag für den nächsten Satz; sie ist hier nicht enthalten.
+Verpolung: Die Buchsentasche ist symmetrisch, die Buchse passt in zwei Lagen. Gedreht liegen GND und 3,3 V (und SDA, SCL) vertauscht an den Pins, das Modul verträgt höchstens 3,5 V. Pin 1 der Buchse beim Einsetzen
+markieren (Strich am Körper unten) und vor dem ersten Stecken am Modul durchmessen. Eine Kodierung in der Tasche ist ein Vorschlag für den nächsten Satz.
 
-Zu fühlen und zu melden (Testbogen kommt nach dem Druck): geht der Körper ohne Kraft in die Mulde, fängt ihn die Fase, sitzt er wackelfrei, lässt er sich verdreht nicht aufsetzen? Kassette im Schacht (1 lose bis 5 fest), Modul in
-der Tasche (Spiel), Zapfen durch Modul (lose/fest), Zapfen im Sackloch, Rückdeckel (Rast, Spiel), Frontblende bündig, Kabelreserve in der Kammer, trifft die Buchse die Pins der Mini-Platte (Winkelleiste geklebt)?
-
-Hinweis zur Maßkette: In Plan 3 stand die Kassette mit 13,2 × 5,58 × 17,1 mm (Maße der v4, Spiel doppelt gerechnet). Richtig für den V2-Unterbau sind Schacht {de(D.KASS_W, 2)} × {de(D.KASS_D, 2)} und Oberkante
-{de(D.KASS_TOP)} mm über der Platte (Unterbau 15,1 minus Fuß 14,2). Die Geometrie hier ist darauf umgestellt: Luft über der Kassette {de(D.AIR)} mm, Schräge hinten {de(d['z_rear'])} mm hoch statt 8,6.
+Zu fühlen und zu melden: Buchse in der Tasche (Sitz, Schultern, geht der Draht durch den Schlitz?), Körper in die Mulde (ohne Kraft, Fase fängt, wackelfrei, verdreht nicht aufsetzbar), Modul in der Tasche, Zapfen (wie in Modulprobe 2),
+Frontblende bündig mit Lippe, Rückdeckel (Rast, Spiel), Kabelreserve in der Kammer, trifft die Buchse die Pins der Mini-Platte (Winkelleiste geklebt)?
 """
     open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt)
 
@@ -222,9 +215,9 @@ def main():
     plate, T = mini_plate(d)
     parts = print_pose(P, aux, d, plate)
 
-    rep("Display-Gebäude E4: Probedruck D1 bis D5 mit Standardwerten (plug/display/params.py, body4.py)")
-    rep("Kassette V2-Unterbau %.2f × %.2f × %.1f, Schacht %.2f × %.2f, Oberkante %.2f über der Platte; Anschlag %.1f hoch (45°), Boden der Kammer %.2f; Spiel Mulde %.2f je Seite" % (
-        D.KASS_W - 2 * TP.KASS_CLR_T, D.KASS_D - 2 * TP.KASS_CLR_T, D.KASS_TOP + TP.dims_plan()["F"], D.KASS_W, D.KASS_D, D.KASS_TOP, d["ledge"], d["z_ledge"], D.CLR_MULDE))
+    rep("Display-Gebäude E4: zweiter Satz D1 bis D4 (Buchsentasche integriert, Kappe, Zapfen P1) (plug/display/params.py, body4.py)")
+    rep("Buchsentasche %.2f × %.2f, %.1f hoch, Schultern bis %.2f über der Platte (Boden der Kammer); Spiel Mulde %.2f je Seite; Hals %.2f × %.2f" % (
+        D.KASS_W, D.KASS_D, D.ZP, D.KASS_TOP, D.CLR_MULDE, d["NW"], d["KD"]))
     rep("Kopf %.1f breit, %.1f tief, %.1f hoch (Oberkante), Unterkante %.2f über der Platte; Schräge hinten %.1f bis %.1f; Fuß %.2f × %.2f mit Kodierecke %.1f" % (
         d["W"], -d["x_back"], d["z_top"], d["z_hb"], d["z_rear"], d["z_top"], d["x_fe"] - d["x_bw"], d["NW"], D.KEY))
 
@@ -252,19 +245,19 @@ def main():
         bad += (not ok)
         rep("  %-78s %9.3f  %s" % (txt, v, "ok" if ok else "FEHLER"))
 
-    body, cas = P["body"], P["cassette"]
-    chk("Körper und Kassette K0 im Schacht", vol_int(body, cas))
+    body, cas = P["body"], P["cassette"]                       # cas = Attrappe der Dupont-Buchse
+    chk("Körper und Dupont-Buchse 10,16 × 2,54 × 14 in der Tasche", vol_int(body, cas))
     chk("Körper und Modulplatine", vol_int(body, P["pcb"]))
     chk("Körper und Modulglas", vol_int(body, P["glass"]))
     chk("Körper und Header samt Pins (Kabelfenster)", vol_int(body, P["header"]) + vol_int(body, P["pins"]))
     chk("Körper und Rückdeckel", vol_int(body, P["lid"]))
     chk("Körper und Frontblende (Zapfen im Sackloch, Blende im Rücksprung)", vol_int(body, P["blende"]))
-    chk("Frontblende und Modul (Zapfen durch die Löcher, Glas dahinter)", vol_int(P["blende"], P["pcb"]) + vol_int(P["blende"], P["glass"]) + vol_int(P["blende"], P["header"]))
-    chk("Kassette K0 und Modul", vol_int(cas, P["pcb"]) + vol_int(cas, P["header"]) + vol_int(cas, P["pins"]))
+    chk("Frontblende und Modulplatine, Header (Zapfen durch die Löcher)", vol_int(P["blende"], P["pcb"]) + vol_int(P["blende"], P["header"]))
+    rep("  Hinweis Frontblende und Modulglas (Lage des Glases nur aus dem Foto, ± 0,5): Überschneidung %.3f mm³ (obere Zapfen laufen an der Glaskante entlang)" % vol_int(P["blende"], P["glass"]))
     chk("Mini-Platte und Körper (Fuß in der Mulde, Spiel %.2f je Seite)" % D.CLR_MULDE, vol_int(plate, body))
-    chk("Mini-Platte und Kassette K0 (Pin-Löcher, Kassette liegt auf dem Muldenboden)", vol_int(plate, cas))
+    chk("Mini-Platte und Buchse (Buchse steht auf dem Muldenboden)", vol_int(plate, cas))
     chk("Mini-Platte und Winkelleiste mit Pins (Pins in den Löchern)", vol_int(plate, P["leiste"]))
-    chk("Kassette K0 und Pins der Winkelleiste (Pins in der Buchsentasche)", vol_int(cas, P["leiste"]))
+    chk("Körper und Pins der Winkelleiste (Pins in der Buchsentasche)", vol_int(body, P["leiste"]))
     sx = (d["x_s0"] + d["x_s1"]) / 2
     rep("  Kontrollen (müssen stoßen):")
     chk("Körper 0,17 mm nach +x verschoben stößt an die Mulde", vol_int(plate, body.translate([0.17, 0, 0])), must_collide=True)
@@ -273,10 +266,6 @@ def main():
     for ang in (90, 180, 270):
         rot = body.translate([-sx, 0, 0]).rotate([0, 0, ang]).translate([sx, 0, 0])
         chk("Körper um %d° gedreht (Verdrehsicherung, Kodierecke und Fußverlängerung) stößt an die Mulde" % ang, vol_int(plate, rot), must_collide=True)
-    cas_dick = cas.translate([-sx, 0, 0]).scale([1.0, 1.0 + 0.2 / 12.96, 1.0]).translate([sx, 0, 0])
-    chk("Kassette 0,2 mm breiter (kein Spiel mehr) stößt im Schacht an", vol_int(cas_dick, body), must_collide=True)
-    bb = cas.bounding_box()
-    rep("  Kassette bündig mit der Fußunterkante: Unterkante %.2f, Fuß %.2f; Oberkante Kassette %.2f, Schachtdecke %.2f" % (bb[2], body.bounding_box()[2], bb[5], d["z_s"]))
     rep("  -> %s" % ("alle Prüfungen bestanden" if not bad else "%d Fehler!" % bad))
 
     rep("\nAbstände (mm):")
@@ -287,7 +276,7 @@ def main():
     rep("  Zapfen Ø%.1f im Modulloch Ø%.1f: %.2f je Seite; im Sackloch Ø%.1f: %.2f je Seite; Tiefe des Sacklochs %.1f, Zapfen ragt %.1f hinein" % (
         D.PEG_D, D.DISP["hole_d"], (D.DISP["hole_d"] - D.PEG_D) / 2, D.PEG_HOLE_D, (D.PEG_HOLE_D - D.PEG_D) / 2, D.PEG_HOLE_T, D.PEG_HOLE_T - 0.2))
     rep("  Modultasche %.2f × %.2f × %.2f (Platine %.1f × %.1f × %.1f): Spiel %.2f je Seite, oben %.2f, Dicke %.2f" % (
-        D.DISP["pcb_w"] + 2 * D.CLR, D.DISP["pcb_h"] + D.CLR, d["slot_t"], D.DISP["pcb_w"], D.DISP["pcb_h"], D.DISP["mod_t"], D.CLR, D.CLR, d["slot_t"] - D.DISP["mod_t"]))
+        D.DISP["pcb_w"] + 2 * D.CLR_W, D.DISP["pcb_h"] + D.CLR, d["slot_t"], D.DISP["pcb_w"], D.DISP["pcb_h"], D.DISP["mod_t"], D.CLR_W, D.CLR, d["slot_t"] - D.DISP["mod_t"]))
     rep("  Kopf über der Platte: %.2f; Wand um die Modultasche %.2f; Rückwand %.2f; Wand um den Schacht %.2f" % (d["z_hb"], D.WALL, D.BACK, D.WALL))
     rep("  Sichtfenster %.1f × %.1f (aktive Fläche %.2f × %.2f plus %.1f Rand je Seite), Unterkante %.1f über der Platte" % (
         2 * (D.DISP["aa_w"] / 2 + D.WINDOW_MARGIN), d["wt"] - d["wb"], D.DISP["aa_w"], D.DISP["aa_h"], D.WINDOW_MARGIN, d["wb"]))

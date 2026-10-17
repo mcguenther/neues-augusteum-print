@@ -60,8 +60,9 @@ WIRE_LEN = 55.0        # A  Länge der Adern: Weg etwa 22 mm plus 30 mm zum Anl�
 # ---- Kassette ohne LED-Streifen: Unterbau der V2 (nur Buchsentasche und Aderschlitz). Maße kommen aus plug/testcase/variants.py (V2: 12,96 × 5,34 × 15,1);
 # der Schacht hat das Einpressspiel KASS_CLR_T je Seite (plug/campus.py shaft_size). Plan 3 hatte 13,2 × 5,58 × 17,1 angenommen (Maße der v4, Spiel doppelt gerechnet).
 _K2 = V.dims("V2")
-KASS_W, KASS_D = _K2["w"] + 2 * TP.KASS_CLR_T, _K2["depth"] + 2 * TP.KASS_CLR_T      # Schacht 13,08 × 5,46 (A, V2 ohne Blatt)
-KASS_TOP = _K2["z_b"] - TP.dims_plan()["F"]    # A  Oberkante der Kassette über der Plattenoberfläche: Unterbau 15,1 minus Fuß 14,2 = 0,9
+KASS_W, KASS_D = _K2["pk_w"], _K2["pk_d"]       # Buchsentasche im Hals (Plan 5: Kassette integriert), 10,56 × 2,94; Hals = Tasche plus Wand 1,2
+KASS_TOP = _K2["z_b"] - TP.dims_plan()["F"]    # A  Oberkante der Schultern über der Plattenoberfläche: 15,1 minus Fuß 14,2 = 0,9
+ZP = _K2["zp"]                                  # A  Höhe der Tasche über der Fußunterkante (Buchse 14,0 plus 0,6)
 SHAFT_EXTRA = TP.SHAFT_EXTRA_T                  # B  Schacht so viel höher als die Kassette (L12)
 ENTRY_CH = TP.ENTRY_CH_T      # B  Einführfase am Schachteingang (Bett)
 ANSCHLAG_T = 1.2       # B  Anschlag über dem Schacht: 45°-Schräge, die auf die Öffnung zuläuft (plug/buildings.py ANSCHLAG_T)

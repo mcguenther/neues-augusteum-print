@@ -26,7 +26,7 @@ def dims():
     d["KD"] = L.KD                                            # Tiefe des Halses (x) = Schacht + Wände
     d["mb"] = D.WIN_BOTTOM - L.BELOW_WINDOW                   # Unterkante der Platine
     d["z_hb"] = d["mb"] - D.FLOOR_T                           # Unterkante des Kopfs über der Platte
-    d["z_top"] = d["mb"] + P["pcb_h"] + D.CLR + D.TOP_CAP     # Oberkante
+    d["z_top"] = d["mb"] + P["pcb_h"] + D.CLR                 # Oberkante des Körpers = Oberkante der Tasche (oben offen); die Lippe der Blende liegt darüber
     d["wb"], d["wt"] = D.WIN_BOTTOM, D.WIN_BOTTOM + L.WIN_H
     d["slot_t"] = P["mod_t"] + 2 * D.CLR
     d["x_blende"] = -D.BLENDE_T                               # Rückseite der Frontblende
@@ -49,53 +49,17 @@ def dims():
     d["z_rear"] = D.KASS_TOP + D.AIR + D.LID_T                # Oberkante hinten über der Kassette (4,5 Luft plus Deckel)
     d["z_pins"] = d["mb"] + P["hdr_edge"]
     d["wall"] = D.WALL
-    d["z_s"] = d["z_cass"] + D.SHAFT_EXTRA                     # Schachtdecke: darüber beginnt die 45°-Schräge des Anschlags
-    d["ledge"] = ledge_depth(d)                                # Höhe der Schräge bis zur Öffnung
-    d["z_ledge"] = d["z_s"] + d["ledge"] + D.DECKEL_T          # Oberseite des Anschlagrands = Boden der Kammer über dem Hals
+    d["z_s"] = d["foot"] + D.ZP                                # Decke der Buchsentasche, darüber die Schultern (0,5)
+    d["ledge"] = 0.0
+    d["z_ledge"] = d["z_cass"]                                 # Oberseite der Schultern = Boden der Kammer über dem Hals
     return d
 
 
-def shaft_rect(d):
-    """Schacht im Grundriss (x, y), shapely."""
-    return sbox(d["x_s0"], -D.KASS_W / 2, d["x_s1"], D.KASS_W / 2)
-
-
-def opening(d):
-    """Öffnung über dem Anschlag (Grundriss): Aderschlitz der Kassette mit Spiel FREI_T, vereinigt mit dem Schacht um ANSCHLAG_T verkleinert."""
+def slit_cut(d):
+    """Aderschlitz über der Buchsentasche: ganze Tiefe der Tasche, Breite wie in der Kassette V2 (9,2), von der Taschendecke bis in die Kammer."""
     k = V.dims("V2")
     sx = (d["x_s0"] + d["x_s1"]) / 2
-    win = sbox(sx - k["pk_d"] / 2 - D.FREI_T, -k["slot"] / 2 - D.FREI_T, sx + k["pk_d"] / 2 + D.FREI_T, k["slot"] / 2 + D.FREI_T)
-    return win.union(shaft_rect(d).buffer(-D.ANSCHLAG_T, join_style=2))
-
-
-def ledge_depth(d):
-    """Höhe der 45°-Schräge: so lange, bis der verkleinerte Schacht in der Öffnung liegt (Schritte 0,1 wie bei den Gebäuden)."""
-    rect, win, depth = shaft_rect(d), opening(d), 0.0
-    while not rect.buffer(-depth, join_style=2).difference(win).buffer(-1e-3).is_empty and depth < 6.0:
-        depth += 0.1
-    return round(depth, 1)
-
-
-def ext_poly(poly, z0, z1):
-    """shapely-Polygon (auch mit Löchern, auch Vielfaches) zwischen z0 und z1."""
-    from shapely.geometry.polygon import orient
-    loops = []
-    for q in getattr(poly, "geoms", [poly]):
-        q = orient(q, 1.0)
-        loops.append([(float(x), float(y)) for x, y in q.exterior.coords][:-1])
-        loops += [[(float(x), float(y)) for x, y in r.coords][:-1] for r in q.interiors]
-    return g.ext(m3d.CrossSection(loops), z0, z1)
-
-
-def ledge_cut(d):
-    """Schnittkörper über dem Schachtende: Schräge in 0,1-mm-Stufen von der Schachtfläche auf die Öffnung, darüber die Öffnung bis in die Kammer."""
-    rect, win = shaft_rect(d), opening(d)
-    zs, parts, t = d["z_s"], [], 0.0
-    while t < d["ledge"] - 1e-9:
-        parts.append(ext_poly(rect.buffer(-(t + 0.05), join_style=2).union(win), zs + t - 0.005, zs + t + 0.105))
-        t += 0.1
-    parts.append(ext_poly(win, zs - 0.01, d["z_ledge"] + 0.6))
-    return g.union(parts)
+    return g.box(sx - k["pk_d"] / 2, sx + k["pk_d"] / 2, -k["slot"] / 2, k["slot"] / 2, d["z_s"] - 0.01, d["z_ledge"] + 3.0)
 
 
 def profile_side(d):
@@ -220,11 +184,9 @@ def peg(d, y, z, dia=None):
 def make_blende(d, dia=None, kappe=False):
     """Frontblende (Weltlage) mit Sichtfenster und vier Zapfen vom Durchmesser dia (Standard PEG_D)."""
     wy = P["aa_w"] / 2 + D.WINDOW_MARGIN
-    blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"]) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, d["wb"], d["wt"])
-    if kappe:
-        top = d["mb"] + P["pcb_h"] + D.CLR                      # Oberkante der Tasche
-        lip = g.box(d["x_slot0"] - 1.0, d["x_blende"] + 0.01, -d["W"] / 2, d["W"] / 2, top, top + D.LIP_T)
-        blende = blende - g.box(d["x_blende"] - 1, 1, -500, 500, top + D.LIP_T, 500) + lip      # Blende endet oben mit der Lippe
+    blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"] + (D.LIP_T if kappe else 0.0)) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, d["wb"], d["wt"])
+    if kappe:                                                   # Lippe: Dach der Tasche, liegt auf Seitenwänden und 1,0 mm der Rückwand
+        blende = blende + g.box(d["x_slot0"] - 1.0, d["x_blende"] + 0.01, -d["W"] / 2, d["W"] / 2, d["z_top"], d["z_top"] + D.LIP_T)
     return blende + g.union([peg(d, y, z, dia) for y, z in peg_centres(d)])
 
 
@@ -272,7 +234,7 @@ def parts(d=None):
     body = env + foot
     # Modultasche: von vorn offen, Tiefe = Modul plus Spiel, Höhe bis unter das Kopfdach
     hw = P["pcb_w"] / 2 + D.CLR_W
-    pocket = g.box(d["x_slot0"], 0.05, -hw, hw, d["mb"], d["mb"] + P["pcb_h"] + D.CLR)
+    pocket = g.box(d["x_slot0"], 0.05, -hw, hw, d["mb"], d["z_top"] + 1.0)
     # Kabelfenster in der Rückwand mit gerundeten Ecken (Pins und Header gehen hindurch)
     win = window_poly(d)
     window = g.prism_x(list(win.exterior.coords)[:-1], d["x_back"] - 0.05, d["x_slot0"] + 0.05)
@@ -282,9 +244,9 @@ def parts(d=None):
         g.ext(_cs(chamber_plan(d)), d["z_hb"] - 1.0, d["z_top"] + 1.0)
     # Schacht für die Kassette mit Einführfase am Fuß; oben der Anschlag (45°-Schräge) und die Öffnung für die Adern
     sx = (d["x_s0"] + d["x_s1"]) / 2
-    shaft = g.union([g.box(d["x_s0"], d["x_s1"], -D.KASS_W / 2, D.KASS_W / 2, d["foot"] - 0.01, d["z_s"]),
+    shaft = g.union([g.box(d["x_s0"], d["x_s1"], -D.KASS_W / 2, D.KASS_W / 2, d["foot"] - 0.01, d["z_s"]),   # Buchsentasche, von unten offen
                      g.frustum(D.KASS_D + 2 * D.ENTRY_CH, D.KASS_W + 2 * D.ENTRY_CH, d["foot"] - 0.01, d["foot"] + D.ENTRY_CH, -D.ENTRY_CH, cx=sx)])
-    ledge = ledge_cut(d)
+    ledge = slit_cut(d)
     # Rückdeckel: Öffnung im Körper (mit Spiel), Deckel selbst
     lid_pts, normal = lid_poly(d)
     lid = g.prism_y(lid_pts, -D.LID_W / 2, D.LID_W / 2)
@@ -312,9 +274,9 @@ def parts(d=None):
     body = body - pocket - window - chamber - shaft - ledge - lid_cut - front_rebate - peg_holes
     lid = lid ^ env
     # Frontblende: liegt in Ost-Fläche, Fenster als Loch
-    blende = make_blende(d)
+    blende = make_blende(d, None, True)
     # Kassette (vereinfacht) und Modul
-    cas = kassette_k0(d)
+    cas = g.box(d["x_s0"] + 0.2, d["x_s1"] - 0.2, -5.08, 5.08, d["foot"] + 0.5, d["foot"] + 14.0)       # Dupont-Buchse 10,16 × 2,54 × 14 in der Tasche (Attrappe)
     mb = d["mb"]
     glass_z0 = mb + 6.7                                   # Glas sitzt 6,7 über der Pin-Kante (Foto, Platine 33,0 hoch: 33,0 - 3,3 - 23,0)
     pcb = g.box(d["x_pcb0"], d["x_pcb1"], -P["pcb_w"] / 2, P["pcb_w"] / 2, mb, mb + P["pcb_h"]) - \
