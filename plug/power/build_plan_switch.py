@@ -6,6 +6,7 @@ Aufruf: `python3 -m plug.power.build_plan_switch` (Sekunden).
 """
 import json
 import os
+import sys
 
 from plug.power import build_concept as BC
 from plug.power import params as PP
@@ -32,10 +33,76 @@ POCKET_T = PP.UK_WALL - WALL_AT_HOLE     # 0,8 tief
 H_WALL = BC.H0["uk_t"]                   # 14,6 Außenhöhe des Unterkastens
 Z_MID = H_WALL / 2
 DEPTH_OUT = SW["body_depth"] + SW["pin_len"] + SW["wire"]               # ab Außenfläche
-LAYOUT = json.load(open(os.path.join(HERE, "switch_layout.json")))   # Lage aus build_concept.variant(1300), Platte 115,6 × 220,8
+LAYOUT_JSON = os.path.join(HERE, "switch_layout.json")
+
+
+def refresh_layout():
+    """Lage der Teile auf der Platte neu aus dem Konzept lesen (ca. 20 s, `--refresh`) und nach switch_layout.json schreiben."""
+    v = BC.variant(1300)
+    rd = lambda g: [[[round(float(a), 1) for a in p] for p in ring] for ring in g]       # noqa: E731
+    pts = lambda g: [[round(float(a), 1) for a in p] for p in g]                         # noqa: E731
+    out = dict(plate=v["plate"], thick=v["thick"], outline=rd(v["outline"]), hof=rd(v["hof"]), fach=rd(v["fach_poly"]), body=rd(v["body"]),
+               channel=rd(v["channel"]), window=rd(v["window"]), elec=rd(v["elec"]), cable=pts(v["cable"]),
+               buildings=[dict(slug=b["slug"], title=b["title"], poly=rd(b["poly"])) for b in v["buildings"]],
+               zones=[dict(slug=d["slug"], title=d["title"], zone=pts(d["zone"])) for d in v["docks"] if d["ok"]],
+               notches=[pts(x["notch"]) for x in v["vs"]],
+               posts=[dict(r=pts(x["r"]), pin=bool(x["pin"])) for x in v["posts"]])
+    with open(LAYOUT_JSON, "w") as fh:
+        json.dump(out, fh, separators=(",", ":"))
+
+
+if "--refresh" in sys.argv:
+    refresh_layout()
+LAYOUT = json.load(open(LAYOUT_JSON))   # Lage aus build_concept.variant(1300), Platte 115,6 × 220,8
 FACH_X0 = min(p[0] for p in LAYOUT["fach"][0])                          # Westkante des Fachs (22,4); Plattenaußenwand liegt bei x = 0
 Y_SW = 116.0                                                            # E  Mitte des Schalters auf der Platte (Nord = größeres y), unter dem Südende des Seminargebäudes
 MARGIN = round(FACH_X0 - DEPTH_OUT, 1)                                  # Luft zwischen den Pins mit Draht und dem Fach
+
+
+STEP = 0.5
+HALF_INT = 7.0          # halbe Breite des Schalterraums im Unterkasten (Kasten 13, Pins, Luft)
+HALO = 2.0              # Luft für Drähte und Lötstellen, darunter gibt es eine gelbe Warnung
+
+
+def conflict_table():
+    """Je Lage y auf der Westwand (Schritt 0,5): Konflikte des Schalterraums mit Teilen des Unterkastens, 'code:r' = Kollision, 'code:y' = Luft unter 2 mm."""
+    from shapely.geometry import Polygon, box
+    obst = {"elec": [Polygon(r) for r in LAYOUT["elec"]], "post": [Polygon(q["r"]) for q in LAYOUT["posts"]],
+            "notch": [Polygon(r) for r in LAYOUT["notches"]], "fach": [Polygon(r) for r in LAYOUT["fach"]]}
+    for i, z in enumerate(LAYOUT["zones"]):
+        obst[f"zone{i}"] = [Polygon(z["zone"])]
+    bl = [(b["title"], [Polygon(r) for r in b["poly"]]) for b in LAYOUT["buildings"]]
+    plate_l = LAYOUT["plate"][1]
+    table, over = [], []
+    for k in range(int(round(plate_l / STEP)) + 1):
+        y = k * STEP
+        room = box(PP.UK_WALL, y - HALF_INT, DEPTH_OUT, y + HALF_INT)
+        codes = []
+        for code, geoms in obst.items():
+            if any(g.intersects(room) for g in geoms):
+                codes.append(code + ":r")
+            elif any(g.buffer(HALO).intersects(room) for g in geoms):
+                codes.append(code + ":y")
+        if any(g.intersects(box(0, y - POCKET[0] / 2, PP.UK_WALL, y + POCKET[0] / 2)) for g in obst["notch"]):
+            codes.append("notch:r") if "notch:r" not in codes else None
+        if y - POCKET[0] / 2 < 3.0 or y + POCKET[0] / 2 > plate_l - 3.0:
+            codes.append("corner:r")
+        table.append(codes)
+        strip = box(0, y - SW["flange_l"] / 2, DEPTH_OUT, y + SW["flange_l"] / 2)
+        over.append([i for i, (_, gs) in enumerate(bl) if any(g.intersects(strip) for g in gs)])
+    return table, over
+
+
+def mover_html():
+    table, over = conflict_table()
+    data = dict(plate=LAYOUT["plate"], outline=LAYOUT["outline"], buildings=LAYOUT["buildings"], hof=LAYOUT["hof"], fach=LAYOUT["fach"],
+                channel=LAYOUT["channel"], body=LAYOUT["body"], elec=LAYOUT["elec"], window=LAYOUT["window"], cable=LAYOUT["cable"],
+                posts=LAYOUT["posts"], notches=LAYOUT["notches"], zones=LAYOUT["zones"], step=STEP, table=table, over=over,
+                sw=dict(y0=Y_SW, depth=DEPTH_OUT, wall=PP.UK_WALL, halo=HALO, half_int=HALF_INT, flange_l=SW["flange_l"], flange_w=SW["flange_w"],
+                        flange_t=SW["flange_t"], body_l=SW["body_l"], body_w=SW["body_w"], body_depth=SW["body_depth"], pin_len=SW["pin_len"],
+                        pin_pitch=SW["pin_pitch"], pocket_l=POCKET[0], fach_x0=FACH_X0, margin=MARGIN))
+    with open(os.path.join(HERE, "switch_mover.template.html"), encoding="utf-8") as fh:
+        return fh.read().replace("__DATA__", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
 
 
 def f(x):
@@ -236,18 +303,18 @@ def build():
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: Zeichenblatt, Platte und Ausschnitt oben, Schnitt und Ansicht nebeneinander, darunter Maßtabelle und Entscheidungskarten */
+/* Layout: Zeichenblatt, Schieber mit Platte und Ausschnitt oben, Schnitt und Ansicht nebeneinander, darunter Maßtabelle und Entscheidungskarten */
 :root {{
   --bg:#f3f5f6; --paper:#ffffff; --ink:#1d2a33; --mute:#5d6c76; --line:#c9d2d8;
-  --wall:#cdd7de; --wallline:#44525c; --accent:#d9480f; --accent-soft:#fde8dc; --ok:#2b7a4b; --warn:#a86a00; --pb:#dfe6ea; --chan:#e7f0f6;
+  --wall:#cdd7de; --wallline:#44525c; --accent:#d9480f; --accent-soft:#fde8dc; --ok:#2b7a4b; --warn:#a86a00; --bad:#c0262d; --pb:#dfe6ea; --chan:#e7f0f6;
   --font-sans:"IBM Plex Sans",system-ui,sans-serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace;
 }}
 @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{
   --bg:#12181c; --paper:#1a2227; --ink:#e4ebef; --mute:#97a6b0; --line:#34414a;
-  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; }} }}
+  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --bad:#ff6b6b; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; }} }}
 :root[data-theme="dark"] {{
   --bg:#12181c; --paper:#1a2227; --ink:#e4ebef; --mute:#97a6b0; --line:#34414a;
-  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; }}
+  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --bad:#ff6b6b; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; }}
 body {{ background:var(--bg); color:var(--ink); font-family:var(--font-sans); font-size:15px; line-height:1.5;
   padding-block:24px 48px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }}
 main {{ max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }}
@@ -306,18 +373,7 @@ a {{ color:var(--accent); }}
   <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, unter dem Seminargebäude, und schnappt von außen in ein Loch von {f(HOLE[0])} × {f(HOLE[1])} mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
 </header>
 
-<div class="row">
-  <section class="sheet">
-    <h2>Unterkasten von oben, Norden oben</h2>
-    <p>Die Platte ist 115,6 × 220,8 mm; der Unterkasten ist gleich groß und hat die Plattenkante als Außenwand. Das Paulinum liegt im Osten, das Seminargebäude im Westen. Die Gebäude stecken oben in der Platte, der Unterkasten liegt darunter.</p>
-    <div class="scroll">{fig_plate()}</div>
-  </section>
-  <section class="sheet">
-    <h2>Ausschnitt um den Schalter, 10 : 1</h2>
-    <p>Westlich vom Fach bleiben {f(FACH_X0)} mm frei, ohne Stützen, Zapfen und Dockzone. Der Schalter braucht {f(DEPTH_OUT)} mm. Die Drähte laufen zum Kabel im Kanal und zur Elektronik. Orange gestrichelt: das Seminargebäude in der Platte darüber.</p>
-    <div class="scroll">{fig_detail()}</div>
-  </section>
-</div>
+{mover_html()}
 
 <div class="row">
   <section class="sheet">
