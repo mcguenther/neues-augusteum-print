@@ -57,3 +57,8 @@ def schnitt_u(man, u0, achse_grad):
     """Schnitt der Ebene u = u0 im Hofsystem (Achse nach Norden, u quer): Liste von Konturen (Nx2) in (t, z) mm."""
     mat = [[0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]]
     return [np.asarray(c) for c in man.rotate([0.0, 0.0, achse_grad]).transform(mat).slice(u0).to_polygons()]
+
+
+def schnitt_t(man, t0, achse_grad):
+    """Schnitt der Ebene t = t0 im Hofsystem (Achse nach Norden, t längs): Liste von Konturen (Nx2) in (u, z) mm, u nach Osten."""
+    return schnitt_y(man.rotate([0.0, 0.0, achse_grad]), t0)

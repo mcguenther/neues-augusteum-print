@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: eine Spalte, Abschnitte nacheinander (Vergleich der Fassungen, Treppen, Trennwand, 3D, Prüfung); Grundrisse nebeneinander, unter 760 px untereinander.
-   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent). Rot = Original, Blau = Fassung A (mit Trennwand), Grün = Fassung B (ohne). */
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent). Rot = Original, Blau = neu (mit Trennwand). */
 :root {
   --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
   --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
@@ -91,11 +91,13 @@ code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-sof
 .plan.sec .tiny { fill: var(--fg); }
 .panels { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .panels.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.panels.one { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 760px) { .panels, .panels.two { grid-template-columns: minmax(0, 1fr); } }
 .panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
 .panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
 .panel.wide .plan { max-height: 480px; }
 .panels:not(.two) .plan { max-width: 330px; margin: 0 auto; }
+.panels.one .panel .plan { max-height: none; max-width: none; }
 .cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 @media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
 .cols .panel .plan { max-width: 560px; margin: 0 auto; }
@@ -161,7 +163,7 @@ button[aria-pressed="true"] { background: var(--accent); border-color: var(--acc
 @media (max-width: 640px) { #stage.multi { flex-direction: column; height: min(130vh, 1000px); } }
 .hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; }
 .tag { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 0.78rem; padding: 2px 9px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); pointer-events: none; }
-.tag.alt { color: var(--alt); } .tag.a { color: var(--va); } .tag.b { color: var(--vb); }
+.tag.alt { color: var(--alt); } .tag.neu { color: var(--va); }
 .cap { padding: 10px 14px; color: var(--muted); font-size: 0.9rem; min-height: 3.4em; border-top: 1px solid var(--line); }
 .sw { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted); }
 .sw i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
@@ -175,70 +177,65 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
 <div class="wrap">
   <header>
     <h1>Innenhof-Einsatz</h1>
-    <p class="lead">Der Hof reicht jetzt bis an die Fassaden der Nachbargebäude. Die Treppen sind Rechtecke, und im Süden führt der Einsatz in sechs Stufen bündig auf die Grundplatte. Zwei Fassungen liegen vor: A lässt eine Trennwand von @WAND@ mm zu den Gebäude-Mulden, B hat keine.</p>
+    <p class="lead">Die Trennwand von @WAND@ mm bleibt. Der Gang im Süden setzt den Hof in der Platte auf Terrassenhöhe fort, am Westende führt eine Treppe auf Plattenhöhe. Im Nordosten steigt eine Treppe aus dem Gang zum Hof. Beide Treppen sind Teil der Platte und enden mit den Wänden der Gebäude, damit der Rand der Platte überall gleich hoch ist.</p>
     <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Planwerte, ungetestet</span></div>
-    <dl class="sum" aria-label="Kurzvergleich Original, A und B">
-      <div><dt>Trennwand zur Gebäude-Mulde</dt><dd><span class="o">0,4</span><span class="arrow">→</span><span class="a">A @WAND@</span><span class="b">B 0</span><span class="arrow">mm</span></dd></div>
-      <div><dt>Hoffläche der Aussparung</dt><dd><span class="o">@FL_O@</span><span class="arrow">→</span><span class="a">A @FL_A@</span><span class="b">B @FL_B@</span><span class="arrow">mm²</span></dd></div>
+    <dl class="sum" aria-label="Kurzvergleich Original und neu">
+      <div><dt>Trennwand zur Gebäude-Mulde</dt><dd><span class="o">0,4</span><span class="arrow">→</span><span class="a">@WAND@</span><span class="arrow">mm</span></dd></div>
+      <div><dt>Gang im Süden</dt><dd><span class="o">Stufe @GESAMT@</span><span class="arrow">→</span><span class="a">ohne Stufe</span></dd></div>
       <div><dt>Schmale Stellen im Umriss</dt><dd><span class="o">@SCHMAL_O@</span><span class="arrow">→</span><span class="a">0</span></dd></div>
-      <div><dt>Anschluss im Süden an die Platte</dt><dd><span class="o">Stufe @GESAMT@</span><span class="arrow">→</span><span class="a">bündig</span></dd></div>
+      <div><dt>Hoffläche der Aussparung</dt><dd><span class="o">@FL_O@</span><span class="arrow">→</span><span class="a">@FL_A@</span><span class="arrow">mm²</span></dd></div>
     </dl>
   </header>
 
   <section class="sec" id="vergleich">
     <div>
-      <h2>Original, A mit Trennwand und B ohne</h2>
-      <p class="lead">Dieselbe Hoffläche in drei Fassungen. Beide neuen Fassungen füllen alles zwischen den Gebäuden und folgen den Fassaden. In A zeigt die blaue Fläche die Trennwand zwischen der Aussparung des Hofs und den Mulden der Gebäude. A zieht sie von der Hoffläche ab.</p>
+      <h2>Original und neu</h2>
+      <p class="lead">Links das Original, in der Mitte der neue Einsatz mit der Trennwand (blau), rechts der ganze Bereich nach Höhe über der Platte gefärbt: Einsatz, Gang im Süden und Treppe im Nordosten.</p>
     </div>
-    <div class="panels">@FIG_VERGLEICH@</div>
-    <div class="cards">
-      <div class="card a"><span class="tag2">Fassung A</span><h3>Mit Trennwand <span>@WAND@ mm</span></h3>
-        <ul>
-          <li><strong>Die Mulde des Gebäudes bleibt rundum geschlossen.</strong> Der Fuß wird über die ganze Tiefe von 14,2 mm geführt.</li>
-          <li><strong>Der Hof ist kleiner</strong> (@FL_A@ statt @FL_B@ mm²). Zwischen Hof und Gebäude bleibt ein sichtbarer Plattenstreifen.</li>
-          <li><strong>Dünn:</strong> Oben schneidet die Einführfase der Mulde (@FASE@ mm) die Wand an, sie bleibt dort @WAND_OBEN@ mm breit. Die Wand von 0,4 mm kam im ersten Druck nicht, 0,8 mm sind zwei Düsenlinien.</li>
-        </ul></div>
-      <div class="card b"><span class="tag2">Fassung B</span><h3>Ohne Trennwand <span>0 mm</span></h3>
-        <ul>
-          <li><strong>Der Hof reicht bis an den Gebäudefuß.</strong> Es gibt keine dünne Wand, die brechen oder im Druck fehlen kann.</li>
-          <li><strong>Mulde und Aussparung gehen ineinander über.</strong> Das Gebäude wird nur unten (8,2 mm) von der Platte geführt, oben vom Einsatz mit rund 0,2 mm Spalt.</li>
-          <li><strong>Reihenfolge:</strong> erst die Gebäude einsetzen, dann den Hof. Ohne Hof kann ein Gebäude oben zur Hofseite ausweichen.</li>
-        </ul></div>
+    <div class="panels">@FIG_VERGLEICH@<figure class="panel"><figcaption>Neu, Höhe über der Platte</figcaption>@FIG_HOEHEN@</figure></div>
+    <div>
+      <div class="grad" aria-hidden="true"></div>
+      <div class="ticks"><span>Platte 0</span><span>Hofboden @HUB@</span><span>Terrasse und Gang @GESAMT@</span></div>
     </div>
-    <p class="reco"><strong>Empfehlung:</strong> A drucken, weil die Gebäude sicher stehen sollen. B als Rückfall mitdrucken, falls die Wand im Druck wieder fehlt. Beide STL liegen in <code>stl/steckmodul_campus/</code>.</p>
     <div class="tw"><table>
-      <thead><tr><th>Kennzahl</th><th class="o">Original</th><th class="a">A mit Wand</th><th class="b">B ohne Wand</th><th>Bemerkung</th></tr></thead>
+      <thead><tr><th>Kennzahl</th><th class="o">Original</th><th class="a">Neu</th><th>Bemerkung</th></tr></thead>
       <tbody>@TABELLE@</tbody>
     </table></div>
+    <p class="note">Unverändert: Fuge @FUGE@ mm je Seite, Einführfase @HOF_FASE@ mm unten am Einsatz, Hofboden @HUB@ mm über der Plattenoberfläche. Der Hof reicht bis an die Fassaden der Nachbargebäude, abzüglich der Trennwand.</p>
   </section>
 
-  <section class="sec" id="treppen">
+  <section class="sec" id="gang">
     <div>
-      <h2>Treppen als Rechtecke</h2>
-      <p class="lead">Die Treppen sind Rechtecke entlang der Hofachse und damit parallel zu den Fassaden. Sie liegen als Stufen auf dem Einsatz, nicht als Ausschnitt in der Platte. Die Farbe zeigt die Höhe über der Plattenoberfläche.</p>
+      <h2>Gang und Treppen</h2>
+      <p class="lead">Der Gang zwischen Seminar- und Hörsaalgebäude liegt im Scan auf Terrassenhöhe und führt nach Westen auf die Straße, dort kommen Treppen. In der Platte setzt er den Einsatz ohne Stufe fort. Wo die Gebäude enden, führt eine Treppe hinunter, so ist der Rand der Platte überall gleich hoch.</p>
     </div>
     <div class="cols">
-      <figure class="panel"><figcaption>Südwestecke, Fassung A</figcaption>@FIG_TREPPEN@</figure>
+      <figure class="panel"><figcaption>Südwestecke</figcaption>@FIG_SW@</figure>
       <div class="side">
-        <div>
-          <div class="grad" aria-hidden="true"></div>
-          <div class="ticks"><span>Platte 0</span><span>Hofboden @HUB@</span><span>Terrasse @GESAMT@</span></div>
-        </div>
         <ul class="tlist">
-          <li><span class="k">W</span><div><h3>Rampe am Seminargebäude</h3><p>Ein Rechteck bis an die Fassade, drei Stufen von der Terrasse nach Norden zum Hof. Die Bucht an der Wand ist gefüllt.</p></div></li>
-          <li><span class="k">K</span><div><h3>Kante vor dem Hörsaalgebäude</h3><p>Schmale Treppe von der Terrasse zum Hof, im Scan 2 m Lauflänge. Sie verläuft quer zur Hofachse, also gerade.</p></div></li>
-          <li><span class="k">S</span><div><h3>Südtreppe</h3><p>Der Gang zwischen Seminar- und Hörsaalgebäude fällt in @STUFEN_S@ Stufen von der Terrasse (@GESAMT@ mm über der Platte) auf Plattenhöhe, jede @RISER@ mm hoch, @LAUF_S@ mm lang. Die letzte Stufe liegt bündig mit der Platte.</p></div></li>
+          <li><span class="k">W</span><div><h3>Rampe am Seminargebäude (Einsatz)</h3><p>Ein Rechteck bis an die Fassade, drei Stufen von der Terrasse nach Norden zum Hof.</p></div></li>
+          <li><span class="k">K</span><div><h3>Kante vor dem Hörsaalgebäude (Einsatz)</h3><p>Schmale Treppe von der Terrasse zum Hof, drei Stufen.</p></div></li>
+          <li><span class="k">G</span><div><h3>Gang (Platte)</h3><p>Auf Terrassenhöhe, @GESAMT@ mm über der Plattenoberfläche. Der Einsatz endet am Südende des Hofs, die Platte macht auf gleicher Höhe weiter.</p></div></li>
+          <li><span class="k">T</span><div><h3>Treppe am Westende (Platte)</h3><p>Sechs Stufen à @RISER_G@ mm, @LAUF_G@ mm lang. Sie liegt zwischen den Wänden von Seminar- und Hörsaalgebäude und endet dort, wo beide Gebäude enden.</p></div></li>
         </ul>
       </div>
     </div>
-    <div class="panels two"><figure class="panel wide" style="grid-column: 1 / -1"><figcaption>Längsschnitt durch die Südtreppe, Fassung A</figcaption>@FIG_SUED@</figure></div>
-    <p class="note">Geländer sind nicht modelliert, sie sind dünner als 0,4 mm Düse. Die Terrasse liegt im Scan @H_TERR_M@ m über dem Hof (@H_TERR@ mm im Modell), der Hof @HUB@ mm über der Platte.</p>
+    <div class="cols">
+      <figure class="panel"><figcaption>Nordosten</figcaption>@FIG_NE@</figure>
+      <div class="side">
+        <ul class="tlist">
+          <li><span class="k">N</span><div><h3>Treppe zum Hof (Platte)</h3><p>Aus dem Gang zwischen Paulinum und Institutsgebäude, der auf Plattenhöhe bleibt, steigt sie in sechs Stufen à @RISER_N@ mm (@LAUF_N@ mm lang) zum Hofboden. Der Einsatz hat dort einen geraden Rand auf Hofhöhe.</p></div></li>
+        </ul>
+        <p class="note">Geländer sind nicht modelliert, sie sind dünner als 0,4 mm Düse.</p>
+      </div>
+    </div>
+    <div class="panels one">@FIG_LANG@@FIG_QUER@</div>
   </section>
 
   <section class="sec" id="wand">
     <div>
       <h2>Trennwand im Schnitt</h2>
-      <p class="lead">Schnitt quer durch den Rand zum Neuen Augusteum, Maße in mm. Der Fuß des Gebäudes steckt in der Mulde mit @SPIEL@ mm Spiel. Der Einsatz hat @FUGE@ mm Fuge zur Aussparung.</p>
+      <p class="lead">Schnitt quer durch den Rand zum Neuen Augusteum, Maße in mm. Der Fuß des Gebäudes steckt in der Mulde mit @SPIEL@ mm Spiel, der Einsatz hat @FUGE@ mm Fuge zur Aussparung. Oben schneidet die Einführfase der Mulde (@FASE@ mm) die Wand an, sie bleibt dort @WAND_OBEN@ mm breit.</p>
     </div>
     <div class="panels two">@FIG_WAND@</div>
   </section>
@@ -246,14 +243,13 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
   <section class="sec" id="drei-d">
     <div>
       <h2>Mulde und Stecker in 3D</h2>
-      <p class="lead">Die Mulde ist der Ausschnitt der Grundplatte um den Hof, der Stecker der Einsatz. Die Felder teilen sich eine Kamera, so liegen alle Fassungen aus demselben Blickwinkel nebeneinander.</p>
+      <p class="lead">Die Mulde ist der Ausschnitt der Grundplatte um Hof, Gang und Treppen, der Stecker der Einsatz. Beide Felder teilen sich eine Kamera. Beim Original ist nur der damalige Ausschnitt um den Hof enthalten.</p>
     </div>
     <section class="stagebox" aria-label="3D-Ansicht">
       <div class="bar2">
-        <div class="seg" role="group" aria-label="Fassungen">
+        <div class="seg" role="group" aria-label="Stände">
           <button type="button" id="t-alt" aria-pressed="false">Original</button>
-          <button type="button" id="t-a" aria-pressed="true">A mit Wand</button>
-          <button type="button" id="t-b" aria-pressed="true">B ohne Wand</button>
+          <button type="button" id="t-neu" aria-pressed="true">Neu</button>
         </div>
         <div class="seg" role="group" aria-label="Teile">
           <button type="button" id="p-mulde" aria-pressed="true">Mulde</button>
@@ -264,8 +260,7 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
       </div>
       <div id="stage" class="multi">
         <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell Original"></canvas><div class="tag alt">Original</div></div>
-        <div class="pane" id="pane-a"><canvas id="cv-a" aria-label="3D-Modell Fassung A"></canvas><div class="tag a">A mit Wand</div></div>
-        <div class="pane" id="pane-b"><canvas id="cv-b" aria-label="3D-Modell Fassung B"></canvas><div class="tag b">B ohne Wand</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
+        <div class="pane" id="pane-neu"><canvas id="cv-neu" aria-label="3D-Modell neu"></canvas><div class="tag neu">Neu</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
       </div>
       <div class="cap" id="cap"></div>
       <div class="bar2 views"><div class="seg" role="group" aria-label="Ansicht" id="views"></div></div>
@@ -275,25 +270,25 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
   <section class="sec" id="pruefung">
     <div>
       <h2>Prüfung</h2>
-      <p class="lead">@PRUEF_ERGEBNIS@. Die Einsätze bei 1:1300 sind dicht (@DICHT@), die Platten mit Aussparung sind @PLATTE@, @KOLLISION@.</p>
+      <p class="lead">@PRUEF_ERGEBNIS@. Der Einsatz bei 1:1300 ist dicht (@DICHT@), die Platte mit Aussparung, Gang und Treppen ist @PLATTE@, @KOLLISION@.</p>
     </div>
     <div class="tw"><table>
       <thead><tr><th>Quelle</th><th>Maßstab</th><th>Einsatz dicht</th><th>Teile</th><th>Löcher</th><th>Schmale Stellen</th><th>Abstand zu Gebäuden</th></tr></thead>
       <tbody>@PRUEFMATRIX@</tbody>
     </table></div>
-    <p class="note">Die Matrix gilt für den Standard von <code>generate.py</code> (Abstand 0,5 mm, Fuge der Grundplatte). Die Steckplatte nimmt den Abstand aus <code>HOF_WALL_T</code> und <code>OUTLINE_CLR_T</code>.</p>
+    <p class="note">Die Matrix gilt für den Standard von <code>generate.py</code> (Abstand 0,5 mm, Fuge der Grundplatte, ohne Gang und Treppen der Platte). Die Steckplatte nimmt den Abstand aus <code>HOF_WALL_T</code> und <code>OUTLINE_CLR_T</code>.</p>
     <div class="cols2">
       <div><h3>Offen, erst der Druck zeigt es</h3>
         <ul class="plain">
-          <li><strong>Trennwand @WAND@ mm:</strong> ob sie im Druck steht, wie breit sie oben bleibt (@WAND_OBEN@ mm) und ob sie die Gebäude sicher führt (Steckprobe 3).</li>
-          <li><strong>Sitz des Einsatzes</strong> mit Fuge @FUGE@ mm und Fase @HOF_FASE@ mm bei jetzt größerem Klotz.</li>
-          <li><strong>Südtreppe:</strong> sechs Stufen von @RISER@ mm, das sind zwei Druckschichten je Stufe, und die letzte bündig zur Platte.</li>
-          <li><strong>Zwischenstufen</strong> der Rampen von 0,18 und 0,37 mm: der Slicer druckt sie als Absatz oder glättet sie.</li>
+          <li><strong>Trennwand @WAND@ mm:</strong> ob sie im Druck steht und wie breit sie oben bleibt (@WAND_OBEN@ mm) (Steckprobe 3).</li>
+          <li><strong>Sitz des Einsatzes</strong> mit Fuge @FUGE@ mm und Fase @HOF_FASE@ mm.</li>
+          <li><strong>Treppen der Platte:</strong> sechs Stufen à @RISER_G@ und @RISER_N@ mm, das sind rund zwei Druckschichten je Stufe.</li>
+          <li><strong>Gang auf Terrassenhöhe:</strong> Die Platte ist dort @GESAMT@ mm höher als der Rand, Druckzeit und Verzug prüfen.</li>
         </ul></div>
       <div><h3>Betroffene Dateien</h3>
         <ul class="plain">
-          <li><code>innenhof.py</code>, <code>data/innenhof.json</code> (Abschnitt <code>form</code>: Hülle, Terrasse, Treppen)</li>
-          <li><code>plug/campus.py</code> und <code>plug/testcase/params.py</code> (<code>HOF_WALL_T</code>): beide Fassungen, STL <code>hof_einsatz_1zu1300.stl</code>, <code>steckplatte_1zu1300.stl</code> und <code>…_ohne_wand.stl</code></li>
+          <li><code>innenhof.py</code>, <code>data/innenhof.json</code> (Abschnitt <code>form</code>: Hülle, Terrasse, Treppen, Aufbauten der Platte)</li>
+          <li><code>plug/campus.py</code> und <code>plug/testcase/params.py</code> (<code>HOF_WALL_T</code>): <code>hof_einsatz_1zu1300.stl</code> und <code>steckplatte_1zu1300.stl</code></li>
           <li>Alle Hof-Dateien aus <code>generate.py</code> laufen über denselben Umriss</li>
           <li>Original zum Vergleich: <code>plug/hof/alt/</code></li>
         </ul></div>
@@ -309,7 +304,7 @@ const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n
 const $ = (id) => document.getElementById(id);
 const stage = $('stage');
 
-// Drei Ansichten (Original, A, B) mit gemeinsamer Kamera, jede in einem eigenen Feld.
+// Zwei Ansichten (Original, neu) mit gemeinsamer Kamera, jede in einem eigenen Feld.
 function makeView(which) {
   const canvas = $('cv-' + which), pane = $('pane-' + which);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -333,8 +328,8 @@ function makeView(which) {
   });
   return v;
 }
-const V = ['alt', 'a', 'b'].map(makeView);
-const state = { show: { alt: false, a: true, b: true }, mulde: true, stecker: true, lift: 0 };
+const V = ['alt', 'neu'].map(makeView);
+const state = { show: { alt: true, neu: true }, mulde: true, stecker: true, lift: 0 };
 
 // Kamera um ein Ziel (z oben): Azimut 0 = Blick von Osten, -90 = von Süden
 const cam = { t: new THREE.Vector3(), d: 150, az: -62, el: 48 };
@@ -366,12 +361,12 @@ function apply() {
     v.part.stecker.holder.position.z = state.lift;
   });
   stage.classList.toggle('multi', n > 1);
-  ['alt', 'a', 'b'].forEach((k) => $('t-' + k).setAttribute('aria-pressed', state.show[k]));
+  ['alt', 'neu'].forEach((k) => $('t-' + k).setAttribute('aria-pressed', state.show[k]));
   $('p-mulde').setAttribute('aria-pressed', state.mulde); $('p-stecker').setAttribute('aria-pressed', state.stecker);
   $('lift-out').textContent = state.lift + ' mm';
   resize();
 }
-['alt', 'a', 'b'].forEach((k) => {
+['alt', 'neu'].forEach((k) => {
   $('t-' + k).onclick = () => {
     const on = Object.values(state.show).filter(Boolean).length;
     if (state.show[k] && on === 1) return;     // mindestens eine Fassung bleibt sichtbar

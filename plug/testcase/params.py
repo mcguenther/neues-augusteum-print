@@ -41,8 +41,7 @@ CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeud
 HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
 HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
 HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite
-HOF_WALL_T = 0.8        # Trennwand zwischen Hof-Aussparung und Gebäude-Mulde (Nutzer 17.10.: prüfen, damit sich die Gebäude sicher einstecken lassen); 0 = ohne Wand, Variante B in plug/campus.py, Vergleich plug/hof/page.html. Oben schneidet die Einführfase der Mulde (MULDE_CH_T) 0,5 ab
-HOF_OVERLAP_T = 0.02    # ohne Wand: Die Hof-Aussparung reicht so weit in die Gebäude-Mulde, dass beide ineinander übergehen (sonst lägen zwei Schnittflächen aufeinander)
+HOF_WALL_T = 0.8        # Trennwand zwischen Hof-Aussparung und Gebäude-Mulde (Nutzer 17.10.: bleibt bei 0,8 mm, Fassung A; B ohne Wand verworfen); oben schneidet die Einführfase der Mulde (MULDE_CH_T) 0,5 ab
 MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
 OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite. r8: bei großem Umriss zu eng (nur mit Kraft); NÄCHSTER PROBEDRUCK MIT 0,15 (Vorgabe des Nutzers, next.md)
 

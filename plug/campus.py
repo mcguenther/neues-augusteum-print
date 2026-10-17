@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Steckplatte des Campus: Grundplatte mit Mulde (voller Gebäudeumriss), vier Pin-Löchern je Gebäude und Aussparung für den Innenhof-Einsatz
-(Trennwand HOF_WALL_T zu den Gebäude-Mulden; die Fassung ohne Wand liegt als *_ohne_wand.stl daneben).
+(Trennwand HOF_WALL_T zu den Gebäude-Mulden; Gang im Süden auf Terrassenhöhe, Treppen im Nordosten und am Westende des Gangs sind Teil der Platte).
 
 Festlegung (plug/logbook/scale.md): Maßstab 1:1300, Mulde überall 4 mm tiefer (F 14,2), Kassette je Gebäude aus
 params.CASSETTE (v4, V1RS, V2R). Die Lage der Mulde im Grundriss wird gesucht (Rechteck um den Schacht, beliebige Drehung, höchste Dachhöhe
@@ -149,7 +149,7 @@ def mulde_body(slug_fp, d):
     dz = ch / n
     parts = [G.extrude(poly, -d["F"], -ch + 0.01)]
     for k in range(n):
-        top = 1.0 if k == n - 1 else -ch + dz * (k + 1) + 0.01
+        top = SCHNITT_OBEN if k == n - 1 else -ch + dz * (k + 1) + 0.01
         parts.append(G.extrude(slug_fp.buffer(P.OUTLINE_CLR_T + dz * (k + 0.5), join_style=2), -ch + dz * k, top))
     return G.union(parts)
 
@@ -246,6 +246,7 @@ def place_all(models, scale, replace=False):
 
 
 OUTLINE = None
+SCHNITT_OBEN = 3.0       # mm über der Plattenoberfläche: so hoch schneiden die Mulden (die Aufbauten der Platte, Gang und Treppe, sind bis 2,35 mm hoch)
 # Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
 PREFER_ROOF = {"02_neues_augusteum"}
 
@@ -255,12 +256,12 @@ def outline_ok(env):
 
 
 def hof_abstand(wand):
-    """Abstand des Hof-Umrisses vom Gebäudegrundriss: Spiel der Gebäude-Mulde plus Trennwand; ohne Wand (0) reicht die Aussparung etwas in die Mulde."""
-    return P.OUTLINE_CLR_T + wand if wand > 0 else P.OUTLINE_CLR_T - P.HOF_OVERLAP_T
+    """Abstand des Hof-Umrisses vom Gebäudegrundriss: Spiel der Gebäude-Mulde plus Trennwand."""
+    return P.OUTLINE_CLR_T + wand
 
 
 def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
-    """hof_wand: Trennwand zwischen Hof-Aussparung und Gebäude-Mulden in mm (Standard P.HOF_WALL_T, 0 = ohne Wand)."""
+    """hof_wand: Trennwand zwischen Hof-Aussparung und Gebäude-Mulden in mm (Standard P.HOF_WALL_T)."""
     global OUTLINE
     s = 1000.0 / scale
     G.FAST = True
@@ -278,6 +279,13 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     plate = plate ^ top_edge(outline, T, P.PLATE_TOP_CH_T)    # obere Außenkante gefast (Wulst im Druck)
     plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan", raised=P.LABEL_RAISE_T,
                            inset=P.PLATE_TOP_CH_T)
+    # Aufbauten der Platte neben dem Einsatz: Gang im Süden auf Terrassenhöhe mit Treppe am Westende, Treppe im Nordosten (innenhof.platte_aufbau_mm);
+    # die Mulden und die Hof-Aussparung schneiden sie danach zu
+    hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s, abstand)
+    inner = outline.buffer(-P.PLATE_TOP_CH_T)
+    for _, bands in innenhof.platte_aufbau_mm(hof, s):
+        for poly, top in bands:
+            plate = plate + G.extrude(G.clean(poly.intersection(inner)), T - 0.01, T + top)
     cut_all, report, envs = [], [], []
     for slug, p in places.items():
         w, dep = shaft_size(p["var"])
@@ -294,8 +302,7 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
         # Muldenboden bleibt 0,4 mm und ist die unterste Schicht; die Pin-Löcher kommen aus pin_holes
     # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Trennwand
     # zu den Gebäude-Mulden (hof_wand) ihre Breite behält
-    hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s, abstand)
-    cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + 0.01))
+    cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + SCHNITT_OBEN))
     plate = diff(plate, *cut_all)
     return plate, report, models, places, outline, hof_solid
 
@@ -328,14 +335,6 @@ def main():
             slug, var, wall, "LED %.1f mm von der Mitte" % flip if flip is not None else "Lage aus der Platzierungs-App", bad))
         ok &= bad < 0.05
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
-    # zweite Fassung ohne Trennwand zwischen Hof-Aussparung und Gebäude-Mulden (Vergleich: plug/hof/build_page.py)
-    plate0, _, _, _, _, hof0 = build(a.scale, False, 0.0)
-    tm0, hof_tm0 = to_tm(plate0), to_tm(hof0)
-    tm0.export(os.path.join(OUT, "steckplatte_1zu%d_ohne_wand.stl" % a.scale))
-    hof_tm0.export(os.path.join(OUT, "hof_einsatz_1zu%d_ohne_wand.stl" % a.scale))
-    print("Fassung ohne Trennwand: Platte dicht=%s, Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s (mit Trennwand %.1f mm: %.1f × %.1f mm)" % (
-        tm0.is_watertight, *hof_tm0.extents, hof_tm0.is_watertight, P.HOF_WALL_T, *hof_tm.extents[:2]))
-    ok &= tm0.is_watertight and hof_tm0.is_watertight
     import preview
     preview.render([(tm, "#9aa7b4")], size=(1000, 1300), azim=-90, elev=89).save(os.path.join(PREV, "steckplatte_1zu%d_oben.png" % a.scale))
     preview.render([(tm, "#9aa7b4")], size=(1100, 900), azim=-50, elev=35).save(os.path.join(PREV, "steckplatte_1zu%d_schraeg.png" % a.scale))

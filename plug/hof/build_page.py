@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Vergleichsseite zum Innenhof-Einsatz: plug/hof/page.html (Vorlage page.template.html).
 
-Drei Fassungen: das Original (Spalt, Steg und Zungen; eingefroren in plug/hof/alt/), Fassung A mit Trennwand (P.HOF_WALL_T, 0,8 mm) zwischen
-Hof-Aussparung und Gebäude-Mulden und Fassung B ohne Trennwand (Einsatz liegt zwischen den Gebäuden). Beide neuen Fassungen kommen aus
-plug.campus.build und innenhof.py: Hof bis an die Fassaden, Treppen als Rechtecke, Abstieg nach Süden bündig zur Platte.
-Die Seite zeigt Grundrisse, Schnitte durch die Trennwand und die Südtreppe, die Treppenhöhen, 3D von Mulde und Stecker und die Prüfung über alle
-Quellen und Maßstäbe.
+Zwei Stände: das Original (Spalt, Steg und Zungen; eingefroren in plug/hof/alt/) und der aktuelle Entwurf aus plug.campus.build und innenhof.py:
+Hof bis an die Fassaden mit Trennwand (P.HOF_WALL_T, 0,8 mm) zu den Gebäude-Mulden, Treppen als Rechtecke, der Gang im Süden auf Terrassenhöhe mit
+Treppe am Westende, im Nordosten eine Treppe zum Hof (beides Teil der Platte). Die Seite zeigt Grundrisse mit Höhen, Schnitte durch Trennwand und
+Gang, 3D von Mulde und Stecker und die Prüfung über alle Quellen und Maßstäbe.
 
 Aufruf (aus dem Wurzelverzeichnis, ca. 1 min; plug/hof/alt/ muss existieren, sonst erst `python3 -m plug.hof.freeze_alt`):
     python3 -m plug.hof.build_page
@@ -32,7 +31,8 @@ ALT = os.path.join(HERE, "alt")
 NAMEN = {"01_paulinum": "Paulinum", "02_neues_augusteum": "Neues Augusteum", "03_hoersaalgebaeude": "Hörsaalgebäude",
          "04_seminargebaeude": "Seminargebäude", "05_institutsgebaeude": "Institutsgebäude", "06_city_hochhaus": "Hochhaus"}
 WAND_Y = 24.0           # mm: Schnitt y = const durch die Trennwand am Neuen Augusteum (Osten des Hofs)
-SUED_U = -92.0          # mm im Hofsystem: Schnitt durch die Südtreppe, Mitte des Gangs
+GANG_U = -92.0          # mm im Hofsystem: Längsschnitt durch die Mitte des Gangs im Süden
+GANG_T = -37.5          # mm im Hofsystem: Querschnitt durch den Westteil des Gangs (zwischen Seminargebäude und Hörsaalgebäude)
 MIN_STELLE_MM2 = 3.0    # kleinere Reste beim Öffnen sind Ecken, keine schmalen Stellen
 
 
@@ -128,11 +128,10 @@ def wand_flaeche(fps, fp, wand):
     return (bl.buffer(P.OUTLINE_CLR_T + wand, join_style=2).difference(bl.buffer(P.OUTLINE_CLR_T, join_style=2))).intersection(fp.buffer(wand + 0.3))
 
 
-def fig_vergleich(fps, fp_alt, fp_a, fp_b):
+def fig_vergleich(fps, fp_alt, fp_a):
     out = []
     wa = wand_flaeche(fps, fp_a, P.HOF_WALL_T)
-    for titel, fp, wand, label in (("Original", fp_alt, None, "Original"), ("A mit Trennwand %s mm" % de(P.HOF_WALL_T), fp_a, wa, "Fassung A"),
-                                   ("B ohne Trennwand", fp_b, None, "Fassung B")):
+    for titel, fp, wand, label in (("Original", fp_alt, None, "Original"), ("Neu, Einsatz und Trennwand %s mm" % de(P.HOF_WALL_T), fp_a, wa, "Neu")):
         pl = Plan(-103, -53, -30, 76, 6.6)
         gebaeude(pl, fps)
         pl.poly(fp, "hof")
@@ -149,32 +148,62 @@ def zone_stil(z, hb, zmax):
     return "--p:%.2f" % max(0.0, min(1.0, p))
 
 
-def fig_treppen(fps, fp, s, data):
-    """Südwestecke des Hofs mit allen Höhen: Terrasse, Stufen, Hofboden, Abstieg bis zur Platte, in Zonenfarben nach Höhe über der Platte."""
+def hoehenplan(plan, fps, fp, s, data, auf):
+    """Zeichnet Einsatz (Hofboden, Terrasse, Treppen) und Aufbauten der Platte (Gang, Treppen) nach Höhe über der Platte in den Plan."""
     hb, h0 = innenhof.hub(data, s), data["terrasse_hoehe"] * s
     zmax = hb + h0
-    pl = Plan(-103, -66, -30, 18, 13.0)
-    gebaeude(pl, fps)
-    pl.poly(fp, "zone", zone_stil(hb, hb, zmax))
-    pl.poly(innenhof.terrasse_mm(fp, s, data), "zone", zone_stil(zmax, hb, zmax))
-    marken = {}
-    for name, fall, stufen in innenhof.treppen_mm(fp, s, data):
-        for poly, _, top in stufen:
-            pl.poly(poly, "zone", zone_stil(hb + top, hb, zmax))
-            pl.poly(poly, "stufe")
-        marken[name] = unary_union([p for p, _, _ in stufen]).representative_point()
-    pl.poly(fp, "hof-line")
+    gebaeude(plan, fps)
+    mulden = unary_union(list(fps.values())).buffer(P.OUTLINE_CLR_T, join_style=2)
+    for _, bands in auf:
+        for poly, top in bands:
+            plan.poly(poly.difference(mulden), "zone", zone_stil(top, hb, zmax))
+            plan.poly(poly.difference(mulden), "stufe")
+    plan.poly(fp, "zone", zone_stil(hb, hb, zmax))
+    plan.poly(innenhof.terrasse_mm(fp, s, data), "zone", zone_stil(zmax, hb, zmax))
+    for _, stufen in innenhof.treppen_mm(fp, s, data):
+        for poly, top in stufen:
+            plan.poly(poly, "zone", zone_stil(hb + top, hb, zmax))
+            plan.poly(poly, "stufe")
+    plan.poly(fp, "hof-line")
+
+
+def fig_hoehen(fps, fp, s, data, auf):
+    """Ganzer Hof mit Gang und Nordost-Treppe, nach Höhe über der Platte gefärbt."""
+    pl = Plan(-126, -50, -50, 76, 5.6)
+    hoehenplan(pl, fps, fp, s, data, auf)
+    pl.scale_and_north()
+    return pl.svg("Der ganze Hof mit Gang im Süden und Treppe im Nordosten, gefärbt nach Höhe über der Platte")
+
+
+def bands_mitte(auf, name, k):
+    return dict(auf)[name][k][0].representative_point()
+
+
+def fig_zoom_sw(fps, fp, s, data, auf):
+    pl = Plan(-126, -84, -50, 22, 10.5)
+    hoehenplan(pl, fps, fp, s, data, auf)
     pl.scale_and_north(5.0)
-    return pl, marken
+    st = dict(innenhof.treppen_mm(fp, s, data))
+    mulden = unary_union(list(fps.values())).buffer(P.OUTLINE_CLR_T, join_style=2)
+    w, k = st["west"][0][0].representative_point(), st["kante"][0][0].representative_point()
+    g = dict(auf)["gang_sued"]
+    gp = g[-1][0].difference(mulden).representative_point()
+    tp = g[1][0].difference(mulden).representative_point()
+    pl.marker(w.x, w.y, -108.0, 16.0, "W")
+    pl.marker(k.x, k.y, -86.5, -6.0, "K")
+    pl.marker(gp.x, gp.y, -108.0, -40.0, "G")
+    pl.marker(tp.x, tp.y, -122.0, -30.0, "T")
+    return pl.svg("Südwestecke: Terrasse und Treppen des Einsatzes (W, K), Gang auf Terrassenhöhe (G) und Treppe am Westende (T)")
 
 
-def fig_treppen_svg(fps, fp, s, data):
-    pl, marken = fig_treppen(fps, fp, s, data)
-    m = {k: (v.x, v.y) for k, v in marken.items()}
-    pl.marker(*m["west"], -99.5, 12.0, "W")
-    pl.marker(*m["kante"], -68.0, 4.5, "K")
-    pl.marker(*m["sued"], -101.0, -23.0, "S")
-    return pl.svg("Südwestecke des Hofs mit Terrasse und den drei Treppen W, K und S, gefärbt nach Höhe über der Platte")
+def fig_zoom_ne(fps, fp, s, data, auf):
+    pl = Plan(-80, -48, 44, 76, 15.0)
+    hoehenplan(pl, fps, fp, s, data, auf)
+    pl.scale_and_north(5.0)
+    mulden = unary_union(list(fps.values())).buffer(P.OUTLINE_CLR_T, join_style=2)
+    n = dict(auf)["nordost"][1][0].difference(mulden).representative_point()
+    pl.marker(n.x, n.y, -52.0, 50.0, "N")
+    return pl.svg("Nordost: Treppe aus dem Gang am Paulinum hinauf zum Hofboden")
 
 
 # --------------------------------------------------------------------------
@@ -230,50 +259,44 @@ def intervalle_y(fp, y0):
     return sorted((min(p.coords[0][0], p.coords[-1][0]), max(p.coords[0][0], p.coords[-1][0])) for p in parts if not p.is_empty)
 
 
-def fig_wand(schn, fp_a, fp_b, T):
+def fig_wand(schn, fp_a, T):
     """Schnitt durch den Rand zum Neuen Augusteum: Mulde des Gebäudes, Trennwand, Hof-Aussparung, Einsatz."""
-    xe = intervalle_y(fp_a, WAND_Y)[-1][1]                  # Ostrand der Hof-Aussparung in A
-    xb = intervalle_y(fp_b, WAND_Y)[-1][1]                  # und in B
+    xe = intervalle_y(fp_a, WAND_Y)[-1][1]                  # Ostrand der Hof-Aussparung
     x0, x1 = xe - 5.0, xe + 4.4
-    out = []
-    for titel, key, xr in (("A mit Trennwand %s mm" % de(P.HOF_WALL_T), "a", xe), ("B ohne Trennwand", "b", xb)):
-        mu, ein = schn[key]
-        xf = xr + (P.OUTLINE_CLR_T + P.HOF_WALL_T if key == "a" else P.OUTLINE_CLR_T - P.HOF_OVERLAP_T)   # Fassade (Grundriss) des Gebäudes
-        sc = Schnitt(x0, x1, T - 8.0, T + 3.4, 46.0)
-        sc.rect(xf, T - 8.0, x1, T, "foot")
-        for c in mu:
-            sc.contour(c, "m-plate")
-        for c in ein:
-            sc.contour(c, "m-stecker")
-        sc.line(x0, T, x1, T, "ref")
-        sc.line(x0, T - 6.0, x1, T - 6.0, "ref")
-        sc.text(x0 + 0.1, T + 0.25, "Oberfläche", "tiny")
-        sc.text(x0 + 0.1, T - 5.75, "Boden der Aussparung", "tiny")
-        sc.text(x1 - 0.1, T - 2.2, "Gebäude", "lab2", "end")
-        sc.text(x1 - 0.1, T - 2.75, "Fuß in der Mulde", "tiny", "end")
-        if key == "a":
-            sc.dim_a(T + 0.75, xr, xr + P.HOF_WALL_T, "Wand %s" % de(P.HOF_WALL_T))
-        else:
-            sc.text(xr - 0.1, T + 0.75, "keine Wand", "lab2", "end")
-        out.append('<figure class="panel wide"><figcaption>%s</figcaption>%s</figure>' % (
-            titel, sc.svg("Schnitt durch den Hofrand am Neuen Augusteum, Fassung %s" % key.upper())))
-    return "".join(out), xe
-
-
-def fig_sued(schn, T, data, s):
-    """Längsschnitt durch den Gang im Süden: Terrasse, Stufen, Abstieg bis zur Platte."""
     mu, ein = schn
-    sc = Schnitt(-31.0, -9.0, T - 7.4, T + 3.6, 36.0)
+    xf = xe + P.OUTLINE_CLR_T + P.HOF_WALL_T                # Fassade (Grundriss) des Gebäudes
+    sc = Schnitt(x0, x1, T - 8.0, T + 3.4, 46.0)
+    sc.rect(xf, T - 8.0, x1, T, "foot")
     for c in mu:
         sc.contour(c, "m-plate")
     for c in ein:
         sc.contour(c, "m-stecker")
-    sc.line(-31.0, T, -9.0, T, "ref")
-    sc.text(-30.8, T + 0.3, "Platte, Straßenniveau", "tiny")
+    sc.line(x0, T, x1, T, "ref")
+    sc.line(x0, T - 6.0, x1, T - 6.0, "ref")
+    sc.text(x0 + 0.1, T + 0.25, "Oberfläche", "tiny")
+    sc.text(x0 + 0.1, T - 5.75, "Boden der Aussparung", "tiny")
+    sc.text(x1 - 0.1, T - 2.2, "Gebäude", "lab2", "end")
+    sc.text(x1 - 0.1, T - 2.75, "Fuß in der Mulde", "tiny", "end")
+    sc.dim_a(T + 0.75, xe, xe + P.HOF_WALL_T, "Wand %s" % de(P.HOF_WALL_T))
+    return '<figure class="panel wide"><figcaption>Trennwand zwischen Hof und Gebäude-Mulde</figcaption>%s</figure>' % sc.svg(
+        "Schnitt durch den Hofrand am Neuen Augusteum"), xe
+
+
+def fig_gang(schn, T, data, s, a0, a1, titel, label, tick):
+    """Schnitt durch den Gang (Längsschnitt oder Querschnitt): Einsatz orange, Platte grau, Höhen bemaßt."""
+    mu, ein = schn
     hb, h0 = innenhof.hub(data, s), data["terrasse_hoehe"] * s
-    sc.dim_z(-9.6, T, T + hb, "%s Hof" % de(hb, 1), -1)
-    sc.dim_z(-9.2, T + hb, T + hb + h0, "%s" % de(h0, 2), 1)
-    return sc.svg("Längsschnitt durch den Gang zwischen Seminar- und Hörsaalgebäude: Terrasse, Stufen, Abstieg bis zur Plattenoberfläche")
+    sc = Schnitt(a0, a1, T - 3.4, T + 3.8, 26.0)
+    for c in mu:
+        sc.contour(c, "m-plate")
+    for c in ein:
+        sc.contour(c, "m-stecker")
+    sc.line(a0, T, a1, T, "ref")
+    sc.text(a0 + 0.2, T + 0.3, "Platte, Straßenniveau", "tiny")
+    sc.line(a0, T + hb + h0, a1, T + hb + h0, "ref")
+    sc.text(a0 + 0.2, T + hb + h0 + 0.3, "Terrassenhöhe %s" % de(hb + h0, 2), "tiny")
+    sc.text(*tick)
+    return '<figure class="panel wide"><figcaption>%s</figcaption>%s</figure>' % (titel, sc.svg(label))
 
 
 # --------------------------------------------------------------------------
@@ -302,65 +325,73 @@ def lade(name):
 def main():
     s = 1000.0 / P.SCALE_PLAN
     data = innenhof.load()
-    plate_a, report, models, places, outline, hof_a = C.build(hof_wand=P.HOF_WALL_T)
-    plate_b, _, _, _, _, hof_b = C.build(hof_wand=0.0)
+    plate, report, models, places, outline, hof_solid = C.build()
     T = C.plate_thickness(P.dims_plan())
     fps = {k: v[1] for k, v in models.items() if k in P.CASSETTE}
     fp_a = innenhof.flaeche_mm(list(fps.values()), s, C.hof_abstand(P.HOF_WALL_T))
-    fp_b = innenhof.flaeche_mm(list(fps.values()), s, C.hof_abstand(0.0))
     fp_alt = H.alt_umriss(list(fps.values()), s)
+    auf = innenhof.platte_aufbau_mm(fp_a, s, data)
+    aufd = dict(auf)
+    ach = data["achse_grad"]
+    hb, h0 = innenhof.hub(data, s), data["terrasse_hoehe"] * s
 
-    # 3D: Mulde (Platte um den Hof) und Stecker (Einsatz, in Einbaulage) der drei Fassungen
-    region = H.ausschnitt(unary_union([fp_alt, fp_a, fp_b]))
-    mul = {"alt": lade("mulde_1zu1300.stl"), "a": plate_a ^ G.extrude(region, -1.0, 30.0), "b": plate_b ^ G.extrude(region, -1.0, 30.0)}
-    ein = {"alt": lade("hof_einsatz_1zu1300.stl").translate([0, 0, T]), "a": hof_a.translate([0, 0, T]), "b": hof_b.translate([0, 0, T])}
+    # 3D: Mulde (Platte um Hof, Gang und Treppen) und Stecker (Einsatz, in Einbaulage), Original aus alt/
+    aufpolys = unary_union([p for _, bands in auf for p, _ in bands])
+    region = H.ausschnitt(unary_union([fp_alt, fp_a, aufpolys]))
+    mul = {"alt": lade("mulde_1zu1300.stl"), "neu": plate ^ G.extrude(region, -1.0, 40.0)}
+    ein = {"alt": lade("hof_einsatz_1zu1300.stl").translate([0, 0, T]), "neu": hof_solid.translate([0, 0, T])}
     tm = {"mulde_" + k: to_tm(v) for k, v in mul.items()}
     tm.update({"stecker_" + k: to_tm(v) for k, v in ein.items()})
 
-    # Schnitte
-    ach = data["achse_grad"]
-    schn_wand = {k: (H.schnitt_y(mul[k], WAND_Y), H.schnitt_y(ein[k], WAND_Y)) for k in ("a", "b")}
-    schn_sued = (H.schnitt_u(mul["a"], SUED_U, ach), H.schnitt_u(ein["a"], SUED_U, ach))
-    fig_w, xe = fig_wand(schn_wand, fp_a, fp_b, T)
+    # Schnitte: Trennwand (y = const), Gang längs (u = const) und Querschnitt durch den Westteil des Gangs (t = const)
+    sw = (H.schnitt_y(mul["neu"], WAND_Y), H.schnitt_y(ein["neu"], WAND_Y))
+    fig_w, xe = fig_wand(sw, fp_a, T)
+    f = data["form"]
+    t_gang = f["platte"]["gang_sued"]["t"][1] * s
+    fig_lang = fig_gang((H.schnitt_u(mul["neu"], GANG_U, ach), H.schnitt_u(ein["neu"], GANG_U, ach)), T, data, s, -46.0, -10.0,
+                        "Längsschnitt durch den Gang im Süden", "Längsschnitt durch den Gang: Einsatz endet auf Terrassenhöhe, die Platte setzt den Gang auf gleicher Höhe fort",
+                        (-24.0, T + hb + h0 + 0.9, "Einsatz  →", "lab2", "end"))
+    fig_quer = fig_gang((H.schnitt_t(mul["neu"], GANG_T, ach), H.schnitt_t(ein["neu"], GANG_T, ach)), T, data, s, -124.0, -84.0,
+                        "Querschnitt durch den Westteil des Gangs", "Querschnitt durch den Westteil des Gang: Treppe am Westende, dann Gang auf Terrassenhöhe",
+                        (-119.0, T + 1.0, "Westende", "lab2", "start"))
 
     def kz(fp, m):
         polys = G.polys_of(fp)
-        return dict(fl=fp.area, m2=fp.area / s / s, um=fp.length, schmal=len(schmale_stellen(fp)), loch=sum(len(q.interiors) for q in polys),
-                    ext=m.extents, vol=m.volume)
-    ko, ka, kb = kz(fp_alt, tm["stecker_alt"]), kz(fp_a, tm["stecker_a"]), kz(fp_b, tm["stecker_b"])
-    stufen = {n: len(st) for n, _, st in innenhof.treppen_mm(fp_a, s, data)}
-    hb, h0 = innenhof.hub(data, s), data["terrasse_hoehe"] * s
-    spiel_o = P.OUTLINE_CLR_T + 0.4 + P.HOF_CLR_T                      # Original: Hof-Aussparung 0,5 vom Grundriss (Wand 0,4)
+        return dict(fl=fp.area, um=fp.length, schmal=len(schmale_stellen(fp)), loch=sum(len(q.interiors) for q in polys), ext=m.extents, vol=m.volume)
+    ko, kn = kz(fp_alt, tm["stecker_alt"]), kz(fp_a, tm["stecker_neu"])
     zeilen = [
-        ("Einsatz, Maße", "%s × %s mm" % (de(ko["ext"][0]), de(ko["ext"][1])), "%s × %s mm" % (de(ka["ext"][0]), de(ka["ext"][1])),
-         "%s × %s mm" % (de(kb["ext"][0]), de(kb["ext"][1])), "Höhe %s mm (Baumkronen)" % de(ka["ext"][2])),
-        ("Einsatz, Volumen", "%s cm³" % de(ko["vol"] / 1000), "%s cm³" % de(ka["vol"] / 1000), "%s cm³" % de(kb["vol"] / 1000), "Material und Druckzeit"),
-        ("Hoffläche der Aussparung", "%s mm²" % de(ko["fl"], 0), "%s mm²" % de(ka["fl"], 0), "%s mm²" % de(kb["fl"], 0), "A lässt rund %s mm² als Wand und Fuge liegen" % de(kb["fl"] - ka["fl"], 0)),
-        ("Trennwand Hof ↔ Gebäude-Mulde", "0,4 mm", "%s mm" % de(P.HOF_WALL_T), "keine", "oben schneidet die Einführfase der Mulde 0,5 mm ab, bleibt in A %s mm" % de(P.HOF_WALL_T - P.MULDE_CH_T)),
-        ("Abstand Einsatz ↔ Gebäudegrundriss", "%s mm" % de(spiel_o + 0.0, 2), "%s mm" % de(P.OUTLINE_CLR_T + P.HOF_WALL_T + P.HOF_CLR_T, 2),
-         "%s mm" % de(P.OUTLINE_CLR_T - P.HOF_OVERLAP_T + P.HOF_CLR_T, 2), "Fuß, Mulde (Spiel %s) und Fuge (%s) zusammen" % (de(P.OUTLINE_CLR_T, 2), de(P.HOF_CLR_T, 2))),
-        ("Schmale Stellen im Umriss (unter 4 mm)", str(ko["schmal"]), str(ka["schmal"]), str(kb["schmal"]), "Zungen, Stege"),
-        ("Löcher im Umriss", str(ko["loch"]), str(ka["loch"]), str(kb["loch"]), ""),
-        ("Treppen auf dem Einsatz", "keine", "3 (W, K, S)", "3 (W, K, S)", "Stufen je %s, %s und %s" % tuple("%d" % stufen[n] for n in ("west", "kante", "sued"))),
-        ("Anschluss im Süden an die Platte", "Stufe %s mm" % de(hb + h0, 2), "bündig, %d Stufen" % stufen["sued"], "bündig, %d Stufen" % stufen["sued"], "Abstieg des Gangs zwischen Seminar- und Hörsaalgebäude"),
+        ("Einsatz, Maße", "%s × %s mm" % (de(ko["ext"][0]), de(ko["ext"][1])), "%s × %s mm" % (de(kn["ext"][0]), de(kn["ext"][1])), "Höhe %s mm (Baumkronen)" % de(kn["ext"][2])),
+        ("Einsatz, Volumen", "%s cm³" % de(ko["vol"] / 1000), "%s cm³" % de(kn["vol"] / 1000), "Material und Druckzeit"),
+        ("Hoffläche der Aussparung", "%s mm²" % de(ko["fl"], 0), "%s mm²" % de(kn["fl"], 0), "ohne Gang; die Trennwand ist abgezogen"),
+        ("Trennwand Hof ↔ Gebäude-Mulde", "0,4 mm", "%s mm" % de(P.HOF_WALL_T), "oben schneidet die Einführfase der Mulde %s mm ab, bleibt %s mm" % (de(P.MULDE_CH_T), de(P.HOF_WALL_T - P.MULDE_CH_T))),
+        ("Schmale Stellen im Umriss (unter 4 mm)", str(ko["schmal"]), str(kn["schmal"]), "Zungen, Stege"),
+        ("Löcher im Umriss", str(ko["loch"]), str(kn["loch"]), ""),
+        ("Treppen im Einsatz", "keine", "2 (W, K)", "je 3 Stufen von der Terrasse zum Hof"),
+        ("Gang im Süden", "Stufe %s mm" % de(hb + h0, 2), "Terrassenhöhe, in der Platte", "setzt den Einsatz ohne Stufe fort"),
+        ("Treppe am Westende des Gangs", "–", "%d Stufen à %s mm" % (f["platte"]["gang_sued"]["stufen"], de((hb + h0) / f["platte"]["gang_sued"]["stufen"], 2)), "Teil der Platte, endet mit den Gebäudewänden"),
+        ("Treppe im Nordosten", "–", "%d Stufen à %s mm" % (f["platte"]["nordost"]["stufen"], de(hb / f["platte"]["nordost"]["stufen"], 2)), "Teil der Platte, vom Gang auf den Hofboden"),
     ]
-    tabelle = "".join('<tr><th scope="row">%s</th><td class="n">%s</td><td class="n a">%s</td><td class="n b">%s</td><td class="hint2">%s</td></tr>' % z for z in zeilen)
+    tabelle = "".join('<tr><th scope="row">%s</th><td class="n o">%s</td><td class="n a">%s</td><td class="hint2">%s</td></tr>' % z for z in zeilen)
 
     matrix = pruefmatrix()
     pm = "".join('<tr><th scope="row">%s</th><td class="n">1:%d</td><td class="n %s">%s</td><td class="n">%d</td><td class="n">%d</td><td class="n">%d</td><td class="n">%s mm</td></tr>' % (
         q, sc, "ok" if d else "bad", "ja" if d else "NEIN", t, lo, sm, de(ab, 2)) for q, sc, d, t, lo, sm, ab, _ in matrix)
     alles_ok = all(d and t == 1 and lo == 0 and sm == 0 and ab >= 0.49 for _, _, d, t, lo, sm, ab, _ in matrix)
 
-    cx, cy = (fp_b.bounds[0] + fp_b.bounds[2]) / 2, (fp_b.bounds[1] + fp_b.bounds[3]) / 2
+    cx, cy = (fp_a.bounds[0] + fp_a.bounds[2]) / 2, (fp_a.bounds[1] + fp_a.bounds[3]) / 2
+    ge, ne = aufd["gang_sued"], aufd["nordost"]
+    stair_w, stair_n = ge[0][0].representative_point(), ne[1][0].representative_point()
     views = [
-        dict(name="Übersicht", t=[cx, cy, T + 1], d=150, az=-62, el=48, text="Beide Teile eingesteckt. Mit dem Regler hebst du den Stecker aus der Mulde."),
+        dict(name="Übersicht", t=[cx, cy - 10, T + 1], d=190, az=-62, el=48, text="Einsatz in der Mulde der Platte, mit Gang im Süden und Treppe im Nordosten. Mit dem Regler hebst du den Stecker heraus."),
         dict(name="Trennwand", t=[xe + 0.4, WAND_Y, T - 1.0], d=24, az=0, el=26,
-             text="Blick aus der Gebäude-Mulde nach Westen auf den Hofrand. In A steht eine Wand von %s mm zwischen Mulde und Aussparung, in B gehen Mulde und Aussparung ineinander über." % de(P.HOF_WALL_T)),
-        dict(name="Südtreppe", t=[-93.5, -17.0, T], d=36, az=-122, el=30,
-             text="Der Gang zwischen Seminar- und Hörsaalgebäude: Terrasse, dann sechs Stufen bis auf Plattenhöhe. Die letzte Stufe liegt bündig mit der Platte."),
-        dict(name="Westrampe", t=[-94.5, 2.0, T + 1], d=34, az=-15, el=38,
-             text="Die Rampe am Seminargebäude ist ein Rechteck, das bis an die Fassade reicht. Drei Stufen führen von der Terrasse nach Norden zum Hof."),
-        dict(name="Von oben", t=[cx, cy, T], d=170, az=-90, el=88, text="Grundriss von oben, Norden ist oben."),
+             text="Blick aus der Gebäude-Mulde nach Westen auf den Hofrand: zwischen Mulde und Aussparung steht eine Wand von %s mm." % de(P.HOF_WALL_T)),
+        dict(name="Gang", t=[-100.0, -14.0, T + 1], d=60, az=-95, el=36,
+             text="Der Gang zwischen Seminar- und Hörsaalgebäude liegt in der Platte auf Terrassenhöhe und schließt ohne Stufe an den Einsatz an."),
+        dict(name="Westende", t=[stair_w.x, stair_w.y, T + 1], d=30, az=-168, el=32,
+             text="Am Westende des Gangs, wo Seminar- und Hörsaalgebäude enden, führt eine Treppe aus der Platte hinunter. Sie endet bündig mit den Gebäudewänden."),
+        dict(name="Nordost", t=[stair_n.x, stair_n.y, T + 1], d=30, az=-10, el=34,
+             text="Im Gang am Paulinum steigt eine Treppe aus der Platte hinauf zum Hofboden. Der Einsatz hat dort einen geraden Rand."),
+        dict(name="Von oben", t=[cx, cy - 10, T], d=210, az=-90, el=88, text="Grundriss von oben, Norden ist oben."),
     ]
     daten = {"views": views}
     for k, tmx in tm.items():
@@ -368,33 +399,34 @@ def main():
 
     ersetz = {
         "@DATA@": json.dumps(daten, ensure_ascii=False),
-        "@FIG_VERGLEICH@": fig_vergleich(fps, fp_alt, fp_a, fp_b),
-        "@FIG_TREPPEN@": fig_treppen_svg(fps, fp_a, s, data),
+        "@FIG_VERGLEICH@": fig_vergleich(fps, fp_alt, fp_a),
+        "@FIG_HOEHEN@": fig_hoehen(fps, fp_a, s, data, auf),
+        "@FIG_SW@": fig_zoom_sw(fps, fp_a, s, data, auf),
+        "@FIG_NE@": fig_zoom_ne(fps, fp_a, s, data, auf),
         "@FIG_WAND@": fig_w,
-        "@FIG_SUED@": fig_sued(schn_sued, T, data, s),
+        "@FIG_LANG@": fig_lang, "@FIG_QUER@": fig_quer,
         "@TABELLE@": tabelle,
         "@PRUEFMATRIX@": pm,
         "@WAND@": de(P.HOF_WALL_T), "@WAND_OBEN@": de(P.HOF_WALL_T - P.MULDE_CH_T), "@FASE@": de(P.MULDE_CH_T), "@SPIEL@": de(P.OUTLINE_CLR_T, 2),
-        "@FUGE@": de(P.HOF_CLR_T, 2), "@HOF_FASE@": de(P.HOF_CH_T, 1), "@TIEFE@": de(P.HOF_DEPTH_T, 1), "@HUB@": de(hb, 1),
-        "@H_TERR@": de(h0, 2), "@H_TERR_M@": de(data["terrasse_hoehe"], 2), "@GESAMT@": de(hb + h0, 2), "@RISER@": de((hb + h0) / stufen["sued"], 2),
-        "@STUFEN_S@": str(stufen["sued"]), "@LAUF_S@": de((data["form"]["treppen"][2]["t"][1] - data["form"]["treppen"][2]["t"][0]) * s, 1),
-        "@MIN_BREITE@": de(innenhof.HOF_MIN_BREITE, 1),
-        "@FL_A@": de(ka["fl"], 0), "@FL_B@": de(kb["fl"], 0), "@FL_O@": de(ko["fl"], 0),
-        "@UM_A@": de(ka["um"], 0), "@UM_O@": de(ko["um"], 0),
-        "@EXT_A@": "%s × %s" % (de(ka["ext"][0]), de(ka["ext"][1])), "@EXT_B@": "%s × %s" % (de(kb["ext"][0]), de(kb["ext"][1])), "@EXT_O@": "%s × %s" % (de(ko["ext"][0]), de(ko["ext"][1])),
+        "@FUGE@": de(P.HOF_CLR_T, 2), "@HOF_FASE@": de(P.HOF_CH_T, 1), "@HUB@": de(hb, 1),
+        "@H_TERR@": de(h0, 2), "@H_TERR_M@": de(data["terrasse_hoehe"], 2), "@GESAMT@": de(hb + h0, 2),
+        "@RISER_G@": de((hb + h0) / f["platte"]["gang_sued"]["stufen"], 2), "@RISER_N@": de(hb / f["platte"]["nordost"]["stufen"], 2),
+        "@LAUF_G@": de(f["platte"]["gang_sued"]["lauf"] * s, 1), "@LAUF_N@": de(f["platte"]["nordost"]["lauf"] * s, 1),
+        "@FL_A@": de(kn["fl"], 0), "@FL_O@": de(ko["fl"], 0),
+        "@EXT_A@": "%s × %s" % (de(kn["ext"][0]), de(kn["ext"][1])), "@EXT_O@": "%s × %s" % (de(ko["ext"][0]), de(ko["ext"][1])),
         "@SCHMAL_O@": str(ko["schmal"]),
         "@PRUEF_ERGEBNIS@": "Alle %d Läufe (Quelle × Maßstab): Einsatz dicht, ein Teil, ohne Löcher und schmale Stellen" % len(matrix) if alles_ok else "ACHTUNG: Prüfung nicht bestanden",
-        "@PLATTE@": "dicht" if (to_tm(plate_a).is_watertight and to_tm(plate_b).is_watertight) else "NICHT dicht",
+        "@PLATTE@": "dicht" if to_tm(plate).is_watertight else "NICHT dicht",
         "@KOLLISION@": "keine Kollision der Docks mit Platte oder Hof" if all(r[4] < 0.05 for r in report) else "ACHTUNG: Kollision",
-        "@DICHT@": "ja" if all(tm["stecker_" + k].is_watertight for k in ("a", "b")) else "NEIN",
+        "@DICHT@": "ja" if tm["stecker_neu"].is_watertight else "NEIN",
     }
     page = open(os.path.join(HERE, "page.template.html"), encoding="utf-8").read()
     for k, v in ersetz.items():
         page = page.replace(k, v)
     pfad = os.path.join(HERE, "page.html")
     open(pfad, "w", encoding="utf-8").write(page)
-    print("page.html: %.0f KB; Fläche Original %.0f, A %.0f, B %.0f mm²; schmale Stellen %d/%d/%d; Matrix ok=%s" % (
-        os.path.getsize(pfad) / 1024, ko["fl"], ka["fl"], kb["fl"], ko["schmal"], ka["schmal"], kb["schmal"], alles_ok))
+    print("page.html: %.0f KB; Fläche Original %.0f, neu %.0f mm²; schmale Stellen %d/%d; Matrix ok=%s" % (
+        os.path.getsize(pfad) / 1024, ko["fl"], kn["fl"], ko["schmal"], kn["schmal"], alles_ok))
     return alles_ok
 
 

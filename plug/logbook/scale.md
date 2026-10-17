@@ -115,7 +115,7 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 - **Ergebnis bei 1:1300 (Laserscan):** Umfang 273 → 200 mm, schmale Stellen 5 → 0, Löcher 1 → 0, Einsatz 36,8 × 72,7 mm (vorher 40,9 × 72,8), dicht; alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher, Abstand zu Gebäuden 0,50). Vergleichsseite `plug/hof/page.html`, alter Stand in `plug/hof/alt/`.
 - **Ungetestet:** Sitz des Einsatzes mit dem durchgehenden Klotz (Steckprobe 3), Druck der Zwischenstufen (Slicer glättet oder druckt Absatz), an den Passagen bleibt Plattenfläche statt Hof (bis zu 5 mm).
 
-### Korrektur 2 zum Hof (2026-10-17, Nutzer): bis an die Fassaden, gerade Treppen, Südtreppe, Trennwand A/B
+### Korrektur 2 zum Hof (2026-10-17, Nutzer): bis an die Fassaden, gerade Treppen, Südtreppe, Trennwand A/B (Südtreppe und B danach ersetzt, siehe Korrektur 3)
 
 Ersetzt das Schließen des Spalts (`HOF_SCHLIESSEN`) und die Treppen aus der Korrektur davor. Der Nutzer sah weiße Flächen zwischen Hof und Nachbargebäuden (Bucht an der Westfassade, Streifen entlang der Fassaden, Gang im Südwesten) und wollte alles gerade, gefüllt und den Fassaden folgend.
 
@@ -124,6 +124,16 @@ Ersetzt das Schließen des Spalts (`HOF_SCHLIESSEN`) und die Treppen aus der Kor
 - **Trennwand zwischen Hof-Aussparung und Gebäude-Mulden** (`HOF_WALL_T` in `params.py`, `plug.campus.build(hof_wand=…)`): A mit 0,8 mm (Hof-Umriss 0,9 mm vom Grundriss: Spiel der Mulde 0,1 plus Wand), B ohne Wand (Aussparung greift `HOF_OVERLAP_T` 0,02 in die Mulde, Hof liegt zwischen den Gebäuden). `python3 -m plug.campus` schreibt beide: `steckplatte_1zu1300.stl` und `hof_einsatz_1zu1300.stl` (A), `…_ohne_wand.stl` (B). Oben schneidet die Einführfase der Mulde (0,5) die Wand A auf 0,3 mm an.
 - **Ergebnis bei 1:1300:** Einsatz A 36,5 × 76,0 mm (Fläche 1595 mm²), B 38,7 × 77,2 mm (1763 mm²), vorher 40,9 × 72,8 mm; alle dicht, alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher und schmale Stellen). Vergleichsseite `plug/hof/page.html`.
 - **Empfehlung:** A drucken, B als Rückfall; in Steckprobe 3 beide.
+
+### Korrektur 3 zum Hof (2026-10-17, Nutzer): Fassung A bleibt, Gang im Süden auf Terrassenhöhe, Treppen in der Platte
+
+Ersetzt die Südtreppe des Einsatzes und die Fassung B (ohne Trennwand) aus der Korrektur davor. Foto des Nutzers: Der Gang zwischen Seminar- und Hörsaalgebäude liegt nahtlos auf Terrassenhöhe und mündet nach Westen auf die Straße, dort kommen Treppen.
+
+- **Trennwand:** nur Fassung A mit `HOF_WALL_T` 0,8 mm. B (`…_ohne_wand.stl`, `HOF_OVERLAP_T`) ist entfallen.
+- **Einsatz endet am Südende des Hofs** (`form.huelle.t_sued` -26 m im Hofsystem) mit geradem Rand auf Terrassenhöhe; die Südtreppe im Einsatz entfällt. Treppen im Einsatz bleiben W (Seminargebäude) und K (Kante vor dem Hörsaalgebäude).
+- **Aufbauten der Platte** (`innenhof.platte_aufbau_mm`, in `plug/campus.py` zur Platte addiert, bevor Mulden und Hof-Aussparung sie zuschneiden; die Mulden schneiden dafür bis `SCHNITT_OBEN` 3 mm über die Oberfläche): **Gang im Süden** auf Terrassenhöhe (2,35 mm über der Platte, Scan: 0,75 m über dem Hof) bis zum Westende, wo Seminar- und Hörsaalgebäude enden (u -145,5 m im Hofsystem); dort **Treppe** mit 6 Stufen à 0,39 mm, 5,4 mm lang, zwischen den Gebäudewänden, die letzte Stufe auf Plattenhöhe. **Nordost:** Gang am Paulinum bleibt auf Plattenhöhe, eine Treppe mit 6 Stufen à 0,30 mm (5,4 mm) steigt zum Hofboden (1,8 mm), der Einsatz hat dort einen geraden Rand. Alle Maße in `data/innenhof.json`, Abschnitt `form.platte`.
+- **Ergebnis bei 1:1300:** Einsatz 35,5 × 70,7 mm, Hoffläche der Aussparung 1556 mm² (Original 1631), Platte und Einsatz dicht, keine Kollisionen; Vergleichsseite `plug/hof/page.html` (Original gegen neu, Höhenplan, Schnitte durch Trennwand und Gang, 3D).
+- **Ungetestet:** Trennwand 0,8 mm im Druck, Platte um bis zu 2,35 mm höher als der Rand (Druckzeit, Verzug), Stufen der Platte (zwei Schichten je Stufe).
 
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
@@ -237,8 +247,9 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
 | Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
 | | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
-| | Blockiger Hof-Umriss bis an die Fassaden (Mindestbreite 4 mm), Treppen als Rechtecke mit Stufen 0,18 / 0,37 mm auf dem Einsatz, Südtreppe sechs Stufen à 0,39 mm bündig zur Platte | ungetestet | Sitz ohne Steg, Druck der Stufen |
-| | Trennwand Hof zu Gebäude-Mulde: A 0,8 mm (`HOF_WALL_T`), B ohne Wand | ungetestet | Wand steht im Druck (0,4 mm kam in r7 nicht), Führung der Gebäude |
+| | Blockiger Hof-Umriss bis an die Fassaden (Mindestbreite 4 mm), Treppen als Rechtecke mit Stufen 0,18 / 0,37 mm auf dem Einsatz, Gang im Süden als Teil der Platte | ungetestet | Sitz ohne Steg, Druck der Stufen |
+| | Trennwand Hof zu Gebäude-Mulde 0,8 mm (`HOF_WALL_T`) | ungetestet | Wand steht im Druck (0,4 mm kam in r7 nicht), Führung der Gebäude |
+| | Gang im Süden und Treppen in der Platte (Terrassenhöhe 2,35 mm über der Oberfläche, Stufen 0,39 und 0,30 mm) | ungetestet | Druckzeit, Verzug, Stufen |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
 | | Halt des Einsatzes (Reibrippen oder Kleber) | nicht festgelegt | bleibt er ohne Halt liegen |
 | Maßstab | 1:1300 | ungetestet | feine Details bei Mindestbreite 0,8 mm |
