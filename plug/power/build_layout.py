@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Lösungsfindung 1:1300: interaktive Seite zur Lage der Powerbank und zu den freien Docks: plug/power/layout.html.
+"""ÜBERHOLT (2026-10-17): Seit der flachen Unterseite liegt die Powerbank unter den Docks, alle sechs Docks passen an den festgelegten Lagen; `--collect` läuft nicht mehr
+(`build_concept.variant` kennt nur noch 1:1300). Die Seite bleibt als Rückblick, nur `python3 -m plug.power.build_layout` ohne `--collect` baut sie neu.
+
+Lösungsfindung 1:1300: interaktive Seite zur Lage der Powerbank und zu den freien Docks: plug/power/layout.html.
 
 Zweistufig, weil die Rechnung lange dauert:
     python3 -m plug.power.build_layout --collect   # rechnet Daten (einige Minuten) nach plug/power/layout_data.json

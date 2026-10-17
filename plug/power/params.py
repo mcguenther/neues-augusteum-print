@@ -75,6 +75,8 @@ HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemesse
 
 # ---- Druck und Material
 BED = 250.0               # Druckbett Bambu A1 (256, mit Rand)
-SCALES = (1000, 1300)   # 1000 zur Referenz; 1300 aus Platzgründen gewählt (Nutzer), Platte passt dann mit Rand auf den Hut
+SCALES = (1300,)        # 1300 aus Platzgründen gewählt (Nutzer), Platte passt dann mit Rand auf den Hut; keine Referenz mehr (Lagen der Docks nur für 1300)
+STECKERRAUM = 3.5       # E  Luft zwischen flacher Plattenunterseite und Oberkante der Powerbank: Leistenkörper 2,0 + Draht (Test-Dock PROP GAP 3,5; 2,5 als Rückfall)
+PIN_PLAN = dict(PIN, h=2.5)   # E  Zentrierzapfen 2,5 (Test-Dock: 1 mm länger als in Steckprobe 2), Zapfenloch 2,8 tief nur außerhalb der Mulden
 PLA = 1.24                # g/cm³
 SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken/Böden), 15 % Füllung
