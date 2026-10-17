@@ -1,0 +1,424 @@
+<title>Trennwände zwischen Gebäuden</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte; Befund (Übersicht, Luftbild, 3D) → Vorher/Nachher (Grundrisse, Breitenverlauf) → Vorschlag und Umsetzung → Rückfragen.
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent). Rot = Steg (Problem), Grün = Weg nach dem Fix. */
+:root {
+  --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
+  --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
+  --bad: #b3392b; --bad-soft: #f4dcd8; --ok: #2c7a4b; --ok-soft: #d9ece1; --blue: #2a6db0;
+  --plate: #e1e5e9; --plate-line: #8d98a3; --mulde: #bcc6d0;
+  --bld: #d3d9df; --bld-line: #a2adb7; --hof-line: #9c5a14;
+  --z-lo: #f6e8cc; --z-hi: #a24f16;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+    --bad: #ee8a7c; --bad-soft: #402420; --ok: #6cc08a; --ok-soft: #1f3a2a; --blue: #6aa6e8;
+    --plate: #2a3139; --plate-line: #5b6772; --mulde: #46535f;
+    --bld: #3a444e; --bld-line: #5a6672; --hof-line: #d6a35e;
+    --z-lo: #4a3a22; --z-hi: #e5aa62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+  --bad: #ee8a7c; --bad-soft: #402420; --ok: #6cc08a; --ok-soft: #1f3a2a; --blue: #6aa6e8;
+  --plate: #2a3139; --plate-line: #5b6772; --mulde: #46535f;
+  --bld: #3a444e; --bld-line: #5a6672; --hof-line: #d6a35e;
+  --z-lo: #4a3a22; --z-hi: #e5aa62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 1.28rem; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; font-weight: 600; }
+h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
+.sec { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 80ch; }
+code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+b, strong { font-weight: 600; }
+
+/* Kennzahlen */
+.sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 22px 0 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.sum > div { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
+.sum > div:first-child { border-left: 0; }
+.sum dt { font-size: 0.78rem; color: var(--muted); }
+.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 1rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+.sum .o { color: var(--bad); } .sum .a { color: var(--ok); font-weight: 500; } .sum .arrow { color: var(--muted); }
+@media (max-width: 760px) { .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sum > div:nth-child(3) { border-left: 0; } .sum > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+
+/* Grafiken */
+.plan { width: 100%; height: auto; display: block; max-width: 100%; }
+.plan text { font-family: var(--font); }
+.plan .platte { fill: var(--plate); stroke: var(--plate-line); stroke-width: 1; stroke-linejoin: round; }
+.plan .bld { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1; }
+.plan .bname { font-size: 10px; fill: var(--muted); }
+.plan .hof-line { fill: none; stroke: var(--hof-line); stroke-width: 1.4; stroke-linejoin: round; }
+.plan .zone { fill: color-mix(in srgb, var(--z-hi) calc(var(--p) * 100%), var(--z-lo)); }
+.plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
+.plan .lead { stroke: var(--fg); stroke-width: 1.2; }
+.plan .dot { fill: var(--fg); }
+.plan .mk { fill: var(--panel); stroke: var(--bad); stroke-width: 1.8; }
+.plan .mkt { font-size: 12px; font-weight: 600; fill: var(--fg); }
+.plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.plan .bar { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.plan .north { fill: var(--muted); }
+.plan .win { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 3; }
+.plan .steg { fill: var(--bad); fill-opacity: 0.55; stroke: var(--bad); stroke-width: 1.6; }
+.plan .steg-weg { fill: none; stroke: var(--ok); stroke-width: 1.6; stroke-dasharray: 4 3; }
+.plan .dimtxt { font-size: 13px; font-weight: 600; fill: var(--fg); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; font-family: var(--mono); }
+.plan .dimline { fill: none; stroke: var(--fg); stroke-width: 1.4; }
+.plan .ring { fill: none; stroke-width: 3; }
+.plan .ring.r-bad { stroke: var(--bad); } .plan .ring.r-ok { stroke: var(--ok); stroke-dasharray: 6 4; }
+.plan .a-bld { fill: none; stroke: #ffd25a; stroke-width: 2; stroke-linejoin: round; }
+.plan .a-steg { fill: #ff5a3c; fill-opacity: 0.45; stroke: #ff5a3c; stroke-width: 2.5; }
+.plan .a-lead { stroke: #ffffff; stroke-width: 2; }
+.plan .alab { font-size: 20px; font-weight: 600; fill: #ffffff; paint-order: stroke; stroke: #11161b; stroke-width: 5px; stroke-linejoin: round; }
+.plan.chart .axis { stroke: var(--muted); stroke-width: 1; }
+.plan.chart .grid { stroke: var(--line); stroke-width: 1; }
+.plan.chart .tick { font-size: 11px; fill: var(--muted); font-family: var(--mono); }
+.plan.chart .l-vor { fill: none; stroke: var(--bad); stroke-width: 2.4; stroke-linejoin: round; }
+.plan.chart .l-nach { fill: none; stroke: var(--ok); stroke-width: 2.4; stroke-dasharray: 7 4; stroke-linejoin: round; }
+.plan.chart .dot-vor { fill: var(--bad); }
+.plan.chart .lab-vor { font-size: 12px; fill: var(--bad); font-weight: 600; }
+.plan.chart .lab-nach { font-size: 12px; fill: var(--ok); font-weight: 600; }
+.plan.chart .lab-abs { font-size: 11.5px; fill: var(--muted); }
+.panels { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
+.panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.panel .cap { font-size: 0.84rem; color: var(--muted); margin-top: 8px; }
+.panel.bad figcaption { color: var(--bad); } .panel.ok figcaption { color: var(--ok); }
+.cols { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.cols .panel .plan.tall { max-width: 330px; margin: 0 auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--line); }
+.grad { height: 12px; width: 120px; border-radius: 4px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--z-lo), var(--z-hi)); display: inline-block; vertical-align: -2px; margin-right: 6px; }
+
+/* Schritte, Karten, Tabellen */
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
+.steps .k { width: 26px; height: 26px; border-radius: 50%; border: 1.7px solid var(--fg); display: grid; place-items: center; font-weight: 600; font-size: 0.82rem; background: var(--panel); }
+.steps p { color: var(--muted); font-size: 0.9rem; margin-top: 1px; }
+.steps strong { color: var(--fg); }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 3px solid var(--line); }
+.card.reco { border-top-color: var(--ok); }
+.card .tag2 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.card.reco .tag2 { color: var(--ok); }
+.card p, .card li { font-size: 0.9rem; color: var(--muted); }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 5px; }
+.card strong { color: var(--fg); }
+.q { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.q .n { font-family: var(--mono); color: var(--accent); font-weight: 500; font-size: 1.05rem; }
+.q p { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+.q p + p { margin-top: 6px; }
+.qs { display: flex; flex-direction: column; gap: 12px; }
+.reco-box { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; font-size: 0.92rem; max-width: 80ch; }
+.tw { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+tbody th { font-weight: 400; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 0.84rem; }
+td.ok { color: var(--ok); } td.bad { color: var(--bad); font-weight: 500; }
+td.hint2 { color: var(--muted); font-size: 0.84rem; }
+a { color: var(--blue); }
+/* Trennwände */
+.plan .mulde { fill: var(--mulde); stroke: var(--plate-line); stroke-width: 0.8; }
+.plan .bld2 { fill: none; stroke: var(--fg); stroke-opacity: 0.55; stroke-width: 1; stroke-dasharray: 4 3; }
+.zoomrow .plan { max-height: 360px; }
+.plan .wand { fill: #e0a526; stroke: #b9800a; stroke-width: 0.8; }
+.plan .keil { fill: var(--bad); fill-opacity: 0.6; stroke: var(--bad); stroke-width: 1.2; }
+.plan .weg { fill: var(--bad); fill-opacity: 0.35; stroke: var(--bad); stroke-width: 1; stroke-dasharray: 3 2; }
+.plan .naht { fill: none; stroke: var(--bad); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.zoomrow { display: flex; flex-direction: column; gap: 10px; }
+.zoomrow + .zoomrow { margin-top: 18px; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: end; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+.ctrl label { display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--muted); min-width: 0; }
+.ctrl input[type=range] { width: 220px; max-width: 100%; accent-color: var(--accent); }
+.ctrl select { font: inherit; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--fg); }
+.ctrl output { font-family: var(--mono); color: var(--fg); font-size: 0.9rem; }
+.ctrl .res { font-family: var(--mono); font-size: 0.9rem; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.ctrl .warn { color: var(--bad); font-weight: 500; }
+.schnitt { width: 100%; height: auto; display: block; }
+.schnitt text { font-family: var(--mono); font-size: 13px; fill: var(--fg); }
+.schnitt .m { fill: none; stroke: var(--fg); stroke-width: 1.2; }
+.schnitt .hl { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 3; fill: none; }
+.schnitt .g { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1.2; }
+.schnitt .w { fill: #e0a526; stroke: #b9800a; stroke-width: 1.2; }
+.schnitt .sm { font-size: 11.5px; fill: var(--muted); }
+.schnitt .brk { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+.reg { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; }
+</style>
+
+<div class="wrap">
+
+<header>
+  <h1>Trennwände zwischen Gebäuden</h1>
+  <p class="lead">Dazwischen ist kein Platz eingeplant. Hörsaalgebäude und City-Hochhaus liegen Wand an Wand, und es sind drei weitere Paare genauso: Die Grundrisse berühren sich in OSM, LoD2 und Laserscan ohne Abstand. In der Steckplatte gehen die Mulden dort ineinander über, zwischen den Gebäuden steht keine Wand. Paulinum und Neues Augusteum überlappen sich sogar auf {{KEIL_A}} mm². Eine Trennwand wie zum Innenhof lässt sich einplanen, und die Platte bleibt dabei {{DIM_X}} × {{DIM_Y}} × {{DIM_Z}} mm groß. Die Fuge kommt aus den Gebäuden, nicht aus der Platte.</p>
+  <div class="meta"><span class="chip">Steckplatte 1:1300, Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Plan, noch nichts umgesetzt</span></div>
+  <dl class="sum">
+    <div><dt>Nähte zwischen Gebäuden</dt><dd>4, zusammen {{NAHT_SUMME}} mm</dd></div>
+    <div><dt>entspricht in echt</dt><dd>{{NAHT_SUMME_M}} m</dd></div>
+    <div><dt>Wand zwischen den Mulden</dt><dd><span class="o">0 mm</span><span class="arrow">→</span><span class="a">{{WAND}} mm</span></dd></div>
+    <div><dt>Fuge zwischen den Gebäuden</dt><dd>{{FUGE}} mm ({{FUGE_M}} m)</dd></div>
+  </dl>
+</header>
+
+<section class="sec">
+  <div>
+    <h2>Das sehe ich</h2>
+    <p class="lead">Es gibt vier Nähte, an denen zwei Gebäude auf der Platte aneinanderstoßen. Die Zahlen stammen aus dem Laserscan-Grundriss bei 1:1300, die Quellen unten zeigen, dass OSM und LoD2 dasselbe sagen.</p>
+  </div>
+  <div class="cols">
+    <figure class="panel">
+      <figcaption>Platte mit den Nähten (rot)</figcaption>
+      <div class="plan tall">{{FIG_UEBER}}</div>
+      <p class="cap">Die Ziffern gehören zur Tabelle rechts.</p>
+    </figure>
+    <div class="sec">
+      <div class="tw"><table>
+        <thead><tr><th>Nr.</th><th>Paar</th><th>Länge</th><th>in echt</th><th>Wand heute</th><th>Folge</th></tr></thead>
+        <tbody>{{NAHTZEILEN}}</tbody>
+      </table></div>
+      <h3>Abstand der Grundrisse je Quelle</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Paar</th><th>OSM</th><th>LoD2</th><th>Laserscan</th></tr></thead>
+        <tbody>{{QUELLZEILEN}}</tbody>
+      </table></div>
+      <p class="note">Das Laserscan-Modell nutzt die LoD2-Grundrisse, deshalb stimmen die beiden Spalten überein. In allen drei Quellen ist der Abstand 0.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Was das heute bedeutet</h2>
+    <p class="lead">Die Mulde jedes Gebäudes ist sein Grundriss plus {{SPIEL}} mm Spiel je Seite. Berühren sich zwei Grundrisse, überlappen sich die Mulden um das doppelte Spiel, und die Platte hat dazwischen kein Material mehr.</p>
+  </div>
+  <div class="cards">
+    <div class="card"><span class="tag2">Platte</span><ul>
+      <li><strong>Eine große Aussparung statt zwei Mulden.</strong> Auf den Nähten, zusammen {{NAHT_SUMME}} mm lang, steht heute keine Wand.</li>
+      <li>Die Gebäude stützen sich an dieser Stelle nur aufeinander, nicht an der Platte. Beim Hof gibt es dagegen {{WAND}} mm Wand.</li>
+    </ul></div>
+    <div class="card"><span class="tag2">Paulinum und Neues Augusteum</span><ul>
+      <li><strong>Die Grundrisse überlappen sich</strong> auf {{KEIL_A}} mm² (etwa {{KEIL_A_M}} m²), an der breitesten Stelle {{KEIL_B}} mm ({{KEIL_B_M}} m).</li>
+      <li>In den fertigen Gebäude-STL durchdringen sich die Wände der beiden Hohlkörper auf der ganzen Höhe, {{STL_UEBER}} mm² je Lage. Beim Stecken würde das zweite Gebäude am ersten anstoßen.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Vorschlag: Wand wie zum Hof</h2>
+    <p class="lead">Zwischen den beiden Mulden bleibt eine Wand von {{WAND}} mm stehen, so breit wie die Wand zum Innenhof (<code>HOF_WALL_T</code>). Dafür rücken die Grundrisse an der Naht auseinander, um Spiel + Wand + Spiel = <strong>{{FUGE}} mm</strong>. Das sind {{FUGE_M}} m in echt. Der Abstand wird aus den Gebäuden geschnitten. Der Plattenumriss hängt nur an den äußeren Grundrissen und ändert sich deshalb nicht.</p>
+  </div>
+  <figure class="panel">
+    <figcaption>Schnitt quer zur Naht, mit Regler</figcaption>
+    <div class="ctrl">
+      <label for="rw">Wand <output id="ow">0,8 mm</output><input id="rw" type="range" min="0.4" max="1.2" step="0.1" value="0.8"></label>
+      <label for="sc">Spiel je Seite<select id="sc"><option value="0.10" selected>0,10 mm (heute)</option><option value="0.15">0,15 mm (Vorgabe nächster Probedruck)</option><option value="0.20">0,20 mm</option></select></label>
+      <div class="res" id="res"></div>
+    </div>
+    <svg id="schnitt" class="schnitt" viewBox="0 0 720 470" role="img" aria-label="Schnitt durch die Trennwand zwischen zwei Gebäuden"></svg>
+    <p class="cap">Gezeigt sind die obersten 3 mm der Mulde und 1 mm darüber. Darunter läuft die Wand gerade weiter bis zum Muldenboden (insgesamt 14,2 mm hoch). Oben nimmt die Einführfase der Mulde (0,5 mm, 45°) der Wand die Schärfe: bei {{WAND}} mm Breite bleibt eine Schneide knapp unter der Plattenoberfläche. Beim Hof ist das genauso.</p>
+  </figure>
+
+  <div>
+    <h3 style="margin-bottom:8px">Wer weicht</h3>
+    <p class="note" style="margin-bottom:10px">Regel: Ein Gebäude gibt höchstens so viel ab, dass sein Schachtrohr noch 0,8 mm Material zum neuen Rand behält. Sonst gibt der Nachbar die ganze Fuge. Sonst teilen sich beide die Fuge je zur Hälfte. Verluste für Fuge {{FUGE}} mm.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Nr.</th><th>Paar</th><th>Wer gibt ab</th><th>Grund</th><th>Verlust im Grundriss</th></tr></thead>
+      <tbody>{{GEBERZEILEN}}</tbody>
+    </table></div>
+    <p class="note" style="margin-top:8px">Das Neue Augusteum verliert am meisten: {{AUG_VERLUST}} mm² ({{AUG_PROZENT}} %, etwa {{AUG_M2}} m² in echt), fast alles davon die Überlappung mit dem Paulinum. Die Platzierungen der Kassetten bleiben gültig, jedes Schachtrohr liegt weiter ≥ {{ROHR_MIN}} mm vom Rand (Paulinum unverändert).</p>
+  </div>
+  <figure class="panel">
+    <figcaption>Verlust je Gebäude bei anderer Fuge</figcaption>
+    <div class="tw"><table id="verlust">
+      <thead><tr><th>Gebäude</th><th>Grundriss heute</th><th>Verlust</th><th>Anteil</th><th>in echt</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="cap">Folgt dem Regler oben (Fuge = 2 × Spiel + Wand). Das Paulinum behält seinen Grundriss, solange das Rohr an der Naht sitzt.</p>
+  </figure>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Die vier Nähte im Grundriss</h2>
+    <p class="lead">Links der Stand von heute, rechts mit Trennwand. Norden oben. Hellgrau ist die Mulde (hier sitzt das Gebäude), die Platte ist die Fläche außen herum.</p>
+  </div>
+  {{ZOOMS}}
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Gegenprobe mit der echten Steckplatte</h2>
+    <p class="lead">Ich habe <code>plug.campus.build</code> einmal mit den beschnittenen Grundrissen laufen lassen, nur im Speicher. Die Dateien in <code>stl/</code> sind unverändert.</p>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Prüfung</th><th>Heute</th><th>Mit Trennwand</th><th>Bemerkung</th></tr></thead>
+    <tbody>
+      <tr><th>Plattenmaß x</th><td class="n">{{DIM0_X}} mm</td><td class="n ok">{{DIM1_X}} mm</td><td class="hint2">gleich; die Nähte liegen innerhalb der äußeren Grundrisse</td></tr>
+      <tr><th>Plattenmaß y</th><td class="n">{{DIM0_Y}} mm</td><td class="n ok">{{DIM1_Y}} mm</td><td class="hint2">gleich</td></tr>
+      <tr><th>Platte dicht</th><td class="n">{{DICHT0}}</td><td class="n ok">{{DICHT1}}</td><td class="hint2">STL-Prüfung wie in <code>plug.campus</code></td></tr>
+      <tr><th>Wand zwischen den Mulden</th><td class="n bad">0 mm</td><td class="n ok">{{WAND_MIN}} mm</td><td class="hint2">kleinste Wand über alle vier Nähte</td></tr>
+      <tr><th>Wand in der Platte vorhanden</th><td class="n bad">nein</td><td class="n ok">{{DECKUNG}} %</td><td class="hint2">Schnitt 4 mm unter der Oberfläche, Wandfläche gedeckt; {{WANDLAENGE}} mm Wand insgesamt</td></tr>
+      <tr><th>Teile je Gebäude-Grundriss</th><td class="n">1</td><td class="n ok">{{TEILE}}</td><td class="hint2">der Beschnitt zerlegt kein Gebäude in Stücke</td></tr>
+      <tr><th>Docks überlappen Rand oder Dock</th><td class="n">-</td><td class="n ok">{{KOLL}} mm²</td><td class="hint2">Prüfwert aus <code>plug.campus</code></td></tr>
+      <tr><th>Hof-Aussparung verändert</th><td class="n">-</td><td class="n ok">{{HOF_DIFF}} mm²</td><td class="hint2">Hof und Einsatz bleiben, wie sie sind</td></tr>
+      <tr><th>Plattenvolumen</th><td class="n">{{VOL0}} cm³</td><td class="n">{{VOL1}} cm³</td><td class="hint2">mehr Material zwischen den Gebäuden</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Nicht geprüft: Slicer und Druck. Eine 0,8 mm breite, 14 mm hohe freistehende Wand ist wie die Hof-Wand noch ungedruckt. Beide ließen sich auf einem kleinen Probestück zusammen testen.</p>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Drei Wege</h2>
+    <p class="lead">Die Fuge kann an der Naht über die ganze Gebäudehöhe sitzen, nur im Fuß oder gar nicht.</p>
+  </div>
+  <div class="cards" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="card reco"><span class="tag2">Empfohlen: Fuge über die ganze Höhe</span><ul>
+      <li>Ein Beschnitt der Grundrisse, Mulde, Hohlkörper und Fuß folgen von selbst.</li>
+      <li>Löst auch die Überlappung: Paulinum und Augusteum überlappen danach nirgends mehr.</li>
+      <li>Sichtbar ist ein Schlitz von {{FUGE}} mm ({{FUGE_M}} m) zwischen den Gebäuden. Er ist gleichmäßig und fällt bei 1:1300 kaum auf.</li>
+      <li>Gilt nur für die Steckplatte und die steckbaren Gebäude. Die Komplettmodelle in <code>stl/osm</code>, <code>stl/lod2</code>, <code>stl/laserscan</code> bleiben.</li>
+    </ul></div>
+    <div class="card"><span class="tag2">Nur im Fuß</span><ul>
+      <li>Oberhalb der Platte bleiben die Gebäude, wie sie sind, und berühren sich weiter.</li>
+      <li>Der Fuß müsste oben auf Gebäudebreite aufgeweitet werden. Mehr als 0,5 mm je Seite gehen nicht, sonst stößt die Aufweitung an die Fase der Mulde und die Schneide der Wand.</li>
+      <li>Das Paulinum kann nicht weichen, und die Überlappung bliebe oberhalb der Platte: die Kollision bleibt.</li>
+      <li>Neue Geometrie in <code>hohl.py</code> und <code>plug/buildings.py</code>, mehr Risiko.</li>
+    </ul></div>
+    <div class="card"><span class="tag2">Wie heute</span><ul>
+      <li>Keine Änderung, keine Wand.</li>
+      <li>Die Überlappung von Paulinum und Augusteum muss trotzdem gelöst werden, sonst passen beide Gebäude nicht gleichzeitig in die Platte.</li>
+      <li>Die Platte bleibt an den Nähten ohne Halt für die Gebäude.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Umsetzung nach dem Abnicken</h2>
+  </div>
+  <ol class="steps">
+    <li><span class="k">1</span><div><strong>Beschnitt einbauen.</strong><p><code>plug/divider/geom.py</code> liegt schon vor (<code>trenn</code>). <code>plug.campus.build</code> und <code>plug.buildings</code> rufen es nach <code>G.source_models</code> auf, bei den Gebäuden wird der Körper mit dem neuen Grundriss geschnitten.</p></div></li>
+    <li><span class="k">2</span><div><strong>Platte und Gebäude neu bauen.</strong><p><code>python3 -m plug.campus</code> (ca. 20 s), danach <code>python3 -m plug.buildings 02_neues_augusteum 03_hoersaalgebaeude 04_seminargebaeude 05_institutsgebaeude 06_city_hochhaus</code> (je 1 bis 2 min). Das Paulinum bleibt unverändert.</p></div></li>
+    <li><span class="k">3</span><div><strong>Prüfung erweitern.</strong><p><code>plug.check</code> bekommt eine Prüfung der Gebäude untereinander (kein Volumen gemeinsam, Abstand mindestens {{FUGE}} mm), dazu <code>dicht=True</code> und keine Kollisionen.</p></div></li>
+    <li><span class="k">4</span><div><strong>Seiten und Doku nachziehen.</strong><p>Steckplatten-Ansicht, Hof-Seite, Logbuch <code>scale.md</code>, STATUS und <code>plug/CLAUDE.md</code>; Vorher/Nachher-Bilder im Chat.</p></div></li>
+  </ol>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Offene Punkte</h2>
+    <p class="lead">Eine kurze Antwort im Chat genügt.</p>
+  </div>
+  <div class="qs">
+    <div class="q"><span class="n">1</span><div>
+      <p><strong>Fuge über die ganze Höhe?</strong> Ich empfehle das. Der Preis ist ein Schlitz von {{FUGE_M}} m zwischen den Gebäuden im Modell. Wenn die Gebäude oben dicht an dicht stehen sollen, ist &bdquo;nur im Fuß&ldquo; der Weg, aber aufwendiger.</p>
+    </div></div>
+    <div class="q"><span class="n">2</span><div>
+      <p><strong>Wandbreite {{WAND}} mm wie beim Hof?</strong> Dünner als 0,8 mm druckt nicht sicher. Dicker macht die Fuge breiter und nimmt den Gebäuden mehr Grundriss.</p>
+    </div></div>
+    <div class="q"><span class="n">3</span><div>
+      <p><strong>Das Neue Augusteum gibt die Überlappung ab.</strong> Es verliert damit {{AUG_VERLUST}} mm² Grundriss und das Paulinum nichts, weil sein Schachtrohr nur 0,18 mm von der Naht sitzt. Falls das Augusteum unangetastet bleiben soll, müsste das Paulinum die Kassette verlegen.</p>
+    </div></div>
+    <div class="q"><span class="n">4</span><div>
+      <p><strong>Spiel 0,10 oder 0,15 mm?</strong> Für den nächsten Probedruck ist 0,15 mm vorgesehen. Die Fuge wächst dann auf 1,1 mm, die Wand bleibt bei {{WAND}} mm (Regler oben).</p>
+    </div></div>
+  </div>
+  <p class="reco-box">Wenn 1 bis 4 so passen, baue ich es ein und zeige danach Vorher und Nachher aus dem echten Lauf.</p>
+</section>
+
+</div>
+
+<script id="daten" type="application/json">{{DATA_JSON}}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("daten").textContent);
+  var rw = document.getElementById("rw"), sc = document.getElementById("sc");
+  var ow = document.getElementById("ow"), res = document.getElementById("res"), svg = document.getElementById("schnitt");
+  var tb = document.querySelector("#verlust tbody");
+  var NS = "http://www.w3.org/2000/svg";
+  function de(v, n) { return v.toFixed(n).replace(".", ","); }
+  function el(tag, attrs, txt) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (txt) e.textContent = txt;
+    svg.appendChild(e);
+    return e;
+  }
+  function draw() {
+    var w = parseFloat(rw.value), c = parseFloat(sc.value), g = 2 * c + w, ch = 0.5;
+    ow.textContent = de(w, 1) + " mm";
+    var warn = w < 0.8 - 1e-9;
+    res.innerHTML = "<span>Fuge " + de(g, 2) + " mm = " + de(g / D.S, 2) + " m</span><span>je Gebäude bei Teilung " + de(g / 2, 2) + " mm</span>" + (warn ? "<span class=\"warn\">Wand unter 0,8 mm: druckt nicht sicher</span>" : "");
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var k = 90, cx = 360, M = 52;                 // px je mm, Mitte, Rand oben
+    var X = function (x) { return cx + x * k; }, Z = function (z) { return M + (1.0 - z) * k; };
+    var top = Z(1.0), bot = Z(-3.0);
+    el("rect", { "class": "g", x: X(-g / 2) - 260, y: top, width: 260, height: bot - top });
+    el("rect", { "class": "g", x: X(g / 2), y: top, width: 260, height: bot - top });
+    var xa = -g / 2 + c, xb = g / 2 - c, zf = -ch, zspitze = Math.min(0, zf + w / 2);
+    var flach = Math.max(0, w - 2 * ch);
+    var pts = [[xa, -3.0], [xa, zf]];
+    if (zspitze < 0) { pts.push([(xa + xb) / 2, zspitze]); } else { pts.push([xa + ch, 0], [xb - ch, 0]); }
+    pts.push([xb, zf], [xb, -3.0]);
+    el("polygon", { "class": "w", points: pts.map(function (p) { return X(p[0]) + "," + Z(p[1]); }).join(" ") });
+    el("line", { "class": "hl", x1: 30, y1: Z(0), x2: 690, y2: Z(0) });
+    el("text", { x: 34, y: Z(0) - 6, "class": "sm" }, "Plattenoberfläche");
+    el("text", { x: X(-g / 2) - 14, y: Z(-1.4), "class": "sm", "text-anchor": "end" }, "Gebäude A");
+    el("text", { x: X(g / 2) + 14, y: Z(-1.4), "class": "sm" }, "Gebäude B");
+    el("path", { "class": "brk", d: "M30 " + (bot + 12) + Array(23).join(" l15 -8 l15 8") });
+    el("text", { x: 34, y: bot + 34, "class": "sm" }, "darunter 11 mm gerade weiter bis zum Muldenboden");
+    function dim(x0, x1, y, txt, dy) {
+      el("line", { "class": "m", x1: X(x0), y1: y, x2: X(x1), y2: y });
+      el("line", { "class": "m", x1: X(x0), y1: y - 5, x2: X(x0), y2: y + 5 });
+      el("line", { "class": "m", x1: X(x1), y1: y - 5, x2: X(x1), y2: y + 5 });
+      el("text", { x: (X(x0) + X(x1)) / 2, y: y + dy, "text-anchor": "middle" }, txt);
+    }
+    dim(-g / 2, g / 2, Z(1.0) - 18, "Fuge " + de(g, 2) + " mm", -8);
+    dim(xa, xb, Z(-2.2), "Wand " + de(w, 2), 20);
+    el("line", { "class": "m", x1: X(-g / 2), y1: Z(-2.75), x2: X(xa), y2: Z(-2.75) });
+    el("line", { "class": "m", x1: X(xb), y1: Z(-2.75), x2: X(g / 2), y2: Z(-2.75) });
+    el("text", { x: X(-g / 2) - 6, y: Z(-2.75) + 4, "text-anchor": "end", "class": "sm" }, "Spiel " + de(c, 2));
+    el("text", { x: X(g / 2) + 6, y: Z(-2.75) + 4, "text-anchor": "start", "class": "sm" }, "Spiel " + de(c, 2));
+    res.innerHTML += "<span>Fase 0,5 mm: " + (flach > 0.001 ? "Kuppe " + de(flach, 1) + " mm breit" : "Schneide") + ", " + de(-zspitze, 1) + " mm unter der Oberfläche</span>";
+    // Tabelle
+    var key = g.toFixed(2), t = D.tabelle[key], rows = "";
+    var sl = Object.keys(D.flaeche);
+    sl.forEach(function (s) {
+      var v = t ? t[s] : 0;
+      rows += "<tr><th>" + D.namen[s] + "</th><td class=\"n\">" + de(D.flaeche[s], 0) + " mm²</td><td class=\"n" + (v > 0 ? "" : " ok") + "\">" + (v > 0 ? de(v, 1) + " mm²" : "0") + "</td><td class=\"n\">" + de(100 * v / D.flaeche[s], 1) + " %</td><td class=\"n\">" + de(v / (D.S * D.S), 0) + " m²</td></tr>";
+    });
+    tb.innerHTML = rows;
+  }
+  rw.addEventListener("input", draw);
+  sc.addEventListener("change", draw);
+  draw();
+})();
+</script>
