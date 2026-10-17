@@ -202,6 +202,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
 | `plug/power/` | Konzept | `build_concept.py`, `concept.template.html`, `concept.html`: Powerbank Intenso XS5000 in der Platte (PLAN Kapitel 6) |
+| `plug/buildings.py` | Generator | steckbare Hohlgebäude zur Steckplatte 1:1300: Fuß 14,2, Boden, Schachtrohr, Aufnahme je Kassette (v4/V1RS/V2R), 45°-Anschlag und 45°-Dach, Prüfung Kollision/Platz/Brücken/Kragstücke; nach `stl/steckmodul_campus/gebaeude/` (Logbuch `scale.md`) |
 | `plug/PLAN.md`, `plug/STATUS.md` | handgeschrieben | Plan (Dupont, Institut, JST-Archiv) und diese Datei |
 | `plug/archive/jst/` | archiviert | JST-Variante: `jst.py`, `PLAN.md`, `view.template.html`, `build_view.py`, `view.html`, `data.json`, `stl/`, `preview/` (nicht gepflegt) |
 | `stl/steckmodul_dupont/`, `stl/steckmodul_institut/`, `stl/steckmodul_probe/` | Ausgabe, eingecheckt | STL, `README.txt` und ZIP des Probestücks (`gebaeude.stl` des Instituts nicht) |
