@@ -205,20 +205,23 @@ def zone_keys(mesh, spec, extents):
     return keys
 
 
-def colour_mesh(tm, slug, to_local, farben, roof_class):
+def colour_mesh(tm, slug, to_local, farben, roof_class, ref=None):
     """Zerschneidet ein Gebäudenetz an seinen Zonengrenzen und färbt es.
 
     tm        Netz in Modellkoordinaten (mm)
     to_local  (offset[3], s): lokal_m = (v - offset) / s; z = Höhe über Gelände
     farben    Eintrag des Gebäudes aus data/farben.json ({"farben": {key: {"rgb"}}, "basis", "zonen"})
     roof_class Funktion (punkte_lokal_m[n,2]) -> Hex-Farbe der Dachpalette
+    ref       Bezugsnetz (Modellkoordinaten) für Zonenlage und Seitenmaße, z. B. der massive Körper zu einer Hohlschale;
+              Standard: tm selbst
     Liefert (Netz in Modellkoordinaten, Hex-Farbe je Dreieck).
     """
     off, s = np.asarray(to_local[0], float), float(to_local[1])
     m = trimesh.Trimesh((tm.vertices - off) / s, tm.faces.copy(), process=False)
-    zones = expand_zones(m, farben.get("zonen", [])) if farben else []
+    mr = m if ref is None else trimesh.Trimesh((ref.vertices - off) / s, ref.faces, process=False)
+    zones = expand_zones(mr, farben.get("zonen", [])) if farben else []
     dicht = m.is_watertight
-    planes = zone_planes(m, zones)
+    planes = zone_planes(mr, zones)
     # Schnellweg: alle Schnitte ohne Zwischenprüfung; die Dichtheitsprüfung kostet mehr als
     # der Schnitt. Ist das Ergebnis dicht, wäre es auch jeder Zwischenstand gewesen.
     m_fast = m
@@ -237,7 +240,7 @@ def colour_mesh(tm, slug, to_local, farben, roof_class):
     extents = {}
     for zo in zones:
         if "seite" in zo and "entlang" in zo:
-            extents[json.dumps(zo["seite"])] = side_extent(m, zo["seite"])
+            extents[json.dumps(zo["seite"])] = side_extent(mr, zo["seite"])
     if farben:
         keys = zone_keys(m, dict(farben, zonen=zones), extents)
         hexes = np.array([farben["farben"][k]["rgb"] if k and not k.startswith("@") else None for k in keys], dtype=object)
