@@ -1,0 +1,715 @@
+<title>Schaltplan und Lötplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Antworten oben, Bauteile, sechs Zeichnungen (Übersicht, Stromweg, Dock, I²C, Last, Höhe) mit Tabellen, Lötanleitung als echte Reihenfolge, Einkauf, Offenes */
+:root {
+  --bg: #f5f7f5; --panel: #ffffff; --fg: #1a201b; --muted: #58645b; --line: #d3dad4; --code: #eef2ee;
+  --c5: #b3261e; --c33: #9a5a06; --cgnd: #4a554d; --cdin: #1f5fae; --cdet: #1b7a43; --csda: #0c7a78; --cscl: #5a45b5;
+  --ok-bg: #d6eedd; --ok-fg: #135a2c; --warn-bg: #fbe0cb; --warn-fg: #86400a; --bad-bg: #f8d9d9; --bad-fg: #8a1f1f;
+  --info-bg: #d9e7fa; --info-fg: #11407a; --neutral-bg: #e2e6e3; --neutral-fg: #2f3832;
+  --led: #f1ebc4; --copper: #c98a2b; --zone: rgba(179,38,30,.16); --pbk: #dfe5e0; --pcb: #2c3a33; --mod: #b8bdb9;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --c5: #ff8f80; --c33: #f0b95a; --cgnd: #aab5ad; --cdin: #8fbaff; --cdet: #7fd1a6; --csda: #6fd6d2; --cscl: #b9acff;
+  --ok-bg: #183f29; --ok-fg: #b6e7c7; --warn-bg: #59301a; --warn-fg: #ffc9a0; --bad-bg: #5a2121; --bad-fg: #ffc4c4;
+  --info-bg: #1b3557; --info-fg: #b9d4ff; --neutral-bg: #30363a; --neutral-fg: #d4d9dc;
+  --led: #4a4720; --copper: #d9a24a; --zone: rgba(255,143,128,.18); --pbk: #2c332e; --pcb: #0f1a14; --mod: #4d534f;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --c5: #ff8f80; --c33: #f0b95a; --cgnd: #aab5ad; --cdin: #8fbaff; --cdet: #7fd1a6; --csda: #6fd6d2; --cscl: #b9acff;
+  --ok-bg: #183f29; --ok-fg: #b6e7c7; --warn-bg: #59301a; --warn-fg: #ffc9a0; --bad-bg: #5a2121; --bad-fg: #ffc4c4;
+  --info-bg: #1b3557; --info-fg: #b9d4ff; --neutral-bg: #30363a; --neutral-fg: #d4d9dc;
+  --led: #4a4720; --copper: #d9a24a; --zone: rgba(255,143,128,.18); --pbk: #2c332e; --pcb: #0f1a14; --mod: #4d534f;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans);
+  padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 38px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 19px; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+h3 { font-size: 15px; margin: 18px 0 6px; font-weight: 600; }
+p { margin: 0 0 10px; max-width: 70ch; }
+small { color: var(--muted); font-size: 12px; }
+.lead { color: var(--muted); max-width: 70ch; }
+.mono, code, pre { font-family: var(--mono); }
+code { background: var(--code); padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+section { min-width: 0; }
+a { color: var(--info-fg); }
+nav.jump { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; margin-top: 12px; }
+nav.jump a { text-decoration: none; border-bottom: 1px solid var(--line); color: var(--fg); }
+
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.ans { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.ans .q { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.ans .a { font-size: 17px; font-weight: 600; line-height: 1.3; }
+.ans p { margin: 0; font-size: 14px; }
+.chip { display: inline-block; font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 3px; white-space: nowrap; letter-spacing: .02em; }
+.chip.ok { background: var(--ok-bg); color: var(--ok-fg); } .chip.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.chip.bad { background: var(--bad-bg); color: var(--bad-fg); } .chip.info { background: var(--info-bg); color: var(--info-fg); }
+.chip.neutral { background: var(--neutral-bg); color: var(--neutral-fg); }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+td small { margin-left: 3px; }
+.tbl { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.grp td { background: var(--code); font-weight: 600; font-size: 12px; letter-spacing: .03em; }
+
+figure { margin: 0; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; max-width: 74ch; }
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; }
+.diagram svg { min-width: 760px; width: 100%; height: auto; display: block; }
+svg text { font-family: var(--mono); font-size: 12px; fill: var(--fg); }
+svg .tm { fill: var(--muted); font-size: 11px; }
+svg .tb { font-weight: 600; font-size: 13px; }
+svg .t5 { fill: var(--c5); } svg .t3 { fill: var(--c33); } svg .tg { fill: var(--cgnd); } svg .td { fill: var(--cdin); } svg .tt { fill: var(--cdet); }
+svg .w { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+svg .bundle { stroke-width: 4.5; }
+svg .w5 { stroke: var(--c5); } svg .w3 { stroke: var(--c33); } svg .wg { stroke: var(--cgnd); } svg .wd { stroke: var(--cdin); }
+svg .wt { stroke: var(--cdet); } svg .wa { stroke: var(--csda); } svg .wl { stroke: var(--cscl); }
+svg .dash { stroke-dasharray: 5 4; }
+svg .bx { fill: var(--panel); stroke: var(--fg); stroke-width: 1.4; }
+svg .bxd { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+svg .sy { fill: var(--panel); stroke: var(--fg); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+svg .syf { fill: var(--fg); stroke: var(--fg); stroke-width: 1.6; stroke-linejoin: round; }
+svg .syl { fill: none; stroke: var(--fg); stroke-width: 1.8; stroke-linecap: round; }
+svg .d5 { fill: var(--c5); } svg .d3 { fill: var(--c33); } svg .dg { fill: var(--cgnd); } svg .da { fill: var(--csda); } svg .dl { fill: var(--cscl); }
+svg .led { fill: var(--led); stroke: var(--fg); stroke-width: 1.2; }
+svg .pad { fill: var(--copper); }
+svg .chip5050 { fill: var(--panel); stroke: var(--fg); stroke-width: 1.2; }
+svg .die { fill: var(--led); stroke: var(--fg); stroke-width: 1; }
+svg .pbk { fill: var(--pbk); stroke: var(--fg); stroke-width: 1.2; }
+svg .pcb { fill: var(--pcb); stroke: var(--fg); stroke-width: 1; }
+svg .pcbg { fill: #256b4f; stroke: var(--fg); stroke-width: 1; }
+svg .tl { fill: #eef4ee; }
+svg .mod { fill: var(--mod); stroke: var(--fg); stroke-width: 1; }
+svg .zone { fill: var(--zone); stroke: var(--c5); stroke-width: 1; stroke-dasharray: 4 3; }
+svg .plate { fill: var(--code); stroke: var(--muted); stroke-width: 1; }
+svg .dim { stroke: var(--muted); stroke-width: 1; fill: none; }
+
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.5; margin: 0; }
+ul, ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+.note { border-left: 3px solid var(--warn-fg); background: var(--warn-bg); color: var(--warn-fg); padding: 10px 14px; border-radius: 0 4px 4px 0; max-width: 72ch; margin: 10px 0; }
+.note.info { border-left-color: var(--info-fg); background: var(--info-bg); color: var(--info-fg); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.two > * { min-width: 0; }
+.net { display: inline-flex; align-items: center; gap: 5px; font: 600 12px var(--mono); }
+.net i { width: 14px; height: 4px; display: inline-block; border-radius: 2px; }
+.n5 i { background: var(--c5); } .n3 i { background: var(--c33); } .ng i { background: var(--cgnd); } .nd i { background: var(--cdin); }
+.nt i { background: var(--cdet); } .na i { background: var(--csda); } .nl i { background: var(--cscl); }
+
+/* Lötanleitung: Schritte sind eine echte Reihenfolge */
+ol.steps { counter-reset: s; list-style: none; padding: 0; gap: 14px; max-width: none; }
+ol.steps > li { counter-increment: s; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px 14px 56px; position: relative; min-width: 0; }
+ol.steps > li::before { content: counter(s); position: absolute; left: 14px; top: 12px; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--fg);
+  display: flex; align-items: center; justify-content: center; font: 600 13px var(--mono); }
+ol.steps h3 { margin: 0 0 6px; font-size: 16px; }
+ol.steps ul { gap: 4px; }
+.check { margin-top: 8px; padding: 8px 12px; border-radius: 4px; background: var(--ok-bg); color: var(--ok-fg); font-size: 13px; max-width: 72ch; }
+.check b { letter-spacing: .04em; text-transform: uppercase; font-size: 11px; margin-right: 6px; }
+.time { font: 400 12px var(--mono); color: var(--muted); }
+@media (max-width: 520px) { ol.steps > li { padding-left: 16px; padding-top: 52px; } }
+</style>
+
+<main>
+  <header>
+    <h1>Schaltplan und Lötplan</h1>
+    <p class="lead">Elektronik im Unterkasten der Steckplatte: ESP32-DevKit (WROOM-32, USB-C), INA226, OLED, Kippschalter, Powerbank und sechs LED-Docks. Ohne Platine, mit Dupont-Buchsen am ESP32 und frei verdrahteten Bauteilen. Pins und Docks stammen aus <code>plug/power/pinout.html</code>.</p>
+    <nav class="jump" aria-label="Abschnitte">
+      <a href="#antworten">Antworten</a><a href="#bauteile">Bauteile</a><a href="#schaltplan">Schaltplan</a><a href="#spannungen">3,3 V und 5 V</a><a href="#hoehe">Einbauhöhe</a>
+      <a href="#ohneplatine">Ohne Platine</a><a href="#ina">INA226</a><a href="#verbindungen">Verbindungen</a><a href="#anleitung">Anleitung</a><a href="#einkauf">Einkauf</a><a href="#offen">Offen</a>
+    </nav>
+  </header>
+
+  <section id="antworten">
+    <h2>Die Antworten auf deine Fragen</h2>
+    <div class="answers">
+      <div class="ans"><span class="q">Passt der ESP32 in den Unterkasten?</span><span class="a">Ja, aber nur flach. Nach unten gerichtete Stiftleisten sind zu knapp.</span>
+        <p>Innenhöhe {{UK_INNEN}} mm. Mit Stiftleisten nach unten braucht der ESP32 {{H_B}} mm und lässt {{LUFT_B}} mm bis zur Platte. Die Adern der Docks liegen in den obersten {{ZONE}} mm. Es bleibt keine Luft. Mit Winkelleisten oben sind es etwa {{H_A}} mm.</p>
+        <span class="chip warn">Variante A empfohlen</span></div>
+      <div class="ans"><span class="q">Muss alles auf eine Platine?</span><span class="a">Nein. Lose verdrahten geht und lässt den ESP32 wechselbar.</span>
+        <p>Der ESP32 bekommt Winkelleisten, die Adern stecken als Dupont-Buchsen darauf. Alles andere wird Draht an Draht gelötet: Widerstände mitten in der Ader, Sammelschienen aus Draht.</p>
+        <span class="chip ok">keine Platine</span></div>
+      <div class="ans"><span class="q">INA226: Widerstand dazulöten?</span><span class="a">Ja, einen 0,1 Ω parallel zum Shunt.</span>
+        <p>Das halbiert den Widerstand auf 0,05 Ω und verdoppelt den Messbereich von ±0,82 A auf ±1,64 A. Der ESP32 mit WLAN, sechs weiße LEDs und der Strompuls liegen zusammen knapp unter 0,82 A.</p>
+        <span class="chip ok">1 Lötstelle</span></div>
+    </div>
+    <p class="note info" style="margin-top:14px">Der Kippschalter ist laut PR #28 ein Wippenschalter KCD11 (10 × 15 mm, zwei Pins) in der Westwand des Unterkastens. Er schaltet das Plus der Powerbank vor dem INA226. Diese Seite geht davon aus. Der PR ist noch nicht gemergt, die Lage der Elektronikbox kann sich noch ändern.</p>
+  </section>
+
+  <section id="bauteile">
+    <h2>Welche Bauteile es gibt</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Bauteil</th><th>Aufgabe</th><th>Spannung</th><th>Hinweis</th></tr></thead>
+      <tbody>
+        <tr><td><b>Powerbank</b> Intenso XS5000</td><td>einzige Quelle</td><td><span class="chip warn">5 V</span> max. 2,1 A</td><td>90 × 63 × 12,6 mm, Ausgang USB-A, schaltet ab, wenn lange kaum Strom fließt</td></tr>
+        <tr><td><b>USB-A-Stecker</b> mit Kabel</td><td>Anschluss an die Powerbank</td><td><span class="chip warn">5 V</span></td><td>Lötadapter oder abgeschnittenes Kabel, nur rot und schwarz benutzen</td></tr>
+        <tr><td><b>Kippschalter</b> KCD11</td><td>Hauptschalter im Pluspol</td><td><span class="chip warn">5 V</span> ≤ 2,1 A</td><td>Nennwert laut Händlern 3 A, reicht reichlich; Lötfahnen etwa 4,8 mm auseinander</td></tr>
+        <tr><td><b>INA226</b>-Modul</td><td>misst Strom, Spannung, Leistung der Powerbank</td><td>Logik <span class="chip info">3,3 V</span>, Messpfad <span class="chip warn">5 V</span></td><td>Shunt 0,1 Ω auf dem Modul, I²C-Adresse 0x40</td></tr>
+        <tr><td><b>ESP32</b> DevKit WROOM-32</td><td>steuert LEDs, liest Docks, Display, INA226</td><td>VIN <span class="chip warn">5 V</span>, Pins <span class="chip info">3,3 V</span></td><td>Boardregler macht aus VIN die 3,3 V für Chip und Pin 3V3</td></tr>
+        <tr><td><b>OLED</b> 1,3″ SH1106</td><td>Anzeige</td><td><span class="chip info">3,3 V</span></td><td>etwa 8 mA, I²C 0x3C, Pinfolge VDD, GND, SCK, SDA</td></tr>
+        <tr><td><b>6 × Dock</b> mit WS2812B-Streifenstück</td><td>Licht je Gebäude, Gebäude-Erkennung</td><td>LED an <span class="chip warn">≈ 4 V</span>, Daten <span class="chip info">3,3 V</span></td><td>Winkelleiste 1×4: 1 GND, 2 DIN, 3 +5 V, 4 DETECT; je LED bis 60 mA</td></tr>
+        <tr><td><b>D1</b> Diode 1N4007</td><td>senkt die LED-Spannung, damit 3,3 V Daten reichen</td><td>5 V → ≈ 4 V</td><td>eine für alle Docks, Strich zur LED-Seite</td></tr>
+        <tr><td><b>C1</b> 1000 µF</td><td>puffert Einschaltstrom und Stecken unter Spannung</td><td>5 V-LED-Seite</td><td>Elko 10 V oder 16 V, liegend einbauen (Ø 10 × 16 mm)</td></tr>
+        <tr><td><b>6 × 330 Ω</b></td><td>je eine in jeder Datenleitung</td><td>3,3 V Signal</td><td>mitten in die Ader gelötet</td></tr>
+        <tr><td><b>Last</b> 47 Ω, MOSFET, 100 Ω, 10 kΩ</td><td>Strompuls gegen das Abschalten der Powerbank</td><td>5 V schalten, Gate <span class="chip info">3,3 V</span></td><td><span class="chip neutral">optional</span> erst bauen, wenn der Test es verlangt</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="schaltplan">
+    <h2>Schaltplan</h2>
+    <h3>Bild 1: Alles zusammen</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 480" role="img" aria-label="Übersicht: Powerbank, Schalter und INA226 liefern 5 V an Knoten, ESP32 VIN, Diode und LED-Docks; ESP32 steuert DIN und DETECT der sechs Docks und den I²C-Bus zu INA226 und OLED">
+          <rect class="bx" x="20" y="55" width="130" height="70" rx="6"/>
+          <text class="tb" x="85" y="80" text-anchor="middle">Powerbank</text>
+          <text class="tm" x="85" y="98" text-anchor="middle">Intenso XS5000</text>
+          <text class="tm" x="85" y="114" text-anchor="middle">5 V · max. 2,1 A</text>
+          <path class="w w5" d="M150 90 H190"/>
+          <text class="tm" x="170" y="80" text-anchor="middle">USB-A</text>
+
+          <rect class="bx" x="190" y="68" width="80" height="44" rx="6"/>
+          <text class="tb" x="230" y="87" text-anchor="middle">Schalter</text>
+          <text class="tm" x="230" y="103" text-anchor="middle">KCD11</text>
+          <path class="w w5" d="M270 90 H310"/>
+
+          <rect class="bx" x="310" y="55" width="110" height="70" rx="6"/>
+          <text class="tb" x="365" y="78" text-anchor="middle">INA226</text>
+          <text class="tm" x="365" y="96" text-anchor="middle">Shunt 0,1 Ω</text>
+          <text class="tm" x="365" y="112" text-anchor="middle">0x40</text>
+
+          <path class="w w5" d="M420 90 H548 M577 90 H760"/>
+          <path class="w w5" d="M470 90 V270 M520 224 H470 M470 270 H450"/>
+          <circle class="d5" cx="470" cy="90" r="4"/><circle class="d5" cx="470" cy="224" r="4"/><circle class="d5" cx="470" cy="270" r="4"/>
+          <text class="tm t5" x="470" y="76" text-anchor="middle">+5 V</text>
+          <polygon class="syf" points="548,80 548,100 574,90"/><path class="syl" d="M578 79 V101"/>
+          <text class="tm" x="562" y="68" text-anchor="middle">D1</text>
+          <text class="tm" x="562" y="120" text-anchor="middle">1N4007</text>
+          <circle class="d5" cx="640" cy="90" r="4"/>
+          <path class="w w5" d="M640 90 V108 M640 116 V128"/>
+          <path class="syl" d="M628 108 H652 M628 116 H652"/>
+          <path class="syl" d="M626 128 H654 M631 133 H649 M636 138 H644"/>
+          <text class="tm" x="662" y="116">C1 1000 µF</text>
+
+          <rect class="bx" x="760" y="40" width="190" height="330" rx="6"/>
+          <text class="tb" x="855" y="62" text-anchor="middle">6 Docks mit LED</text>
+          {{DOCK_ROWS}}
+          <path class="w wg" d="M855 370 V380"/>
+          <path class="syl" d="M841 380 H869 M846 385 H864 M851 390 H859"/>
+
+          <rect class="bx" x="520" y="160" width="140" height="250" rx="6"/>
+          <text class="tb" x="590" y="182" text-anchor="middle">ESP32</text>
+          <text class="tm" x="590" y="198" text-anchor="middle">DevKit WROOM-32</text>
+          <text class="tm t5" x="528" y="228">VIN</text>
+          <text class="tm" x="528" y="304">GPIO14</text>
+          <text class="tm" x="528" y="364">3V3 GND SDA SCL</text>
+          <text class="tm" x="652" y="234" text-anchor="end">6 × GPIO</text>
+          <text class="tm" x="652" y="304" text-anchor="end">6 × GPIO</text>
+          <path class="w wg" d="M590 410 V418"/>
+          <path class="syl" d="M576 418 H604 M581 423 H599 M586 428 H594"/>
+
+          <path class="w wd" d="M660 230 H692 M728 230 H760"/>
+          <rect class="sy" x="692" y="222" width="36" height="16" rx="2"/>
+          <text class="tm td" x="710" y="214" text-anchor="middle">330 Ω</text>
+          <text class="tm td" x="710" y="256" text-anchor="middle">6 × DIN</text>
+          <path class="w wt" d="M660 300 H760"/>
+          <text class="tm tt" x="710" y="292" text-anchor="middle">6 × DETECT</text>
+
+          <rect class="bxd" x="340" y="240" width="110" height="80" rx="6"/>
+          <text class="tb" x="395" y="262" text-anchor="middle">Last</text>
+          <text class="tm" x="395" y="278" text-anchor="middle">47 Ω + MOSFET</text>
+          <text class="tm" x="395" y="294" text-anchor="middle">optional</text>
+          <path class="w wd" d="M520 300 H450"/>
+
+          <path class="w wa bundle" d="M330 125 V360 H520 M150 360 H330"/>
+          <circle class="da" cx="330" cy="360" r="5"/>
+          <text class="tm" x="425" y="350" text-anchor="middle">I²C + 3,3 V + GND</text>
+          <rect class="bx" x="20" y="330" width="130" height="60" rx="6"/>
+          <text class="tb" x="85" y="356" text-anchor="middle">OLED 1,3″</text>
+          <text class="tm" x="85" y="374" text-anchor="middle">SH1106 · 0x3C</text>
+
+          <path class="w w5" d="M20 452 H50"/><text class="tm" x="58" y="456">+5 V</text>
+          <path class="w wa" d="M120 452 H150"/><text class="tm" x="158" y="456">I²C + 3,3 V + GND</text>
+          <path class="w wd" d="M300 452 H330"/><text class="tm" x="338" y="456">3,3-V-Datenleitung</text>
+          <path class="w wt" d="M500 452 H530"/><text class="tm" x="538" y="456">DETECT</text>
+          <path class="syl" d="M640 446 H660 M644 451 H656 M648 456 H652"/><text class="tm" x="668" y="456">GND-Zeichen = eine gemeinsame Masse</text>
+        </svg>
+      </div>
+      <figcaption>Die Bündel stehen für mehrere Drähte. Rot ist alles, was 5 V führt, vom Schalter bis zur Diode. Hinter D1 sinkt die Spannung auf etwa 4 V für die LEDs. Teal führt 3,3 V Versorgung, GND und die zwei I²C-Leitungen zu INA226 und OLED. Die Last hängt vor der Diode, damit der INA226 ihren Strom mitmisst.</figcaption>
+    </figure>
+
+    <h3>Bild 2: Der Stromweg im Detail</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 340" role="img" aria-label="Stromweg: USB-A-Stecker, Kippschalter im Pluspol, INA226 mit Shunt und optionalem Parallelwiderstand, Knoten K5 mit Abzweigen zu ESP32 VIN, Last und über D1 zu C1 und den Docks">
+          <rect class="bx" x="20" y="55" width="100" height="90" rx="6"/>
+          <text class="tb" x="70" y="76" text-anchor="middle">USB-A</text>
+          <text class="tm" x="70" y="92" text-anchor="middle">Stecker</text>
+          <text class="tm t5" x="70" y="116" text-anchor="middle">rot = +5 V</text>
+          <text class="tm tg" x="70" y="134" text-anchor="middle">schwarz = GND</text>
+          <path class="w w5" d="M120 100 H176 M244 100 H300"/>
+          <circle class="syl" cx="180" cy="100" r="4"/><circle class="syl" cx="240" cy="100" r="4"/>
+          <path class="syl" d="M183 97 L232 72"/>
+          <text class="tm" x="210" y="132" text-anchor="middle">Kippschalter KCD11</text>
+          <text class="tm" x="210" y="148" text-anchor="middle">im Pluspol (offen)</text>
+
+          <rect class="bx" x="300" y="50" width="200" height="130" rx="6"/>
+          <text class="tb" x="400" y="68" text-anchor="middle">INA226-Modul</text>
+          <text class="tm" x="308" y="90">VIN+</text><text class="tm" x="492" y="90" text-anchor="end">VIN−</text>
+          <path class="w w5" d="M300 100 H370 M450 100 H540"/>
+          <rect class="sy" x="370" y="92" width="80" height="16" rx="2"/>
+          <text class="tm" x="410" y="86" text-anchor="middle">Shunt 0,1 Ω</text>
+          <path class="w w5 dash" d="M330 100 V140 H370 M450 140 H490 V100"/>
+          <rect class="sy dash" x="370" y="132" width="80" height="16" rx="2" style="stroke-dasharray:4 3"/>
+          <text class="tm" x="410" y="166" text-anchor="middle">optional: 0,1 Ω parallel</text>
+          <circle class="d5" cx="330" cy="100" r="3.5"/><circle class="d5" cx="490" cy="100" r="3.5"/>
+
+          <circle class="d5" cx="540" cy="100" r="4.5"/>
+          <text class="tm t5" x="540" y="84" text-anchor="middle">Knoten K5</text>
+          <path class="w w5" d="M540 100 V215"/>
+          <rect class="bx" x="490" y="215" width="100" height="44" rx="6"/>
+          <text class="tb" x="540" y="234" text-anchor="middle">ESP32</text>
+          <text class="tm" x="540" y="250" text-anchor="middle">Pin VIN</text>
+
+          <path class="w w5" d="M540 100 H702 M729 100 H830"/>
+          <circle class="d5" cx="640" cy="100" r="4"/>
+          <path class="w w5 dash" d="M640 100 V215"/>
+          <rect class="bxd" x="610" y="215" width="120" height="44" rx="6"/>
+          <text class="tb" x="670" y="234" text-anchor="middle">Last-Zweig</text>
+          <text class="tm" x="670" y="250" text-anchor="middle">optional, Bild 5</text>
+
+          <polygon class="syf" points="702,90 702,110 726,100"/><path class="syl" d="M730 89 V111"/>
+          <text class="tm" x="716" y="76" text-anchor="middle">D1 1N4007</text>
+          <text class="tm" x="716" y="132" text-anchor="middle">Strich zur LED</text>
+          <circle class="d5" cx="780" cy="100" r="4"/>
+          <path class="w w5" d="M780 100 V138 M780 146 V160"/>
+          <path class="syl" d="M768 138 H792 M768 146 H792"/>
+          <text class="tm" x="804" y="150">C1 1000 µF</text>
+          <text class="tm" x="804" y="166">Streifen an GND</text>
+          <rect class="bx" x="830" y="70" width="120" height="60" rx="6"/>
+          <text class="tb" x="890" y="94" text-anchor="middle">6 Docks</text>
+          <text class="tm" x="890" y="112" text-anchor="middle">Pin 3 (+5 V)</text>
+
+          <path class="w wg" d="M20 300 H940 M70 145 V300 M540 259 V300 M670 259 V300 M780 160 V300 M890 130 V300"/>
+          <path class="w wg dash" d="M670 259 V300"/>
+          <circle class="dg" cx="70" cy="300" r="4"/><circle class="dg" cx="540" cy="300" r="4"/><circle class="dg" cx="670" cy="300" r="4"/><circle class="dg" cx="780" cy="300" r="4"/><circle class="dg" cx="890" cy="300" r="4"/>
+          <text class="tm tg" x="480" y="324" text-anchor="middle">GND-Schiene: eine gemeinsame Masse für alles</text>
+        </svg>
+      </div>
+      <figcaption>Der Schalter sitzt vor dem Shunt. Ausgeschaltet ist der INA226 damit stromlos. Hinter dem Shunt liegt der Knoten K5: Er versorgt den ESP32, die optionale Last und, über D1, die LED-Schiene mit C1. Der INA226 sieht deshalb den gesamten Strom aus der Powerbank.</figcaption>
+    </figure>
+
+    <h3>Bild 3: Ein Dock mit LED-Streifenstück</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 340" role="img" aria-label="Ein Dock: GND-Schiene an Pin 1, GPIO über 330 Ohm an Pin 2 DIN, 5 V hinter D1 an Pin 3, GPIO an Pin 4 DETECT; im Gebäude hängen GND, DIN und 5 V am LED-Streifenstück und Pin 4 liegt an GND">
+                    <text class="tm tg" x="20" y="84">GND-Schiene</text>
+          <text class="tm td" x="20" y="144">ESP32 GPIO23</text>
+          <text class="tm t5" x="20" y="204">+5 V hinter D1</text>
+          <text class="tm tt" x="20" y="264">ESP32 GPIO32</text>
+          <path class="w wg" d="M150 80 H470"/>
+          <path class="w wd" d="M150 140 H230 M270 140 H470"/>
+          <rect class="sy" x="230" y="132" width="40" height="16" rx="2"/>
+          <text class="tm td" x="250" y="124" text-anchor="middle">330 Ω</text>
+          <path class="w w5" d="M150 200 H470"/>
+          <path class="w wt" d="M150 260 H470"/>
+          <text class="tm" x="310" y="250" text-anchor="middle">interner Pull-up im ESP32</text>
+
+          <rect class="bx" x="470" y="40" width="120" height="250" rx="6"/>
+          <text class="tb" x="530" y="54" text-anchor="middle">Dock</text>
+          <text class="tm" x="530" y="67" text-anchor="middle">Winkelleiste</text>
+          <text class="tm" x="478" y="84">1 GND</text><text class="tm" x="478" y="144">2 DIN</text><text class="tm" x="478" y="204">3 +5 V</text><text class="tm" x="478" y="264">4 DETECT</text>
+          <path class="w wg" d="M590 80 H650"/><path class="w wd" d="M590 140 H650"/><path class="w w5" d="M590 200 H650"/><path class="w wt" d="M590 260 H650"/>
+
+          <rect class="bx" x="650" y="40" width="110" height="250" rx="6"/>
+          <text class="tb" x="705" y="58" text-anchor="middle">Stecker</text>
+          <text class="tm" x="705" y="72" text-anchor="middle">Gebäude-Buchse</text>
+          <path class="w wg" d="M760 80 H830"/><path class="w wd" d="M760 140 H830"/><path class="w w5" d="M760 200 H830"/>
+          <path class="w wt dash" d="M760 260 H790 V80"/>
+          <circle class="dg" cx="790" cy="80" r="4"/>
+
+          <rect class="led" x="830" y="50" width="110" height="230" rx="4"/>
+          <rect class="pad" x="830" y="73" width="16" height="14"/><rect class="pad" x="830" y="133" width="16" height="14"/><rect class="pad" x="830" y="193" width="16" height="14"/>
+          <text class="tm" x="852" y="84">GND</text><text class="tm" x="852" y="144">DIN</text><text class="tm" x="852" y="204">5 V</text>
+          <rect class="chip5050" x="890" y="130" width="40" height="40" rx="4"/>
+          <circle class="die" cx="910" cy="150" r="11"/>
+          <text class="tm" x="885" y="236" text-anchor="middle">WS2812B</text>
+          <text class="tm" x="885" y="296" text-anchor="middle">LED-Streifenstück</text>
+          <text class="tm" x="800" y="322" text-anchor="end">Pin 4 liegt im Gebäude an GND. LOW am ESP32 heißt: Gebäude steckt.</text>
+        </svg>
+      </div>
+      <figcaption>Das Streifenstück hat Pads für 5 V, DIN und GND. Die Brücke von Pin 4 zu GND sitzt im Gebäude. Der ESP32 liest DETECT mit Pull-up und gibt die Daten erst 100 ms nach LOW frei (ESPHome: <code>delayed_on: 100ms</code>). Der 330-Ω-Widerstand sitzt beim ESP32, nicht im Dock, weil dort nur 3,5 mm Platz ist.</figcaption>
+    </figure>
+
+    <h3>Bild 4: I²C-Bus mit INA226 und OLED</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 330" role="img" aria-label="ESP32 3V3, GND, SDA und SCL laufen zu INA226 und OLED; die Pinfolge der beiden Module ist verschieden">
+          <rect class="bx" x="20" y="30" width="150" height="150" rx="6"/>
+          <text class="tb" x="95" y="50" text-anchor="middle">ESP32</text>
+          <text class="tm t3" x="162" y="74" text-anchor="end">3V3</text>
+          <text class="tm tg" x="162" y="104" text-anchor="end">GND</text>
+          <text class="tm" x="162" y="134" text-anchor="end">GPIO21 · SDA</text>
+          <text class="tm" x="162" y="164" text-anchor="end">GPIO22 · SCL</text>
+          <path class="w w3" d="M170 70 H660"/><text class="tm t3" x="672" y="74">3,3 V</text>
+          <path class="w wg" d="M170 100 H710"/><text class="tm tg" x="722" y="104">GND</text>
+          <path class="w wa" d="M170 130 H810"/><text class="tm" x="822" y="134" style="fill:var(--csda)">SDA</text>
+          <path class="w wl" d="M170 160 H760"/><text class="tm" x="772" y="164" style="fill:var(--cscl)">SCL</text>
+
+          <rect class="bx" x="330" y="215" width="250" height="80" rx="6"/>
+          <text class="tb" x="445" y="268" text-anchor="middle">INA226</text>
+          <text class="tm" x="445" y="284" text-anchor="middle">0x40 · Pinfolge je Modul prüfen</text>
+          <path class="w w3" d="M350 70 V215"/><path class="w wg" d="M400 100 V215"/><path class="w wl" d="M450 160 V215"/><path class="w wa" d="M500 130 V215"/>
+          <text class="tm" x="350" y="234" text-anchor="middle">VCC</text><text class="tm" x="400" y="234" text-anchor="middle">GND</text><text class="tm" x="450" y="234" text-anchor="middle">SCL</text><text class="tm" x="500" y="234" text-anchor="middle">SDA</text>
+          <text class="tm" x="550" y="234" text-anchor="middle" style="opacity:.6">ALE</text>
+          <text class="tm" x="550" y="250" text-anchor="middle" style="opacity:.6">frei</text>
+
+          <rect class="bx" x="640" y="215" width="200" height="80" rx="6"/>
+          <text class="tb" x="740" y="268" text-anchor="middle">OLED 1,3″</text>
+          <text class="tm" x="740" y="284" text-anchor="middle">SH1106 · 0x3C</text>
+          <path class="w w3" d="M660 70 V215"/><path class="w wg" d="M710 100 V215"/><path class="w wl" d="M760 160 V215"/><path class="w wa" d="M810 130 V215"/>
+          <text class="tm" x="660" y="234" text-anchor="middle">VDD</text><text class="tm" x="710" y="234" text-anchor="middle">GND</text><text class="tm" x="760" y="234" text-anchor="middle">SCK</text><text class="tm" x="810" y="234" text-anchor="middle">SDA</text>
+
+          <circle class="d3" cx="350" cy="70" r="3.5"/><circle class="dg" cx="400" cy="100" r="3.5"/><circle class="dl" cx="450" cy="160" r="3.5"/><circle class="da" cx="500" cy="130" r="3.5"/>
+          <circle class="d3" cx="660" cy="70" r="3.5"/><circle class="dg" cx="710" cy="100" r="3.5"/><circle class="dl" cx="760" cy="160" r="3.5"/><circle class="da" cx="810" cy="130" r="3.5"/>
+          <text class="tm" x="20" y="322">Pull-up-Widerstände sitzen auf den Modulen. Gekreuzte Linien ohne Punkt sind nicht verbunden.</text>
+        </svg>
+      </div>
+      <figcaption>Jede der vier Leitungen vom ESP32 teilt sich in einem Lötknoten (Y) in zwei Drähte zu den Modulen. Beim OLED heißt der Takt SCK, gemeint ist SCL. Die Pinfolge von INA226 und OLED unterscheidet sich je nach Händler, deshalb am Aufdruck lesen, nicht nach der Zeichnung löten.</figcaption>
+    </figure>
+
+    <h3>Bild 5: Strompuls-Last (optional)</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 640 250" role="img" aria-label="Last: 47 Ohm vom 5-V-Knoten über den N-MOSFET nach GND, Gate von GPIO14 über 100 Ohm mit 10 kOhm nach GND">
+          <path class="w w5" d="M40 40 H440"/>
+          <text class="tm t5" x="40" y="28">+5 V (Knoten K5, vor der Diode)</text>
+          <path class="w w5" d="M440 40 V55 M440 105 V125"/>
+          <rect class="sy" x="430" y="55" width="20" height="50" rx="2"/>
+          <text class="tm" x="462" y="84">47 Ω · 1 W</text>
+          <path class="w wg" d="M440 125 V185"/><path class="w wg" d="M424 125 V185"/>
+          <path class="w wg" d="M440 185 V210"/>
+          <text class="tm" x="454" y="130">D</text><text class="tm" x="454" y="190">S</text><text class="tm" x="408" y="158" text-anchor="end">G</text>
+          <text class="tm" x="454" y="152">N-MOSFET</text><text class="tm" x="454" y="168">IRLZ44N</text>
+          <rect class="bx" x="10" y="135" width="100" height="40" rx="4"/>
+          <text class="tb" x="60" y="160" text-anchor="middle">GPIO14</text>
+          <path class="w wd" d="M110 155 H230 M290 155 H424"/>
+          <rect class="sy" x="230" y="145" width="60" height="20" rx="2"/>
+          <text class="tm" x="260" y="138" text-anchor="middle">100 Ω</text>
+          <circle class="dg" cx="350" cy="155" r="3.5" style="fill:var(--cdin)"/>
+          <path class="w wd" d="M350 155 V170"/><path class="w wg" d="M350 200 V210"/>
+          <rect class="sy" x="342" y="170" width="16" height="30" rx="2"/>
+          <text class="tm" x="366" y="189">10 kΩ</text>
+          <path class="w wg" d="M40 210 H480"/>
+          <text class="tm tg" x="40" y="230">GND</text>
+        </svg>
+      </div>
+      <figcaption>Der 10-kΩ-Widerstand hält den MOSFET beim Start aus, der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. 47 Ω ziehen 106 mA, Pulslänge 300 ms alle 5 s. Werte und Alternativen (33, 22, 100 Ω) stehen auf der Pinout-Seite.</figcaption>
+    </figure>
+  </section>
+
+  <section id="spannungen">
+    <h2>Was liegt auf 3,3 V, was auf 5 V</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Netz</th><th>kommt von</th><th>hängt daran</th><th>nie verbinden mit</th></tr></thead>
+      <tbody>
+        <tr><td><span class="net n5"><i></i>+5 V (K5)</span></td><td>Powerbank über Schalter und Shunt</td><td>ESP32 VIN, D1, optionale Last, INA226 VIN−/VBUS (nur gemessen)</td><td>3V3, jedem GPIO, INA226-VCC</td></tr>
+        <tr><td><span class="net n5"><i></i>+5 V LED</span></td><td>K5 hinter D1, etwa 3,9 bis 4,3 V</td><td>6 × Dock Pin 3, C1</td><td>ESP32 VIN (hängt an K5)</td></tr>
+        <tr><td><span class="net n3"><i></i>3,3 V</span></td><td>ESP32-Pin 3V3 (Boardregler)</td><td>INA226 VCC, OLED VDD</td><td>5 V, GND</td></tr>
+        <tr><td><span class="net nd"><i></i>3,3-V-Signale</span></td><td>ESP32-GPIOs</td><td>DIN (über 330 Ω), DETECT, Gate, SDA, SCL</td><td>5 V an einem GPIO zerstört ihn</td></tr>
+        <tr><td><span class="net ng"><i></i>GND</span></td><td>Powerbank</td><td>alles</td><td>–</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Warum die Diode D1 nötig ist</h3>
+    <p>Der ESP32 gibt 3,3 V an DIN aus, das WS2812B-Datenblatt verlangt für High mindestens 0,7 × VDD, bei 5 V also 3,5 V. Eine Siliziumdiode (1N4007) nimmt etwa 0,7 V bei 60 mA und etwa 0,9 V bei allen sechs LEDs weiß. Die LEDs bekommen dann 3,9 bis 4,3 V, ihre Schwelle sinkt auf 2,7 bis 3,0 V, und 3,3 V haben 0,3 bis 0,6 V Reserve. Die Mindestspannung des WS2812B (3,5 V) bleibt eingehalten. Eine Schottky-Diode (1N5819) wäre schlechter, sie nimmt nur 0,3 V und lässt die Schwelle bei 3,2 V.</p>
+    <p class="note">Der Weg ohne Pegelwandler ist ungetestet. Erster Test: ein Dock auf dem Steckbrett, LED an, auch beim Stecken unter Spannung. Der ESP32 hängt am Knoten K5 vor der Diode und sieht die vollen 5 V.</p>
+    <h3>Strombudget</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Verbraucher</th><th class="num">typisch</th><th class="num">Spitze</th><th>Quelle</th></tr></thead>
+      <tbody>
+        <tr><td>6 × WS2812B</td><td class="num">≈ 100 mA</td><td class="num">360 mA</td><td>60 mA je LED bei Vollweiß</td></tr>
+        <tr><td>ESP32 mit WLAN</td><td class="num">≈ 100 mA</td><td class="num">≈ 250 mA</td><td>grobe Herstellerwerte, ungemessen</td></tr>
+        <tr><td>OLED + INA226</td><td class="num">≈ 9 mA</td><td class="num">≈ 9 mA</td><td>ETT-Datenblatt, INA226 unter 1 mA</td></tr>
+        <tr><td>Last (optional)</td><td class="num">0 mA</td><td class="num">106 mA</td><td>47 Ω an 5 V, 300 ms alle 5 s</td></tr>
+        <tr><td><b>Summe</b></td><td class="num"><b>≈ 0,2 A</b></td><td class="num"><b>≈ 0,73 A</b></td><td>Powerbank liefert 2,1 A, Standby unter etwa 50 mA</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="hoehe">
+    <h2>Passt der ESP32 in den Unterkasten?</h2>
+    <p>Maße laut Konzept Stand 6 (<code>plug/power/params.py</code>, ungedruckt): Unterkasten {{UK_TOTAL}} mm hoch, Boden {{UK_FLOOR}} mm, innen also <b>{{UK_INNEN}} mm</b>. Direkt unter der Platte läuft durch den ganzen Kasten der Steckerraum der Docks: Die Leisten hängen 2,0 mm unter der Platte, Lötstellen reichen bis 2,9 mm, die Adern laufen 1,5 bis 2,5 mm darunter waagerecht zur Elektronik. Über der Elektronik muss deshalb eine Adernzone von {{ZONE}} mm frei bleiben, oder die Adern müssen um den ESP32 herumlaufen.</p>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 400" role="img" aria-label="Querschnitt des Unterkastens 16,2 mm innen: Powerbank 12,6 mm, ESP32 mit Winkelleisten 5,9 mm, ESP32 mit Stiftleisten nach unten 13,4 mm, die in die Adernzone von 2,9 mm unter der Platte reicht">
+          {{HEIGHT_SVG}}
+        </svg>
+      </div>
+      <figcaption>Maßstab 14 px je mm. Die ESP32-Maße sind typische Werte: Platine 1,6 mm, Modul 3,1 mm (WROOM-32D, ältere Revision 2,8 mm), USB-C-Buchse etwa 3,3 mm, Stiftleiste 2,54 mm Raster mit 2,5 mm Kunststoff, 6,0 mm langem und 3,0 mm kurzem Pin. Das eigene Board mit der Schieblehre nachmessen.</figcaption>
+    </figure>
+    <div class="tbl" style="margin-top:14px"><table>
+      <thead><tr><th>Aufbau</th><th class="num">Höhe</th><th class="num">Luft zur Platte</th><th>Urteil</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b> Winkelleisten oben, Dupont waagerecht</td><td class="num">≈ {{H_A}} mm</td><td class="num">≈ {{LUFT_A}} mm</td><td><span class="chip ok">passt gut</span> braucht aber Fläche, Seite 56 × 54 mm</td></tr>
+        <tr><td><b>B</b> Stiftleisten nach unten, Draht an den Spitzen</td><td class="num">{{H_B}} mm</td><td class="num">{{LUFT_B}} mm</td><td><span class="chip warn">knapp</span> Adernzone braucht {{ZONE}} mm, nur ohne Adern darüber</td></tr>
+        <tr><td><b>C</b> Drähte direkt in die Löcher gelötet</td><td class="num">≈ {{H_A}} mm</td><td class="num">≈ {{LUFT_A}} mm</td><td><span class="chip warn">flach, aber fest</span> ESP32 nur durch Auslöten wechselbar</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Fläche für Aufbau A</h3>
+    <p>Die Dupont-Gehäuse sind 14 mm lang und stecken waagerecht auf den Winkelleisten. Die Elektronikbox braucht dann etwa 56 mm in der Breite (Platine 28,3 mm plus zweimal etwa 13 mm) und etwa 54 mm in der Länge (Platine 51,8 mm). Das Konzept rechnet mit 60 × 35 mm (<code>ESP_BOX</code>). Für Aufbau A ist ein Rechteck von rund 60 × 58 mm besser, damit die Adern ausweichen können. Im Süden der Platte ist Platz (laut Konzept etwa 115 × 92 mm frei), der Generator muss das aber prüfen. Aufbau B passt mit 54 × 32 mm in die vorhandene Box.</p>
+    <p>Aufbau A hat einen weiteren Vorteil: Der ESP32 liegt flach, mit den vier Befestigungslöchern auf zwei Heißkleber-Punkten oder gedruckten Dornen. Die USB-C-Buchse ist im geschlossenen Kasten nicht erreichbar. Deshalb das erste Mal per USB flashen, bevor er eingebaut wird. Danach geht ESPHome per WLAN (OTA).</p>
+  </section>
+
+  <section id="ohneplatine">
+    <h2>Platine oder lose verdrahten</h2>
+    <p>Lose geht, und es passt besser zu diesem Kasten: Die Teile sitzen über 200 mm verteilt (Schalter in der Westwand, Docks unter den Gebäuden, Elektronik im Süden), eine Platine müsste sie mit Drähten trotzdem verbinden.</p>
+    <div class="two">
+      <div>
+        <h3>Was dafür spricht</h3>
+        <ul>
+          <li>Der ESP32 wird nie festgelötet. Du lötest nur Leisten an. Die Drähte stecken wie bei einem Steckbrett.</li>
+          <li>Widerstände, Diode, Kondensator und MOSFET sitzen frei in den Adern. Kein Platz für Lochraster nötig.</li>
+          <li>Jede Ader lässt sich einzeln umstecken oder kürzen.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Was dagegen spricht</h3>
+        <ul>
+          <li>Mehr freie Lötstellen, die mechanisch halten müssen: Schrumpfschlauch und Heißkleber sind Pflicht.</li>
+          <li>Mit 19 Dupont-Adern am ESP32 braucht die Elektronikbox Fläche (siehe oben).</li>
+          <li>Kurzschlussgefahr beim Verlegen, wenn Lötstellen nicht isoliert sind.</li>
+        </ul>
+      </div>
+    </div>
+    <h3>Später auf den ESP32-C6 wechseln</h3>
+    <p>Mit Dupont-Adern ist das ein Umstecken: Winkelleisten an das neue Board löten, 19 Adern einzeln auf die neuen Pins stecken, GPIO-Nummern in ESPHome ändern. Es gibt keine Platine, die neu gezeichnet werden muss. Zwei Dinge vorher prüfen: Der ESP32-C6 hat nach meinem Wissen nur zwei RMT-Sendekanäle, der klassische ESP32 hat acht. Sechs getrennte Datenleitungen mit <code>esp32_rmt_led_strip</code> laufen dann wahrscheinlich nicht. Außerdem hat das C6-DevKit eine andere Pinleiste. Die Zahl der RMT-Kanäle vor dem Kauf in der Espressif-Doku nachlesen.</p>
+    <h3>Wo eine Mini-Platine doch lohnt</h3>
+    <p>Nur für die Last-Schaltung (MOSFET, drei Widerstände), falls sie gebaut wird. Sie geht auch frei verlötet: 10 kΩ direkt zwischen Gate- und Source-Beinchen, 100 Ω am Gate, 47 Ω am Drain, alles in Schrumpfschlauch. Der IRLZ44N ist 4,6 mm dick und liegt flach.</p>
+  </section>
+
+  <section id="ina">
+    <h2>INA226: Widerstand dazulöten</h2>
+    <p>Der INA226 misst die Spannung über dem Shunt, höchstens ±81,92 mV. Bei 0,1 Ω sind das ±0,82 A. Die Spitze aus dem Strombudget (0,73 A) liegt nur 11 % darunter, mit WLAN-Spitzen und Toleranzen läuft der Wert an die Grenze. Ein zweiter 0,1-Ω-Widerstand parallel gibt dem Modul 0,05 Ω.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Shunt</th><th class="num">Messbereich</th><th class="num">Auflösung</th><th class="num">Abfall bei 0,8 A</th><th>Urteil</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">0,1 Ω (Modul)</td><td class="num">± 0,82 A</td><td class="num">25 µA</td><td class="num">80 mV</td><td>reicht knapp</td></tr>
+        <tr><td class="mono"><b>0,05 Ω (zwei parallel)</b></td><td class="num"><b>± 1,64 A</b></td><td class="num">50 µA</td><td class="num">40 mV</td><td><span class="chip ok">empfohlen</span></td></tr>
+        <tr><td class="mono">0,033 Ω (drei parallel)</td><td class="num">± 2,48 A</td><td class="num">75 µA</td><td class="num">26 mV</td><td>deckt die vollen 2,1 A, unnötig</td></tr>
+      </tbody>
+    </table></div>
+    <ol style="margin-top:14px">
+      <li><b>Wert prüfen.</b> Auf dem Modul steht am Shunt „R100“ (0,1 Ω). Es gibt auch R010 und R002. Bei R100 weitermachen.</li>
+      <li><b>Widerstand parallel löten.</b> 0,1 Ω, 1 %, mindestens 0,5 W (1 W Metallfilm axial oder SMD 1206 mit 0,5 W). Beine kurz abschneiden und direkt auf die beiden Lötflächen von VIN+ und VIN− des Moduls löten, dort wo die Kabel hinkommen. Die Richtung ist egal.</li>
+      <li><b>ESPHome anpassen:</b> <code>shunt_resistance: 0.05 ohm</code> und <code>max_current: 1.6A</code>.</li>
+      <li><b>Eichen.</b> Die Zuleitung des Zusatzwiderstands addiert einige Milliohm, das sind bei 0,05 Ω schnell 5 bis 10 %. Mit einem USB-Strommesser oder einem Multimeter im 10-A-Bereich bei etwa 0,3 bis 0,5 A vergleichen und die Abweichung mit <code>calibrate_linear</code> ausgleichen.</li>
+      <li><b>VBUS prüfen.</b> Bei den meisten Modulen ist der Pin VBUS schon mit VIN− verbunden. Mit dem Multimeter Durchgang zwischen VBUS und VIN− messen. Fehlt er, einen kurzen Draht einlöten.</li>
+      <li><b>Adresse.</b> A0 und A1 offen lassen ergibt 0x40, das OLED hat 0x3C.</li>
+    </ol>
+    <p class="note info" style="margin-top:12px">Ohne den Zusatzwiderstand merkst du die Grenze im Log: Der Stromwert bleibt bei etwa 0,82 A stehen, obwohl die LEDs mehr ziehen. Nachrüsten geht jederzeit, solange der Kasten offen ist.</p>
+  </section>
+
+  <section id="verbindungen">
+    <h2>Alle Verbindungen</h2>
+    <h3>Liste der Drähte</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Nr.</th><th>von</th><th>nach</th><th>Draht und Bauteil</th></tr></thead>
+      <tbody>{{NETLIST}}</tbody>
+    </table></div>
+    <h3>Dupont-Buchsen am ESP32</h3>
+    <p>19 Adern stecken auf Winkelleisten. Position zählt von der Antenne (oben) zur USB-Seite (unten), Antenne oben gehalten, wie auf der Pinout-Seite. Die Farben sind ein Vorschlag für ein Kabelset aus bunten Jumperdrähten.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Seite</th><th class="num">Pos.</th><th>Aufdruck</th><th>GPIO</th><th>Ziel</th><th>Farbe</th></tr></thead>
+      <tbody>{{DUPONT}}</tbody>
+    </table></div>
+    <h3>Adern der Docks</h3>
+    <p>Je Dock ein vieradriges Stück Flachbandkabel (28 AWG) in Pinreihenfolge: braun = Pin 1 GND, <b>rot = Pin 2 DIN</b>, orange = Pin 3 +5 V, gelb = Pin 4 DETECT. Rot ist hier also nicht Plus.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Dock</th><th>Gebäude (Vorschlag)</th><th>DIN</th><th>DETECT</th><th class="num">Luftlinie zur Box</th><th class="num">Ader zuschneiden</th></tr></thead>
+      <tbody>{{DOCKS}}</tbody>
+    </table></div>
+    <p style="margin-top:10px"><small>Luftlinie vom Dock zur Elektronikbox aus dem Konzept von PR #28 (Fachlage nach dem Innenhof-Merge). Ader = 1,3 × Luftlinie + 40 mm, auf 5 mm aufgerundet, mindestens 60 mm. Die Zuordnung der Docks zu den Gebäuden ist noch nicht festgelegt. Ändert sich die Fachlage, die Längen neu rechnen. Am Anfang lieber 20 mm länger lassen und beim ESP32-Ende kürzen.</small></p>
+  </section>
+
+  <section id="anleitung">
+    <h2>Lötanleitung</h2>
+    <p>Die Reihenfolge ist die zum Bauen. Erst alles auf dem Tisch testen, dann einbauen: Im geschlossenen Kasten kommst du an den USB-Anschluss nicht mehr heran.</p>
+    <ol class="steps">
+      <li>
+        <h3>Auf dem Tisch testen <span class="time">1 Stunde, ohne Löten</span></h3>
+        <ul>
+          <li>ESP32, OLED und INA226 mit Jumperdrähten auf dem Steckbrett verbinden (Bild 4).</li>
+          <li>Per USB-C die ESPHome-Firmware einspielen (Skizze auf der Pinout-Seite), I²C-Scan im Log ansehen: 0x3C und 0x40 müssen erscheinen.</li>
+          <li>OLED mit <code>SH1106 128x64</code> testen: Rahmen und Diagonale. Ergebnis in <code>docs/oled-1k3-i2c.md</code> eintragen.</li>
+          <li>Ein Dock testen: LED, 1N4007, 330 Ω, DETECT an GND. Leuchtet die LED bei 3,3 V Daten?</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>I²C-Scan zeigt beide Adressen, LED reagiert, DETECT schaltet im Log.</div>
+      </li>
+      <li>
+        <h3>Winkelleisten an den ESP32 <span class="time">30 Minuten, 30 Lötstellen</span></h3>
+        <ul>
+          <li>Zwei Stück 1×15 aus einer 40-poligen Winkelleiste abbrechen.</li>
+          <li>ESP32 flach auf den Tisch legen, Leisten von oben in die Lochreihen stecken, Pins nach <b>außen</b> über die Platinenkante, Kunststoffkörper auf der Platine.</li>
+          <li>Ein Eck-Pin je Leiste anlöten, Sitz prüfen (Leiste muss flach aufliegen), dann die übrigen 14. Alle Pins löten, dann ist jeder spätere Pinwechsel ohne Löten möglich.</li>
+          <li>Lötenden von unten auf etwa 1 mm kürzen, damit der ESP32 flach auf dem Kastenboden liegt.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Leisten gerade, kein Zinn zwischen benachbarten Pins (Multimeter, Durchgang benachbarter Pins muss offen sein).</div>
+      </li>
+      <li>
+        <h3>Dupont-Adern machen <span class="time">20 Minuten</span></h3>
+        <ul>
+          <li>Fertige Jumperdrähte (Buchse–Buchse, 20 cm) in der Mitte durchschneiden: Jede Hälfte hat eine Buchse und ein freies Ende. Oder eigene Adern mit Dupont-Buchsen crimpen (Crimpzange aus dem Dupont-Set).</li>
+          <li>19 Stück nach der Tabelle „Dupont-Buchsen am ESP32“, Farben nach Vorschlag. Länge an die Docks anpassen.</li>
+          <li>Freie Enden 3 mm abisolieren und verzinnen.</li>
+        </ul>
+      </li>
+      <li>
+        <h3>Docks: Adern an die Leisten <span class="time">45 Minuten</span></h3>
+        <ul>
+          <li>Je Dock 4 Adern Flachband in der Länge aus der Tabelle, 1 mm abisolieren, verzinnen.</li>
+          <li>Pin 1 braun, Pin 2 rot, Pin 3 orange, Pin 4 gelb an die Lötenden der Winkelleiste. Schrumpfschlauch 1,5 mm über jede Lötstelle.</li>
+          <li>PLA wird ab etwa 60 °C weich. Wenn möglich, die Adern an die Leiste löten, bevor sie in die Platte geklebt wird. Wenn nicht, pro Lötstelle höchstens 2 Sekunden, mit nasser Spitze und Pausen. Wie das im Test-Dock klappt, ist noch offen.</li>
+          <li>Jede Ader mit einem Klebeband-Fähnchen mit der Dock-Nummer kennzeichnen.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Durchgang jeder Ader von der freien Seite bis zum Pin, kein Durchgang zwischen den Adern.</div>
+      </li>
+      <li>
+        <h3>Widerstände in die DIN-Adern <span class="time">20 Minuten</span></h3>
+        <ul>
+          <li>Je Dock die rote Ader (Pin 2) beim ESP32-Ende durchtrennen und einen 330-Ω-Widerstand dazwischenlöten, Schrumpfschlauch 3 mm darüber.</li>
+          <li>Der Widerstand liegt am ESP32-Ende, nicht im Dock-Steckerraum.</li>
+          <li>Die andere Seite des Widerstands bekommt die Dupont-Ader zu GPIO23, 19, 18, 17, 16 oder 4.</li>
+        </ul>
+      </li>
+      <li>
+        <h3>Sammelschienen <span class="time">20 Minuten</span></h3>
+        <ul>
+          <li>Zwei Stücke verzinnter Kupferdraht 1 mm, etwa 45 mm, gerade biegen. Eine ist die <b>GND-Schiene</b>, die andere die <b>+5-V-LED-Schiene</b>.</li>
+          <li>Die GND-Schiene bekommt 10 Drähte: USB-Kabel schwarz, ESP32 GND (linke Reihe), C1 Minus, 6 × Dock Pin 1 (braun) und die Last-Source.</li>
+          <li>Die LED-Schiene bekommt 8 Drähte: D1 Kathode, C1 Plus und 6 × Dock Pin 3 (orange).</li>
+          <li>Jeden Draht mit ca. 4 mm Abstand anlöten, die fertige Schiene in Schrumpfschlauch 6 mm schieben (vorher auf einen Draht aufschieben).</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Zwischen GND-Schiene und LED-Schiene kein Durchgang. Dock-Pins 1 und 3 sind je mit ihrer Schiene verbunden.</div>
+      </li>
+      <li>
+        <h3>D1 und C1 <span class="time">10 Minuten</span></h3>
+        <ul>
+          <li><b>D1</b> 1N4007: Anode (ohne Strich) an Knoten K5, Kathode (Strich) an die LED-Schiene. Der Strich zeigt zu den LEDs.</li>
+          <li><b>C1</b> 1000 µF: Plus (längeres Bein, ohne Streifen) an die LED-Schiene, Minus (Streifen) an die GND-Schiene. Liegend einbauen, Beine kurz.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Diodentest am Multimeter: Anode zu Kathode zeigt 0,5 bis 0,7 V, rückwärts „OL“. Elko-Polung nochmal anschauen, falsch herum platzt er.</div>
+      </li>
+      <li>
+        <h3>I²C und 3,3 V <span class="time">25 Minuten</span></h3>
+        <ul>
+          <li>Vier Dupont-Adern vom ESP32: 3V3 (orange), GND rechte Reihe (schwarz), GPIO21 (weiß), GPIO22 (violett).</li>
+          <li>Je Ader einen Lötknoten (Y): Das freie Ende teilt sich in zwei kurze Drähte zu INA226 und OLED. Die Knoten mit Schrumpfschlauch isolieren.</li>
+          <li>An INA226 und OLED die Drähte direkt an die Lötpads löten, die Stiftleisten der Module nicht benutzen (zu hoch für den Kasten). Pinfolge am Aufdruck prüfen, die beiden Module sind verschieden.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>3V3 und GND sind nicht verbunden. SDA und SCL sind nicht verbunden.</div>
+      </li>
+      <li>
+        <h3>Hauptstrom: Kabel, Schalter, INA226 <span class="time">30 Minuten</span></h3>
+        <ul>
+          <li>USB-A-Kabel aufschneiden, nur rot (+5 V) und schwarz (GND) benutzen, Datenadern kürzen und isolieren. Mit dem Multimeter Rot und Schwarz am Stecker prüfen.</li>
+          <li><b>Schalter:</b> rot an eine Lötfahne, die andere Lötfahne an INA226 VIN+. Fahnen vorher verzinnen, höchstens 3 Sekunden. Je Fahne Schrumpfschlauch 2 mm.</li>
+          <li><b>INA226:</b> VIN− zum Knoten K5. K5 ist ein Lötknoten aus VIN− (dicker Draht), ESP32 VIN (Dupont-Ader, rot), D1 Anode und, falls gebaut, die Last. Danach den Zusatzwiderstand parallel zum Shunt (Abschnitt INA226) und den VBUS-Durchgang prüfen.</li>
+          <li>Schwarz vom USB-Kabel an die GND-Schiene.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Schalter aus: kein Durchgang vom USB-Rot zu K5. Schalter ein: Durchgang. Kein Durchgang zwischen +5 V und GND.</div>
+      </li>
+      <li>
+        <h3>Optional: Last-Schaltung <span class="time">20 Minuten</span></h3>
+        <ul>
+          <li>Nur bauen, wenn die Powerbank im Test abschaltet (Schritt 12).</li>
+          <li>10 kΩ zwischen Gate- und Source-Beinchen, 100 Ω ans Gate, 47 Ω (1 W) ans Drain, die freien Enden an K5 (Drain-Seite), GND-Schiene (Source) und die Dupont-Ader von GPIO14 (grau, über den 100 Ω).</li>
+          <li>Der IRLZ44N liegt flach, Kühlfahne zeigt nach oben, die Lötstellen mit Schrumpfschlauch isolieren.</li>
+        </ul>
+      </li>
+      <li>
+        <h3>Ohne Strom durchmessen <span class="time">15 Minuten</span></h3>
+        <ul>
+          <li>+5 V (K5) gegen GND: kein Durchgang, auch nicht bei Schalter ein.</li>
+          <li>LED-Schiene gegen GND: kein Durchgang.</li>
+          <li>3V3 gegen GND: kein Durchgang, später am ESP32 prüfen: der Regler zeigt einige kΩ.</li>
+          <li>Je Dock: ESP32-Dupont-Ader bis Pin 2 etwa 330 Ω. Pin 4 bis ESP32-GPIO: Durchgang (0 Ω). Pin 2 gegen Pin 3: offen.</li>
+          <li>Kein GPIO hat Durchgang zu 5 V oder 3V3.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Alle Punkte erfüllt, bevor der erste Strom fließt.</div>
+      </li>
+      <li>
+        <h3>Erstes Einschalten, ohne LEDs <span class="time">20 Minuten</span></h3>
+        <ul>
+          <li>Keine Gebäude stecken. Schalter ein: Das OLED zeigt etwas, der INA226 meldet etwa 5,0 V und 80 bis 150 mA.</li>
+          <li>Powerbank-Test: Springt die Powerbank an, wenn der Schalter schließt? Manche brauchen einen Tastendruck. Bleibt sie nach 30 Sekunden an? Schaltet sie ab, die Last-Schaltung bauen.</li>
+          <li>Dann ein Gebäude nach dem anderen stecken: DETECT schaltet im Log, LED leuchtet, Strom steigt um höchstens 60 mA.</li>
+          <li>Beim Flashen per USB den Schalter ausmachen. Das Board hat eine Diode zwischen USB und 5-V-Netz (im Foto ein SOD-123-Bauteil „SL“, nicht verifiziert), aber zwei Quellen gleichzeitig sind trotzdem keine gute Idee.</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Spannung am INA226 über 4,7 V auch bei allen LEDs an. Fällt sie darunter, sind Kabel oder Shunt zu schwach.</div>
+      </li>
+      <li>
+        <h3>Einbauen und sichern <span class="time">30 Minuten</span></h3>
+        <ul>
+          <li>ESP32 mit Heißkleber in der Elektronikbox befestigen (zwei Punkte an den Befestigungslöchern).</li>
+          <li>Sammelschienen, Knoten, D1, C1 und Last auf den Boden kleben. Adern mit Heißkleber in Bündeln fixieren, nichts darf über der Powerbank in die Adernzone hängen.</li>
+          <li>Schalter in die Westwand einschnappen lassen, Kabel zum INA226 entlasten.</li>
+          <li>Beim Zudecken alle Adern kontrollieren: nirgends gequetscht, keine blanke Stelle.</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+  <section id="einkauf">
+    <h2>Einkaufsliste</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Teil</th><th class="num">Menge</th><th>Wofür</th><th>Hinweis</th></tr></thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">Vorhanden laut Repo</td></tr>
+        <tr><td>ESP32 DevKit WROOM-32, USB-C</td><td class="num">1</td><td>Steuerung</td><td>Foto in <code>docs/bilder/</code></td></tr>
+        <tr><td>INA226-Modul</td><td class="num">1</td><td>Strommessung</td><td>Aufdruck des Shunts lesen</td></tr>
+        <tr><td>OLED 1,3″ I²C</td><td class="num">1</td><td>Anzeige</td><td><code>docs/oled-1k3-i2c.md</code></td></tr>
+        <tr><td>Wippenschalter KCD11</td><td class="num">1</td><td>Hauptschalter</td><td><code>docs/wippenschalter-kcd11.md</code> im PR #28</td></tr>
+        <tr><td>Dupont-Set, Winkelleisten, Flachbandkabel</td><td class="num">–</td><td>Docks, ESP32-Adern</td><td>Crimpzange für eigene Buchsen</td></tr>
+        <tr class="grp"><td colspan="4">Besorgen</td></tr>
+        <tr><td>Winkelstiftleiste 40-polig, 2,54 mm</td><td class="num">1</td><td>zwei 1×15 für den ESP32</td><td>Körper etwa 2 mm hoch, wie die Dock-Leisten</td></tr>
+        <tr><td>Jumperdrähte Buchse–Buchse, 20 cm</td><td class="num">20</td><td>19 Dupont-Adern</td><td>bunte Farben, in der Mitte durchschneiden</td></tr>
+        <tr><td>Widerstand 330 Ω, ¼ W</td><td class="num">6</td><td>DIN der Docks</td><td></td></tr>
+        <tr><td>Diode 1N4007</td><td class="num">1</td><td>D1</td><td>nicht Schottky</td></tr>
+        <tr><td>Elko 1000 µF, 10 V oder 16 V</td><td class="num">1</td><td>C1</td><td>Ø bis 10 mm, liegend</td></tr>
+        <tr><td>Widerstand 0,1 Ω, 1 %, ≥ 0,5 W</td><td class="num">1</td><td>parallel zum Shunt</td><td>1 W axial oder SMD 1206</td></tr>
+        <tr><td>USB-A-Stecker mit Lötanschlüssen oder altes USB-Kabel</td><td class="num">1</td><td>Anschluss Powerbank</td><td>nur rot und schwarz</td></tr>
+        <tr><td>Silikonlitze 24 AWG rot und schwarz</td><td class="num">1 m</td><td>Hauptstrom</td><td>für die Zuleitung bis zum Knoten K5</td></tr>
+        <tr><td>Verzinnter Kupferdraht 1 mm</td><td class="num">0,1 m</td><td>zwei Sammelschienen</td><td></td></tr>
+        <tr><td>Schrumpfschlauch Ø 1,5, 2, 3 und 6 mm</td><td class="num">Sortiment</td><td>alle Lötstellen</td><td></td></tr>
+        <tr><td>Heißkleber, Flussmittel, Klebeband für Fähnchen</td><td class="num">–</td><td>Fixieren, Kennzeichnen</td><td></td></tr>
+        <tr class="grp"><td colspan="4">Nur wenn die Last gebraucht wird</td></tr>
+        <tr><td>IRLZ44N (N-Kanal, Logic Level)</td><td class="num">1</td><td>Last schalten</td><td>2N7000 nicht nehmen, schaltet bei 3,3 V schlecht</td></tr>
+        <tr><td>Widerstand 47 Ω, 1 W</td><td class="num">1</td><td>Last</td><td>oder zwei 100 Ω, ½ W parallel</td></tr>
+        <tr><td>Widerstand 100 Ω und 10 kΩ</td><td class="num">je 1</td><td>Gate</td><td></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="offen">
+    <h2>Offen und ungetestet</h2>
+    <ul>
+      <li><b>Alle Zahlen zur Höhe sind typische Werte.</b> ESP32-Board, Dupont-Gehäuse und Winkelleisten mit der Schieblehre nachmessen. Der Unterkasten ist noch nicht gedruckt (Konzept Stand 6).</li>
+      <li><b>Elektronikbox 60 × 35 mm</b> reicht für Aufbau A nicht. Wert in <code>plug/power/params.py</code> (<code>ESP_BOX</code>) und im Generator anpassen. PR #28 ändert die Lage der Box und der Docks.</li>
+      <li><b>Zuordnung Dock zu Gebäude</b> ist nicht festgelegt. Die Reihenfolge in der Tabelle ist ein Vorschlag, die Nummern sind austauschbar.</li>
+      <li><b>3,3 V Daten an 4-V-LEDs</b> ohne Pegelwandler sind ungetestet (Schritt 1).</li>
+      <li><b>Powerbank schaltet ein und bleibt an?</b> Ob sie ohne Tastendruck startet und wie lange sie bei geringer Last an bleibt, ist unbekannt. Der Test steht in Schritt 12.</li>
+      <li><b>Einschaltstrom von C1.</b> 1000 µF hinter einem harten Schalter belasten die Powerbank kurz stark. Schaltet sie dabei ab, C1 auf 470 µF verkleinern.</li>
+      <li><b>RMT-Kanäle beim ESP32-C6</b> prüfen, bevor die Platine gekauft wird (siehe oben).</li>
+      <li><b>Hot-Plug:</b> Alle Dock-Stifte sind gleich lang. Die Datenleitung gibt die Firmware erst 100 ms nach DETECT = LOW frei.</li>
+    </ul>
+  </section>
+</main>

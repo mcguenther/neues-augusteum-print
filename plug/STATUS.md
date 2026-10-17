@@ -292,6 +292,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
 | Innenhof-Einsatz: Original gegen neu (Grundrisse, Höhenplan, Gang und Treppen, Schnitte, 3D Mulde und Stecker) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
 | ESP32-Pinout (WROOM-32, 6 Docks, INA226 und 1,3″-OLED am I²C-Bus, Strompuls-Last GPIO14, ESPHome-Skizze, Pins zum Meiden, Schaltung) | `plug/power/pinout.html` | https://claude.ai/artifact/WnrSS5r9uZcTFur5SPE3oE |
+| Schaltplan und Lötplan (Übersicht, Stromweg, Dock, I²C, Last, Einbauhöhe ESP32, Verbindungsliste, Lötanleitung ohne Platine, INA226-Parallelwiderstand) | `plug/power/wiring.html` | https://claude.ai/artifact/E3N36JZyLHKj5354RRspRz |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
