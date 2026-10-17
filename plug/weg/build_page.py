@@ -48,25 +48,16 @@ def steg_von(fp):
     return fp.difference(opened).intersection(box(*STEG_FENSTER))
 
 
-def ohne_steg(fp):
-    return fp.difference(steg_von(fp).buffer(0.02, join_style=2))
-
-
 def platte(mit_steg):
-    """Steckplatte (Manifold) und Modelle; ohne Steg: Hörsaal-Grundriss ohne Steg (nur die Mulde hängt daran, die Platzierungen sind zwischengespeichert)."""
-    orig = G.source_models
-
-    def wrapper(q, s):
-        out = orig(q, s)
-        if not mit_steg:
-            sol, fp, info = out[SLUG]
-            out[SLUG] = (sol, ohne_steg(fp), info)
-        return out
-    G.source_models = wrapper
+    """Steckplatte (Manifold) und Modelle. Seit dem Fix schneidet lod2.models den Steg selbst (lod2.OHNE_STEG); für den Stand mit Steg wird das
+    hier abgeschaltet. Die Platzierungen sind zwischengespeichert."""
+    orig = lod2.OHNE_STEG
+    if mit_steg:
+        lod2.OHNE_STEG = {}
     try:
         pl, report, models, places, outline, hof_solid = C.build(P.SCALE_PLAN, False)
     finally:
-        G.source_models = orig
+        lod2.OHNE_STEG = orig
     return pl, report, models, outline
 
 

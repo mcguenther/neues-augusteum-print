@@ -27,7 +27,7 @@ import numpy as np
 import pyproj
 import shapely
 from lxml import etree
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
 import generate as G
@@ -211,6 +211,19 @@ def partition(outlines, lod2_fps, grow_step=0.5, grow_max=6.0):
             for k, c in cells.items() if c}
 
 
+# Steg am Hörsaalgebäude: ein Verbindungsgang in der Höhe zum Seminargebäude, im LoD2 als Vollblock bis zum Boden (OSM kennt ihn nicht). Er verengte den
+# Weg zwischen beiden Gebäuden (plug/weg/plan.html) und wird aus dem Grundriss geschnitten: im Fenster (lokale m: x0, y0, x1, y1) entfällt alles
+# vom Gebäude, was als Auswuchs schmaler ist als 2 × STEG_OEFFNUNG.
+OHNE_STEG = {"03_hoersaalgebaeude": (-148.2, -27.95, -137.8, -16.9)}
+STEG_OEFFNUNG = 2.0   # m
+
+
+def ohne_steg(cell, fenster):
+    opened = cell.buffer(-STEG_OEFFNUNG, join_style=2).buffer(STEG_OEFFNUNG, join_style=2)
+    steg = cell.difference(opened).intersection(box(*fenster))
+    return cell.difference(steg.buffer(0.03, join_style=2))
+
+
 def thin(p, width=1.0):
     return 2 * p.area / max(p.length, 1e-9) < width
 
@@ -230,6 +243,9 @@ def models(s, min_share=0.25):
     for b in blds:
         b["fp"] = unary_union([Polygon(r[:, :2]).buffer(0) for r, _ in b["roofs"]]).buffer(0.01)
     cells = partition(outlines, [b["fp"] for b in blds])
+    for slug, fenster in OHNE_STEG.items():
+        if slug in cells:
+            cells[slug] = ohne_steg(cells[slug], fenster)
     assigned = {k: [] for k in cells}
     for b in blds:
         for ext, ints in b["roofs"]:

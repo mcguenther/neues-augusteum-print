@@ -150,8 +150,8 @@ a { color: var(--blue); }
 
 <header>
   <h1>Südweg der Sockelplatte</h1>
-  <p class="lead">Ich sehe die Stelle. Am Weg zwischen Seminar- und Hörsaalgebäude ragt vom Hörsaalgebäude ein schmaler Steg in den Weg und verengt ihn auf der Platte von {{WEG_N}} auf {{HALS}} mm. Mein Vorschlag: den Steg aus dem Grundriss des Hörsaalgebäudes schneiden, damit der Weg überall gleich breit durchläuft. Am Modell ist noch nichts geändert; die Bilder nach dem Fix sind eine Simulation.</p>
-  <div class="meta"><span class="chip">Steckplatte 1:1300, Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Vorschlag, noch nicht umgesetzt</span></div>
+  <p class="lead">Ich sehe die Stelle. Am Weg zwischen Seminar- und Hörsaalgebäude ragt vom Hörsaalgebäude ein schmaler Steg in den Weg und verengt ihn auf der Platte von {{WEG_N}} auf {{HALS}} mm. Mein Vorschlag: den Steg aus dem Grundriss des Hörsaalgebäudes schneiden, damit der Weg überall gleich breit durchläuft. Nachtrag: Der Vorschlag ist umgesetzt (<code>lod2.py</code>). Auf Wunsch beginnt dabei die unterste Treppenstufe an der Westkante des Hörsaalgebäudes und ragt nicht mehr darüber hinaus (vorher stand ein 0,5 m breiter Streifen vor, der an der Westwand entlanglief). Die Treppe ist in allen Bildern auf dieser Seite schon die angepasste.</p>
+  <div class="meta"><span class="chip">Steckplatte 1:1300, Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">umgesetzt am 17.10.</span></div>
   <dl class="sum">
     <div><dt>Steg, Größe auf der Platte</dt><dd>{{STEG_B}} × {{STEG_L}} mm</dd></div>
     <div><dt>entspricht in echt</dt><dd>{{STEG_B_M}} × {{STEG_L_M}} m</dd></div>
@@ -185,7 +185,7 @@ a { color: var(--blue); }
       <p class="cap">Roter Kreis: der Steg als schmaler Einschnitt der Hörsaal-Mulde. Zwischen ihm und der Seminar-Mulde bleibt nur ein dünner Plattensteg.</p>
     </figure>
     <figure class="panel ok">
-      <figcaption>Nach dem Fix (Simulation)</figcaption>
+      <figcaption>Nach dem Fix</figcaption>
       {{FIG_3D_NACH}}
       <p class="cap">Dieselbe Stelle ohne Steg. Der Gang liegt hier in voller Breite auf Terrassenhöhe, die Treppe am Westende bleibt wie sie ist.</p>
     </figure>
@@ -228,7 +228,7 @@ a { color: var(--blue); }
     <li><span class="k">4</span><div><strong>Seiten und Doku nachziehen.</strong><p>Steckplatten-Ansicht (<code>plug.views.campus.build_view</code>) neu veröffentlichen, Logbuch <code>scale.md</code> und STATUS ergänzen, Vorher/Nachher-Bilder im Chat zeigen.</p></div></li>
   </ol>
   <div>
-    <h3 style="margin-bottom:8px">Was die Simulation schon geprüft hat</h3>
+    <h3 style="margin-bottom:8px">Prüfung</h3>
     <div class="tw"><table>
       <thead><tr><th>Prüfung</th><th>Ergebnis</th><th>Bemerkung</th></tr></thead>
       <tbody>
@@ -239,7 +239,7 @@ a { color: var(--blue); }
         <tr><th>Wegfallende Fläche</th><td class="n">{{STEG_A}} mm²</td><td class="hint2">etwa {{STEG_A_M}} m² in echt</td></tr>
       </tbody>
     </table></div>
-    <p class="note" style="margin-top:8px">Noch nicht geprüft: <code>dicht=True</code> der neu erzeugten STL, die Hohlkörper-Schnitte und der Slicer. Das gehört zur Umsetzung. Gedruckt ist die Änderung nicht.</p>
+    <p class="note" style="margin-top:8px">Im echten Lauf: <code>generate.py</code> (alle STL <code>dicht=True</code>), <code>plug.campus</code> und <code>plug.buildings 03_hoersaalgebaeude</code> (dicht, keine Kollisionen). Nicht geprüft: Slicer, Druck.</p>
   </div>
 </section>
 
