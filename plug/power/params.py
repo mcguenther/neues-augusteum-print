@@ -54,7 +54,9 @@ UK_FLOOR = 1.2            # E  Boden
 UK_WALL = 2.4             # E  Außenwand (3 Linien + Rand)
 POST = (6.0, 40.0)        # E  Stützen unter der Oberplatte: Kante, Raster
 PIN = dict(d=4.0, h=1.5, clr=0.15)   # E  Zentrierzapfen auf Stützen, Loch in der Oberplatte mit Gleitspiel 0,15 (L10)
-NOTCH_PAD = 0.4           # E  Eckaussparung im Unterkasten reicht so weit über die Fadentrichter hinaus
+NOTCH_PAD = 2.0           # E  Eckaussparung im Unterkasten reicht so weit über die Fadentrichter hinaus; war 0,4, jetzt 2,0 (Nutzer 2026-10-17: V-Kanäle der Oberplatte dürfen etwa ±1,6 mm wandern)
+UK_OUTLINE = (115.6, 220.8)   # E  Außenmaß des Unterkastens, festgeschrieben (Nutzer 2026-10-17): die Steckplatte bleibt in diesem Rechteck; build_batteriefach prüft es
+PB_T_ZUSCHLAG = 0.2       # E  Dickenzuschlag der Powerbank aus der Fachprobe r5 ("ca. 0,2 mm mehr Höhe", Nutzer): Unterkasten innen für 12,8 statt 12,6, keine Messung
 
 # ---- Dock in der Oberplatte: Kabelnische hinter den Lötenden (Nutzer: Lötenden brauchen viel Freiluft, das Kabel muss nach unten fallen)
 SLOT_END = P2.PROP["SLOT_END"]   # Ende des Lötendenschlitzes -8,0 (Plan Steckprobe 2)

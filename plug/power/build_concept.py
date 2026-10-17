@@ -64,7 +64,7 @@ def heights():
     """z-Lagen (Plattenoberseite = 0), Maßkette der Steckprobe."""
     d = PP.stack_plan()
     deck = d["z_hb"]                                    # flache Unterseite der Oberplatte = F + Muldenboden (Leiste hängt darunter)
-    uk_bot = deck - sd.layer_up(PP.STECKERRAUM + PP.PB_T) - PP.UK_FLOOR      # Steckerraum 3,5 über der Powerbank (die 0,8 Luft des Fachs sind darin enthalten)
+    uk_bot = deck - sd.layer_up(PP.STECKERRAUM + PP.PB_T + PP.PB_T_ZUSCHLAG) - PP.UK_FLOOR      # Steckerraum 3,5 über der Powerbank (die 0,8 Luft des Fachs sind darin enthalten)
     return dict(F=d["F"], E=d["E"], ceil=PP.CEIL, body=sd.HDR_BODY, z_hb=d["z_hb"], z_bb=d["z_bb"], z_tip=d["z_tip"],
                 z_bm=d["z_bm"], deck=deck, fach_h=FACH_H, floor=PP.UK_FLOOR, uk_bot=uk_bot, total=-uk_bot, uk_t=deck - uk_bot,
                 stamp_top=d["z_bb"] - PP.STAMP_AIR, pocket=TP.HOF_DEPTH_T, old=OLD["stand1"], old_ober=OLD["ober1"],

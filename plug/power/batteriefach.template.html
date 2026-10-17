@@ -191,10 +191,10 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
   /* ---------- Kurz ---------- */
   $('answer').innerHTML = [
-    ['rec', 'Abmessung', dimsTxt, 'Höhe ' + mm(H.uk_t) + ' (Boden ' + mm(H.floor) + ', innen ' + mm(H.inner) + '); Oberplatte ' + mm(H.plate_t) + ' darüber, zusammen ' + mm(H.total) + '. Gewicht etwa ' + D.grams[0] + ' g PLA (' + fmt(D.grams[1], 0) + ' cm³).'],
+    ['rec', 'Abmessung', dimsTxt, 'Höhe ' + mm(H.uk_t) + ' (Boden ' + mm(H.floor) + ', innen ' + mm(H.inner) + ' für Powerbank ' + mm(PB.T) + ' mit dem Zuschlag aus r5); Oberplatte ' + mm(H.plate_t) + ' darüber, zusammen ' + mm(H.total) + '. Gewicht etwa ' + D.grams[0] + ' g PLA (' + fmt(D.grams[1], 0) + ' cm³).'],
     ['', 'Zaun um die Powerbank', 'entfällt', 'Die Powerbank liegt lose im Fach, notfalls ein paar Punkte Heißkleber. Das Fenster in der Kante für LEDs, microUSB und USB-C bleibt (' + mm(FA.win[1] - FA.win[0], 0) + ' breit).'],
     ['', 'Elektronikfläche', fmt(ESP.zones[0][0], 0) + ' × ' + fmt(ESP.zones[0][1], 1) + ' mm', 'ESP32-DevKit 30 Pin (' + fmt(ESP.board[0], 1) + ' × ' + fmt(ESP.board[1], 1) + ') mit Isoband, dazu ' + mm(ESP.ring, 0) + ' freier Rand. Keine Box; bis ' + mm(H.esp_free) + ' hoch.'],
-    ['', 'Abhängigkeit von der Steckplatte', '3 feste, 2 mit Spielraum', 'Fest: Außenmaß, Oberkante, Eckaussparungen. Spielraum: Zapfen ' + mm(minPin) + ', Docks ' + mm(minDock) + ' bis ' + mm(maxDock) + '. Tabelle unten.']
+    ['', 'Abhängigkeit von der Steckplatte', '2 fest, 3 mit Spielraum', 'Fest: Außenmaß (festgeschrieben) und Oberkante. Spielraum: Eckaussparungen ±' + mm(IF.notch_pad - 0.4) + ', Zapfen ' + mm(minPin) + ', Docks ' + mm(minDock) + ' bis ' + mm(maxDock) + '. Tabelle unten.']
   ].map(([c, l, b, t]) => '<div class="' + c + '"><span class="lbl">' + l + '</span><span class="big">' + b + '</span><span class="small muted">' + t + '</span></div>').join('');
 
   /* ---------- Draufsicht ---------- */
@@ -300,11 +300,11 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
   /* ---------- Schnittstelle ---------- */
   const ifcPill = (c, t) => '<span class="pill ' + c + '">' + t + '</span>';
-  set('ifcLead', 'Nein, nicht ganz. Der Kasten ist der Abdruck der Plattenunterseite: Außenmaß, Oberkante, Zapfen, Eckaussparungen und Dockzonen kommen von der Steckplatte. Drei Punkte sind fest, zwei haben Spielraum, alles andere im Kasten (Fach, Fenster, Elektronik, Schalter) ist unabhängig. Wird der Kasten gedruckt, bleiben diese Werte für die Steckplatte verbindlich.');
+  set('ifcLead', 'Nein, nicht ganz. Der Kasten ist der Abdruck der Plattenunterseite: Außenmaß, Oberkante, Zapfen, Eckaussparungen und Dockzonen kommen von der Steckplatte. Zwei Punkte sind fest (Außenmaß ist jetzt festgeschrieben), drei haben Spielraum, alles andere im Kasten (Fach, Fenster, Elektronik, Schalter) ist unabhängig. Wird der Kasten gedruckt, bleiben diese Werte für die Steckplatte verbindlich.');
   $('ifcTable').innerHTML = '<tr><th>Schnittstelle</th><th>Wert im Kasten</th><th>Woher</th><th>Wenn sich an der Platte etwas ändert</th><th>Status</th></tr>' + [
-    ['Außenmaß', fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm, Ecken R 3', 'Rechteck um alle Gebäudeumrisse plus Rand und Schriftband', 'Ändern sich Grundrisse am Rand (heute der Südweg), kann das Maß springen. Abhilfe: Maß festschreiben und die Platte darin halten.', ifcPill('warn', 'fest')],
+    ['Außenmaß', fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm, Ecken R 3', 'Rechteck um alle Gebäudeumrisse plus Rand und Schriftband', 'Festgeschrieben (<code>UK_OUTLINE</code>): die Steckplatte bleibt in diesem Rechteck. Der Generator bricht ab, wenn die Platte ein anderes Maß ergibt.', ifcPill('warn', 'festgeschrieben')],
     ['Oberkante', 'z = ' + fmt(H.deck, 1) + ' (Platte ' + mm(H.plate_t) + ' dick)', 'Mulde 14,2 + Muldenboden 0,4', 'Eine dickere oder dünnere Platte verschiebt die Auflage der Stützen.', ifcPill('warn', 'fest')],
-    ['Eckaussparungen', '4 Stück am Faden-V, Rand ' + mm(IF.notch_pad) + ' über dem Trichter', 'Lage der V-Kanäle in der Oberplatte', 'Wandert ein V um mehr als ' + mm(IF.notch_pad) + ', passt die Aussparung nicht mehr. Abhilfe: Aussparung großzügiger machen.', ifcPill('warn', 'fest')],
+    ['Eckaussparungen', '4 Stück am Faden-V, Rand ' + mm(IF.notch_pad) + ' über dem Trichter (vorher 0,4)', 'Lage der V-Kanäle in der Oberplatte', 'Ein V darf um etwa ' + mm(IF.notch_pad - 0.4) + ' wandern. Kleinster Abstand der Aussparungen zur nächsten Stütze: ' + mm(IF.notch_free) + '.', ifcPill('mid', 'Spielraum ±' + fmt(IF.notch_pad - 0.4, 1) + ' mm')],
     ['Zapfen', IF.pins.length + ' Stück, Ø ' + mm(UK.pin.d) + ', ' + mm(UK.pin.h), 'Zapfenlöcher in massiven Stellen der Oberplatte', 'Kleinster Abstand des Lochs zu Mulde oder Hof: ' + mm(minPin) + '. Die Löcher bleiben nur gültig, solange dort Material steht.', ifcPill('mid', 'Spielraum ' + fmt(minPin, 1) + ' mm')],
     ['Dockzonen', v.docks.length + ' Stück (Leiste, Lötenden, Draht)', 'Lage der Docks nach <code>placements_1300.json</code>', 'Ein Dock darf um ' + mm(minDock) + ' bis ' + mm(maxDock) + ' wandern (siehe Tabelle), sonst trifft die Zone eine Stütze.', ifcPill('mid', 'Spielraum ' + fmt(minDock, 0) + ' bis ' + fmt(maxDock, 0) + ' mm')],
     ['Stützen', IF.posts.length + ' Stück, ' + mm(UK.post[0], 0) + ' Kante', 'Raster im Kasten', 'Tragen nur die Platte; die Platte hängt nicht von ihnen ab, solange kein Dock sie trifft.', ifcPill('ok', 'frei')],
@@ -334,10 +334,10 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
   ].map((x) => '<li>' + x + '</li>').join('');
 
   $('cards').innerHTML = [
-    ['rec', 'Außenmaß festschreiben', 'Vorschlag', ['Rechteck ' + fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm als feste Schnittstelle, die Steckplatte bleibt darin.', 'Sonst muss der Kasten jedes Mal neu gedruckt werden, wenn sich ein Randgebäude ändert.']],
-    ['', 'Eckaussparungen mit Toleranz', 'Vorschlag, noch zu prüfen', ['Rand von ' + mm(IF.notch_pad) + ' auf etwa 2 mm vergrößern, dann dürfen die V-Kanäle wandern.', 'Die zwei Zapfenlöcher liegen nur ' + mm(minPin) + ' neben Mulde und Hof: ihre Lage jetzt festschreiben und die Platte dort massiv lassen.']],
+    ['rec', 'Außenmaß festgeschrieben', 'umgesetzt', ['Rechteck ' + fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm ist die feste Schnittstelle, die Steckplatte bleibt darin.', 'Ändert sich ein Randgebäude so, dass das Maß abweicht, bricht der Generator ab, statt den Kasten still zu ändern.']],
+    ['', 'Eckaussparungen mit Toleranz', 'umgesetzt', ['Rand von 0,4 auf ' + mm(IF.notch_pad) + ' vergrößert. Stützen, Fach, Docks und Schalter bleiben an denselben Stellen.', 'Die zwei Zapfenlöcher liegen nur ' + mm(minPin) + ' neben Mulde und Hof: ihre Lage jetzt festschreiben und die Platte dort massiv lassen.']],
     ['', 'Powerbank ohne Anschlag', 'beschlossen', ['Kein Zaun, kein Steg. Notfalls Heißkleber auf dem Boden.', 'Offen: sitzt die Powerbank schief, trifft sie das Fenster nicht. Beim ersten Einlegen prüfen.']],
-    ['', 'Messen vor dem Druck', 'offen', ['Powerbank Dicke (r5: minimal über 12,6) und ESP32-Board mit der Schieblehre.', 'Der Kasten ist noch nicht gedruckt. Die Höhe ' + mm(H.uk_t) + ' hängt an 12,6 mm Powerbank plus ' + mm(gapReal) + ' Steckerraum.']]
+    ['', 'Dickenzuschlag Powerbank', 'umgesetzt, nicht gemessen', ['Der Zuschlag von 0,2 mm aus der Fachprobe r5 ist im Kasten: innen für ' + mm(PB.T) + ' statt ' + mm(PB.t0) + ' Powerbank, Kasten ' + mm(H.uk_t) + ' hoch, zusammen ' + mm(H.total) + '.', 'Nichts wird nachgemessen; die ESP32-Maße sind typische Werte.']]
   ].map(([c, t, m, l]) => '<div class="card ' + c + '"><h3>' + t + '</h3><span class="meta">' + m + '</span><ul>' + l.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
 
   /* ---------- 3D ---------- */

@@ -71,13 +71,14 @@ def main():
     meshes = v.pop("meshes")
     h = BC.H0
     ifc = interface(v)
+    assert all(abs(a - b) < 0.05 for a, b in zip(v["plate"], PP.UK_OUTLINE)), "Außenmaß weicht von UK_OUTLINE ab: %s" % v["plate"]
     inner_h = round(h["uk_t"] - PP.UK_FLOOR, 2)
     data = dict(
         v=v, meshes=meshes, ifc=ifc,
         h=dict(deck=h["deck"], uk_bot=h["uk_bot"], uk_t=round(h["uk_t"], 2), inner=inner_h, floor=PP.UK_FLOOR, plate_t=round(-h["deck"], 2),
                total=round(h["total"], 1), gap=PP.STECKERRAUM, body=h["body"], adern=PP.ADERN_ZONE,
                esp_free=round(inner_h - PP.ADERN_ZONE, 1), esp_h=PP.ESP_H, z_bm=h["z_bm"]),
-        pb=dict(L=PP.PB_L, W=PP.PB_W, T=PP.PB_T, g=PP.PB_G, plug=PP.PB_PLUG, cable=PP.PB_CABLE, clr=PP.PB_CLR, clr_z=PP.PB_CLR_Z,
+        pb=dict(L=PP.PB_L, W=PP.PB_W, T=PP.PB_T + PP.PB_T_ZUSCHLAG, t0=PP.PB_T, g=PP.PB_G, plug=PP.PB_PLUG, cable=PP.PB_CABLE, clr=PP.PB_CLR, clr_z=PP.PB_CLR_Z,
                 port_v=PP.PB_PORT_V),
         fach=dict(L=BC.FACH_L, W=BC.FACH_W, H=BC.FACH_H, u0=BC.U0, bu0=BC.BU0, bv0=BC.BV0, kv0=BC.KV0, win=BC.WIN),
         uk=dict(floor=PP.UK_FLOOR, wall=PP.UK_WALL, post=PP.POST, pin=PP.PIN_PLAN),
