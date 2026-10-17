@@ -289,7 +289,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
-| ESP32-Pinout (WROOM-32, 6 Docks, INA226 und Display am I²C-Bus, Pins zum Meiden, Schaltung) | `plug/power/pinout.html` | https://claude.ai/artifact/WnrSS5r9uZcTFur5SPE3oE |
+| ESP32-Pinout (WROOM-32, 6 Docks, INA226 und 1,3″-OLED am I²C-Bus, ESPHome-Skizze, Pins zum Meiden, Schaltung) | `plug/power/pinout.html` | https://claude.ai/artifact/WnrSS5r9uZcTFur5SPE3oE |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

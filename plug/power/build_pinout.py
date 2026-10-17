@@ -10,11 +10,10 @@ OUT = Path(__file__).with_name("pinout.html")
 # Dock 1 bis 6: Datenausgang (DIN) und Eingang (DETECT) je Dock
 DIN = [23, 19, 18, 17, 16, 4]
 DETECT = [32, 33, 25, 26, 27, 13]
-# I²C-Bus (INA226 0x40 und Display 0x3C) auf den Standard-Pins von Wire, ALERT des INA226 auf einen Eingang
+# I²C-Bus (INA226 0x40 und Display 0x3C) auf den Standard-Pins von Wire; ALERT des INA226 bleibt unbenutzt (ESPHome braucht ihn nicht)
 SPECIAL = {
     21: ("i2c", "SDA", "I²C SDA: INA226 und Display"),
     22: ("i2c", "SCL", "I²C SCL: INA226 und Display"),
-    34: ("inonly", "ALERT", "INA226 ALERT, braucht externen Pull-up 10 kΩ an 3V3"),
 }
 RESERVE = {}
 
@@ -149,7 +148,7 @@ def main():
             .replace("{{N_CLEAN}}", str(len(clean)))
             .replace("{{N_USED}}", str(used))
             .replace("{{N_FREE}}", str(len(clean) - used))
-            .replace("{{N_INONLY}}", str(len(inonly) - 1))  # ohne ALERT
+            .replace("{{N_INONLY}}", str(len(inonly)))
             .replace("{{N_COND}}", str(len(cond)))
             .replace("{{N_AVOID}}", str(len(avoid))))
     OUT.write_text(html, encoding="utf-8")
