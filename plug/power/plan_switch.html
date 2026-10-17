@@ -388,14 +388,14 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
     <tr><td>Südwand</td><td>Dahinter liegt die Elektronik direkt an der Wand (x 3 bis 63, y 53 bis 88), kein Platz.</td></tr>
     <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
   </table>
-  <p class="note"><b>Zu klären:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist 2.4 mm dick, am Loch nur 1.2 mm (Tasche 1.2 tief, das sind drei Linien). Ob sie dort steif genug ist und die Haken fassen, zeigt die Probe T2 (T1 passte mit dieser Wand). Die Stützen-Raster (Kante 6, alle 40 mm) liegen ohnehin weiter innen.</p>
+  <p class="note"><b>Stand:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist 2.4 mm dick, am Loch nur 1.2 mm (Tasche 1.2 tief, drei Linien). Mit dem Probeteil T2 hat sich der Schalter sehr gut einsetzen lassen und hält sehr fest; die Werte sind bewährt und stehen in <code>plug/power/params.py</code>. Offen sind der Einbau in den echten Unterkasten und die Hakenspanne.</p>
 </section>
 
 <section class="sheet">
   <h2>Maße und Maßkette</h2>
   <div class="scroll"><table>
     <tr><th>Größe</th><th>Wert in mm</th><th>Status und Herkunft</th></tr>
-    <tr><td>Kasten (verschwindet in der Wand), B × L</td><td class='n'>8.0 × 13.0</td><td><span class='st st-M'>M</span>  vom Nutzer grob gemessen; Händler: Ausschnitt 13,5 × 8,5 bis 9</td></tr><tr><td>Frontplatte B × L (Rand etwa 1 je Seite)</td><td class='n'>10.0 × 15.0</td><td><span class='st st-M'>M</span>  Nutzer; passt zur Bauform 10 × 15 (KCD11)</td></tr><tr><td>Loch in der Wand</td><td class='n'>13.7 × 9.0</td><td><span class='st st-E'>E</span>  nach T1 (13,6 × 8,6: passte, aber sehr stramm) horizontal +0,1, vertikal +0,4 (Nutzer); Händler nennen 13,5 × 8,5 bis 9; Testprobe T2</td></tr><tr><td>Wand am Loch</td><td class='n'>1.2</td><td><span class='st st-E'>E</span>  Nutzer: erst dünn probieren; Schnapphaken greifen je nach Typ bei 0,8 bis 2,0, Abstand Frontplatte bis Hakenkante messen</td></tr><tr><td>Außenwand sonst, Innentasche</td><td class='n'>2.4 / 17.7 × 12.0 × 1.2</td><td><span class='st st-E'>E</span>  Tasche von innen, damit die Haken ausfedern können</td></tr><tr><td>Höhe der Wand außen / Schaltermitte</td><td class='n'>17.4 / 8.7</td><td><span class='st st-A'>A</span>  Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten 17.4 = 32.0), Frontplatte 10 hoch lässt je 3.7 Rand</td></tr><tr><td>Lage auf der Platte</td><td class='n'>Westwand, y = 36.0</td><td><span class='st st-E'>E</span>  Wunsch des Nutzers: südlich der Elektronikbox (y 53,4 bis 88,4), 10 mm Luft zur Box, darüber das Hörsaalgebäude</td></tr><tr><td>Einbautiefe ab Außenfläche</td><td class='n'>≈ 20.0</td><td><span class='st st-A'>A</span>  Kasten 9.0 + Pins 7.0 (aus Foto) + 4.0 Lötstelle und Biegung</td></tr><tr><td>Platz bis zum Fach (Westkante x = 22.4)</td><td class='n'>22.4 frei, Luft 2.4</td><td><span class='st st-A'>A</span>  Streifen westlich des Fachs, an der Stelle ohne Stützen, Zapfen und Dockzone</td></tr>
+    <tr><td>Kasten (verschwindet in der Wand), B × L</td><td class='n'>8.0 × 13.0</td><td><span class='st st-M'>M</span>  vom Nutzer grob gemessen; Händler: Ausschnitt 13,5 × 8,5 bis 9</td></tr><tr><td>Frontplatte B × L (Rand etwa 1 je Seite)</td><td class='n'>10.0 × 15.0</td><td><span class='st st-M'>M</span>  Nutzer; passt zur Bauform 10 × 15 (KCD11)</td></tr><tr><td>Loch in der Wand</td><td class='n'>13.7 × 9.0</td><td><span class='st st-B'>B</span>  bewährt mit T2 (13,6 × 8,6 in T1 war sehr stramm, jetzt +0,1 horizontal und +0,4 vertikal); Händler nennen 13,5 × 8,5 bis 9</td></tr><tr><td>Wand am Loch</td><td class='n'>1.2</td><td><span class='st st-B'>B</span>  bewährt mit T1 und T2 (Nutzer: hält sehr fest); Hakenabstand bleibt nachzumessen</td></tr><tr><td>Außenwand sonst, Innentasche</td><td class='n'>2.4 / 17.7 × 12.0 × 1.2</td><td><span class='st st-E'>E</span>  Tasche von innen, damit die Haken ausfedern können</td></tr><tr><td>Höhe der Wand außen / Schaltermitte</td><td class='n'>17.4 / 8.7</td><td><span class='st st-A'>A</span>  Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten 17.4 = 32.0), Frontplatte 10 hoch lässt je 3.7 Rand</td></tr><tr><td>Lage auf der Platte</td><td class='n'>Westwand, y = 36.0</td><td><span class='st st-E'>E</span>  Wunsch des Nutzers: südlich der Elektronikbox (y 53,4 bis 88,4), 10 mm Luft zur Box, darüber das Hörsaalgebäude</td></tr><tr><td>Einbautiefe ab Außenfläche</td><td class='n'>≈ 20.0</td><td><span class='st st-A'>A</span>  Kasten 9.0 + Pins 7.0 (aus Foto) + 4.0 Lötstelle und Biegung</td></tr><tr><td>Platz bis zum Fach (Westkante x = 22.4)</td><td class='n'>22.4 frei, Luft 2.4</td><td><span class='st st-A'>A</span>  Streifen westlich des Fachs, an der Stelle ohne Stützen, Zapfen und Dockzone</td></tr>
   </table></div>
   <p>Status: M gemessen, A abgeleitet, S geschätzt, E Entscheidung, wie im Logbuch. Der Händler-Ausschnitt 13,5 × 8,5 bis 9 stammt aus Angeboten für den KCD11 (<a href="https://makerselectronics.com/product/kcd11-101-on-off-switch-250v-3a/">Makers Electronics</a>, <a href="https://www.ebay.com/p/13026640396">eBay</a>). Eine Plattenstärke für den Einschnapp-Sitz steht dort nicht. Lage der Teile aus `plug/power/build_concept.py` (Stand 1:1300, Fach an der Nordkante, Spiegelung sgn −1).</p>
 </section>
@@ -415,10 +415,10 @@ Powerbank USB  ──schwarz (GND)───────────────�
       <div class="pick">Vorschlag: A</div></div>
     <div class="card"><h3>2. Loch</h3>
       <ul><li><b>13.7 × 9.0</b></li><li>Wand am Loch 1.2 mit Innentasche 1.2</li></ul>
-      <div class="pick">Loch nach T1 etwas größer, Wand weiter 1.2; Probe T2 klärt den Sitz</div></div>
+      <div class="pick">Loch und Wand bewährt (T2): 13.7 × 9.0, Wand 1.2</div></div>
     <div class="card"><h3>3. Oberkante des Lochs</h3>
       <ul><li><b>Brücke</b> über 13.7 mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
-      <div class="pick">Vorschlag: Brücke, in T2 prüfen</div></div>
+      <div class="pick">Vorschlag: Brücke, im echten Unterkasten prüfen</div></div>
   </div>
 </section>
 
@@ -434,8 +434,8 @@ Powerbank USB  ──schwarz (GND)───────────────�
 </section>
 
 <section class="sheet">
-  <h2>Probeteile T1 und T2</h2>
-  <p><b>T1</b> (Loch 13,6 × 8,6, Wand am Loch 1,2) ist gedruckt: passt, aber sehr stramm. <b>T2</b> nimmt das Loch 13.7 × 9.0 (horizontal +0,1, vertikal +0,4), Wand weiter 1.2 mm, Tasche 17.7 × 12.0.</p>
-  <p>Beide sind ein Wandstück 24.0 × 17.4 × 2.4 mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen 6.0 mm tief, damit es steht wie in der Wand (Loch ab z = 4.2 über dem Bett). Zusammen etwa 1 g und 5 bis 10 Minuten Druck. T2 zeigt, ob der Sitz jetzt leichtgängig ohne Klappern ist und die Haken noch fassen. STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code> (Dateien mit T2), erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>.</p>
+  <h2>Probeteile T1 und T2 (gedruckt)</h2>
+  <p><b>T1</b> (Loch 13,6 × 8,6, Wand am Loch 1,2): passt, aber sehr stramm. <b>T2</b> (Loch 13.7 × 9.0, horizontal +0,1, vertikal +0,4, Wand weiter 1.2, Tasche 17.7 × 12.0): <b>lässt sich sehr gut einsetzen und hält trotzdem sehr fest.</b> Damit sind Loch, Wand und Tasche bewährt.</p>
+  <p>Beide sind ein Wandstück 24.0 × 17.4 × 2.4 mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen 6.0 mm tief (Loch ab z = 4.2 über dem Bett). STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code>, erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>; der Satz ist eingefroren in <code>plug/logbook/rounds/r9_schalterprobe/</code>.</p>
 </section>
 </main>

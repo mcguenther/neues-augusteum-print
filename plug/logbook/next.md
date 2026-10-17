@@ -9,6 +9,10 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 Offene Folge aus r8: `plug/buildings.py` baut jetzt die Fuß-Fase 2,0 (`FUSS_FASE_T`); die eingecheckten Gebäude-STL in `stl/steckmodul_campus/gebaeude/` sind noch mit Fase 0,5 und müssen mit `python3 -m plug.buildings` neu gebaut werden.
 
+## Offene Folge aus r9 (Hauptschalter, 2026-10-17)
+
+Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Abschnitt 2f). Offen: Loch und Tasche in den echten Unterkasten bauen (Westwand, y = 36 aus `SW_Y`), Hakenspanne an der 13-mm-Seite nachmessen, Brücke über dem Loch im echten Teil prüfen; Verdrahtung Powerbank → Schalter → INA226 (`docs/wippenschalter-kcd11.md`).
+
 ## Geklärt (2026-10-16)
 
 - **Platte B** ist die getestete Platte (W, S, D); die Druckmängel gehören zu Platte A. Basis ist B.

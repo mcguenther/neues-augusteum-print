@@ -91,6 +91,18 @@ Maßstab 1:1250, Mulde 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, 
 
 Eingefroren: `rounds/r8_passform_hochhaus/passform_stummel_hochhaus.zip`.
 
+## 2f. Nach der Schalterprobe (r9, 2026-10-17)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Loch für den Wippenschalter KCD11 (Kasten 13 × 8), Langseite waagerecht | **13,7 × 9,0 mm**; T1 mit 13,6 × 8,6 war sehr stramm | **bewährt** | r9 T1, T2 | `SW_HOLE` (`plug/power/params.py`) |
+| Wand am Loch (Schalter rastet ein) | **1,2 mm** (drei Linien), sonst 2,4; „hält sehr fest“ | **bewährt** | r9 T1, T2 | `SW_WALL` |
+| Innentasche für die Haken | Loch + 4,0 × + 3,0, 1,2 tief, oben 45°-Dach | bewährt (gedruckt, nicht gesondert bewertet) | r9 | `SW_POCKET_PAD` |
+| Lage des Schalters | Westwand, y = 36 (südlich der Elektronikbox), frei von Konflikten | vorläufig, nicht in der echten Platte gedruckt | Plan `plan_switch.html` | `SW_Y` |
+| Brücke über dem Loch, Hakenspanne | nicht gesondert gemeldet bzw. ungemessen | offen | r9 | – |
+
+Eingefroren: `rounds/r9_schalterprobe/schalterprobe_T1_T2.zip`.
+
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 
 | Größe | Wert |
