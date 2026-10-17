@@ -285,6 +285,9 @@ def page(v):
     win_h = d["win_top"] - d["mb"]
     pillar = d["W"] / 2 - D.WIN_W / 2 - D.WALL
     wide_w = D.KASS_W + 2 * (D.WALL + D.FOOT_CH_FRONT)
+    kd2 = body4.V.dims("V2")
+    lp = aux["lid_pts"]
+    lid_len = math.hypot(lp[0][0] - lp[1][0], lp[0][1] - lp[1][1])
     head = open(CONCEPT_TEMPLATE, encoding="utf-8").read().split('<div class="wrap">')[0]
     head = head.replace("<title>Powerbank in der Grundplatte</title>", "<title>Plan 3 Display-Gebäude</title>\n<meta name=\"description\" content=\"Display-Körper mit Kopf über der Platte, Rückenkeil und 3D-Ansicht\">")
     head = head.replace("</style>", CSS_EXTRA + CSS3 + "</style>")
@@ -314,9 +317,10 @@ def page(v):
     mini = mini_map(v, pl, L.EAST_XE, y_mid)
     html = f"""<div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 3, zweite Fassung, noch nicht abgenickt</div>
+  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 3, zweite Fassung, STL für den ersten Probedruck mit Standardwerten gebaut</div>
   <h1>Display-Gebäude: Kopf über der Platte</h1>
-  <p class="lead">Zweite Fassung nach deiner Rückmeldung: Das Kabelfenster geht hoch, der Fuß ist verdrehsicher, die Fase folgt <code>main</code>, und die dünnen Teile halten mit Zapfen und Rastnasen. Kopf über der Platte, Fenster ab 10 mm und der Rückenkeil mit schrägem Rückdeckel sind abgenickt. Erst nach deinem Okay entstehen STL.</p>
+  <p class="lead">Zweite Fassung nach deiner Rückmeldung: Das Kabelfenster geht hoch, der Fuß ist verdrehsicher, die Fase folgt <code>main</code>, und die dünnen Teile halten mit Zapfen und Rastnasen. Kopf über der Platte, Fenster ab 10 mm und der Rückenkeil mit schrägem Rückdeckel sind abgenickt. Auf deine Bitte, erst mit meinen Standardwerten zu testen, sind die STL für den ersten Probedruck gebaut (<code>stl/steckmodul_display/</code>, <code>python3 -m plug.display.build</code>).</p>
+  <p class="small muted">Korrektur beim Bau: Die Kassette ist der V2-Unterbau mit {de(kd2['w'], 2)} × {de(kd2['depth'], 2)} × {de(kd2['z_b'], 1)} mm im Schacht {de(D.KASS_W, 2)} × {de(D.KASS_D, 2)}. Plan 3 hatte die Maße der v4 (13,2 × 5,58 × 17,1) angenommen; die Kassette endet deshalb nur {de(D.KASS_TOP, 1)} mm über der Platte, und der Rückenkeil ist {de(d['z_rear'], 1)} mm statt 8,6 mm hoch. Alle Zahlen und Bilder auf dieser Seite sind neu gerechnet.</p>
 </header>
 
 <section aria-labelledby="h-neu">
@@ -418,9 +422,9 @@ def page(v):
     <thead><tr><th>Teil</th><th>Maße</th><th>Drucklage</th><th>Anmerkung</th></tr></thead>
     <tbody>
       <tr><td><b>1 Körper</b></td><td class="num">{de(d['W'])} × {de(d['depth'])} × {de(d['z_top'] - d['foot'])}</td><td>stehend, Fuß unten auf dem Bett, <b>mit Support</b> unter dem Kopf</td><td>Fuß {de(d['NW'])} × {de(foot_len)} mit Kodierecke und Fasen (2,0 vorn, {de(D.FOOT_CH_SIDE)} seitlich), Schacht mit Einführfase, Tasche von vorn offen, Kabelfenster mit Rundbogen, Rückenkeil mit offener Kammer unter der Schräge (Wand lehnt höchstens 31° über Luft). Support nur unter dem Kopf: Tree-Support bis auf das Bett, Kontakt nur an der Kopfunterseite.</td></tr>
-      <tr><td><b>2 Rückdeckel</b></td><td class="num">{de(D.LID_W)} × 31,9 × {de(D.BLENDE_T)}</td><td>liegend</td><td>Schräge Wand mit vier Rastnasen, bündig im Körper.</td></tr>
+      <tr><td><b>2 Rückdeckel</b></td><td class="num">{de(D.LID_W)} × {de(lid_len)} × {de(D.BLENDE_T)}</td><td>liegend</td><td>Schräge Wand mit vier Rastnasen, bündig im Körper.</td></tr>
       <tr><td><b>3 Frontblende</b></td><td class="num">{de(d['W'])} × {de(d['z_top'] - d['z_hb'])} × {de(D.BLENDE_T)}</td><td>liegend, Außenseite unten, Zapfen nach oben</td><td>Sichtfenster {de(P['aa_w'] + 2 * D.WINDOW_MARGIN)} × {de(P['aa_h'] + 2 * D.WINDOW_MARGIN)} als glattes Loch, vier Zapfen Ø {de(D.PEG_D)}.</td></tr>
-      <tr><td><b>4 Kassette</b></td><td class="num">{de(D.KASS_W)} × {de(D.KASS_D)} × 17,1</td><td>stehend</td><td>Unterbau der V2 (als Unterbau im Schacht bewährt, r8) ohne Blatt und Streifen, neu zu zeichnen.</td></tr>
+      <tr><td><b>4 Kassette</b></td><td class="num">{de(kd2['w'], 2)} × {de(kd2['depth'], 2)} × {de(kd2['z_b'], 1)}</td><td>stehend, Tasche unten</td><td>Kassette K0: Unterbau der V2 (Unterbau im Schacht bewährt, r8) ohne Blatt und Streifen; Schacht {de(D.KASS_W, 2)} × {de(D.KASS_D, 2)}, Anschlag {de(d['ledge'])} mm in 45° auf die Öffnung.</td></tr>
       <tr><td>Kaufteile</td><td colspan="3">Modul mit Header, vier Silikon-Adern 28 AWG (etwa 60 mm), Dupont-Buchse 4-polig mit Kontakten, Winkelleiste für das Dock.</td></tr>
     </tbody></table></div>
   <ol class="todo">
@@ -490,7 +494,7 @@ def page(v):
   <h2 id="h-open">Offen</h2>
   <ul>
     <li><b>Du:</b> Modulmaße nachliefern (Pinlänge, Dicke mit Header, vor allem die <b>Lochlage</b> für die Zapfen). Ein Lineal und ein seitliches Foto reichen.</li>
-    <li><b>Kassette ohne Streifen</b> (Unterbau der V2) ist noch zu zeichnen. Der Anschlag im Schacht ist hier vereinfacht.</li>
+    <li><b>Kassette in zwei Lagen:</b> Die Buchsentasche ist symmetrisch, die Kassette passt gedreht in den Schacht. Dann liegen GND und 3,3 V vertauscht an den Pins. Bis zu einer Kodierecke an Kassette und Schacht (Vorschlag für den nächsten Satz): Pin 1 beim Bestücken markieren und vor dem ersten Stecken durchmessen.</li>
     <li><b>Rastnasen und Zapfen</b> sind klein (0,4 bis 2,4 mm): Passung erst im Probedruck sicher.</li>
     <li>Die Adern der 3D-Ansicht sind nur ein Beispiel einer Schleife.</li>
   </ul>

@@ -14,6 +14,7 @@ from shapely.ops import unary_union
 from plug import geom as g
 from plug.display import layout as L
 from plug.display import params as D
+from plug.testcase import variants as V
 
 P = D.DISP
 
@@ -48,7 +49,53 @@ def dims():
     d["z_rear"] = D.KASS_TOP + D.AIR + D.LID_T                # Oberkante hinten über der Kassette (4,5 Luft plus Deckel)
     d["z_pins"] = d["mb"] + P["hdr_edge"]
     d["wall"] = D.WALL
+    d["z_s"] = d["z_cass"] + D.SHAFT_EXTRA                     # Schachtdecke: darüber beginnt die 45°-Schräge des Anschlags
+    d["ledge"] = ledge_depth(d)                                # Höhe der Schräge bis zur Öffnung
+    d["z_ledge"] = d["z_s"] + d["ledge"] + D.DECKEL_T          # Oberseite des Anschlagrands = Boden der Kammer über dem Hals
     return d
+
+
+def shaft_rect(d):
+    """Schacht im Grundriss (x, y), shapely."""
+    return sbox(d["x_s0"], -D.KASS_W / 2, d["x_s1"], D.KASS_W / 2)
+
+
+def opening(d):
+    """Öffnung über dem Anschlag (Grundriss): Aderschlitz der Kassette mit Spiel FREI_T, vereinigt mit dem Schacht um ANSCHLAG_T verkleinert."""
+    k = V.dims("V2")
+    sx = (d["x_s0"] + d["x_s1"]) / 2
+    win = sbox(sx - k["pk_d"] / 2 - D.FREI_T, -k["slot"] / 2 - D.FREI_T, sx + k["pk_d"] / 2 + D.FREI_T, k["slot"] / 2 + D.FREI_T)
+    return win.union(shaft_rect(d).buffer(-D.ANSCHLAG_T, join_style=2))
+
+
+def ledge_depth(d):
+    """Höhe der 45°-Schräge: so lange, bis der verkleinerte Schacht in der Öffnung liegt (Schritte 0,1 wie bei den Gebäuden)."""
+    rect, win, depth = shaft_rect(d), opening(d), 0.0
+    while not rect.buffer(-depth, join_style=2).difference(win).buffer(-1e-3).is_empty and depth < 6.0:
+        depth += 0.1
+    return round(depth, 1)
+
+
+def ext_poly(poly, z0, z1):
+    """shapely-Polygon (auch mit Löchern, auch Vielfaches) zwischen z0 und z1."""
+    from shapely.geometry.polygon import orient
+    loops = []
+    for q in getattr(poly, "geoms", [poly]):
+        q = orient(q, 1.0)
+        loops.append([(float(x), float(y)) for x, y in q.exterior.coords][:-1])
+        loops += [[(float(x), float(y)) for x, y in r.coords][:-1] for r in q.interiors]
+    return g.ext(m3d.CrossSection(loops), z0, z1)
+
+
+def ledge_cut(d):
+    """Schnittkörper über dem Schachtende: Schräge in 0,1-mm-Stufen von der Schachtfläche auf die Öffnung, darüber die Öffnung bis in die Kammer."""
+    rect, win = shaft_rect(d), opening(d)
+    zs, parts, t = d["z_s"], [], 0.0
+    while t < d["ledge"] - 1e-9:
+        parts.append(ext_poly(rect.buffer(-(t + 0.05), join_style=2).union(win), zs + t - 0.005, zs + t + 0.105))
+        t += 0.1
+    parts.append(ext_poly(win, zs - 0.01, d["z_ledge"] + 0.6))
+    return g.union(parts)
 
 
 def profile_side(d):
@@ -107,7 +154,7 @@ def chamber_poly(d, r=None):
     prof = Polygon(profile_side(d))
     inner = prof.buffer(-D.WALL, join_style=2)
     c = inner.intersection(sbox(d["x_bw"], d["z_hb"], d["x_back"], d["z_top"]))
-    c = c.difference(sbox(d["x_bw"] - 1, d["z_hb"] - 1, d["x_be"], d["z_cass"]))                      # über der Kassette bis zur Oberkante; der Schacht ist anders
+    c = c.difference(sbox(d["x_bw"] - 1, d["z_hb"] - 1, d["x_be"], d["z_ledge"]))                     # Anschlagrand über dem Hals; die Adern gehen durch die Öffnung
     c = c.difference(sbox(d["x_bw"] - 1, d["z_hb"] - 1, d["x_back"] + 1, d["mb"]))                    # Boden bis zur Plattenunterkante
     c = c.buffer(-r).buffer(r)
     if c.geom_type != "Polygon":
@@ -165,6 +212,14 @@ def rounded_rect(y0, y1, z0, z1, r, n=8):
     return Polygon(sbox(y0 + r, z0 + r, y1 - r, z1 - r).buffer(r, quad_segs=n).exterior.coords)
 
 
+def kassette_k0(d):
+    """Kassette K0: Unterbau der V2 (plug/testcase/variants.py) ohne Blatt, in der Lage im Schacht (Weltlage; lokal x -> y, lokal y -> x)."""
+    k = V.dims("V2")
+    m = V.kassette("V2").trim_by_plane([0, 0, -1], -k["z_b"])          # Blatt abschneiden: nur Unterbau bis zur Schulterfläche
+    m = m.translate([0.0, -k["depth"] / 2, 0.0]).rotate([0.0, 0.0, 90.0])
+    return m.translate([(d["x_s0"] + d["x_s1"]) / 2, 0.0, d["foot"]])
+
+
 def parts(d=None):
     """Volumenkörper aller Teile (manifold3d, Weltlage: x Osten, z oben) und Hilfsdaten für die Ansicht."""
     d = d or dims()
@@ -187,12 +242,11 @@ def parts(d=None):
     ch_poly = chamber_poly(d)
     chamber = g.prism_y(list(ch_poly.exterior.coords)[:-1], -D.CHAMBER_FRONT_W / 2, D.CHAMBER_FRONT_W / 2) ^ \
         g.ext(_cs(chamber_plan(d)), d["z_hb"] - 1.0, d["z_top"] + 1.0)
-    # Schacht für die Kassette mit Einführfase am Fuß und Anschlag oben
+    # Schacht für die Kassette mit Einführfase am Fuß; oben der Anschlag (45°-Schräge) und die Öffnung für die Adern
     sx = (d["x_s0"] + d["x_s1"]) / 2
-    shaft = g.union([g.box(d["x_s0"], d["x_s1"], -D.KASS_W / 2, D.KASS_W / 2, d["foot"] - 0.01, d["z_cass"] + 0.3),
-                     g.frustum(D.KASS_D, D.KASS_W, d["foot"] - 0.01, d["foot"] + 0.5, 0.5, cx=sx)])
-    # Öffnung für die Adern über dem Anschlag
-    gap = g.box(d["x_s0"] + 1.2, d["x_s1"] - 1.2, -5.0, 5.0, d["z_cass"] - 0.9, d["z_cass"] + 1.0)
+    shaft = g.union([g.box(d["x_s0"], d["x_s1"], -D.KASS_W / 2, D.KASS_W / 2, d["foot"] - 0.01, d["z_s"]),
+                     g.frustum(D.KASS_D + 2 * D.ENTRY_CH, D.KASS_W + 2 * D.ENTRY_CH, d["foot"] - 0.01, d["foot"] + D.ENTRY_CH, -D.ENTRY_CH, cx=sx)])
+    ledge = ledge_cut(d)
     # Rückdeckel: Öffnung im Körper (mit Spiel), Deckel selbst
     lid_pts, normal = lid_poly(d)
     lid = g.prism_y(lid_pts, -D.LID_W / 2, D.LID_W / 2)
@@ -218,7 +272,7 @@ def parts(d=None):
     hz = [d["mb"] + P["hole_edge"], d["mb"] + P["hole_edge"] + P["hole_dy"]]
     hy = [-P["hole_dx"] / 2, P["hole_dx"] / 2]
     peg_holes = g.union([_xcyl(D.PEG_HOLE_D / 2, d["x_slot0"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T, y, z) for y in hy for z in hz])
-    body = body - pocket - window - chamber - shaft - gap - lid_cut - front_rebate - peg_holes
+    body = body - pocket - window - chamber - shaft - ledge - lid_cut - front_rebate - peg_holes
     lid = lid ^ env
     # Frontblende: liegt in Ost-Fläche, Fenster als Loch
     wb, wt = d["wb"], d["wt"]
@@ -227,7 +281,7 @@ def parts(d=None):
     pegs = g.union([_xcyl(D.PEG_D / 2, d["x_blende"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T + 0.2, y, z) for y in hy for z in hz])
     blende = blende + pegs
     # Kassette (vereinfacht) und Modul
-    cas = g.box(d["x_s0"] + 0.06, d["x_s1"] - 0.06, -D.KASS_W / 2 + 0.06, D.KASS_W / 2 - 0.06, d["foot"], d["z_cass"])
+    cas = kassette_k0(d)
     mb = d["mb"]
     glass_z0 = mb + P["pcb_h"] - 3.3 - P["panel_h"]
     pcb = g.box(d["x_pcb0"], d["x_pcb1"], -P["pcb_w"] / 2, P["pcb_w"] / 2, mb, mb + P["pcb_h"]) - \
@@ -250,6 +304,6 @@ def parts(d=None):
     lpins = g.union([g.box(-pe - 0.32, -pe + 0.32, (i - 1.5) * 2.54 - 0.32, (i - 1.5) * 2.54 + 0.32, -16.0, -8.9) for i in range(4)])
     tails = g.union([g.box(-pe - 6.3, -pe, (i - 1.5) * 2.54 - 0.32, (i - 1.5) * 2.54 + 0.32, -16.0, -15.4) for i in range(4)])
     # Weg der Adern (x, z) mit Schleife in der Kammer, von der Kassettenoberkante zu den Stiftspitzen
-    wire = [(cx, d["z_cass"]), (cx - 0.7, 7.5), (cx + 1.3, 12.5), (cx + 5.8, 16.5), (cx + 9.5, 13.0), (cx + 9.8, 8.0), (cx + 8.3, 4.8), (d["x_tip"] - 0.6, d["z_pins"])]
+    wire = [(cx, d["z_cass"]), (cx - 0.7, 6.5), (cx + 1.3, 10.5), (cx + 5.8, 15.5), (cx + 9.5, 12.5), (cx + 9.8, 8.0), (cx + 8.3, 4.8), (d["x_tip"] - 0.6, d["z_pins"])]
     return dict(body=body, lid=lid, blende=blende, cassette=cas, pcb=pcb, glass=glass, aa=aa, header=hdr, pins=pins, plate=plate,
                 leiste=lei + lpins + tails), dict(chamber=ch_poly, wire=wire, normal=normal, lid_pts=lid_pts, d=d)

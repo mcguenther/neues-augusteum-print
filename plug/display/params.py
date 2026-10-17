@@ -6,6 +6,7 @@ das Modul mit der Schieblehre gemessen hat.
 """
 from plug.power import params as PP
 from plug.testcase import params as TP
+from plug.testcase import variants as V
 
 # ---- OLED-Modul: GME12864-70 ist laut Hersteller ein nacktes 1,3"-Panel (CH1116G/SH1106, 128 × 64, FPC 30 pol.); das Teil des Nutzers sitzt auf einer
 # Platine „1.30" IIC“ mit 4-Pin-Header (VDD GND SCK SDA). Maße aus den Fotos der Vorder- und Rückseite (Stand 2026-10-17): Maßstab aus dem Pinraster
@@ -55,9 +56,16 @@ TOP_CAP = 1.2          # E  Kopfdach über dem Modul (Teil des Körpers; das Mod
 BLENDE_T = 1.2         # E  Frontblende (eigenes Teil, liegend gedruckt, Fenster als Loch)
 WIRE_LEN = 55.0        # A  Länge der Adern: Weg etwa 22 mm plus 30 mm zum Anlöten außerhalb des Körpers
 
-# ---- Kassette ohne LED-Streifen: Unterbau der V2 (nur Buchsentasche und Aderschlitz), Schacht mit Spiel aus plug.campus.shaft_size
-KASS_W, KASS_D = 13.08 + 2 * TP.KASS_CLR_T, 5.46 + 2 * TP.KASS_CLR_T      # Schacht 13,2 × 5,58 (A, V2 ohne Blatt)
-KASS_TOP = 2.9         # A  Oberkante der Kassette über der Plattenoberfläche (Maßkette Campus: F 14,2 + 2,9 = 17,1)
+# ---- Kassette ohne LED-Streifen: Unterbau der V2 (nur Buchsentasche und Aderschlitz). Maße kommen aus plug/testcase/variants.py (V2: 12,96 × 5,34 × 15,1);
+# der Schacht hat das Einpressspiel KASS_CLR_T je Seite (plug/campus.py shaft_size). Plan 3 hatte 13,2 × 5,58 × 17,1 angenommen (Maße der v4, Spiel doppelt gerechnet).
+_K2 = V.dims("V2")
+KASS_W, KASS_D = _K2["w"] + 2 * TP.KASS_CLR_T, _K2["depth"] + 2 * TP.KASS_CLR_T      # Schacht 13,08 × 5,46 (A, V2 ohne Blatt)
+KASS_TOP = _K2["z_b"] - TP.dims_plan()["F"]    # A  Oberkante der Kassette über der Plattenoberfläche: Unterbau 15,1 minus Fuß 14,2 = 0,9
+SHAFT_EXTRA = TP.SHAFT_EXTRA_T                  # B  Schacht so viel höher als die Kassette (L12)
+ENTRY_CH = TP.ENTRY_CH_T      # B  Einführfase am Schachteingang (Bett)
+ANSCHLAG_T = 1.2       # B  Anschlag über dem Schacht: 45°-Schräge, die auf die Öffnung zuläuft (plug/buildings.py ANSCHLAG_T)
+FREI_T = 0.3           # B  Spiel der Öffnung um Aderschlitz (buildings.py FREI_T)
+DECKEL_T = 0.4         # E  Decke des Anschlagrands über der Schräge (zwei Schichten, wie das Schachtrohr der Gebäude)
 
 # ---- Abstände auf der Platte
 EDGE = 3.5             # E  Mulde bis Plattenkante (Fase 1,5 + Wand 2,0)
