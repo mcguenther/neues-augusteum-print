@@ -111,7 +111,7 @@ Umsetzung: `hohl.py` (Verfahren), `generate.py` (`hohl_models`, `colour_hohl`), 
 Offen:
 1. **Lichtprobe** Wandstreifen 0,4 / 0,8 / 1,2 mit LED (Schritt L in Steckprobe 2): bestätigt oder ändert `hohl.WAND`.
 2. **Brückenprobe**: Mini-Gebäude mit Decke 10 mm Spannweite und einem Gewölbe, im selben Druck wie die Lichtprobe; die Gewölbe sind ungedruckt.
-3. **Fuß und Kassette in der Schale**: als Prototyp gebaut (2026-10-17, `python3 -m plug.buildings`, siehe `scale.md`, Abschnitt „Steckbare Hohlgebäude“); ungedruckt.
+3. **Fuß und Kassette in der Schale**: als Prototyp gebaut (2026-10-17, `python3 -m plug.buildings`, siehe `scale.md`, Abschnitt „Steckbare Hohlgebäude“); Gewölbe überarbeitet (Rohr als Stütze, Spalten gefüllt, zusammen −15 %), Füllungs-Empfehlung Gyroid 10 % dort; ungedruckt.
 4. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm) und durch farbige Wände: ungetestet.
 5. Slicer prüfen: 0,8-mm-Wände, `_farbig.3mf` mit bemalten Dreiecken (Innenflächen einfarbig).
 

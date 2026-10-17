@@ -201,7 +201,12 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
         # Kassette (Platz mit 45°-Walm, unten). Sonst griffe das Gewölbe eines Nachbarraums über den Rohrkopf, wo das Rohr nicht trägt,
         # und zwischen ihm und dem Walm bliebe eine nach unten hängende Kante.
         # Die Säule reicht bis 0,4 mm über die Walmspitze; darüber darf das Gewölbe wieder über das Rohr greifen (hohe Gebäude).
-        cav = cav - ext(rohr_fp, -F - 1.0, float(platz.bounding_box()[5]) + 0.4)
+        zt = float(platz.bounding_box()[5]) + 0.4
+        cav = cav - ext(rohr_fp, -F - 1.0, zt)
+        # Wo über der Säule bis zum Gewölbe weniger als FUELLEN_T Luft bliebe, wird auch das Material (keine flachen Taschen)
+        flach = rohr_fp.intersection(hohl._cs_poly(cav.slice(zt + 0.1))).difference(hohl._cs_poly(cav.slice(zt + max(FUELLEN_T, 0.4))))
+        if flach.area > 0.05:
+            cav = cav - ext(flach.buffer(0.02, join_style=2), zt - 0.01, zt + max(FUELLEN_T, 0.4) + 0.01)
     ziel = hohl.cavity(lay0).translate([0, 0, -F])                  # Ziel-Hohlraum ohne Gewölbe (Wand und Dach 0,8)
     boden = ext(fp, -F - 0.01, -F + BODEN_T)
     body = (voll - cav) + (boden ^ voll) + (rohr ^ voll)

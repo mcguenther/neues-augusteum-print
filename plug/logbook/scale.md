@@ -170,7 +170,39 @@ Druckbarkeit ohne Support im Gebäude (Gebäude steht auf dem Boden, Schacht nac
 
 Alle dicht, Platz für die Kassette überall vollständig. Kragstücke bis 0,7 mm sind 45°-Treppen der Schichtung und unkritisch. Preis: mehr Material, weil das Gewölbe die Räume unter den Dächern füllt (Neues Augusteum 36 statt 21 cm³ mit Brücke 10). Schnittbilder: `vorschau/steckmodul_campus/gebaeude/` (`uebersicht_schnitte.png`).
 
-Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) in den gefüllten Gebäuden; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
+#### Gewölbe überarbeitet (2026-10-17, Nutzer: „zu viel gewinkelt, das Gewölbe kann von mehreren Seiten und von der Aufnahme aus kommen“)
+
+Befund: Das Gewölbe ist ein Feld aus 45°-Kegeln, die von den tragenden Teilen aufsteigen; jeder Wandpunkt bekommt seine Starthöhe aus dem entferntesten Deckenpunkt in seinem Einzugsgebiet. Tragend waren nur die Außenwände; das Schachtrohr in der Mitte zählte nicht. So reichten die Einzugsgebiete quer durchs Gebäude, das Gewölbe setzte sehr tief an (Neues Augusteum links bei −11 mm) und stieg nur von einer Seite auf. Wo zwei Kegel mit sehr verschiedenen Starthöhen aneinanderstoßen, blieben dünne Spalten im Hohlraum (Hörsaalgebäude bei x ≈ 16, Institutsgebäude bei −9 und 6 mm).
+
+Umgesetzt (`hohl.py`, Optionen nur in `plug/buildings.py` an; `generate.py` unverändert):
+- **Rohr als Stütze** (`hohl.ceiling(stuetzen=…)`): von der Rohroberkante (aufs Lagenraster abgerundet) steigen ebenfalls Kegel auf; jeder Raum wird von Wand und Rohr aus überwölbt, das Gewölbe setzt höher an. Stützpunkte, deren Oberkante unter der Starthöhe ihres Einzugsgebiets liegt, tragen nicht (sonst füllte der niedrige Rohrkopf einen hohen Raum, City-Hochhaus 54,9 statt 13,7 cm³); danach werden die Einzugsgebiete neu gerechnet.
+- **Säule über dem Rohr** bis 0,4 mm über die Walmspitze, darüber flache Taschen unter 2 mm gefüllt: sonst griffe das Gewölbe eines Nachbarraums über den Rohrkopf und zwischen ihm und dem Walm über der LED bliebe eine nach unten hängende Kante (4,6 mm, gefunden in der Lagenprüfung).
+- **Spalten füllen** (`hohl.spalten`, 2 mm): schmalere Teile des Hohlraums werden Material, gedruckt mit Füllung statt zwei Wänden und Spalt.
+- **Je Gebäude mit und ohne Rohrstütze gebaut, das leichtere genommen**: das Rohr hilft unter niedrigen Dächern, in hohen, schmalen Gebäuden kostet die Säule nur.
+- Geprüft und verworfen als Standard: `--umkreis 2` (Kegel nur im eigenen Bereich): Neues Augusteum 21,9 statt 23,7 cm³, aber senkrechte Stufen in der Decke statt glatter Grate.
+
+| Gebäude | vorher | nachher | Rohrstütze | Kragstücke | Brücken |
+|---|---|---|---|---|---|
+| Paulinum | 7,9 cm³ | 8,0 cm³ | ohne (mit 10,3) | bis 1,0 mm | bis 2,1 mm |
+| Neues Augusteum | 36,1 cm³ | **25,2 cm³** | mit (ohne 36,3) | bis 2,1 mm (über der LED-Box) | – |
+| Hörsaalgebäude | 56,3 cm³ | **44,7 cm³** | mit (ohne 56,7) | bis 1,2 mm | – |
+| Seminargebäude | 11,7 cm³ | 12,0 cm³ | ohne (mit 13,4) | bis 1,0 mm | – |
+| Institutsgebäude | 18,7 cm³ | 19,0 cm³ | ohne (mit 19,9) | bis 1,5 mm | bis 1,7 mm |
+| City-Hochhaus | 13,6 cm³ | 13,7 cm³ | ohne (mit 15,5) | bis 1,2 mm | bis 1,7 mm |
+| zusammen | 144,2 cm³ | **122,5 cm³** (−15 %) | | | |
+
+Alle dicht, keine Kollision, Platz für die Kassette vollständig. Die kleinen Zunahmen ohne Rohrstütze kommen vom Füllen der Spalten (Material statt zwei Wänden mit Spalt; gedruckt mit Füllung sparsamer als es das Volumen zeigt). Vorher/Nachher: Schnittbilder in `vorschau/steckmodul_campus/gebaeude/`.
+
+#### Füllung im Slicer (Empfehlung, ungetestet)
+
+Die dicken Gewölbe-Keile druckt der Slicer mit Füllung, nicht massiv. Für gleichmäßiges Licht:
+- **Gyroid 10 %** (Rückfall 15 %): gleich in alle Richtungen, ohne durchgehende Ebenen, streut das Licht gleichmäßig und wirft keine Streifen auf die Wand; trägt sich ohne Brücken selbst. Gitter, Linien und Dreiecke werfen gerade Schatten, die man durch die 0,8-mm-Wand sieht. Blitz (Lightning) spart am meisten und lässt am meisten Licht durch, gibt aber unregelmäßige, fleckige Schatten.
+- Wandlinien 2 (0,8 mm Wand = 2 × 0,4), Dach oben 4 Lagen (0,8 mm bei 0,2 mm Schicht).
+- **Untere Deckschichten 2** statt 3 bis 4: die 45°-Unterseiten der Gewölbe zählen als Unterseite und bekämen sonst eine dichte Haut, die Licht schluckt.
+- „Senkrechte Wandstärke sicherstellen“ (Bambu Studio: Ensure vertical shell thickness) aus: sonst füllt der Slicer an den Schrägen zusätzlich massiv.
+- Weißes oder naturfarbenes PLA leitet am meisten Licht.
+
+Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) und durch die Füllung der Keile; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
 
 ## Ungetestete Planwerte (müssen noch getestet werden)
 
