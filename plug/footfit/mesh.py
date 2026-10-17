@@ -14,7 +14,7 @@ import trimesh
 from shapely.geometry import Polygon
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-STL = os.path.join(os.path.dirname(os.path.dirname(HERE)), "stl", "steckmodul_campus", "gebaeude", "06_city_hochhaus_1zu1300.stl")
+STL = os.path.join(os.path.dirname(os.path.dirname(HERE)), "stl", "steckmodul_campus", "gebaeude", "06_city_hochhaus_1zu1300_fase2.stl")
 QUANT = 0.005
 LAYER = 0.2
 

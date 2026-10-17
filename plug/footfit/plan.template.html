@@ -75,7 +75,8 @@ svg .t-fg { fill: var(--fg); }
       <span class="pill ok">Platte: flach, 14,6 mm (Stand hopeful-mccarthy)</span>
       <span class="pill">Maßstab 1:1300</span>
       <span class="pill warn">Kassette V2R: Konzept, noch kein STL, nie gedruckt</span>
-      <span class="pill ok">Hohlgebäude aus jolly-pascal: 1:1300, mit Fuß, Boden und V2R-Schacht, dicht, keine Kollision</span>
+      <span class="pill ok">Hohlgebäude 1:1300: Fuß, Boden, V2R-Schacht, Fase unten 2,0 mm; dicht, keine Kollision</span>
+      <span class="pill ok">Spiel 0,10 wie in Steckprobe 2 bewährt</span>
     </div>
   </header>
 
@@ -83,7 +84,7 @@ svg .t-fg { fill: var(--fg); }
     <div>
       <h2>3D-Vorschau des Abschneidens</h2>
       <div class="slicer">
-        <input class="vrange" id="hSlider" type="range" min="4" max="111" step="0.2" value="25" aria-label="Höhe des Stummels über der Plattenoberfläche">
+        <input class="vrange" id="hSlider" type="range" min="4" max="111" step="0.2" value="24" aria-label="Höhe des Stummels über der Plattenoberfläche">
         <div id="gl" role="img" aria-label="3D-Ansicht des Hohlgebäudes, oben abgeschnitten"></div>
       </div>
       <div class="row" style="margin-top:8px">
@@ -100,23 +101,26 @@ svg .t-fg { fill: var(--fg); }
       <div class="kpis">
         <div class="kpi"><b id="kH">–</b><span>Höhe über der Platte</span></div>
         <div class="kpi"><b id="kTot">–</b><span>Gesamthöhe des Stummels (mit 14,2 Fuß)</span></div>
-        <div class="kpi"><b id="kTime">–</b><span>Druckzeit, geschätzt, alle Stücke</span></div>
-        <div class="kpi"><b id="kVol">–</b><span>Material ca., alle Stücke</span></div>
+        <div class="kpi"><b id="kTime">–</b><span>Druckzeit, geschätzt</span></div>
+        <div class="kpi"><b id="kVol">–</b><span>Material ca.</span></div>
       </div>
       <div id="warn" class="note" style="margin-top:12px" hidden></div>
 
       <div class="field">
         <span class="lab">Höhe über der Plattenoberfläche (mm)</span>
-        <div class="row"><input id="hNum" type="number" min="4" max="111" step="0.5" value="25"><span class="hint">Dach des Hochhauses bei <span class="mono" id="hmax"></span> mm</span></div>
+        <div class="row"><input id="hNum" type="number" min="4" max="111" step="0.5" value="24"><span class="hint">Dach des Hochhauses bei <span class="mono" id="hmax"></span> mm</span></div>
       </div>
       <div class="field">
-        <span class="lab">Spiel je Seite zwischen Mulde und Stummel (mm)</span>
-        <div class="checks" id="clrChecks"></div>
-        <span class="hint">Die Mulde ist gedruckt und lässt sich nicht mehr ändern; das Spiel stellen wir über den Umriss des Stummels ein. Jedes Häkchen ergibt ein Stück. Ohne Messschieber vergleichst du nur von Hand: lässt sich 0,10 ohne Kraft einsetzen, wackelt 0,20?</span>
+        <span class="lab">Spiel je Seite zwischen Mulde und Stummel</span>
+        <span class="hint"><b class="mono">0,10 mm</b>, nicht variiert. In Steckprobe 2 passte das Gebäude mit diesem Spiel in die Mulde (r4 M). Es wird ein einziges Stück gedruckt.</span>
       </div>
       <div class="field">
-        <span class="lab">Im Modell enthalten</span>
-        <span class="hint">Boden 1,2 mm, Schachtrohr mit Aufnahme für Kassette V2R (Anschlag, 45°-Auflage), Wand 0,8 mm, 45°-Gewölbe; Fuß 14,2 mm mit Fase an der Bettkante. Die Kassette V2R selbst fehlt noch und wird als Probeteil gebaut.</span>
+        <span class="lab">Fase unten am Gebäude</span>
+        <span class="hint"><b class="mono">2,0 mm</b>, 45°, rundum am Fuß, die Wand bleibt dabei 0,8 mm. Bewährt war eine Einführung von 1,8 mm (Fußfase 0,8 plus Muldenfase 1,0). Die Campus-Platte hat oben an der Mulde keine Fase, weil die Wand zum Hof nur 0,4 mm dick ist; deshalb bringt der Fuß die ganze Einführung mit. Das Modell aus <span class="mono">jolly-pascal</span> hatte unten nur 0,5 mm und ist dafür neu gerechnet.</span>
+      </div>
+      <div class="field">
+        <span class="lab">Weiter im Modell</span>
+        <span class="hint">Boden 1,2 mm, Schachtrohr mit Aufnahme für Kassette V2R (Anschlag, 45°-Auflage), Wand 0,8 mm, 45°-Gewölbe, Fuß 14,2 mm. Die Kassette V2R selbst fehlt noch und wird als Probeteil gebaut.</span>
       </div>
     </div>
   </section>
@@ -133,7 +137,7 @@ svg .t-fg { fill: var(--fg); }
         <label class="hint" for="tOv">Zuschlag je Lage (s)</label><input id="tOv" type="number" min="0" max="10" step="0.5" value="1.5">
         <label class="hint" for="tStart">Start (Heizen, Kalibrieren) (min)</label><input id="tStart" type="number" min="0" max="20" step="1" value="6">
       </div>
-      <p class="hint" style="margin-top:8px">Nicht kalibriert. Sag mir die echte Zeit aus dem Slicer, dann stelle ich die Werte darauf ein. Gerechnet: Schichthöhe 0,2 mm, Wand aus 2 Bahnen (Außen- und Innenseite), kein Boden, keine Füllung, alle Stücke in einem Druck, Lage für Lage.</p>
+      <p class="hint" style="margin-top:8px">Nicht kalibriert. Sag mir die echte Zeit aus dem Slicer, dann stelle ich die Werte darauf ein. Gerechnet: Schichthöhe 0,2 mm, Pfadlänge aus der Materialfläche jeder Lage des Modells (Fläche geteilt durch 0,42), Boden und Gewölbe eingerechnet, ein Stück.</p>
     </details>
   </section>
 
@@ -161,7 +165,7 @@ svg .t-fg { fill: var(--fg); }
       <li>Sitzt der Stummel auf dem Muldenboden auf? Falls nicht, fehlt Tiefe oder die Fase unten liegt auf.</li>
       <li>Kassette (Probeteil V2R) von unten in den Schacht pressen: Sitz, Wand um den Schacht gerissen?</li>
       <li>Kassette im eingesteckten Stummel: Pins treffen die Buchse?</li>
-      <li>Jedes Stück vorher beschriften (Spiel), damit die Reihe zuzuordnen ist.</li>
+      <li>Fase unten: fängt sie das Gebäude beim Einsetzen in der Mulde? Bleibt unten ein Wulst (Elefantenfuß), der klemmt?</li>
     </ul>
   </section>
 
@@ -169,8 +173,8 @@ svg .t-fg { fill: var(--fg); }
     <h2>Offen</h2>
     <ul class="list">
       <li><b>Kassette V2R:</b> bisher nur Konzept (<span class="mono">plug/logbook/cassettes.md</span>), die Streifendicke 2,2 mm ist nicht gemessen. Für diese Runde baue ich sie als Probeteil; bewährt ist nur v4.</li>
-      <li><b>Hohlgebäude:</b> Dateien aus <span class="mono">jolly-pascal</span> (<span class="mono">plug.buildings</span>) übernommen: <span class="mono">stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300.stl</span>. Der Branch ist nicht gemerged, nur diese Dateien liegen hier.</li>
-      <li><b>Spiel-Reihe:</b> Das Modell hat das Spiel 0,10 (Umriss gleich Scan, Mulde 0,10 größer). Die anderen Stücke entstehen durch Verkleinern des Umrisses; wie genau, lege ich beim STL fest.</li>
+      <li><b>Hohlgebäude:</b> Dateien aus <span class="mono">jolly-pascal</span> (<span class="mono">plug.buildings</span>) übernommen: <span class="mono">stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300_fase2.stl</span>. Der Branch ist nicht gemerged, nur diese Dateien liegen hier.</li>
+      <li><b>Fuß-Fase 2,0 mm:</b> neu gerechnet (nach dem Aushöhlen angebracht, Wand bleibt 0,8). Der Patch für <span class="mono">plug/buildings.py</span> liegt in <span class="mono">plug/footfit/buildings_fuss_fase.patch</span>; im Branch <span class="mono">jolly-pascal</span> steht noch 0,5 mm.</li>
       <li>Beim Abschneiden entsteht oben eine offene Kante. Der Stummel ist dünnwandig (0,8 mm) und deshalb weicher als das ganze Gebäude.</li>
     </ul>
   </section>
@@ -180,7 +184,6 @@ svg .t-fg { fill: var(--fg); }
 const D = /*DATA*/null;
 const M = /*MESH*/null;
 const $ = id => document.getElementById(id);
-const CLRS = [0.05, 0.10, 0.15, 0.20, 0.25];
 const NF = (x, n = 1) => x.toFixed(n).replace(".", ",");
 const FOOT = D.F, PLATE = D.plate_t, HMAX = D.hmax, NEED = D.need, CASS_TOP = D.top - D.F; // über der Platte
 const LED = D.led_z - D.F;
@@ -205,11 +208,10 @@ const x0 = Math.min(...outIv.map(i => i[0])), x1 = Math.max(...outIv.map(i => i[
 
 $("hmax").textContent = NF(HMAX);
 $("area").textContent = NF(D.area, 0); $("perim").textContent = NF(D.perimeter, 0);
-$("clrChecks").innerHTML = CLRS.map(c => `<label><input type="checkbox" class="clr" value="${c}" ${[0.10, 0.15, 0.20].includes(c) ? "checked" : ""}> ${NF(c, 2)}</label>`).join("");
 
 function state() {
   const h = parseFloat($("hNum").value);
-  return { h, clrs: [...document.querySelectorAll(".clr:checked")].map(e => parseFloat(e.value)), cass: "v2r", wall: 0.8 };
+  return { h, clrs: [0.10], cass: "v2r", wall: 0.8 };
 }
 
 // Druckzeit und Material aus den echten Lagen des Hohlgebäudes (Pfadlänge = Fläche / Linienbreite 0,42)
@@ -252,6 +254,10 @@ function drawSection(s) {
   outIv.forEach(([a, b]) => {
     g += rect(a + 0.1, a + 0.1 + w, -FOOT, top, `fill="var(--stub)"`);
     g += rect(b - 0.1 - w, b - 0.1, -FOOT, top, `fill="var(--stub)"`);
+  });
+  outIv.forEach(([a, b]) => {                                  // Fase unten 2 mm: Ecken der Wand und des Bodens abgeschrägt
+    const c = 2.0, tri = (xa, xb, xc) => `<polygon points="${X(xa)},${Z(-FOOT)} ${X(xb)},${Z(-FOOT)} ${X(xc)},${Z(-FOOT + c)}" fill="var(--panel)"/>`;
+    g += tri(a + 0.1, a + 0.1 + c, a + 0.1) + tri(b - 0.1, b - 0.1 - c, b - 0.1);
   });
   // Schacht mit Kassette
   if (s.cass !== "none") {
@@ -314,18 +320,18 @@ function render() {
   $("kVol").textContent = NF(e.mm3 / 1000, 1) + " cm³";
   const w = $("warn"), msgs = [];
   if (s.cass !== "none" && s.h < NEED) msgs.push(`Mit Kassette V2R braucht der Stummel mindestens ${NF(NEED)} mm über der Platte (Kassette oben bei ${NF(CASS_TOP)} plus Dach). Darunter ragt die Kassette aus dem Stummel heraus.`);
-  if (!s.clrs.length) msgs.push("Kein Spiel gewählt: Es wird kein Stück gedruckt.");
   if (s.h >= HMAX - 0.5) msgs.push("Das ist das ganze Hochhaus mit Dach (111 mm über der Platte, 125 mm hoch gedruckt).");
   w.hidden = !msgs.length; w.innerHTML = msgs.join("<br>");
   drawSection(s); drawGap(s); setCut(s.h);
   const txt = [
     "Passform-Stummel City-Hochhaus (1:1300, Platte 14,6 mm flach)",
     `Höhe über der Plattenoberfläche: ${NF(s.h)} mm (Gesamthöhe ${NF(FOOT + s.h)} mm mit Fuß 14,2)`,
-    `Spiel-Reihe je Seite: ${s.clrs.map(c => NF(c, 2)).join(" / ") || "keine"} mm (${s.clrs.length} Stück${s.clrs.length === 1 ? "" : "e"})`,
-    "Modell: stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300.stl (Hohlgebäude mit Fuß, Boden 1,2, Schacht V2R), oben bei der Höhe abgeschnitten",
+    "Spiel je Seite: 0,10 mm (bewährt, nicht variiert), 1 Stück",
+    "Fase unten am Gebäude: 2,0 mm (45°), Wand 0,8 mm",
+    "Modell: stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300_fase2.stl (Hohlgebäude mit Fuß, Boden 1,2, Schacht V2R), oben bei der Höhe abgeschnitten",
     "Kassette V2R: Probeteil dazu (Konzept)",
-    `Druckzeit geschätzt: ${fmtT(e.min)} (alle Stücke), Material ca. ${NF(e.mm3 / 1000, 1)} cm³`,
-    "", JSON.stringify({ gebaeude: D.slug, hoehe_ueber_platte: +s.h.toFixed(1), spiel: s.clrs, modell: "06_city_hochhaus_1zu1300", kassette_probeteil: "V2R", zeit_min: Math.round(e.min) })
+    `Druckzeit geschätzt: ${fmtT(e.min)}, Material ca. ${NF(e.mm3 / 1000, 1)} cm³`,
+    "", JSON.stringify({ gebaeude: D.slug, hoehe_ueber_platte: +s.h.toFixed(1), spiel: 0.10, fase_unten: 2.0, stueck: 1, modell: "06_city_hochhaus_1zu1300_fase2", kassette_probeteil: "V2R", zeit_min: Math.round(e.min) })
   ].join("\n");
   $("out").value = txt;
 }
@@ -333,8 +339,8 @@ function render() {
 ["hSlider", "hNum"].forEach(id => $(id).addEventListener("input", ev => {
   const v = ev.target.value; $("hSlider").value = v; $("hNum").value = v; render();
 }));
-document.querySelectorAll(".clr, #vEff, #tMin, #tOv, #tStart").forEach(el => el.addEventListener("input", render));
-$("hSlider").max = HMAX; $("hNum").max = HMAX; $("hSlider").value = 25; $("hNum").value = 25;
+document.querySelectorAll("#vEff, #tMin, #tOv, #tStart").forEach(el => el.addEventListener("input", render));
+$("hSlider").max = HMAX; $("hNum").max = HMAX; $("hSlider").value = 24; $("hNum").value = 24;
 $("copy").addEventListener("click", async () => {
   const t = $("out").value, ok = $("copied");
   try { await navigator.clipboard.writeText(t); ok.textContent = "Kopiert."; }
