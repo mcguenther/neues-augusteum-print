@@ -656,7 +656,9 @@ def variant(scale, h=H0, dk=DK):
         return dict(slug=d["slug"], title=d["title"], ok=True, p=[d["p"][0] + sh[0], d["p"][1] + sh[1]], phi=round(d["phi"], 1),
                     kass=coords(d["kass"], sh)[0], zone=coords(d["zone"], sh)[0], body=coords(d["body"], sh)[0],
                     niche=[coords(n, sh)[0] for n in d["niche"]],
-                    over_pb=round(d["zone"].intersection(fp["fach"]).area, 1), moved=bool(d.get("moved", True)), var=d.get("var", "v4"))
+                    over_pb=round(d["zone"].intersection(fp["fach"]).area, 1), moved=bool(d.get("moved", True)), var=d.get("var", "v4"),
+                    over_body=round(d["zone"].intersection(fp["body"]).area, 1), over_elec=round(d["zone"].intersection(elec).area, 1),
+                    to_elec=round(Point(d["p"]).distance(elec), 1))
 
     uk_cuts = unterkasten_cut(Ln, deck_cuts, [affinity.translate(g, *sh) for g in [fp["fach"], elec] + notches] +
                               [affinity.translate(d["zone"], *sh) for d in docks if d["ok"]])
