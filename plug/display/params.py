@@ -15,7 +15,7 @@ from plug.testcase import variants as V
 # Glas vor der Platine 1,3 bis 1,7, Platine 1,0, Bauteile hinten bis 1,2 (Header 2,5). Keine Schieblehre vorhanden: Passprobe (Schlitz in drei Breiten) klärt es.
 DISP = dict(
     pcb_w=35.3,        # M  Platine, Breite (Foto ± 0,5; Schwestermodul -79: 35,5 ± 0,2)
-    pcb_h=34.05,       # M  Platine, Höhe: Probedruck 1 (2026-10-17) passte das Modul nicht in die Tasche 33,3, es war etwa 0,75 höher (Foto sagte 33,0); Wert = 33,3 + 0,75, ± 0,3
+    pcb_h=33.8,        # M  Platine, Höhe: Probedruck 1 passte das Modul nicht in die Tasche 33,3; Modulprobe (Tasche 34,35) passte mit Luft, Nutzer: 33,8 reicht vermutlich
     pcb_t=1.0,         # S  Platinendicke (Schwestermodul -79: 1,0)
     mod_t=4.5,         # S  Dicke Glas 1,7 + Platine 1,0 + Bauteile 1,2 = 3,9, ohne Header; mit 0,6 Reserve
     hdr_t=2.5,         # B  Kunststoff der Pinleiste hinten (Zeichnung -79: 2,5 max; die Pins ragen bis 11,3 von der Glasfront)
@@ -31,7 +31,7 @@ DISP = dict(
     panel_h=23.0,      # B
     aa_w=29.42,        # B  aktive Fläche 128 × 64 Pixel, Pixel 0,21 mm
     aa_h=14.70,        # B
-    aa_top=10.45,      # M  Abstand der aktiven Fläche vom Platinenrand gegenüber den Pins (aus pcb_h − aa_bottom − aa_h; das Foto gab 9,4 bei Höhe 33,0)
+    aa_top=10.2,       # M  Abstand der aktiven Fläche vom Platinenrand gegenüber den Pins (aus pcb_h − aa_bottom − aa_h; das Foto gab 9,4 bei Höhe 33,0)
     aa_bottom=8.9,     # M  Abstand der aktiven Fläche vom Platinenrand mit den Pins (Glas 7,0 darüber + Rand 1,9)
     vdd_max=3.5,       # B  VDD1 1,65 bis 3,5 V des Panels; ein SOT-23-Bauteil neben C9 ist vermutlich ein Regler (nicht belegt)
 )
@@ -40,7 +40,7 @@ WINDOW_MARGIN = 0.4    # E  Sichtfenster im Rahmen größer als die aktive Fläc
 # ---- Gehäuse
 WALL = 1.2             # E  Wand um Modul und Kassette (wie KASS_WALL)
 CLR = 0.3              # E  Spiel um die Platine: Dicke (je Seite) und Höhe (oben)
-CLR_W = 0.4            # E  Spiel um die Platine in der Breite je Seite (Probedruck 1: Breite passte, Nutzer: 0,1 mm mehr Luft; vorher 0,3)
+CLR_W = 0.32           # E  Spiel um die Platine in der Breite je Seite (Probedruck 1: Breite passte, Nutzer: 0,1 mm mehr Luft; vorher 0,3)
 BACK = 1.6             # E  Rückwand/Deckel hinter dem Modul
 CAVITY = 4.0           # S  Kabelkanal zwischen Modul und Kassette bei direkt angelöteten Adern (= CHAN; mit Dupont-Buchse auf der Pinleiste etwa 17: Entscheidungskarte)
 CAVITY_DUPONT = 17.0    # S  Kabelraum hinter dem Modul mit aufgesteckter Dupont-Buchse (Pinleiste 2,5 + Gehäuse etwa 14) und Biegung der Adern
