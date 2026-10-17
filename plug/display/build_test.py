@@ -54,7 +54,7 @@ def hinten_material(d):
     side, plan = Polygon(B.profile_side(d)), Polygon(B.profile_plan(d))
     xb, out = d["x_slot0"] - D.PEG_HOLE_T, []
     for y, z in B.peg_centres(d):
-        xs = side.intersection(LineString([(-60, z), (5, z)])).bounds[0]
+        xs = side.intersection(LineString([(-60, z + D.PEG_HOLE_D / 2), (5, z + D.PEG_HOLE_D / 2)])).bounds[0]   # obere Lochkante, dort liegt die Schräge am weitesten vorn
         xp = plan.intersection(LineString([(-60, abs(y) + D.PEG_HOLE_D / 2), (5, abs(y) + D.PEG_HOLE_D / 2)])).bounds[0]
         out.append(xb - max(xs, xp))
     return min(out)

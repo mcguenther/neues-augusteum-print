@@ -7,15 +7,15 @@ Entscheidung des Nutzers nach Plan 4: Decke A (Kappe) und Zapfen P1, Loch Ø 2,5
 Was sich gegenüber Modulprobe 1 geändert hat
   Aufnahme         Oben offen, keine Decke mehr, kein Support. Die Seitenwände und die Rückwand enden an der Oberkante der Tasche (34,10 über dem Boden).
   Blende (Kappe)   Hat oben eine Lippe 1,0 mm dick, die über die Tasche und 1,0 mm über die Rückwand reicht und als Dach auf den Wänden liegt. Die Blende liegt flach, die Lippe steht als Rippe nach oben.
-  Tasche           Breite 35,94 (0,32 Luft je Seite), Höhe 34,10 (Modul als 33,80 angenommen, oben 0,30 Luft), Dicke 5,10.
+  Tasche           Breite 35,94 (0,32 Luft je Seite), Höhe 34,10 (Modul als 33,80 angenommen, oben 0,30 Luft), Dicke 5,00.
   Sackloch         Ø 2,55 (Modulprobe 1: 2,5), 2,6 tief, Einführfase 0,3.
-  Zapfen P1        Spitze Ø 1,8, Kegel über 2,2 mm (11 Lagen) auf den vollen Durchmesser, dann zylindrisch. Blende M2: Enddurchmesser 2,4, Blende M3: 2,5
-                   (etwas fester). Im Sackloch 2,4 tief. Im echten Körper bleibt hinter dem Sackloch mindestens 1,0 mm Material.
+  Zapfen P1        Spitze Ø 1,8, Kegel über 2,2 mm (11 Lagen) auf den vollen Durchmesser, dann zylindrisch. Blende M2: Enddurchmesser 2,5, Blende M3: 2,5
+                   (etwas fester). Im Sackloch 2,4 tief. Im echten Körper bleibt hinter dem Sackloch mindestens 1,2 mm Material.
 
 Teile
-  M1_aufnahme.stl             8,7 × 38,3 × 35,3 mm  Kopf mit Tasche (oben und vorn offen), Kabelfenster in der Rückwand, vier Sacklöcher
-  M2_blende_A_zapfen_2_4.stl  36,3 × 38,3 × 8,7 mm  Blende mit Lippe, Fenster und vier Zapfen, Ende Ø 2,4
-  M3_blende_B_zapfen_2_5.stl  36,3 × 38,3 × 8,7 mm  dieselbe Blende, Zapfen Ende Ø 2,5
+  M1_aufnahme.stl             8,6 × 38,3 × 35,3 mm  Kopf mit Tasche (oben und vorn offen), Kabelfenster in der Rückwand, vier Sacklöcher
+  M2_blende_A_zapfen_2_4.stl  36,3 × 38,3 × 8,6 mm  Blende mit Lippe, Fenster und vier Zapfen, Ende Ø 2,5
+  M3_blende_B_zapfen_2_5.stl  36,3 × 38,3 × 8,6 mm  dieselbe Blende, Zapfen Ende Ø 2,5
 
 Druckausrichtung (so liegen die Dateien schon)
   M1  stehend auf der Kopfunterseite (Tasche und Sacklöcher liegen waagerecht wie im echten Körper), kein Support nötig.

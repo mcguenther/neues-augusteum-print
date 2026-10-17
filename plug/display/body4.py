@@ -299,6 +299,6 @@ def parts(d=None):
     lpins = g.union([g.box(-pe - 0.32, -pe + 0.32, (i - 1.5) * 2.54 - 0.32, (i - 1.5) * 2.54 + 0.32, -16.0, -8.9) for i in range(4)])
     tails = g.union([g.box(-pe - 6.3, -pe, (i - 1.5) * 2.54 - 0.32, (i - 1.5) * 2.54 + 0.32, -16.0, -15.4) for i in range(4)])
     # Weg der Adern (x, z) mit Schleife in der Kammer, von der Kassettenoberkante zu den Stiftspitzen
-    wire = [(cx, d["z_cass"]), (cx - 0.7, 6.5), (cx + 1.3, 10.5), (cx + 5.8, 15.5), (cx + 9.5, 12.5), (cx + 9.8, 8.0), (cx + 8.3, 4.8), (d["x_tip"] - 0.6, d["z_pins"])]
+    wire = [(cx, d["z_cass"]), (cx - 0.7, 6.5), (cx + 1.3, 10.5), (cx + 5.8, 15.5), (d["x_back"] - 1.5, 12.5), (d["x_back"] - 1.4, 8.0), (d["x_back"] - 2.8, 4.8), (d["x_tip"] - 0.6, d["z_pins"])]
     return dict(body=body, lid=lid, blende=blende, cassette=cas, pcb=pcb, glass=glass, aa=aa, header=hdr, pins=pins, plate=plate,
                 leiste=lei + lpins + tails), dict(chamber=ch_poly, wire=wire, normal=normal, lid_pts=lid_pts, d=d)
