@@ -1,0 +1,533 @@
+<title>Durchgang am Paulinum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Abschnitte nacheinander (Befund, Vorschlag, Schnitte mit Regler, 3D, Druck und Entscheidungen, Prüfung).
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent); Rot = Ist, Blau = Neu, Petrol = die neue Brücke. */
+:root {
+  --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
+  --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
+  --alt: #b3392b; --va: #2a6db0; --ok: #2c7a4b; --bad: #b3392b;
+  --plate: #8c9aa9; --pau: #7f93ad; --ins: #cfa57a; --bruecke: #1f8a7e; --bruecke-soft: #cfe9e5;
+  --bld: #d9dee3; --bld-line: #a2adb7; --hof: #efd3a6; --hof-line: #9c5a14;
+  --z-lo: #f6e8cc; --z-hi: #a24f16;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+    --alt: #ee8a7c; --va: #6aa6e8; --ok: #6cc08a; --bad: #ee8a7c;
+    --plate: #78879a; --pau: #6d819b; --ins: #b98f65; --bruecke: #4fc0b2; --bruecke-soft: #1f3b38;
+    --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
+    --z-lo: #4a3a22; --z-hi: #e5aa62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+  --alt: #ee8a7c; --va: #6aa6e8; --ok: #6cc08a; --bad: #ee8a7c;
+  --plate: #78879a; --pau: #6d819b; --ins: #b98f65; --bruecke: #4fc0b2; --bruecke-soft: #1f3b38;
+  --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
+  --z-lo: #4a3a22; --z-hi: #e5aa62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1140px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 1.28rem; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; font-weight: 600; }
+h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
+.sec { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 80ch; }
+code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+
+/* Kurzvergleich */
+.sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 22px 0 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.sum > div { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
+.sum > div:first-child { border-left: 0; }
+.sum dt { font-size: 0.78rem; color: var(--muted); }
+.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 0.98rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+.sum .o { color: var(--alt); } .sum .a { color: var(--va); font-weight: 500; }
+.sum .arrow { color: var(--muted); }
+@media (max-width: 760px) { .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sum > div:nth-child(3) { border-left: 0; } .sum > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+
+/* Befund */
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+.fact { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fact .v { font-family: var(--mono); color: var(--accent); font-size: 0.82rem; }
+.fact p { color: var(--muted); font-size: 0.88rem; }
+
+/* Grundrisse und Schnitte */
+.plan { width: 100%; height: auto; display: block; max-width: 100%; }
+.plan text { font-family: var(--font); }
+.plan .hof { fill: var(--hof); }
+.plan .bld { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1; }
+.plan .bname { font-size: 11px; fill: var(--muted); }
+.plan .zone { fill: color-mix(in srgb, var(--z-hi) calc(var(--p) * 100%), var(--z-lo)); }
+.plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
+.plan .block { fill: var(--alt); fill-opacity: 0.35; }
+.plan .tunnel-ist { fill: none; stroke: var(--alt); stroke-width: 1.8; stroke-dasharray: 6 4; }
+.plan .bruecke { fill: var(--bruecke); fill-opacity: 0.32; }
+.plan .tunnel-neu { fill: none; stroke: var(--bruecke); stroke-width: 1.8; }
+.plan .lab2 { font-size: 11.5px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.plan .bar { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.sec-svg .gnd { fill: var(--plate); }
+.sec-svg .hofb { fill: var(--hof); stroke: var(--hof-line); stroke-width: 1; }
+.sec-svg .m-pau { fill: var(--pau); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .m-ins { fill: var(--ins); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .m-alt { fill: var(--alt); fill-opacity: 0.16; stroke: var(--alt); stroke-width: 1.3; stroke-dasharray: 5 4; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .m-br { fill: var(--bruecke); fill-opacity: 0.85; stroke: var(--fg); stroke-opacity: 0.6; stroke-width: 0.9; }
+.sec-svg .st-alt { fill: none; stroke: var(--alt); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.sec-svg .st-neu { fill: color-mix(in srgb, var(--va) 30%, transparent); stroke: var(--va); stroke-width: 1.6; }
+.sec-svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.sec-svg .dt { font-size: 12px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.sec-svg .dt.sm { font-size: 10.5px; font-family: var(--mono); font-weight: 400; fill: var(--muted); }
+.sec-svg .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+.sec-svg text { font-family: var(--font); }
+.panels { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.panels.one { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 760px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
+.panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.panel .plan { max-height: 520px; }
+.hscroll { overflow-x: auto; }
+.hscroll .plan { min-width: 560px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+.sw { display: inline-flex; align-items: center; gap: 6px; }
+.sw i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* Regler und Messwerte */
+.ctl { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.lift { display: inline-flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--fg); font-weight: 500; }
+.lift input { width: 220px; max-width: 100%; accent-color: var(--accent); }
+.lift output { font-family: var(--mono); font-size: 0.86rem; min-width: 4.6em; color: var(--accent); font-weight: 500; }
+.reads { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.84rem; color: var(--muted); }
+.reads b { font-family: var(--mono); font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+button { font: inherit; font-size: 0.86rem; cursor: pointer; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--fg); }
+button:hover { background: var(--accent-soft); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] button[aria-pressed="true"] { color: #1a1008; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button[aria-pressed="true"] { color: #1a1008; } }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+
+/* Tabellen, Karten */
+.tw { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+tbody th { font-weight: 400; }
+td.n { font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+td.n.a, thead th.a { color: var(--va); } thead th.o { color: var(--alt); } td.n.o { color: var(--alt); }
+td.hint2 { color: var(--muted); font-size: 0.84rem; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card.rec { border-color: var(--va); }
+.card h3 span { font-family: var(--mono); font-weight: 500; color: var(--muted); font-size: 0.8rem; margin-left: 6px; }
+.card .tag2 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.card.rec .tag2 { color: var(--va); }
+ul.plain { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 0.9rem; }
+ul.plain strong { color: var(--fg); font-weight: 600; }
+.reco { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; font-size: 0.92rem; max-width: 80ch; }
+.cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+@media (max-width: 760px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* 3D */
+.stagebox { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.bar2 { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.bar2.views { border-bottom: 0; border-top: 1px solid var(--line); }
+#stage { height: min(62vh, 600px); min-height: 340px; background: var(--line); display: flex; gap: 2px; touch-action: none; }
+.pane { position: relative; flex: 1 1 0; min-width: 0; background: var(--stage); }
+.pane[hidden] { display: none; }
+.pane canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.pane canvas:active { cursor: grabbing; }
+@media (max-width: 640px) { #stage.multi { flex-direction: column; height: min(130vh, 1000px); } }
+.hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+.tag { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 0.78rem; padding: 2px 9px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); pointer-events: none; }
+.tag.alt { color: var(--alt); } .tag.neu { color: var(--va); }
+.cap { padding: 10px 14px; color: var(--muted); font-size: 0.9rem; min-height: 3.4em; border-top: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Durchgang am Paulinum</h1>
+    <p class="lead">Zwischen Paulinum und Institutsgebäude führt eine überdachte Gasse vom Augustusplatz zum Campus. Im Laserscan-Modell ist sie ein Vollblock mit senkrechten Streifen. Der Vorschlag schneidet unter der Brücke waagerecht frei, ordnet die Brücke dem Institutsgebäude zu und führt die Treppe der Platte bis zum Ostende des Durchgangs.</p>
+    <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Vorschlag, noch nicht im Generator</span></div>
+    <dl class="sum" aria-label="Kurzvergleich Ist und Neu">
+      <div><dt>Durchgang</dt><dd><span class="o">Vollblock</span><span class="arrow">→</span><span class="a">@LAENGE@ × @BREITE@ mm frei</span></dd></div>
+      <div><dt>Decke über der Platte</dt><dd><span class="a">@ZC@ mm</span><span class="arrow">=</span><span class="a">@ZC_M@ m</span></dd></div>
+      <div><dt>Brücke gehört zum</dt><dd><span class="o">Paulinum</span><span class="arrow">→</span><span class="a">Institutsgebäude</span></dd></div>
+      <div><dt>Treppe im Nordosten</dt><dd><span class="o">6 Stufen</span><span class="arrow">→</span><span class="a">@STUFEN@ Stufen</span></dd></div>
+    </dl>
+  </header>
+
+  <section class="sec" id="befund">
+    <div>
+      <h2>Was im Modell steckt</h2>
+      <p class="lead">Der Scan fliegt von oben. Er sieht das Dach der Brücke und den Boden der Gasse an der Westmündung, aber nichts dazwischen, und das Modell füllt die Lücke bis zum Boden. Der Grundriss dieses Blocks wurde beim Zuschnitt der Gebäude dem Paulinum zugeschlagen. Die Streifen an seiner Ostwand sind Rasterfacetten zwischen Dachzellen und Bodenzellen.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="v">LoD2, Stadt Leipzig</span><h3>Brücke von @ZC_ABS@ bis @ZT_ABS@ m</h3><p>Die Unterkante der oberen Gebäudeteile liegt bei @ZC_ABS@ m ü. NHN, das Dach bei @ZT_ABS@ m. Darunter gibt es keine Fläche. Bezogen auf den Boden des Institutsgebäudes sind das @ZC_M@ und @ZT_M@ m, im Modell @ZC@ und @ZT@ mm.</p></div>
+      <div class="fact"><span class="v">Laserscan, Bodenpunkte</span><h3>Boden bei @BODEN_ABS@ m ü. NHN</h3><p>An der Westmündung liefert der Scan Bodenpunkte zwischen 115,0 und 115,6 m, das ist rund ein Meter über der Platte. Die Gasse steigt nach Westen zum Hof an (116,8 m). Dort setzt die Treppe der Platte an.</p></div>
+      <div class="fact"><span class="v">Grundriss des Durchgangs</span><h3>@LAENGE_M@ × @BREITE_M@ m, @FLAECHE_M@ m²</h3><p>Im Modell @LAENGE@ × @BREITE@ mm. Die Südwand ist die Nordwand des Paulinums, die Nordwand die Südwand des Institutsgebäudes. Die Gasse läuft rund 12° gedreht zur Karte, wie die beiden Gebäude.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="vorschlag">
+    <div>
+      <h2>Vorschlag</h2>
+      <p class="lead">Links der Ist-Zustand: ein roter Vollblock füllt die Gasse. Rechts der Vorschlag: Der Durchgang ist frei, die Brücke (petrol) liegt als Platte darüber, und die Stufen der Platte laufen bis zum Ostende. Gefärbt ist nach Höhe über der Platte, Hofboden @HUB@ mm.</p>
+    </div>
+    <div class="panels">@FIG_IST@@FIG_NEU@</div>
+    <div class="legend"><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span><span class="sw"><i style="background:color-mix(in srgb, var(--z-hi) 60%, var(--z-lo))"></i>Stufen, heller = tiefer</span><span class="sw"><i style="background:var(--bld)"></i>Gebäude (Mulde)</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Kennzahl</th><th class="o">Ist</th><th class="a">Neu</th><th>Bemerkung</th></tr></thead>
+      <tbody>@TABELLE@</tbody>
+    </table></div>
+    <p class="note">Beide Gebäude haben im Modell als Nullhöhe ihren eigenen Boden (Paulinum 114,46 m, Institutsgebäude 113,90 m). Die Brücke ist im Bezug des Institutsgebäudes gemessen, weil sie ihm gehört.</p>
+  </section>
+
+  <section class="sec" id="schnitte">
+    <div>
+      <h2>Schnitte und Deckenhöhe</h2>
+      <p class="lead">Beide Schnitte sind echte Schnitte durch die Laserscan-Körper. Mit dem Regler verschiebst du die Decke; die Brücke wird dabei dünner oder dicker, das Dach bleibt bei @ZT@ mm. Der Vorschlag nimmt den Wert aus LoD2.</p>
+    </div>
+    <div class="ctl">
+      <label class="lift" for="zc">Decke <input type="range" id="zc" min="8" max="18" step="0.1" value="@ZC@" aria-describedby="zc-reads"><output id="zc-out" for="zc">@ZC@ mm</output></label>
+      <button type="button" id="zc-reset">Wert aus LoD2</button>
+      <div class="reads" id="zc-reads">
+        <span>Höhe im Original <b id="r-real">–</b></span>
+        <span>Brücke dick <b id="r-dicke">–</b></span>
+        <span>Support von der Druckplatte <b id="r-support">–</b></span>
+      </div>
+    </div>
+    <div class="panels one">
+      <figure class="panel"><figcaption>Querschnitt quer durch den Durchgang, Blick nach Westen</figcaption><div class="hscroll"><svg id="sq" class="plan sec-svg" role="img" aria-label="Querschnitt durch den Durchgang"></svg></div></figure>
+      <figure class="panel"><figcaption>Längsschnitt durch die Gasse, Hof links, Augustusplatz rechts</figcaption><div class="hscroll"><svg id="sl" class="plan sec-svg" role="img" aria-label="Längsschnitt durch die Gasse mit Treppe"></svg></div></figure>
+    </div>
+    <div class="legend"><span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke (neu)</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Ist: Vollblock</span><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span></div>
+  </section>
+
+  <section class="sec" id="drei-d">
+    <div>
+      <h2>Ist und Neu in 3D</h2>
+      <p class="lead">Ausschnitt um den Durchgang, beide Felder teilen eine Kamera. Ziehen dreht, Shift oder rechte Taste schiebt, das Rad zoomt. Die Mulden der Platte sind nicht dargestellt. Der Regler aus dem Abschnitt davor verschiebt auch hier die Decke der Brücke.</p>
+    </div>
+    <section class="stagebox" aria-label="3D-Ansicht">
+      <div class="bar2">
+        <div class="seg" role="group" aria-label="Stände">
+          <button type="button" id="t-alt" aria-pressed="true">Ist</button>
+          <button type="button" id="t-neu" aria-pressed="true">Neu</button>
+        </div>
+        <label class="lift" for="zc3">Decke <input type="range" id="zc3" min="8" max="18" step="0.1" value="@ZC@"><output id="zc3-out" for="zc3">@ZC@ mm</output></label>
+        <span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke</span><span class="sw"><i style="background:var(--plate)"></i>Platte</span>
+      </div>
+      <div id="stage" class="multi">
+        <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell Ist"></canvas><div class="tag alt">Ist</div></div>
+        <div class="pane" id="pane-neu"><canvas id="cv-neu" aria-label="3D-Modell Neu"></canvas><div class="tag neu">Neu</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
+      </div>
+      <div class="cap" id="cap"></div>
+      <div class="bar2 views"><div class="seg" role="group" aria-label="Ansicht" id="views"></div></div>
+    </section>
+  </section>
+
+  <section class="sec" id="druck">
+    <div>
+      <h2>Druck und Steckplatte</h2>
+      <p class="lead">Die Brücke ist ein waagerechter Überhang über 4,9 × 7,2 mm. Dafür nimmst du Support in Kauf, wie besprochen. Offen ist, woher der Support wächst und wie der Boden des Durchgangs gebaut wird.</p>
+    </div>
+    <div class="cards">
+      <div class="card rec">
+        <span class="tag2">Empfohlen</span>
+        <h3>A · Kein Fuß unter dem Durchgang <span>Aussparung im Fuß</span></h3>
+        <ul class="plain">
+          <li><strong>Boden und Stufen gehören zur Platte.</strong> Die Treppe läuft ohne Naht von der Hofkante bis zum Ostende, die Mulde des Institutsgebäudes bleibt wie sie ist.</li>
+          <li><strong>Support @SUPPORT_H@ mm hoch</strong> (Fuß @FUSS@ mm plus Decke @ZC@ mm), steht von der Druckplatte aus frei neben dem Fuß.</li>
+          <li>Die Brücke kragt vom Institutsgebäude aus. Zum Paulinum bleibt in der Steckplatte eine Fuge von 0,3 mm (Vorschlag), im Komplettmodell ist sie verschmolzen.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag2">Alternative</span>
+        <h3>B · Fuß geht durch <span>Mulde unter dem Durchgang</span></h3>
+        <ul class="plain">
+          <li><strong>Support nur @ZC@ mm hoch</strong> und auf dem Fuß statt auf der Druckplatte.</li>
+          <li>Die letzten Stufen unter der Brücke gehören dann zum Gebäude. Das gibt eine Naht in der Treppe, die auf 0,1 mm genau sitzen muss.</li>
+          <li>Das Paulinum und das Institutsgebäude haben eine Mulde mehr bzw. weniger; die Platte verliert die Stufen im Durchgang.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="reco"><strong>Treppe:</strong> @STUFEN@ Stufen à @RISER@ mm, das ist genau eine Druckschicht je Stufe. Jede Stufe ist @TREAD@ m (@TREAD_MM@ mm) lang, die Treppe endet am Ostende des Durchgangs. Damit liegen @UNTER@ der Stufen unter der Brücke. Die bisherigen 6 Stufen à 0,3 mm auf @LAUF_ALT@ mm bleiben nur als Alternative, falls 0,2 mm im Druck nicht ankommen.</div>
+  </section>
+
+  <section class="sec" id="pruefung">
+    <div>
+      <h2>Prüfung und offene Punkte</h2>
+      <p class="lead">Die neuen Körper von Paulinum und Institutsgebäude sind dicht (@DICHT@). Volumen Paulinum @VOL_P@ cm³, Institutsgebäude @VOL_I@ cm³. Die Kassette des Paulinums liegt mehr als 7 mm vom Durchgang entfernt, die des Institutsgebäudes mehr als 27 mm.</p>
+    </div>
+    <div class="cols2">
+      <div><h3>Noch nicht gemacht</h3>
+        <ul class="plain">
+          <li><strong>Generator:</strong> weder <code>generate.py</code> noch <code>plug.campus</code> noch <code>plug.buildings</code> kennen den Durchgang. Es gibt keine STL und keine neuen Vorschaubilder.</li>
+          <li><strong>Hohlkörper:</strong> die Brücke ist als Vollkörper gerechnet. Ob <code>hohl.py</code> sie sauber aushöhlt, zeigt erst der Lauf.</li>
+          <li><strong>Quellen:</strong> der Vorschlag gilt für den Laserscan. OSM und LoD2 hätten dieselbe Lücke, sind aber nicht angefasst.</li>
+          <li><strong>Deckenhöhe:</strong> @ZC_M@ m ist der LoD2-Wert und wirkt hoch. Ein Foto der Gasse würde ihn bestätigen.</li>
+        </ul></div>
+      <div><h3>Betroffene Dateien bei Zustimmung</h3>
+        <ul class="plain">
+          <li><code>plug/passage/geom.py</code> (Geometrie, Grundriss, Schnitte; später in <code>laserscan.py</code> bzw. <code>generate.py</code> einhängen)</li>
+          <li><code>data/innenhof.json</code> (Abschnitt <code>form.platte.nordost</code>: Länge, Stufen, Ende) und <code>innenhof.py</code></li>
+          <li><code>plug/campus.py</code> und <code>plug/buildings.py</code> (Mulde und Fuß des Institutsgebäudes, Paulinum ohne Durchgang)</li>
+          <li><code>data/fassaden/01_paulinum.json</code>, <code>05_institutsgebaeude.json</code> (Farbzonen der Brücke prüfen)</li>
+          <li>Erzeugt: <code>stl/</code>, <code>vorschau/</code>, README-Bilder</li>
+        </ul></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = @DATA@;
+const b64 = (s) => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Float32Array(u.buffer); };
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const $ = (id) => document.getElementById(id);
+const nf = (v, d = 1) => v.toFixed(d).replace('.', ',');
+const SC = DATA.z, S13 = 1000 / 1300;
+const state = { zc: SC.zc, show: { alt: true, neu: true } };
+
+/* ---------- Schnitte ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function ringsPath(polys, X, Y) {
+  return polys.map((p) => p.map((r) => 'M' + r.map((q) => X(q[0]).toFixed(1) + ' ' + Y(q[1]).toFixed(1)).join(' L') + 'Z').join(' ')).join(' ');
+}
+function dimV(svg, x, y0, y1, text, anchor) {
+  el('path', { class: 'dim', d: 'M' + x + ' ' + y0 + ' L' + x + ' ' + y1 + ' M' + (x - 4) + ' ' + y0 + ' L' + (x + 4) + ' ' + y0 + ' M' + (x - 4) + ' ' + y1 + ' L' + (x + 4) + ' ' + y1 }, svg);
+  const t = el('text', { class: 'dt', x: x + (anchor === 'end' ? -7 : 7), y: (y0 + y1) / 2 + 4, 'text-anchor': anchor || 'start' }, svg); t.textContent = text;
+}
+function dimH(svg, y, x0, x1, text) {
+  el('path', { class: 'dim', d: 'M' + x0 + ' ' + y + ' L' + x1 + ' ' + y + ' M' + x0 + ' ' + (y - 4) + ' L' + x0 + ' ' + (y + 4) + ' M' + x1 + ' ' + (y - 4) + ' L' + x1 + ' ' + (y + 4) }, svg);
+  const t = el('text', { class: 'dt', x: (x0 + x1) / 2, y: y - 6, 'text-anchor': 'middle' }, svg); t.textContent = text;
+}
+function drawQuer() {
+  const q = DATA.schnitt.quer, svg = $('sq'), k = 22, zmax = 27, padL = 16, padT = 14, padB = 40;
+  const [t0, t1] = q.fenster, W = (t1 - t0) * k + padL * 2, H = zmax * k + padT + padB;
+  svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 ' + W.toFixed(0) + ' ' + H.toFixed(0));
+  const X = (t) => padL + (t - t0) * k, Y = (z) => padT + (zmax - z) * k;
+  el('rect', { class: 'gnd', x: 0, y: Y(0), width: W, height: padB - 6 }, svg);
+  el('path', { class: 'm-alt', d: ringsPath(q.paulinum_alt, X, Y) }, svg);
+  el('path', { class: 'm-pau', d: ringsPath(q.paulinum_neu, X, Y) }, svg);
+  el('path', { class: 'm-ins', d: ringsPath(q.institut, X, Y) }, svg);
+  const [b0, b1] = q.bruecke, zc = state.zc, zt = SC.zt;
+  el('rect', { class: 'm-br', x: X(b0) - 0.5, y: Y(zt), width: (b1 - b0) * k + 1, height: (zt - zc) * k }, svg);
+  dimV(svg, X(b0) + (b1 - b0) * k / 2, Y(zc), Y(0), 'Decke ' + nf(zc) + ' mm', 'start');
+  dimH(svg, Y(0) + 22, X(b0), X(b1), 'Durchgang ' + nf(b1 - b0) + ' mm breit');
+  const t = el('text', { class: 'dt', x: X(b0) + (b1 - b0) * k / 2, y: Y(zt) + (zt - zc) * k / 2 + 4, 'text-anchor': 'middle' }, svg); t.textContent = 'Brücke';
+  const a = el('text', { class: 'dt sm', x: X(t0) + 4, y: Y(zmax) + 14 }, svg); a.textContent = 'Paulinum';
+  const b = el('text', { class: 'dt sm', x: X(t1) - 4, y: Y(zmax) + 14, 'text-anchor': 'end' }, svg); b.textContent = 'Institutsgebäude';
+}
+function drawLaengs() {
+  const l = DATA.schnitt.laengs, svg = $('sl'), k = 20, zmax = 27, padL = 16, padT = 14, padB = 30;
+  const [u0, u1] = l.fenster, W = (u1 - u0) * k + padL * 2, H = zmax * k + padT + padB;
+  svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 ' + W.toFixed(0) + ' ' + H.toFixed(0));
+  const X = (u) => padL + (u - u0) * k, Y = (z) => padT + (zmax - z) * k, hb = SC.hb;
+  el('rect', { class: 'gnd', x: 0, y: Y(0), width: W, height: padB - 6 }, svg);
+  el('rect', { class: 'hofb', x: 0, y: Y(hb), width: X(l.hof_u), height: hb * k }, svg);
+  el('path', { class: 'm-alt', d: ringsPath(l.block, X, Y) }, svg);
+  const alt = ['M' + X(l.hof_u) + ' ' + Y(hb)];
+  l.alt.forEach((s) => alt.push('L' + X(s[0]) + ' ' + Y(s[2]) + ' L' + X(s[1]) + ' ' + Y(s[2])));
+  alt.push('L' + X(l.alt[l.alt.length - 1][1]) + ' ' + Y(0) + ' L' + X(u1) + ' ' + Y(0));
+  el('path', { class: 'st-alt', d: alt.join(' ') }, svg);
+  const neu = ['M' + X(l.hof_u) + ' ' + Y(0), 'L' + X(l.hof_u) + ' ' + Y(hb)];
+  l.neu.forEach((s) => neu.push('L' + X(s[0]) + ' ' + Y(s[2]) + ' L' + X(s[1]) + ' ' + Y(s[2])));
+  const last = l.neu[l.neu.length - 1][1];
+  neu.push('L' + X(last) + ' ' + Y(0) + ' Z');
+  el('path', { class: 'st-neu', d: neu.join(' ') }, svg);
+  const [b0, b1] = l.bruecke, zc = state.zc, zt = SC.zt;
+  el('rect', { class: 'm-br', x: X(b0), y: Y(zt), width: (b1 - b0) * k, height: (zt - zc) * k }, svg);
+  dimH(svg, Y(zt) - 12, X(b0), X(b1), 'Durchgang ' + nf(b1 - b0) + ' mm lang');
+  dimV(svg, X(b1) + 14, Y(zc), Y(0), 'Decke ' + nf(zc) + ' mm', 'start');
+  const t = el('text', { class: 'dt', x: X((b0 + b1) / 2), y: Y(zt) + (zt - zc) * k / 2 + 4, 'text-anchor': 'middle' }, svg); t.textContent = 'Brücke';
+  const h = el('text', { class: 'dt sm', x: X(u0) + 6, y: Y(hb) - 8 }, svg); h.textContent = 'Hofboden ' + nf(hb) + ' mm';
+  const s1 = el('text', { class: 'dt sm', x: X(l.hof_u) + 8, y: Y(0) + 18 }, svg); s1.textContent = 'Stufen: ' + (l.neu.length + 1) + ' à ' + nf(hb / (l.neu.length + 1), 2) + ' mm (neu), gestrichelt: 6 à 0,30 mm (Ist)';
+  const bl = l.block.length ? el('text', { class: 'dt sm', x: X(b0) - 6, y: Y(zt * 0.5), 'text-anchor': 'end' }, svg) : null; if (bl) bl.textContent = 'Ist: Vollblock';
+}
+function readouts() {
+  const zc = state.zc;
+  $('zc-out').textContent = nf(zc) + ' mm'; $('zc3-out').textContent = nf(zc) + ' mm';
+  $('zc').value = zc; $('zc3').value = zc;
+  $('r-real').textContent = nf(zc / S13) + ' m';
+  $('r-dicke').textContent = nf(SC.zt - zc) + ' mm';
+  $('r-support').textContent = nf(zc + SC.fuss) + ' mm';
+}
+
+/* ---------- 3D ---------- */
+const stage = $('stage');
+function makeView(which) {
+  const canvas = $('cv-' + which), pane = $('pane-' + which);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 3000);
+  camera.up.set(0, 0, 1);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x7a8696, 1.0));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.6), fill = new THREE.DirectionalLight(0xffffff, 0.25);
+  scene.add(sun); scene.add(fill);
+  const v = { which, canvas, pane, renderer, scene, camera, sun, fill, part: {}, bridge: null };
+  ['platte', 'paulinum', 'institut'].forEach((kind) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(b64(DATA[kind + '_' + which]), 3));
+    g.computeVertexNormals();
+    const mat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.85, metalness: 0.0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+    const lines = new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32 }));
+    const holder = new THREE.Group(); holder.add(new THREE.Mesh(g, mat)); holder.add(lines);
+    scene.add(holder);
+    v.part[kind] = { holder, mat, lines };
+  });
+  if (which === 'neu') {
+    v.bridgeMat = new THREE.MeshStandardMaterial({ color: 0x1f8a7e, roughness: 0.8, metalness: 0.0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+    v.bridgeLine = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.4 });
+  }
+  return v;
+}
+const V = ['alt', 'neu'].map(makeView);
+const vNeu = V[1];
+function buildBridge() {
+  if (vNeu.bridge) { vNeu.scene.remove(vNeu.bridge); vNeu.bridge.traverse((o) => o.geometry && o.geometry.dispose()); }
+  const sh = new THREE.Shape(DATA.tunnel.map((p) => new THREE.Vector2(p[0], p[1])));
+  const g = new THREE.ExtrudeGeometry(sh, { depth: SC.zt - state.zc, bevelEnabled: false });
+  g.translate(0, 0, state.zc);
+  const grp = new THREE.Group(); grp.add(new THREE.Mesh(g, vNeu.bridgeMat)); grp.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), vNeu.bridgeLine));
+  vNeu.bridge = grp; vNeu.scene.add(grp);
+}
+
+const cam = { t: new THREE.Vector3(), d: 150, az: -12, el: 12 };
+function draw() {
+  const a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  V.forEach((v) => {
+    if (v.pane.hidden) return;
+    v.camera.position.set(cam.t.x + cam.d * Math.cos(e) * Math.cos(a), cam.t.y + cam.d * Math.cos(e) * Math.sin(a), cam.t.z + cam.d * Math.sin(e));
+    v.camera.lookAt(cam.t);
+    v.sun.position.copy(v.camera.position).add(new THREE.Vector3(60, -40, 120)); v.fill.position.copy(v.camera.position).add(new THREE.Vector3(-80, 60, 20));
+    v.renderer.render(v.scene, v.camera);
+  });
+}
+function resize() {
+  V.forEach((v) => {
+    if (v.pane.hidden) return;
+    const w = v.pane.clientWidth, h = v.pane.clientHeight;
+    if (!w || !h) return;
+    v.renderer.setSize(w, h, false); v.camera.aspect = w / h; v.camera.updateProjectionMatrix();
+  });
+  draw();
+}
+function applyShow() {
+  const n = V.filter((v) => state.show[v.which]).length;
+  V.forEach((v) => { v.pane.hidden = !state.show[v.which]; });
+  stage.classList.toggle('multi', n > 1);
+  ['alt', 'neu'].forEach((k) => $('t-' + k).setAttribute('aria-pressed', state.show[k]));
+  resize();
+}
+['alt', 'neu'].forEach((k) => {
+  $('t-' + k).onclick = () => {
+    const on = Object.values(state.show).filter(Boolean).length;
+    if (state.show[k] && on === 1) return;
+    state.show[k] = !state.show[k]; applyShow();
+  };
+});
+function setZc(v) { state.zc = Math.min(SC.zc_max, Math.max(SC.zc_min, v)); readouts(); drawQuer(); drawLaengs(); buildBridge(); draw(); }
+$('zc').oninput = (e) => setZc(+e.target.value);
+$('zc3').oninput = (e) => setZc(+e.target.value);
+$('zc-reset').onclick = () => setZc(SC.zc);
+
+function theme() {
+  const ink = new THREE.Color(css('--fg'));
+  V.forEach((v) => {
+    v.renderer.setClearColor(css('--stage'));
+    v.part.platte.mat.color.set(css('--plate')); v.part.paulinum.mat.color.set(css('--pau')); v.part.institut.mat.color.set(css('--ins'));
+    ['platte', 'paulinum', 'institut'].forEach((k) => v.part[k].lines.material.color.copy(ink));
+  });
+  vNeu.bridgeMat.color.set(css('--bruecke')); vNeu.bridgeLine.color.copy(ink);
+  draw();
+}
+
+let anim = null;
+function goTo(v) {
+  const from = { x: cam.t.x, y: cam.t.y, z: cam.t.z, d: cam.d, az: cam.az, el: cam.el };
+  const to = { x: v.t[0], y: v.t[1], z: v.t[2], d: v.d, az: v.az, el: v.el };
+  let daz = to.az - from.az; daz = ((daz + 540) % 360) - 180;
+  const t0 = performance.now(), dur = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
+  cancelAnimationFrame(anim);
+  const step = (now) => {
+    const k = dur ? Math.min(1, (now - t0) / dur) : 1, s = k * k * (3 - 2 * k);
+    cam.t.set(from.x + (to.x - from.x) * s, from.y + (to.y - from.y) * s, from.z + (to.z - from.z) * s);
+    cam.d = from.d + (to.d - from.d) * s; cam.az = from.az + daz * s; cam.el = from.el + (to.el - from.el) * s;
+    draw(); if (k < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+const views = $('views'), cap = $('cap');
+function showView(i) {
+  const v = DATA.views[i];
+  [...views.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+  cap.innerHTML = '<strong style="color:var(--fg)">' + v.name + '.</strong> ' + v.text;
+  goTo(v);
+}
+DATA.views.forEach((v, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = v.name; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => showView(i); views.appendChild(b);
+});
+
+const ptrs = new Map(); let pinch = 0;
+function panBy(dx, dy) {
+  const k = cam.d * 0.0016, a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  const right = new THREE.Vector3(-Math.sin(a), Math.cos(a), 0);
+  const up = new THREE.Vector3(-Math.sin(e) * Math.cos(a), -Math.sin(e) * Math.sin(a), Math.cos(e));
+  cam.t.addScaledVector(right, -dx * k).addScaledVector(up, dy * k);
+}
+V.forEach((v) => {
+  const c = v.canvas;
+  c.addEventListener('contextmenu', (e) => e.preventDefault());
+  c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; cancelAnimationFrame(anim); });
+  c.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+  c.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+  c.addEventListener('pointermove', (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+    if (ptrs.size === 2) {
+      const [p, q] = [...ptrs.values()]; const dist = Math.hypot(p[0] - q[0], p[1] - q[1]);
+      if (pinch) cam.d = Math.min(500, Math.max(6, cam.d * pinch / dist));
+      pinch = dist; panBy(dx / 2, dy / 2);
+    } else if (e.shiftKey || e.buttons === 2) panBy(dx, dy);
+    else { cam.az -= dx * 0.4; cam.el = Math.max(-89, Math.min(89, cam.el + dy * 0.4)); }
+    draw();
+  });
+  c.addEventListener('wheel', (e) => { e.preventDefault(); cam.d = Math.min(500, Math.max(6, cam.d * Math.exp(e.deltaY * 0.0012))); draw(); }, { passive: false });
+  new ResizeObserver(resize).observe(v.pane);
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+const v0 = DATA.views[0];
+cam.t.set(v0.t[0], v0.t[1], v0.t[2]); cam.d = v0.d; cam.az = v0.az; cam.el = v0.el;
+readouts(); drawQuer(); drawLaengs(); buildBridge(); applyShow(); theme(); showView(0);
+</script>
