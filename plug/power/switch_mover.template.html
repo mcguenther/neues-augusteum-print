@@ -77,9 +77,12 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
   var SW = D.sw, STEP = D.step, PW = D.plate[0], PL = D.plate[1];
   var YMIN = 10, YMAX = 211;
   var state = { y: SW.y0, ig: false };
+  var bbx = function (r) { var xs = r.map(function (p) { return p[0]; }), ys = r.map(function (p) { return p[1]; }); return [Math.min.apply(null, xs), Math.max.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, ys)]; };
+  var CABX = D.cable[D.cable.length - 1][0], CABYS = D.cable.filter(function (p) { return p[0] === CABX; }).map(function (p) { return p[1]; }), CAB0 = Math.min.apply(null, CABYS), CAB1 = Math.max.apply(null, CABYS);
+  var EB = bbx(D.elec[0]), FY = [bbx(D.fach[0])[2], bbx(D.fach[0])[3]];
   var NAMES = ['Paulinum', 'Neues Augusteum', 'Hörsaalgebäude', 'Seminargebäude', 'Institutsgebäude', 'City-Hochhaus'];
   var TEXT = {
-    elec: ['Die Elektronikbox (60 × 35 mm, x 3,4 bis 63,4, y 53,4 bis 88,4) liegt im Weg. Sie müsste verlegt werden; östlich davon liegen die Dockzonen von Hörsaalgebäude und City-Hochhaus.', 'Weniger als 2 mm Luft zur Elektronikbox.'],
+    elec: ['Die Elektronikbox (60 × 35 mm, x ' + fx(EB[0]) + ' bis ' + fx(EB[1]) + ', y ' + fx(EB[2]) + ' bis ' + fx(EB[3]) + ') liegt im Weg. Sie müsste verlegt werden.', 'Weniger als 2 mm Luft zur Elektronikbox.'],
     post: ['Eine Stütze unter der Oberplatte (6 × 6 mm) steht im Weg. Der Generator muss sie an dieser Stelle weglassen.', 'Weniger als 2 mm Luft zu einer Stütze.'],
     notch: ['Eckaussparung für den Faden-V der Oberplatte im Weg.', 'Weniger als 2 mm Luft zur Eckaussparung.'],
     fach: ['Das Fach der Powerbank ragt in den Schalterraum.', 'Weniger als 2 mm Luft zum Fach (Zaun, Kabelkanal).'],
@@ -128,8 +131,9 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
     D.posts.forEach(function (p) { el('path', { 'class': 'post', d: ring(p.r, PX, PY) }, gStatic); });
     el('polyline', { 'class': 'cab', points: D.cable.map(function (p) { return PX(p[0]).toFixed(1) + ',' + PY(p[1]).toFixed(1); }).join(' ') }, gStatic);
     var t;
-    t = el('text', { 'class': 'lbl', x: PX(PW * 0.25), y: PY(70) + 4, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Elektronik';
-    t = el('text', { 'class': 'lbl', x: PX(57), y: PY(150), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Powerbank';
+    t = el('text', { 'class': 'lbl', x: PX((EB[0] + EB[1]) / 2), y: PY((EB[2] + EB[3]) / 2) + 4, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Elektronik';
+    var BB = bbx(D.body[0]);
+    t = el('text', { 'class': 'lbl', x: PX((BB[0] + BB[1]) / 2), y: PY(BB[2] + 20), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Powerbank';
     t = el('text', { 'class': 'lbl', x: PX(PW / 2), y: OY - 8, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Nord (Anschlussseite)';
     t = el('text', { 'class': 'lbl', x: PX(PW / 2), y: OY + PL * S + 16, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Süd';
     t = el('text', { 'class': 'lbl', x: PX(90), y: PY(168), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Paulinum';
@@ -192,8 +196,8 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
     el('rect', { 'class': 'sw', x: X(0), y: Y(y + SW.body_l / 2), width: SW.body_depth * DS, height: SW.body_l * DS }, g);
     var pe = SW.body_depth + SW.pin_len, pn = y + SW.pin_pitch / 2, ps = y - SW.pin_pitch / 2;
     [pn, ps].forEach(function (py) { el('line', { 'class': 'pin', x1: X(SW.body_depth), x2: X(pe), y1: Y(py), y2: Y(py) }, g); });
-    var cx = D.cable[D.cable.length - 1][0];
-    var tap = Math.min(207.9, Math.max(80.4, y));
+    var cx = CABX;
+    var tap = Math.min(CAB1, Math.max(CAB0, y));
     var ye = Math.min(eb[3], Math.max(eb[2], y));
     el('polyline', { 'class': 'wire', points: [X(pe) + ',' + Y(pn), X(pe + 2) + ',' + Y(pn), X(pe + 2) + ',' + Y(tap), X(cx) + ',' + Y(tap)].join(' ') }, g);
     el('polyline', { 'class': 'wire', points: [X(pe) + ',' + Y(ps), X(12) + ',' + Y(ps), X(12) + ',' + Y(ye)].join(' ') }, g);
@@ -229,9 +233,9 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
       if (!txt) return;
       var li = document.createElement('li'); li.className = parts[1]; li.textContent = txt; ul.appendChild(li);
     });
-    if (y + SW.half_int > 92.4 && y - SW.half_int < 218.4) {
+    if (SW.margin >= 0 && y + SW.half_int > FY[0] && y - SW.half_int < FY[1]) {
       var li = document.createElement('li'); li.className = 'i';
-      li.textContent = 'Hinweis: Neben dem Fach bleiben ' + fx(SW.margin) + ' mm Luft zwischen Draht und Fach (Kabelkanal bei x 25,4).'; ul.appendChild(li);
+      li.textContent = 'Hinweis: Neben dem Fach bleiben ' + fx(SW.margin) + ' mm Luft zwischen Draht und Fach.'; ul.appendChild(li);
     }
     if (!ul.firstChild) {
       var l0 = document.createElement('li'); l0.className = 'i'; l0.textContent = 'Keine Konflikte gefunden.'; ul.appendChild(l0);

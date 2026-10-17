@@ -54,9 +54,15 @@ def refresh_layout():
 if "--refresh" in sys.argv:
     refresh_layout()
 LAYOUT = json.load(open(LAYOUT_JSON))   # Lage aus build_concept.variant(1300), Platte 115,6 × 220,8
-FACH_X0 = min(p[0] for p in LAYOUT["fach"][0])                          # Westkante des Fachs (22,4); Plattenaußenwand liegt bei x = 0
+FACH_X0 = min(p[0] for p in LAYOUT["fach"][0])                          # Westkante des Fachs; Plattenaußenwand liegt bei x = 0
 Y_SW = PP.SW_Y                                                             # E  Mitte des Schalters auf der Platte (Nord = größeres y), Wunsch des Nutzers, südlich der Elektronikbox
 MARGIN = round(FACH_X0 - DEPTH_OUT, 1)                                  # Luft zwischen den Pins mit Draht und dem Fach
+
+_bb = lambda ring: (min(p[0] for p in ring), max(p[0] for p in ring), min(p[1] for p in ring), max(p[1] for p in ring))   # noqa: E731
+FACH_Y0 = _bb(LAYOUT["fach"][0])[2]                                     # Südkante des Fachs
+ELEC = _bb(LAYOUT["elec"][0])                                           # Elektronikbox: x0, x1, y0, y1
+CABLE_X = LAYOUT["cable"][-1][0]                                        # Kabel im Kanal
+PW_ = LAYOUT["plate"][0]
 
 
 STEP = 0.5
@@ -290,10 +296,20 @@ def build():
         ("Wand am Loch", f"{f(WALL_AT_HOLE)}", "B bewährt mit T1 und T2 (Nutzer: hält sehr fest); Hakenabstand bleibt nachzumessen"),
         ("Außenwand sonst, Innentasche", f"{f(PP.UK_WALL)} / {f(POCKET[0])} × {f(POCKET[1])} × {f(POCKET_T)}", "E Tasche von innen, damit die Haken ausfedern können"),
         ("Höhe der Wand außen / Schaltermitte", f"{f(H_WALL)} / {f(Z_MID)}", f"A Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten {f(H_WALL)} = {f(LAYOUT['thick'])}), Frontplatte 10 hoch lässt je {f((H_WALL - 10) / 2)} Rand"),
-        ("Lage auf der Platte", f"Westwand, y = {f(Y_SW)}", "E Wunsch des Nutzers: südlich der Elektronikbox (y 53,4 bis 88,4), 10 mm Luft zur Box, darüber das Hörsaalgebäude"),
+        ("Lage auf der Platte", f"Westwand, y = {f(Y_SW)}", f"E Wunsch des Nutzers: südlich vom Fach (Fach ab y = {f(FACH_Y0)}), die Elektronikbox liegt weiter östlich (x {f(ELEC[0])} bis {f(ELEC[1])}, y {f(ELEC[2])} bis {f(ELEC[3])})"),
         ("Einbautiefe ab Außenfläche", f"≈ {f(DEPTH_OUT)}", f"A Kasten {f(SW['body_depth'])} + Pins {f(SW['pin_len'])} (aus Foto) + {f(SW['wire'])} Lötstelle und Biegung"),
-        ("Platz bis zum Fach (Westkante x = %s)" % f(FACH_X0), f"{f(FACH_X0)} frei, Luft {f(MARGIN)}", "A Streifen westlich des Fachs, an der Stelle ohne Stützen, Zapfen und Dockzone"),
+        ("Platz bis zum Fach (Westkante x = %s)" % f(FACH_X0), (f"{f(FACH_X0)} frei, Luft {f(MARGIN)}" if MARGIN >= 0 else f"{f(FACH_X0)} frei: nur südlich vom Fach (y unter {f(FACH_Y0 - HALF_INT)})"), "A Streifen westlich des Fachs; Stützen, Zapfen und Dockzonen sind bei y = %s frei" % f(Y_SW)),
     ]
+    tab, _ = conflict_table()
+    rng, st = [], None
+    for k, c in enumerate(tab + [["x:r"]]):
+        ok = not any(x.endswith(":r") for x in c)
+        if ok and st is None:
+            st = k
+        if not ok and st is not None:
+            rng.append("y %s bis %s" % (f(st * STEP), f((k - 1) * STEP)))
+            st = None
+    free_text = ", ".join(r for r in rng if True) or "keine Lage"
     html = f"""<title>Hauptschalter Westwand</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -365,7 +381,7 @@ a {{ color:var(--accent); }}
 <header style="display:flex;flex-direction:column;gap:8px">
   <div class="kicker">Plan · Konzept, noch keine STL · Stand 17.10.2026 · Platte 1:1300</div>
   <h1>Hauptschalter in der Westwand des Unterkastens</h1>
-  <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, bei y = {f(Y_SW)} südlich der Elektronik, und schnappt von außen in ein Loch von {f(HOLE[0])} × {f(HOLE[1])} mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
+  <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, bei y = {f(Y_SW)} südlich vom Fach, und schnappt von außen in ein Loch von {f(HOLE[0])} × {f(HOLE[1])} mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
 </header>
 
 {mover_html()}
@@ -387,9 +403,9 @@ a {{ color:var(--accent); }}
   <h2>Warum dort</h2>
   <table>
     <tr><th>Stelle</th><th>Urteil</th></tr>
-    <tr><td>Westwand, y = {f(Y_SW)}</td><td><b>Vorschlag.</b> Gegenüber dem Paulinum, von außen erreichbar, ohne Ausbuchtung: Der Streifen bis zum Fach ist {f(FACH_X0)} mm breit und der Schalter braucht {f(DEPTH_OUT)}. Das Kabel liegt im Kanal (x 25,4), die Elektronik beginnt bei y = 88,4.</td></tr>
-    <tr><td>Ostwand (Paulinum-Seite)</td><td>Auch möglich, der Streifen ist 23 mm breit. Entfällt nach deiner Vorgabe, außerdem läge das Kabel dann auf der falschen Seite des Fachs.</td></tr>
-    <tr><td>Südwand</td><td>Dahinter liegt die Elektronik direkt an der Wand (x 3 bis 63, y 53 bis 88), kein Platz.</td></tr>
+    <tr><td>Westwand, y = {f(Y_SW)}</td><td><b>Vorschlag.</b> Gegenüber dem Paulinum, von außen erreichbar, ohne Ausbuchtung: Der Schalter braucht {f(DEPTH_OUT)} mm Tiefe; der Streifen bis zum Fach ist {f(FACH_X0)} mm breit, deshalb geht er nur südlich vom Fach (y unter {f(FACH_Y0 - HALF_INT)}). Das Kabel liegt im Kanal bei x = {f(CABLE_X)}, die Elektronikbox bei x {f(ELEC[0])} bis {f(ELEC[1])}.</td></tr>
+    <tr><td>Ostwand (Paulinum-Seite)</td><td>Entfällt nach deiner Vorgabe (Seite gegenüber dem Paulinum); der Kabelkanal liegt im aktuellen Layout auf dieser Seite (x = {f(CABLE_X)}).</td></tr>
+    <tr><td>Südwand</td><td>Nicht geprüft; nicht die Seite gegenüber dem Paulinum.</td></tr>
     <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
   </table>
   <p class="note"><b>Stand:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, drei Linien). Mit dem Probeteil T2 hat sich der Schalter sehr gut einsetzen lassen und hält sehr fest; die Werte sind bewährt und stehen in <code>plug/power/params.py</code>. Die Brücke über dem Loch war sauber. Offen sind der Einbau in den echten Unterkasten und die Hakenspanne.</p>
@@ -415,7 +431,7 @@ Powerbank USB  ──schwarz (GND)───────────────�
   <h2 style="margin-bottom:12px">Entscheidungen</h2>
   <div class="cards">
     <div class="card"><h3>1. Lage entlang der Westwand</h3>
-      <ul><li><b>A</b> y = {f(Y_SW)}, südlich der Elektronikbox (Wunsch des Nutzers)</li><li>B y = 116, unter dem Südende des Seminargebäudes, Platz frei</li><li>C y = 150, Mitte unter dem Seminargebäude</li></ul>
+      <ul><li><b>A</b> y = {f(Y_SW)}, südlich vom Fach (Wunsch des Nutzers)</li><li>Frei (grün) sind laut Rechnung: {free_text}. Weiter nördlich liegt das Fach im Weg.</li></ul>
       <div class="pick">Vorschlag: A</div></div>
     <div class="card"><h3>2. Loch</h3>
       <ul><li><b>{f(HOLE[0])} × {f(HOLE[1])}</b></li><li>Wand am Loch {f(WALL_AT_HOLE)} mit Innentasche {f(POCKET_T)}</li></ul>

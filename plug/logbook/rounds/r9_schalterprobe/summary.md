@@ -24,5 +24,5 @@ Ob der Wippenschalter KCD11 (10 × 15, Kasten 13 × 8) in der 1,2 mm dünnen Wan
 ## Entscheidungen und Folgen
 
 - Werte stehen in `plug/power/params.py` (`SW_HOLE`, `SW_WALL`, `SW_POCKET_PAD`, `SW_Y`) und werden vom Plan `build_plan_switch.py` gelesen.
-- Lage: Westwand, y = 36 (Platte 1:1300, südlich der Elektronikbox); der Schieber der Planseite zeigt sie frei von Konflikten. Sie ist noch nicht in der echten Platte gedruckt.
+- Lage: Westwand, y = 36 (Platte 1:1300, südlich vom Fach); der Schieber der Planseite zeigt sie frei von Konflikten. Sie ist noch nicht in der echten Platte gedruckt.
 - Offen: Einbau in den echten Unterkasten (Generator `hohl`/`build_concept` kennt die Wand und das Loch noch nicht), Hakenspanne mit der Schieblehre nachmessen, Brücke im echten Teil nur noch gegenzuprüfen (im Probeteil sauber).
