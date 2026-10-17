@@ -45,11 +45,7 @@ def sections(man, step=STEP):
     out, z = [], 0.0
     while z < zmax - 1e-6:
         z1 = min(z + step, zmax)
-        polys = [Polygon(c) for c in man.slice((z + z1) / 2).to_polygons() if len(c) >= 3]
-        g = Polygon()
-        for p in polys:  # Gerade-Ungerade-Regel: Löcher heben sich über die symmetrische Differenz auf
-            g = p if g.is_empty else g.symmetric_difference(p)
-        out.append((z1, g.buffer(0)))
+        out.append((z1, _cs_poly(man.slice((z + z1) / 2))))
         z = z1
     return out
 
@@ -180,11 +176,20 @@ def vault_solid(R, hc, zmax, sub=2):
 
 
 def _cs_poly(cs):
+    """CrossSection -> shapely-Fläche nach der Gerade-Ungerade-Regel (Löcher heben sich über die symmetrische Differenz auf).
+    Jeder Ring wird vorher repariert; Manifold-Schnitte können Ringe liefern, die sich in einem Punkt selbst berühren."""
+    import shapely
     g = Polygon()
     for c in cs.to_polygons():
-        if len(c) >= 3:
-            p = Polygon(c)
+        if len(c) < 3:
+            continue
+        p = shapely.make_valid(Polygon(c)).buffer(0)
+        if p.is_empty:
+            continue
+        try:
             g = p if g.is_empty else g.symmetric_difference(p)
+        except shapely.errors.GEOSException:
+            g = shapely.make_valid(g).buffer(0).symmetric_difference(p.buffer(1e-6).buffer(-1e-6))
     return g.buffer(0)
 
 
