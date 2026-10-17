@@ -71,6 +71,12 @@ CH_PIN = 0.5                                        # Spitze der Zentrierzapfen
 # ---- Elektronik, Doktorhut
 ESP_BOX = (60.0, 35.0)    # S  ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter
 ESP_BOXES = (ESP_BOX, (50.0, 30.0))   # Rückfall bei knappem Platz (1:1300): nur ESP32-DevKit 51 × 28 mm ohne Beiwerk (S)
+ESP_BOARD = (51.8, 28.2)  # A  ESP32-DevKit WROOM-32 (30 Pin), Platine; typisch (docs/esp32-devkit-wroom32.md), ungemessen
+ESP_H = 5.9               # A  Aufbau A (Lötstellen 1,0 + Platine 1,6 + USB-C-Buchse 3,3), Einbauhöhe in plug/power/build_wiring.py
+ESP_TAPE = 1.0            # E  Isoband um das Board, je Seite (keine feste Box: das Board liegt lose, Leitungen hängen frei)
+ESP_RING = 5.0            # E  freier Rand um das Board ohne Stützen, damit die Leitungen biegen können
+ADERN_ZONE = 2.9          # A  Leiste 2,0 + Lötstelle/Draht unter der Platte (plug/power/build_wiring.py ZONE)
+ESP_ZONES = ((64.0, 40.5), (54.0, 30.5))   # E  Elektronikfläche final (Board + Isoband + Ring) und Rückfall ohne Ring; ersetzt 60 × 35 der Box im Batteriefach
 HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemessen
 
 # ---- Hauptschalter (Wippe KCD11 10 × 15, Kasten 13 × 8, Frontplatte 15 × 10), Probeteil T2 gedruckt und bewährt (r9, 2026-10-17)

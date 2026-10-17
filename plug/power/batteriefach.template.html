@@ -1,0 +1,472 @@
+<title>Batteriefach Unterkasten</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Antwort oben, dann 3D mit Schichtschaltern neben der Draufsicht, Höhenkette, Schnittstelle zur Steckplatte, Elektronik, Entscheidungen.
+   Gleiches Farbsystem wie plug/power/concept.template.html (Unterkasten blaugrau, Powerbank hell, Elektronik grün, Dock orange). */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
+  --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
+  --c-elec: #2f7d4f; --c-thread: #c8423b; --c-niche: #d97a1f; --c-sw: #7a4fb0;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+    --c-elec: #4c9a69; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-sw: #b48ae6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+  --c-elec: #4c9a69; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-sw: #b48ae6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+.lead { font-size: 1.12rem; color: var(--muted); max-width: 66ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+header { display: flex; flex-direction: column; gap: 14px; }
+.small { font-size: 0.88rem; } .muted { color: var(--muted); }
+ul { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+
+.answer { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.answer > div { background: var(--panel); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.answer .big { font-family: var(--mono); font-size: 1.45rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.answer .lbl { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.answer .rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 0.95rem; }
+.views { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .views { grid-template-columns: 1fr; } }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.ctrl input[type=range] { width: 160px; accent-color: var(--accent); }
+.ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.ctrl button:focus-visible, .ctrl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 6px 14px; }
+.layer { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; min-width: 0; }
+.layer .sw { width: 12px; height: 12px; border-radius: 2px; flex: none; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+.layer .nm { flex: 1; min-width: 0; }
+.tri { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex: none; }
+.tri button { font: inherit; font-size: 0.75rem; border: 0; background: var(--panel); color: var(--muted); padding: 2px 8px; cursor: pointer; border-right: 1px solid var(--line); }
+.tri button:last-child { border-right: 0; }
+.tri button[aria-pressed="true"] { background: var(--accent-fill); color: var(--on-accent); }
+.tri button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+#plan { width: 100%; height: auto; max-height: 82vh; display: block; }
+#plan text, #hk text { font-family: var(--font); fill: var(--fg); }
+#plan .mut, #hk .mut { fill: var(--muted); }
+.scroll { overflow-x: auto; }
+#hk { width: 100%; min-width: 640px; height: auto; display: block; }
+#hk .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.cards .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.cards ul { font-size: 0.93rem; }
+.meta { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Steckmechanismus · Grundplatte · Unterkasten, Stand 7</div>
+  <h1>Batteriefach Unterkasten</h1>
+  <p class="lead">Die unterste Ebene der Grundplatte (1:1300, Laserscan): Powerbank, Elektronik und Hauptschalter in einem hohlen Kasten unter der Steckplatte. Diese Seite zeigt den Stand vor dem Druck: ohne Zaun um die Powerbank, mit freier Fläche für das ESP32-DevKit, und was am Kasten an der Steckplatte hängt. Es gibt noch keine STL.</p>
+</header>
+
+<section aria-labelledby="h-ans">
+  <h2 id="h-ans">Kurz</h2>
+  <div class="answer" id="answer"></div>
+</section>
+
+<section aria-labelledby="h-view">
+  <h2 id="h-view">Ansicht <span class="num muted" id="viewDims" style="font-size:1rem;font-weight:500"></span></h2>
+  <div class="views">
+    <div class="card">
+      <h3>3D: Schichten einzeln schalten</h3>
+      <div class="stage" id="stage"><canvas id="cv" aria-label="3D-Ansicht, ziehen zum Drehen"></canvas><span class="tag" id="tag3d"></span></div>
+      <div class="ctrl">
+        <label for="explode">Auseinanderziehen</label><input type="range" id="explode" min="0" max="1" step="0.01" value="0.5">
+        <span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="edge">Fenster</button><button type="button" data-view="sw">Schalter</button></span>
+      </div>
+      <div class="layers" id="layers"></div>
+    </div>
+    <div class="card">
+      <h3>Draufsicht Unterkasten <span class="muted small num" id="planDims"></span></h3>
+      <svg id="plan" role="img" aria-label="Draufsicht des Unterkastens mit Stützen, Zapfen, Powerbank, Elektronikfläche, Schalter und Dockzonen"></svg>
+      <div class="legend">
+        <span style="--sw:var(--c-under)">Stütze</span><span style="--sw:var(--c-pb)">Powerbank</span>
+        <span style="--sw:var(--accent-fill)">Fenster, Stecker, Kabel</span><span style="--sw:var(--c-elec)">ESP32 und freie Fläche</span>
+        <span style="--sw:var(--c-niche)">Dockzone (keine Stütze)</span><span style="--sw:var(--c-thread)">Eckaussparung (Faden)</span>
+        <span style="--sw:var(--c-sw)">Hauptschalter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-hk">
+  <h2 id="h-hk">Höhenkette</h2>
+  <p class="muted" id="hkNote"></p>
+  <div class="card"><div class="scroll"><svg id="hk" role="img" aria-label="Schnitt durch Platte und Unterkasten in drei Bereichen: unter einem Dock, freie Fläche mit ESP32, Stütze mit Zapfen"></svg></div></div>
+</section>
+
+<section aria-labelledby="h-ifc">
+  <h2 id="h-ifc">Wie unabhängig ist der Kasten von der Steckplatte?</h2>
+  <p id="ifcLead"></p>
+  <div class="card"><div class="scroll"><table id="ifcTable"></table></div></div>
+  <div class="two">
+    <div class="card"><h3>Dockzonen: Spielraum je Dock</h3><div class="scroll"><table id="dockTable"></table></div>
+      <p class="small muted">Abstand der Dockzone (Leistenkörper, Lötenden, hängender Draht, plus 2 mm Rand) zur nächsten Stütze, Außenwand oder Eckaussparung. Ein Dock darf sich so weit verschieben, ohne dass der Kasten sich ändert. Drehen oder Wandern in eine andere Ecke zählt nicht dazu.</p></div>
+    <div class="card"><h3>Stützen und Zapfen (Rohkoordinaten der Platte, Süden y = 0)</h3><div class="scroll"><table id="postTable"></table></div>
+      <p class="small muted">Zapfen: Ø <span id="pinD"></span>, 2,5 mm hoch, Zapfenloch in der Oberplatte mit 0,15 Gleitspiel. Die Spalte „Abstand“ ist der Abstand des Zapfenlochs zur nächsten Mulde oder zum Innenhof.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-el">
+  <h2 id="h-el">Elektronik: ESP32 ohne Box</h2>
+  <div class="two">
+    <div class="card"><h3>Grundfläche</h3><table id="espTable"></table></div>
+    <div class="card"><h3>Was das bedeutet</h3>
+      <ul id="espList"></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-next">
+  <h2 id="h-next">Entscheidungen vor dem Bau</h2>
+  <div class="cards" id="cards"></div>
+</section>
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const D = JSON.parse($('data').textContent);
+  const v = D.v, H = D.h, PB = D.pb, FA = D.fach, UK = D.uk, ESP = D.esp, IF = D.ifc, SW = D.sw, DK = D.dock;
+  const fmt = (x, n = 1) => (+x).toFixed(n).replace('.', ',').replace('-', '−');
+  const mm = (x, n = 1) => fmt(x, n) + ' mm';
+  const set = (id, t) => { $(id).textContent = t; };
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const bb = (p) => { const xs = p.map((q) => q[0]), ys = p.map((q) => q[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+  const short = { '01_paulinum': 'Paulinum', '02_neues_augusteum': 'Augusteum', '03_hoersaalgebaeude': 'Hörsaal', '04_seminargebaeude': 'Seminar', '05_institutsgebaeude': 'Institut', '06_city_hochhaus': 'Hochhaus' };
+  const W = v.plate[0], L = v.plate[1];
+  const eb = bb(v.elec[0]);
+  const dimsTxt = fmt(W, 1) + ' × ' + fmt(L, 1) + ' × ' + fmt(H.uk_t, 1) + ' mm';
+  const dockFree = IF.docks.map((d) => d.free);
+  const minDock = Math.min(...dockFree), maxDock = Math.max(...dockFree);
+  const minPin = Math.min(...IF.pins.map((p) => p.free));
+  const gapReal = H.inner - PB.T, rest = gapReal - H.adern;
+  set('viewDims', '1:1300 · Kasten ' + dimsTxt); set('planDims', dimsTxt);
+
+  /* ---------- Kurz ---------- */
+  $('answer').innerHTML = [
+    ['rec', 'Abmessung', dimsTxt, 'Höhe ' + mm(H.uk_t) + ' (Boden ' + mm(H.floor) + ', innen ' + mm(H.inner) + '); Oberplatte ' + mm(H.plate_t) + ' darüber, zusammen ' + mm(H.total) + '. Gewicht etwa ' + D.grams[0] + ' g PLA (' + fmt(D.grams[1], 0) + ' cm³).'],
+    ['', 'Zaun um die Powerbank', 'entfällt', 'Die Powerbank liegt lose im Fach, notfalls ein paar Punkte Heißkleber. Das Fenster in der Kante für LEDs, microUSB und USB-C bleibt (' + mm(FA.win[1] - FA.win[0], 0) + ' breit).'],
+    ['', 'Elektronikfläche', fmt(ESP.zones[0][0], 0) + ' × ' + fmt(ESP.zones[0][1], 1) + ' mm', 'ESP32-DevKit 30 Pin (' + fmt(ESP.board[0], 1) + ' × ' + fmt(ESP.board[1], 1) + ') mit Isoband, dazu ' + mm(ESP.ring, 0) + ' freier Rand. Keine Box; bis ' + mm(H.esp_free) + ' hoch.'],
+    ['', 'Abhängigkeit von der Steckplatte', '3 feste, 2 mit Spielraum', 'Fest: Außenmaß, Oberkante, Eckaussparungen. Spielraum: Zapfen ' + mm(minPin) + ', Docks ' + mm(minDock) + ' bis ' + mm(maxDock) + '. Tabelle unten.']
+  ].map(([c, l, b, t]) => '<div class="' + c + '"><span class="lbl">' + l + '</span><span class="big">' + b + '</span><span class="small muted">' + t + '</span></div>').join('');
+
+  /* ---------- Draufsicht ---------- */
+  (function plan() {
+    const s = 3.4, pad = 24, w = W * s + 2 * pad, h = L * s + 2 * pad;
+    const X = (x) => pad + x * s, Y = (y) => pad + (L - y) * s;
+    const path = (r) => 'M' + r.map((p) => X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join('L') + 'Z';
+    const paths = (rs) => rs.map(path).join('');
+    let o = '';
+    o += '<path d="' + paths(v.outline) + '" style="fill:var(--c-under);fill-opacity:.16;stroke:var(--edge);stroke-width:1.4"/>';
+    for (const b of v.buildings) o += '<path d="' + path(b.poly[0]) + '" style="fill:none;stroke:var(--muted);stroke-width:.8;stroke-dasharray:4 3"/>';
+    o += '<path d="' + paths(v.hof) + '" style="fill:none;stroke:var(--c-hof);stroke-width:1.2;stroke-dasharray:4 3"/>';
+    for (const b of v.buildings) { const q = bb(b.poly[0]); o += '<text class="mut" x="' + X((q[0] + q[2]) / 2) + '" y="' + Y((q[1] + q[3]) / 2) + '" text-anchor="middle" font-size="11" opacity=".55">' + short[b.slug] + '</text>'; }
+    for (const d of v.docks) if (d.ok) {
+      o += '<path d="' + path(d.zone) + '" style="fill:var(--c-niche);fill-opacity:.22;stroke:var(--c-niche);stroke-width:1"/>';
+      const c = bb(d.zone); o += '<text x="' + X((c[0] + c[2]) / 2) + '" y="' + (Y((c[1] + c[3]) / 2) + 4) + '" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--c-niche)">' + (v.docks.indexOf(d) + 1) + '</text>';
+    }
+    o += '<path d="' + path(v.fach_poly[0]) + '" style="fill:none;stroke:var(--fg);stroke-width:.9;stroke-dasharray:5 3"/>';
+    o += '<path d="' + path(v.body[0]) + '" style="fill:var(--c-pb);fill-opacity:.85;stroke:var(--edge);stroke-width:1.2"/>';
+    o += '<path d="' + paths(v.plug) + '" style="fill:var(--accent-fill);fill-opacity:.8"/>';
+    o += '<path d="' + paths(v.window) + '" style="fill:var(--accent-fill);fill-opacity:.9;stroke:var(--edge);stroke-width:1"/>';
+    o += '<polyline points="' + v.cable.map((p) => X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ') + '" style="fill:none;stroke:var(--accent-fill);stroke-width:3;stroke-linecap:round"/>';
+    // Elektronikfläche und ESP32-Board
+    const ew = eb[2] - eb[0], eh = eb[3] - eb[1], cx = (eb[0] + eb[2]) / 2, cy = (eb[1] + eb[3]) / 2;
+    const bw = ew >= eh ? ESP.board[0] : ESP.board[1], bh = ew >= eh ? ESP.board[1] : ESP.board[0];
+    const tp = ESP.tape;
+    o += '<rect x="' + X(eb[0]) + '" y="' + Y(eb[3]) + '" width="' + ew * s + '" height="' + eh * s + '" style="fill:var(--c-elec);fill-opacity:.12;stroke:var(--c-elec);stroke-width:1.2;stroke-dasharray:5 3"/>';
+    o += '<rect x="' + X(cx - bw / 2 - tp) + '" y="' + Y(cy + bh / 2 + tp) + '" width="' + (bw + 2 * tp) * s + '" height="' + (bh + 2 * tp) * s + '" rx="2" style="fill:var(--c-elec);fill-opacity:.35;stroke:var(--c-elec);stroke-width:1"/>';
+    o += '<rect x="' + X(cx - bw / 2) + '" y="' + Y(cy + bh / 2) + '" width="' + bw * s + '" height="' + bh * s + '" rx="1.5" style="fill:var(--c-elec);stroke:var(--edge);stroke-width:.8"/>';
+    o += '<text x="' + X(cx) + '" y="' + (Y(cy) + 4) + '" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--bg)">ESP32</text>';
+    // Stützen, Zapfen
+    for (const p of v.posts) {
+      o += '<path d="' + path(p.r) + '" style="fill:var(--c-under);fill-opacity:.8;stroke:var(--edge);stroke-width:.8"/>';
+      if (p.pin) { const q = bb(p.r); o += '<circle cx="' + X((q[0] + q[2]) / 2) + '" cy="' + Y((q[1] + q[3]) / 2) + '" r="' + (UK.pin.d / 2) * s + '" style="fill:var(--bg);stroke:var(--edge);stroke-width:1"/>'; }
+    }
+    for (const x of v.vs) o += '<path d="' + path(x.notch) + '" style="fill:var(--c-thread);fill-opacity:.55;stroke:var(--c-thread);stroke-width:1"/>';
+    // Schalter in der Westwand
+    const sr = IF.switch_room;
+    o += '<rect x="' + X(sr[0]) + '" y="' + Y(sr[3]) + '" width="' + (sr[2] - sr[0]) * s + '" height="' + (sr[3] - sr[1]) * s + '" style="fill:var(--c-sw);fill-opacity:.12;stroke:var(--c-sw);stroke-width:1;stroke-dasharray:4 3"/>';
+    o += '<rect x="' + X(0) + '" y="' + Y(SW.y + SW.hole[0] / 2) + '" width="' + UK.wall * s + '" height="' + SW.hole[0] * s + '" style="fill:var(--c-sw);stroke:var(--edge);stroke-width:.8"/>';
+    o += '<text x="' + X(SW.depth + 1) + '" y="' + (Y(SW.y) + 4) + '" font-size="11" style="fill:var(--c-sw)">Schalter</text>';
+    // Beschriftung
+    const fb = bb(v.fach_poly[0]);
+    o += '<text x="' + X((fb[0] + fb[2]) / 2) + '" y="' + (Y(fb[3]) - 6) + '" text-anchor="middle" font-size="11" class="mut">Fach: Stecker ' + mm(PB.plug, 0) + ' + Powerbank ' + fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + '</text>';
+    o += '<text x="' + (w - pad) + '" y="14" text-anchor="end" font-size="12" class="mut">N ↑</text>';
+    $('plan').setAttribute('viewBox', '0 0 ' + w.toFixed(0) + ' ' + h.toFixed(0));
+    $('plan').innerHTML = o;
+  })();
+
+  /* ---------- Höhenkette ---------- */
+  (function hk() {
+    const s = 13, top = 40, left = 230, cw = 190, gap = 40;
+    const zTop = 0, zBot = H.uk_bot, tot = -zBot;                  // z: Plattenoberseite 0
+    const Z = (z) => top + (zTop - z) * s;
+    const zDeck = H.deck, zf = H.uk_bot + H.floor, zpbTop = zf + PB.T;
+    const cols = [left, left + cw + gap, left + 2 * (cw + gap)];
+    const wTot = cols[2] + cw + 140, hTot = Z(zBot) + 60;
+    let o = '';
+    const R = (x, a, b, w, fill, fo, st) => '<rect x="' + x + '" y="' + Z(Math.max(a, b)) + '" width="' + w + '" height="' + Math.abs(Z(a) - Z(b)) + '" style="fill:' + fill + ';fill-opacity:' + fo + ';' + (st || 'stroke:var(--edge);stroke-width:1') + '"/>';
+    const T = (x, y, t, a, c, fs) => '<text x="' + x + '" y="' + y + '" text-anchor="' + (a || 'start') + '" font-size="' + (fs || 12) + '"' + (c ? ' class="' + c + '"' : '') + '>' + t + '</text>';
+    const titles = ['unter einem Dock', 'freie Fläche (ESP32)', 'Stütze mit Zapfen'];
+    cols.forEach((x, i) => { o += T(x + cw / 2, 22, titles[i], 'middle', '', 13).replace('<text', '<text font-weight="600"'); });
+    for (const x of cols) {
+      o += R(x, zDeck, 0, cw, 'var(--c-plate)', 0.55);                     // Oberplatte
+      o += R(x - 6, zBot + H.floor, zBot, cw + 12, 'var(--c-under)', 0.8); // Boden
+      o += R(x - 6, zDeck, zBot + H.floor, 6, 'var(--c-under)', 0.8);
+      o += R(x + cw, zDeck, zBot + H.floor, 6, 'var(--c-under)', 0.8);
+    }
+    o += T(cols[0] + cw / 2, Z(-H.plate_t / 2) + 4, 'Oberplatte ' + mm(H.plate_t), 'middle', 'mut');
+    // Spalte 1: Dock
+    let x = cols[0];
+    o += R(x + 30, zDeck, zDeck - H.body, 56, 'var(--c-niche)', 0.8);
+    o += T(x + 58, Z(zDeck - H.body / 2) + 4, 'Leiste', 'middle', '', 11);
+    o += R(x + 20, zDeck - H.adern, zDeck, 150, 'var(--c-niche)', 0.12, 'stroke:var(--c-niche);stroke-dasharray:4 3;stroke-width:1');
+    o += T(x + 92, Z(zDeck - H.body / 2) + 4, 'Adernzone ' + mm(H.adern), 'start', 'mut', 11);
+    o += R(x + 10, zf, zpbTop, cw - 20, 'var(--c-pb)', 0.95);
+    o += T(x + cw / 2, Z(zf + PB.T / 2) + 4, 'Powerbank ' + mm(PB.T), 'middle');
+    // Spalte 2: ESP32
+    x = cols[1];
+    o += R(x + 20, zf, zf + ESP.h + ESP.tape, cw - 40, 'var(--c-elec)', 0.35);
+    o += R(x + 20, zf + ESP.tape, zf + ESP.h, cw - 40, 'var(--c-elec)', 0.9);
+    o += T(x + cw / 2, Z(zf + ESP.h / 2) + 4, 'ESP32 ' + mm(ESP.h), 'middle', '', 11).replace('<text', '<text style="fill:var(--bg)"');
+    o += R(x + 10, zDeck - H.adern, zDeck, cw - 20, 'var(--c-niche)', 0.08, 'stroke:var(--c-niche);stroke-dasharray:4 3;stroke-width:1');
+    o += T(x + cw / 2, Z(zDeck - H.adern) + 18, 'ESP32 bis ' + mm(H.esp_free) + ' hoch', 'middle', 'mut', 11);
+    o += '<line x1="' + (x + 10) + '" x2="' + (x + cw - 10) + '" y1="' + Z(zDeck - H.adern) + '" y2="' + Z(zDeck - H.adern) + '" style="stroke:var(--warn);stroke-width:1.4;stroke-dasharray:6 3"/>';
+    // Spalte 3: Stütze
+    x = cols[2];
+    o += R(x + cw / 2 - 18, zDeck, zf, 36, 'var(--c-under)', 0.9);
+    o += R(x + cw / 2 - UK.pin.d * 2, zDeck + UK.pin.h, zDeck, UK.pin.d * 4, 'var(--c-under)', 1);
+    o += T(x + cw / 2 + 24, Z(zDeck + UK.pin.h / 2) + 4, 'Zapfen ' + mm(UK.pin.h), 'start', '', 11);
+    o += T(x + cw / 2 + 24, Z((zDeck + zf) / 2) + 4, 'Stütze ' + fmt(UK.post[0], 0) + ' × ' + fmt(UK.post[0], 0) + ' mm', 'start', 'mut', 11);
+    // Maßlinien links
+    const dim = (z0, z1, xx, t, anchor) => '<line class="dim" x1="' + xx + '" x2="' + xx + '" y1="' + Z(z0) + '" y2="' + Z(z1) + '"/><line class="dim" x1="' + (xx - 4) + '" x2="' + (xx + 4) + '" y1="' + Z(z0) + '" y2="' + Z(z0) + '"/><line class="dim" x1="' + (xx - 4) + '" x2="' + (xx + 4) + '" y1="' + Z(z1) + '" y2="' + Z(z1) + '"/>' + (t ? T(anchor ? xx + 8 : xx - 8, (Z(z0) + Z(z1)) / 2 + 4, t, anchor || 'end', '', 12) : '');
+    o += dim(0, zDeck, 170, mm(H.plate_t));
+    o += dim(zDeck, zf, 170, 'innen ' + mm(H.inner));
+    o += dim(zf, zBot, 170, 'Boden ' + mm(H.floor));
+    o += '<text transform="translate(34 ' + (Z((zDeck + zBot) / 2) + 40) + ') rotate(-90)" font-size="12">Kasten ' + mm(H.uk_t) + '</text><line class="dim" x1="46" x2="46" y1="' + Z(zDeck) + '" y2="' + Z(zBot) + '"/><line class="dim" x1="42" x2="50" y1="' + Z(zDeck) + '" y2="' + Z(zDeck) + '"/><line class="dim" x1="42" x2="50" y1="' + Z(zBot) + '" y2="' + Z(zBot) + '"/>';
+    o += dim(zDeck, zpbTop, wTot - 120, 'Steckerraum ' + mm(gapReal), 'start');
+    $('hk').setAttribute('viewBox', '0 0 ' + wTot + ' ' + hTot.toFixed(0));
+    $('hk').innerHTML = o;
+    set('hkNote', 'Im Maßstab 13 px je mm. Unter einem Dock hängt die Leiste (' + mm(H.body) + ') an der Platte, dazu Lötenden und Draht bis ' + mm(H.adern) + '. Darunter bleiben ' + mm(rest) + ' Luft bis zur Powerbank. Neben den Docks sind es ' + mm(gapReal) + ', der ESP32 liegt mit ' + mm(ESP.h) + ' weit unter der Adernzone. Die Platte drückt die Powerbank nicht an; sie wird vom Fach, dem Stecker und notfalls Heißkleber gehalten.');
+  })();
+
+  /* ---------- Schnittstelle ---------- */
+  const ifcPill = (c, t) => '<span class="pill ' + c + '">' + t + '</span>';
+  set('ifcLead', 'Nein, nicht ganz. Der Kasten ist der Abdruck der Plattenunterseite: Außenmaß, Oberkante, Zapfen, Eckaussparungen und Dockzonen kommen von der Steckplatte. Drei Punkte sind fest, zwei haben Spielraum, alles andere im Kasten (Fach, Fenster, Elektronik, Schalter) ist unabhängig. Wird der Kasten gedruckt, bleiben diese Werte für die Steckplatte verbindlich.');
+  $('ifcTable').innerHTML = '<tr><th>Schnittstelle</th><th>Wert im Kasten</th><th>Woher</th><th>Wenn sich an der Platte etwas ändert</th><th>Status</th></tr>' + [
+    ['Außenmaß', fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm, Ecken R 3', 'Rechteck um alle Gebäudeumrisse plus Rand und Schriftband', 'Ändern sich Grundrisse am Rand (heute der Südweg), kann das Maß springen. Abhilfe: Maß festschreiben und die Platte darin halten.', ifcPill('warn', 'fest')],
+    ['Oberkante', 'z = ' + fmt(H.deck, 1) + ' (Platte ' + mm(H.plate_t) + ' dick)', 'Mulde 14,2 + Muldenboden 0,4', 'Eine dickere oder dünnere Platte verschiebt die Auflage der Stützen.', ifcPill('warn', 'fest')],
+    ['Eckaussparungen', '4 Stück am Faden-V, Rand ' + mm(IF.notch_pad) + ' über dem Trichter', 'Lage der V-Kanäle in der Oberplatte', 'Wandert ein V um mehr als ' + mm(IF.notch_pad) + ', passt die Aussparung nicht mehr. Abhilfe: Aussparung großzügiger machen.', ifcPill('warn', 'fest')],
+    ['Zapfen', IF.pins.length + ' Stück, Ø ' + mm(UK.pin.d) + ', ' + mm(UK.pin.h), 'Zapfenlöcher in massiven Stellen der Oberplatte', 'Kleinster Abstand des Lochs zu Mulde oder Hof: ' + mm(minPin) + '. Die Löcher bleiben nur gültig, solange dort Material steht.', ifcPill('mid', 'Spielraum ' + fmt(minPin, 1) + ' mm')],
+    ['Dockzonen', v.docks.length + ' Stück (Leiste, Lötenden, Draht)', 'Lage der Docks nach <code>placements_1300.json</code>', 'Ein Dock darf um ' + mm(minDock) + ' bis ' + mm(maxDock) + ' wandern (siehe Tabelle), sonst trifft die Zone eine Stütze.', ifcPill('mid', 'Spielraum ' + fmt(minDock, 0) + ' bis ' + fmt(maxDock, 0) + ' mm')],
+    ['Stützen', IF.posts.length + ' Stück, ' + mm(UK.post[0], 0) + ' Kante', 'Raster im Kasten', 'Tragen nur die Platte; die Platte hängt nicht von ihnen ab, solange kein Dock sie trifft.', ifcPill('ok', 'frei')],
+    ['Fach, Fenster, Elektronik, Schalter', 'innen und in der Westwand', 'nur im Kasten', 'Lassen sich ändern, ohne dass die Steckplatte es merkt. Das Fenster liegt an der Nordkante und hängt nur am Außenmaß.', ifcPill('ok', 'frei')]
+  ].map((r) => '<tr><td><b>' + r[0] + '</b></td><td>' + r[1] + '</td><td class="small">' + r[2] + '</td><td class="small">' + r[3] + '</td><td>' + r[4] + '</td></tr>').join('');
+  $('dockTable').innerHTML = '<tr><th>Dock</th><th>Spielraum</th><th>Nächstes Hindernis</th></tr>' + IF.docks.map((d, i) => '<tr><td>' + (i + 1) + ' ' + short[d.slug] + '</td><td class="num">' + mm(d.free) + '</td><td>' + d.near + '</td></tr>').join('');
+  $('postTable').innerHTML = '<tr><th>Nr.</th><th>x</th><th>y</th><th>Zapfen</th><th>Abstand</th></tr>' + IF.posts.map((p, i) => {
+    const q = IF.pins.find((a) => a.x === p.x && a.y === p.y);
+    return '<tr><td>' + (i + 1) + '</td><td class="num">' + fmt(p.x, 1) + '</td><td class="num">' + fmt(p.y, 1) + '</td><td>' + (q ? 'ja' : '–') + '</td><td class="num">' + (q ? mm(q.free) : '–') + '</td></tr>';
+  }).join('');
+  set('pinD', mm(UK.pin.d));
+
+  /* ---------- Elektronik ---------- */
+  $('espTable').innerHTML = [
+    ['ESP32-DevKit WROOM-32, 30 Pin', fmt(ESP.board[0], 1) + ' × ' + fmt(ESP.board[1], 1) + ' mm'],
+    ['mit Isoband (' + mm(ESP.tape, 1) + ' je Seite)', fmt(ESP.board[0] + 2 * ESP.tape, 1) + ' × ' + fmt(ESP.board[1] + 2 * ESP.tape, 1) + ' mm'],
+    ['plus freier Rand ' + mm(ESP.ring, 0) + ' für Leitungen', '<b>' + fmt(ESP.zones[0][0], 1) + ' × ' + fmt(ESP.zones[0][1], 1) + ' mm</b> (gewählt)'],
+    ['Rückfall ohne Rand', fmt(ESP.zones[1][0], 1) + ' × ' + fmt(ESP.zones[1][1], 1) + ' mm'],
+    ['bisherige Box im Konzept', fmt(ESP.old[0], 0) + ' × ' + fmt(ESP.old[1], 0) + ' mm'],
+    ['Höhe über dem Boden', 'ESP32 ' + mm(ESP.h) + ', erlaubt bis ' + mm(H.esp_free)]
+  ].map((r) => '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>').join('');
+  $('espList').innerHTML = [
+    'Die Fläche ist nur ein stützenfreier Bereich im Boden des Kastens. Es gibt keine Wände, keine Halter, keine Box; das Board liegt in Isoband gewickelt lose darin, die Leitungen hängen frei.',
+    'Platziert wird sie vom Generator an die Stelle, die frei von Stützen, Fach und Eckaussparungen ist und möglichst nah am Fach liegt: hier ' + fmt(eb[0], 0) + ' bis ' + fmt(eb[2], 0) + ' mm in x, ' + fmt(eb[1], 0) + ' bis ' + fmt(eb[3], 0) + ' mm in y.',
+    'Abstand zur nächsten Stütze: ' + mm(IF.elec_post) + '. Die Adern der Docks laufen in der Adernzone unter der Platte darüber hinweg; der ESP32 liegt weit darunter.',
+    'Platinenmaße sind typische Werte und nicht gemessen (<code>docs/esp32-devkit-wroom32.md</code>). Mit der Schieblehre nachmessen, bevor der Kasten gedruckt wird.'
+  ].map((x) => '<li>' + x + '</li>').join('');
+
+  $('cards').innerHTML = [
+    ['rec', 'Außenmaß festschreiben', 'Vorschlag', ['Rechteck ' + fmt(W, 1) + ' × ' + fmt(L, 1) + ' mm als feste Schnittstelle, die Steckplatte bleibt darin.', 'Sonst muss der Kasten jedes Mal neu gedruckt werden, wenn sich ein Randgebäude ändert.']],
+    ['', 'Eckaussparungen mit Toleranz', 'Vorschlag, noch zu prüfen', ['Rand von ' + mm(IF.notch_pad) + ' auf etwa 2 mm vergrößern, dann dürfen die V-Kanäle wandern.', 'Die zwei Zapfenlöcher liegen nur ' + mm(minPin) + ' neben Mulde und Hof: ihre Lage jetzt festschreiben und die Platte dort massiv lassen.']],
+    ['', 'Powerbank ohne Anschlag', 'beschlossen', ['Kein Zaun, kein Steg. Notfalls Heißkleber auf dem Boden.', 'Offen: sitzt die Powerbank schief, trifft sie das Fenster nicht. Beim ersten Einlegen prüfen.']],
+    ['', 'Messen vor dem Druck', 'offen', ['Powerbank Dicke (r5: minimal über 12,6) und ESP32-Board mit der Schieblehre.', 'Der Kasten ist noch nicht gedruckt. Die Höhe ' + mm(H.uk_t) + ' hängt an 12,6 mm Powerbank plus ' + mm(gapReal) + ' Steckerraum.']]
+  ].map(([c, t, m, l]) => '<div class="card ' + c + '"><h3>' + t + '</h3><span class="meta">' + m + '</span><ul>' + l.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
+
+  /* ---------- 3D ---------- */
+  const LAYERS = [
+    ['bld', 'Gebäude', '--c-bld', 1], ['hof', 'Innenhof', '--c-hof', 1], ['ober', 'Oberplatte', '--c-plate', 1],
+    ['uk', 'Unterkasten', '--c-under', 0], ['pb', 'Powerbank, Stecker', '--c-pb', 0], ['esp', 'ESP32', '--c-elec', 0],
+    ['sw', 'Hauptschalter', '--c-sw', 0], ['wires', 'Dock-Adern', '--c-thread', 0], ['thread', 'Faden', '--c-thread', 1]
+  ];
+  const state = Object.fromEntries(LAYERS.map((l) => [l[0], l[3]]));
+  $('layers').innerHTML = LAYERS.map((l) => '<div class="layer" style="--sw:var(' + l[2] + ')"><span class="sw"></span><span class="nm">' + l[1] + '</span><span class="tri" data-l="' + l[0] + '"><button type="button" data-s="0">voll</button><button type="button" data-s="1">blass</button><button type="button" data-s="2">aus</button></span></div>').join('');
+  function paintTri() { document.querySelectorAll('.tri').forEach((t) => t.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.s === state[t.dataset.l])))); }
+
+  let T3 = null;
+  (function init3d() {
+    const stage = $('stage'), canvas = $('cv');
+    if (!window.THREE) { stage.innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Draufsicht und Höhenkette gelten trotzdem.</p>'; return; }
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+    catch (e) { stage.innerHTML = '<p style="padding:24px">WebGL ist in diesem Browser nicht verfügbar.</p>'; return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 20000);
+    camera.up.set(0, 0, 1);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.75));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(60, -50, 90); scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(-60, 80, -40); scene.add(fill);
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xc8423b });
+    const mats = {}; const byLayer = {};
+    const mat = (layer, tok) => { const k = layer + tok; if (!mats[k]) { mats[k] = new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.03, flatShading: true, side: THREE.DoubleSide }); mats[k].tok = tok; (byLayer[layer] = byLayer[layer] || []).push(mats[k]); } return mats[k]; };
+    const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+    const mk = (e, m) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(b64(e.v)), 3)); g.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(e.i)), 1)); g.computeVertexNormals(); const o = new THREE.Mesh(g, m); o.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), edgeMat)); return o; };
+    const box = (l, w, t, m) => { const g = new THREE.BoxGeometry(l, w, t); const o = new THREE.Mesh(g, m); o.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat)); return o; };
+    const G = {}; for (const l of LAYERS) { G[l[0]] = new THREE.Group(); scene.add(G[l[0]]); }
+    const zf = H.uk_bot + H.floor;
+    for (const slug in D.meshes.buildings) G.bld.add(mk(D.meshes.buildings[slug], mat('bld', '--c-bld')));
+    G.hof.add(mk(D.meshes.hof, mat('hof', '--c-hof'))); G.ober.add(mk(D.meshes.ober, mat('ober', '--c-plate'))); G.uk.add(mk(D.meshes.uk, mat('uk', '--c-under')));
+    // Powerbank im Fachrahmen
+    const fr = v.frame, sg = fr.sgn, fg = new THREE.Group(); fg.position.set(fr.c[0], fr.c[1], 0); fg.rotation.z = fr.ang * Math.PI / 180; G.pb.add(fg);
+    const at = (m, u, vv, z) => { m.position.set(u, vv * sg, z); fg.add(m); };
+    const bvc = FA.bv0 + PB.W / 2, zm = zf + PB.T / 2;
+    at(box(PB.L, PB.W, PB.T, mat('pb', '--c-pb')), FA.bu0 + PB.L / 2, bvc, zm);
+    const PW = { usb_a: [12.5, 5], usb_c: [9, 3.4], micro: [7.5, 2.8], leds: [10, 1.2] };
+    for (const k in PB.port_v) at(box(1.2, PW[k][0], PW[k][1], mat('pb', k === 'leds' ? '--accent-fill' : '--c-port')), FA.bu0 - 0.4, bvc + PB.port_v[k], zm);
+    const ua = bvc + PB.port_v.usb_a;
+    at(box(12, 12, 4.5, mat('pb', '--c-port')), FA.bu0 - 6, ua, zm); at(box(13, 15, 8, mat('pb', '--accent-fill')), FA.bu0 - 18.5, ua, zm);
+    const kc = FA.kv0 + PB.cable / 2, pe = FA.bu0 - 25, zc = zf + 2.5;
+    const curve = new THREE.CatmullRomCurve3([[pe, ua, zm], [pe - 6, (ua + kc) / 2, zc + 1], [pe, kc, zc], [FA.u0 + FA.L, kc, zc], [FA.u0 + FA.L + 14, kc, zc]].map(([u, vv, z]) => new THREE.Vector3(u, vv * sg, z)));
+    fg.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 60, 2, 8, false), mat('pb', '--accent-fill')));
+    // ESP32 mit Isoband
+    const ew = eb[2] - eb[0], eh = eb[3] - eb[1], cx = (eb[0] + eb[2]) / 2, cy = (eb[1] + eb[3]) / 2;
+    const bw = ew >= eh ? ESP.board[0] : ESP.board[1], bh = ew >= eh ? ESP.board[1] : ESP.board[0];
+    const e1 = box(bw, bh, ESP.h, mat('esp', '--c-elec')); e1.position.set(cx, cy, zf + ESP.h / 2 + ESP.tape); G.esp.add(e1);
+    const e2 = box(bw + 2 * ESP.tape, bh + 2 * ESP.tape, ESP.h + 2 * ESP.tape, mat('esp', '--c-elec')); e2.position.set(cx, cy, zf + (ESP.h + 2 * ESP.tape) / 2); e2.material = mat('esp', '--tape'); G.esp.add(e2);
+    // Hauptschalter in der Westwand
+    const swz = H.uk_bot + 8.7;
+    const sk = box(9, SW.hole[0] - 0.7, SW.hole[1] - 1, mat('sw', '--c-sw')); sk.position.set(UK.wall + 4.5, SW.y, swz); G.sw.add(sk);
+    const sf = box(1.5, 15, 10, mat('sw', '--c-sw')); sf.position.set(-0.75, SW.y, swz); G.sw.add(sf);
+    // Adern der Docks (waagerecht unter der Platte zur Elektronik)
+    const zw = H.deck - 2.0;
+    for (const d of v.docks) if (d.ok) {
+      const a = d.phi * Math.PI / 180, ux = Math.cos(a), uy = Math.sin(a), vx = -Math.sin(a), vy = Math.cos(a);
+      const loc = (x, y) => [d.p[0] + ux * x + vx * y, d.p[1] + uy * x + vy * y];
+      const tx = Math.min(eb[2] - 3, Math.max(eb[0] + 3, d.p[0])), ty = Math.min(eb[3] - 3, Math.max(eb[1] + 3, d.p[1]));
+      let k = 0;
+      for (const lx of [-3.81, -1.27, 1.27, 3.81]) {
+        const a0 = loc(lx, DK.y_tail), a1 = loc(lx * 1.2, DK.y_tail - 3);
+        const dxl = tx - a1[0], dyl = ty - a1[1], len = Math.hypot(dxl, dyl) || 1, off = (k++ - 1.5) * 1.1;
+        const px = -dyl / len * off, py = dxl / len * off;
+        const pts = [new THREE.Vector3(a0[0], a0[1], H.z_bm), new THREE.Vector3(a1[0], a1[1], zw + 0.5), new THREE.Vector3(a1[0] + dxl * 0.5 + px, a1[1] + dyl * 0.5 + py, zw), new THREE.Vector3(tx + px, ty + py, zw)];
+        G.wires.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(new THREE.CatmullRomCurve3(pts).getPoints(24)), lineMat));
+      }
+    }
+    // Faden: von unten durch die Eckaussparung, über das V, wieder nach unten
+    for (const x of v.vs) {
+      const [a, c, b] = [x.ent[0], x.c, x.ent[1]], ax = x.axis === 'y' ? [0, 1] : [1, 0], zb = H.uk_bot - 6;
+      const p = [a[0] - ax[0] * 1.5, a[1] - ax[1] * 1.5, zb, a[0], a[1], H.deck, c[0], c[1], H.deck + D.v_ap, b[0], b[1], H.deck, b[0] + ax[0] * 1.5, b[1] + ax[1] * 1.5, zb];
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(p), 3)); G.thread.add(new THREE.Line(g, lineMat));
+    }
+    const TAPE = { '--tape': '#2a2d30' };
+    const st = { view: null, target: [W / 2, L / 2, -14], dirty: true, name: 'iso' };
+    function apply() {
+      for (const l of LAYERS) {
+        const s = state[l[0]]; G[l[0]].visible = s !== 2;
+        for (const m of byLayer[l[0]] || []) { const ghost = s === 1 || m.tok === '--tape'; m.transparent = ghost; m.opacity = m.tok === '--tape' ? 0.5 : (s === 1 ? 0.16 : 1); m.depthWrite = !ghost; m.needsUpdate = true; }
+        if (l[0] === 'wires' || l[0] === 'thread') lineMat.transparent = false;
+      }
+      st.dirty = true;
+    }
+    function explode() {
+      const e = +$('explode').value;
+      G.bld.position.z = e * 80; G.hof.position.z = e * 55; G.ober.position.z = e * 30; G.thread.position.z = e * 30; G.wires.position.z = e * 30;
+      G.uk.position.z = -e * 25; G.pb.position.z = -e * 10; G.esp.position.z = -e * 10; G.sw.position.z = -e * 25;
+      st.dirty = true;
+    }
+    function theme() {
+      for (const k in mats) { const m = mats[k]; m.color.set(m.tok === '--tape' ? TAPE['--tape'] : css(m.tok)); }
+      lineMat.color.set(css('--c-thread')); renderer.setClearColor(css('--canvas')); edgeMat.color.set(css('--edge')); st.dirty = true;
+    }
+    const VIEWS = { iso: { az: 55, el: 30 }, top: { az: -90, el: 88 }, under: { az: -120, el: -35 }, edge: { az: 0, el: 20 }, sw: { az: 180, el: 15 } };
+    function setView(n) {
+      st.name = n; st.view = Object.assign({}, VIEWS[n], { dist: Math.max(W, L) * 2.3 }); st.target = [W / 2, L / 2, -14];
+      if (n === 'edge') { const a = fr.ang * Math.PI / 180; st.view.az = fr.ang + 180 + 25; st.target = [fr.c[0] + Math.cos(a) * FA.u0, fr.c[1] + Math.sin(a) * FA.u0, -25]; st.view.dist = 150; }
+      if (n === 'sw') { st.target = [0, SW.y, -24]; st.view.dist = 110; st.view.az = 200; }
+      st.dirty = true;
+    }
+    function cam() { const a = st.view.az * Math.PI / 180, e = st.view.el * Math.PI / 180, t = st.target, r = st.view.dist; camera.position.set(t[0] + r * Math.cos(e) * Math.cos(a), t[1] + r * Math.cos(e) * Math.sin(a), t[2] + r * Math.sin(e)); camera.lookAt(t[0], t[1], t[2]); }
+    function resize() { const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); st.dirty = true; }
+    new ResizeObserver(resize).observe(stage);
+    const ptrs = new Map(); let pinch = 0;
+    canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; });
+    canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId)); canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+    canvas.addEventListener('pointermove', (e) => {
+      const p = ptrs.get(e.pointerId); if (!p || !st.view) return;
+      if (ptrs.size === 1) { st.view.az -= (e.clientX - p[0]) * 0.4; st.view.el = Math.max(-89, Math.min(89, st.view.el + (e.clientY - p[1]) * 0.3)); }
+      p[0] = e.clientX; p[1] = e.clientY;
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) st.view.dist *= pinch / d; pinch = d; }
+      st.dirty = true;
+    });
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); st.view.dist *= 1 + e.deltaY * 0.001; st.dirty = true; }, { passive: false });
+    $('explode').addEventListener('input', explode);
+    document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+    new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    set('tag3d', '1:1300 · ' + fmt(W, 0) + ' × ' + fmt(L, 0) + ' mm');
+    T3 = { apply };
+    setView('iso'); explode(); theme(); apply(); resize();
+    (function loop() { if (st.dirty && st.view) { cam(); renderer.render(scene, camera); st.dirty = false; } requestAnimationFrame(loop); })();
+  })();
+  document.querySelectorAll('.tri button').forEach((b) => b.addEventListener('click', () => { state[b.parentNode.dataset.l] = +b.dataset.s; paintTri(); if (T3) T3.apply(); }));
+  paintTri();
+})();
+</script>

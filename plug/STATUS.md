@@ -279,6 +279,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
 | Planung Steckprobe 2 | `plug/testcase/plan2.html` | https://claude.ai/artifact/TmuFSSVHgjMBQVKkzvKEG9 |
+| Batteriefach (Unterkasten) final, Schnittstelle zur Steckplatte | `plug/power/batteriefach.html` | https://claude.ai/artifact/T3r9cucJnhk9ozSLUJgvSS |
 | Powerbank-Konzept | `plug/power/concept.html` | https://claude.ai/artifact/WPkLCy4M1m8ehMzJTTr5iS |
 | Testbogen Test-Dock | `plug/power/feedback_dock.html` | https://claude.ai/artifact/M6RLKVRrrSKpCS3MNzTkCS |
 | Plan Test-Dock Steckerraum | `plug/power/plan_dock.html` | https://claude.ai/artifact/WrQfVpQH5XAjDYszFyB2rY |
