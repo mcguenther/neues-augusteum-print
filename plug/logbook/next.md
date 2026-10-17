@@ -46,6 +46,10 @@ Ergänzung (Nutzer): eine **Auflage für die Lötenden** einplanen, damit Löten
 
 **Test-Dock gebaut, wartet auf den Druck (`stl/steckmodul_testdock/`, Testbogen `plug/power/feedback_dock.html`; Plan abgenickt vom Nutzer: „ok, passt“). Prüfbericht: alle Teile dicht, keine Kollisionen, kein Support nötig, ≈ 10 g.** Plan `plug/power/plan_dock.html`, Stand nach der Vereinfachung des Nutzers (2026-10-16): alles auf gleicher Höhe, keine Tasche, keine Stufe, kein Support.** Mini-Oberplatte 40 × 50,4 × 10,6 mm mit Mulde und vier Pin-Löchern, flache Unterseite; der Körper der Leiste (2,0) liegt unter der Platte und wird aufgeklebt (Sekundenkleber, dann Heißkleber testen); Draht und Lötstelle bis etwa 2,9 unter der Platte; Luft zur Powerbank 3,5 (Gesamthöhe etwa 27,9 mm, wie vorher); zwei Füße-Sätze 3,5 und 2,5 mm mit Zapfen 2,5; Gebäude und Kassette aus Steckprobe 2. Hauptrisiko: der Kleber hält das Aufstecken (Druck zieht die Leiste von der Platte weg).
 
+## Passform-Runde Hochhaus (gebaut, wartet auf den Druck, 2026-10-17)
+
+Plan `plug/footfit/plan.html`; STL, README, ZIP, Prüfbericht in `stl/steckmodul_footfit/` (Stummel 25 mm über der Platte, Spiel 0,10 wie in r4 bewährt, Fuß-Fase 2,0 mm statt 0,5; Probeteil Kassette V2R, Konzept). Fragen im Druck: Einführen mit 2,0-mm-Fase ohne Muldenfase, Wulst unten, Sitz der V2R-Kassette im Schacht, Pins treffen die Buchse. Der Patch für die Fuß-Fase in `plug/buildings.py` (`plug/footfit/buildings_fuss_fase.patch`) ist noch nicht im Branch jolly-pascal.
+
 ## Priorität 1 neu: Steckprobe 3 (r6, nach r4 und r5)
 
 Der Aufbau passt bis auf vier Dinge. Vorschläge (nicht abgenickt, zuerst als Plan mit Grafiken):
