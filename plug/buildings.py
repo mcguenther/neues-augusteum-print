@@ -220,9 +220,21 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
     zc = -F + BC.n_layers(FUSS_FASE_T) * BC.L + 0.02
     ch_out = BC.slab_ch(fp, -F, zc, FUSS_FASE_T)
     ch_in = BC.slab_ch(fp.buffer(-hohl.WAND), -F, zc, FUSS_FASE_T)
-    body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
+    # Liegt das Schachtrohr näher am Rand als Fase plus Wand (Paulinum, Wand 1,2: die Kassette sitzt dicht an der Nordwand), würde die Fase die
+    # Rohrwand abschneiden und der Innenring der Fase in den Schacht ragen (Kollision). Dort entfällt die Fase auf dem Stück vor dem Rohr:
+    # voller Umriss, kein Innenring. Das Stück ist so lang wie das Rohr, der Rest des Umrisses behält die Fase.
+    rand = fp.difference(fp.buffer(-(FUSS_FASE_T + hohl.WAND + 0.2)))        # Randstreifen, in dem Fase und Innenring liegen
+    schacht_fp = rohr_fp.buffer(-min(ROHR_T, p["wall"]), join_style=2)       # Schacht (Kassette mit Einpressspiel) ohne die Rohrwand
+    nah = G.clean(rand.intersection(schacht_fp.buffer(FUSS_FASE_T + hohl.WAND + 0.5)).buffer(0.3, join_style=2)).intersection(fp) \
+        if rand.intersection(schacht_fp).area > 0.05 else Polygon()
+    if nah.is_empty or nah.area < 0.05:
+        body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
+    else:
+        body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
     body = body.simplify(hohl.VEREINFACHEN)
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze)
+    if not nah.is_empty and nah.area >= 0.05:
+        info["fase_entfaellt_mm2"] = round(nah.area, 1)
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt

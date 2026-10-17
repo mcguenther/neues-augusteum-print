@@ -145,6 +145,17 @@ Ersetzt die Südtreppe des Einsatzes und die Fassung B (ohne Trennwand) aus der 
 - **Baumkronen 1 mm kleiner** (`KRONE_ABZUG` in `innenhof.py`, Nutzer: Kronen sollen beim Einsetzen nicht an den Gebäuden anstoßen), gilt für alle Quellen und Maßstäbe.
 - **Ungetestet:** Trennwand 0,8 mm im Druck, Platte um bis zu 2,35 mm höher als der Rand (Druckzeit, Verzug), Stufen der Platte (zwei Schichten je Stufe).
 
+### Korrektur 4 (2026-10-17, Nutzer): Durchgang zwischen Paulinum und Institutsgebäude frei, Treppe bis zum Ostende
+
+Befund (Seite `plug/passage/page.html`): Das Laserscan-Höhenfeld sah über der Gasse nur das Dach der Brücke (LoD2: 131,1 bis 145,0 m ü. NHN) und machte daraus einen Vollblock im Paulinum (Grundriss `plug/passage/geom.py TUNNEL_M`, 27 mm²); die senkrechten Streifen an der Ostwand sind Rasterfacetten. Der Nutzer wollte erst einen Durchgang mit waagerechter Decke, dann (nach dem ersten Vorschlag) „einfach das ganze Teil weg“, weil noch Flächen die Gasse versperrten (Absatz in der Nordwand, Splitter an der Institutswand, Grat an der Ostmündung).
+
+- **Laserscan-Modell:** `laserscan.durchgang_schnitt` schneidet alles nördlich der Nordwand des Paulinums ab (Wandlinie `DURCHGANG_WAND_T` 61,15 m im Hofsystem, Länge `DURCHGANG_U`), Körper und Grundriss. Nur Quelle laserscan; OSM und LoD2 unverändert. Institutsgebäude unverändert, keine Brücke.
+- **Treppe der Platte im Nordosten** (`data/innenhof.json` `form.platte.nordost`): 9 Stufen à 0,2 mm (eine Druckschicht), Teilung 42,75 m, von der Hofkante (u -94) bis zum Ostende der früheren Brücke (u -56), nur in der Gasse (t 61,0 bis 67,6), nicht mehr auf die OSM-Fläche begrenzt (sie deckt den Durchgang nicht ab). Vorher 6 Stufen à 0,3 mm auf 7 m.
+- **Mulde und Fuß:** `plug.campus` (Platte) und `plug.buildings` (Paulinum) nehmen den neuen Grundriss automatisch aus `G.source_models("laserscan")`; die Kassettenlagen bleiben (die Paulinum-Kassette liegt mit ihrer Wand dicht an der Nordwand, die Wandlinie bleibt dieselbe; der Schnitt trifft sie nicht).
+- **Prüfung:** `plug.passage.geom.freie_gasse` schneidet beide Körper in 18 Höhen (0,2 bis 28 mm) und sucht Material im Streifen zwischen den Wänden: keines, engste freie Breite 6,3 m (4,8 mm); vorher 28 mm² Rest.
+- **Ergebnis (2026-10-17):** `plug.campus` Platte und Hof-Einsatz dicht, keine Kollisionen; `plug.buildings` alle sechs Gebäude neu mit Fuß-Fase 2,0, alle dicht, keine Kollisionen. Beim Paulinum musste dafür die Fase auf dem Randstück vor dem Rohr entfallen (siehe `next.md`, Folge aus r8): die Kassette (Wand 1,2) sitzt dicht an der Nordwand, die Fase 2,0 samt Innenring wäre in den Schacht gelaufen (schon mit dem alten Grundriss 33,6 mm³ Kollision).
+- **Ungetestet:** Stufen von 0,2 mm im Druck, neuer Muldenumriss des Paulinums (gerade Nordwand), Paulinum ohne Fuß-Fase auf dem Stück vor der Kassette.
+
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
 - **Mulde ohne Stufen:** gerade Wände mit Spiel 0,1 (`MULDE_CLR_T`) über die ganze Tiefe von 10,2 mm, oben eine 45°-Fase von 0,5 mm (`MULDE_CH_T`). Weggefallen sind Entlastung (`RELIEF`), Führungsband (`BAND`) und die Treppenfase aus `institute.pocket_cuts`. Das ist eine Abweichung vom getesteten Aufbau der Steckprobe 1 (dort mit diesen Stufen), also in Steckprobe 3 zu prüfen (Einstecken, Wackeln, Kippen). Die einzige Stufe, die bleibt, ist der Boden der 4 mm tiefen Umriss-Aussparung.
@@ -258,6 +269,7 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
 | | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
 | | Blockiger Hof-Umriss bis an die Fassaden (Mindestbreite 4 mm), Treppen als Rechtecke mit Stufen 0,18 / 0,37 mm auf dem Einsatz, Gang im Süden als Teil der Platte | ungetestet | Sitz ohne Steg, Druck der Stufen |
+| | Treppe der Platte in der Gasse am Paulinum: 9 Stufen à 0,2 mm bis zum Ostende (Korrektur 4) | ungetestet | Stufen von einer Schicht im Druck, Paulinum-Mulde mit gerader Nordwand |
 | | Trennwand Hof zu Gebäude-Mulde 0,8 mm (`HOF_WALL_T`) | ungetestet | Wand steht im Druck (0,4 mm kam in r7 nicht), Führung der Gebäude |
 | | Gang im Süden und Treppen in der Platte (Terrassenhöhe 2,35 mm über der Oberfläche, Stufen 0,39 und 0,30 mm) | ungetestet | Druckzeit, Verzug, Stufen |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
