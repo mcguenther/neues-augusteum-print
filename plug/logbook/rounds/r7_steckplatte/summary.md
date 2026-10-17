@@ -19,7 +19,7 @@ Teil: `stl/steckmodul_campus/steckplatte_1zu1300.stl` aus `python3 -m plug.campu
 ## Umgesetzt (Planwerte, ungetestet)
 
 `plug/campus.py`: `top_edge()` (Fase oben), `mulde_body()` mit Einführfase, erhabene Schrift; `generate.py`: `engrave_labels(..., raised=0.0)`, Standard unverändert; Werte in `plug/testcase/params.py`.
-Prüfung: dicht, kein Überhang (nur die Stufen der Bettfase, 0,2 mm), Schrift liegt komplett im Beschriftungsstreifen weiter als 1,8 mm vom Rand.
+Beschriftungsblock um die Fasenbreite (1,5) nach innen gerückt (`engrave_labels(inset=…)`), Abstand zur ebenen Fläche mindestens 1,9 mm. Prüfung: dicht, kein Überhang (nur die Stufen der Bettfase, 0,2 mm), Schrift liegt komplett im Beschriftungsstreifen weiter als 1,8 mm vom Rand.
 Interaktive Vorschau: `python3 -m plug.views.campus.build_view` → `plug/views/campus/view.html` (neu und gedruckt umschaltbar, feste Ansichten je Änderung).
 
 ## Offen

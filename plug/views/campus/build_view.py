@@ -53,6 +53,8 @@ def main():
     inner = outline.buffer(-P.PLATE_TOP_CH_T - 0.3)
     text_ok = all(inner.contains(p) for p in text)
     tb = np.array([p.bounds for p in text])
+    flat = outline.buffer(-P.PLATE_TOP_CH_T)
+    clear = min(flat.exterior.distance(p) for p in text)
     label = ((tb[:, 0].min() + tb[:, 2].max()) / 2, (tb[:, 1].min() + tb[:, 3].max()) / 2)
 
     # Hof und Institutsgebäude: nächster Punkt zwischen Aussparung und Hof
@@ -82,7 +84,7 @@ def main():
         dict(name="Übersicht", t=[cx, cy, 7.0], d=370, az=-62, el=50, which="neu",
              text="Die ganze Platte, Gebäude-Mulden und Hof-Aussparung. Ziehen dreht, Rad zoomt."),
         dict(name="Schrift", t=[label[0], label[1], T + 0.3], d=62, az=-90, el=42, which="neu",
-             text="Titel, Quellenzeile, Nordpfeil und „N“ stehen jetzt %s mm hoch auf der Oberseite. Mit „Gedruckt“ siehst du dieselbe Stelle graviert." % de(P.LABEL_RAISE_T)),
+             text="Titel, Quellenzeile, Nordpfeil und „N“ stehen jetzt %s mm hoch auf der Oberseite, um die Breite der Randfase nach innen gerückt (Abstand zur ebenen Fläche min. %s mm). Mit „Gedruckt“ siehst du dieselbe Stelle graviert." % (de(P.LABEL_RAISE_T), de(clear))),
         dict(name="Oberkante", t=[b[1][0] - 7.0, b[0][1], T - 1.5], d=17, az=-90, el=4, which="neu",
              text="Blick auf die Stirnseite im Südosten: die obere Außenkante läuft mit einer Fase von %s mm unter 45° aus (in Schichtstufen). Im Druck wölbten sich dort die letzten 5 bis 7 Schichten nach außen." % de(P.PLATE_TOP_CH_T)),
         dict(name="Mulden-Rand", t=[mx, my, T - 0.5], d=8, az=mulde_az, el=18, which="neu",
@@ -112,7 +114,8 @@ def main():
                  "@OVERHANG@": "%.0f mm²" % ov["steep_area"],
                  "@HOEHE@": de(tm.extents[2]),
                  "@VOL@": de(tm.volume / 1000.0),
-                 "@TEXT_OK@": "ja" if text_ok else "NEIN"}.items():
+                 "@TEXT_OK@": "ja" if text_ok else "NEIN",
+                 "@CLEAR@": de(clear)}.items():
         html = html.replace(k, v)
     path = os.path.join(HERE, "view.html")
     open(path, "w", encoding="utf-8").write(html)

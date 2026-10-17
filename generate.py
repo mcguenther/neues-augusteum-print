@@ -381,9 +381,11 @@ ATTRIBUTION = {
 }
 
 
-def engrave_labels(plate, outline, scale, title, top_z, quelle="osm", raised=0.0):
-    """Schrift und Nordpfeil in die Oberseite gravieren; mit raised > 0 stattdessen so viel mm erhaben auf die Oberseite setzen."""
+def engrave_labels(plate, outline, scale, title, top_z, quelle="osm", raised=0.0, inset=0.0):
+    """Schrift und Nordpfeil in die Oberseite gravieren; mit raised > 0 stattdessen so viel mm erhaben auf die Oberseite setzen.
+    inset: Block der Beschriftung um so viel mm von linkem, rechtem und unterem Rand nach innen (Breite der Randfase)."""
     minx, miny, maxx, maxy = outline.bounds
+    minx, miny, maxx = minx + inset, miny + inset, maxx - inset
     cuts = []
     avail = maxx - minx - 22  # Platz links vom Nordpfeil
     t1 = text_cross_section(title, 4.2, minx + 5, miny + LABEL_BAND / 2 - 0.3, max_width=avail)

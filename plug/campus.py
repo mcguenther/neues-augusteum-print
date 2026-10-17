@@ -268,7 +268,8 @@ def build(scale=P.SCALE_PLAN, replace=False):
     hof_solid = models[G.HOF["slug"]][0]
     plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T)           # Bettkante mit Fase gegen den Elefantenfuß
     plate = plate ^ top_edge(outline, T, P.PLATE_TOP_CH_T)    # obere Außenkante gefast (Wulst im Druck)
-    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan", raised=P.LABEL_RAISE_T)
+    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan", raised=P.LABEL_RAISE_T,
+                           inset=P.PLATE_TOP_CH_T)
     cut_all, report, envs = [], [], []
     for slug, p in places.items():
         w, dep = shaft_size(p["var"])
