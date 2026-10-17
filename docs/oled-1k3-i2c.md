@@ -8,6 +8,11 @@ ist als Alternativbestückung möglich (nicht bestätigt, nur per Funktionstest 
 
 ## Eigenschaften
 
+Das Datenblatt der ETT CO., LTD. für das baugleiche Referenzmodul liegt als `datenblaetter/oled-1k3-i2c-sh1106-ett.pdf` im Repo
+(Quelle: [robu.in](https://robu.in/wp-content/uploads/2019/12/1.3-Inch-I2C-IIC-OLED-LCD-Module-4pin-with-VCC-GND-Blue-1.pdf)). Es nennt
+SH1106, 3,3–5 V, 128 × 64, I²C, PCB 33,7 × 35,5 mm, Gesamtstrom ca. 8 mA und die Pinfolge VDD, GND, SCK (= SCL), SDA; Signale dürfen
+direkt an 3,3-V- und 5-V-Controller, und es gibt Weiß- und Blau-Varianten. Es betrifft das Referenzmodul, nicht das gekaufte Exemplar.
+
 | Punkt | Wert | Sicherheit |
 |---|---|---|
 | Modulfamilie | 1,3″ OLED, monochrom, 128 × 64 | sehr sicher |
@@ -70,8 +75,8 @@ Ergebnis des Tests hier eintragen (Treiber, Adresse, Displayfarbe, nachgemessene
 
 ## Quellen
 
-1. ETT-Modul-Datenblatt (SH1106, 1,3″, I²C, 128 × 64, 3,3–5 V, PCB-Maße)
+1. ETT-Modul-Datenblatt (SH1106, 1,3″, I²C, 128 × 64, 3,3–5 V, PCB-Maße): `datenblaetter/oled-1k3-i2c-sh1106-ett.pdf`, Original-Link oben
 2. GoldenMorning GME12864-70: Panelkennzeichnung, mögliche Controller SH1106/CH1116G
 3. ESPHome-Dokumentation, Plattform `ssd1306_i2c` (inkl. SH1106)
 
-(Die Links standen nur im PDF; bei Bedarf aus der Recherche nachtragen.)
+(Die Links zu 2 und 3 standen nur als Text im Recherche-PDF; bei Bedarf nachtragen.)

@@ -1,7 +1,7 @@
 # Komponenten-Doku
 
 Datenblatt-Notizen, Identifikation und Anschluss der verbauten Elektronik-Bauteile (Display, ESP32 usw.). Je Bauteil eine Markdown-Datei,
-Fotos in `bilder/`. Was gemessen und was nur von Referenzmodulen übernommen ist, steht in der jeweiligen Datei.
+Fotos in `bilder/`, Hersteller-Datenblätter in `datenblaetter/`. Was gemessen und was nur von Referenzmodulen übernommen ist, steht in der jeweiligen Datei.
 
 | Datei | Bauteil | Stand |
 |---|---|---|
