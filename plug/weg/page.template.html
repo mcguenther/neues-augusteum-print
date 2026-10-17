@@ -1,0 +1,271 @@
+<title>Südweg der Sockelplatte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte; Befund (Übersicht, Luftbild, 3D) → Vorher/Nachher (Grundrisse, Breitenverlauf) → Vorschlag und Umsetzung → Rückfragen.
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent). Rot = Steg (Problem), Grün = Weg nach dem Fix. */
+:root {
+  --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
+  --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
+  --bad: #b3392b; --bad-soft: #f4dcd8; --ok: #2c7a4b; --ok-soft: #d9ece1; --blue: #2a6db0;
+  --plate: #e1e5e9; --plate-line: #8d98a3;
+  --bld: #d3d9df; --bld-line: #a2adb7; --hof-line: #9c5a14;
+  --z-lo: #f6e8cc; --z-hi: #a24f16;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+    --bad: #ee8a7c; --bad-soft: #402420; --ok: #6cc08a; --ok-soft: #1f3a2a; --blue: #6aa6e8;
+    --plate: #2a3139; --plate-line: #5b6772;
+    --bld: #3a444e; --bld-line: #5a6672; --hof-line: #d6a35e;
+    --z-lo: #4a3a22; --z-hi: #e5aa62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+  --bad: #ee8a7c; --bad-soft: #402420; --ok: #6cc08a; --ok-soft: #1f3a2a; --blue: #6aa6e8;
+  --plate: #2a3139; --plate-line: #5b6772;
+  --bld: #3a444e; --bld-line: #5a6672; --hof-line: #d6a35e;
+  --z-lo: #4a3a22; --z-hi: #e5aa62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 1.28rem; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; font-weight: 600; }
+h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
+.sec { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 80ch; }
+code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+b, strong { font-weight: 600; }
+
+/* Kennzahlen */
+.sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 22px 0 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.sum > div { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
+.sum > div:first-child { border-left: 0; }
+.sum dt { font-size: 0.78rem; color: var(--muted); }
+.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 1rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+.sum .o { color: var(--bad); } .sum .a { color: var(--ok); font-weight: 500; } .sum .arrow { color: var(--muted); }
+@media (max-width: 760px) { .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sum > div:nth-child(3) { border-left: 0; } .sum > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+
+/* Grafiken */
+.plan { width: 100%; height: auto; display: block; max-width: 100%; }
+.plan text { font-family: var(--font); }
+.plan .platte { fill: var(--plate); stroke: var(--plate-line); stroke-width: 1; stroke-linejoin: round; }
+.plan .bld { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1; }
+.plan .bname { font-size: 10px; fill: var(--muted); }
+.plan .hof-line { fill: none; stroke: var(--hof-line); stroke-width: 1.4; stroke-linejoin: round; }
+.plan .zone { fill: color-mix(in srgb, var(--z-hi) calc(var(--p) * 100%), var(--z-lo)); }
+.plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
+.plan .lead { stroke: var(--fg); stroke-width: 1.2; }
+.plan .dot { fill: var(--fg); }
+.plan .mk { fill: var(--panel); stroke: var(--bad); stroke-width: 1.8; }
+.plan .mkt { font-size: 12px; font-weight: 600; fill: var(--fg); }
+.plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.plan .bar { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.plan .north { fill: var(--muted); }
+.plan .win { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 3; }
+.plan .steg { fill: var(--bad); fill-opacity: 0.55; stroke: var(--bad); stroke-width: 1.6; }
+.plan .steg-weg { fill: none; stroke: var(--ok); stroke-width: 1.6; stroke-dasharray: 4 3; }
+.plan .dimtxt { font-size: 13px; font-weight: 600; fill: var(--fg); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; font-family: var(--mono); }
+.plan .dimline { fill: none; stroke: var(--fg); stroke-width: 1.4; }
+.plan .ring { fill: none; stroke-width: 3; }
+.plan .ring.r-bad { stroke: var(--bad); } .plan .ring.r-ok { stroke: var(--ok); stroke-dasharray: 6 4; }
+.plan .a-bld { fill: none; stroke: #ffd25a; stroke-width: 2; stroke-linejoin: round; }
+.plan .a-steg { fill: #ff5a3c; fill-opacity: 0.45; stroke: #ff5a3c; stroke-width: 2.5; }
+.plan .a-lead { stroke: #ffffff; stroke-width: 2; }
+.plan .alab { font-size: 20px; font-weight: 600; fill: #ffffff; paint-order: stroke; stroke: #11161b; stroke-width: 5px; stroke-linejoin: round; }
+.plan.chart .axis { stroke: var(--muted); stroke-width: 1; }
+.plan.chart .grid { stroke: var(--line); stroke-width: 1; }
+.plan.chart .tick { font-size: 11px; fill: var(--muted); font-family: var(--mono); }
+.plan.chart .l-vor { fill: none; stroke: var(--bad); stroke-width: 2.4; stroke-linejoin: round; }
+.plan.chart .l-nach { fill: none; stroke: var(--ok); stroke-width: 2.4; stroke-dasharray: 7 4; stroke-linejoin: round; }
+.plan.chart .dot-vor { fill: var(--bad); }
+.plan.chart .lab-vor { font-size: 12px; fill: var(--bad); font-weight: 600; }
+.plan.chart .lab-nach { font-size: 12px; fill: var(--ok); font-weight: 600; }
+.plan.chart .lab-abs { font-size: 11.5px; fill: var(--muted); }
+.panels { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
+.panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.panel .cap { font-size: 0.84rem; color: var(--muted); margin-top: 8px; }
+.panel.bad figcaption { color: var(--bad); } .panel.ok figcaption { color: var(--ok); }
+.cols { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 24px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.cols .panel .plan.tall { max-width: 330px; margin: 0 auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--line); }
+.grad { height: 12px; width: 120px; border-radius: 4px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--z-lo), var(--z-hi)); display: inline-block; vertical-align: -2px; margin-right: 6px; }
+
+/* Schritte, Karten, Tabellen */
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
+.steps .k { width: 26px; height: 26px; border-radius: 50%; border: 1.7px solid var(--fg); display: grid; place-items: center; font-weight: 600; font-size: 0.82rem; background: var(--panel); }
+.steps p { color: var(--muted); font-size: 0.9rem; margin-top: 1px; }
+.steps strong { color: var(--fg); }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 3px solid var(--line); }
+.card.reco { border-top-color: var(--ok); }
+.card .tag2 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.card.reco .tag2 { color: var(--ok); }
+.card p, .card li { font-size: 0.9rem; color: var(--muted); }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 5px; }
+.card strong { color: var(--fg); }
+.q { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.q .n { font-family: var(--mono); color: var(--accent); font-weight: 500; font-size: 1.05rem; }
+.q p { color: var(--muted); font-size: 0.92rem; max-width: 80ch; }
+.q p + p { margin-top: 6px; }
+.qs { display: flex; flex-direction: column; gap: 12px; }
+.reco-box { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; font-size: 0.92rem; max-width: 80ch; }
+.tw { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+tbody th { font-weight: 400; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 0.84rem; }
+td.ok { color: var(--ok); } td.bad { color: var(--bad); font-weight: 500; }
+td.hint2 { color: var(--muted); font-size: 0.84rem; }
+a { color: var(--blue); }
+</style>
+
+<div class="wrap">
+
+<header>
+  <h1>Südweg der Sockelplatte</h1>
+  <p class="lead">Ich sehe die Stelle. Am Weg zwischen Seminar- und Hörsaalgebäude ragt vom Hörsaalgebäude ein schmaler Steg in den Weg und verengt ihn auf der Platte von {{WEG_N}} auf {{HALS}} mm. Mein Vorschlag: den Steg aus dem Grundriss des Hörsaalgebäudes schneiden, damit der Weg überall gleich breit durchläuft. Am Modell ist noch nichts geändert; die Bilder nach dem Fix sind eine Simulation.</p>
+  <div class="meta"><span class="chip">Steckplatte 1:1300, Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Vorschlag, noch nicht umgesetzt</span></div>
+  <dl class="sum">
+    <div><dt>Steg, Größe auf der Platte</dt><dd>{{STEG_B}} × {{STEG_L}} mm</dd></div>
+    <div><dt>entspricht in echt</dt><dd>{{STEG_B_M}} × {{STEG_L_M}} m</dd></div>
+    <div><dt>Weg an der Engstelle</dt><dd><span class="o">{{HALS}} mm</span><span class="arrow">→</span><span class="a">{{WEG_N}} mm</span></dd></div>
+    <div><dt>Quelle des Stegs</dt><dd>LoD2, nicht OSM</dd></div>
+  </dl>
+</header>
+
+<section class="sec">
+  <div>
+    <h2>Das sehe ich</h2>
+    <p class="lead">Der Weg führt vom Südwestende des Innenhofs nach Süden und dann zwischen Seminargebäude (nördlich) und Hörsaalgebäude (südlich) nach Westen. Auf der Platte liegt er als Gang auf Terrassenhöhe, am Westende fällt er über sechs Stufen auf Plattenhöhe. Genau dort, wo er schmal und gleichmäßig verläuft, springt vom Hörsaalgebäude ein Steg nach Norden vor, bis auf {{HALS}} mm an die Mulde des Seminargebäudes heran.</p>
+  </div>
+  <div class="cols">
+    <figure class="panel">
+      <figcaption>Platte, Lage des Stegs (S)</figcaption>
+      <div class="plan tall">{{FIG_UEBER}}</div>
+      <div class="legend"><span><span class="grad"></span>Höhe: Platte → Terrasse</span></div>
+      <p class="cap">Der gestrichelte Rahmen ist der Ausschnitt der Grundrisse weiter unten.</p>
+    </figure>
+    <figure class="panel">
+      <figcaption>Luftbild 2024, Blick von oben</figcaption>
+      {{FIG_LUFT}}
+      <p class="cap">Gelb: Grundriss des Hörsaalgebäudes im LoD2. Rot: der Steg. Im Luftbild ist an der Stelle ein schmales, überdachtes Bauteil zwischen den beiden Gebäuden zu erkennen, also ein Verbindungsgang. Das passt zu deiner Vermutung. In welchem Geschoss er liegt, geben die Daten nicht her. Das 3D-Stadtmodell macht daraus einen Vollblock vom Boden bis 18,8 m Höhe, die Daten von OpenStreetMap enthalten ihn gar nicht.</p>
+    </figure>
+  </div>
+  <div class="panels">
+    <figure class="panel bad">
+      <figcaption>Steckplatte heute, Blick von Südosten</figcaption>
+      {{FIG_3D_VOR}}
+      <p class="cap">Roter Kreis: der Steg als schmaler Einschnitt der Hörsaal-Mulde. Zwischen ihm und der Seminar-Mulde bleibt nur ein dünner Plattensteg.</p>
+    </figure>
+    <figure class="panel ok">
+      <figcaption>Nach dem Fix (Simulation)</figcaption>
+      {{FIG_3D_NACH}}
+      <p class="cap">Dieselbe Stelle ohne Steg. Der Gang liegt hier in voller Breite auf Terrassenhöhe, die Treppe am Westende bleibt wie sie ist.</p>
+    </figure>
+  </div>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Vorher und nachher im Grundriss</h2>
+    <p class="lead">Beide Bilder zeigen denselben Ausschnitt, Norden oben. Die Pfeillinie misst den Weg zwischen den Mulden an der engsten Stelle (Fuge der Mulden schon abgezogen).</p>
+  </div>
+  <div class="panels">
+    <figure class="panel bad">
+      <figcaption>Vorher</figcaption>
+      {{FIG_VOR}}
+      <p class="cap">Rot: der Steg. Der Weg schrumpft dort auf {{HALS}} mm, in echt etwa {{HALS_M}} m.</p>
+    </figure>
+    <figure class="panel ok">
+      <figcaption>Nachher</figcaption>
+      {{FIG_NACH}}
+      <p class="cap">Grün gestrichelt: die Fläche, die entfällt. Der Weg ist durchgehend mindestens {{WEG_N}} mm breit, etwa {{WEG_N_M}} m in echt.</p>
+    </figure>
+  </div>
+  <figure class="panel">
+    <figcaption>Breite des Wegs entlang der Strecke</figcaption>
+    {{FIG_BREITE}}
+    <p class="cap">Gemessen senkrecht zur Gebäudekante. Der Einbruch ist der Steg. Der Sprung rechts ist der Absatz in der Kante des Hörsaalgebäudes, dort öffnet sich der Weg zum Platz. Den Absatz würde ich unverändert lassen (siehe Rückfrage 3).</p>
+  </figure>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Vorschlag</h2>
+    <p class="lead">Der Steg wird aus dem Grundriss des Hörsaalgebäudes entfernt, und zwar dort, wo der Grundriss entsteht (<code>lod2.py</code>). Dann folgen Mulde, Gang und das steckbare Gebäude von selbst, weil alle denselben Grundriss benutzen. Die Fläche des Stegs liegt innerhalb des Gangs und kommt dadurch auf Terrassenhöhe.</p>
+  </div>
+  <ol class="steps">
+    <li><span class="k">1</span><div><strong>Steg abschneiden.</strong><p>In <code>lod2.models</code> nach der Aufteilung der Zellen: im Fenster um den Steg alles vom Hörsaalgebäude abziehen, was als Auswuchs schmaler ist als 3 mm (etwa 4 m in echt). Ein festes Fenster, kein Eingriff in andere Kanten. OSM braucht nichts, der Steg ist dort nicht enthalten.</p></div></li>
+    <li><span class="k">2</span><div><strong>Alle Modelle neu bauen.</strong><p><code>python3 generate.py</code> (ca. 5 min), weil sich das Hörsaalgebäude in LoD2 und Laserscan ändert, in allen Maßstäben und in den Hohlkörpern. Vorab zur Kontrolle <code>--fast --quelle laserscan</code>.</p></div></li>
+    <li><span class="k">3</span><div><strong>Steckplatte und Gebäude neu bauen.</strong><p><code>python3 -m plug.campus</code> (Platte), <code>python3 -m plug.buildings 03_hoersaalgebaeude</code> (ca. 1 bis 2 min), danach <code>python3 -m plug.check</code> (dicht, keine Kollisionen). Die Lage der Kassetten bleibt gültig, die Simulation hat sie unverändert übernommen.</p></div></li>
+    <li><span class="k">4</span><div><strong>Seiten und Doku nachziehen.</strong><p>Steckplatten-Ansicht (<code>plug.views.campus.build_view</code>) neu veröffentlichen, Logbuch <code>scale.md</code> und STATUS ergänzen, Vorher/Nachher-Bilder im Chat zeigen.</p></div></li>
+  </ol>
+  <div>
+    <h3 style="margin-bottom:8px">Was die Simulation schon geprüft hat</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Prüfung</th><th>Ergebnis</th><th>Bemerkung</th></tr></thead>
+      <tbody>
+        <tr><th>Steckplatte mit geändertem Grundriss gebaut</th><td class="n ok">ja</td><td class="hint2">mit den bestehenden Kassettenlagen</td></tr>
+        <tr><th>Docks überlappen sich oder den Plattenrand</th><td class="n ok">{{KOLL}} mm²</td><td class="hint2">Prüfwert wie in <code>plug.campus</code></td></tr>
+        <tr><th>Innenhof-Aussparung verändert</th><td class="n ok">{{HOF_DIFF}} mm²</td><td class="hint2">Hof und Einsatz bleiben, wie sie sind</td></tr>
+        <tr><th>Weg zwischen den Mulden</th><td class="n ok">≥ {{WEG_N}} mm</td><td class="hint2">vorher an der Engstelle {{HALS}} mm</td></tr>
+        <tr><th>Wegfallende Fläche</th><td class="n">{{STEG_A}} mm²</td><td class="hint2">etwa {{STEG_A_M}} m² in echt</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin-top:8px">Noch nicht geprüft: <code>dicht=True</code> der neu erzeugten STL, die Hohlkörper-Schnitte und der Slicer. Das gehört zur Umsetzung. Gedruckt ist die Änderung nicht.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div>
+    <h2>Wo ich etwas anders verstanden haben könnte</h2>
+    <p class="lead">Vier Punkte, bei denen ich eine Annahme getroffen habe. Eine kurze Antwort im Chat genügt.</p>
+  </div>
+  <div class="qs">
+    <div class="q"><span class="n">1</span><div>
+      <p><strong>Ist der Steg die gemeinte Ausbuchtung?</strong> Ich lese deine Beschreibung so: Der Steg ist die Ausbuchtung des Hörsaalgebäudes, auf der Platte ist es die Einbuchtung im Weg. Beide Wörter beschreiben dann dieselbe Stelle.</p>
+      <p>Falls du die Stelle weiter östlich meinst, wo die Kante des Hörsaalgebäudes zurückspringt und der Weg breiter wird: Das wäre der Absatz im Breitenverlauf oben. Sag dann kurz Bescheid.</p>
+    </div></div>
+    <div class="q"><span class="n">2</span><div>
+      <p><strong>Soll das überall gelten, oder nur auf der Steckplatte?</strong> Meine Empfehlung: überall. Das Hörsaalgebäude hat dann in allen Quellen und Maßstäben denselben Grundriss, und LoD2 passt zu OSM. Das hat einen Preis: Dafür ändern sich eingecheckte Dateien des Hörsaalgebäudes und der Komplettmodelle (<code>stl/</code>, <code>vorschau/</code>).</p>
+      <p>Die Alternative wäre, den Steg nur bei der Steckplatte und dem steckbaren Hörsaalgebäude wegzulassen. Das ist ein kleiner Eingriff, aber die Komplettmodelle hätten den Steg weiter.</p>
+    </div></div>
+    <div class="q"><span class="n">3</span><div>
+      <p><strong>Bleibt der Absatz in der Kante des Hörsaalgebäudes?</strong> Wenige Millimeter weiter östlich springt die Gebäudekante um 3,5 mm nach Süden zurück, der Weg öffnet sich dort zum Platz. Der Absatz steht auch in OSM, ist also echte Gebäudekante. Ich würde ihn lassen.</p>
+      <p>Wenn der Weg auch dort gleich breit weiterlaufen soll, müsste ich die Kante künstlich verlängern, und das Hörsaalgebäude bekäme Fläche, die es nicht hat.</p>
+    </div></div>
+    <div class="q"><span class="n">4</span><div>
+      <p><strong>Treppe am Westende und Plattenrand.</strong> Du sagst, der Weg mündet am Rand der Platte. Aktuell fällt er am Westende über sechs Stufen auf Plattenhöhe, danach ist die Platte flach bis zum Rand. Ich lasse das unverändert. Falls &bdquo;durchgängig&ldquo; auch heißt, dass der Gang ohne Stufen auf Terrassenhöhe bis zum Plattenrand läuft, ist das eine zweite, getrennte Änderung am Hof-Aufbau (<code>data/innenhof.json</code>).</p>
+    </div></div>
+  </div>
+  <p class="reco-box">Wenn 1 bis 4 so passen (Steg ist die Ausbuchtung, überall entfernen, Absatz und Treppe bleiben), setze ich den Vorschlag um und zeige danach Vorher und Nachher aus dem echten Lauf.</p>
+</section>
+
+</div>
