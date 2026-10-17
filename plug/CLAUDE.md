@@ -54,6 +54,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.power.build_plan_dock` (ca. 5 s) | Plan Test-Dock mit durchgehendem Steckerraum (Schnitt, Unterseite, Maßkette, Entscheidungskarten) `plug/power/plan_dock.html`; Werte in `PROP` der Datei, STL erst nach dem Abnicken |
 | `python3 -m plug.power.build_dock` (ca. 2 min) | Test-Dock flache Unterseite (Mini-Oberplatte ohne Tasche, Stufe und Support, zwei Sätze Füße 3,5 und 2,5), Prüfbericht, README, ZIP nach `stl/steckmodul_testdock/`, Bilder nach `vorschau/steckmodul_testdock/` |
 | `python3 -m plug.power.build_feedback_dock` | Testbogen Test-Dock (Leiste ankleben, Stecken, Halt des Klebers, Luft, Zapfen) `plug/power/feedback_dock.html` |
+| `python3 -m plug.footfit.data` (ca. 1 min), `python3 -m plug.footfit.build_plan` | Passform-Stummel (Fuß plus Wand über der Platte) für das City-Hochhaus in der flachen Steckplatte: Daten (Umriss, Schacht, Pins, Umfang je Höhe) nach `plug/footfit/data.json`, Planseite mit Höhenregler, Druckzeit-Schätzung (nicht kalibriert) und Kopier-Text `plug/footfit/plan.html` (Vorlage `plan.template.html`); STL folgt erst nach dem Abnicken |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 

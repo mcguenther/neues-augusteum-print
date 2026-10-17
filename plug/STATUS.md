@@ -282,6 +282,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
+| Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

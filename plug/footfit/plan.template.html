@@ -1,0 +1,347 @@
+<title>Passform-Stummel Hochhaus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine Spalte, links Schnitt mit senkrechtem Regler, rechts Werte und Einstellungen; Grundriss und Hinweise darunter */
+:root {
+  --bg: #f2f5f6; --panel: #ffffff; --fg: #1b2327; --muted: #5a6870; --line: #cdd7db;
+  --accent: #1d5f8a; --accent-soft: #d8e8f2; --part: #e3ebee; --warn: #a8530b; --warn-soft: #f8e6d3; --ok: #2b7a4b;
+  --plate: #c9d3d7; --cassette: #f1c987; --stub: #1d5f8a;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12181b; --panel: #1b2327; --fg: #e4eaed; --muted: #94a3ab; --line: #34424a;
+  --accent: #6db6e3; --accent-soft: #1f3a4c; --part: #263238; --warn: #f0a15c; --warn-soft: #3b2b1b; --ok: #6fcf97;
+  --plate: #3a4a52; --cassette: #b88a3e; --stub: #6db6e3; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12181b; --panel: #1b2327; --fg: #e4eaed; --muted: #94a3ab; --line: #34424a;
+  --accent: #6db6e3; --accent-soft: #1f3a4c; --part: #263238; --warn: #f0a15c; --warn-soft: #3b2b1b; --ok: #6fcf97;
+  --plate: #3a4a52; --cassette: #b88a3e; --stub: #6db6e3; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0; font-weight: 600; text-wrap: balance; }
+h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+.sub { color: var(--muted); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; min-width: 0; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.status { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { font-size: 12px; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel); }
+.pill.warn { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.pill.ok { color: var(--ok); border-color: var(--ok); }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.slicer { display: flex; gap: 6px; align-items: stretch; }
+.slicer svg { flex: 1 1 auto; min-width: 0; max-width: 360px; height: auto; }
+.vrange { writing-mode: vertical-lr; direction: rtl; width: 34px; accent-color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.kpi { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+.kpi b { display: block; font-family: var(--mono); font-size: 22px; font-weight: 500; line-height: 1.2; }
+.kpi span { font-size: 12px; color: var(--muted); }
+.field { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; }
+.field label, .field .lab { font-size: 13px; font-weight: 500; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.row input[type=range] { flex: 1 1 160px; min-width: 0; accent-color: var(--accent); }
+input[type=number], select { font: inherit; font-family: var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; width: 92px; }
+select { width: auto; max-width: 100%; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.checks label { display: flex; gap: 6px; align-items: center; font-weight: 400; }
+.hint { font-size: 12.5px; color: var(--muted); }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+button { font: inherit; font-weight: 500; border-radius: 6px; padding: 8px 14px; border: 1px solid var(--accent); background: var(--accent); color: var(--bg); cursor: pointer; }
+button.ghost { background: transparent; color: var(--accent); }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { width: 100%; min-height: 150px; font-family: var(--mono); font-size: 12.5px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 10px; resize: vertical; }
+details summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+ul.list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+svg text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+svg .t-fg { fill: var(--fg); }
+.plan svg { width: 100%; max-height: 440px; }
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Passform-Stummel Hochhaus</h1>
+    <p class="sub">Erste Testrunde: nur das City-Hochhaus, nur ein Stück Fuß plus Wand über der Platte. Geprüft wird, ob der Umriss in die gedruckte Mulde passt und ob die Kassette in den Schacht geht.</p>
+    <div class="status">
+      <span class="pill ok">Platte: flach, 14,6 mm (Stand hopeful-mccarthy)</span>
+      <span class="pill">Maßstab 1:1300</span>
+      <span class="pill warn">Kassette V2R: Konzept, noch kein STL, nie gedruckt</span>
+      <span class="pill warn">Hohlgebäude (Branch jolly-pascal) noch nicht integriert</span>
+    </div>
+  </header>
+
+  <section class="panel cols">
+    <div>
+      <h2>Schnitt durch den Schacht</h2>
+      <div class="slicer">
+        <input class="vrange" id="hSlider" type="range" min="4" max="111" step="0.2" value="25" aria-label="Höhe des Stummels über der Plattenoberfläche">
+        <svg id="section" viewBox="0 0 300 560" role="img" aria-label="Schnitt: Platte mit Mulde, Stummel, Kassette"></svg>
+      </div>
+      <p class="hint" style="margin-top:8px">Regler von unten nach oben: bis wohin gedruckt wird. Maße in mm, alles maßstäblich außer dem Spiel (zu fein, um es zu sehen).</p>
+    </div>
+
+    <div>
+      <h2>Was gedruckt wird</h2>
+      <div class="kpis">
+        <div class="kpi"><b id="kH">–</b><span>Höhe über der Platte</span></div>
+        <div class="kpi"><b id="kTot">–</b><span>Gesamthöhe des Stummels (mit 14,2 Fuß)</span></div>
+        <div class="kpi"><b id="kTime">–</b><span>Druckzeit, geschätzt, alle Stücke</span></div>
+        <div class="kpi"><b id="kVol">–</b><span>Material ca., alle Stücke</span></div>
+      </div>
+      <div id="warn" class="note" style="margin-top:12px" hidden></div>
+
+      <div class="field">
+        <span class="lab">Höhe über der Plattenoberfläche (mm)</span>
+        <div class="row"><input id="hNum" type="number" min="4" max="111" step="0.5" value="25"><span class="hint">Dach des Hochhauses bei <span class="mono" id="hmax"></span> mm</span></div>
+      </div>
+      <div class="field">
+        <span class="lab">Spiel je Seite zwischen Mulde und Stummel (mm)</span>
+        <div class="checks" id="clrChecks"></div>
+        <span class="hint">Die Mulde ist gedruckt und lässt sich nicht mehr ändern; das Spiel stellen wir über den Umriss des Stummels ein. Jedes Häkchen ergibt ein Stück. Ohne Messschieber vergleichst du nur von Hand: lässt sich 0,10 ohne Kraft einsetzen, wackelt 0,20?</span>
+      </div>
+      <div class="field">
+        <label for="cass">Kassette</label>
+        <select id="cass">
+          <option value="v2r">Schacht V2R mit Kassette V2R (Konzept, muss erst gebaut werden)</option>
+          <option value="none">Ohne Schacht, nur Umriss</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="wall">Wandstärke</label>
+        <select id="wall"><option value="0.8" selected>0,8 mm (wie Hohlgebäude)</option><option value="1.2">1,2 mm (steifer)</option></select>
+      </div>
+      <div class="field">
+        <label for="rad">Eckenradius am Umriss</label>
+        <select id="rad"><option value="0">0 (Umriss wie im Scan)</option><option value="0.3" selected>0,3 mm (druckt die Mulde auch rund)</option></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Einstellungen kopieren</h2>
+    <p class="sub" style="margin-bottom:10px">Der Text enthält alles, was ich zum Bauen brauche. Kopieren und im Chat einfügen.</p>
+    <textarea id="out" readonly aria-label="Einstellungen als Text"></textarea>
+    <div class="row" style="margin-top:10px"><button id="copy">Einstellungen kopieren</button><span class="hint" id="copied" role="status"></span></div>
+    <details style="margin-top:14px"><summary>Annahmen der Zeitschätzung</summary>
+      <div class="row" style="margin-top:10px">
+        <label class="hint" for="vEff">mittlere Geschwindigkeit der Wände (mm/s)</label><input id="vEff" type="number" min="10" max="300" step="5" value="60">
+        <label class="hint" for="tMin">Mindestzeit je Lage (s)</label><input id="tMin" type="number" min="0" max="30" step="1" value="6">
+        <label class="hint" for="tOv">Zuschlag je Lage (s)</label><input id="tOv" type="number" min="0" max="10" step="0.5" value="1.5">
+        <label class="hint" for="tStart">Start (Heizen, Kalibrieren) (min)</label><input id="tStart" type="number" min="0" max="20" step="1" value="6">
+      </div>
+      <p class="hint" style="margin-top:8px">Nicht kalibriert. Sag mir die echte Zeit aus dem Slicer, dann stelle ich die Werte darauf ein. Gerechnet: Schichthöhe 0,2 mm, Wand aus 2 Bahnen (Außen- und Innenseite), kein Boden, keine Füllung, alle Stücke in einem Druck, Lage für Lage.</p>
+    </details>
+  </section>
+
+  <section class="panel plan">
+    <h2>Grundriss in der Platte</h2>
+    <div class="cols">
+      <svg id="plan" viewBox="0 0 400 400" role="img" aria-label="Grundriss des Hochhauses mit Schacht und Pin-Reihe"></svg>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <ul class="list">
+          <li>Umriss des Hochhauses: Laserscan 1:1300, Fläche <span class="mono" id="area"></span> mm², Umfang <span class="mono" id="perim"></span> mm.</li>
+          <li>Der Schacht liegt um <span class="mono">53°</span> gedreht, 4,7 mm Wand zum Rand (Lage aus der Platzierungs-App).</li>
+          <li>Die Pin-Reihe (vier Pins, Raster 2,54) sitzt am Schacht, Luft zur Platte darunter ist die 0,4-mm-Bodenschicht mit Löchern.</li>
+        </ul>
+        <svg id="gap" viewBox="0 0 260 150" role="img" aria-label="Fuge zwischen Mulde und Wand, 60-fach vergrößert"></svg>
+        <span class="hint">Fuge zwischen Mulde (links) und Stummelwand (rechts), 60-fach vergrößert. Wand und Spiel folgen den Einstellungen.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Was du am Stummel prüfst</h2>
+    <ul class="list">
+      <li>Einsetzen in die Mulde: geht es ohne Kraft, hakt es an einer Ecke, in welcher Drehlage geht es?</li>
+      <li>Wackeln im eingesetzten Zustand und Zugkraft beim Herausziehen (fühlbar: 1 locker bis 5 fest).</li>
+      <li>Sitzt der Stummel auf dem Muldenboden auf? Falls nicht, fehlt Tiefe oder die Fase unten liegt auf.</li>
+      <li>Kassette von unten in den Schacht pressen: Sitz, Wand um den Schacht gerissen?</li>
+      <li>Kassette im eingesteckten Stummel: Pins treffen die Buchse?</li>
+      <li>Jedes Stück vorher beschriften (Spiel), damit die Reihe zuzuordnen ist.</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>Offen</h2>
+    <ul class="list">
+      <li><b>Kassette V2R:</b> bisher nur Konzept (<span class="mono">plug/logbook/cassettes.md</span>), die Streifendicke 2,2 mm ist nicht gemessen. Für diese Runde baue ich die V2R-Kassette als Probeteil; bewährt ist nur v4.</li>
+      <li><b>Hohlgebäude:</b> der Branch <span class="mono">jolly-pascal</span> erzeugt die Schale ohne Fuß und Schacht. Ab hier ist die Seite ein Platzhalter: der graue Bereich über dem Stummel zeigt das spätere Gebäude, das Dach mit 45°-Gewölbe kommt erst nach der Integration.</li>
+      <li>Rechteckiger Schacht-Block im Stummel statt echter Hohlstruktur; Wand 0,8 mm ist wie beim Hohlgebäude gewählt, aber nicht gedruckt getestet.</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+const D = /*DATA*/null;
+const $ = id => document.getElementById(id);
+const CLRS = [0.05, 0.10, 0.15, 0.20, 0.25];
+const NF = (x, n = 1) => x.toFixed(n).replace(".", ",");
+const FOOT = D.F, PLATE = D.plate_t, HMAX = D.hmax, NEED = D.need, CASS_TOP = D.top - D.F; // über der Platte
+const LED = D.led_z - D.F;
+
+// Schnittlinie: waagerecht durch die Schachtmitte
+function cutIntervals(poly, y) {
+  const xs = [];
+  for (let i = 0; i < poly.length - 1; i++) {
+    const [x1, y1] = poly[i], [x2, y2] = poly[i + 1];
+    if ((y1 <= y && y2 > y) || (y2 <= y && y1 > y)) xs.push(x1 + (y - y1) * (x2 - x1) / (y2 - y1));
+  }
+  xs.sort((a, b) => a - b);
+  const out = [];
+  for (let i = 0; i + 1 < xs.length; i += 2) out.push([xs[i], xs[i + 1]]);
+  return out;
+}
+const shp = D.shaft.slice(0, -1);
+const sc = shp.reduce((a, p) => [a[0] + p[0] / shp.length, a[1] + p[1] / shp.length], [0, 0]);
+const cutY = sc[1];
+const outIv = cutIntervals(D.outline, cutY), shIv = cutIntervals(D.shaft, cutY);
+const x0 = Math.min(...outIv.map(i => i[0])), x1 = Math.max(...outIv.map(i => i[1]));
+
+$("hmax").textContent = NF(HMAX);
+$("area").textContent = NF(D.area, 0); $("perim").textContent = NF(D.perimeter, 0);
+$("clrChecks").innerHTML = CLRS.map(c => `<label><input type="checkbox" class="clr" value="${c}" ${[0.10, 0.15, 0.20].includes(c) ? "checked" : ""}> ${NF(c, 2)}</label>`).join("");
+
+function state() {
+  const h = parseFloat($("hNum").value);
+  return { h, clrs: [...document.querySelectorAll(".clr:checked")].map(e => parseFloat(e.value)), cass: $("cass").value,
+    wall: parseFloat($("wall").value), rad: parseFloat($("rad").value) };
+}
+
+// Druckzeit und Material: Lage für Lage
+function estimate(s) {
+  const v = +$("vEff").value, tMin = +$("tMin").value, tOv = +$("tOv").value, tStart = +$("tStart").value;
+  const n = Math.max(s.clrs.length, 1), LH = 0.2, total = FOOT + s.h, layers = Math.round(total / LH);
+  const shaftPer = s.cass === "none" ? 0 : 2 * ((D.shaft_w + 2 * s.wall) + (D.shaft_d + 2 * s.wall)) * 2;  // Außenring plus Innenring des Schacht-Blocks
+  const shaftTop = FOOT + Math.min(s.h, NEED);
+  let sec = 0, vol = 0;
+  for (let i = 0; i < layers; i++) {
+    const z = (i + 0.5) * LH;
+    let len = 2 * D.perimeter;                                // zwei Bahnen am Umriss
+    if (shaftPer && z < shaftTop) len += shaftPer;
+    // Bahn 0,4 breit, Lage 0,2 hoch
+    vol += len * 0.4 * LH;
+    sec += Math.max(n * (len / v + tOv), tMin);
+  }
+  return { min: sec / 60 * 1 + tStart, mm3: vol * n, layers, n };
+}
+const fmtT = m => m >= 60 ? `${Math.floor(m / 60)} h ${String(Math.round(m % 60)).padStart(2, "0")} min` : `${Math.round(m)} min`;
+
+function drawSection(s) {
+  const PXMM = 4, padL = 16, padT = 14;
+  const wPlate = (x1 - x0) + 24;                              // Plattenausschnitt breiter als der Umriss
+  const zTop = HMAX + 3, H = (zTop + PLATE) * PXMM;
+  const X = x => padL + (x - (x0 - 12)) * PXMM, Z = z => padT + (zTop - z) * PXMM;  // z über der Plattenoberfläche
+  const Wsvg = padL + wPlate * PXMM + 150;
+  const svg = $("section");
+  svg.setAttribute("viewBox", `0 0 ${Wsvg} ${H + padT + 20}`);
+  let g = "";
+  const rect = (xa, xb, za, zb, cls, extra = "") => `<rect x="${X(xa).toFixed(1)}" y="${Z(zb).toFixed(1)}" width="${((xb - xa) * PXMM).toFixed(1)}" height="${((zb - za) * PXMM).toFixed(1)}" ${cls} ${extra}/>`;
+  // Platz für das spätere Hohlgebäude über dem Stummel
+  const top = s.h;
+  outIv.forEach(([a, b]) => { g += rect(a, b, top, HMAX, `fill="none" stroke="var(--muted)" stroke-dasharray="3 3"`, `stroke-width="1"`); });
+  const mid = X((x0 + x1) / 2);
+  if (HMAX - top > 12) g += `<text x="${mid}" y="${Z((top + HMAX) / 2)}" text-anchor="middle">Platzhalter Hohlgebäude</text><text x="${mid}" y="${Z((top + HMAX) / 2) + 12}" text-anchor="middle">Dach bei ${NF(HMAX)} mm</text>`;
+  // Platte mit Mulde
+  const pa = x0 - 12, pb = x1 + 12;
+  let platePath = rect(pa, pb, -PLATE, 0, `fill="var(--plate)" stroke="var(--muted)"`, `stroke-width="1"`);
+  g += platePath;
+  outIv.forEach(([a, b]) => { g += rect(a - D.clr, b + D.clr, -FOOT, 0.01, `fill="var(--panel)" stroke="var(--muted)"`, `stroke-width="1"`); });
+  // Stummel: zwei Wände je Abschnitt, offen unten und oben
+  const w = s.wall;
+  outIv.forEach(([a, b]) => {
+    g += rect(a + 0.1, a + 0.1 + w, -FOOT, top, `fill="var(--stub)"`);
+    g += rect(b - 0.1 - w, b - 0.1, -FOOT, top, `fill="var(--stub)"`);
+  });
+  // Schacht mit Kassette
+  if (s.cass !== "none") {
+    shIv.forEach(([a, b]) => {
+      const ct = Math.min(CASS_TOP, top);
+      g += rect(a, b, -FOOT, ct, `fill="var(--cassette)" fill-opacity=".85" stroke="var(--warn)"`, `stroke-width="1"`);
+      g += rect(a - w, a, -FOOT, Math.min(top, NEED), `fill="var(--stub)"`);
+      g += rect(b, b + w, -FOOT, Math.min(top, NEED), `fill="var(--stub)"`);
+      if (top >= NEED) g += rect(a - w, b + w, CASS_TOP, NEED, `fill="var(--stub)"`);
+      if (LED < top) g += `<circle cx="${X((a + b) / 2)}" cy="${Z(LED)}" r="3.5" fill="var(--bg)" stroke="var(--warn)" stroke-width="1.5"/>`;
+    });
+  }
+  // Maßlinien rechts
+  const xr = X(pb) + 8;
+  const labels = [[0, "Plattenoberfläche 0", ""], [-FOOT, `Mulde −${NF(FOOT)}`, ""], [-PLATE, `Unterseite −${NF(PLATE)}`, ""], [top, `Stummel +${NF(top)}`, "t-fg"]];
+  if (s.cass !== "none") labels.push([NEED, `Anschlag +${NF(NEED)}`, ""]);
+  labels.sort((p, q) => q[0] - p[0]);
+  let lastY = -99;
+  labels.forEach(([z, t, cls]) => {
+    const ty = Math.max(Z(z) + 3, lastY + 12); lastY = ty;
+    g += `<line x1="${X(pb)}" x2="${xr + 4}" y1="${Z(z)}" y2="${Z(z)}" stroke="var(--muted)" stroke-width=".7" stroke-dasharray="2 2"/><text x="${xr + 6}" y="${ty}" class="${cls}">${t}</text>`;
+  });
+  svg.innerHTML = g;
+}
+
+function drawPlan() {
+  const svg = $("plan");
+  const all = D.outline, xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+  const bx0 = Math.min(...xs), bx1 = Math.max(...xs), by0 = Math.min(...ys), by1 = Math.max(...ys);
+  const m = 22, sz = 400 - 2 * m, k = sz / Math.max(bx1 - bx0, by1 - by0);
+  const X = x => m + (x - bx0) * k, Y = y => 400 - m - (y - by0) * k;
+  const path = pts => pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join(" ") + "Z";
+  let g = `<path d="${path(D.outline)}" fill="var(--part)" stroke="var(--stub)" stroke-width="1.6"/>`;
+  g += `<path d="${path(D.shaft)}" fill="var(--cassette)" fill-opacity=".8" stroke="var(--warn)" stroke-width="1.2"/>`;
+  D.pins.forEach(p => { g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="2.2" fill="var(--fg)"/>`; });
+  g += `<circle cx="${X(D.led_xy[0])}" cy="${Y(D.led_xy[1])}" r="4" fill="none" stroke="var(--warn)" stroke-width="1.5"/>`;
+  g += `<line x1="${X(bx0)}" x2="${X(bx1)}" y1="${Y(cutY)}" y2="${Y(cutY)}" stroke="var(--accent)" stroke-dasharray="4 3" stroke-width="1"/><text x="${X(bx1) - 2}" y="${Y(cutY) - 4}" text-anchor="end">Schnitt</text>`;
+  g += `<text x="${m}" y="${400 - 4}">${NF(bx1 - bx0)} × ${NF(by1 - by0)} mm</text>`;
+  svg.innerHTML = g;
+}
+
+function drawGap(s) {
+  const svg = $("gap"), K = 60, h = 90;
+  const clr = s.clrs.length ? s.clrs[Math.floor(s.clrs.length / 2)] : D.clr;
+  const xp = 20, xs = xp + 10 + clr * K;                      // Mulde endet bei xp+10 (Platte links), Stummelwand beginnt nach Spiel
+  svg.innerHTML = `<rect x="${xp - 20}" y="10" width="30" height="${h}" fill="var(--plate)" stroke="var(--muted)"/>
+  <rect x="${xs}" y="10" width="${s.wall * K}" height="${h}" fill="var(--stub)"/>
+  <line x1="${xp + 10}" x2="${xs}" y1="${h + 22}" y2="${h + 22}" stroke="var(--fg)"/>
+  <text x="${xp + 10}" y="${h + 40}" class="t-fg">Spiel ${NF(clr, 2)}</text>
+  <text x="${xs + s.wall * K + 6}" y="60">Wand ${NF(s.wall)}</text>`;
+}
+
+function render() {
+  const s = state();
+  s.h = Math.min(Math.max(s.h || 0, 4), HMAX);
+  const e = estimate(s);
+  $("kH").textContent = NF(s.h) + " mm";
+  $("kTot").textContent = NF(FOOT + s.h) + " mm";
+  $("kTime").textContent = fmtT(e.min);
+  $("kVol").textContent = NF(e.mm3 / 1000, 1) + " cm³";
+  const w = $("warn"), msgs = [];
+  if (s.cass !== "none" && s.h < NEED) msgs.push(`Mit Kassette V2R braucht der Stummel mindestens ${NF(NEED)} mm über der Platte (Kassette ${NF(CASS_TOP)} + 1,2 Anschlag). Darunter ragt die Kassette heraus und der Schacht hat keinen Anschlag.`);
+  if (!s.clrs.length) msgs.push("Kein Spiel gewählt: Es wird kein Stück gedruckt.");
+  if (s.h >= HMAX - 0.5) msgs.push("Das ist das ganze Hochhaus. Dach und Gewölbe fehlen noch, solange das Hohlgebäude nicht integriert ist.");
+  w.hidden = !msgs.length; w.innerHTML = msgs.join("<br>");
+  drawSection(s); drawGap(s);
+  const txt = [
+    "Passform-Stummel City-Hochhaus (1:1300, Platte 14,6 mm flach)",
+    `Höhe über der Plattenoberfläche: ${NF(s.h)} mm (Gesamthöhe ${NF(FOOT + s.h)} mm mit Fuß 14,2)`,
+    `Spiel-Reihe je Seite: ${s.clrs.map(c => NF(c, 2)).join(" / ") || "keine"} mm (${s.clrs.length} Stück${s.clrs.length === 1 ? "" : "e"})`,
+    `Kassette: ${s.cass === "none" ? "ohne Schacht" : "Schacht V2R mit Kassette V2R (Konzept)"}`,
+    `Wand: ${NF(s.wall)} mm, Eckenradius: ${NF(s.rad)} mm, unten offen, oben offen`,
+    `Druckzeit geschätzt: ${fmtT(e.min)} (alle Stücke), Material ca. ${NF(e.mm3 / 1000, 1)} cm³`,
+    "", JSON.stringify({ gebaeude: D.slug, hoehe_ueber_platte: +s.h.toFixed(1), spiel: s.clrs, kassette: s.cass, wand: s.wall, eckenradius: s.rad, zeit_min: Math.round(e.min) })
+  ].join("\n");
+  $("out").value = txt;
+}
+
+["hSlider", "hNum"].forEach(id => $(id).addEventListener("input", ev => {
+  const v = ev.target.value; $("hSlider").value = v; $("hNum").value = v; render();
+}));
+document.querySelectorAll(".clr, #cass, #wall, #rad, #vEff, #tMin, #tOv, #tStart").forEach(el => el.addEventListener("input", render));
+$("hSlider").max = HMAX; $("hNum").max = HMAX; $("hSlider").value = 25; $("hNum").value = 25;
+$("copy").addEventListener("click", async () => {
+  const t = $("out").value, ok = $("copied");
+  try { await navigator.clipboard.writeText(t); ok.textContent = "Kopiert."; }
+  catch (e) { $("out").focus(); $("out").select(); ok.textContent = "Markiert, bitte mit Strg+C kopieren."; }
+});
+drawPlan(); render();
+</script>
