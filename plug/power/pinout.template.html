@@ -1,0 +1,379 @@
+<title>ESP32 Pinout Steckplatte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Ergebnis oben, Board-Zeichnung mit Rollenchips, Dock-Tabelle, Schaltung eines Docks, Pegel und Bibliothek, Offenes */
+:root {
+  --bg: #f5f7f5; --panel: #ffffff; --fg: #1a201b; --muted: #58645b; --line: #d3dad4; --code: #eef2ee;
+  --din-bg: #d9e7fa; --din-fg: #11407a;
+  --det-bg: #d6eedd; --det-fg: #135a2c;
+  --res-bg: #e8e5f7; --res-fg: #3d3484;
+  --inonly-bg: #f0e7c8; --inonly-fg: #67500a;
+  --cond-bg: #fbe0cb; --cond-fg: #86400a;
+  --avoid-bg: #f8d9d9; --avoid-fg: #8a1f1f;
+  --i2c-bg: #cdebea; --i2c-fg: #0c5452;
+  --pwr-bg: #e2e6e3; --pwr-fg: #2f3832;
+  --gnd-bg: #e2e6e3; --gnd-fg: #2f3832;
+  --wire: #2d6a4f;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --din-bg: #1b3557; --din-fg: #b9d4ff;
+  --det-bg: #183f29; --det-fg: #b6e7c7;
+  --res-bg: #2c2a55; --res-fg: #cdc8ff;
+  --inonly-bg: #483d15; --inonly-fg: #ecd88a;
+  --cond-bg: #59301a; --cond-fg: #ffc9a0;
+  --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --i2c-bg: #143e3e; --i2c-fg: #a8e4e1;
+  --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
+  --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
+  --wire: #7fd1a6; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --din-bg: #1b3557; --din-fg: #b9d4ff;
+  --det-bg: #183f29; --det-fg: #b6e7c7;
+  --res-bg: #2c2a55; --res-fg: #cdc8ff;
+  --inonly-bg: #483d15; --inonly-fg: #ecd88a;
+  --cond-bg: #59301a; --cond-fg: #ffc9a0;
+  --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --i2c-bg: #143e3e; --i2c-fg: #a8e4e1;
+  --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
+  --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
+  --wire: #7fd1a6; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans);
+  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 34px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 18px; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+p { margin: 0 0 10px; max-width: 68ch; }
+small { color: var(--muted); font-size: 11px; margin-left: 4px; }
+.lead { color: var(--muted); max-width: 68ch; }
+.mono, code, pre { font-family: var(--mono); }
+code { background: var(--code); padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+section { min-width: 0; }
+
+.verdict { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.verdict .big { font-size: 18px; font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip { display: inline-block; font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 3px; white-space: nowrap; letter-spacing: .02em; }
+.chip.din, .dot.din { background: var(--din-bg); color: var(--din-fg); }
+.chip.det, .dot.det { background: var(--det-bg); color: var(--det-fg); }
+.chip.i2c, .dot.i2c { background: var(--i2c-bg); color: var(--i2c-fg); }
+.chip.res, .dot.res { background: var(--res-bg); color: var(--res-fg); }
+.chip.inonly, .dot.inonly { background: var(--inonly-bg); color: var(--inonly-fg); }
+.chip.cond, .dot.cond { background: var(--cond-bg); color: var(--cond-fg); }
+.chip.avoid, .dot.avoid { background: var(--avoid-bg); color: var(--avoid-fg); }
+.chip.pwr, .dot.pwr, .chip.gnd, .dot.gnd { background: var(--pwr-bg); color: var(--pwr-fg); }
+
+.scroll { overflow-x: auto; }
+.board { display: grid; grid-template-columns: 1fr 46px 1fr; min-width: 330px; max-width: 460px; margin: 0 auto; }
+.col { display: flex; flex-direction: column; }
+.pr { height: 32px; display: flex; align-items: center; gap: 6px; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.pr.l { justify-content: flex-end; }
+.pr.r { justify-content: flex-start; }
+.pr .nm { font-family: var(--mono); white-space: nowrap; }
+.pr .nm b { font-weight: 600; }
+.dot { width: 14px; height: 4px; flex: none; border-radius: 0; }
+.body { background: var(--panel); border: 1.5px solid var(--fg); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 0; margin: 0 -1px; }
+.body span { writing-mode: vertical-rl; font: 600 11px var(--mono); color: var(--muted); letter-spacing: .08em; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+td small { margin-left: 3px; }
+.tbl { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.tbl table td:last-child { min-width: 260px; }
+
+svg text { font-family: var(--mono); font-size: 12px; fill: var(--fg); }
+svg .m { fill: var(--muted); font-size: 11px; }
+svg .w { stroke: var(--wire); stroke-width: 2; fill: none; }
+svg .p { stroke: var(--fg); stroke-width: 1.5; fill: var(--panel); }
+svg .f { fill: var(--fg); }
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; }
+.diagram svg { min-width: 560px; width: 100%; height: auto; display: block; }
+
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.5; margin: 0; }
+ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
+.note { border-left: 3px solid var(--cond-fg); background: var(--cond-bg); color: var(--cond-fg); padding: 10px 14px; border-radius: 0 4px 4px 0; max-width: 70ch; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+</style>
+
+<main>
+  <header>
+    <h1>ESP32 Pinout Steckplatte</h1>
+    <p class="lead">Klassischer ESP32 (WROOM-32, 30-Pin-Board mit USB-C). Sechs Docks, je ein Datenausgang für die LED (DIN) und ein Eingang für die Steckerkennung (DETECT), dazu INA226 und Display am I²C-Bus. Die Firmware ist ESPHome. Der 74AHCT125 ist erst einmal gestrichen.</p>
+  </header>
+
+  <section class="verdict">
+    <div class="big">Die Pins reichen, aber alle {{N_CLEAN}} unauffälligen sind jetzt belegt.</div>
+    <div class="facts">
+      <span class="chip din">6 × DIN</span><span class="chip det">6 × DETECT</span><span class="chip i2c">SDA + SCL</span>
+      <span class="chip res">{{N_FREE}} Reserve</span><span class="chip inonly">{{N_INONLY}} nur Eingang frei</span>
+      <span class="chip cond">GPIO14 Last</span><span class="chip cond">{{N_COND}} bedingt frei</span><span class="chip avoid">{{N_AVOID}} meiden</span>
+    </div>
+    <p style="margin:0">Das Board hat {{N_GPIO}} herausgeführte GPIOs. Die 14 belegten Pins können Ausgang und Eingang, haben einen internen Pull-up und verhalten sich beim Booten ruhig. Den I²C-Bus (GPIO21 und 22, die Standardpins des klassischen ESP32) teilen sich INA226 und Display. Der ALERT-Pin des INA226 bleibt unbenutzt, ESPHome braucht ihn nicht. Strapping-Pins und UART-Pins bleiben unbelegt. GPIO14 schaltet über einen MOSFET eine Last für den Strompuls alle 5 s (Abschnitt „Strompuls für die Powerbank“).</p>
+  </section>
+
+  <section>
+    <h2>Pinbelegung</h2>
+    <p>Ansicht von oben, Antenne oben, USB unten. Die Reihenfolge entspricht dem üblichen 30-Pin-DOIT-Board; vor dem Löten mit dem Aufdruck deines Boards vergleichen. Mit dem Mauszeiger über einem Pin steht die Begründung.</p>
+    <div class="scroll">{{BOARD}}</div>
+    <div class="legend" style="margin-top:14px">
+      <span><i class="dot din" style="height:8px"></i>Datenleitung zur LED</span>
+      <span><i class="dot det" style="height:8px"></i>Steckerkennung</span>
+      <span><i class="dot res" style="height:8px"></i>Reserve</span>
+      <span><i class="dot inonly" style="height:8px"></i>nur Eingang, ohne Pull-up</span>
+      <span><i class="dot cond" style="height:8px"></i>bedingt (Boot-Signal)</span>
+      <span><i class="dot avoid" style="height:8px"></i>meiden</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Zuordnung je Dock</h2>
+    <p>Die Reihenfolge der Docks und die Zuordnung zu den Gebäuden sind noch nicht festgelegt. Die Nummern sind austauschbar.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Dock</th><th>DIN zur LED</th><th>DETECT</th></tr></thead>
+      <tbody>{{DOCKS}}</tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>INA226 und Display am I²C-Bus</h2>
+    <p>Das Display ist das 1,3″-OLED mit 128 × 64 Pixeln (Controller wahrscheinlich SH1106, Funktionstest offen, Details in <code>docs/oled-1k3-i2c.md</code>). Dazu kommt ein INA226-Modul. Beide hängen an GPIO21 (SDA) und GPIO22 (SCL). Deshalb liegen die Datenleitungen der Docks jetzt auf GPIO23, 19, 18, 17, 16 und 4. In der ersten Fassung dieser Seite lagen zwei davon auf 21 und 22.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 640 190" role="img" aria-label="I²C-Bus: ESP32 mit INA226 und Display an SDA, SCL, 3,3 V und GND">
+        <path class="w" d="M130 62 H520 M130 92 H520 M130 132 H520 M130 162 H520"/>
+        <rect class="p" x="10" y="20" width="120" height="160" rx="4"/>
+        <text x="70" y="42" text-anchor="middle" style="font-weight:600">ESP32</text>
+        <text x="122" y="66" text-anchor="end">GPIO21</text>
+        <text x="122" y="96" text-anchor="end">GPIO22</text>
+        <text x="122" y="136" text-anchor="end">3V3</text>
+        <text x="122" y="166" text-anchor="end">GND</text>
+
+        <rect class="p" x="250" y="26" width="110" height="145" rx="4"/>
+        <text x="305" y="46" text-anchor="middle" style="font-weight:600">INA226 <tspan class="m">0x40</tspan></text>
+        <text x="258" y="66">SDA</text><text x="258" y="96">SCL</text><text x="258" y="136">VS</text><text x="258" y="166">GND</text>
+
+        <rect class="p" x="410" y="26" width="110" height="145" rx="4"/>
+        <text x="465" y="46" text-anchor="middle" style="font-weight:600">Display <tspan class="m">0x3C</tspan></text>
+        <text x="418" y="66">SDA</text><text x="418" y="96">SCL</text><text x="418" y="136">VCC</text><text x="418" y="166">GND</text>
+
+        <path class="w" d="M360 62 H410 M360 92 H410 M360 132 H410 M360 162 H410"/>
+        <text x="526" y="66" class="m">Pull-ups am Modul</text>
+      </svg>
+    </div>
+    <ul style="margin-top:12px">
+      <li><b>Adressen:</b> INA226 hat 0x40 (A0 und A1 an GND), das OLED 0x3C. Beide teilen sich den Bus ohne Konflikt.</li>
+      <li><b>Messort:</b> Der Shunt kommt in die 5-V-Leitung zwischen USB-A-Buchse und dem Abzweig zu ESP32-VIN und Diode. So misst der INA226 den gesamten Strom aus der Powerbank. IN+ zur Buchse, IN− zur Last, der VBUS-Pin an IN−.</li>
+      <li><b>Messbereich:</b> Die üblichen Module haben 0,1 Ω Shunt, das reicht für etwa ±0,8 A. Erwartet werden 6 × 60 mA LED plus rund 100 mA für den ESP32 mit WLAN (Spitzen höher), also unter 0,7 A. Der Abfall am Shunt liegt bei etwa 60 mV. Den Wert auf dem Modul prüfen (R100 = 0,1 Ω, es gibt auch R010 und R002) und in ESPHome als <code>shunt_resistance</code> eintragen.</li>
+      <li><b>ALERT:</b> Wird nicht angeschlossen. Die ESPHome-Plattform <code>ina226</code> liest Spannung, Strom und Leistung über I²C und hat keine ALERT-Option.</li>
+      <li><b>Versorgung:</b> INA226 und Display laufen mit 3,3 V vom 3V3-Pin, zusammen unter 25 mA. Das Display braucht laut Datenblatt des Referenzmoduls etwa 8 mA und läuft mit 3,3 bis 5 V.</li>
+      <li><b>Display-Modul:</b> Pinfolge laut Aufdruck VDD, GND, SCK, SDA, wobei SCK hier der I²C-Takt ist, kein SPI. Platine etwa 33,7 × 35,5 mm mit vier Befestigungslöchern (Maß vom Referenzmodul, nicht nachgemessen). Adresse meist 0x3C, per I²C-Scan prüfen.</li>
+      <li><b>Controller offen:</b> SH1106 ist wahrscheinlich, ein CH1116G wäre möglich. Entscheidet der Funktionstest (Rahmen und Diagonale, Modell <code>SH1106 128x64</code>), Ergebnis dann in <code>docs/oled-1k3-i2c.md</code> eintragen.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Strompuls für die Powerbank</h2>
+    <p>Viele Powerbanks schalten sich ab, wenn sie länger kaum Strom abgeben. GPIO14 schaltet deshalb alle 5 s kurz eine Last gegen 5 V. Ein GPIO kann das nicht selbst: Er verträgt höchstens rund 40 mA, und 3,3 V über einen Widerstand ergäben zu wenig Strom. Es braucht einen MOSFET als Schalter und einen Lastwiderstand an 5 V.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 640 230" role="img" aria-label="Strompuls-Last: 5 V über Lastwiderstand und N-MOSFET nach GND, Gate von GPIO14 über 100 Ohm mit 10 kOhm Pulldown">
+        <path class="w" d="M40 40 H480"/>
+        <text x="40" y="30" class="m">+5 V (hinter dem INA226-Shunt, vor der Diode)</text>
+        <path class="w" d="M440 40 V55 M440 105 V125"/>
+        <rect class="p" x="430" y="55" width="20" height="50" rx="2"/>
+        <text x="460" y="84">47 Ω, 1 W</text>
+        <!-- MOSFET -->
+        <path class="w" d="M440 120 V180"/>
+        <path class="w" d="M424 120 V180"/>
+        <path class="w" d="M440 180 V205"/>
+        <text x="454" y="146" class="m">N-MOSFET</text>
+        <text x="454" y="162" class="m">z. B. IRLZ44N</text>
+        <text x="454" y="125" class="m">D</text><text x="454" y="186" class="m">S</text><text x="408" y="150" class="m" text-anchor="end">G</text>
+        <!-- Gate -->
+        <rect class="p" x="10" y="130" width="100" height="40" rx="4"/>
+        <text x="60" y="155" text-anchor="middle">GPIO14</text>
+        <path class="w" d="M110 150 H230 M290 150 H424"/>
+        <rect class="p" x="230" y="140" width="60" height="20" rx="2"/>
+        <text x="260" y="134" text-anchor="middle" class="m">100 Ω</text>
+        <circle class="f" cx="350" cy="150" r="3"/>
+        <path class="w" d="M350 150 V165 M350 195 V205"/>
+        <rect class="p" x="342" y="165" width="16" height="30" rx="2"/>
+        <text x="366" y="184" class="m">10 kΩ</text>
+        <!-- GND -->
+        <path class="w" d="M40 205 H480"/>
+        <text x="40" y="222" class="m">GND</text>
+      </svg>
+    </div>
+    <p style="margin-top:10px">Der 10-kΩ-Widerstand zwischen Gate und GND hält den MOSFET aus, solange der Pin beim Start noch nicht gesetzt ist oder kurz PWM ausgibt. Der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. Eine Schutzdiode ist bei einer reinen Widerstandslast nicht nötig.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Lastwiderstand</th><th>Strom bei 5 V</th><th>Leistung im Puls</th><th>Mindest-Nennleistung</th><th>Wann</th></tr></thead>
+      <tbody>
+        <tr><td class="mono"><b>47 Ω</b></td><td>etwa 106 mA</td><td>0,53 W</td><td>1 W</td><td>Startwert</td></tr>
+        <tr><td class="mono">33 Ω</td><td>etwa 152 mA</td><td>0,76 W</td><td>1 W</td><td>wenn 100 mA nicht reichen</td></tr>
+        <tr><td class="mono">22 Ω</td><td>etwa 227 mA</td><td>1,14 W</td><td>2 W</td><td>wenn die Powerbank deutlich mehr verlangt</td></tr>
+        <tr><td class="mono">100 Ω</td><td>etwa 50 mA</td><td>0,25 W</td><td>0,5 W</td><td>nur bei sehr niedriger Schwelle</td></tr>
+      </tbody>
+    </table></div>
+    <ul style="margin-top:12px">
+      <li><b>Zwei kleine Widerstände:</b> Statt eines 47-Ω-Widerstands gehen auch zwei 100 Ω zu je ½ W parallel (50 Ω, je etwa 0,25 W).</li>
+      <li><b>MOSFET:</b> Ein Logic-Level-N-Kanal-Typ, der bei 3,3 V Gate-Spannung voll durchschaltet, zum Beispiel IRLZ44N (bedrahtet) oder AO3400 (SMD). Ein 2N7000 schaltet bei 3,3 V schlecht durch, für 100 mA geht er gerade noch.</li>
+      <li><b>Anschluss:</b> Die Last hängt am 5-V-Knoten hinter dem INA226-Shunt, aber vor der Diode zu den LEDs. So sieht der INA226 den Puls, und die Diode verliert keine Leistung.</li>
+      <li><b>Erst messen:</b> Die Abschaltschwelle der Intenso XS5000 ist mir nicht bekannt. Mit WLAN zieht der ESP32 schon rund 100 mA. Wenn die Powerbank mit dem INA226 im Dauerbetrieb ohne LEDs an bleibt, ist der Puls vielleicht unnötig. Sonst Puls und Pause im Test anpassen (Startwert 300 ms alle 5 s).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Schaltung eines Docks</h2>
+    <div class="diagram">
+      <svg viewBox="0 0 640 270" role="img" aria-label="Schaltung eines Docks: GPIO über 330 Ohm an DIN, DETECT direkt, 5 V über Diode, GND">
+        <rect class="p" x="10" y="20" width="120" height="235" rx="4"/>
+        <text x="70" y="42" text-anchor="middle" style="font-weight:600">ESP32</text>
+        <text x="122" y="80" text-anchor="end">GPIO23</text>
+        <text x="122" y="140" text-anchor="end">GPIO32</text>
+        <text x="122" y="200" text-anchor="end">VIN 5 V</text>
+        <text x="122" y="240" text-anchor="end">GND</text>
+
+        <rect class="p" x="500" y="20" width="130" height="235" rx="4"/>
+        <text x="565" y="42" text-anchor="middle" style="font-weight:600">Dock</text>
+        <text x="508" y="80">2 DIN</text>
+        <text x="508" y="140">4 DETECT</text>
+        <text x="508" y="200">3 +5 V</text>
+        <text x="508" y="240">1 GND</text>
+
+        <!-- DIN über 330 Ohm -->
+        <path class="w" d="M130 76 H250 M310 76 H500"/>
+        <rect class="p" x="250" y="66" width="60" height="20" rx="2"/>
+        <text x="280" y="62" text-anchor="middle" class="m">330 Ω</text>
+        <!-- DETECT -->
+        <path class="w" d="M130 136 H500"/>
+        <text x="315" y="156" text-anchor="middle" class="m">interner Pull-up, LOW = Gebäude steckt</text>
+        <!-- 5 V über Diode -->
+        <path class="w" d="M130 196 H215 M255 196 H500"/>
+        <path class="p" d="M215 184 L215 208 L242 196 Z"/>
+        <path class="w" d="M247 184 V208"/>
+        <text x="232" y="176" text-anchor="middle" class="m">Diode 1N4007</text>
+        <text x="232" y="224" text-anchor="middle" class="m">einmal für alle Docks</text>
+        <!-- Kondensator -->
+        <path class="w" d="M360 196 V206 M345 206 H375 M345 214 H375 M360 214 V236"/>
+        <text x="388" y="214" class="m">1000 µF</text>
+        <!-- GND -->
+        <path class="w" d="M130 236 H500"/>
+      </svg>
+    </div>
+    <p style="margin-top:10px">Die Diode sitzt hinter dem Abzweig zu ESP32-VIN und dem INA226-Shunt. Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
+  </section>
+
+  <section>
+    <h2>3,3 V an der LED ohne Pegelwandler</h2>
+    <p>Der ESP32 liefert an DIN 3,3 V. Nach dem älteren WS2812B-Datenblatt braucht ein High-Pegel mindestens 0,7 × VDD, bei 5 V also 3,5 V. Das klappt oft trotzdem, liegt aber außerhalb der Angabe.</p>
+    <div class="note">Vorschlag: eine Siliziumdiode in der gemeinsamen 5-V-Leitung der Docks. Sie senkt VDD an den LEDs auf etwa 4,1 bis 4,4 V, die Schwelle liegt dann bei etwa 2,9 bis 3,1 V und 3,3 V reichen. Der ESP32 hängt vor der Diode an den vollen 5 V. Das ist nicht getestet und gehört in den nächsten Testbogen: ein Dock auf dem Steckbrett, LED sicher an, auch beim Stecken unter Spannung.</div>
+  </section>
+
+  <section>
+    <h2>ESPHome</h2>
+    <p>Die Firmware ist ESPHome, ohne Eigenbau-Bibliothek. Die Plattform <code>esp32_rmt_led_strip</code> sendet über den RMT-Block, ohne Bit-Banging. Je Dock gibt es eine Light-Instanz mit einer LED, je Dock einen <code>binary_sensor</code> für DETECT.</p>
+    <div class="two">
+      <div>
+        <p><b>RMT-Speicher:</b> Auf dem klassischen ESP32 teilen sich alle RMT-Nutzer 512 Symbole in Blöcken zu 64. Eine LED braucht 24 Symbole. Sechs Lights mit <code>rmt_symbols: 64</code> belegen 384 von 512. Die ESPHome-Doku nennt keine feste Obergrenze für die Zahl der Strips, ob sechs zugleich laufen, zeigt erst der erste Lauf.</p>
+        <p><b>PSRAM:</b> Das WROOM-32 hat keins, deshalb <code>use_psram: false</code>.</p>
+        <p><b>Freigabe je Dock:</b> <code>delayed_on: 100ms</code> am DETECT entspricht der Regel „Daten erst 100 ms nach DETECT = LOW“. Das Licht wird erst danach eingeschaltet.</p>
+        <p><b>I²C-Takt:</b> Eine höhere Taktrate beschleunigt die Display-Updates, sie lässt sich im <code>i2c:</code>-Block einstellen.</p>
+      </div>
+<pre># Skizze, nicht getestet
+# Grundkonfiguration (esphome, esp32, wifi) wie gehabt
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+
+sensor:
+  - platform: ina226
+    address: 0x40
+    shunt_resistance: 0.1 ohm
+    max_current: 1A
+    bus_voltage:
+      name: "Powerbank Spannung"
+    current:
+      name: "Strom gesamt"
+    power:
+      name: "Leistung gesamt"
+    update_interval: 5s
+
+display:
+  - platform: ssd1306_i2c
+    model: "SH1106 128x64"
+    address: 0x3C
+    lambda: |-
+      it.rectangle(0, 0, 128, 64);
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: dock1_led
+    name: "Dock 1"
+    pin: GPIO23
+    num_leds: 1
+    chipset: ws2812
+    channel_colors: GRB
+    rmt_symbols: 64
+    use_psram: false
+  # Dock 2 bis 6: GPIO19, 18, 17, 16, 4
+
+binary_sensor:
+  - platform: gpio
+    id: dock1_steckt
+    pin:
+      number: GPIO32
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+    on_press:
+      - light.turn_on: dock1_led
+    on_release:
+      - light.turn_off: dock1_led
+  # Dock 2 bis 6: GPIO33, 25, 26, 27, 13
+
+output:
+  - platform: gpio
+    id: powerbank_last
+    pin: GPIO14
+
+interval:
+  - interval: 5s
+    then:
+      - output.turn_on: powerbank_last
+      - delay: 300ms
+      - output.turn_off: powerbank_last</pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alle Pins im Überblick</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>GPIO</th><th>Aufdruck</th><th>Rolle</th><th>Ausgang</th><th>Eingang</th><th>Pull-up</th><th>RMT</th><th>Hinweis</th></tr></thead>
+      <tbody>{{TABLE}}</tbody>
+    </table></div>
+    <p style="margin-top:10px"><small style="margin-left:0">GPIO 6 bis 11 hängen intern am Flash und sind nicht herausgeführt. GPIO0 fehlt auf den meisten 30-Pin-Boards; falls er bei deinem Board doch herausgeführt ist, bleibt er wegen Boot-Taste und Strapping unbelegt.</small></p>
+  </section>
+
+  <section>
+    <h2>Offen und zu beachten</h2>
+    <ul>
+      <li><b>Aufdruck prüfen.</b> Klone vertauschen gelegentlich Pins. Die Tabelle gilt nach GPIO-Nummer, nicht nach Position.</li>
+      <li><b>WROOM, nicht WROVER.</b> Auf dem Etikett steht ESP-WROOM-32. Nur dort sind GPIO16 und 17 frei, beide sind jetzt Datenleitungen.</li>
+      <li><b>Zwei Stromquellen.</b> Die Powerbank hängt an VIN. Beim Flashen über USB-C die Powerbank abziehen, sonst speisen sich beide gegenseitig, sofern das Board keine Diode hat.</li>
+      <li><b>Strompuls alle 5 s.</b> GPIO14 steuert die Last über einen MOSFET. Lastwiderstand, Pulslänge und ob der Puls überhaupt nötig ist, klärt ein Test mit der Powerbank und dem INA226.</li>
+      <li><b>Pull-up.</b> Der interne Pull-up hat etwa 45 kΩ. Bei langen Flachbandstücken kann ein externer 10 kΩ nötig werden; in Software 100 ms entprellen.</li>
+      <li><b>Pins 34, 35, 36, 39.</b> Frei, aber nur als Eingänge mit externem Pull-up brauchbar, nie als Ausgang. Sie sind die Reserve für weitere DETECT-Leitungen.</li>
+    </ul>
+  </section>
+</main>

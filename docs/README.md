@@ -9,3 +9,4 @@ Fotos in `bilder/`, Hersteller-Datenblätter in `datenblaetter/`. Was gemessen u
 | `wippenschalter-kcd11.md` | Wippenschalter 10 × 15 mm, 2 Pins (KCD11-Bauart), Hauptschalter für das Plus der Powerbank | identifiziert, Einbauloch mit Probeteil T2 bewährt, Hakenspanne nachmessen offen |
 
 Steckmechanismus und LED-Gebäude (Controller, 74AHCT125 usw.): `plug/PLAN.md`.
+Pinbelegung des ESP32 (Docks, I²C für INA226 und Display, ESPHome-Skizze): `plug/power/pinout.html` (Artifact, Quelle `plug/power/build_pinout.py`).
