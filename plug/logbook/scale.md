@@ -195,12 +195,7 @@ Alle dicht, keine Kollision, Platz für die Kassette vollständig. Die kleinen Z
 
 #### Füllung im Slicer (Empfehlung, ungetestet)
 
-Die dicken Gewölbe-Keile druckt der Slicer mit Füllung, nicht massiv. Für gleichmäßiges Licht:
-- **Gyroid 10 %** (Rückfall 15 %): gleich in alle Richtungen, ohne durchgehende Ebenen, streut das Licht gleichmäßig und wirft keine Streifen auf die Wand; trägt sich ohne Brücken selbst. Gitter, Linien und Dreiecke werfen gerade Schatten, die man durch die 0,8-mm-Wand sieht. Blitz (Lightning) spart am meisten und lässt am meisten Licht durch, gibt aber unregelmäßige, fleckige Schatten.
-- Wandlinien 2 (0,8 mm Wand = 2 × 0,4), Dach oben 4 Lagen (0,8 mm bei 0,2 mm Schicht).
-- **Untere Deckschichten 2** statt 3 bis 4: die 45°-Unterseiten der Gewölbe zählen als Unterseite und bekämen sonst eine dichte Haut, die Licht schluckt.
-- „Senkrechte Wandstärke sicherstellen“ (Bambu Studio: Ensure vertical shell thickness) aus: sonst füllt der Slicer an den Schrägen zusätzlich massiv.
-- Weißes oder naturfarbenes PLA leitet am meisten Licht.
+Steht in [`plug/slicer.md`](../slicer.md) (eine Quelle für alle Slicer-Einstellungen der steckbaren Gebäude): Gyroid 10 %, 2 untere Deckschichten, „Ensure vertical shell thickness“ aus, Support aus.
 
 Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) und durch die Füllung der Keile; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
 

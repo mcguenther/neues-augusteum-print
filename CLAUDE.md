@@ -47,7 +47,7 @@ data/                  Rohdaten-Ausschnitte, Zonen je Gebäude (data/fassaden/),
 stl/<quelle>/1zu1000|1zu1300|1zu1500/   Ausgabe (osm, lod2, laserscan; einzeln/ massiv, einzeln_hohl/ Hohlkörper) + stl/steckmodul_*   (erzeugt, eingecheckt)
 vorschau/              Ausgabe-Bilder (erzeugt, eingecheckt); vorschau/readme/ für die README
 stl-fast/ vorschau-fast/   Ausgabe von `--fast` (gitignored)
-plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/)
+plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/); Slicer-Einstellungen der steckbaren Gebäude: plug/slicer.md
 werkzeuge/             Hilfsskripte: farbmessung/, performance/ (Messung der Laufzeit), innenhof_messen.py, rosette_kamera.py
 archiv/                zurückgestellte Gebäude (moritzbastei/)
 README.md FOTOQUELLEN.md   README (Blöcke AUTO), Foto-Urheber und Lizenzen
