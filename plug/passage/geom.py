@@ -6,9 +6,10 @@ Brücke, die die oberen Geschosse verbindet. Das Laserscan-Höhenfeld sieht nur 
 (Grundriss `TUNNEL_M`, bisher beim Paulinum); die senkrechten Streifen an seiner Ostwand sind Rasterfacetten zwischen Dach- und
 Bodenzellen. Das 3D-Stadtmodell LoD2 hat die Brücke ab 131,1 m ü. NHN (Unterkante) bis 145,0 m (Dach), darunter nichts.
 
-Vorschlag: Der Block unter der Decke entfällt (Durchgang, Boden = Platte), die Brücke darüber bekommt eine waagerechte Unterseite und gehört zum
-Institutsgebäude. Das Paulinum verliert den Grundriss des Durchgangs, der Fuß des Institutsgebäudes bleibt wie er ist (die Brücke kragt darüber aus).
-Die Treppe der Platte im Nordosten reicht bis an das Ostende des Durchgangs.
+Vorschlag (Stand nach Nutzerwunsch 17.10.): Das ganze Teil entfällt, Brücke und Block. Das Paulinum bekommt eine gerade Nordwand (alles nördlich der
+Wandlinie `WAND_T` im Hofsystem wird abgeschnitten, auch der Splitter an der Institutswand und der Absatz im Grundriss), das Institutsgebäude bleibt
+unverändert. Die Gasse ist damit auf ganzer Länge frei, vom Hof bis zum Augustusplatz. Die Treppe der Platte im Nordosten reicht bis an das
+Ostende der früheren Brücke (Hofsystem u = `ENDE_U`).
 
 Alle Maße in mm im Kartensystem (Meter mal Maßstab), z = 0 ist der Boden des jeweiligen Gebäudes (`ground_z`).
 """
@@ -77,29 +78,48 @@ def laser_pair(s=S):
     return out
 
 
-def umbauen(pair, z_decke_m=Z_DECKE_M, z_dach_m=Z_DACH_M, s=S, mit_bruecke=True):
+WAND_T = 61.15        # m im Hofsystem: Nordwand des Paulinums; was weiter nördlich liegt (Block, Splitter, Absatz), entfällt
+GASSE_U = (-102.0, -30.0)   # m im Hofsystem: so weit reicht der Schnitt entlang der Wand (vom Hof bis hinter die Ostecke des Paulinums)
+
+
+def schnittbereich_mm(s=S):
+    """Fläche (mm, Kartensystem), die vom Paulinum entfällt: nördlich der Wandlinie, zwischen Hof und Ostecke."""
+    _, aus_hof = I.rahmen(I.load())
+    return aus_hof(box(GASSE_U[0] * s, WAND_T * s, GASSE_U[1] * s, 100 * s))
+
+
+def umbauen(pair, s=S):
     """Neue Körper: {slug: (Volumenkörper, Grundriss mm)} für Paulinum und Institutsgebäude.
 
-    Paulinum: ohne den Grundriss des Durchgangs (senkrechter Schnitt in der Nordwand). Institutsgebäude: alter Körper plus Brücke
-    (Grundriss des Durchgangs von der Decke bis zum Dach); der Grundriss für Mulde und Fuß bleibt der alte, die Brücke kragt aus.
-    mit_bruecke=False lässt die Brücke weg (die Vorschlagsseite zeichnet sie selbst, damit ein Regler die Decke verschieben kann)."""
-    t = tunnel_mm(s)
+    Paulinum: alles nördlich der Wandlinie WAND_T entfällt (Block des Durchgangs mit der Brücke, Splitter an der Institutswand, Absatz im Grundriss),
+    senkrechter Schnitt. Institutsgebäude: unverändert. Keine Brücke, keine Decke."""
     (p_solid, p_fp, _), (i_solid, i_fp, _) = pair["01_paulinum"], pair["05_institutsgebaeude"]
     zmax = p_solid.bounding_box()[5] + 2
-    # Splitter des Paulinum-Grundrisses neben dem Institutsgebäude (dünner Streifen an dessen Ostwand, LoD2-Zuschnitt) gehört zum Institutsgebäude
-    polys = sorted(G.polys_of(p_fp), key=lambda p: -p.area)
-    splitter = G.clean(unary_union(polys[1:]).difference(t).buffer(0.02, join_style=2)) if len(polys) > 1 else None
-    weg = t if splitter is None or splitter.is_empty else unary_union([t, splitter])
-    p_new = p_solid - G.extrude(weg, -1, zmax)
-    p_fp_new = G.clean(p_fp.difference(weg))
-    zc, zt = decke_mm(z_decke_m), decke_mm(z_dach_m)
-    bruecke = G.extrude(t.buffer(0.03, join_style=2).difference(p_fp_new), zc, zt)    # 0,03 mm Überlappung mit dem Institutsgebäude
-    i_new, i_fp_new = (i_solid + bruecke) if mit_bruecke else i_solid, i_fp
-    if splitter is not None and not splitter.is_empty:
-        shift = (GROUND["01_paulinum"] - GROUND["05_institutsgebaeude"]) * s      # Bezugshöhe des Paulinums liegt etwas höher
-        i_new = i_new + (p_solid ^ G.extrude(splitter, -1, zmax)).translate([0, 0, shift])
-        i_fp_new = G.clean(unary_union([i_fp, splitter]))
-    return {"01_paulinum": (p_new, p_fp_new), "05_institutsgebaeude": (i_new, i_fp_new)}
+    weg = schnittbereich_mm(s)
+    return {"01_paulinum": (p_solid - G.extrude(weg, -1, zmax), G.clean(p_fp.difference(weg))), "05_institutsgebaeude": (i_solid, i_fp)}
+
+
+def freie_gasse(neu, s=S, u=(-94.0, -50.0), t=(61.3, 67.3), hoehen=None):
+    """Prüft, dass in der Gasse nichts steht: Schnitte beider neuer Körper in vielen Höhen, Fläche im Rechteck u × t (Hofsystem, m)
+    zwischen den Wänden. Liefert (größte Restfläche in mm², Liste von (Höhe, Fläche) mit Fläche > 0, engste freie Breite in m über alle Höhen
+    und alle u)."""
+    import hohl
+    from shapely.geometry import LineString
+    hoehen = hoehen or [0.2, 0.6, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+    rest, eng = [], 99.0
+    ber = box(u[0] * s, t[0] * s, u[1] * s, t[1] * s)
+    for z in hoehen:
+        flaeche = 0.0
+        geoms = [nach_hof_mm(hohl._cs_poly(sol.slice(z))) for sol in (v[0] for v in neu.values())]
+        for g in geoms:
+            flaeche += g.intersection(ber).area
+        rest.append((z, flaeche))
+        for uu in np.arange(u[0], u[1] + 0.01, 1.0):
+            ln = LineString([(uu * s, 55 * s), (uu * s, 75 * s)])
+            frei_t0 = max([g.intersection(ln).bounds[3] for g in geoms[:1] if not g.intersection(ln).is_empty] or [55 * s])
+            frei_t1 = min([g.intersection(ln.difference(geoms[0])).bounds[1] for g in geoms[1:] if not g.intersection(ln.difference(geoms[0])).is_empty] or [75 * s])
+            eng = min(eng, (frei_t1 - frei_t0) / s)
+    return max(f for _, f in rest), [(z, f) for z, f in rest if f > 1e-6], eng
 
 
 # --------------------------------------------------------------------------
@@ -132,7 +152,10 @@ def neu(n=9, ende_u=-56.0):
     """Neue Treppe: bis zum Ostende des Durchgangs (`ende_u` im Hofsystem), n Stufen gleich lang."""
     u0 = -94.0
     lauf = (ende_u - u0) * n / (n - 1)       # die letzte Teilung (Plattenhöhe) liegt hinter dem Ende
-    return dict(u=(u0, ende_u + 1.0), t=(58.0, 90.0), n=n, lauf=lauf)
+    return dict(u=(u0, ende_u + 1.0), t=(61.0, 70.0), n=n, lauf=lauf)
+
+
+ENDE_U = -56.0       # m im Hofsystem: Ostende der früheren Brücke (Ende der Treppe)
 
 
 def tunnel_u():

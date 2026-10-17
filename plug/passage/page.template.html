@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: eine Spalte, Abschnitte nacheinander (Befund, Vorschlag, Schnitte mit Regler, 3D, Druck und Entscheidungen, Prüfung).
-   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent); Rot = Ist, Blau = Neu, Petrol = die neue Brücke. */
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent); Rot = Ist, Blau = Neu. */
 :root {
   --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
   --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
@@ -82,7 +82,6 @@ code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-sof
 .plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
 .plan .block { fill: var(--alt); fill-opacity: 0.35; }
 .plan .tunnel-ist { fill: none; stroke: var(--alt); stroke-width: 1.8; stroke-dasharray: 6 4; }
-.plan .bruecke { fill: var(--bruecke); fill-opacity: 0.32; }
 .plan .tunnel-neu { fill: none; stroke: var(--bruecke); stroke-width: 1.8; }
 .plan .lab2 { font-size: 11.5px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
 .plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
@@ -92,7 +91,6 @@ code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-sof
 .sec-svg .m-pau { fill: var(--pau); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
 .sec-svg .m-ins { fill: var(--ins); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
 .sec-svg .m-alt { fill: var(--alt); fill-opacity: 0.16; stroke: var(--alt); stroke-width: 1.3; stroke-dasharray: 5 4; stroke-linejoin: round; fill-rule: evenodd; }
-.sec-svg .m-br { fill: var(--bruecke); fill-opacity: 0.85; stroke: var(--fg); stroke-opacity: 0.6; stroke-width: 0.9; }
 .sec-svg .st-alt { fill: none; stroke: var(--alt); stroke-width: 1.5; stroke-dasharray: 5 3; }
 .sec-svg .st-neu { fill: color-mix(in srgb, var(--va) 30%, transparent); stroke: var(--va); stroke-width: 1.6; }
 .sec-svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
@@ -171,12 +169,12 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
 <div class="wrap">
   <header>
     <h1>Durchgang am Paulinum</h1>
-    <p class="lead">Zwischen Paulinum und Institutsgebäude führt eine überdachte Gasse vom Augustusplatz zum Campus. Im Laserscan-Modell ist sie ein Vollblock mit senkrechten Streifen. Der Vorschlag schneidet unter der Brücke waagerecht frei, ordnet die Brücke dem Institutsgebäude zu und führt die Treppe der Platte bis zum Ostende des Durchgangs.</p>
+    <p class="lead">Zwischen Paulinum und Institutsgebäude führt eine Gasse vom Augustusplatz zum Hof. Im Laserscan-Modell füllt dort ein Vollblock mit senkrechten Streifen die Gasse. Der Vorschlag nimmt das ganze Teil weg, Block und Brücke. Die Nordwand des Paulinums wird gerade, die Gasse ist auf ganzer Länge frei, und die Treppe der Platte reicht bis zum Ostende.</p>
     <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Vorschlag, noch nicht im Generator</span></div>
     <dl class="sum" aria-label="Kurzvergleich Ist und Neu">
-      <div><dt>Durchgang</dt><dd><span class="o">Vollblock</span><span class="arrow">→</span><span class="a">@LAENGE@ × @BREITE@ mm frei</span></dd></div>
-      <div><dt>Decke über der Platte</dt><dd><span class="a">@ZC@ mm</span><span class="arrow">=</span><span class="a">@ZC_M@ m</span></dd></div>
-      <div><dt>Brücke gehört zum</dt><dd><span class="o">Paulinum</span><span class="arrow">→</span><span class="a">Institutsgebäude</span></dd></div>
+      <div><dt>Block im Durchgang</dt><dd><span class="o">Vollblock</span><span class="arrow">→</span><span class="a">entfällt</span></dd></div>
+      <div><dt>Engste freie Breite</dt><dd><span class="a">@ENG@ m</span><span class="arrow">=</span><span class="a">@ENG_MM@ mm</span></dd></div>
+      <div><dt>Brücke</dt><dd><span class="o">im Block</span><span class="arrow">→</span><span class="a">weggelassen</span></dd></div>
       <div><dt>Treppe im Nordosten</dt><dd><span class="o">6 Stufen</span><span class="arrow">→</span><span class="a">@STUFEN@ Stufen</span></dd></div>
     </dl>
   </header>
@@ -184,54 +182,44 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
   <section class="sec" id="befund">
     <div>
       <h2>Was im Modell steckt</h2>
-      <p class="lead">Der Scan fliegt von oben. Er sieht das Dach der Brücke und den Boden der Gasse an der Westmündung, aber nichts dazwischen, und das Modell füllt die Lücke bis zum Boden. Der Grundriss dieses Blocks wurde beim Zuschnitt der Gebäude dem Paulinum zugeschlagen. Die Streifen an seiner Ostwand sind Rasterfacetten zwischen Dachzellen und Bodenzellen.</p>
+      <p class="lead">Der Scan fliegt von oben. Er sieht das Dach der Brücke über der Gasse und den Boden an ihrer Westmündung, aber nichts dazwischen, und das Modell füllt die Lücke bis zum Boden. Beim Zuschnitt der Gebäude kam dieser Block zum Paulinum. Die Streifen an seiner Ostwand sind Rasterfacetten zwischen Dachzellen und Bodenzellen.</p>
     </div>
     <div class="facts">
-      <div class="fact"><span class="v">LoD2, Stadt Leipzig</span><h3>Brücke von @ZC_ABS@ bis @ZT_ABS@ m</h3><p>Die Unterkante der oberen Gebäudeteile liegt bei @ZC_ABS@ m ü. NHN, das Dach bei @ZT_ABS@ m. Darunter gibt es keine Fläche. Bezogen auf den Boden des Institutsgebäudes sind das @ZC_M@ und @ZT_M@ m, im Modell @ZC@ und @ZT@ mm.</p></div>
-      <div class="fact"><span class="v">Laserscan, Bodenpunkte</span><h3>Boden bei @BODEN_ABS@ m ü. NHN</h3><p>An der Westmündung liefert der Scan Bodenpunkte zwischen 115,0 und 115,6 m, das ist rund ein Meter über der Platte. Die Gasse steigt nach Westen zum Hof an (116,8 m). Dort setzt die Treppe der Platte an.</p></div>
-      <div class="fact"><span class="v">Grundriss des Durchgangs</span><h3>@LAENGE_M@ × @BREITE_M@ m, @FLAECHE_M@ m²</h3><p>Im Modell @LAENGE@ × @BREITE@ mm. Die Südwand ist die Nordwand des Paulinums, die Nordwand die Südwand des Institutsgebäudes. Die Gasse läuft rund 12° gedreht zur Karte, wie die beiden Gebäude.</p></div>
+      <div class="fact"><span class="v">LoD2, Stadt Leipzig</span><h3>Brücke von @ZC_ABS@ bis @ZT_ABS@ m</h3><p>In der Wirklichkeit liegt die Brücke zwischen 131,1 und 145,0 m ü. NHN, ihre Unterkante rund @ZC_M@ m über dem Boden. Das Modell lässt sie weg, damit nichts über der Gasse hängt.</p></div>
+      <div class="fact"><span class="v">Laserscan, Bodenpunkte</span><h3>Boden bei @BODEN_ABS@ m ü. NHN</h3><p>An der Westmündung liegt der Boden rund einen Meter über der Platte und steigt zum Hof (116,8 m) an. Dort setzt die Treppe der Platte an.</p></div>
+      <div class="fact"><span class="v">Grundriss des Blocks</span><h3>@LAENGE_M@ × @BREITE_M@ m, @FLAECHE_M@ m²</h3><p>Die Südwand der Gasse ist die Nordwand des Paulinums, die Nordwand die Südwand des Institutsgebäudes. Die Gasse läuft rund 12° gedreht zur Karte, wie beide Gebäude.</p></div>
     </div>
   </section>
 
   <section class="sec" id="vorschlag">
     <div>
       <h2>Vorschlag</h2>
-      <p class="lead">Links der Ist-Zustand: ein roter Vollblock füllt die Gasse. Rechts der Vorschlag: Der Durchgang ist frei, die Brücke (petrol) liegt als Platte darüber, und die Stufen der Platte laufen bis zum Ostende. Gefärbt ist nach Höhe über der Platte, Hofboden @HUB@ mm.</p>
+      <p class="lead">Links der Ist-Zustand mit dem roten Vollblock. Rechts der Vorschlag: Das Paulinum endet an seiner geraden Nordwand, die Gasse ist leer, die Stufen der Platte laufen bis zum Ostende. Gefärbt ist nach Höhe über der Platte, Hofboden @HUB@ mm.</p>
     </div>
     <div class="panels">@FIG_IST@@FIG_NEU@</div>
-    <div class="legend"><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span><span class="sw"><i style="background:color-mix(in srgb, var(--z-hi) 60%, var(--z-lo))"></i>Stufen, heller = tiefer</span><span class="sw"><i style="background:var(--bld)"></i>Gebäude (Mulde)</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke</span></div>
+    <div class="legend"><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span><span class="sw"><i style="background:color-mix(in srgb, var(--z-hi) 60%, var(--z-lo))"></i>Stufen, heller = tiefer</span><span class="sw"><i style="background:var(--bld)"></i>Gebäude (Mulde)</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Block (Ist)</span></div>
     <div class="tw"><table>
       <thead><tr><th>Kennzahl</th><th class="o">Ist</th><th class="a">Neu</th><th>Bemerkung</th></tr></thead>
       <tbody>@TABELLE@</tbody>
     </table></div>
-    <p class="note">Beide Gebäude haben im Modell als Nullhöhe ihren eigenen Boden (Paulinum 114,46 m, Institutsgebäude 113,90 m). Die Brücke ist im Bezug des Institutsgebäudes gemessen, weil sie ihm gehört.</p>
   </section>
 
   <section class="sec" id="schnitte">
     <div>
-      <h2>Schnitte und Deckenhöhe</h2>
-      <p class="lead">Beide Schnitte sind echte Schnitte durch die Laserscan-Körper. Mit dem Regler verschiebst du die Decke; die Brücke wird dabei dünner oder dicker, das Dach bleibt bei @ZT@ mm. Der Vorschlag nimmt den Wert aus LoD2.</p>
-    </div>
-    <div class="ctl">
-      <label class="lift" for="zc">Decke <input type="range" id="zc" min="8" max="18" step="0.1" value="@ZC@" aria-describedby="zc-reads"><output id="zc-out" for="zc">@ZC@ mm</output></label>
-      <button type="button" id="zc-reset">Wert aus LoD2</button>
-      <div class="reads" id="zc-reads">
-        <span>Höhe im Original <b id="r-real">–</b></span>
-        <span>Brücke dick <b id="r-dicke">–</b></span>
-        <span>Support von der Druckplatte <b id="r-support">–</b></span>
-      </div>
+      <h2>Schnitte</h2>
+      <p class="lead">Beide Schnitte sind echte Schnitte durch die Laserscan-Körper. Gestrichelt rot ist der Block, der entfällt.</p>
     </div>
     <div class="panels one">
-      <figure class="panel"><figcaption>Querschnitt quer durch den Durchgang, Blick nach Westen</figcaption><div class="hscroll"><svg id="sq" class="plan sec-svg" role="img" aria-label="Querschnitt durch den Durchgang"></svg></div></figure>
+      <figure class="panel"><figcaption>Querschnitt quer durch die Gasse, Blick nach Westen</figcaption><div class="hscroll"><svg id="sq" class="plan sec-svg" role="img" aria-label="Querschnitt durch die Gasse"></svg></div></figure>
       <figure class="panel"><figcaption>Längsschnitt durch die Gasse, Hof links, Augustusplatz rechts</figcaption><div class="hscroll"><svg id="sl" class="plan sec-svg" role="img" aria-label="Längsschnitt durch die Gasse mit Treppe"></svg></div></figure>
     </div>
-    <div class="legend"><span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke (neu)</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Ist: Vollblock</span><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span></div>
+    <div class="legend"><span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Block (Ist)</span><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span></div>
   </section>
 
   <section class="sec" id="drei-d">
     <div>
       <h2>Ist und Neu in 3D</h2>
-      <p class="lead">Ausschnitt um den Durchgang, beide Felder teilen eine Kamera. Ziehen dreht, Shift oder rechte Taste schiebt, das Rad zoomt. Die Mulden der Platte sind nicht dargestellt. Der Regler aus dem Abschnitt davor verschiebt auch hier die Decke der Brücke.</p>
+      <p class="lead">Ausschnitt um die Gasse, beide Felder teilen eine Kamera. Ziehen dreht, Shift oder rechte Taste schiebt, das Rad zoomt. Die Mulden der Platte sind nicht dargestellt.</p>
     </div>
     <section class="stagebox" aria-label="3D-Ansicht">
       <div class="bar2">
@@ -239,8 +227,7 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
           <button type="button" id="t-alt" aria-pressed="true">Ist</button>
           <button type="button" id="t-neu" aria-pressed="true">Neu</button>
         </div>
-        <label class="lift" for="zc3">Decke <input type="range" id="zc3" min="8" max="18" step="0.1" value="@ZC@"><output id="zc3-out" for="zc3">@ZC@ mm</output></label>
-        <span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--bruecke)"></i>Brücke</span><span class="sw"><i style="background:var(--plate)"></i>Platte</span>
+        <span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--plate)"></i>Platte</span>
       </div>
       <div id="stage" class="multi">
         <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell Ist"></canvas><div class="tag alt">Ist</div></div>
@@ -251,53 +238,44 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
     </section>
   </section>
 
-  <section class="sec" id="druck">
+  <section class="sec" id="frei">
     <div>
-      <h2>Druck und Steckplatte</h2>
-      <p class="lead">Die Brücke ist ein waagerechter Überhang über 4,9 × 7,2 mm. Dafür nimmst du Support in Kauf, wie besprochen. Offen ist, woher der Support wächst und wie der Boden des Durchgangs gebaut wird.</p>
+      <h2>Ist die Gasse frei?</h2>
+      <p class="lead">Ich habe beide neuen Körper in 18 Höhen von 0,2 bis 28 mm waagerecht geschnitten und in der Gasse zwischen Hof und Augustusplatz nach Material gesucht, im Streifen zwischen den Wänden von Paulinum und Institutsgebäude. Ergebnis: @FREI@. Im Ist-Zustand liegen dort dagegen bis zu @FREI_ALT@. Die engste freie Breite ist @ENG@ m (@ENG_MM@ mm).</p>
     </div>
-    <div class="cards">
-      <div class="card rec">
-        <span class="tag2">Empfohlen</span>
-        <h3>A · Kein Fuß unter dem Durchgang <span>Aussparung im Fuß</span></h3>
+    <div class="cols2">
+      <div><h3>Was die Prüfung gefunden und entfernt hat</h3>
         <ul class="plain">
-          <li><strong>Boden und Stufen gehören zur Platte.</strong> Die Treppe läuft ohne Naht von der Hofkante bis zum Ostende, die Mulde des Institutsgebäudes bleibt wie sie ist.</li>
-          <li><strong>Support @SUPPORT_H@ mm hoch</strong> (Fuß @FUSS@ mm plus Decke @ZC@ mm), steht von der Druckplatte aus frei neben dem Fuß.</li>
-          <li>Die Brücke kragt vom Institutsgebäude aus. Zum Paulinum bleibt in der Steckplatte eine Fuge von 0,3 mm (Vorschlag), im Komplettmodell ist sie verschmolzen.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <span class="tag2">Alternative</span>
-        <h3>B · Fuß geht durch <span>Mulde unter dem Durchgang</span></h3>
+          <li><strong>Block und Brücke</strong> im Paulinum: weg.</li>
+          <li><strong>Absatz</strong> in der Nordwand des Paulinums (rund 1 m weit in die Gasse, ein Rest des Zuschnitts): weg, die Wand ist gerade.</li>
+          <li><strong>Splitter</strong> an der Ostwand des Institutsgebäudes und ein dünner Grat an der Ostmündung: weg.</li>
+          <li>Das Institutsgebäude bleibt unverändert, seine Südwand steht zurück von der Gasse.</li>
+        </ul></div>
+      <div><h3>Noch offen</h3>
         <ul class="plain">
-          <li><strong>Support nur @ZC@ mm hoch</strong> und auf dem Fuß statt auf der Druckplatte.</li>
-          <li>Die letzten Stufen unter der Brücke gehören dann zum Gebäude. Das gibt eine Naht in der Treppe, die auf 0,1 mm genau sitzen muss.</li>
-          <li>Das Paulinum und das Institutsgebäude haben eine Mulde mehr bzw. weniger; die Platte verliert die Stufen im Durchgang.</li>
-        </ul>
-      </div>
+          <li><strong>Brücke:</strong> nur wenn du sie später doch als Modell willst; dafür bräuchte es Support und eine Deckenhöhe (LoD2: @ZC_M@ m).</li>
+          <li><strong>Plattenseite:</strong> die Stufen bis zum Ostende (@STUFEN@ à @RISER@ mm, je @TREAD@ m lang) sind nur gezeichnet. Ob eine Stufe von einer Schicht im Druck ankommt, zeigt erst der Druck.</li>
+          <li><strong>Quellen:</strong> der Vorschlag gilt für den Laserscan. OSM und LoD2 haben dieselbe Lücke und sind nicht angefasst.</li>
+        </ul></div>
     </div>
-    <div class="reco"><strong>Treppe:</strong> @STUFEN@ Stufen à @RISER@ mm, das ist genau eine Druckschicht je Stufe. Jede Stufe ist @TREAD@ m (@TREAD_MM@ mm) lang, die Treppe endet am Ostende des Durchgangs. Damit liegen @UNTER@ der Stufen unter der Brücke. Die bisherigen 6 Stufen à 0,3 mm auf @LAUF_ALT@ mm bleiben nur als Alternative, falls 0,2 mm im Druck nicht ankommen.</div>
   </section>
 
   <section class="sec" id="pruefung">
     <div>
-      <h2>Prüfung und offene Punkte</h2>
-      <p class="lead">Die neuen Körper von Paulinum und Institutsgebäude sind dicht (@DICHT@). Volumen Paulinum @VOL_P@ cm³, Institutsgebäude @VOL_I@ cm³. Die Kassette des Paulinums liegt mehr als 7 mm vom Durchgang entfernt, die des Institutsgebäudes mehr als 27 mm.</p>
+      <h2>Prüfung und Dateien</h2>
+      <p class="lead">Die neuen Körper von Paulinum und Institutsgebäude sind dicht (@DICHT@), das Paulinum hat einen zusammenhängenden Grundriss. Volumen Paulinum @VOL_P@ cm³. Die Kassetten beider Gebäude liegen weit von der Gasse entfernt (Paulinum mehr als 7 mm, Institutsgebäude mehr als 27 mm).</p>
     </div>
     <div class="cols2">
       <div><h3>Noch nicht gemacht</h3>
         <ul class="plain">
-          <li><strong>Generator:</strong> weder <code>generate.py</code> noch <code>plug.campus</code> noch <code>plug.buildings</code> kennen den Durchgang. Es gibt keine STL und keine neuen Vorschaubilder.</li>
-          <li><strong>Hohlkörper:</strong> die Brücke ist als Vollkörper gerechnet. Ob <code>hohl.py</code> sie sauber aushöhlt, zeigt erst der Lauf.</li>
-          <li><strong>Quellen:</strong> der Vorschlag gilt für den Laserscan. OSM und LoD2 hätten dieselbe Lücke, sind aber nicht angefasst.</li>
-          <li><strong>Deckenhöhe:</strong> @ZC_M@ m ist der LoD2-Wert und wirkt hoch. Ein Foto der Gasse würde ihn bestätigen.</li>
+          <li><code>generate.py</code>, <code>plug.campus</code> und <code>plug.buildings</code> kennen die Änderung nicht. Es gibt keine STL und keine neuen Vorschaubilder der Gesamtmodelle.</li>
+          <li>Mulde und Fuß des Paulinums müssen mit dem neuen Grundriss neu gerechnet werden (Hohlkörper, Kassettenlage prüfen).</li>
         </ul></div>
       <div><h3>Betroffene Dateien bei Zustimmung</h3>
         <ul class="plain">
-          <li><code>plug/passage/geom.py</code> (Geometrie, Grundriss, Schnitte; später in <code>laserscan.py</code> bzw. <code>generate.py</code> einhängen)</li>
-          <li><code>data/innenhof.json</code> (Abschnitt <code>form.platte.nordost</code>: Länge, Stufen, Ende) und <code>innenhof.py</code></li>
-          <li><code>plug/campus.py</code> und <code>plug/buildings.py</code> (Mulde und Fuß des Institutsgebäudes, Paulinum ohne Durchgang)</li>
-          <li><code>data/fassaden/01_paulinum.json</code>, <code>05_institutsgebaeude.json</code> (Farbzonen der Brücke prüfen)</li>
+          <li><code>plug/passage/geom.py</code> (Schnittbereich <code>WAND_T</code>, später in <code>laserscan.py</code> bzw. <code>generate.py</code> einhängen)</li>
+          <li><code>data/innenhof.json</code> (<code>form.platte.nordost</code>: Länge, Stufen, Ende) und <code>innenhof.py</code></li>
+          <li><code>plug/campus.py</code> und <code>plug/buildings.py</code> (Mulde und Fuß des Paulinums)</li>
           <li>Erzeugt: <code>stl/</code>, <code>vorschau/</code>, README-Bilder</li>
         </ul></div>
     </div>
@@ -312,7 +290,7 @@ const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n
 const $ = (id) => document.getElementById(id);
 const nf = (v, d = 1) => v.toFixed(d).replace('.', ',');
 const SC = DATA.z, S13 = 1000 / 1300;
-const state = { zc: SC.zc, show: { alt: true, neu: true } };
+const state = { show: { alt: true, neu: true } };
 
 /* ---------- Schnitte ---------- */
 const NS = 'http://www.w3.org/2000/svg';
@@ -337,11 +315,8 @@ function drawQuer() {
   el('path', { class: 'm-alt', d: ringsPath(q.paulinum_alt, X, Y) }, svg);
   el('path', { class: 'm-pau', d: ringsPath(q.paulinum_neu, X, Y) }, svg);
   el('path', { class: 'm-ins', d: ringsPath(q.institut, X, Y) }, svg);
-  const [b0, b1] = q.bruecke, zc = state.zc, zt = SC.zt;
-  el('rect', { class: 'm-br', x: X(b0) - 0.5, y: Y(zt), width: (b1 - b0) * k + 1, height: (zt - zc) * k }, svg);
-  dimV(svg, X(b0) + (b1 - b0) * k / 2, Y(zc), Y(0), 'Decke ' + nf(zc) + ' mm', 'start');
-  dimH(svg, Y(0) + 22, X(b0), X(b1), 'Durchgang ' + nf(b1 - b0) + ' mm breit');
-  const t = el('text', { class: 'dt', x: X(b0) + (b1 - b0) * k / 2, y: Y(zt) + (zt - zc) * k / 2 + 4, 'text-anchor': 'middle' }, svg); t.textContent = 'Brücke';
+  const [f0, f1] = q.frei;
+  dimH(svg, Y(0) + 22, X(f0), X(f1), 'Gasse ' + nf(f1 - f0) + ' mm breit');
   const a = el('text', { class: 'dt sm', x: X(t0) + 4, y: Y(zmax) + 14 }, svg); a.textContent = 'Paulinum';
   const b = el('text', { class: 'dt sm', x: X(t1) - 4, y: Y(zmax) + 14, 'text-anchor': 'end' }, svg); b.textContent = 'Institutsgebäude';
 }
@@ -362,24 +337,12 @@ function drawLaengs() {
   const last = l.neu[l.neu.length - 1][1];
   neu.push('L' + X(last) + ' ' + Y(0) + ' Z');
   el('path', { class: 'st-neu', d: neu.join(' ') }, svg);
-  const [b0, b1] = l.bruecke, zc = state.zc, zt = SC.zt;
-  el('rect', { class: 'm-br', x: X(b0), y: Y(zt), width: (b1 - b0) * k, height: (zt - zc) * k }, svg);
-  dimH(svg, Y(zt) - 12, X(b0), X(b1), 'Durchgang ' + nf(b1 - b0) + ' mm lang');
-  dimV(svg, X(b1) + 14, Y(zc), Y(0), 'Decke ' + nf(zc) + ' mm', 'start');
-  const t = el('text', { class: 'dt', x: X((b0 + b1) / 2), y: Y(zt) + (zt - zc) * k / 2 + 4, 'text-anchor': 'middle' }, svg); t.textContent = 'Brücke';
+  const [b0, b1] = l.bruecke;
+  dimH(svg, Y(0) - 8, X(b0), X(b1), 'frühere Brücke, ' + nf(b1 - b0) + ' mm');
   const h = el('text', { class: 'dt sm', x: X(u0) + 6, y: Y(hb) - 8 }, svg); h.textContent = 'Hofboden ' + nf(hb) + ' mm';
   const s1 = el('text', { class: 'dt sm', x: X(l.hof_u) + 8, y: Y(0) + 18 }, svg); s1.textContent = 'Stufen: ' + (l.neu.length + 1) + ' à ' + nf(hb / (l.neu.length + 1), 2) + ' mm (neu), gestrichelt: 6 à 0,30 mm (Ist)';
-  const bl = l.block.length ? el('text', { class: 'dt sm', x: X(b0) - 6, y: Y(zt * 0.5), 'text-anchor': 'end' }, svg) : null; if (bl) bl.textContent = 'Ist: Vollblock';
+  const bl = l.block.length ? el('text', { class: 'dt sm', x: X(b0) - 6, y: Y(12), 'text-anchor': 'end' }, svg) : null; if (bl) bl.textContent = 'Ist: Vollblock';
 }
-function readouts() {
-  const zc = state.zc;
-  $('zc-out').textContent = nf(zc) + ' mm'; $('zc3-out').textContent = nf(zc) + ' mm';
-  $('zc').value = zc; $('zc3').value = zc;
-  $('r-real').textContent = nf(zc / S13) + ' m';
-  $('r-dicke').textContent = nf(SC.zt - zc) + ' mm';
-  $('r-support').textContent = nf(zc + SC.fuss) + ' mm';
-}
-
 /* ---------- 3D ---------- */
 const stage = $('stage');
 function makeView(which) {
@@ -392,7 +355,7 @@ function makeView(which) {
   scene.add(new THREE.HemisphereLight(0xffffff, 0x7a8696, 1.0));
   const sun = new THREE.DirectionalLight(0xffffff, 0.6), fill = new THREE.DirectionalLight(0xffffff, 0.25);
   scene.add(sun); scene.add(fill);
-  const v = { which, canvas, pane, renderer, scene, camera, sun, fill, part: {}, bridge: null };
+  const v = { which, canvas, pane, renderer, scene, camera, sun, fill, part: {} };
   ['platte', 'paulinum', 'institut'].forEach((kind) => {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(b64(DATA[kind + '_' + which]), 3));
@@ -403,23 +366,9 @@ function makeView(which) {
     scene.add(holder);
     v.part[kind] = { holder, mat, lines };
   });
-  if (which === 'neu') {
-    v.bridgeMat = new THREE.MeshStandardMaterial({ color: 0x1f8a7e, roughness: 0.8, metalness: 0.0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
-    v.bridgeLine = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.4 });
-  }
   return v;
 }
 const V = ['alt', 'neu'].map(makeView);
-const vNeu = V[1];
-function buildBridge() {
-  if (vNeu.bridge) { vNeu.scene.remove(vNeu.bridge); vNeu.bridge.traverse((o) => o.geometry && o.geometry.dispose()); }
-  const sh = new THREE.Shape(DATA.tunnel.map((p) => new THREE.Vector2(p[0], p[1])));
-  const g = new THREE.ExtrudeGeometry(sh, { depth: SC.zt - state.zc, bevelEnabled: false });
-  g.translate(0, 0, state.zc);
-  const grp = new THREE.Group(); grp.add(new THREE.Mesh(g, vNeu.bridgeMat)); grp.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), vNeu.bridgeLine));
-  vNeu.bridge = grp; vNeu.scene.add(grp);
-}
-
 const cam = { t: new THREE.Vector3(), d: 150, az: -12, el: 12 };
 function draw() {
   const a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
@@ -454,11 +403,6 @@ function applyShow() {
     state.show[k] = !state.show[k]; applyShow();
   };
 });
-function setZc(v) { state.zc = Math.min(SC.zc_max, Math.max(SC.zc_min, v)); readouts(); drawQuer(); drawLaengs(); buildBridge(); draw(); }
-$('zc').oninput = (e) => setZc(+e.target.value);
-$('zc3').oninput = (e) => setZc(+e.target.value);
-$('zc-reset').onclick = () => setZc(SC.zc);
-
 function theme() {
   const ink = new THREE.Color(css('--fg'));
   V.forEach((v) => {
@@ -466,7 +410,6 @@ function theme() {
     v.part.platte.mat.color.set(css('--plate')); v.part.paulinum.mat.color.set(css('--pau')); v.part.institut.mat.color.set(css('--ins'));
     ['platte', 'paulinum', 'institut'].forEach((k) => v.part[k].lines.material.color.copy(ink));
   });
-  vNeu.bridgeMat.color.set(css('--bruecke')); vNeu.bridgeLine.color.copy(ink);
   draw();
 }
 
@@ -529,5 +472,5 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
 new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 const v0 = DATA.views[0];
 cam.t.set(v0.t[0], v0.t[1], v0.t[2]); cam.d = v0.d; cam.az = v0.az; cam.el = v0.el;
-readouts(); drawQuer(); drawLaengs(); buildBridge(); applyShow(); theme(); showView(0);
+drawQuer(); drawLaengs(); applyShow(); theme(); showView(0);
 </script>
