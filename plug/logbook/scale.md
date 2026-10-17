@@ -206,7 +206,7 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | Bereich | Wert | Stand | Was der Test zeigen muss |
 |---|---|---|---|
 | Mulde und Platte | Mulde 14,2 mm als eine Ebene mit vollem Gebäudeumriss (getestet war der L-Fuß mit 10,2 mm) | ungetestet | Einführen, Kippen, Klemmen, Ziehkraft, Verzug |
-| | Spiel Umriss zur Mulde 0,1 mm je Seite (`OUTLINE_CLR_T`) | ungetestet auf großen Flächen | Ob das Gebäude bei langen Kanten sauber hineingeht |
+| | Spiel Umriss zur Mulde 0,1 mm je Seite (`OUTLINE_CLR_T`) | **r8: Hochhaus-Stummel geht nur mit Kraft hinein, sehr fest; 0,15 testen (Vorgabe des Nutzers)** | Ob 0,15 leicht, aber ohne Wackeln passt |
 | | Muldenboden 0,4 mm unter sehr großen Mulden | im Kleinen bewährt, groß ungetestet | Druck ohne Support, Halt beim Einstecken |
 | | Flache Unterseite 14,6 mm mit aufgeklebter Leiste (statt Dock in 20,2 mm) | ungetestet (Test-Dock steht aus) | Pin-Treffer, Halt des Klebers, Luft unter der Platte |
 | | Platte 14,6 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |

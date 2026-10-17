@@ -80,6 +80,17 @@ Eingefroren: `rounds/r5_fachprobe/fachprobe.zip` (Stand Commit `3ccceeb`, Luft 0
 
 Maßstab 1:1250, Mulde 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, City-Hochhaus V2R: siehe [`scale.md`](scale.md). Die Maßkette unten gilt für die getestete Steckprobe 1 (F 10,2).
 
+## 2e. Nach der Passform-Runde Hochhaus (r8, 2026-10-17)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Spiel Mulde zu Gebäude bei großem Umriss (Hochhaus 36 × 35 mm) | 0,10: Einsetzen nur mit Kraft, Herausziehen sehr fest, kein Wackeln; **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)** | 0,10 verworfen für große Umrisse, 0,15 offen | r8 | `OUTLINE_CLR_T` (`params.py`, bleibt 0,10 bis zum Test) |
+| Fuß-Fase 2,0 mm (45°), keine Muldenfase an der Platte | fängt das Gebäude, kein Wulst, sitzt auf dem Muldenboden auf | **bewährt** | r8 | `FUSS_FASE_T` (`plug/buildings.py`) |
+| Kassette V2R (Unterbau im Schacht, Probeteil) | Druck sauber, Sitz gut, Wand ungerissen, unten bündig, Pins treffen die Buchse | bewährt (ohne Streifen, Adern, Licht) | r8 | `variants.kassette("V2R")` |
+| Hohlgebäude: Fuß 14,2, Boden 1,2, Wand 0,8, Schachtrohr | als Stummel (25 mm über der Platte) gedruckt, passt zur Kassette | bewährt (Teilhöhe) | r8 | `plug/buildings.py` |
+
+Eingefroren: `rounds/r8_passform_hochhaus/passform_stummel_hochhaus.zip`.
+
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 
 | Größe | Wert |

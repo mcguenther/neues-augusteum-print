@@ -74,6 +74,8 @@ Chat-Runden unten ist es Runde 2 (= „v4“) und Runde 3 (= „v5“). Die Spal
 Commit-Nachrichten und Code-Kommentare sind dabei nicht ganz konsistent (z. B. nennt Commit `013b5af` „Passprobe v5“
 für einen Stand vor der heutigen Runde 3); die Tabelle unten folgt dem Chat.
 
+- **2026-10-17, r8 Passform Hochhaus (gedruckt, ausgewertet):** Stummel (25 mm über der Platte, Fuß-Fase 2,0, Spiel 0,10) und Kassette V2R: Fase und Kassette gut, Spiel 0,10 bei großem Umriss zu eng (nur mit Kraft, sehr fest); **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)**. Siehe `logbook/rounds/r8_passform_hochhaus/summary.md`, Lehren L43 bis L45.
+
 ## 3. Passprobe-Ergebnisse und Herkunft der Konstanten
 
 Gedruckt wird mit 0,4-mm-Düse, 0,2 mm Schichthöhe, PLA.
@@ -285,6 +287,8 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
 | Steckplatte Änderungsvorschau (3D, neu und gedruckt) | `plug/views/campus/view.html` | https://claude.ai/artifact/K9Bv3YubjhJxxokDKZ11og |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
+| Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
+| Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
