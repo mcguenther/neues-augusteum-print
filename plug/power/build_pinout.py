@@ -8,9 +8,15 @@ from pathlib import Path
 OUT = Path(__file__).with_name("pinout.html")
 
 # Dock 1 bis 6: Datenausgang (DIN) und Eingang (DETECT) je Dock
-DIN = [23, 22, 21, 19, 18, 17]
+DIN = [23, 19, 18, 17, 16, 4]
 DETECT = [32, 33, 25, 26, 27, 13]
-RESERVE = {16: "Reserve A", 4: "Reserve B"}
+# I²C-Bus (INA226 0x40 und Display 0x3C) auf den Standard-Pins von Wire, ALERT des INA226 auf einen Eingang
+SPECIAL = {
+    21: ("i2c", "SDA", "I²C SDA: INA226 und Display"),
+    22: ("i2c", "SCL", "I²C SCL: INA226 und Display"),
+    34: ("inonly", "ALERT", "INA226 ALERT, braucht externen Pull-up 10 kΩ an 3V3"),
+}
+RESERVE = {}
 
 # (gpio oder None, Beschriftung am Board, Seite, Klasse, Ausgang, Eingang, Pull-up, Hinweis)
 # Reihenfolge je Seite von oben (Antenne) nach unten (USB), wie auf dem üblichen 30-Pin-DOIT-Board.
@@ -46,10 +52,10 @@ RIGHT = [
     (2, "D2", "avoid", True, True, True, "Strapping: muss beim Flashen LOW oder offen sein, hängt oft an der Board-LED."),
     (15, "D15", "cond", True, True, True, "Strapping, gibt beim Booten kurz ein PWM-Signal aus (Boot-Log)."),
     (None, "GND", "gnd", False, False, False, "Masse."),
-    (None, "3V3", "pwr", False, False, False, "3,3 V Ausgang des Boardreglers, nicht belasten."),
+    (None, "3V3", "pwr", False, False, False, "3,3 V Ausgang des Boardreglers, versorgt INA226 und Display (zusammen unter 25 mA), sonst nicht belasten."),
 ]
 
-CHIP = {"din": "DIN", "det": "DET", "res": "Reserve", "inonly": "nur Ein", "cond": "bedingt",
+CHIP = {"i2c": "I²C", "din": "DIN", "det": "DET", "res": "Reserve", "inonly": "nur Ein", "cond": "bedingt",
         "avoid": "meiden", "pwr": "Versorg.", "gnd": "GND", "ok": "frei"}
 
 
@@ -59,12 +65,14 @@ def role(gpio, cls, label):
         return "din", f"DIN {DIN.index(gpio) + 1}", f"Datenleitung Dock {DIN.index(gpio) + 1}"
     if gpio in DETECT:
         return "det", f"DET {DETECT.index(gpio) + 1}", f"DETECT Dock {DETECT.index(gpio) + 1}"
+    if gpio in SPECIAL:
+        return SPECIAL[gpio]
     if gpio in RESERVE:
         return "res", "Reserve", RESERVE[gpio]
     if cls == "ok":
         return "res", "frei", "frei"
     return cls, CHIP[cls], {"inonly": "frei mit externem Pull-up", "cond": "bedingt nutzbar",
-                            "avoid": "meiden", "pwr": "Versorgung", "gnd": "Masse"}[cls]
+                            "avoid": "meiden", "pwr": "Versorgung", "gnd": "Masse", "i2c": "I²C"}[cls]
 
 
 def pin_name(gpio, label):
@@ -132,7 +140,7 @@ TEMPLATE = (Path(__file__).with_name("pinout.template.html")).read_text(encoding
 
 def main():
     n, clean, inonly, cond, avoid = counts()
-    used = len(DIN) + len(DETECT)
+    used = len(DIN) + len(DETECT) + 2  # plus SDA, SCL
     html = (TEMPLATE
             .replace("{{BOARD}}", board())
             .replace("{{TABLE}}", table())
@@ -141,7 +149,7 @@ def main():
             .replace("{{N_CLEAN}}", str(len(clean)))
             .replace("{{N_USED}}", str(used))
             .replace("{{N_FREE}}", str(len(clean) - used))
-            .replace("{{N_INONLY}}", str(len(inonly)))
+            .replace("{{N_INONLY}}", str(len(inonly) - 1))  # ohne ALERT
             .replace("{{N_COND}}", str(len(cond)))
             .replace("{{N_AVOID}}", str(len(avoid))))
     OUT.write_text(html, encoding="utf-8")

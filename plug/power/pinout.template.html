@@ -11,6 +11,7 @@
   --inonly-bg: #f0e7c8; --inonly-fg: #67500a;
   --cond-bg: #fbe0cb; --cond-fg: #86400a;
   --avoid-bg: #f8d9d9; --avoid-fg: #8a1f1f;
+  --i2c-bg: #cdebea; --i2c-fg: #0c5452;
   --pwr-bg: #e2e6e3; --pwr-fg: #2f3832;
   --gnd-bg: #e2e6e3; --gnd-fg: #2f3832;
   --wire: #2d6a4f;
@@ -25,6 +26,7 @@
   --inonly-bg: #483d15; --inonly-fg: #ecd88a;
   --cond-bg: #59301a; --cond-fg: #ffc9a0;
   --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --i2c-bg: #143e3e; --i2c-fg: #a8e4e1;
   --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
   --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
   --wire: #7fd1a6; color-scheme: dark; } }
@@ -36,6 +38,7 @@
   --inonly-bg: #483d15; --inonly-fg: #ecd88a;
   --cond-bg: #59301a; --cond-fg: #ffc9a0;
   --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --i2c-bg: #143e3e; --i2c-fg: #a8e4e1;
   --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
   --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
   --wire: #7fd1a6; color-scheme: dark; }
@@ -60,6 +63,7 @@ section { min-width: 0; }
 .chip { display: inline-block; font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 3px; white-space: nowrap; letter-spacing: .02em; }
 .chip.din, .dot.din { background: var(--din-bg); color: var(--din-fg); }
 .chip.det, .dot.det { background: var(--det-bg); color: var(--det-fg); }
+.chip.i2c, .dot.i2c { background: var(--i2c-bg); color: var(--i2c-fg); }
 .chip.res, .dot.res { background: var(--res-bg); color: var(--res-fg); }
 .chip.inonly, .dot.inonly { background: var(--inonly-bg); color: var(--inonly-fg); }
 .chip.cond, .dot.cond { background: var(--cond-bg); color: var(--cond-fg); }
@@ -104,17 +108,17 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
 <main>
   <header>
     <h1>ESP32 Pinout Steckplatte</h1>
-    <p class="lead">Klassischer ESP32 (WROOM-32, 30-Pin-Board mit USB-C). Sechs Docks, je ein Datenausgang für die LED (DIN) und ein Eingang für die Steckerkennung (DETECT). Der 74AHCT125 ist erst einmal gestrichen.</p>
+    <p class="lead">Klassischer ESP32 (WROOM-32, 30-Pin-Board mit USB-C). Sechs Docks, je ein Datenausgang für die LED (DIN) und ein Eingang für die Steckerkennung (DETECT), dazu INA226 und Display am I²C-Bus. Der 74AHCT125 ist erst einmal gestrichen.</p>
   </header>
 
   <section class="verdict">
-    <div class="big">Ja, die Pins reichen: 12 gebraucht, {{N_CLEAN}} unauffällige vorhanden.</div>
+    <div class="big">Die Pins reichen, aber alle {{N_CLEAN}} unauffälligen sind jetzt belegt.</div>
     <div class="facts">
-      <span class="chip din">6 × DIN</span><span class="chip det">6 × DETECT</span>
-      <span class="chip res">{{N_FREE}} Reserve</span><span class="chip inonly">{{N_INONLY}} nur Eingang</span>
+      <span class="chip din">6 × DIN</span><span class="chip det">6 × DETECT</span><span class="chip i2c">SDA + SCL</span>
+      <span class="chip inonly">ALERT</span><span class="chip res">{{N_FREE}} Reserve</span><span class="chip inonly">{{N_INONLY}} nur Eingang frei</span>
       <span class="chip cond">{{N_COND}} bedingt</span><span class="chip avoid">{{N_AVOID}} meiden</span>
     </div>
-    <p style="margin:0">Das Board hat {{N_GPIO}} herausgeführte GPIOs. Alle zwölf belegten Pins können Ausgang und Eingang, haben einen internen Pull-up und verhalten sich beim Booten ruhig. Strapping-Pins, die UART-Pins und der Pin mit dem PWM-Signal beim Start bleiben unbelegt.</p>
+    <p style="margin:0">Das Board hat {{N_GPIO}} herausgeführte GPIOs. Die 14 belegten Pins können Ausgang und Eingang, haben einen internen Pull-up und verhalten sich beim Booten ruhig. Den I²C-Bus (GPIO21 und 22, Standard von <code>Wire</code>) teilen sich INA226 und Display. Der ALERT-Pin des INA226 liegt auf GPIO34 (nur Eingang, externer Pull-up). Strapping-Pins und UART-Pins bleiben unbelegt. Der Pin für den Strompuls alle 5 s bleibt offen, dafür bietet sich GPIO14 an.</p>
   </section>
 
   <section>
@@ -138,6 +142,44 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
       <thead><tr><th>Dock</th><th>DIN zur LED</th><th>DETECT</th></tr></thead>
       <tbody>{{DOCKS}}</tbody>
     </table></div>
+  </section>
+
+  <section>
+    <h2>INA226 und Display am I²C-Bus</h2>
+    <p>Angenommen ist ein I²C-OLED (SSD1306 oder SH1106) und ein INA226-Modul. Beide hängen an GPIO21 (SDA) und GPIO22 (SCL). Deshalb liegen die Datenleitungen der Docks jetzt auf GPIO23, 19, 18, 17, 16 und 4. In der ersten Fassung dieser Seite lagen zwei davon auf 21 und 22.</p>
+    <div class="diagram">
+      <svg viewBox="0 0 640 235" role="img" aria-label="I²C-Bus: ESP32 mit INA226 und Display an SDA, SCL, 3,3 V und GND, ALERT nur zum INA226">
+        <path class="w" d="M130 62 H520 M130 92 H520 M130 132 H520 M130 162 H520"/>
+        <path class="w" d="M130 200 H250"/>
+        <rect class="p" x="10" y="20" width="120" height="205" rx="4"/>
+        <text x="70" y="42" text-anchor="middle" style="font-weight:600">ESP32</text>
+        <text x="122" y="66" text-anchor="end">GPIO21</text>
+        <text x="122" y="96" text-anchor="end">GPIO22</text>
+        <text x="122" y="136" text-anchor="end">3V3</text>
+        <text x="122" y="166" text-anchor="end">GND</text>
+        <text x="122" y="204" text-anchor="end">GPIO34</text>
+
+        <rect class="p" x="250" y="26" width="110" height="190" rx="4"/>
+        <text x="305" y="46" text-anchor="middle" style="font-weight:600">INA226 <tspan class="m">0x40</tspan></text>
+        <text x="258" y="66">SDA</text><text x="258" y="96">SCL</text><text x="258" y="136">VS</text><text x="258" y="166">GND</text><text x="258" y="204">ALERT</text>
+
+        <rect class="p" x="410" y="26" width="110" height="190" rx="4"/>
+        <text x="465" y="46" text-anchor="middle" style="font-weight:600">Display <tspan class="m">0x3C</tspan></text>
+        <text x="418" y="66">SDA</text><text x="418" y="96">SCL</text><text x="418" y="136">VCC</text><text x="418" y="166">GND</text>
+
+        <path class="w" d="M360 62 H410 M360 92 H410 M360 132 H410 M360 162 H410"/>
+        <text x="526" y="66" class="m">Pull-ups am Modul</text>
+        <text x="190" y="190" class="m" text-anchor="middle">+ 10 kΩ an 3V3</text>
+      </svg>
+    </div>
+    <ul style="margin-top:12px">
+      <li><b>Adressen:</b> INA226 hat 0x40 (A0 und A1 an GND), das OLED 0x3C. Beide teilen sich den Bus ohne Konflikt.</li>
+      <li><b>Messort:</b> Der Shunt kommt in die 5-V-Leitung zwischen USB-A-Buchse und dem Abzweig zu ESP32-VIN und Diode. So misst der INA226 den gesamten Strom aus der Powerbank. IN+ zur Buchse, IN− zur Last, der VBUS-Pin an IN−.</li>
+      <li><b>Messbereich:</b> Die üblichen Module haben 0,1 Ω Shunt, das reicht für etwa ±0,8 A. Erwartet werden 6 × 60 mA LED plus einige zehn mA für den ESP32, also unter 0,5 A. Der Abfall am Shunt liegt bei etwa 50 mV. Den Wert auf dem Modul prüfen (R100 = 0,1 Ω, es gibt auch R010 und R002).</li>
+      <li><b>Versorgung:</b> INA226 und Display laufen mit 3,3 V vom 3V3-Pin, zusammen unter 25 mA.</li>
+      <li><b>Bibliotheken:</b> Für den INA226 gibt es zum Beispiel <code>INA226_WE</code> und die Bibliothek von Rob Tillaart, für das OLED <code>U8g2</code> oder <code>Adafruit_SSD1306</code>.</li>
+      <li><b>Kein I²C-Display?</b> Ein SPI-Display (z. B. ST7789) braucht SCK, MOSI, CS, DC und RST, also fünf Pins. Dann reichen die unauffälligen Pins nicht mehr. Ein Ausweg wären DETECT auf GPIO35, 36 und 39 mit externem Pull-up. Das müsste neu geplant werden.</li>
+    </ul>
   </section>
 
   <section>
@@ -178,7 +220,7 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
         <path class="w" d="M130 236 H500"/>
       </svg>
     </div>
-    <p style="margin-top:10px">Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
+    <p style="margin-top:10px">Die Diode sitzt hinter dem Abzweig zu ESP32-VIN und dem INA226-Shunt. Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
   </section>
 
   <section>
@@ -203,11 +245,11 @@ CRGB led[6];
 
 void setup() {
   FastLED.addLeds&lt;WS2812B, 23, GRB&gt;(&amp;led[0], 1);
-  FastLED.addLeds&lt;WS2812B, 22, GRB&gt;(&amp;led[1], 1);
-  FastLED.addLeds&lt;WS2812B, 21, GRB&gt;(&amp;led[2], 1);
-  FastLED.addLeds&lt;WS2812B, 19, GRB&gt;(&amp;led[3], 1);
-  FastLED.addLeds&lt;WS2812B, 18, GRB&gt;(&amp;led[4], 1);
-  FastLED.addLeds&lt;WS2812B, 17, GRB&gt;(&amp;led[5], 1);
+  FastLED.addLeds&lt;WS2812B, 19, GRB&gt;(&amp;led[1], 1);
+  FastLED.addLeds&lt;WS2812B, 18, GRB&gt;(&amp;led[2], 1);
+  FastLED.addLeds&lt;WS2812B, 17, GRB&gt;(&amp;led[3], 1);
+  FastLED.addLeds&lt;WS2812B, 16, GRB&gt;(&amp;led[4], 1);
+  FastLED.addLeds&lt;WS2812B, 4, GRB&gt;(&amp;led[5], 1);
   for (uint8_t p : DETECT) pinMode(p, INPUT_PULLUP);
 }
 
@@ -234,11 +276,11 @@ void loop() {
     <h2>Offen und zu beachten</h2>
     <ul>
       <li><b>Aufdruck prüfen.</b> Klone vertauschen gelegentlich Pins. Die Tabelle gilt nach GPIO-Nummer, nicht nach Position.</li>
-      <li><b>WROOM, nicht WROVER.</b> Auf dem Etikett steht ESP-WROOM-32. Nur dort sind GPIO16 und 17 frei.</li>
+      <li><b>WROOM, nicht WROVER.</b> Auf dem Etikett steht ESP-WROOM-32. Nur dort sind GPIO16 und 17 frei, beide sind jetzt Datenleitungen.</li>
       <li><b>Zwei Stromquellen.</b> Die Powerbank hängt an VIN. Beim Flashen über USB-C die Powerbank abziehen, sonst speisen sich beide gegenseitig, sofern das Board keine Diode hat.</li>
-      <li><b>Strompuls alle 5 s.</b> Wie der Mikrocontroller kurz Strom für die Powerbank abruft, ist noch nicht festgelegt. GPIO16 bleibt dafür frei.</li>
+      <li><b>Strompuls alle 5 s.</b> Wie der Mikrocontroller kurz Strom für die Powerbank abruft, ist noch nicht festgelegt. Es ist kein unauffälliger Pin mehr frei. GPIO14 ist die beste Wahl (bedingt: PWM-Signal nur beim Booten).</li>
       <li><b>Pull-up.</b> Der interne Pull-up hat etwa 45 kΩ. Bei langen Flachbandstücken kann ein externer 10 kΩ nötig werden; in Software 100 ms entprellen.</li>
-      <li><b>Pins 34, 35, 36, 39.</b> Nur als zusätzliche DETECT-Eingänge brauchbar, dann mit externem Pull-up. Für Ausgänge nicht geeignet.</li>
+      <li><b>Pins 34, 35, 36, 39.</b> GPIO34 trägt ALERT. Die anderen drei sind nur als zusätzliche Eingänge mit externem Pull-up brauchbar, nie als Ausgang.</li>
     </ul>
   </section>
 </main>
