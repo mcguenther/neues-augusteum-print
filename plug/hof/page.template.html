@@ -4,15 +4,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Layout: eine Spalte, Abschnitte nacheinander (Befund, Änderung, 3D, Schnitt, Treppe, Prüfung); Grundrisse nebeneinander, unter 760 px untereinander.
-   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent); Rot steht für den alten Stand, Grün für den neuen. */
+/* Layout: eine Spalte, Abschnitte nacheinander (Vergleich der Fassungen, Treppen, Trennwand, 3D, Prüfung); Grundrisse nebeneinander, unter 760 px untereinander.
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent). Rot = Original, Blau = Fassung A (mit Trennwand), Grün = Fassung B (ohne). */
 :root {
   --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
   --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
-  --alt: #b3392b; --neu: #2c7a4b; --ok: #2c7a4b; --bad: #b3392b;
+  --alt: #b3392b; --va: #2a6db0; --vb: #2c7a4b; --ok: #2c7a4b; --bad: #b3392b;
   --plate: #8c9aa9; --stecker: #d98a54;
-  --bld: #d9dee3; --bld-line: #a2adb7; --hof: #efd3a6; --hof-line: #9c5a14;
-  --h0: #f1dcb8; --h1: #e5be86; --h2: #d49652; --h3: #b3622a;
+  --bld: #d9dee3; --bld-line: #a2adb7; --hof: #efd3a6; --hof-line: #9c5a14; --wand: #2a6db0;
+  --z-lo: #f6e8cc; --z-hi: #a24f16;
   --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
@@ -20,20 +20,20 @@
   :root:not([data-theme="light"]) {
     --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
     --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
-    --alt: #ee8a7c; --neu: #6cc08a; --ok: #6cc08a; --bad: #ee8a7c;
+    --alt: #ee8a7c; --va: #6aa6e8; --vb: #6cc08a; --ok: #6cc08a; --bad: #ee8a7c;
     --plate: #78879a; --stecker: #e39a63;
-    --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
-    --h0: #5b4627; --h1: #7d5d31; --h2: #a37a40; --h3: #d29a56;
+    --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e; --wand: #6aa6e8;
+    --z-lo: #4a3a22; --z-hi: #e5aa62;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
   --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
-  --alt: #ee8a7c; --neu: #6cc08a; --ok: #6cc08a; --bad: #ee8a7c;
+  --alt: #ee8a7c; --va: #6aa6e8; --vb: #6cc08a; --ok: #6cc08a; --bad: #ee8a7c;
   --plate: #78879a; --stecker: #e39a63;
-  --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
-  --h0: #5b4627; --h1: #7d5d31; --h2: #a37a40; --h3: #d29a56;
+  --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e; --wand: #6aa6e8;
+  --z-lo: #4a3a22; --z-hi: #e5aa62;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -48,73 +48,68 @@ h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; 
 h2 { font-size: 1.28rem; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; font-weight: 600; }
 h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
 p { margin: 0; }
-.lead { color: var(--muted); max-width: 68ch; margin-top: 8px; }
+.lead { color: var(--muted); max-width: 70ch; margin-top: 8px; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
 .sec { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.sec > p { color: var(--muted); max-width: 72ch; }
 .note { color: var(--muted); font-size: 0.86rem; max-width: 80ch; }
 code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
 
-/* Zusammenfassung */
+/* Kurzvergleich */
 .sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 22px 0 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
 .sum > div { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
 .sum > div:first-child { border-left: 0; }
 .sum dt { font-size: 0.78rem; color: var(--muted); }
-.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 1.1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.sum .a { color: var(--alt); } .sum .n { color: var(--neu); font-weight: 500; }
-.sum .arrow { color: var(--muted); padding: 0 4px; }
+.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 1rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+.sum .o { color: var(--alt); } .sum .a { color: var(--va); font-weight: 500; } .sum .b { color: var(--vb); font-weight: 500; }
+.sum .arrow { color: var(--muted); }
 @media (max-width: 760px) { .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sum > div:nth-child(3) { border-left: 0; } .sum > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
 
-/* Grundrisse */
+/* Grundrisse und Schnitte */
 .plan { width: 100%; height: auto; display: block; max-width: 100%; }
 .plan text { font-family: var(--font); }
 .plan .bld { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1; }
 .plan .bname { font-size: 10px; fill: var(--muted); }
 .plan .hof { fill: var(--hof); }
 .plan .hof-line { fill: none; stroke: var(--hof-line); stroke-width: 1.4; stroke-linejoin: round; }
-.plan .thin { fill: var(--alt); fill-opacity: 0.5; }
-.plan .gap { fill: var(--alt); fill-opacity: 0.12; stroke: var(--alt); stroke-width: 1.3; stroke-dasharray: 4 3; }
-.plan .weg { fill: var(--alt); fill-opacity: 0.75; }
-.plan .neu { fill: var(--neu); fill-opacity: 0.8; }
-.plan .h0 { fill: var(--h0); } .plan .h1 { fill: var(--h1); } .plan .h2 { fill: var(--h2); } .plan .h3 { fill: var(--h3); }
-.plan .lead { stroke: var(--alt); stroke-width: 1.3; }
-.plan .dot { fill: var(--alt); }
-.plan .mk { fill: var(--panel); stroke: var(--alt); stroke-width: 1.7; }
-.plan .mkt { font-size: 12px; font-weight: 600; fill: var(--alt); }
-.plan .lab2 { font-size: 11.5px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.plan .wand { fill: var(--wand); }
+.plan .zone { fill: color-mix(in srgb, var(--z-hi) calc(var(--p) * 100%), var(--z-lo)); }
+.plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
+.plan .lead { stroke: var(--fg); stroke-width: 1.2; }
+.plan .dot { fill: var(--fg); }
+.plan .mk { fill: var(--panel); stroke: var(--fg); stroke-width: 1.7; }
+.plan .mkt { font-size: 12px; font-weight: 600; fill: var(--fg); }
 .plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
-.plan .lab { font-size: 13px; font-weight: 600; fill: var(--fg); }
+.plan .lab2 { font-size: 11.5px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
 .plan .bar { fill: none; stroke: var(--muted); stroke-width: 1.2; }
 .plan .north { fill: var(--muted); }
 .plan .m-plate { fill: var(--plate); stroke: var(--fg); stroke-width: 0.8; stroke-linejoin: round; }
 .plan .m-stecker { fill: var(--stecker); stroke: var(--fg); stroke-width: 0.8; stroke-linejoin: round; }
+.plan .foot { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
 .plan .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 5 4; }
 .plan .dim { stroke: var(--fg); stroke-width: 1; }
-.plan.sec .tiny { fill: var(--fg); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.plan.sec .tiny { fill: var(--fg); }
 .panels { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .panels.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 760px) { .panels, .panels.two { grid-template-columns: minmax(0, 1fr); } }
 .panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
 .panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
-.panel.wide .plan { max-height: 460px; }
+.panel.wide .plan { max-height: 480px; }
 .panels:not(.two) .plan { max-width: 330px; margin: 0 auto; }
-
-/* Befund */
-.cols { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 14px; align-items: start; }
-.cols .panel:first-child .plan { max-width: 360px; margin: 0 auto; }
+.cols { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 @media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
-.legend { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
-@media (max-width: 760px) { .legend { grid-template-columns: minmax(0, 1fr); } }
-.legend li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
-.legend .k { width: 26px; height: 26px; border-radius: 50%; border: 1.7px solid var(--alt); color: var(--alt); display: grid; place-items: center; font-weight: 600; font-size: 0.82rem; background: var(--panel); }
-.legend p { color: var(--muted); font-size: 0.9rem; margin-top: 1px; }
-.legend h3 { margin-bottom: 1px; }
-.key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.82rem; color: var(--muted); }
-.key span { display: inline-flex; align-items: center; gap: 7px; }
-.key i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
+.cols .panel .plan { max-width: 560px; margin: 0 auto; }
 
-/* Regeln */
+/* Karten */
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border-top: 3px solid var(--line); }
+.card.a { border-top-color: var(--va); } .card.b { border-top-color: var(--vb); }
+.card h3 span { font-family: var(--mono); font-weight: 500; color: var(--muted); font-size: 0.8rem; margin-left: 6px; }
+.card ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 5px; font-size: 0.9rem; color: var(--muted); }
+.card ul strong { color: var(--fg); font-weight: 600; }
+.card .tag2 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.reco { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; font-size: 0.92rem; max-width: 80ch; }
 .rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 960px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } }
@@ -129,9 +124,18 @@ th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line);
 thead th { border-top: 0; color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
 tbody th { font-weight: 400; }
 td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: 0.84rem; }
-td.alt { color: var(--alt); } td.neu { color: var(--neu); }
+td.n.a, thead th.a { color: var(--va); } td.n.b, thead th.b { color: var(--vb); } thead th.o { color: var(--alt); } td.n.o { color: var(--alt); }
 td.ok { color: var(--ok); } td.bad { color: var(--bad); font-weight: 600; }
 td.hint2 { color: var(--muted); font-size: 0.84rem; }
+
+/* Höhenskala und Treppen */
+.grad { height: 14px; border-radius: 4px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--z-lo), var(--z-hi)); }
+.ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.74rem; color: var(--muted); margin-top: 4px; gap: 8px; }
+.tlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.tlist li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
+.tlist .k { width: 26px; height: 26px; border-radius: 50%; border: 1.7px solid var(--fg); display: grid; place-items: center; font-weight: 600; font-size: 0.82rem; background: var(--panel); }
+.tlist p { color: var(--muted); font-size: 0.9rem; margin-top: 1px; }
+.side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 
 /* 3D */
 .stagebox { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
@@ -154,20 +158,13 @@ button[aria-pressed="true"] { background: var(--accent); border-color: var(--acc
 .pane[hidden] { display: none; }
 .pane canvas { display: block; width: 100%; height: 100%; cursor: grab; }
 .pane canvas:active { cursor: grabbing; }
-@media (max-width: 640px) { #stage.both { flex-direction: column; height: min(92vh, 760px); } }
+@media (max-width: 640px) { #stage.multi { flex-direction: column; height: min(130vh, 1000px); } }
 .hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; }
 .tag { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 0.78rem; padding: 2px 9px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); pointer-events: none; }
-.tag.alt { color: var(--alt); } .tag.neu { color: var(--neu); }
+.tag.alt { color: var(--alt); } .tag.a { color: var(--va); } .tag.b { color: var(--vb); }
 .cap { padding: 10px 14px; color: var(--muted); font-size: 0.9rem; min-height: 3.4em; border-top: 1px solid var(--line); }
 .sw { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted); }
 .sw i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-
-/* Treppe */
-.ramp { display: flex; flex-wrap: wrap; gap: 10px; }
-.ramp > div { display: flex; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; min-width: 0; }
-.ramp i { width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--line); display: block; flex: none; }
-.ramp b { font-family: var(--mono); font-weight: 500; font-size: 0.9rem; display: block; }
-.ramp span { color: var(--muted); font-size: 0.8rem; }
 .cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
 @media (max-width: 760px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
 ul.plain { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 0.92rem; }
@@ -178,66 +175,85 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
 <div class="wrap">
   <header>
     <h1>Innenhof-Einsatz</h1>
-    <p class="lead">Mulde und Einsatz des Innenhofs sind jetzt ein einziger Klotz. Der schmale Steg am Hörsaalgebäude und die Spalte im Umriss sind weg, die Treppen liegen als Stufen auf dem Einsatz und nicht mehr als Ausschnitt in der Grundplatte.</p>
+    <p class="lead">Der Hof reicht jetzt bis an die Fassaden der Nachbargebäude. Die Treppen sind Rechtecke, und im Süden führt der Einsatz in sechs Stufen bündig auf die Grundplatte. Zwei Fassungen liegen vor: A lässt eine Trennwand von @WAND@ mm zu den Gebäude-Mulden, B hat keine.</p>
     <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Planwerte, ungetestet</span></div>
-    <dl class="sum" aria-label="Kurzvergleich vorher nachher">
-      <div><dt>Schmale Stellen im Umriss</dt><dd><span class="a">@SCHMAL_ALT@</span><span class="arrow">→</span><span class="n">@SCHMAL_NEU@</span></dd></div>
-      <div><dt>Rippen und Zähne der Platte</dt><dd><span class="a">2</span><span class="arrow">→</span><span class="n">0</span></dd></div>
-      <div><dt>Löcher im Umriss</dt><dd><span class="a">@LOCH_ALT@</span><span class="arrow">→</span><span class="n">@LOCH_NEU@</span></dd></div>
-      <div><dt>Umfang</dt><dd><span class="a">@UMFANG_ALT@</span><span class="arrow">→</span><span class="n">@UMFANG_NEU@ mm</span></dd></div>
+    <dl class="sum" aria-label="Kurzvergleich Original, A und B">
+      <div><dt>Trennwand zur Gebäude-Mulde</dt><dd><span class="o">0,4</span><span class="arrow">→</span><span class="a">A @WAND@</span><span class="b">B 0</span><span class="arrow">mm</span></dd></div>
+      <div><dt>Hoffläche der Aussparung</dt><dd><span class="o">@FL_O@</span><span class="arrow">→</span><span class="a">A @FL_A@</span><span class="b">B @FL_B@</span><span class="arrow">mm²</span></dd></div>
+      <div><dt>Schmale Stellen im Umriss</dt><dd><span class="o">@SCHMAL_O@</span><span class="arrow">→</span><span class="a">0</span></dd></div>
+      <div><dt>Anschluss im Süden an die Platte</dt><dd><span class="o">Stufe @GESAMT@</span><span class="arrow">→</span><span class="a">bündig</span></dd></div>
     </dl>
   </header>
 
-  <section class="sec" id="befund">
+  <section class="sec" id="vergleich">
     <div>
-      <h2>Woher der Steg kommt</h2>
-      <p class="lead">Der Umriss des Hofs entsteht aus der OSM-Fußgängerfläche, begrenzt durch zwei Flächen aus dem Laserscan: die Hofgrenze und die Terrasse vor Hörsaal- und Seminargebäude. Die beiden Treppen dazwischen gehören zu keiner der beiden Flächen. Sie fehlen im Umriss und hinterlassen Spalte.</p>
-    </div>
-    <div class="cols">
-      <figure class="panel"><figcaption>Vorher, ganzer Hof</figcaption>@FIG_BEFUND@</figure>
-      <figure class="panel"><figcaption>Vorher, Stegstelle am Hörsaalgebäude</figcaption>@FIG_BEFUND_ZOOM@</figure>
-    </div>
-    <ul class="legend">
-      <li><span class="k">A</span><div><h3>Spalt zwischen Terrasse und Hof</h3><p>Die Treppe fehlt im Umriss. In der Grundplatte bleibt eine Rippe stehen, an der Schnittstelle @RIPPE_BREIT@ mm breit und 6 mm hoch, im Mittel noch dünner.</p></div></li>
-      <li><span class="k">B</span><div><h3>Steg am Hörsaalgebäude</h3><p>Hinter dem Spalt hängt ein Streifen der Terrasse, @STEG_BREIT@ mm breit und rund 20 mm lang, nur am Westende angebunden. Der Einsatz hat dort eine Zunge, die leicht abbricht.</p></div></li>
-      <li><span class="k">C</span><div><h3>Zweite Treppe, Bucht nach Norden</h3><p>Dieselbe Ursache am Nordende der Terrasse. Die Platte hat dort einen Zahn von 3 mm Breite im Hofumriss.</p></div></li>
-      <li><span class="k">D</span><div><h3>Zunge zur Passage im Norden</h3><p>Der OSM-Streifen der Passage zwischen Paulinum und Augusteum reicht als Zunge von rund 4 mm Breite in den Umriss.</p></div></li>
-      <li><span class="k">E</span><div><h3>Spitze zur Passage im Osten</h3><p>Am Südostende läuft der Umriss in einen Fuß von 3 mm Breite aus.</p></div></li>
-      <li><span class="k">F</span><div><h3>Splitterloch</h3><p>Ein Loch von 0,4 mm Breite zwischen Hofgrenze und Terrasse. Es liefe als Schlitz durch den Einsatz.</p></div></li>
-    </ul>
-    <div class="key" aria-label="Legende"><span><i style="background:var(--hof)"></i>Hof-Umriss (Mulde und Einsatz)</span><span><i style="background:var(--alt);opacity:.5"></i>schmaler als @P_BREITE@ mm</span><span><i style="border:1.5px dashed var(--alt)"></i>Spalt, später geschlossen</span><span><i style="background:var(--bld)"></i>Gebäude</span></div>
-  </section>
-
-  <section class="sec" id="aenderung">
-    <div>
-      <h2>Was sich ändert</h2>
-      <p class="lead">Der Umriss wird im Generator geglättet (<code>innenhof.flaeche_mm</code>), Mulde in der Platte und Einsatz nutzen dieselbe Fläche. Rot ist, was entfällt (@ENTF@ mm²), grün, was hinzukommt (@DAZU@ mm²).</p>
+      <h2>Original, A mit Trennwand und B ohne</h2>
+      <p class="lead">Dieselbe Hoffläche in drei Fassungen. Beide neuen Fassungen füllen alles zwischen den Gebäuden und folgen den Fassaden. In A zeigt die blaue Fläche die Trennwand zwischen der Aussparung des Hofs und den Mulden der Gebäude. A zieht sie von der Hoffläche ab.</p>
     </div>
     <div class="panels">@FIG_VERGLEICH@</div>
-    <div class="rules">
-      <div class="rule"><h3>Spalte schließen</h3><span class="v">@P_SCHLIESSEN@ m je Seite</span><p>Lücken bis 6 m zwischen Hofgrenze und Terrasse zählen zum Hof. Die Fläche bleibt innerhalb der OSM-Fußgängerfläche.</p></div>
-      <div class="rule"><h3>Mindestbreite</h3><span class="v">@P_BREITE@ mm</span><p>Zungen und Zähne, in die kein Kreis dieser Breite passt, entfallen. An den Passagen bleibt Plattenfläche auf Straßenniveau.</p></div>
-      <div class="rule"><h3>Löcher füllen</h3><span class="v">unter 16 mm²</span><p>Splitterlöcher im Umriss sind gefüllt. Der Umriss rückt nie näher an ein Gebäude heran, die Wand zu den Mulden der Gebäude bleibt.</p></div>
-      <div class="rule"><h3>Treppen auf den Klotz</h3><span class="v">@P_STUFEN@ Stufen</span><p>Die Treppen sind Aufbau auf dem Einsatz. Die Aussparung in der Platte bleibt glatt, ohne Treppenform.</p></div>
+    <div class="cards">
+      <div class="card a"><span class="tag2">Fassung A</span><h3>Mit Trennwand <span>@WAND@ mm</span></h3>
+        <ul>
+          <li><strong>Die Mulde des Gebäudes bleibt rundum geschlossen.</strong> Der Fuß wird über die ganze Tiefe von 14,2 mm geführt.</li>
+          <li><strong>Der Hof ist kleiner</strong> (@FL_A@ statt @FL_B@ mm²). Zwischen Hof und Gebäude bleibt ein sichtbarer Plattenstreifen.</li>
+          <li><strong>Dünn:</strong> Oben schneidet die Einführfase der Mulde (@FASE@ mm) die Wand an, sie bleibt dort @WAND_OBEN@ mm breit. Die Wand von 0,4 mm kam im ersten Druck nicht, 0,8 mm sind zwei Düsenlinien.</li>
+        </ul></div>
+      <div class="card b"><span class="tag2">Fassung B</span><h3>Ohne Trennwand <span>0 mm</span></h3>
+        <ul>
+          <li><strong>Der Hof reicht bis an den Gebäudefuß.</strong> Es gibt keine dünne Wand, die brechen oder im Druck fehlen kann.</li>
+          <li><strong>Mulde und Aussparung gehen ineinander über.</strong> Das Gebäude wird nur unten (8,2 mm) von der Platte geführt, oben vom Einsatz mit rund 0,2 mm Spalt.</li>
+          <li><strong>Reihenfolge:</strong> erst die Gebäude einsetzen, dann den Hof. Ohne Hof kann ein Gebäude oben zur Hofseite ausweichen.</li>
+        </ul></div>
     </div>
+    <p class="reco"><strong>Empfehlung:</strong> A drucken, weil die Gebäude sicher stehen sollen. B als Rückfall mitdrucken, falls die Wand im Druck wieder fehlt. Beide STL liegen in <code>stl/steckmodul_campus/</code>.</p>
     <div class="tw"><table>
-      <thead><tr><th>Kennzahl</th><th>Vorher</th><th>Nachher</th><th>Bemerkung</th></tr></thead>
+      <thead><tr><th>Kennzahl</th><th class="o">Original</th><th class="a">A mit Wand</th><th class="b">B ohne Wand</th><th>Bemerkung</th></tr></thead>
       <tbody>@TABELLE@</tbody>
     </table></div>
-    <p class="note">Unverändert: Fuge @P_FUGE@ mm je Seite, Einführfase @P_FASE@ mm unten am Einsatz, Aussparung @P_TIEFE@ mm tief, Hofboden @HUB@ mm über der Plattenoberfläche, Wand von 0,4 mm zu den Gebäude-Mulden (im ersten Druck kam sie nicht, die Gebäude werden zuerst eingesetzt, das war in Ordnung).</p>
+  </section>
+
+  <section class="sec" id="treppen">
+    <div>
+      <h2>Treppen als Rechtecke</h2>
+      <p class="lead">Die Treppen sind Rechtecke entlang der Hofachse und damit parallel zu den Fassaden. Sie liegen als Stufen auf dem Einsatz, nicht als Ausschnitt in der Platte. Die Farbe zeigt die Höhe über der Plattenoberfläche.</p>
+    </div>
+    <div class="cols">
+      <figure class="panel"><figcaption>Südwestecke, Fassung A</figcaption>@FIG_TREPPEN@</figure>
+      <div class="side">
+        <div>
+          <div class="grad" aria-hidden="true"></div>
+          <div class="ticks"><span>Platte 0</span><span>Hofboden @HUB@</span><span>Terrasse @GESAMT@</span></div>
+        </div>
+        <ul class="tlist">
+          <li><span class="k">W</span><div><h3>Rampe am Seminargebäude</h3><p>Ein Rechteck bis an die Fassade, drei Stufen von der Terrasse nach Norden zum Hof. Die Bucht an der Wand ist gefüllt.</p></div></li>
+          <li><span class="k">K</span><div><h3>Kante vor dem Hörsaalgebäude</h3><p>Schmale Treppe von der Terrasse zum Hof, im Scan 2 m Lauflänge. Sie verläuft quer zur Hofachse, also gerade.</p></div></li>
+          <li><span class="k">S</span><div><h3>Südtreppe</h3><p>Der Gang zwischen Seminar- und Hörsaalgebäude fällt in @STUFEN_S@ Stufen von der Terrasse (@GESAMT@ mm über der Platte) auf Plattenhöhe, jede @RISER@ mm hoch, @LAUF_S@ mm lang. Die letzte Stufe liegt bündig mit der Platte.</p></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panels two"><figure class="panel wide" style="grid-column: 1 / -1"><figcaption>Längsschnitt durch die Südtreppe, Fassung A</figcaption>@FIG_SUED@</figure></div>
+    <p class="note">Geländer sind nicht modelliert, sie sind dünner als 0,4 mm Düse. Die Terrasse liegt im Scan @H_TERR_M@ m über dem Hof (@H_TERR@ mm im Modell), der Hof @HUB@ mm über der Platte.</p>
+  </section>
+
+  <section class="sec" id="wand">
+    <div>
+      <h2>Trennwand im Schnitt</h2>
+      <p class="lead">Schnitt quer durch den Rand zum Neuen Augusteum, Maße in mm. Der Fuß des Gebäudes steckt in der Mulde mit @SPIEL@ mm Spiel. Der Einsatz hat @FUGE@ mm Fuge zur Aussparung.</p>
+    </div>
+    <div class="panels two">@FIG_WAND@</div>
   </section>
 
   <section class="sec" id="drei-d">
     <div>
       <h2>Mulde und Stecker in 3D</h2>
-      <p class="lead">Die Mulde ist der Ausschnitt der Grundplatte um den Hof, der Stecker der Einsatz. Mit „Nebeneinander“ stehen alter und neuer Stand im selben Bild.</p>
+      <p class="lead">Die Mulde ist der Ausschnitt der Grundplatte um den Hof, der Stecker der Einsatz. Die Felder teilen sich eine Kamera, so liegen alle Fassungen aus demselben Blickwinkel nebeneinander.</p>
     </div>
     <section class="stagebox" aria-label="3D-Ansicht">
       <div class="bar2">
-        <div class="seg" role="group" aria-label="Stand">
-          <button type="button" id="m-alt" aria-pressed="false">Vorher</button>
-          <button type="button" id="m-neu" aria-pressed="false">Nachher</button>
-          <button type="button" id="m-both" aria-pressed="true">Nebeneinander</button>
+        <div class="seg" role="group" aria-label="Fassungen">
+          <button type="button" id="t-alt" aria-pressed="false">Original</button>
+          <button type="button" id="t-a" aria-pressed="true">A mit Wand</button>
+          <button type="button" id="t-b" aria-pressed="true">B ohne Wand</button>
         </div>
         <div class="seg" role="group" aria-label="Teile">
           <button type="button" id="p-mulde" aria-pressed="true">Mulde</button>
@@ -246,60 +262,40 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
         <label class="lift" for="lift">Stecker anheben <input type="range" id="lift" min="0" max="30" step="1" value="0"><output id="lift-out" for="lift">0 mm</output></label>
         <span class="sw"><i style="background:var(--plate)"></i>Mulde</span><span class="sw"><i style="background:var(--stecker)"></i>Stecker</span>
       </div>
-      <div id="stage" class="both">
-        <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell vorher"></canvas><div class="tag alt">Vorher</div></div>
-        <div class="pane" id="pane-neu"><canvas id="cv-neu" aria-label="3D-Modell nachher"></canvas><div class="tag neu">Nachher</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
+      <div id="stage" class="multi">
+        <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell Original"></canvas><div class="tag alt">Original</div></div>
+        <div class="pane" id="pane-a"><canvas id="cv-a" aria-label="3D-Modell Fassung A"></canvas><div class="tag a">A mit Wand</div></div>
+        <div class="pane" id="pane-b"><canvas id="cv-b" aria-label="3D-Modell Fassung B"></canvas><div class="tag b">B ohne Wand</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
       </div>
       <div class="cap" id="cap"></div>
       <div class="bar2 views"><div class="seg" role="group" aria-label="Ansicht" id="views"></div></div>
     </section>
   </section>
 
-  <section class="sec" id="schnitt">
-    <div>
-      <h2>Schnitt durch die Stegstelle</h2>
-      <p class="lead">Schnitt in Nord-Süd-Richtung bei x = -80 mm, Maße in mm. Vorher steht der Steg frei neben einer dünnen Rippe der Platte. Nachher ist alles ein Block, die Treppe sitzt oben auf.</p>
-    </div>
-    <div class="panels two">@FIG_SCHNITT@</div>
-  </section>
-
-  <section class="sec" id="treppe">
-    <div>
-      <h2>Die Treppe auf dem Einsatz</h2>
-      <p class="lead">Im Scan liegt die Terrasse @H_TERR_M@ m über dem Hof und fällt über ein bis drei Meter zum Hof ab. Der Generator teilt diese Breite in @P_STUFEN@ gleich breite Stufen. Die beiden Zwischenstufen sind eine bis zwei Druckschichten hoch.</p>
-    </div>
-    <div class="ramp" aria-label="Stufenhöhen">
-      <div><i style="background:var(--h0)"></i><p><b>0 mm</b><span>Hofboden</span></p></div>
-      <div><i style="background:var(--h1)"></i><p><b>@H_S1@ mm</b><span>Stufe 1, entspricht @H_S1M@ m</span></p></div>
-      <div><i style="background:var(--h2)"></i><p><b>@H_S2@ mm</b><span>Stufe 2, entspricht @H_S2M@ m</span></p></div>
-      <div><i style="background:var(--h3)"></i><p><b>@H_TERR@ mm</b><span>Terrasse, entspricht @H_TERR_M@ m</span></p></div>
-    </div>
-    <div class="panels two">@FIG_ZOOM@</div>
-    <p class="note">Geländer sind nicht modelliert: Die Scan-Punkte an den Treppenrändern sind dünne Stäbe, die bei 0,4 mm Düse nicht druckbar wären. Wer sie trotzdem will, setzt sie auf den Einsatz und nicht in die Platte.</p>
-  </section>
-
   <section class="sec" id="pruefung">
     <div>
       <h2>Prüfung</h2>
-      <p class="lead">@PRUEF_ERGEBNIS@. Der Einsatz bei 1:1300 ist dicht (vorher @DICHT_ALT@, nachher @DICHT_NEU@), die Platte mit Aussparung ist @PLATTE@, @KOLLISION@.</p>
+      <p class="lead">@PRUEF_ERGEBNIS@. Die Einsätze bei 1:1300 sind dicht (@DICHT@), die Platten mit Aussparung sind @PLATTE@, @KOLLISION@.</p>
     </div>
     <div class="tw"><table>
-      <thead><tr><th>Quelle</th><th>Maßstab</th><th>Einsatz dicht</th><th>Teile</th><th>Löcher</th><th>Schmale Stellen</th><th>Abstand zu Gebäuden</th><th>Treppen</th></tr></thead>
+      <thead><tr><th>Quelle</th><th>Maßstab</th><th>Einsatz dicht</th><th>Teile</th><th>Löcher</th><th>Schmale Stellen</th><th>Abstand zu Gebäuden</th></tr></thead>
       <tbody>@PRUEFMATRIX@</tbody>
     </table></div>
+    <p class="note">Die Matrix gilt für den Standard von <code>generate.py</code> (Abstand 0,5 mm, Fuge der Grundplatte). Die Steckplatte nimmt den Abstand aus <code>HOF_WALL_T</code> und <code>OUTLINE_CLR_T</code>.</p>
     <div class="cols2">
       <div><h3>Offen, erst der Druck zeigt es</h3>
         <ul class="plain">
-          <li><strong>Sitz des Einsatzes</strong> mit Fuge @P_FUGE@ mm und Fase @P_FASE@ mm bei jetzt durchgehendem Klotz (Steckprobe 3).</li>
-          <li><strong>Treppenstufen</strong> von @H_S1@ und @H_S2@ mm: ob der Slicer sie als Absatz druckt oder glättet.</li>
-          <li><strong>Plattenfläche an den Passagen:</strong> Der Hof endet dort 4 bis 5 mm früher, der Rest liegt auf Straßenniveau.</li>
+          <li><strong>Trennwand @WAND@ mm:</strong> ob sie im Druck steht, wie breit sie oben bleibt (@WAND_OBEN@ mm) und ob sie die Gebäude sicher führt (Steckprobe 3).</li>
+          <li><strong>Sitz des Einsatzes</strong> mit Fuge @FUGE@ mm und Fase @HOF_FASE@ mm bei jetzt größerem Klotz.</li>
+          <li><strong>Südtreppe:</strong> sechs Stufen von @RISER@ mm, das sind zwei Druckschichten je Stufe, und die letzte bündig zur Platte.</li>
+          <li><strong>Zwischenstufen</strong> der Rampen von 0,18 und 0,37 mm: der Slicer druckt sie als Absatz oder glättet sie.</li>
         </ul></div>
       <div><h3>Betroffene Dateien</h3>
         <ul class="plain">
-          <li><code>innenhof.py</code>: <code>flaeche_mm</code>, <code>treppen_mm</code>, Konstanten oben in der Datei</li>
-          <li><code>stl/steckmodul_campus/hof_einsatz_1zu1300.stl</code> und <code>steckplatte_1zu1300.stl</code></li>
-          <li>Alle Hof-Dateien aus <code>generate.py</code> (osm, lod2, laserscan, drei Maßstäbe) laufen über denselben Umriss</li>
-          <li>Alter Stand zum Vergleich: <code>plug/hof/alt/</code></li>
+          <li><code>innenhof.py</code>, <code>data/innenhof.json</code> (Abschnitt <code>form</code>: Hülle, Terrasse, Treppen)</li>
+          <li><code>plug/campus.py</code> und <code>plug/testcase/params.py</code> (<code>HOF_WALL_T</code>): beide Fassungen, STL <code>hof_einsatz_1zu1300.stl</code>, <code>steckplatte_1zu1300.stl</code> und <code>…_ohne_wand.stl</code></li>
+          <li>Alle Hof-Dateien aus <code>generate.py</code> laufen über denselben Umriss</li>
+          <li>Original zum Vergleich: <code>plug/hof/alt/</code></li>
         </ul></div>
     </div>
   </section>
@@ -313,7 +309,7 @@ const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n
 const $ = (id) => document.getElementById(id);
 const stage = $('stage');
 
-// Zwei Ansichten (vorher, nachher) mit gemeinsamer Kamera; im Modus "Nebeneinander" stehen beide Felder im Bild.
+// Drei Ansichten (Original, A, B) mit gemeinsamer Kamera, jede in einem eigenen Feld.
 function makeView(which) {
   const canvas = $('cv-' + which), pane = $('pane-' + which);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -337,8 +333,8 @@ function makeView(which) {
   });
   return v;
 }
-const V = [makeView('alt'), makeView('neu')];
-const state = { mode: 'both', mulde: true, stecker: true, lift: 0 };
+const V = ['alt', 'a', 'b'].map(makeView);
+const state = { show: { alt: false, a: true, b: true }, mulde: true, stecker: true, lift: 0 };
 
 // Kamera um ein Ziel (z oben): Azimut 0 = Blick von Osten, -90 = von Süden
 const cam = { t: new THREE.Vector3(), d: 150, az: -62, el: 48 };
@@ -362,21 +358,26 @@ function resize() {
   draw();
 }
 function apply() {
+  const n = V.filter((v) => state.show[v.which]).length;
   V.forEach((v) => {
-    v.pane.hidden = !(state.mode === 'both' || state.mode === v.which);
+    v.pane.hidden = !state.show[v.which];
     v.part.mulde.holder.visible = state.mulde;
     v.part.stecker.holder.visible = state.stecker;
     v.part.stecker.holder.position.z = state.lift;
   });
-  stage.classList.toggle('both', state.mode === 'both');
-  [['m-alt', 'alt'], ['m-neu', 'neu'], ['m-both', 'both']].forEach(([id, k]) => $(id).setAttribute('aria-pressed', state.mode === k));
+  stage.classList.toggle('multi', n > 1);
+  ['alt', 'a', 'b'].forEach((k) => $('t-' + k).setAttribute('aria-pressed', state.show[k]));
   $('p-mulde').setAttribute('aria-pressed', state.mulde); $('p-stecker').setAttribute('aria-pressed', state.stecker);
   $('lift-out').textContent = state.lift + ' mm';
   resize();
 }
-$('m-alt').onclick = () => { state.mode = 'alt'; apply(); };
-$('m-neu').onclick = () => { state.mode = 'neu'; apply(); };
-$('m-both').onclick = () => { state.mode = 'both'; apply(); };
+['alt', 'a', 'b'].forEach((k) => {
+  $('t-' + k).onclick = () => {
+    const on = Object.values(state.show).filter(Boolean).length;
+    if (state.show[k] && on === 1) return;     // mindestens eine Fassung bleibt sichtbar
+    state.show[k] = !state.show[k]; apply();
+  };
+});
 $('p-mulde').onclick = () => { state.mulde = !state.mulde; apply(); };
 $('p-stecker').onclick = () => { state.stecker = !state.stecker; apply(); };
 $('lift').oninput = (e) => { state.lift = +e.target.value; apply(); };
@@ -418,7 +419,7 @@ DATA.views.forEach((v, i) => {
   b.onclick = () => showView(i); views.appendChild(b);
 });
 
-// Maus, Touch: drehen, schieben (Shift, rechte Taste, zwei Finger), zoomen; beide Felder teilen die Kamera
+// Maus, Touch: drehen, schieben (Shift, rechte Taste, zwei Finger), zoomen; alle Felder teilen die Kamera
 const ptrs = new Map(); let pinch = 0;
 function panBy(dx, dy) {
   const k = cam.d * 0.0016, a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;

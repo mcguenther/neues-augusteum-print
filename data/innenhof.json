@@ -1277,5 +1277,88 @@
   ]
  ],
  "terrasse_hoehe": 0.71,
- "sockel_z": 114.46
+ "sockel_z": 114.46,
+ "form": {
+  "_notiz": "Form des Hof-Einsatzes, von Hand festgelegt; Maße aus dem Laserscan im Hofsystem abgelesen (Höhenprofile quer und längs zur Hofachse). Hofsystem: u quer zur Achse (nach Osten), t längs (nach Norden), Meter, Achse = achse_grad. Die Hoffläche ist die OSM-Fußgängerfläche in der Hülle, also bis an die Fassaden der Nachbargebäude; nur an den Durchgängen begrenzen gerade Schnitte. Treppen sind Rechtecke im Hofsystem, in gleich breite Stufen geteilt: fall nord = hoch im Süden (Terrasse), tief im Norden (Hofniveau); fall sued = hoch im Norden, tief im Süden bis auf die Plattenoberfläche (Straßenniveau, bündig mit der Grundplatte). Terrasse = Rechtecke, terrasse_hoehe über dem Hof.",
+  "huelle": {
+   "u": [
+    -150.0,
+    -60.0
+   ],
+   "t_nord": 80.0,
+   "passage_nord": {
+    "u": -94.0,
+    "t": 60.0,
+    "_notiz": "Ecke des Paulinum: östlich von u und nördlich von t liegt die Passage zwischen Paulinum und Institutsgebäude, nicht mehr Hof"
+   }
+  },
+  "terrasse": [
+   {
+    "u": [
+     -150.0,
+     -119.5
+    ],
+    "t": [
+     -26.0,
+     -12.0
+    ],
+    "_notiz": "Westflügel am Seminargebäude, Terrassenhöhe 0,8 m (Scan)"
+   },
+   {
+    "u": [
+     -150.0,
+     -60.0
+    ],
+    "t": [
+     -26.0,
+     -18.0
+    ],
+    "_notiz": "Streifen vor dem Hörsaalgebäude und Gang nach Süden"
+   }
+  ],
+  "treppen": [
+   {
+    "name": "west",
+    "u": [
+     -150.0,
+     -119.5
+    ],
+    "t": [
+     -12.0,
+     4.0
+    ],
+    "fall": "nord",
+    "stufen": 3,
+    "_notiz": "Rampe am Seminargebäude, im Scan 2 bis 3 m breit und 16 m lang, hier bis an die Fassade gefüllt"
+   },
+   {
+    "name": "kante",
+    "u": [
+     -119.5,
+     -60.0
+    ],
+    "t": [
+     -18.0,
+     -16.0
+    ],
+    "fall": "nord",
+    "stufen": 3,
+    "_notiz": "Treppe von der Terrasse vor dem Hörsaalgebäude zum Hof, im Scan 2 m Lauflänge"
+   },
+   {
+    "name": "sued",
+    "u": [
+     -150.0,
+     -60.0
+    ],
+    "t": [
+     -33.0,
+     -26.0
+    ],
+    "fall": "sued",
+    "stufen": 6,
+    "_notiz": "Abstieg des Gangs zwischen Seminar- und Hörsaalgebäude auf Straßenniveau: 7 m Lauflänge (19 Stufen im Original), im Modell 6 Stufen, die letzte bündig mit der Platte"
+   }
+  ]
+ }
 }

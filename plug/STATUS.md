@@ -204,7 +204,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
 | `plug/power/` | Konzept | `build_concept.py`, `concept.template.html`, `concept.html`: Powerbank Intenso XS5000 in der Platte (PLAN Kapitel 6) |
-| `plug/hof/` | Vergleich | `build_page.py` (Seite `page.html`), `compare.py` (alter Umriss, Schnitte), `freeze_alt.py`, `alt/` (eingefrorener Stand vor dem blockigen Hof-Umriss, Commit c46d9d3); Umriss und Treppen selbst in `innenhof.py` |
+| `plug/hof/` | Vergleich | `build_page.py` (Seite `page.html`: Original, A mit Trennwand, B ohne), `compare.py` (alter Umriss, Schnitte), `freeze_alt.py`, `alt/` (eingefrorenes Original, Commit c46d9d3); Form, Treppen und Umriss des Hofs in `innenhof.py` und `data/innenhof.json` (`form`), Fassungen in `plug/campus.py` |
 | `plug/buildings.py` | Generator | steckbare Hohlgebäude zur Steckplatte 1:1300: Fuß 14,2, Boden, Schachtrohr, Aufnahme je Kassette (v4/V1RS/V2R), 45°-Anschlag und 45°-Dach, Prüfung Kollision/Platz/Brücken/Kragstücke; nach `stl/steckmodul_campus/gebaeude/` (Logbuch `scale.md`) |
 | `plug/PLAN.md`, `plug/STATUS.md` | handgeschrieben | Plan (Dupont, Institut, JST-Archiv) und diese Datei |
 | `plug/archive/jst/` | archiviert | JST-Variante: `jst.py`, `PLAN.md`, `view.template.html`, `build_view.py`, `view.html`, `data.json`, `stl/`, `preview/` (nicht gepflegt) |
@@ -290,7 +290,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
-| Innenhof-Einsatz vorher/nachher (Befund, Grundrisse, 3D Mulde und Stecker, Schnitt, Treppe) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
+| Innenhof-Einsatz: Original, A mit Trennwand, B ohne (Grundrisse, Treppen, Schnitte, 3D Mulde und Stecker) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

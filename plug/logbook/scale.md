@@ -108,12 +108,22 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 - **Gebäude werden um die 4 mm nach unten verlängert:** Der volle Gebäudeumriss (Laserscan-Grundriss) reicht 4 mm unter die Plattenoberfläche (`OUTLINE_CLR_T` 0,1 Spiel), darunter folgt wie getestet die Fußmulde mit 10,2 mm (um 4 mm nach unten verschoben, auf die Umriss-Aussparung begrenzt). Gesamttiefe F bleibt 14,2, Platte 20,2. Auf der Platte sind so die Gebäudeumrisse zu sehen. Die erste Umsetzung (reine 4 mm Führungslänge im Fuß) war ein Missverständnis. Der Gebäude-Generator (Fuß und Körper 4 mm länger) bleibt To-do im Hohlkörper-Chat.
 - **Hof-Einsatz tiefer:** statt 1 mm jetzt `HOF_DEPTH_T = 6,0` mm unter der Oberfläche (Nutzer; vorher 1 mm, dann 3 mm), Fuge `HOF_CLR_T` 0,1, Einführfase unten 0,4 (Einsatz); Aussparung ohne Fase oben, damit die Wand zur Gebäude-Aussparung 0,4 mm bleibt. `innenhof.model(s, fps, tiefe, spiel)`, Einsatz als `stl/steckmodul_campus/hof_einsatz_1zu1300.stl`.
 
-### Korrektur 2026-10-17 (Nutzer: Hof-Einsatz ein solider Klotz, Steg am Hörsaalgebäude weg)
+### Korrektur 2026-10-17 (Nutzer: Hof-Einsatz ein solider Klotz, Steg am Hörsaalgebäude weg; erste Fassung, siehe die Korrektur 2 danach)
 
 - **Befund:** Der Hof-Umriss (`innenhof.flaeche_mm`) hatte einen Spalt zwischen Hofgrenze und Terrasse (die beiden Treppen gehören im Scan zu keiner der Flächen) und dahinter einen Steg der Terrasse am Hörsaalgebäude (3,8 mm breit, rund 20 mm lang). In der Platte stand dort eine Rippe von 0,6 mm Breite und 6 mm Höhe, im Einsatz hing eine Zunge. Dazu kamen zwei Zungen an den Passagen (Nord, Ost), ein zweiter Spalt (Bucht am Nordende der Terrasse) und ein Splitterloch.
 - **Änderung (`innenhof.py`):** Spalte bis 6 m werden geschlossen (`HOF_SCHLIESSEN` 3 m je Seite), Zungen und Zähne unter `HOF_MIN_BREITE` 4 mm entfallen, Löcher unter 16 mm² gefüllt. Der Umriss rückt nie näher an ein Gebäude, die Wand von 0,4 mm zu den Gebäude-Mulden bleibt. Die Treppen liegen als Stufen auf dem Einsatz (`treppen_mm`, `TREPPE_STUFEN` 3, Terrasse 0,55 mm, Zwischenstufen 0,36 und 0,18 mm), nicht mehr als Ausschnitt in der Platte. Geländer sind nicht modelliert (unter 0,4 mm).
 - **Ergebnis bei 1:1300 (Laserscan):** Umfang 273 → 200 mm, schmale Stellen 5 → 0, Löcher 1 → 0, Einsatz 36,8 × 72,7 mm (vorher 40,9 × 72,8), dicht; alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher, Abstand zu Gebäuden 0,50). Vergleichsseite `plug/hof/page.html`, alter Stand in `plug/hof/alt/`.
 - **Ungetestet:** Sitz des Einsatzes mit dem durchgehenden Klotz (Steckprobe 3), Druck der Zwischenstufen (Slicer glättet oder druckt Absatz), an den Passagen bleibt Plattenfläche statt Hof (bis zu 5 mm).
+
+### Korrektur 2 zum Hof (2026-10-17, Nutzer): bis an die Fassaden, gerade Treppen, Südtreppe, Trennwand A/B
+
+Ersetzt das Schließen des Spalts (`HOF_SCHLIESSEN`) und die Treppen aus der Korrektur davor. Der Nutzer sah weiße Flächen zwischen Hof und Nachbargebäuden (Bucht an der Westfassade, Streifen entlang der Fassaden, Gang im Südwesten) und wollte alles gerade, gefüllt und den Fassaden folgend.
+
+- **Hoffläche:** OSM-Fußgängerfläche (um 2 m vergrößert) in einer Hülle, bis an die Laser-Grundrisse der Gebäude. Gerade Schnitte nur am Durchgang im Nordosten (Ecke des Paulinum) und am Ende der Südtreppe. Zungen unter 4 mm entfallen, Löcher unter 16 mm² sind gefüllt. Die Messflächen `grenze` und `terrasse` bleiben in `data/innenhof.json` für die Luftbildproben, die Form steht im Abschnitt `form` (Hofsystem: Achse 11,8°, u quer, t längs, Meter).
+- **Treppen als Rechtecke im Hofsystem** (`innenhof.treppen_mm`), Maße aus Höhenprofilen des Scans: W am Seminargebäude (u bis -119,5 m, t von -12 bis 4 m, drei Stufen nach Norden), K an der Kante vor dem Hörsaalgebäude (t von -18 bis -16 m, drei Stufen), S im Gang zwischen Seminar- und Hörsaalgebäude (7 m, sechs Stufen von der Terrasse 2,35 mm über der Platte bis auf Plattenhöhe, die letzte bündig mit der Grundplatte, Stufenhöhe 0,39 mm). Terrasse als Rechtecke (`form.terrasse`).
+- **Trennwand zwischen Hof-Aussparung und Gebäude-Mulden** (`HOF_WALL_T` in `params.py`, `plug.campus.build(hof_wand=…)`): A mit 0,8 mm (Hof-Umriss 0,9 mm vom Grundriss: Spiel der Mulde 0,1 plus Wand), B ohne Wand (Aussparung greift `HOF_OVERLAP_T` 0,02 in die Mulde, Hof liegt zwischen den Gebäuden). `python3 -m plug.campus` schreibt beide: `steckplatte_1zu1300.stl` und `hof_einsatz_1zu1300.stl` (A), `…_ohne_wand.stl` (B). Oben schneidet die Einführfase der Mulde (0,5) die Wand A auf 0,3 mm an.
+- **Ergebnis bei 1:1300:** Einsatz A 36,5 × 76,0 mm (Fläche 1595 mm²), B 38,7 × 77,2 mm (1763 mm²), vorher 40,9 × 72,8 mm; alle dicht, alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher und schmale Stellen). Vergleichsseite `plug/hof/page.html`.
+- **Empfehlung:** A drucken, B als Rückfall; in Steckprobe 3 beide.
 
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
@@ -227,8 +237,8 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
 | Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
 | | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
-| | Blockiger Hof-Umriss (Spalte zu, Mindestbreite 4 mm, Treppen als Stufen 0,18 / 0,36 / 0,55 mm auf dem Einsatz) | ungetestet | Sitz ohne Steg, Druck der Stufen |
-| | Wand 0,4 mm zwischen Hof- und Gebäude-Aussparung | ungetestet | Druck, Stehenbleiben |
+| | Blockiger Hof-Umriss bis an die Fassaden (Mindestbreite 4 mm), Treppen als Rechtecke mit Stufen 0,18 / 0,37 mm auf dem Einsatz, Südtreppe sechs Stufen à 0,39 mm bündig zur Platte | ungetestet | Sitz ohne Steg, Druck der Stufen |
+| | Trennwand Hof zu Gebäude-Mulde: A 0,8 mm (`HOF_WALL_T`), B ohne Wand | ungetestet | Wand steht im Druck (0,4 mm kam in r7 nicht), Führung der Gebäude |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
 | | Halt des Einsatzes (Reibrippen oder Kleber) | nicht festgelegt | bleibt er ohne Halt liegen |
 | Maßstab | 1:1300 | ungetestet | feine Details bei Mindestbreite 0,8 mm |

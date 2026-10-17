@@ -15,9 +15,11 @@ Aussparung, im Komplettmodell ist es in die Sockelplatte eingelassen.
 Kleine Objekte werden auf druckbare Breite (MIN_FEATURE) und Mindesthöhe
 (MIN_HOEHE) gebracht; Baumkronen haben unten höchstens 45° Überhang.
 
-Umriss: Aussparung und Einsatz sind ein Klotz ohne Stege (flaeche_mm). Die Treppen zwischen Hofgrenze und Terrasse, die im Scan zu keiner der
-beiden Flächen gehören, werden geschlossen (HOF_SCHLIESSEN), Zungen und Zähne unter HOF_MIN_BREITE entfallen. Die Treppen
-liegen als Stufen auf dem Einsatz (treppen_mm), nicht als Ausschnitt in der Grundplatte. Vergleich vorher/nachher: plug/hof/build_page.py.
+Umriss: Aussparung und Einsatz sind ein Klotz ohne Stege (flaeche_mm). Die Hoffläche ist die OSM-Fußgängerfläche in einer Hülle (data/innenhof.json,
+"form"), also bis an die Fassaden der Nachbargebäude und nur an den Durchgängen von geraden Schnitten begrenzt; die Gebäude und eine Trennwand
+(abstand) werden abgezogen, Zungen unter HOF_MIN_BREITE entfallen. Treppen sind Aufbau auf dem Einsatz (treppen_mm), nicht Ausschnitt in der Platte:
+Rechtecke im Hofsystem (Achse = Beetreihen), am Seminargebäude entlang und von der Terrasse zum Hof, im Süden ein Abstieg bis auf Plattenhöhe, damit
+der Einsatz bündig an die Grundplatte anschließt. Vergleich der Fassungen: plug/hof/build_page.py.
 
 Farben: data/fassaden/08_innenhof.json. Statt Fassaden-Zonen ordnen die
 "zonen" dort jedem Teil (Feld "teil", siehe TEILE) eine Farbe zu.
@@ -29,6 +31,7 @@ import os
 import manifold3d as m3d
 import numpy as np
 import shapely
+from shapely import affinity
 from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
@@ -40,11 +43,9 @@ HOF_WAY = "118176611"   # OSM highway=pedestrian, area=yes: Innenhof mit Passage
 MIN_HOEHE = 0.4         # mm, flachere Objekte werden darauf angehoben (2 Schichten)
 ROOF_NZ = G.ROOF_NZ
 
-# Blockiger Umriss (Aussparung und Einsatz sind ein Klotz, keine Stege): Treppen sind Aufbau auf dem Einsatz, kein Ausschnitt in der Platte
-HOF_SCHLIESSEN = 3.0    # m: Spalte zwischen Hofgrenze und Terrasse bis 6 m Breite (Treppen) werden geschlossen
+# Blockiger Umriss (Aussparung und Einsatz sind ein Klotz, keine Stege): Form und Treppen in data/innenhof.json, "form"
+HOF_UEBERMASS = 2.0     # m: OSM-Fläche wird um so viel vergrößert, damit sie bis an die Laser-Grundrisse der Gebäude reicht
 HOF_MIN_BREITE = 4.0    # mm: Zungen und Zähne im Umriss, die schmaler sind, entfallen (Einsatz bricht dort, Aussparung wird zum Steg)
-TREPPE_MIN_M2 = 5.0     # m²: kleinere Stücke zwischen Hofgrenze und Terrasse sind Splitter, keine Treppe
-TREPPE_STUFEN = 3       # Stufen von der Terrassenkante bis aufs Hofniveau (2 Zwischenstufen)
 
 # Teile, denen data/fassaden/08_innenhof.json Farben zuordnet
 TEILE = ["pflaster", "platz", "denkmalplatz", "beet", "beet_rand", "podest", "bank",
@@ -79,56 +80,74 @@ def rechteck(o, data):
     return Polygon([c - hl * d - hb * n, c + hl * d - hb * n, c + hl * d + hb * n, c - hl * d + hb * n])
 
 
-def hof_zu_m(data):
-    """(Kern, geschlossene Hoffläche) in m. Kern = Hofgrenze (Scan) ∪ Terrasse; zwischen beiden liegen die Treppen, die im Scan weder zum
-    einen noch zum anderen gehören und sonst als schmaler Spalt (mit Steg zum Hörsaalgebäude) in der Aussparung stehen. Geschlossen wird
-    der Spalt, die Fläche bleibt innerhalb der OSM-Fußgängerfläche."""
-    kern = unary_union([Polygon(data["grenze"]), Polygon(data["terrasse"])])
-    zu = hof_polygon_local().intersection(kern.buffer(HOF_SCHLIESSEN).buffer(-HOF_SCHLIESSEN))
-    return kern, zu
+def rahmen(data):
+    """Hofsystem: (nach_hof, aus_hof), Funktionen auf shapely-Geometrie. u quer zur Hofachse (nach Osten), t längs (nach Norden), Meter."""
+    a = math.radians(data["achse_grad"])
+    c, s = math.cos(a), math.sin(a)
+    return (lambda g: affinity.affine_transform(g, [c, -s, s, c, 0, 0])), (lambda g: affinity.affine_transform(g, [c, s, -s, c, 0, 0]))
 
 
-def treppen_m(data):
-    """Treppenflächen (m): was das Schließen zum Kern hinzufügt, nur Stücke ab TREPPE_MIN_M2 (der Rest sind Splitter)."""
-    kern, zu = hof_zu_m(data)
-    return [p for p in G.polys_of(zu.difference(kern)) if p.area >= TREPPE_MIN_M2]
+def block_m(data, u, t):
+    """Rechteck u × t im Hofsystem als Geometrie in lokalen Metern."""
+    return rahmen(data)[1](box(u[0], t[0], u[1], t[1]))
 
 
-def flaeche_mm(building_fps_mm, s):
-    """Hoffläche (mm): ein blockiger Umriss für Aussparung und Einsatz. OSM-Fläche ∩ Hofgrenze (Scan) mit geschlossenen Treppenspalten
-    (hof_zu_m) minus Gebäude (mit Fuge für die Grundplatte); Zungen und Zähne schmaler als HOF_MIN_BREITE entfallen, Löcher kleiner als
-    HOF_MIN_BREITE² sind gefüllt. Der Umriss liegt nie näher an einem Gebäude als vorher."""
+def huelle_m(data):
+    """Hülle des Hofs (lokale m): Rechteck im Hofsystem, nach Süden bis zum Ende der Südtreppe, im Nordosten ohne die Passage."""
+    f = data["form"]
+    h = f["huelle"]
+    t_sued = min(tr["t"][0] for tr in f["treppen"] if tr["fall"] == "sued")
+    u0, u1 = h["u"]
+    uc, tc = h["passage_nord"]["u"], h["passage_nord"]["t"]
+    return rahmen(data)[1](Polygon([(u0, t_sued), (u1, t_sued), (u1, tc), (uc, tc), (uc, h["t_nord"]), (u0, h["t_nord"])]))
+
+
+def flaeche_mm(building_fps_mm, s, abstand=None):
+    """Hoffläche (mm): ein blockiger Umriss für Aussparung und Einsatz. OSM-Fußgängerfläche (um HOF_UEBERMASS vergrößert) in der Hülle
+    (huelle_m) minus Gebäude plus abstand; Zungen und Zähne schmaler als HOF_MIN_BREITE entfallen, Löcher kleiner als HOF_MIN_BREITE² sind
+    gefüllt. abstand: Abstand des Umrisses vom Gebäudegrundriss (Standard 2 × POCKET_CLEARANCE, Fuge der Grundplatte); in der Steckplatte
+    Fuge der Gebäude-Mulde plus Trennwand (plug/campus.py)."""
     data = load()
-    hof = G.scale_geom(hof_zu_m(data)[1], s)
-    blds = unary_union(list(building_fps_mm)).buffer(2 * G.POCKET_CLEARANCE, join_style=2)
-    frei = hof.difference(blds)
+    hof = G.scale_geom(hof_polygon_local().buffer(HOF_UEBERMASS).intersection(huelle_m(data)), s)
+    d = 2 * G.POCKET_CLEARANCE if abstand is None else abstand
+    frei = hof.difference(unary_union(list(building_fps_mm)).buffer(d, join_style=2))
     r = HOF_MIN_BREITE / 2
-    rest = frei.buffer(-r, join_style=2).buffer(r, join_style=2)       # Zungen, Zähne und Splitter entfernen
-    rest = rest.intersection(frei)                                      # nie näher an einem Gebäude
+    rest = frei.buffer(-r, join_style=2).buffer(r, join_style=2).intersection(frei)    # Zungen und Splitter entfernen, nie näher an ein Gebäude
     polys = G.polys_of(rest)
     big = max(p.area for p in polys)
     polys = [Polygon(p.exterior, [h for h in p.interiors if Polygon(h).area >= HOF_MIN_BREITE ** 2]) for p in polys if p.area > 0.05 * big]
     return G.clean(unary_union(polys))
 
 
-def treppen_mm(fp, s, data=None):
-    """Treppen auf dem Einsatz: [(Polygon mm, [(Zone, Höhe mm), …])]. Von der Terrasse (Höhe terrasse_hoehe) fällt die Treppe in
-    TREPPE_STUFEN gleich breiten Stufen auf Hofniveau ab; die Zone einer Stufe ist ihre Fläche bis zu dieser Entfernung von der Terrasse."""
+def terrasse_mm(fp, s, data=None):
+    """Terrasse (mm) im Umriss fp: Rechtecke aus data["form"]["terrasse"]."""
     data = data or load()
-    terr = G.scale_geom(Polygon(data["terrasse"]), s)
-    h0 = data["terrasse_hoehe"] * s
+    t = unary_union([block_m(data, r["u"], r["t"]) for r in data["form"]["terrasse"]])
+    return G.clean(fp.intersection(G.scale_geom(t, s)))
+
+
+def treppen_mm(fp, s, data=None):
+    """Treppen auf dem Einsatz: [(Name, Fall, [(Polygon im Umriss fp, Rechteck, Oberkante mm über dem Hofboden), …])]. Jede Treppe ist ein
+    Rechteck im Hofsystem (data["form"]["treppen"]) in gleich breite Stufen geteilt. Fall nord: von der Terrassenhöhe in n Stufen auf den Hofboden,
+    die letzte Stufe liegt auf Hofniveau. Fall sued: von der Terrasse in n Stufen bis auf die Plattenoberfläche (Oberkante -hub), die letzte
+    Stufe schließt bündig an die Grundplatte an (Oberkante negativ, der Hofboden liegt hub über der Platte)."""
+    data = data or load()
+    h0, hb = data["terrasse_hoehe"] * s, hub(data, s)
     out = []
-    for p in treppen_m(data):
-        poly = G.clean(G.scale_geom(p, s).intersection(fp))
-        if poly.is_empty:
-            continue
-        w = max(terr.distance(shapely.Point(c)) for q in G.polys_of(poly) for c in q.exterior.coords)
+    for tr in data["form"]["treppen"]:
+        n = tr["stufen"]
+        (u0, u1), (t0, t1) = tr["u"], tr["t"]
         stufen = []
-        for j in range(1, TREPPE_STUFEN):
-            zone = G.clean(poly.intersection(terr.buffer(w * j / TREPPE_STUFEN)))
-            if not zone.is_empty:
-                stufen.append((zone, h0 * (TREPPE_STUFEN - j) / TREPPE_STUFEN))
-        out.append((poly, stufen))
+        for j in range(n):
+            if tr["fall"] == "nord":
+                lo, hi, top = t0 + (t1 - t0) * j / n, t0 + (t1 - t0) * (j + 1) / n, h0 * (n - 1 - j) / n
+            else:
+                lo, hi, top = t1 - (t1 - t0) * (j + 1) / n, t1 - (t1 - t0) * j / n, h0 - (j + 1) * (h0 + hb) / n
+            rect = G.scale_geom(block_m(data, (u0, u1), (lo, hi)), s)
+            poly = G.clean(fp.intersection(rect))
+            if not poly.is_empty:
+                stufen.append((poly, rect, top))
+        out.append((tr["name"], tr["fall"], stufen))
     return out
 
 
@@ -240,12 +259,12 @@ def hub(data, s):
     return (data["boden_z"] - data["sockel_z"]) * s
 
 
-def model(s, building_fps_mm, tiefe=None, spiel=0.0):
+def model(s, building_fps_mm, tiefe=None, spiel=0.0, abstand=None):
     """(Volumenkörper mm, Grundriss mm, Info): Platte von -POCKET_DEPTH bis zum Hofboden (hub),
     Objekte darauf. tiefe: andere Tiefe unter der Oberfläche (Steckplatte, plug/campus.py); spiel: Einsatz so viel kleiner
-    als die Aussparung (Fuge je Seite)."""
+    als die Aussparung (Fuge je Seite); abstand: Abstand des Umrisses vom Gebäudegrundriss (flaeche_mm)."""
     data = load()
-    fp = flaeche_mm(building_fps_mm, s)
+    fp = flaeche_mm(building_fps_mm, s, abstand)
     if spiel:
         fp = G.clean(fp.buffer(-spiel, join_style=2))
     T = G.POCKET_DEPTH if tiefe is None else tiefe
@@ -259,10 +278,15 @@ def model(s, building_fps_mm, tiefe=None, spiel=0.0):
         if not part.is_empty:
             slabs.append(G.extrude(part, -T, H))
     slabs.append(G.extrude(rest, -T, H))
-    solids = [prism(G.clean(fp.intersection(G.scale_geom(Polygon(data["terrasse"]), s))),
-                    data["terrasse_hoehe"] * s)]
-    for _, stufen in treppen_mm(fp, s, data):
-        solids += [G.extrude(zone, 0, h) for zone, h in stufen]
+    treppen = treppen_mm(fp, s, data)
+    slab = G.union(slabs)
+    solids = [prism(terrasse_mm(fp, s, data), data["terrasse_hoehe"] * s)]
+    for _, _, stufen in treppen:
+        for poly, rect, top in stufen:
+            if top > 1e-6:                # Stufe über dem Hofboden: Aufbau
+                solids.append(G.extrude(poly, 0, top))
+            elif top < -1e-6:             # Stufe unter dem Hofboden (Abstieg nach Süden): Platte oben abschneiden, Rechteck über den Umriss hinaus
+                slab = slab - G.extrude(rect, H + top, H + 5)
     for o in data["objekte"]:
         typ = o["typ"]
         if typ in ("beet", "podest", "bank"):
@@ -275,7 +299,7 @@ def model(s, building_fps_mm, tiefe=None, spiel=0.0):
     # nichts über den Hofrand hinaus (Kronen über Gebäuden), sonst passt die Grundplatte nicht
     zmax = max(o.get("hoehe", 1) for o in data["objekte"]) * s + 2
     objs = objs ^ G.extrude(fp.buffer(-0.05, join_style=2), -0.5, zmax)
-    solid = G.union(slabs + [objs.translate([0, 0, H - 0.01])])
+    solid = G.union([slab, objs.translate([0, 0, H - 0.01])])
     solid = solid ^ einfuehrfase(fp, T, H, zmax)
     counts = {}
     for o in data["objekte"]:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Steckplatte des Campus: Grundplatte mit Mulde (voller Gebäudeumriss), vier Pin-Löchern je Gebäude und Aussparung für den Innenhof-Einsatz.
+"""Steckplatte des Campus: Grundplatte mit Mulde (voller Gebäudeumriss), vier Pin-Löchern je Gebäude und Aussparung für den Innenhof-Einsatz
+(Trennwand HOF_WALL_T zu den Gebäude-Mulden; die Fassung ohne Wand liegt als *_ohne_wand.stl daneben).
 
 Festlegung (plug/logbook/scale.md): Maßstab 1:1300, Mulde überall 4 mm tiefer (F 14,2), Kassette je Gebäude aus
 params.CASSETTE (v4, V1RS, V2R). Die Lage der Mulde im Grundriss wird gesucht (Rechteck um den Schacht, beliebige Drehung, höchste Dachhöhe
@@ -253,12 +254,19 @@ def outline_ok(env):
     return OUTLINE is None or env.within(OUTLINE.buffer(-1.0))
 
 
-def build(scale=P.SCALE_PLAN, replace=False):
+def hof_abstand(wand):
+    """Abstand des Hof-Umrisses vom Gebäudegrundriss: Spiel der Gebäude-Mulde plus Trennwand; ohne Wand (0) reicht die Aussparung etwas in die Mulde."""
+    return P.OUTLINE_CLR_T + wand if wand > 0 else P.OUTLINE_CLR_T - P.HOF_OVERLAP_T
+
+
+def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
+    """hof_wand: Trennwand zwischen Hof-Aussparung und Gebäude-Mulden in mm (Standard P.HOF_WALL_T, 0 = ohne Wand)."""
     global OUTLINE
     s = 1000.0 / scale
     G.FAST = True
+    abstand = hof_abstand(P.HOF_WALL_T if hof_wand is None else hof_wand)
     models = G.source_models("laserscan", s)
-    models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T)
+    models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T, abstand)
     fps = {k: v[1] for k, v in models.items()}
     outline = G.plate_outline(unary_union(list(fps.values())))
     OUTLINE = outline
@@ -284,9 +292,9 @@ def build(scale=P.SCALE_PLAN, replace=False):
         # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante, oben mit Einführfase
         cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
         # Muldenboden bleibt 0,4 mm und ist die unterste Schicht; die Pin-Löcher kommen aus pin_holes
-    # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Wand
-    # zu den Gebäude-Aussparungen 0,4 mm bleibt
-    hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s)
+    # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Trennwand
+    # zu den Gebäude-Mulden (hof_wand) ihre Breite behält
+    hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s, abstand)
     cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + 0.01))
     plate = diff(plate, *cut_all)
     return plate, report, models, places, outline, hof_solid
@@ -320,6 +328,14 @@ def main():
             slug, var, wall, "LED %.1f mm von der Mitte" % flip if flip is not None else "Lage aus der Platzierungs-App", bad))
         ok &= bad < 0.05
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
+    # zweite Fassung ohne Trennwand zwischen Hof-Aussparung und Gebäude-Mulden (Vergleich: plug/hof/build_page.py)
+    plate0, _, _, _, _, hof0 = build(a.scale, False, 0.0)
+    tm0, hof_tm0 = to_tm(plate0), to_tm(hof0)
+    tm0.export(os.path.join(OUT, "steckplatte_1zu%d_ohne_wand.stl" % a.scale))
+    hof_tm0.export(os.path.join(OUT, "hof_einsatz_1zu%d_ohne_wand.stl" % a.scale))
+    print("Fassung ohne Trennwand: Platte dicht=%s, Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s (mit Trennwand %.1f mm: %.1f × %.1f mm)" % (
+        tm0.is_watertight, *hof_tm0.extents, hof_tm0.is_watertight, P.HOF_WALL_T, *hof_tm.extents[:2]))
+    ok &= tm0.is_watertight and hof_tm0.is_watertight
     import preview
     preview.render([(tm, "#9aa7b4")], size=(1000, 1300), azim=-90, elev=89).save(os.path.join(PREV, "steckplatte_1zu%d_oben.png" % a.scale))
     preview.render([(tm, "#9aa7b4")], size=(1100, 900), azim=-50, elev=35).save(os.path.join(PREV, "steckplatte_1zu%d_schraeg.png" % a.scale))

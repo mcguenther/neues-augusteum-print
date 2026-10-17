@@ -45,3 +45,15 @@ def schnitt_x(man, x0):
     mat = [[0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]]   # (x, y, z) → (y, z, x)
     cs = man.transform(mat).slice(x0)
     return [np.asarray(c) for c in cs.to_polygons()]
+
+
+def schnitt_y(man, y0):
+    """Schnitt der Ebene y = y0: Liste von Konturen (Nx2) in (x, z) mm."""
+    mat = [[-1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0]]   # (x, y, z) → (-x, z, y), Drehung ohne Spiegelung
+    return [np.column_stack([-c[:, 0], c[:, 1]]) for c in (np.asarray(c) for c in man.transform(mat).slice(y0).to_polygons())]
+
+
+def schnitt_u(man, u0, achse_grad):
+    """Schnitt der Ebene u = u0 im Hofsystem (Achse nach Norden, u quer): Liste von Konturen (Nx2) in (t, z) mm."""
+    mat = [[0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]]
+    return [np.asarray(c) for c in man.rotate([0.0, 0.0, achse_grad]).transform(mat).slice(u0).to_polygons()]
