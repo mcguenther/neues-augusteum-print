@@ -17,7 +17,7 @@ DISP = dict(
     pcb_w=35.3,        # M  Platine, Breite (Foto ± 0,5; Schwestermodul -79: 35,5 ± 0,2)
     pcb_h=33.8,        # M  Platine, Höhe: Probedruck 1 passte das Modul nicht in die Tasche 33,3; Modulprobe (Tasche 34,35) passte mit Luft, Nutzer: 33,8 reicht vermutlich
     pcb_t=1.0,         # S  Platinendicke (Schwestermodul -79: 1,0)
-    mod_t=4.5,         # S  Dicke Glas 1,7 + Platine 1,0 + Bauteile 1,2 = 3,9, ohne Header; mit 0,6 Reserve
+    mod_t=4.4,         # S  Dicke Glas 1,7 + Platine 1,0 + Bauteile 1,2 = 3,9, ohne Header; mit 0,6 Reserve
     hdr_t=2.5,         # B  Kunststoff der Pinleiste hinten (Zeichnung -79: 2,5 max; die Pins ragen bis 11,3 von der Glasfront)
     hole_d=3.0,        # M  Befestigungsbohrung (Foto 2,9 bis 3,2; Lötring 3,8)
     hole_dx=30.3,      # M  Lochabstand quer (Foto 30,3)
@@ -96,7 +96,7 @@ KEY = 3.0              # B  Kodierecke (parts.py KEY, Steckprobe 1 bewährt), Ec
 FOOT_CH_FRONT = 2.0    # B  Fase vorn und an der Kodierecke: FUSS_FASE_T 2,0 (plug/buildings.py, r8 bewährt: fängt, kein Wulst)
 FOOT_CH_SIDE = 0.6     # E  Fase an den Längsseiten und hinten: Wand um den Schacht ist 1,2, bei 2,0 würde die Fase in den Schacht schneiden
 CLR_MULDE = 0.15       # E  Spiel Fuß zur Mulde je Seite (Vorgabe des Nutzers für den nächsten Probedruck, r8; 0,10 war an der kleinen Lehre bewährt)
-PEG_D = 2.4            # E  Zapfen der Frontblende durch die Befestigungslöcher des Moduls (Loch etwa Ø 3,0)
+PEG_D = 2.5            # E  Zapfen der Frontblende durch die Befestigungslöcher des Moduls (Loch etwa Ø 3,0)
 PEG_D_B = 2.5          # E  Variante B für die Modulprobe: Zapfen ohne Spiel im Sackloch
 PEG_HOLE_D = 2.55      # E  Sackloch in der Rückwand; Probedruck 1: Ø 2,6 (0,1 je Seite) ließ den Zapfen nur gleiten, jetzt 0,05 je Seite wie die bewährte Kassette (0,06)
 PEG_HOLE_T = 2.6       # E  Tiefe des Sacklochs; Probedruck 1: 1,2, Zapfen griff nur 1,0 tief. Dahinter bleibt im Körper mindestens 1,0 Material
