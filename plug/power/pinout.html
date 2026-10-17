@@ -1,0 +1,244 @@
+<title>ESP32 Pinout Steckplatte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Ergebnis oben, Board-Zeichnung mit Rollenchips, Dock-Tabelle, Schaltung eines Docks, Pegel und Bibliothek, Offenes */
+:root {
+  --bg: #f5f7f5; --panel: #ffffff; --fg: #1a201b; --muted: #58645b; --line: #d3dad4; --code: #eef2ee;
+  --din-bg: #d9e7fa; --din-fg: #11407a;
+  --det-bg: #d6eedd; --det-fg: #135a2c;
+  --res-bg: #e8e5f7; --res-fg: #3d3484;
+  --inonly-bg: #f0e7c8; --inonly-fg: #67500a;
+  --cond-bg: #fbe0cb; --cond-fg: #86400a;
+  --avoid-bg: #f8d9d9; --avoid-fg: #8a1f1f;
+  --pwr-bg: #e2e6e3; --pwr-fg: #2f3832;
+  --gnd-bg: #e2e6e3; --gnd-fg: #2f3832;
+  --wire: #2d6a4f;
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --din-bg: #1b3557; --din-fg: #b9d4ff;
+  --det-bg: #183f29; --det-fg: #b6e7c7;
+  --res-bg: #2c2a55; --res-fg: #cdc8ff;
+  --inonly-bg: #483d15; --inonly-fg: #ecd88a;
+  --cond-bg: #59301a; --cond-fg: #ffc9a0;
+  --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
+  --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
+  --wire: #7fd1a6; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111512; --panel: #1a1f1b; --fg: #e5eae5; --muted: #99a59c; --line: #2f3731; --code: #151a16;
+  --din-bg: #1b3557; --din-fg: #b9d4ff;
+  --det-bg: #183f29; --det-fg: #b6e7c7;
+  --res-bg: #2c2a55; --res-fg: #cdc8ff;
+  --inonly-bg: #483d15; --inonly-fg: #ecd88a;
+  --cond-bg: #59301a; --cond-fg: #ffc9a0;
+  --avoid-bg: #5a2121; --avoid-fg: #ffc4c4;
+  --pwr-bg: #30363a; --pwr-fg: #d4d9dc;
+  --gnd-bg: #30363a; --gnd-fg: #d4d9dc;
+  --wire: #7fd1a6; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--sans);
+  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 34px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 18px; margin: 0 0 10px; font-weight: 600; text-wrap: balance; }
+p { margin: 0 0 10px; max-width: 68ch; }
+small { color: var(--muted); font-size: 11px; margin-left: 4px; }
+.lead { color: var(--muted); max-width: 68ch; }
+.mono, code, pre { font-family: var(--mono); }
+code { background: var(--code); padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+section { min-width: 0; }
+
+.verdict { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.verdict .big { font-size: 18px; font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip { display: inline-block; font: 600 11px/1 var(--mono); padding: 4px 6px; border-radius: 3px; white-space: nowrap; letter-spacing: .02em; }
+.chip.din, .dot.din { background: var(--din-bg); color: var(--din-fg); }
+.chip.det, .dot.det { background: var(--det-bg); color: var(--det-fg); }
+.chip.res, .dot.res { background: var(--res-bg); color: var(--res-fg); }
+.chip.inonly, .dot.inonly { background: var(--inonly-bg); color: var(--inonly-fg); }
+.chip.cond, .dot.cond { background: var(--cond-bg); color: var(--cond-fg); }
+.chip.avoid, .dot.avoid { background: var(--avoid-bg); color: var(--avoid-fg); }
+.chip.pwr, .dot.pwr, .chip.gnd, .dot.gnd { background: var(--pwr-bg); color: var(--pwr-fg); }
+
+.scroll { overflow-x: auto; }
+.board { display: grid; grid-template-columns: 1fr 46px 1fr; min-width: 330px; max-width: 460px; margin: 0 auto; }
+.col { display: flex; flex-direction: column; }
+.pr { height: 32px; display: flex; align-items: center; gap: 6px; border-bottom: 1px dashed var(--line); font-size: 12px; }
+.pr.l { justify-content: flex-end; }
+.pr.r { justify-content: flex-start; }
+.pr .nm { font-family: var(--mono); white-space: nowrap; }
+.pr .nm b { font-weight: 600; }
+.dot { width: 14px; height: 4px; flex: none; border-radius: 0; }
+.body { background: var(--panel); border: 1.5px solid var(--fg); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 8px 0; margin: 0 -1px; }
+.body span { writing-mode: vertical-rl; font: 600 11px var(--mono); color: var(--muted); letter-spacing: .08em; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+td small { margin-left: 3px; }
+.tbl { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
+.tbl table td:last-child { min-width: 260px; }
+
+svg text { font-family: var(--mono); font-size: 12px; fill: var(--fg); }
+svg .m { fill: var(--muted); font-size: 11px; }
+svg .w { stroke: var(--wire); stroke-width: 2; fill: none; }
+svg .p { stroke: var(--fg); stroke-width: 1.5; fill: var(--panel); }
+svg .f { fill: var(--fg); }
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; }
+.diagram svg { min-width: 560px; width: 100%; height: auto; display: block; }
+
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.5; margin: 0; }
+ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 70ch; }
+.note { border-left: 3px solid var(--cond-fg); background: var(--cond-bg); color: var(--cond-fg); padding: 10px 14px; border-radius: 0 4px 4px 0; max-width: 70ch; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+</style>
+
+<main>
+  <header>
+    <h1>ESP32 Pinout Steckplatte</h1>
+    <p class="lead">Klassischer ESP32 (WROOM-32, 30-Pin-Board mit USB-C). Sechs Docks, je ein Datenausgang für die LED (DIN) und ein Eingang für die Steckerkennung (DETECT). Der 74AHCT125 ist erst einmal gestrichen.</p>
+  </header>
+
+  <section class="verdict">
+    <div class="big">Ja, die Pins reichen: 12 gebraucht, 14 unauffällige vorhanden.</div>
+    <div class="facts">
+      <span class="chip din">6 × DIN</span><span class="chip det">6 × DETECT</span>
+      <span class="chip res">2 Reserve</span><span class="chip inonly">4 nur Eingang</span>
+      <span class="chip cond">3 bedingt</span><span class="chip avoid">4 meiden</span>
+    </div>
+    <p style="margin:0">Das Board hat 25 herausgeführte GPIOs. Alle zwölf belegten Pins können Ausgang und Eingang, haben einen internen Pull-up und verhalten sich beim Booten ruhig. Strapping-Pins, die UART-Pins und der Pin mit dem PWM-Signal beim Start bleiben unbelegt.</p>
+  </section>
+
+  <section>
+    <h2>Pinbelegung</h2>
+    <p>Ansicht von oben, Antenne oben, USB unten. Die Reihenfolge entspricht dem üblichen 30-Pin-DOIT-Board; vor dem Löten mit dem Aufdruck deines Boards vergleichen. Mit dem Mauszeiger über einem Pin steht die Begründung.</p>
+    <div class="scroll"><div class="board"><div class="col"><div class="pr l" title="Reset-Pin, nicht belegen."><span class="chip pwr">Versorg.</span><span class="nm"><b>EN</b></span><i class="dot pwr"></i></div><div class="pr l" title="Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1."><span class="chip inonly">nur Ein</span><span class="nm"><b>GPIO36</b><small>VP</small></span><i class="dot inonly"></i></div><div class="pr l" title="Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1."><span class="chip inonly">nur Ein</span><span class="nm"><b>GPIO39</b><small>VN</small></span><i class="dot inonly"></i></div><div class="pr l" title="Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1."><span class="chip inonly">nur Ein</span><span class="nm"><b>GPIO34</b><small>D34</small></span><i class="dot inonly"></i></div><div class="pr l" title="Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1."><span class="chip inonly">nur Ein</span><span class="nm"><b>GPIO35</b><small>D35</small></span><i class="dot inonly"></i></div><div class="pr l" title="Unauffällig beim Booten, RTC-Pin, ADC1."><span class="chip det">DET 1</span><span class="nm"><b>GPIO32</b><small>D32</small></span><i class="dot det"></i></div><div class="pr l" title="Unauffällig beim Booten, RTC-Pin, ADC1."><span class="chip det">DET 2</span><span class="nm"><b>GPIO33</b><small>D33</small></span><i class="dot det"></i></div><div class="pr l" title="Unauffällig beim Booten, DAC1, ADC2."><span class="chip det">DET 3</span><span class="nm"><b>GPIO25</b><small>D25</small></span><i class="dot det"></i></div><div class="pr l" title="Unauffällig beim Booten, DAC2, ADC2."><span class="chip det">DET 4</span><span class="nm"><b>GPIO26</b><small>D26</small></span><i class="dot det"></i></div><div class="pr l" title="Unauffällig beim Booten, ADC2."><span class="chip det">DET 5</span><span class="nm"><b>GPIO27</b><small>D27</small></span><i class="dot det"></i></div><div class="pr l" title="Gibt beim Booten kurz ein PWM-Signal aus."><span class="chip cond">bedingt</span><span class="nm"><b>GPIO14</b><small>D14</small></span><i class="dot cond"></i></div><div class="pr l" title="Strapping (MTDI): HIGH beim Start stellt den Flash auf 1,8 V, das WROOM-32 startet dann nicht."><span class="chip avoid">meiden</span><span class="nm"><b>GPIO12</b><small>D12</small></span><i class="dot avoid"></i></div><div class="pr l" title="Unauffällig beim Booten, ADC2."><span class="chip det">DET 6</span><span class="nm"><b>GPIO13</b><small>D13</small></span><i class="dot det"></i></div><div class="pr l" title="Masse."><span class="chip gnd">GND</span><span class="nm"><b>GND</b></span><i class="dot gnd"></i></div><div class="pr l" title="5 V Eingang, hier hängt die USB-A-Buchse der Powerbank."><span class="chip pwr">Versorg.</span><span class="nm"><b>VIN</b></span><i class="dot pwr"></i></div></div><div class="body"><span class="ant">Antenne</span><span class="mod">ESP32-WROOM-32</span><span class="usb">USB-C</span></div><div class="col"><div class="pr r" title="Unauffällig beim Booten (VSPI MOSI)."><span class="nm"><b>GPIO23</b><small>D23</small></span><span class="chip din">DIN 1</span><i class="dot din"></i></div><div class="pr r" title="Unauffällig beim Booten (I²C SCL)."><span class="nm"><b>GPIO22</b><small>D22</small></span><span class="chip din">DIN 2</span><i class="dot din"></i></div><div class="pr r" title="UART0 zum USB-Chip, gibt das Boot-Log aus, wird beim Flashen benutzt."><span class="nm"><b>GPIO1</b><small>TX0</small></span><span class="chip avoid">meiden</span><i class="dot avoid"></i></div><div class="pr r" title="UART0 vom USB-Chip, wird beim Flashen benutzt."><span class="nm"><b>GPIO3</b><small>RX0</small></span><span class="chip avoid">meiden</span><i class="dot avoid"></i></div><div class="pr r" title="Unauffällig beim Booten (I²C SDA)."><span class="nm"><b>GPIO21</b><small>D21</small></span><span class="chip din">DIN 3</span><i class="dot din"></i></div><div class="pr r" title="Unauffällig beim Booten (VSPI MISO)."><span class="nm"><b>GPIO19</b><small>D19</small></span><span class="chip din">DIN 4</span><i class="dot din"></i></div><div class="pr r" title="Unauffällig beim Booten (VSPI SCK)."><span class="nm"><b>GPIO18</b><small>D18</small></span><span class="chip din">DIN 5</span><i class="dot din"></i></div><div class="pr r" title="Strapping, gibt beim Booten kurz ein PWM-Signal aus."><span class="nm"><b>GPIO5</b><small>D5</small></span><span class="chip cond">bedingt</span><i class="dot cond"></i></div><div class="pr r" title="Unauffällig beim Booten (beim WROVER mit PSRAM belegt)."><span class="nm"><b>GPIO17</b><small>TX2</small></span><span class="chip din">DIN 6</span><i class="dot din"></i></div><div class="pr r" title="Unauffällig beim Booten (beim WROVER mit PSRAM belegt)."><span class="nm"><b>GPIO16</b><small>RX2</small></span><span class="chip res">Reserve</span><i class="dot res"></i></div><div class="pr r" title="Unauffällig beim Booten, ADC2."><span class="nm"><b>GPIO4</b><small>D4</small></span><span class="chip res">Reserve</span><i class="dot res"></i></div><div class="pr r" title="Strapping: muss beim Flashen LOW oder offen sein, hängt oft an der Board-LED."><span class="nm"><b>GPIO2</b><small>D2</small></span><span class="chip avoid">meiden</span><i class="dot avoid"></i></div><div class="pr r" title="Strapping, gibt beim Booten kurz ein PWM-Signal aus (Boot-Log)."><span class="nm"><b>GPIO15</b><small>D15</small></span><span class="chip cond">bedingt</span><i class="dot cond"></i></div><div class="pr r" title="Masse."><span class="nm"><b>GND</b></span><span class="chip gnd">GND</span><i class="dot gnd"></i></div><div class="pr r" title="3,3 V Ausgang des Boardreglers, nicht belasten."><span class="nm"><b>3V3</b></span><span class="chip pwr">Versorg.</span><i class="dot pwr"></i></div></div></div></div>
+    <div class="legend" style="margin-top:14px">
+      <span><i class="dot din" style="height:8px"></i>Datenleitung zur LED</span>
+      <span><i class="dot det" style="height:8px"></i>Steckerkennung</span>
+      <span><i class="dot res" style="height:8px"></i>Reserve</span>
+      <span><i class="dot inonly" style="height:8px"></i>nur Eingang, ohne Pull-up</span>
+      <span><i class="dot cond" style="height:8px"></i>bedingt (Boot-Signal)</span>
+      <span><i class="dot avoid" style="height:8px"></i>meiden</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Zuordnung je Dock</h2>
+    <p>Die Reihenfolge der Docks und die Zuordnung zu den Gebäuden sind noch nicht festgelegt. Die Nummern sind austauschbar.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Dock</th><th>DIN zur LED</th><th>DETECT</th></tr></thead>
+      <tbody><tr><td><b>Dock 1</b></td><td class="mono">GPIO23 <small>D23</small></td><td class="mono">GPIO32 <small>D32</small></td></tr><tr><td><b>Dock 2</b></td><td class="mono">GPIO22 <small>D22</small></td><td class="mono">GPIO33 <small>D33</small></td></tr><tr><td><b>Dock 3</b></td><td class="mono">GPIO21 <small>D21</small></td><td class="mono">GPIO25 <small>D25</small></td></tr><tr><td><b>Dock 4</b></td><td class="mono">GPIO19 <small>D19</small></td><td class="mono">GPIO26 <small>D26</small></td></tr><tr><td><b>Dock 5</b></td><td class="mono">GPIO18 <small>D18</small></td><td class="mono">GPIO27 <small>D27</small></td></tr><tr><td><b>Dock 6</b></td><td class="mono">GPIO17 <small>TX2</small></td><td class="mono">GPIO13 <small>D13</small></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Schaltung eines Docks</h2>
+    <div class="diagram">
+      <svg viewBox="0 0 640 270" role="img" aria-label="Schaltung eines Docks: GPIO über 330 Ohm an DIN, DETECT direkt, 5 V über Diode, GND">
+        <rect class="p" x="10" y="20" width="120" height="235" rx="4"/>
+        <text x="70" y="42" text-anchor="middle" style="font-weight:600">ESP32</text>
+        <text x="122" y="80" text-anchor="end">GPIO23</text>
+        <text x="122" y="140" text-anchor="end">GPIO32</text>
+        <text x="122" y="200" text-anchor="end">VIN 5 V</text>
+        <text x="122" y="240" text-anchor="end">GND</text>
+
+        <rect class="p" x="500" y="20" width="130" height="235" rx="4"/>
+        <text x="565" y="42" text-anchor="middle" style="font-weight:600">Dock</text>
+        <text x="508" y="80">2 DIN</text>
+        <text x="508" y="140">4 DETECT</text>
+        <text x="508" y="200">3 +5 V</text>
+        <text x="508" y="240">1 GND</text>
+
+        <!-- DIN über 330 Ohm -->
+        <path class="w" d="M130 76 H250 M310 76 H500"/>
+        <rect class="p" x="250" y="66" width="60" height="20" rx="2"/>
+        <text x="280" y="62" text-anchor="middle" class="m">330 Ω</text>
+        <!-- DETECT -->
+        <path class="w" d="M130 136 H500"/>
+        <text x="315" y="156" text-anchor="middle" class="m">interner Pull-up, LOW = Gebäude steckt</text>
+        <!-- 5 V über Diode -->
+        <path class="w" d="M130 196 H215 M255 196 H500"/>
+        <path class="p" d="M215 184 L215 208 L242 196 Z"/>
+        <path class="w" d="M247 184 V208"/>
+        <text x="232" y="176" text-anchor="middle" class="m">Diode 1N4007</text>
+        <text x="232" y="224" text-anchor="middle" class="m">einmal für alle Docks</text>
+        <!-- Kondensator -->
+        <path class="w" d="M360 196 V206 M345 206 H375 M345 214 H375 M360 214 V236"/>
+        <text x="388" y="214" class="m">1000 µF</text>
+        <!-- GND -->
+        <path class="w" d="M130 236 H500"/>
+      </svg>
+    </div>
+    <p style="margin-top:10px">Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
+  </section>
+
+  <section>
+    <h2>3,3 V an der LED ohne Pegelwandler</h2>
+    <p>Der ESP32 liefert an DIN 3,3 V. Nach dem älteren WS2812B-Datenblatt braucht ein High-Pegel mindestens 0,7 × VDD, bei 5 V also 3,5 V. Das klappt oft trotzdem, liegt aber außerhalb der Angabe.</p>
+    <div class="note">Vorschlag: eine Siliziumdiode in der gemeinsamen 5-V-Leitung der Docks. Sie senkt VDD an den LEDs auf etwa 4,1 bis 4,4 V, die Schwelle liegt dann bei etwa 2,9 bis 3,1 V und 3,3 V reichen. Der ESP32 hängt vor der Diode an den vollen 5 V. Das ist nicht getestet und gehört in den nächsten Testbogen: ein Dock auf dem Steckbrett, LED sicher an, auch beim Stecken unter Spannung.</div>
+  </section>
+
+  <section>
+    <h2>Bibliothek und RMT</h2>
+    <p>Der klassische ESP32 hat 8 RMT-Sendekanäle, jeder lässt sich auf einen beliebigen Ausgangspin legen. Sechs Docks belegen sechs Kanäle, zwei bleiben frei. Mit einer LED je Dock dauert selbst das Senden nacheinander unter 2 ms. Es braucht kein Bit-Banging.</p>
+    <div class="two">
+      <div>
+        <p><b>FastLED</b>: ein <code>addLeds</code> je Pin mit festem Pin als Template-Parameter. Es sendet an alle Pins zugleich; eine Freigabe je Dock geht nur über die Farbe (Schwarz).</p>
+        <p><b>NeoPixelBus</b>: je Dock eine eigene Instanz mit Methode <code>NeoEsp32Rmt0Ws2812xMethod</code> bis <code>Rmt5</code>. Damit lässt sich die Freigabe je Dock sauber trennen.</p>
+        <p>Welche Bibliotheksversion mit dem installierten ESP32-Core alle sechs Kanäle zugleich schafft, zeigt erst der erste Lauf.</p>
+      </div>
+<pre>#include &lt;FastLED&gt;
+// Skizze, nicht getestet
+const uint8_t DETECT[6] = {32, 33, 25, 26, 27, 13};
+CRGB led[6];
+
+void setup() {
+  FastLED.addLeds&lt;WS2812B, 23, GRB&gt;(&amp;led[0], 1);
+  FastLED.addLeds&lt;WS2812B, 22, GRB&gt;(&amp;led[1], 1);
+  FastLED.addLeds&lt;WS2812B, 21, GRB&gt;(&amp;led[2], 1);
+  FastLED.addLeds&lt;WS2812B, 19, GRB&gt;(&amp;led[3], 1);
+  FastLED.addLeds&lt;WS2812B, 18, GRB&gt;(&amp;led[4], 1);
+  FastLED.addLeds&lt;WS2812B, 17, GRB&gt;(&amp;led[5], 1);
+  for (uint8_t p : DETECT) pinMode(p, INPUT_PULLUP);
+}
+
+void loop() {
+  for (int i = 0; i &lt; 6; i++)
+    led[i] = digitalRead(DETECT[i]) == LOW
+             ? CRGB::White : CRGB::Black;
+  FastLED.show();
+  delay(20);
+}</pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alle Pins im Überblick</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>GPIO</th><th>Aufdruck</th><th>Rolle</th><th>Ausgang</th><th>Eingang</th><th>Pull-up</th><th>RMT</th><th>Hinweis</th></tr></thead>
+      <tbody><tr><td class="mono"><b>1</b></td><td class="mono">TX0</td><td><span class="chip avoid">meiden</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>UART0 zum USB-Chip, gibt das Boot-Log aus, wird beim Flashen benutzt.</td></tr><tr><td class="mono"><b>2</b></td><td class="mono">D2</td><td><span class="chip avoid">meiden</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Strapping: muss beim Flashen LOW oder offen sein, hängt oft an der Board-LED.</td></tr><tr><td class="mono"><b>3</b></td><td class="mono">RX0</td><td><span class="chip avoid">meiden</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>UART0 vom USB-Chip, wird beim Flashen benutzt.</td></tr><tr><td class="mono"><b>4</b></td><td class="mono">D4</td><td><span class="chip res">Reserve</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, ADC2.</td></tr><tr><td class="mono"><b>5</b></td><td class="mono">D5</td><td><span class="chip cond">bedingt</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Strapping, gibt beim Booten kurz ein PWM-Signal aus.</td></tr><tr><td class="mono"><b>12</b></td><td class="mono">D12</td><td><span class="chip avoid">meiden</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Strapping (MTDI): HIGH beim Start stellt den Flash auf 1,8 V, das WROOM-32 startet dann nicht.</td></tr><tr><td class="mono"><b>13</b></td><td class="mono">D13</td><td><span class="chip det">DET 6</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, ADC2.</td></tr><tr><td class="mono"><b>14</b></td><td class="mono">D14</td><td><span class="chip cond">bedingt</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Gibt beim Booten kurz ein PWM-Signal aus.</td></tr><tr><td class="mono"><b>15</b></td><td class="mono">D15</td><td><span class="chip cond">bedingt</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Strapping, gibt beim Booten kurz ein PWM-Signal aus (Boot-Log).</td></tr><tr><td class="mono"><b>16</b></td><td class="mono">RX2</td><td><span class="chip res">Reserve</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (beim WROVER mit PSRAM belegt).</td></tr><tr><td class="mono"><b>17</b></td><td class="mono">TX2</td><td><span class="chip din">DIN 6</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (beim WROVER mit PSRAM belegt).</td></tr><tr><td class="mono"><b>18</b></td><td class="mono">D18</td><td><span class="chip din">DIN 5</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (VSPI SCK).</td></tr><tr><td class="mono"><b>19</b></td><td class="mono">D19</td><td><span class="chip din">DIN 4</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (VSPI MISO).</td></tr><tr><td class="mono"><b>21</b></td><td class="mono">D21</td><td><span class="chip din">DIN 3</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (I²C SDA).</td></tr><tr><td class="mono"><b>22</b></td><td class="mono">D22</td><td><span class="chip din">DIN 2</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (I²C SCL).</td></tr><tr><td class="mono"><b>23</b></td><td class="mono">D23</td><td><span class="chip din">DIN 1</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten (VSPI MOSI).</td></tr><tr><td class="mono"><b>25</b></td><td class="mono">D25</td><td><span class="chip det">DET 3</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, DAC1, ADC2.</td></tr><tr><td class="mono"><b>26</b></td><td class="mono">D26</td><td><span class="chip det">DET 4</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, DAC2, ADC2.</td></tr><tr><td class="mono"><b>27</b></td><td class="mono">D27</td><td><span class="chip det">DET 5</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, ADC2.</td></tr><tr><td class="mono"><b>32</b></td><td class="mono">D32</td><td><span class="chip det">DET 1</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, RTC-Pin, ADC1.</td></tr><tr><td class="mono"><b>33</b></td><td class="mono">D33</td><td><span class="chip det">DET 2</span></td><td>ja</td><td>ja</td><td>ja</td><td>ja</td><td>Unauffällig beim Booten, RTC-Pin, ADC1.</td></tr><tr><td class="mono"><b>34</b></td><td class="mono">D34</td><td><span class="chip inonly">nur Ein</span></td><td>nein</td><td>ja</td><td>nein</td><td>nein</td><td>Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1.</td></tr><tr><td class="mono"><b>35</b></td><td class="mono">D35</td><td><span class="chip inonly">nur Ein</span></td><td>nein</td><td>ja</td><td>nein</td><td>nein</td><td>Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1.</td></tr><tr><td class="mono"><b>36</b></td><td class="mono">VP</td><td><span class="chip inonly">nur Ein</span></td><td>nein</td><td>ja</td><td>nein</td><td>nein</td><td>Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1.</td></tr><tr><td class="mono"><b>39</b></td><td class="mono">VN</td><td><span class="chip inonly">nur Ein</span></td><td>nein</td><td>ja</td><td>nein</td><td>nein</td><td>Nur Eingang, kein interner Pull-up (extern 10 kΩ), ADC1.</td></tr></tbody>
+    </table></div>
+    <p style="margin-top:10px"><small style="margin-left:0">GPIO 6 bis 11 hängen intern am Flash und sind nicht herausgeführt. GPIO0 fehlt auf den meisten 30-Pin-Boards; falls er bei deinem Board doch herausgeführt ist, bleibt er wegen Boot-Taste und Strapping unbelegt.</small></p>
+  </section>
+
+  <section>
+    <h2>Offen und zu beachten</h2>
+    <ul>
+      <li><b>Aufdruck prüfen.</b> Klone vertauschen gelegentlich Pins. Die Tabelle gilt nach GPIO-Nummer, nicht nach Position.</li>
+      <li><b>WROOM, nicht WROVER.</b> Auf dem Etikett steht ESP-WROOM-32. Nur dort sind GPIO16 und 17 frei.</li>
+      <li><b>Zwei Stromquellen.</b> Die Powerbank hängt an VIN. Beim Flashen über USB-C die Powerbank abziehen, sonst speisen sich beide gegenseitig, sofern das Board keine Diode hat.</li>
+      <li><b>Strompuls alle 5 s.</b> Wie der Mikrocontroller kurz Strom für die Powerbank abruft, ist noch nicht festgelegt. GPIO16 bleibt dafür frei.</li>
+      <li><b>Pull-up.</b> Der interne Pull-up hat etwa 45 kΩ. Bei langen Flachbandstücken kann ein externer 10 kΩ nötig werden; in Software 100 ms entprellen.</li>
+      <li><b>Pins 34, 35, 36, 39.</b> Nur als zusätzliche DETECT-Eingänge brauchbar, dann mit externem Pull-up. Für Ausgänge nicht geeignet.</li>
+    </ul>
+  </section>
+</main>
