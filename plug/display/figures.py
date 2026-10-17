@@ -52,7 +52,7 @@ class Svg:
         self.text(x + 1.2 * side, (z0 + z1) / 2, label, "num", "start" if side > 0 else "end", dy=4)
 
     def svg(self, ident, label):
-        return '<svg id="%s" viewBox="0 0 %.0f %.0f" role="img" aria-label="%s" class="fig sec">%s</svg>' % (ident, self.w, self.h, label, "".join(self.o))
+        return '<svg id="%s" viewBox="0 0 %.0f %.0f" role="img" aria-label="%s" class="fig sec" style="max-width:%.0fpx">%s</svg>' % (ident, self.w, self.h, label, self.w, "".join(self.o))
 
 
 def _rot(pts, piv, deg):

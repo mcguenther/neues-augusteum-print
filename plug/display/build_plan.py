@@ -240,7 +240,7 @@ def page(v):
 <header>
   <div class="kicker">Steckmechanismus · Display-Gebäude · Plan, noch nicht abgenickt</div>
   <h1>Display-Gebäude für Leistung und Verbrauch</h1>
-  <p class="lead">Ein senkrecht stehendes OLED auf einem eigenen Fuß mit Mulde, steckbar wie ein Gebäude, nah am Boden, nach Osten gerichtet, am Ostrand und nicht vor den Gebäuden. Es zeigt als Rolling-Plot die Leistung und den Verbrauch, gemessen mit dem INA226. Dieser Plan vergleicht drei Entwürfe und mehrere Lagen. Erst nach deinem Okay entstehen STL.</p>
+  <p class="lead">Ein senkrecht stehendes OLED auf einem eigenen Fuß mit Mulde, steckbar wie ein Gebäude, nah am Boden, nach Osten gerichtet, am Ostrand und nicht vor den Gebäuden. Es zeigt als Rolling-Plot die Leistung und den Verbrauch, gemessen mit dem INA226. Dieser Plan vergleicht drei Entwürfe und mehrere Lagen. Erst nach deinem Okay entstehen STL. <b>Stand 2:</b> Das Modul ist aus deinen Fotos ausgemessen, der Aufbau und Zusammenbau des Körpers steht in <a href="https://claude.ai/artifact/NBFuN7QfeQDaLr9qCWXUVp">Plan 2</a>.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -251,7 +251,7 @@ def page(v):
     <div class="rec"><span class="lbl">Lage</span><span class="big">Südost-Ecke</span>
       <span class="small">Am Ostrand, Mitte {de(y_a, 0)} mm von der Südkante, etwa 5 mm über der Schrift. Dort steht nichts davor, die Platte hat Platz bis zu den Gebäuden.</span></div>
     <div class="rec"><span class="lbl">Entwurf</span><span class="big">E2, {de(d2['w'])} × {de(d2['depth'])}</span>
-      <span class="small">Display vorn, Block mit Kassette dahinter. Das Sichtfenster beginnt {de(sc['E2']['win_bottom'])} mm über der Platte, der Fuß nimmt die untere Platinenhälfte auf. Höhe gesamt {de(sc['E2']['top'])} mm.</span></div>
+      <span class="small">Display vorn, Block mit Kassette dahinter. Das Sichtfenster beginnt {de(sc['E2']['win_bottom'])} mm über der Platte, der Fuß nimmt das untere Ende der Platine auf. Höhe gesamt {de(sc['E2']['top'])} mm.</span></div>
     <div><span class="lbl">Kabel</span><span class="big">≈ {de(esp_a * 1.3 + 30, 0)} mm</span>
       <span class="small">Vier Adern vom Display-Dock zum ESP-Feld im Unterkasten, ohne die Powerbank zu kreuzen. {posts_short}</span></div>
   </div>
@@ -259,21 +259,21 @@ def page(v):
 
 <section aria-labelledby="h-mod">
   <h2 id="h-mod">Das Display ist ein 1,3-Zoll-Modul</h2>
-  <p>Die Recherche zum Aufdruck „GME12864-70“ ergab: Das ist laut Hersteller ein nacktes <b>1,3-Zoll-Panel</b> (128 × 64 Pixel, Controller CH1116G, kompatibel zum SH1106) mit FPC. Dein Teil sitzt auf einer Platine. Die Platine misst auf dem Foto etwa 35 mm in der Breite, das passt zu den 35,5 × 32 mm des Schwestermoduls GME12864-79. Damit ist die Anzeige größer als beim 0,96-Zoll-Modul, das ich zuerst angenommen hatte: Die aktive Fläche hat <span class="num">{de(D.DISP['aa_w'], 2)} × {de(D.DISP['aa_h'], 2)} mm</span> statt 21,7 × 10,9 mm. Für den Rolling-Plot ist das ein klarer Gewinn.</p>
+  <p>Die Recherche zum Aufdruck „GME12864-70“ ergab: Das ist laut Hersteller ein nacktes <b>1,3-Zoll-Panel</b> (128 × 64 Pixel, Controller CH1116G, kompatibel zum SH1106) mit FPC. Dein Teil sitzt auf einer Platine. Die Platine „1.30″ IIC“ misst nach deinen Fotos etwa 35,3 × 33 mm (Maße und Zeichnung in Plan 2). Damit ist die Anzeige größer als beim 0,96-Zoll-Modul, das ich zuerst angenommen hatte: Die aktive Fläche hat <span class="num">{de(D.DISP['aa_w'], 2)} × {de(D.DISP['aa_h'], 2)} mm</span> statt 21,7 × 10,9 mm. Für den Rolling-Plot ist das ein klarer Gewinn.</p>
   <div class="two">
     <div class="card"><h3>Was belegt ist (Datenblatt GME12864-70)</h3>
       <ul class="small">
         <li>Panel 34,5 × 23,0 × 1,45 mm, aktive Fläche 29,42 × 14,70 mm, Pixel 0,21 mm.</li>
-        <li>VDD1 1,65 bis 3,5 V. Die Herstellerseite nennt „3 bis 5 V“, das widerspricht dem Datenblatt. Ohne sichtbaren Spannungsregler auf der Platine bleibt es bei 3,3 V.</li>
+        <li>VDD1 1,65 bis 3,5 V. Die Herstellerseite nennt „3 bis 5 V“, das widerspricht dem Datenblatt. Neben C9 sitzt ein SOT-23-Bauteil, vermutlich ein Regler. Mit 3,3 V vom ESP geht es mit und ohne.</li>
         <li>RAM 132 × 64: Die Treiber-Einstellung „SH1106 128×64“ (U8g2) passt, falls das Bild 2 Pixel verschoben ist, den Spaltenversatz setzen.</li>
         <li>Pinfolge am Header, wie du gelesen hast: VDD, GND, SCK, SDA.</li>
       </ul></div>
-    <div class="card"><h3>Was noch geschätzt ist: bitte messen</h3>
+    <div class="card"><h3>Was aus deinen Fotos folgt</h3>
       <ul class="small">
-        <li>Platine Breite, Höhe und Dicke, dazu die Gesamtdicke von der Panelfront bis zur Platinenrückseite (Plan rechnet mit 35,5 × 32 × 4,5).</li>
-        <li>Lochabstand und Lochdurchmesser (auf dem Foto sind oben zwei Löcher zu sehen, geschätzt 31 mm Abstand).</li>
-        <li>Abstand von der Oberkante der Platine bis zur aktiven Fläche (Plan: 5,0).</li>
-        <li>Lage und Höhe der Pinleiste, und ob auf der Vorderseite ein Regler sitzt. Ein Foto der Vorderseite hilft.</li>
+        <li>Platine etwa 35,3 × 33,0 mm, Löcher Ø 3,0 im Raster 30,3 × 28,6 mm (± 0,5 mm; Maßstab aus Pinraster 2,54 und Lochraster).</li>
+        <li>Die aktive Fläche liegt 8,9 mm über der Pinkante und 9,4 mm unter der Gegenkante. Der Header sitzt hinten.</li>
+        <li>Dicke etwa 3,9 mm ohne Header (aus der Zeichnung des Schwestermoduls, ungemessen). Eine Passprobe klärt sie.</li>
+        <li>Lötplätze auf der Rückseite wählen die I²C-Adresse: 0x3C oder 0x3D, ein Scan zeigt es.</li>
       </ul></div>
   </div>
 </section>
@@ -364,9 +364,9 @@ def page(v):
   <p>Blick von Süden, das Display schaut nach rechts (Osten). Grün ist die Platine, die gelbe Linie die aktive Fläche, rot die Adern. Die Platte liegt bei 0, die Mulde reicht {de(14.2)} mm tief.</p>
   <div class="figs3">
     <div class="card"><h3><span class="meta">E1</span> Stele auf der Kassette</h3><div class="scroll">{F.section('E1')}</div>
-      <p class="small">Das Modul sitzt ganz über der Kassette. Die untere Platinenhälfte ist sichtbar, das Fenster beginnt {de(sc['E1']['win_bottom'])} mm über der Platte. Kleinste Fläche ({de(d1['depth'])} × {de(d1['w'])}), die Adern sind kurz. Kommt nicht nah an den Boden.</p></div>
+      <p class="small">Das Modul sitzt ganz über der Kassette. Die Platine steht ganz über der Kassette, das Fenster beginnt {de(sc['E1']['win_bottom'])} mm über der Platte. Kleinste Fläche ({de(d1['depth'])} × {de(d1['w'])}), die Adern sind kurz. Kommt nicht nah an den Boden.</p></div>
     <div class="card rec"><h3><span class="meta">E2</span> Display vorn, Block dahinter</h3><div class="scroll">{F.section('E2')}</div>
-      <p class="small">So hast du es beschrieben. Das untere Drittel der Platine ist im Fuß versenkt, das Fenster beginnt {de(sc['E2']['win_bottom'])} mm über der Platte. Dahinter steht der Block mit der Kassette, dazwischen ein 4 mm breiter Kabelraum für die angelöteten Adern. Der Kabelraum ist oben offen und wird von einem Deckel geschlossen.</p></div>
+      <p class="small">So hast du es beschrieben. Das untere Ende der Platine ist im Fuß versenkt, das Fenster beginnt {de(sc['E2']['win_bottom'])} mm über der Platte. Dahinter steht der Block mit der Kassette, dazwischen ein 4 mm breiter Kabelraum für die angelöteten Adern. Der Kabelraum ist oben offen und wird von einem Deckel geschlossen.</p></div>
     <div class="card"><h3><span class="meta">E3</span> Pult, 15° geneigt</h3><div class="scroll">{F.section('E3')}</div>
       <p class="small">Wie E2, aber um 15° nach hinten geneigt. Das ist besser von oben lesbar, wenn man auf die Platte herabsieht. Es ist nicht mehr senkrecht und {de(d3['depth'] - d2['depth'])} mm tiefer als E2.</p></div>
   </div>
@@ -412,11 +412,11 @@ def page(v):
   <div class="scroll"><table>
     <thead><tr><th>Maß</th><th>Soll</th><th>Worst-Case</th><th>Ergebnis</th><th>Quelle</th></tr></thead>
     <tbody>
-      <tr><td>Breite der Mulde</td><td class="num">35,5 + 2 × (0,3 + 1,2) = {de(d2['w'])}</td><td class="num">Platine 36,0: Spiel 0,05 bis 0,55</td><td><span class="pill mid">messen</span></td><td class="src">S, Schwestermodul −79</td></tr>
+      <tr><td>Breite der Mulde</td><td class="num">{de(D.DISP['pcb_w'])} + 2 × (0,3 + 1,2) = {de(d2['w'])}</td><td class="num">Platine 35,8: Spiel 0,05</td><td><span class="pill mid">Passprobe</span></td><td class="src">M, Foto ± 0,5</td></tr>
       <tr><td>Tiefe der Mulde</td><td class="num">{de(L.SLAB)} + 4,0 + {de(L.KD)} = {de(d2['depth'])}</td><td class="num">Modulpaket 5,0 statt 4,5: +0,5</td><td><span class="pill mid">messen</span></td><td class="src">S</td></tr>
       <tr><td>Fußtiefe</td><td class="num">14,2, Muldenboden 0,4</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill ok">bewährt</span></td><td class="src">Plan Campus</td></tr>
-      <tr><td>Unterkante der Platine</td><td class="num">{de(sc['E2']['mod_b'])} unter der Platte, Boden darunter {de(14.2 + sc['E2']['mod_b'])}</td><td class="num">Platine 32,3: Fenster 0,3 höher</td><td><span class="pill ok">frei</span></td><td class="src">A</td></tr>
-      <tr><td>Fenster</td><td class="num">{de(sc['E2']['win_bottom'])} bis {de(sc['E2']['win_bottom'] + L.WIN_H)} über der Platte, Rand 0,4 um die aktive Fläche</td><td class="num">Abstand Rand bis aktive Fläche 5,0 ± 0,5: Rand 0 bis 0,9</td><td><span class="pill mid">messen, Rand klein</span></td><td class="src">S</td></tr>
+      <tr><td>Unterkante der Platine</td><td class="num">{de(sc['E2']['mod_b'])} unter der Platte, Boden darunter {de(14.2 + sc['E2']['mod_b'])}</td><td class="num">Foto ± 0,5: Fenster ± 0,5</td><td><span class="pill ok">frei</span></td><td class="src">A</td></tr>
+      <tr><td>Fenster</td><td class="num">{de(sc['E2']['win_bottom'])} bis {de(sc['E2']['win_bottom'] + L.WIN_H)} über der Platte, Rand 0,4 um die aktive Fläche</td><td class="num">Lage der aktiven Fläche ± 0,5: Rand −0,1 bis 0,9</td><td><span class="pill mid">Passprobe</span></td><td class="src">M, Foto</td></tr>
       <tr><td>Kassette</td><td class="num">V2-Unterbau 13,2 × 5,6, ohne Streifen, Oberkante 2,9 über der Platte</td><td class="num">wie V2</td><td><span class="pill mid">V2 ungetestet</span></td><td class="src">E, Konzept r4</td></tr>
       <tr><td>Abstand zur Plattenkante</td><td class="num">4,1 (verlangt 3,5)</td><td class="num">Randfase 1,5 + Wand 2,0</td><td><span class="pill ok">frei</span></td><td class="src">E</td></tr>
       <tr><td>Abstand zur Schrift</td><td class="num">Mulde ab y = {de(y_a - d2['w'] / 2)}, Schrift bis y ≈ 13</td><td class="num">Schrift 0,6 erhaben</td><td><span class="pill ok">frei</span></td><td class="src">A, aus generate.py</td></tr>

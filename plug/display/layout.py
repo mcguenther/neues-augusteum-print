@@ -246,5 +246,5 @@ def scan(plate, designs=("E1", "E2", "E3", "E2D")):
         out[e] = dict(ost=ost, sw=sw, ne=ne, intervals=iv, depth=round(d["depth"], 1), w=round(d["w"], 1),
                       win_z=round(window_z(e), 1), mod_b=round(module_bottom_z(e), 1),
                       win_bottom=round(module_bottom_z(e) + BELOW_WINDOW * (math.cos(math.radians(D.TILT_DEG)) if e == "E3" else 1), 1),
-                      top=round(module_bottom_z(e) + D.DISP["pcb_h"] * (math.cos(math.radians(D.TILT_DEG)) if e == "E3" else 1) + D.WALL, 1))
+                      top=round(module_bottom_z(e) + D.DISP["pcb_h"] * (math.cos(math.radians(D.TILT_DEG)) if e == "E3" else 1) + D.CLR + D.TOP_CAP, 1))
     return out

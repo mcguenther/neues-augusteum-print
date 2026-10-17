@@ -8,21 +8,31 @@ from plug.power import params as PP
 from plug.testcase import params as TP
 
 # ---- OLED-Modul: GME12864-70 ist laut Hersteller ein nacktes 1,3"-Panel (CH1116G/SH1106, 128 × 64, FPC 30 pol.); das Teil des Nutzers sitzt auf einer
-# Platine mit 4-Pin-Header (VDD GND SCK SDA). Platinenmaße aus dem Foto geschätzt (Platine etwa 35 mm breit) und aus dem Datenblatt des
-# Schwestermoduls GME12864-79 (35,5 × 32 × 1,0). Alles mit (S) vor dem Bau mit der Schieblehre messen.
+# Platine „1.30" IIC“ mit 4-Pin-Header (VDD GND SCK SDA). Maße aus den Fotos der Vorder- und Rückseite (Stand 2026-10-17): Maßstab aus dem Pinraster
+# 2,54 mm (Header 10,2 mm = 318 px) und aus dem Lochraster 30,3 × 28,4 mm des Halters „Simple holder 1.3 inch 128x64“ (Printables 59743); beide Maßstäbe
+# stimmen auf 1 % überein (31,3 und 31,2 px/mm). Genauigkeit etwa ± 0,5 mm. Dicke aus der Zeichnung des Schwestermoduls GME12864-79 (Datenblatt):
+# Glas vor der Platine 1,3 bis 1,7, Platine 1,0, Bauteile hinten bis 1,2 (Header 2,5). Keine Schieblehre vorhanden: Passprobe (Schlitz in drei Breiten) klärt es.
 DISP = dict(
-    pcb_w=35.5,        # S  Platine, Breite (Foto etwa 35; Schwestermodul -79: 35,5)
-    pcb_h=32.0,        # S  Platine, Höhe (Schwestermodul -79: 32,0)
+    pcb_w=35.3,        # M  Platine, Breite (Foto ± 0,5; Schwestermodul -79: 35,5 ± 0,2)
+    pcb_h=33.0,        # M  Platine, Höhe (Foto ± 0,5; Schwestermodul -79: 32,0, andere Platine)
     pcb_t=1.0,         # S  Platinendicke (Schwestermodul -79: 1,0)
-    mod_t=4.5,         # S  Dicke Panel 1,45 + Klebeband + Platine + Bauteile, ohne Pinleiste
-    hole_d=3.0,        # S  Befestigungsbohrung (auf dem Foto zwei Löcher oben links und rechts sichtbar)
-    hole_dx=31.0,      # S  Lochabstand quer, aus dem Foto geschätzt (Schwestermodul -79: Langlöcher 25,4 × 27,7)
+    mod_t=4.5,         # S  Dicke Glas 1,7 + Platine 1,0 + Bauteile 1,2 = 3,9, ohne Header; mit 0,6 Reserve
+    hdr_t=2.5,         # B  Kunststoff der Pinleiste hinten (Zeichnung -79: 2,5 max; die Pins ragen bis 11,3 von der Glasfront)
+    hole_d=3.0,        # M  Befestigungsbohrung (Foto 2,9 bis 3,2; Lötring 3,8)
+    hole_dx=30.3,      # M  Lochabstand quer (Foto 30,3)
+    hole_dy=28.6,      # M  Lochabstand hoch (Foto 28,6; Halter 59743: 28,4)
+    hole_edge=2.3,     # M  Mitte der Bohrung bis zum Plattenrand
+    hdr_edge=1.8,      # M  Pin-Reihe bis zum Platinenrand (Foto 1,3 bis 2,4)
+    hdr_pitch=2.54,    # B
+    notch_w=14.4,      # M  Ausschnitt am Rand gegenüber den Pins (FPC), Breite
+    notch_d=4.0,       # M  Ausschnitt, Tiefe
     panel_w=34.5,      # B  Panel-Außenmaß GME12864-70, Datenblatt S. 5
     panel_h=23.0,      # B
     aa_w=29.42,        # B  aktive Fläche 128 × 64 Pixel, Pixel 0,21 mm
     aa_h=14.70,        # B
-    aa_top=5.0,        # S  Abstand der aktiven Fläche vom oberen Platinenrand
-    vdd_max=3.5,       # B  VDD1 1,65 bis 3,5 V (Datenblatt); die Herstellerseite nennt „3 bis 5 V“, widerspricht dem Datenblatt
+    aa_top=9.4,        # M  Abstand der aktiven Fläche vom Platinenrand gegenüber den Pins (Glas 3,3 + Rand 6,4 mit dem Controllerstreifen)
+    aa_bottom=8.9,     # M  Abstand der aktiven Fläche vom Platinenrand mit den Pins (Glas 7,0 darüber + Rand 1,9)
+    vdd_max=3.5,       # B  VDD1 1,65 bis 3,5 V des Panels; ein SOT-23-Bauteil neben C9 ist vermutlich ein Regler (nicht belegt)
 )
 WINDOW_MARGIN = 0.4    # E  Sichtfenster im Rahmen größer als die aktive Fläche: Rand je Seite (A: Panelrand sichtbar halten)
 
@@ -30,10 +40,20 @@ WINDOW_MARGIN = 0.4    # E  Sichtfenster im Rahmen größer als die aktive Fläc
 WALL = 1.2             # E  Wand um Modul und Kassette (wie KASS_WALL)
 CLR = 0.3              # E  Spiel um die Platine
 BACK = 1.6             # E  Rückwand/Deckel hinter dem Modul
-CAVITY = 4.0           # S  Kabelraum zwischen Modul und Kassette bei direkt angelöteten Adern (mit Dupont-Buchse auf der Pinleiste etwa 17: Entscheidungskarte)
+CAVITY = 4.0           # S  Kabelkanal zwischen Modul und Kassette bei direkt angelöteten Adern (= CHAN; mit Dupont-Buchse auf der Pinleiste etwa 17: Entscheidungskarte)
 CAVITY_DUPONT = 17.0    # S  Kabelraum hinter dem Modul mit aufgesteckter Dupont-Buchse (Pinleiste 2,5 + Gehäuse etwa 14) und Biegung der Adern
 GAP_FRONT = 1.5        # E  Unterkante des Sichtfensters über der Plattenoberfläche (Nutzer: möglichst nah am Boden)
 TILT_DEG = 15.0        # E  Neigung der Variante „Pult“
+
+# ---- Nutzer 2026-10-17: Block über der Kassette einstufig, mindestens 4 mm Luft über der Kassette für die Adern
+AIR_MIN = 4.0          # E  Luft über der Kassettenoberkante, Mindestmaß (Nutzer)
+AIR = 4.5              # E  Plan: 0,5 Reserve
+LID_T = 1.2            # E  Deckel der Kabelkammer, bündig im Blockdach
+CHAN = 4.0             # S  Kabelkanal hinter der Rückwand des Moduls (vier Adern 28 AWG, Silikon, bündeln etwa 2,5 mm)
+SLIT_W = 14.0          # E  Kabelfenster in der Rückwand für die Adern (Pin-Reihe 7,6 plus Löt- und Biegeraum)
+TOP_CAP = 1.2          # E  Kopfdach über dem Modul (Teil des Körpers; das Modul geht von vorn hinein, die Frontblende schließt)
+BLENDE_T = 1.2         # E  Frontblende (eigenes Teil, liegend gedruckt, Fenster als Loch)
+WIRE_LEN = 55.0        # A  Länge der Adern: Weg etwa 22 mm plus 30 mm zum Anlöten außerhalb des Körpers
 
 # ---- Kassette ohne LED-Streifen: Unterbau der V2 (nur Buchsentasche und Aderschlitz), Schacht mit Spiel aus plug.campus.shaft_size
 KASS_W, KASS_D = 13.08 + 2 * TP.KASS_CLR_T, 5.46 + 2 * TP.KASS_CLR_T      # Schacht 13,2 × 5,58 (A, V2 ohne Blatt)
