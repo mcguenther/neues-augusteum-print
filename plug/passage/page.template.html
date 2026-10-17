@@ -170,7 +170,7 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
   <header>
     <h1>Durchgang am Paulinum</h1>
     <p class="lead">Zwischen Paulinum und Institutsgebäude führt eine Gasse vom Augustusplatz zum Hof. Im Laserscan-Modell füllt dort ein Vollblock mit senkrechten Streifen die Gasse. Der Vorschlag nimmt das ganze Teil weg, Block und Brücke. Die Nordwand des Paulinums wird gerade, die Gasse ist auf ganzer Länge frei, und die Treppe der Platte reicht bis zum Ostende.</p>
-    <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">Vorschlag, noch nicht im Generator</span></div>
+    <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">umgesetzt, ungedruckt</span></div>
     <dl class="sum" aria-label="Kurzvergleich Ist und Neu">
       <div><dt>Block im Durchgang</dt><dd><span class="o">Vollblock</span><span class="arrow">→</span><span class="a">entfällt</span></dd></div>
       <div><dt>Engste freie Breite</dt><dd><span class="a">@ENG@ m</span><span class="arrow">=</span><span class="a">@ENG_MM@ mm</span></dd></div>
@@ -262,21 +262,21 @@ ul.plain strong { color: var(--fg); font-weight: 600; }
 
   <section class="sec" id="pruefung">
     <div>
-      <h2>Prüfung und Dateien</h2>
-      <p class="lead">Die neuen Körper von Paulinum und Institutsgebäude sind dicht (@DICHT@), das Paulinum hat einen zusammenhängenden Grundriss. Volumen Paulinum @VOL_P@ cm³. Die Kassetten beider Gebäude liegen weit von der Gasse entfernt (Paulinum mehr als 7 mm, Institutsgebäude mehr als 27 mm).</p>
+      <h2>Umsetzung und Prüfung</h2>
+      <p class="lead">Umgesetzt ist der Schnitt im Laserscan-Modell (<code>laserscan.durchgang_schnitt</code>), die Treppe der Platte (<code>data/innenhof.json</code>), die Steckplatte (<code>plug.campus</code>) und alle sechs Gebäude (<code>plug.buildings</code>). Alle STL sind dicht, es gibt keine Kollisionen, der volle Lauf von <code>generate.py</code> und <code>plug.check</code> ist grün. Volumen Paulinum @VOL_P@ cm³.</p>
     </div>
     <div class="cols2">
-      <div><h3>Noch nicht gemacht</h3>
+      <div><h3>Dabei aufgefallen</h3>
         <ul class="plain">
-          <li><code>generate.py</code>, <code>plug.campus</code> und <code>plug.buildings</code> kennen die Änderung nicht. Es gibt keine STL und keine neuen Vorschaubilder der Gesamtmodelle.</li>
-          <li>Mulde und Fuß des Paulinums müssen mit dem neuen Grundriss neu gerechnet werden (Hohlkörper, Kassettenlage prüfen).</li>
+          <li><strong>Fuß-Fase 2,0 mm (r8, bewährt):</strong> Die Gebäude-STL waren noch mit Fase 0,5 gebaut. Mit 2,0 mm kollidierte beim Paulinum die Fase mit der Kassette (Wand nur 1,2 mm, schon mit dem alten Grundriss). Auf dem Randstück vor dem Schachtrohr (280 mm²) entfällt die Fase deshalb. Ungetestet im Druck.</li>
+          <li>Die Kassettenlage des Paulinums blieb unverändert. Ihre Wand (1,2 mm) liegt schon bisher dicht an der Nordwand zur Gasse; der Schnitt ändert diese Wand nicht, die Wandlinie ist dieselbe.</li>
+          <li>Die Gasse ist in allen Höhen frei, engste Breite @ENG@ m.</li>
         </ul></div>
-      <div><h3>Betroffene Dateien bei Zustimmung</h3>
+      <div><h3>Noch offen</h3>
         <ul class="plain">
-          <li><code>plug/passage/geom.py</code> (Schnittbereich <code>WAND_T</code>, später in <code>laserscan.py</code> bzw. <code>generate.py</code> einhängen)</li>
-          <li><code>data/innenhof.json</code> (<code>form.platte.nordost</code>: Länge, Stufen, Ende) und <code>innenhof.py</code></li>
-          <li><code>plug/campus.py</code> und <code>plug/buildings.py</code> (Mulde und Fuß des Paulinums)</li>
-          <li>Erzeugt: <code>stl/</code>, <code>vorschau/</code>, README-Bilder</li>
+          <li>Stufen von einer Schicht (0,2 mm) und die neue gerade Nordwand des Paulinums im Druck prüfen.</li>
+          <li>OSM und LoD2 haben dieselbe Lücke und sind nicht angefasst.</li>
+          <li>Die Brücke fehlt im Modell. Sie ließe sich später mit Support nachrüsten.</li>
         </ul></div>
     </div>
   </section>

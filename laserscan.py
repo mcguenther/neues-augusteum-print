@@ -245,6 +245,27 @@ def building_grid(pts, fp, info, theta=0.0):
     return grid, zl, minx, miny, len(sel), c
 
 
+# Durchgang zwischen Paulinum und Institutsgebäude (Vorschlag plug/passage/page.html, Nutzer 17.10.): Das Höhenfeld füllt die Gasse unter der Brücke
+# als Vollblock, der dem Paulinum zugeschlagen war. Das ganze Teil entfällt: alles Nördliche der Nordwand des Paulinums (Wandlinie im Hofsystem,
+# t = DURCHGANG_WAND_T m) wird abgeschnitten, auch der Absatz im Grundriss und der Splitter an der Institutswand. Nur Laserscan.
+DURCHGANG_WAND_T = 61.15      # m im Hofsystem (innenhof.rahmen), Nordwand des Paulinums
+DURCHGANG_U = (-102.0, -30.0)  # m im Hofsystem: Länge des Schnitts entlang der Wand (vom Hof bis hinter die Ostecke des Paulinums)
+
+
+def durchgang_weg(s):
+    """Fläche (mm, Kartensystem), die vom Paulinum entfällt."""
+    import innenhof
+    from shapely.geometry import box
+    _, aus_hof = innenhof.rahmen(innenhof.load())
+    return aus_hof(box(DURCHGANG_U[0] * s, DURCHGANG_WAND_T * s, DURCHGANG_U[1] * s, 100 * s))
+
+
+def durchgang_schnitt(solid, fp_mm, s):
+    """Paulinum ohne den Block im Durchgang: (Volumenkörper, Grundriss)."""
+    weg = durchgang_weg(s)
+    return solid - G.extrude(weg, -1, solid.bounding_box()[5] + 2), G.clean(fp_mm.difference(weg))
+
+
 def models(s):
     """Volumenkörper (mm), Grundrisse (mm) und Infos je Gebäude-Slug."""
     if not os.path.exists(LAZ_FILE):
@@ -266,6 +287,8 @@ def models(s):
         comps = solid.decompose()
         vmax = max(c.volume() for c in comps)
         solid = G.union([c for c in comps if c.volume() > 0.005 * vmax])
+        if slug == "01_paulinum":
+            solid, fp_mm = durchgang_schnitt(solid, fp_mm, s)
         out[slug] = (solid, fp_mm, dict(ground_z=info["ground_z"], punkte=npts, raster_drehung=round(theta, 1)))
     return out
 

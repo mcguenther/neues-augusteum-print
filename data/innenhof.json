@@ -1364,15 +1364,15 @@
    "nordost": {
     "u": [
      -94.0,
-     -60.0
+     -56.0
     ],
     "t": [
-     58.0,
-     90.0
+     61.0,
+     67.6
     ],
-    "stufen": 6,
-    "lauf": 7.0,
-    "_notiz": "Gang zwischen Paulinum und Institutsgebäude, auf Plattenhöhe; die Treppe steigt nach Westen zum Hofboden, lauf in m"
+    "stufen": 9,
+    "lauf": 42.75,
+    "_notiz": "Gasse zwischen Paulinum und Institutsgebäude (Durchgang, ohne Brücke und ohne Block, siehe laserscan.DURCHGANG_WAND_T), auf Plattenhöhe am Ostende; die Treppe steigt nach Westen zum Hofboden, 9 Stufen à 0,2 mm (eine Druckschicht), lauf = Länge der Teilung in m, die letzte Teilung (Plattenhöhe) liegt hinter u = -56 (Ostende der früheren Brücke); t = die Gasse zwischen den Wänden (Paulinum 61,1, Institutsgebäude 67,4), nicht auf die OSM-Fußgängerfläche begrenzt, weil diese den Durchgang nicht abdeckt"
    }
   }
  }

@@ -22,6 +22,7 @@ from shapely.ops import unary_union
 
 import generate as G
 import innenhof as I
+import laserscan as L
 
 SCALE = 1300
 S = 1000.0 / SCALE
@@ -59,7 +60,6 @@ def maße(s=S):
 
 def laser_pair(s=S):
     """Volumenkörper, Grundrisse (mm) und Bodenhöhe von Paulinum und Institutsgebäude wie in laserscan.models, nur für diese beiden."""
-    import laserscan as L
     import lod2
     pts = L.load_points()
     out = {}
@@ -78,25 +78,22 @@ def laser_pair(s=S):
     return out
 
 
-WAND_T = 61.15        # m im Hofsystem: Nordwand des Paulinums; was weiter nördlich liegt (Block, Splitter, Absatz), entfällt
-GASSE_U = (-102.0, -30.0)   # m im Hofsystem: so weit reicht der Schnitt entlang der Wand (vom Hof bis hinter die Ostecke des Paulinums)
+WAND_T = L.DURCHGANG_WAND_T   # m im Hofsystem: Nordwand des Paulinums; was weiter nördlich liegt (Block, Splitter, Absatz), entfällt
+GASSE_U = L.DURCHGANG_U
 
 
 def schnittbereich_mm(s=S):
     """Fläche (mm, Kartensystem), die vom Paulinum entfällt: nördlich der Wandlinie, zwischen Hof und Ostecke."""
-    _, aus_hof = I.rahmen(I.load())
-    return aus_hof(box(GASSE_U[0] * s, WAND_T * s, GASSE_U[1] * s, 100 * s))
+    return L.durchgang_weg(s)
 
 
 def umbauen(pair, s=S):
-    """Neue Körper: {slug: (Volumenkörper, Grundriss mm)} für Paulinum und Institutsgebäude.
+    """Neue Körper: {slug: (Volumenkörper, Grundriss mm)} für Paulinum und Institutsgebäude, wie laserscan.models sie jetzt liefert.
 
-    Paulinum: alles nördlich der Wandlinie WAND_T entfällt (Block des Durchgangs mit der Brücke, Splitter an der Institutswand, Absatz im Grundriss),
-    senkrechter Schnitt. Institutsgebäude: unverändert. Keine Brücke, keine Decke."""
+    `pair` kommt aus laser_pair() (alter Stand ohne Schnitt). Paulinum: alles nördlich der Wandlinie entfällt, Institutsgebäude unverändert.
+    Keine Brücke, keine Decke."""
     (p_solid, p_fp, _), (i_solid, i_fp, _) = pair["01_paulinum"], pair["05_institutsgebaeude"]
-    zmax = p_solid.bounding_box()[5] + 2
-    weg = schnittbereich_mm(s)
-    return {"01_paulinum": (p_solid - G.extrude(weg, -1, zmax), G.clean(p_fp.difference(weg))), "05_institutsgebaeude": (i_solid, i_fp)}
+    return {"01_paulinum": L.durchgang_schnitt(p_solid, p_fp, s), "05_institutsgebaeude": (i_solid, i_fp)}
 
 
 def freie_gasse(neu, s=S, u=(-94.0, -50.0), t=(61.3, 67.3), hoehen=None):

@@ -7,7 +7,7 @@ Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswe
 
 **Beim nächsten Probedruck mit Gebäuden in der Steckplatte das Spiel 0,15 mm je Seite testen** (nicht 0,10). Grund: r8, Hochhaus-Stummel mit 0,10 geht nur mit Kraft hinein und sitzt sehr fest (Fase 2,0 und Kassette V2R waren gut). Die gedruckte Platte hat Spiel 0,10; ein Stummel mit 0,15 bekommt den Umriss 0,05 mm je Seite kleiner (oder die Platte wird mit `OUTLINE_CLR_T = 0.15` neu gebaut). `OUTLINE_CLR_T` bleibt 0,10, bis der Test bestätigt; danach in `params.py` und `scale.md` umstellen, Gebäude und Platte neu bauen. Einzelheiten: `rounds/r8_passform_hochhaus/summary.md`, Lehre L43.
 
-Offene Folge aus r8: `plug/buildings.py` baut jetzt die Fuß-Fase 2,0 (`FUSS_FASE_T`); die eingecheckten Gebäude-STL in `stl/steckmodul_campus/gebaeude/` sind noch mit Fase 0,5 und müssen mit `python3 -m plug.buildings` neu gebaut werden.
+Folge aus r8 (erledigt 2026-10-17): Alle sechs Gebäude-STL in `stl/steckmodul_campus/gebaeude/` sind mit Fuß-Fase 2,0 neu gebaut (`python3 -m plug.buildings`). Beim Paulinum schnitt die Fase die Rohrwand ab und der Innenring der Fase ragte in den Schacht (Kollision 33,6 mm³ schon mit dem alten Grundriss, Wand 1,2 mm um die Kassette, nur 0,01 mm vom Rand). Jetzt entfällt die Fase samt Innenring auf dem Randstück vor dem Rohr, wenn Schacht und Rand näher als Fase plus Wand (2,8 mm) liegen (`plug/buildings.py`, `nah`, Eintrag `fase_entfaellt_mm2` in der JSON; nur das Paulinum, 280 mm² Randstreifen). **Ungetestet:** Einführen des Paulinums ohne Fase auf diesem Stück (die Mulde hat oben keine Fase); beim nächsten Probedruck mit dem Paulinum beobachten.
 
 ## Offene Folge aus r9 (Hauptschalter, 2026-10-17)
 
