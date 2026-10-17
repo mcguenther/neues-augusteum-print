@@ -296,6 +296,8 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Innenhof-Einsatz: Original gegen neu (Grundrisse, Höhenplan, Gang und Treppen, Schnitte, 3D Mulde und Stecker) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
 | Durchgang Paulinum – Institutsgebäude (Vorschlag: Block und Brücke entfallen, Gasse frei, Treppe bis zum Ostende; Schnitte, 3D Ist/Neu, Prüfung der freien Gasse) | `plug/passage/page.html` | https://claude.ai/artifact/H24rikAAmURQ2dYwieHJ1B |
 | ESP32-Pinout (WROOM-32, 6 Docks, INA226 und 1,3″-OLED am I²C-Bus, Strompuls-Last GPIO14, ESPHome-Skizze, Pins zum Meiden, Schaltung) | `plug/power/pinout.html` | https://claude.ai/artifact/WnrSS5r9uZcTFur5SPE3oE |
+| Südweg der Sockelplatte (Steg am Hörsaalgebäude verengte den Weg; Befund, Vorschlag, Rückfragen; umgesetzt 17.10.) | `plug/weg/plan.html` | https://claude.ai/artifact/7pVEkxhXKfjL79qLAR1nFE |
+| Schaltplan und Lötplan (Übersicht, Stromweg, Dock, I²C, Last, Einbauhöhe ESP32, Verbindungsliste, Lötanleitung ohne Platine, INA226-Parallelwiderstand) | `plug/power/wiring.html` | https://claude.ai/artifact/E3N36JZyLHKj5354RRspRz |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

@@ -125,6 +125,15 @@ Ersetzt das Schließen des Spalts (`HOF_SCHLIESSEN`) und die Treppen aus der Kor
 - **Ergebnis bei 1:1300:** Einsatz A 36,5 × 76,0 mm (Fläche 1595 mm²), B 38,7 × 77,2 mm (1763 mm²), vorher 40,9 × 72,8 mm; alle dicht, alle Quellen und Maßstäbe geprüft (ein Teil, ohne Löcher und schmale Stellen). Vergleichsseite `plug/hof/page.html`.
 - **Empfehlung:** A drucken, B als Rückfall; in Steckprobe 3 beide.
 
+### Korrektur 4 (2026-10-17, Nutzer): Steg am Weg zwischen Seminar- und Hörsaalgebäude weg, Treppe endet an der Gebäudekante
+
+Seite: `plug/weg/plan.html` (`python3 -m plug.weg.build_page`). Der Gang auf Terrassenhöhe zwischen Seminar- und Hörsaalgebäude war durch einen Steg am Hörsaalgebäude auf 1,9 mm verengt (Weg sonst 6,7 mm). Der Steg ist im Luftbild ein Verbindungsgang in der Höhe und steht nur im LoD2-Grundriss (OSM kennt ihn nicht), im LoD2 als Vollblock bis zum Boden.
+
+- **Steg entfernt, in allen Quellen und Maßstäben:** `lod2.OHNE_STEG` (Fenster in lokalen m) mit `lod2.ohne_steg` in `lod2.models` nach der Aufteilung der Zellen: im Fenster entfällt vom Hörsaalgebäude, was als Auswuchs schmaler ist als 2 × `STEG_OEFFNUNG` (2 m). Laserscan übernimmt den Grundriss aus LoD2. Fläche 10 mm² bei 1:1300 (etwa 17 m²), Hörsaal-Grundriss 4094,1 → 4084,0 mm².
+- **Treppe am Westende beginnt an der Gebäudekante:** `data/innenhof.json` `form.platte.gang_sued.u[0]` von -145,5 auf -145,0 m (Westkante des Hörsaalgebäudes; das Seminargebäude endet bei -145,6). Vorher stand die unterste Stufe 0,5 m über die Gebäudekante hinaus und lief als schmaler Streifen an der Westwand des Hörsaalgebäudes entlang (Nutzer-Hinweis auf der Planseite).
+- **Absatz in der Kante des Hörsaalgebäudes bleibt** (steht auch in OSM), ebenso die Treppe selbst.
+- **Prüfung:** `generate.py` alle STL `dicht=True`; `plug.campus` dicht, keine Kollisionen, Kassettenlagen unverändert (zwischengespeichert); Hof-Aussparung unverändert (1556 mm²); `plug.buildings 03_hoersaalgebaeude` dicht, keine Kollisionen. `plug.check` (alle Generatoren) nicht gelaufen. Nicht gedruckt.
+
 ### Korrektur 3 zum Hof (2026-10-17, Nutzer): Fassung A bleibt, Gang im Süden auf Terrassenhöhe, Treppen in der Platte
 
 Ersetzt die Südtreppe des Einsatzes und die Fassung B (ohne Trennwand) aus der Korrektur davor. Foto des Nutzers: Der Gang zwischen Seminar- und Hörsaalgebäude liegt nahtlos auf Terrassenhöhe und mündet nach Westen auf die Straße, dort kommen Treppen.
