@@ -1277,5 +1277,103 @@
   ]
  ],
  "terrasse_hoehe": 0.71,
- "sockel_z": 114.46
+ "sockel_z": 114.46,
+ "form": {
+  "_notiz": "Form des Hof-Einsatzes und der Aufbauten der Steckplatte, von Hand festgelegt; Maße aus dem Laserscan im Hofsystem abgelesen (Höhenprofile quer und längs zur Hofachse). Hofsystem: u quer zur Achse (nach Osten), t längs (nach Norden), Meter, Achse = achse_grad. Die Hoffläche des Einsatzes ist die OSM-Fußgängerfläche in der Hülle, also bis an die Fassaden der Nachbargebäude; nur an den Durchgängen begrenzen gerade Schnitte (Nordost: Ecke des Paulinum, Süd: Ende der Terrasse). Treppen des Einsatzes sind Rechtecke im Hofsystem in gleich breite Stufen geteilt (fall nord = hoch im Süden, tief im Norden). Terrasse = Rechtecke, terrasse_hoehe über dem Hof. 'platte' sind Aufbauten der Steckplatte außerhalb des Einsatzes: der Gang im Süden setzt die Terrasse auf Terrassenhöhe fort und fällt am Westende, wo Seminar- und Hörsaalgebäude enden, in Stufen auf Plattenhöhe; im Nordosten führt eine Treppe aus dem Gang am Paulinum auf den Hofboden. Die Aufbauten reichen bis an die Gebäude, die Mulden schneiden sie zu.",
+  "huelle": {
+   "u": [
+    -150.0,
+    -60.0
+   ],
+   "t_nord": 80.0,
+   "passage_nord": {
+    "u": -94.0,
+    "t": 60.0,
+    "_notiz": "Ecke des Paulinum: östlich von u und nördlich von t liegt die Passage zwischen Paulinum und Institutsgebäude, nicht mehr Hof"
+   },
+   "t_sued": -26.0
+  },
+  "terrasse": [
+   {
+    "u": [
+     -150.0,
+     -119.5
+    ],
+    "t": [
+     -26.0,
+     -12.0
+    ],
+    "_notiz": "Westflügel am Seminargebäude, Terrassenhöhe 0,8 m (Scan)"
+   },
+   {
+    "u": [
+     -150.0,
+     -60.0
+    ],
+    "t": [
+     -26.0,
+     -18.0
+    ],
+    "_notiz": "Streifen vor dem Hörsaalgebäude und Gang nach Süden"
+   }
+  ],
+  "treppen": [
+   {
+    "name": "west",
+    "u": [
+     -150.0,
+     -119.5
+    ],
+    "t": [
+     -12.0,
+     4.0
+    ],
+    "fall": "nord",
+    "stufen": 3,
+    "_notiz": "Rampe am Seminargebäude, im Scan 2 bis 3 m breit und 16 m lang, hier bis an die Fassade gefüllt"
+   },
+   {
+    "name": "kante",
+    "u": [
+     -119.5,
+     -60.0
+    ],
+    "t": [
+     -18.0,
+     -16.0
+    ],
+    "fall": "nord",
+    "stufen": 3,
+    "_notiz": "Treppe von der Terrasse vor dem Hörsaalgebäude zum Hof, im Scan 2 m Lauflänge"
+   }
+  ],
+  "platte": {
+   "gang_sued": {
+    "u": [
+     -145.5,
+     -60.0
+    ],
+    "t": [
+     -75.0,
+     -26.0
+    ],
+    "stufen": 6,
+    "lauf": 7.0,
+    "_notiz": "Gang zwischen Seminar- und Hörsaalgebäude: auf Terrassenhöhe, im Scan 0,75 m über dem Hof; u -145,5 = Westende der Gebäude (Seminargebäude und Hörsaalgebäude enden dort), lauf = Länge der Treppe in m"
+   },
+   "nordost": {
+    "u": [
+     -94.0,
+     -60.0
+    ],
+    "t": [
+     58.0,
+     90.0
+    ],
+    "stufen": 6,
+    "lauf": 7.0,
+    "_notiz": "Gang zwischen Paulinum und Institutsgebäude, auf Plattenhöhe; die Treppe steigt nach Westen zum Hofboden, lauf in m"
+   }
+  }
+ }
 }
