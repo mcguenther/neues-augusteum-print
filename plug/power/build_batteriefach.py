@@ -68,6 +68,7 @@ def final_variant():
     """Platte 1:1300 mit Unterkasten Stand 7 (ohne Zaun, ESP32-Fläche); `BC.LAST` hält danach den Kasten als Manifold (Rohkoordinaten)."""
     BC.FENCE_ON = False
     BC.WINDOW_OPEN = True
+    BC.FIX_ON = True
     with BC.patched(PP, ESP_BOXES=PP.ESP_ZONES):
         return BC.variant(1300)
 

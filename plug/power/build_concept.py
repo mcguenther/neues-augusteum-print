@@ -545,6 +545,7 @@ def switch_cut(minx, miny, bot, h=H0):
 
 LAST = {}
 WINDOW_OPEN = False  # True: Fenster in der Kante bis zur Oberkante offen (keine 45-mm-Brücke über dem Fenster), Batteriefach final
+FIX_ON = True         # True: Fach an der festgeschriebenen Stelle PP.FACH_FIX (Batteriefach final)
 FENCE_ON = True      # False: Unterkasten ohne Zaun um die Powerbank (Batteriefach final, plug/power/build_batteriefach.py)
 SW_DEPTH = 20.0      # Schalter ab Außenfläche: Kasten 9 + Pins 7 + Lötstelle 4 (plug/power/build_plan_switch.py, DEPTH_OUT)
 
@@ -576,6 +577,8 @@ def variant(scale, h=H0, dk=DK):
     n_possible = len(docks)
     best, sides = None, {}
     for ov, side_c, f_c in fach_candidates(outline, hof_fp, v_zone):      # Fach und Elektronik liegen unten, Docks stören nicht
+        if getattr(PP, "FACH_FIX", None) and FIX_ON and (side_c != PP.FACH_FIX[0] or abs(f_c.c[0] + sh[0] - PP.FACH_FIX[1]) > 0.5):
+            continue
         fp_c = fach_parts(f_c)
         elec_c = esp_c = None
         for sz in PP.ESP_BOXES:
@@ -645,7 +648,7 @@ def variant(scale, h=H0, dk=DK):
     uk = G.union(solids) - G.union(holes)
     sw = switch_cut(minx, miny, bot, h)
     uk = uk - sw["cut"]
-    LAST["uk"], LAST["sh"] = uk, (-minx, -miny)           # für plug/power/check_switch.py
+    LAST["uk"], LAST["ober"], LAST["sh"] = uk, ober, (-minx, -miny)           # für plug/power/check_switch.py
     sw_free = float(vol_int(sw["room"], uk)) < 0.05      # Schalterraum frei von Stützen, Zaun, Fach
 
     # --- Innenhof-Teil unten gefast ---

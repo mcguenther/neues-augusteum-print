@@ -5,6 +5,7 @@ Fenster in der Nordkante (oben offen, keine Brücke) und Schalterloch in der Wes
 
 Teile:
   U_unterkasten.stl     Kasten, Boden auf das Bett, kein Support nötig (siehe pruefbericht.txt)   ca. 67 g
+  U_oberplatte.stl      Oberplatte mit Faden-V und Zapfenlöchern, 14,6 mm hoch, Unterseite auf das Bett                          ca. 120 g
   U_distanz_3_4.stl     Distanzplatte 20 x 20 x 3,4 mm (Spiel 0.2 mm)
   U_distanz_3_6.stl     Distanzplatte 20 x 20 x 3,6 mm (füllt die Luft über einer 12,8-mm-Powerbank genau)
   U_distanz_3_8.stl     Distanzplatte 20 x 20 x 3,8 mm (Pressung 0,2 mm)

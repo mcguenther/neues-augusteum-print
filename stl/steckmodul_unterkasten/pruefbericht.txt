@@ -4,6 +4,8 @@ Distanzplatte 20 × 20 auf der Powerbank bei x = 24, y = 126 (Rohkoordinaten der
 Teile (Druckausrichtung, Bett z = 0):
   U_unterkasten.stl   115.6 ×  220.8 ×  20.1 mm    54.4 cm³  ≈  67.0 g  dicht=True
       waagerechte Decken: z=0.4: 134 mm² (115.6 × 220.8); z=0.2: 134 mm² (115.2 × 220.4); z=13.3: 16 mm² (1.2 × 13.7)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  U_oberplatte.stl    115.6 ×  220.8 ×  16.9 mm   213.5 cm³  ≈ 120.0 g  dicht=True
+      waagerechte Decken: z=0.2: 139 mm² (115.2 × 220.4); z=0.4: 139 mm² (115.6 × 220.8); z=2.8: 29 mm² (84.3 × 164.3); z=1.5: 23 mm² (108.0 × 215.2)   Überhang flacher als 45° zur Senkrechten: 45 mm²
   U_distanz_3_4.stl    20.0 ×   20.0 ×   3.4 mm     1.4 cm³  ≈   1.0 g  dicht=True
       waagerechte Decken: z=0.4: 16 mm² (20.0 × 20.0); z=0.2: 16 mm² (19.6 × 19.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
   U_distanz_3_6.stl    20.0 ×   20.0 ×   3.6 mm     1.4 cm³  ≈   1.0 g  dicht=True
@@ -13,6 +15,7 @@ Teile (Druckausrichtung, Bett z = 0):
 
 Prüfung (Überschneidungsvolumen, mm³; muss 0 sein):
   Powerbank (12.8 dick) im Kasten                                                   0.000  ok
+  Kasten und Oberplatte (Zapfen in den Zapfenlöchern, Kasten liegt auf)             0.000  ok
   Distanzplatte 3.4 auf der Powerbank, Kasten                                       0.000  ok
   Distanzplatte 3.4 und Powerbank (liegt nur auf)                                   0.000  ok
       Luft über der Platte bis zur Oberplatte: +0.20 mm (Spiel)

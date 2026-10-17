@@ -3,6 +3,7 @@
 
 Teile (Druckausrichtung, Boden auf dem Bett):
   U_unterkasten.stl        Kasten 115,6 × 220,8 × 17,6 mm (mit Zapfen 20,1), hohl, ohne Zaun, mit Stützen, Zapfen, Eckaussparungen, Fenster, Schalterloch
+  U_oberplatte.stl         Oberplatte (Steckplatte aus plug.campus) mit Faden-V an den vier Ecken und Zapfenlöchern, Unterseite flach auf das Bett
   U_distanz_3_4/3_6/3_8    Distanzplatte 20 × 20 mm, 3,4 / 3,6 / 3,8 mm dick (Luft über der Powerbank 3,6 bei 12,8 mm Dicke)
 Die Distanzplatte liegt auf der Powerbank an einer Stelle ohne Dockzone, Adern und Zapfenloch und klemmt sie gegen die Oberplatte.
 Geometrie: plug/power/build_concept.py (variant), Stand und Werte wie plug/power/batteriefach.html.
@@ -115,7 +116,8 @@ def main():
     rep("Unterkasten Stand 7: Platte %.1f × %.1f, Kasten %.1f hoch (Boden %.1f, innen %.1f), Powerbank %.1f dick (12,6 + Zuschlag %.1f), Luft darüber %.2f" % (
         v["plate"][0], v["plate"][1], h["uk_t"], PP.UK_FLOOR, h["uk_t"] - PP.UK_FLOOR, pb_t, PP.PB_T_ZUSCHLAG, gap))
     rep("Distanzplatte %.0f × %.0f auf der Powerbank bei x = %.0f, y = %.0f (Rohkoordinaten der Platte, Süden y = 0)" % (SIDE, SIDE, x, y))
-    parts = {"U_unterkasten": to_bed(uk)}
+    ober = BC.LAST["ober"].translate([sh[0], sh[1], 0])
+    parts = {"U_unterkasten": to_bed(uk), "U_oberplatte": to_bed(ober)}
     for t in THICK:
         parts["U_distanz_%s" % str(t).replace(".", "_")] = spacer(t)
     rep("\nTeile (Druckausrichtung, Bett z = 0):")
@@ -143,6 +145,7 @@ def main():
     b = body.bounds
     pb = box(b[0], b[2], b[1], b[3], zf, zf + pb_t)
     chk("Powerbank (%.1f dick) im Kasten" % pb_t, vol_int(pb, uk))
+    chk("Kasten und Oberplatte (Zapfen in den Zapfenlöchern, Kasten liegt auf)", vol_int(uk, ober))
     for t in THICK:
         sp = parts["U_distanz_%s" % str(t).replace(".", "_")].translate([x, y, z_top_pb])
         chk("Distanzplatte %.1f auf der Powerbank, Kasten" % t, vol_int(sp, uk))
@@ -211,6 +214,7 @@ Fenster in der Nordkante (oben offen, keine Brücke) und Schalterloch in der Wes
 
 Teile:
   U_unterkasten.stl     Kasten, Boden auf das Bett, kein Support nötig (siehe pruefbericht.txt)   ca. %(k).0f g
+  U_oberplatte.stl      Oberplatte mit Faden-V und Zapfenlöchern, 14,6 mm hoch, Unterseite auf das Bett                          ca. %(o).0f g
   U_distanz_3_4.stl     Distanzplatte 20 x 20 x 3,4 mm (Spiel %(g34).1f mm)
   U_distanz_3_6.stl     Distanzplatte 20 x 20 x 3,6 mm (füllt die Luft über einer 12,8-mm-Powerbank genau)
   U_distanz_3_8.stl     Distanzplatte 20 x 20 x 3,8 mm (Pressung 0,2 mm)
@@ -221,7 +225,7 @@ sitzt die Powerbank locker, 3,8, ist es zu stramm, 3,4. Bei Bedarf einen Punkt H
 
 Druck: PLA, 0,2 mm Schicht, Gyroid 10 %% wie plug/slicer.md; Kasten Boden unten. Der Kasten ist noch nicht gedruckt, alle Werte sind Planwerte.
 """
-    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(k=info["U_unterkasten"]["g"], g34=gap - 3.4, x=x, y=y))
+    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(k=info["U_unterkasten"]["g"], o=info["U_oberplatte"]["g"], g34=gap - 3.4, x=x, y=y))
 
 
 if __name__ == "__main__":
