@@ -14,6 +14,7 @@ DETECT = [32, 33, 25, 26, 27, 13]
 SPECIAL = {
     21: ("i2c", "SDA", "I²C SDA: INA226 und Display"),
     22: ("i2c", "SCL", "I²C SCL: INA226 und Display"),
+    14: ("cond", "Last", "Gate des MOSFET für die Powerbank-Last (Strompuls); PWM beim Booten, der Gate-Pulldown hält ihn dabei aus"),
 }
 RESERVE = {}
 
@@ -149,7 +150,7 @@ def main():
             .replace("{{N_USED}}", str(used))
             .replace("{{N_FREE}}", str(len(clean) - used))
             .replace("{{N_INONLY}}", str(len(inonly)))
-            .replace("{{N_COND}}", str(len(cond)))
+            .replace("{{N_COND}}", str(len(cond) - 1))  # ohne GPIO14
             .replace("{{N_AVOID}}", str(len(avoid))))
     OUT.write_text(html, encoding="utf-8")
     print(f"{OUT}: {n} GPIO am Board, {len(clean)} saubere Pins, {used} belegt, {len(clean) - used} Reserve")
