@@ -1350,7 +1350,7 @@
   "platte": {
    "gang_sued": {
     "u": [
-     -145.5,
+     -145.0,
      -60.0
     ],
     "t": [
@@ -1359,7 +1359,7 @@
     ],
     "stufen": 6,
     "lauf": 7.0,
-    "_notiz": "Gang zwischen Seminar- und Hörsaalgebäude: auf Terrassenhöhe, im Scan 0,75 m über dem Hof; u -145,5 = Westende der Gebäude (Seminargebäude und Hörsaalgebäude enden dort), lauf = Länge der Treppe in m"
+    "_notiz": "Gang zwischen Seminar- und Hörsaalgebäude: auf Terrassenhöhe, im Scan 0,75 m über dem Hof; u -145,0 = Westkante des Hörsaalgebäudes (die unterste Stufe beginnt dort und ragt nicht über die Gebäudekante hinaus; das Seminargebäude endet bei -145,6), lauf = Länge der Treppe in m"
    },
    "nordost": {
     "u": [
