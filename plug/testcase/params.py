@@ -46,6 +46,8 @@ OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
 
 # ---- Fasen
 ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)
+PLATE_TOP_CH_T = 1.5    # Steckplatte: Fase an der oberen Außenkante (45°); der Druck zeigte oben einen Wulst über die letzten 5 bis 7 Schichten (Nutzer: 1,5 bis 2 mm)
+LABEL_RAISE_T = 0.6     # Steckplatte: Schrift und Nordpfeil erhaben statt graviert (graviert nicht lesbar, L01)
 EF_CH_T = 0.5           # Fase an Bettkanten von Steckteilen; Steckprobe 2: 0,5 (0,3 und 0,4 ließen einen leichten Wulst)
 
 # ---- Taschenhöhe über der Buchse: sie bestimmt, wie weit die Buchse hinter der Kassettenunterkante sitzen kann (Einstecktiefe E sinkt um diesen Wert)
@@ -114,7 +116,7 @@ def dims(extra=0.0):
 
 
 def dims_plan():
-    """Maßkette mit der festgelegten Zusatztiefe (F 14,2, Platte 20,2 mm)."""
+    """Maßkette mit der festgelegten Zusatztiefe (F 14,2; die alte Platte B wäre 20,2 mm dick, die Steckplatte `plug/campus.py` ist F + CEIL_T = 14,6 mm)."""
     return dims(MULDE_EXTRA_T)
 
 

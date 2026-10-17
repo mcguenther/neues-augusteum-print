@@ -3,6 +3,10 @@
 Entscheidungen des Nutzers im Chat; Rechnung und Grafiken: `plug/scale1176/page.html` (Artifact https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx, Ordnername von der ersten Fassung bei 1:1176).
 **Alles Planung, nichts gedruckt, keine STL.** Werte in `plug/parts.py` und `plug/testcase/params.py` sind noch nicht umgestellt.
 
+## Umstellung auf flache Unterseite (2026-10-16, Steckplatte)
+
+Auf Wunsch des Nutzers (Konzept des Test-Docks, `plug/power/build_dock.py`): Die Steckplatte `plug/campus.py` hat **keine Docks im Plattenkörper** mehr. Platte 14,6 mm (F 14,2 + Muldenboden 0,4), der Muldenboden ist die unterste Schicht auf dem Bett, die Unterseite ist eben, 24 Pin-Löcher (6 Gebäude × 4) mit Fase 0,15 beidseitig, Bettkante mit Fase 0,5 (`EF_CH_T`), kein Support, Überhang 0 mm². Die Winkelleiste wird von unten aufgeklebt (Körper 2,0, Lötenden und Draht darunter). Die Lagen aus der Platzierungs-App bleiben gültig (Hüllkurve des alten Docks unverändert als Platzhalter für die Leiste unter der Platte). **Die Zeilen unten, die von Plattendicke 20,2 und Dock im Plattenkörper sprechen, sind damit überholt.** Offen: Unterkasten mit Füßen und Zapfenlöchern, Faden (Ecken), Halt der aufgeklebten Leiste (Test-Dock steht noch aus); Test-Dock-Ergebnisse können Luft und Lagen noch ändern.
+
 ## Festgelegt
 
 | Punkt | Entscheidung | Beleg |
@@ -146,8 +150,8 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | Mulde und Platte | Mulde 14,2 mm als eine Ebene mit vollem Gebäudeumriss (getestet war der L-Fuß mit 10,2 mm) | ungetestet | Einführen, Kippen, Klemmen, Ziehkraft, Verzug |
 | | Spiel Umriss zur Mulde 0,1 mm je Seite (`OUTLINE_CLR_T`) | ungetestet auf großen Flächen | Ob das Gebäude bei langen Kanten sauber hineingeht |
 | | Muldenboden 0,4 mm unter sehr großen Mulden | im Kleinen bewährt, groß ungetestet | Druck ohne Support, Halt beim Einstecken |
-| | Dock in der 20,2 mm dicken Platte, 4 mm tiefer | ungetestet | Pin-Treffer, Kabelraum, Löträume ohne Support |
-| | Platte 20,2 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |
+| | Flache Unterseite 14,6 mm mit aufgeklebter Leiste (statt Dock in 20,2 mm) | ungetestet (Test-Dock steht aus) | Pin-Treffer, Halt des Klebers, Luft unter der Platte |
+| | Platte 14,6 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |
 | Kassetten | V1RS (Seminar, Institut), V2R (Hochhaus) | nur Konzepte, nie gedruckt | Einpressen mit Streifen und Blatt, Adernweg, Verkettung der zwei LEDs |
 | | Streifendicke 2,2 mm | nicht gemessen | am echten Streifen messen, vor jeder STL |
 | | Blattdicke 1,2 oder 1,6 mm, 45°-Versatz über dem Aderschlitz | offen | Druckbarkeit, Bruch beim Biegen |

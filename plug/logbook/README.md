@@ -18,7 +18,8 @@ Runden: [r0 Passproben und Probestück](rounds/r0_fitprobes/summary.md) ·
 [r1 Nachtdruck 1](rounds/r1_night1/summary.md) · [r2 Nachtdruck 2](rounds/r2_night2/summary.md) ·
 [r3 Steckprobe 1](rounds/r3_steckprobe1/summary.md) ·
 [r4 Steckprobe 2 (gedruckt, ausgewertet)](rounds/r4_steckprobe2/summary.md) ·
-[r5 Fachprobe Powerbank (gedruckt, ausgewertet)](rounds/r5_fachprobe/summary.md)
+[r5 Fachprobe Powerbank (gedruckt, ausgewertet)](rounds/r5_fachprobe/summary.md) ·
+[r7 Steckplatte 1:1300 (gedruckt, Rückmeldung)](rounds/r7_steckplatte/summary.md)
 
 ## Begriffe
 
