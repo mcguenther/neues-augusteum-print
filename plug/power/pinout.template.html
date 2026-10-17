@@ -171,7 +171,7 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
     </div>
     <ul style="margin-top:12px">
       <li><b>Adressen:</b> INA226 hat 0x40 (A0 und A1 an GND), das OLED 0x3C. Beide teilen sich den Bus ohne Konflikt.</li>
-      <li><b>Messort:</b> Der Shunt kommt in die 5-V-Leitung zwischen USB-A-Buchse und dem Abzweig zu ESP32-VIN und Diode. So misst der INA226 den gesamten Strom aus der Powerbank. IN+ zur Buchse, IN− zur Last, der VBUS-Pin an IN−.</li>
+      <li><b>Messort:</b> Der Shunt kommt in die 5-V-Leitung zwischen USB-A-Buchse und dem Abzweig zu ESP32-VIN und zur LED-Schiene. So misst der INA226 den gesamten Strom aus der Powerbank. IN+ zur Buchse, IN− zur Last, der VBUS-Pin an IN−.</li>
       <li><b>Messbereich:</b> Die üblichen Module haben 0,1 Ω Shunt, das reicht für etwa ±0,8 A. Erwartet werden 6 × 60 mA LED plus rund 100 mA für den ESP32 mit WLAN (Spitzen höher), also unter 0,7 A. Der Abfall am Shunt liegt bei etwa 60 mV. Den Wert auf dem Modul prüfen (R100 = 0,1 Ω, es gibt auch R010 und R002) und in ESPHome als <code>shunt_resistance</code> eintragen.</li>
       <li><b>ALERT:</b> Wird nicht angeschlossen. Die ESPHome-Plattform <code>ina226</code> liest Spannung, Strom und Leistung über I²C und hat keine ALERT-Option.</li>
       <li><b>Versorgung:</b> INA226 und Display laufen mit 3,3 V vom 3V3-Pin, zusammen unter 25 mA. Das Display braucht laut Datenblatt des Referenzmoduls etwa 8 mA und läuft mit 3,3 bis 5 V.</li>
@@ -186,7 +186,7 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
     <div class="diagram">
       <svg viewBox="0 0 640 230" role="img" aria-label="Strompuls-Last: 5 V über Lastwiderstand und N-MOSFET nach GND, Gate von GPIO14 über 100 Ohm mit 10 kOhm Pulldown">
         <path class="w" d="M40 40 H480"/>
-        <text x="40" y="30" class="m">+5 V (hinter dem INA226-Shunt, vor der Diode)</text>
+        <text x="40" y="30" class="m">+5 V (Knoten K5, hinter dem INA226-Shunt)</text>
         <path class="w" d="M440 40 V55 M440 105 V125"/>
         <rect class="p" x="430" y="55" width="20" height="50" rx="2"/>
         <text x="460" y="84">47 Ω, 1 W</text>
@@ -203,16 +203,16 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
         <path class="w" d="M110 150 H230 M290 150 H424"/>
         <rect class="p" x="230" y="140" width="60" height="20" rx="2"/>
         <text x="260" y="134" text-anchor="middle" class="m">100 Ω</text>
-        <circle class="f" cx="350" cy="150" r="3"/>
-        <path class="w" d="M350 150 V165 M350 195 V205"/>
-        <rect class="p" x="342" y="165" width="16" height="30" rx="2"/>
-        <text x="366" y="184" class="m">10 kΩ</text>
+        <circle class="f" cx="170" cy="150" r="3"/>
+        <path class="w" d="M170 150 V165 M170 195 V205"/>
+        <rect class="p" x="162" y="165" width="16" height="30" rx="2"/>
+        <text x="186" y="184" class="m">10 kΩ</text>
         <!-- GND -->
         <path class="w" d="M40 205 H480"/>
         <text x="40" y="222" class="m">GND</text>
       </svg>
     </div>
-    <p style="margin-top:10px">Der 10-kΩ-Widerstand zwischen Gate und GND hält den MOSFET aus, solange der Pin beim Start noch nicht gesetzt ist oder kurz PWM ausgibt. Der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. Eine Schutzdiode ist bei einer reinen Widerstandslast nicht nötig.</p>
+    <p style="margin-top:10px">Der 10-kΩ-Widerstand zwischen der GPIO-Leitung und GND hält den MOSFET aus, solange der Pin beim Start noch nicht gesetzt ist oder kurz PWM ausgibt. Er sitzt auf der GPIO-Seite des 100-Ω-Widerstands, so bekommt der MOSFET an jedes Bein genau ein Teil. Der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. Welches Bein welches ist: <code>plug/power/wiring.html</code>. Eine Schutzdiode ist bei einer reinen Widerstandslast nicht nötig.</p>
     <div class="tbl"><table>
       <thead><tr><th>Lastwiderstand</th><th>Strom bei 5 V</th><th>Leistung im Puls</th><th>Mindest-Nennleistung</th><th>Wann</th></tr></thead>
       <tbody>
@@ -225,7 +225,7 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
     <ul style="margin-top:12px">
       <li><b>Zwei kleine Widerstände:</b> Statt eines 47-Ω-Widerstands gehen auch zwei 100 Ω zu je ½ W parallel (50 Ω, je etwa 0,25 W).</li>
       <li><b>MOSFET:</b> Ein Logic-Level-N-Kanal-Typ, der bei 3,3 V Gate-Spannung voll durchschaltet, zum Beispiel IRLZ44N (bedrahtet) oder AO3400 (SMD). Ein 2N7000 schaltet bei 3,3 V schlecht durch, für 100 mA geht er gerade noch.</li>
-      <li><b>Anschluss:</b> Die Last hängt am 5-V-Knoten hinter dem INA226-Shunt, aber vor der Diode zu den LEDs. So sieht der INA226 den Puls, und die Diode verliert keine Leistung.</li>
+      <li><b>Anschluss:</b> Die Last hängt am 5-V-Knoten K5 hinter dem INA226-Shunt. So sieht der INA226 den Puls.</li>
       <li><b>Erst messen:</b> Die Abschaltschwelle der Intenso XS5000 ist mir nicht bekannt. Mit WLAN zieht der ESP32 schon rund 100 mA. Wenn die Powerbank mit dem INA226 im Dauerbetrieb ohne LEDs an bleibt, ist der Puls vielleicht unnötig. Sonst Puls und Pause im Test anpassen (Startwert 300 ms alle 5 s).</li>
     </ul>
   </section>
@@ -233,7 +233,7 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
   <section>
     <h2>Schaltung eines Docks</h2>
     <div class="diagram">
-      <svg viewBox="0 0 640 270" role="img" aria-label="Schaltung eines Docks: GPIO über 330 Ohm an DIN, DETECT direkt, 5 V über Diode, GND">
+      <svg viewBox="0 0 640 270" role="img" aria-label="Schaltung eines Docks: GPIO über 330 Ohm an DIN, DETECT direkt, 5 V über Drahtbrücke, GND">
         <rect class="p" x="10" y="20" width="120" height="235" rx="4"/>
         <text x="70" y="42" text-anchor="middle" style="font-weight:600">ESP32</text>
         <text x="122" y="80" text-anchor="end">GPIO23</text>
@@ -255,12 +255,11 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
         <!-- DETECT -->
         <path class="w" d="M130 136 H500"/>
         <text x="315" y="156" text-anchor="middle" class="m">interner Pull-up, LOW = Gebäude steckt</text>
-        <!-- 5 V über Diode -->
-        <path class="w" d="M130 196 H215 M255 196 H500"/>
-        <path class="p" d="M215 184 L215 208 L242 196 Z"/>
-        <path class="w" d="M247 184 V208"/>
-        <text x="232" y="176" text-anchor="middle" class="m">Diode 1N4007</text>
-        <text x="232" y="224" text-anchor="middle" class="m">einmal für alle Docks</text>
+        <!-- 5 V über Drahtbrücke, Platzhalter für die geparkte Diode -->
+        <path class="w" d="M130 196 H500"/>
+        <rect x="190" y="186" width="44" height="20" rx="3" fill="none" stroke="currentColor" stroke-dasharray="4 3"/>
+        <text x="212" y="176" text-anchor="middle" class="m">Drahtbrücke</text>
+        <text x="212" y="224" text-anchor="middle" class="m">später D1</text>
         <!-- Kondensator -->
         <path class="w" d="M360 196 V206 M345 206 H375 M345 214 H375 M360 214 V236"/>
         <text x="388" y="214" class="m">1000 µF</text>
@@ -268,13 +267,13 @@ ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 
         <path class="w" d="M130 236 H500"/>
       </svg>
     </div>
-    <p style="margin-top:10px">Die Diode sitzt hinter dem Abzweig zu ESP32-VIN und dem INA226-Shunt. Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
+    <p style="margin-top:10px">Die 5 V der Docks kommen vom Knoten K5 hinter dem INA226-Shunt, im Aufbau über eine Drahtbrücke (Platzhalter für die geparkte Diode, siehe unten). Im Gebäude liegt Pin 4 an GND, daher zeigt LOW ein gestecktes Gebäude. Die Datenleitung wird erst 100 ms nach DETECT = LOW freigegeben (Plan 2.7).</p>
   </section>
 
   <section>
     <h2>3,3 V an der LED ohne Pegelwandler</h2>
     <p>Der ESP32 liefert an DIN 3,3 V. Nach dem älteren WS2812B-Datenblatt braucht ein High-Pegel mindestens 0,7 × VDD, bei 5 V also 3,5 V. Das klappt oft trotzdem, liegt aber außerhalb der Angabe.</p>
-    <div class="note">Vorschlag: eine Siliziumdiode in der gemeinsamen 5-V-Leitung der Docks. Sie senkt VDD an den LEDs auf etwa 4,1 bis 4,4 V, die Schwelle liegt dann bei etwa 2,9 bis 3,1 V und 3,3 V reichen. Der ESP32 hängt vor der Diode an den vollen 5 V. Das ist nicht getestet und gehört in den nächsten Testbogen: ein Dock auf dem Steckbrett, LED sicher an, auch beim Stecken unter Spannung.</div>
+    <div class="note">Geparkt: Zuerst wird ohne Diode gebaut, das klappt normalerweise. Flackert die LED, kommt eine Siliziumdiode (1N4007) in die gemeinsame 5-V-Leitung der Docks, an die Stelle der Drahtbrücke. Sie senkt VDD an den LEDs auf etwa 3,9 bis 4,3 V und die Schwelle auf etwa 2,7 bis 3,0 V. Der ESP32 hängt vor der Diode an den vollen 5 V. Ungetestet: ein Dock auf dem Steckbrett, LED sicher an, auch beim Stecken unter Spannung. Einzelheiten und Nachrüst-Schnitt: <code>plug/power/wiring.html</code>.</div>
   </section>
 
   <section>

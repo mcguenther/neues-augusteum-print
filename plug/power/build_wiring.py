@@ -15,7 +15,7 @@ TEMPLATE = Path(__file__).with_name("wiring.template.html").read_text(encoding="
 # ---- Docks (Reihenfolge wie 01_ bis 06_ im Konzept; die Zuordnung zu den Gebäuden ist noch nicht festgelegt)
 BUILDINGS = [("Paulinum", "Paulinum"), ("Neues Augusteum", "N. Augusteum"), ("Hörsaalgebäude", "Hörsaal"),
              ("Seminargebäude", "Seminar"), ("Institutsgebäude", "Institut"), ("City-Hochhaus", "Hochhaus")]
-# Luftlinie Dock bis Elektronikbox in mm, Konzept PR #28 (Branch ccr-e337172c-xtl689, concept.html, Stand nach Innenhof-Merge)
+# Luftlinie Dock bis Elektronikbox in mm, aus plug/power/concept.html (Dock-Daten "to_elec", Stand nach Hauptschalter und Innenhof-Merge); bei neuer Fachlage neu ablesen
 TO_ELEC = [83.8, 33.7, 10.9, 61.3, 111.1, 0.0]
 
 
