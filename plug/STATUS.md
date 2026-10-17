@@ -283,6 +283,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
+| Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

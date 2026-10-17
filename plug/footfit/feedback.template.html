@@ -1,0 +1,96 @@
+<title>Testbogen Passform Hochhaus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: eine schmale Spalte, je Frage eine Zeile mit Auswahlknöpfen; unten der Ergebnistext */
+:root {
+  --bg: #f2f5f6; --panel: #ffffff; --fg: #1b2327; --muted: #5a6870; --line: #cdd7db; --accent: #1d5f8a;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12181b; --panel: #1b2327; --fg: #e4eaed; --muted: #94a3ab; --line: #34424a; --accent: #6db6e3; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #12181b; --panel: #1b2327; --fg: #e4eaed; --muted: #94a3ab; --line: #34424a; --accent: #6db6e3; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5;
+  padding-block: 24px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0; font-weight: 600; }
+h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; font-weight: 600; }
+p { margin: 0; max-width: 65ch; color: var(--muted); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 18px 14px; min-width: 0; }
+.q { display: flex; flex-direction: column; gap: 6px; padding-block: 12px; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q > span { font-weight: 500; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.opts input { position: absolute; opacity: 0; pointer-events: none; }
+.opts label { padding: 5px 12px; border: 1px solid var(--line); border-radius: 99px; cursor: pointer; font-size: 14px; background: var(--bg); }
+.opts input:checked + label { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.opts input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=text], textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; width: 100%; }
+textarea { min-height: 70px; resize: vertical; }
+#out { font-family: var(--mono); font-size: 12.5px; min-height: 230px; }
+button { font: inherit; font-weight: 500; border-radius: 6px; padding: 8px 14px; border: 1px solid var(--accent); background: var(--accent); color: var(--bg); cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hint { font-size: 12.5px; color: var(--muted); }
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Testbogen Passform Hochhaus</h1>
+    <p>Erste Passform-Runde: Stummel in der Steckplatte und Kassette V2R. Alles antippen, was du weißt; Offenes einfach weglassen.</p>
+  </header>
+
+  <section class="panel" id="f">
+    <h2>Stummel in der Mulde</h2>
+    <div class="q"><span>Einsetzen</span><div class="opts" data-k="Einsetzen" data-opts="ohne Kraft|leichter Druck|nur mit Kraft|geht nicht"></div></div>
+    <div class="q"><span>Wackeln im eingesetzten Zustand</span><div class="opts" data-k="Wackeln" data-opts="nein|leicht|deutlich"></div></div>
+    <div class="q"><span>Fase unten fängt ihn beim Einsetzen</span><div class="opts" data-k="Fase fängt" data-opts="ja|nein"></div></div>
+    <div class="q"><span>Wulst unten am Stummel (Elefantenfuß)</span><div class="opts" data-k="Wulst unten" data-opts="keiner|leicht|klemmt"></div></div>
+    <div class="q"><span>Sitzt er auf dem Muldenboden auf</span><div class="opts" data-k="Sitzt auf" data-opts="ja|nein|nicht erkennbar"></div></div>
+    <div class="q"><span>Herausziehen</span><div class="opts" data-k="Herausziehen" data-opts="locker|gut|fest|sehr fest"></div></div>
+
+    <h2 style="margin-top:14px">Kassette V2R</h2>
+    <div class="q"><span>Druck des Probeteils</span><div class="opts" data-k="Kassette Druck" data-opts="sauber|Blatt wackelt|Blatt gebrochen|anderes Problem"></div></div>
+    <div class="q"><span>In den Schacht des Stummels pressen</span><div class="opts" data-k="Kassette Sitz" data-opts="lose|gut|fest|geht nicht"></div></div>
+    <div class="q"><span>Wand am Schacht gerissen</span><div class="opts" data-k="Wand gerissen" data-opts="nein|ja"></div></div>
+    <div class="q"><span>Unten bündig mit dem Fuß</span><div class="opts" data-k="Bündig" data-opts="ja|steht heraus|sitzt zu tief"></div></div>
+    <div class="q"><span>Pins treffen die Buchse (Stummel mit Kassette in der Platte)</span><div class="opts" data-k="Pins treffen" data-opts="ja|nein|nicht getestet"></div></div>
+
+    <h2 style="margin-top:14px">Sonst</h2>
+    <div class="q"><span>ZIP-Stand</span><div class="opts" data-k="ZIP" data-opts="passform_stummel_hochhaus.zip (Höhe 25, Fase 2,0)|andere"></div></div>
+    <div class="q"><span>Druckzeit laut Slicer (Minuten, beide Teile)</span><input type="text" id="zeit" inputmode="numeric" placeholder="z. B. 50"></div>
+    <div class="q"><span>Bemerkung</span><textarea id="note" placeholder="alles, was auffiel"></textarea></div>
+  </section>
+
+  <section class="panel">
+    <h2 style="padding-top:12px">Ergebnistext</h2>
+    <p style="margin-bottom:10px">Kopieren und im Chat einfügen.</p>
+    <textarea id="out" readonly aria-label="Ergebnistext"></textarea>
+    <div class="row" style="margin-top:10px"><button id="copy" type="button">Ergebnis kopieren</button><span class="hint" id="copied" role="status"></span></div>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const ans = {};
+let uid = 0;
+document.querySelectorAll(".opts").forEach(el => {
+  const k = el.dataset.k;
+  el.innerHTML = el.dataset.opts.split("|").map(o => { const id = "o" + (uid++); return `<input type="radio" name="${k}" id="${id}" value="${o}"><label for="${id}">${o}</label>`; }).join("");
+  el.addEventListener("change", ev => { ans[k] = ev.target.value; render(); });
+});
+function render() {
+  const lines = ["Testbogen Passform Hochhaus (Stummel 25 mm, Spiel 0,10, Fase 2,0, Kassette V2R)"];
+  document.querySelectorAll(".opts").forEach(el => lines.push(`${el.dataset.k}: ${ans[el.dataset.k] || "–"}`));
+  lines.push(`Druckzeit: ${$("zeit").value.trim() ? $("zeit").value.trim() + " min" : "–"}`);
+  lines.push(`Bemerkung: ${$("note").value.trim() || "–"}`);
+  $("out").value = lines.join("\n");
+}
+["zeit", "note"].forEach(id => $(id).addEventListener("input", render));
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("out").value); $("copied").textContent = "Kopiert."; }
+  catch (e) { $("out").focus(); $("out").select(); $("copied").textContent = "Markiert, bitte mit Strg+C kopieren."; }
+});
+render();
+</script>
