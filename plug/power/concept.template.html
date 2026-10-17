@@ -157,10 +157,9 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 5</div>
+  <div class="kicker">Steckmechanismus · Grundplatte mit Powerbank · Konzept, Stand 6</div>
   <h1>Powerbank in der Grundplatte</h1>
-  <p class="lead">Stand 5 setzt den Maßstab auf 1:1300 (Platte passt mit Rand auf den Doktorhut), prüft, welche Docks dort noch frei bleiben, und hält die Fasen, die große Kabelnische und den flacheren Faden. Stand 4 prüfte die Fasen, gab den Lötenden eine große Kabelnische und
-    führte den Faden flacher durch die Ecken. Die Zahlen kommen aus den OSM-Grundrissen und den Werten der Steckprobe.</p>
+  <p class="lead">Stand 6 folgt der Festlegung in <code>plug/logbook/scale.md</code> und der Sockelplatte aus <code>plug/campus.py</code>: Laserscan-Grundrisse, Maßstab 1:1300 (Platte 115,6 × 220,8 mm), Mulde 14,2 mm tief, <b>flache Unterseite</b> (Platte 14,6 mm, Leiste aufgeklebt), die vom Nutzer festgelegten Kassetten- und Dock-Lagen, <b>alle sechs Docks</b>. Darunter liegt ein durchgehender Steckerraum, und die Powerbank und die Elektronik liegen unter den Docks und stören sie nicht. Dazu der flachere Faden.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -174,8 +173,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   <p class="vnote" id="vnote"></p>
   <div class="scroll"><table id="vtab"></table></div>
   <p class="small muted">Doktorhut mit <span class="num" id="hutTxt"></span> Kantenlänge angenommen, nicht gemessen. Kassette: <span class="num" id="kassTxt"></span>
-    mit <span class="num" id="kwallTxt"></span> Wand um den Schacht. „Dock frei“ heißt: Die Nische (siehe unten) liegt weder über der Powerbank noch über der
-    Elektronik, den Eckaussparungen oder einem anderen Dock.</p>
+    mit <span class="num" id="kwallTxt"></span> Wand um den Schacht. Die Docks sitzen an den vom Nutzer festgelegten Lagen (<code>placements_1300.json</code>); Powerbank, Elektronik und Stützen richten sich danach. Unter jedem Dock bleibt der Steckerraum frei von Stützen.</p>
 </section>
 
 <section aria-labelledby="h-view">
@@ -187,7 +185,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
       <div class="legend">
         <span style="--sw:var(--c-bld)">Gebäude (Mulde)</span><span style="--sw:var(--c-hof)">Innenhof</span>
         <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Steckerraum, Kabel</span>
-        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-niche)">Dock: Körper und Kabelnische</span>
+        <span style="--sw:var(--c-elec)">Elektronik</span><span style="--sw:var(--c-niche)">Dock: Leiste und Lötraum</span>
         <span style="--sw:var(--c-under)">Stütze, mit Zapfen umrandet</span><span style="--sw:var(--c-thread)">Faden-V, Eckaussparung</span>
         <span style="--sw:var(--c-cut)">Stoß Oberplatte</span><span style="--sw:var(--c-cut2)">Stoß Unterkasten</span>
         <span style="--sw:var(--c-hut)">Doktorhut</span>
@@ -216,19 +214,15 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 </section>
 
 <section aria-labelledby="h-dock">
-  <h2 id="h-dock">Dock: Platz hinter den Lötenden</h2>
+  <h2 id="h-dock">Dock: Leiste unter der flachen Platte</h2>
   <div class="two">
-    <div class="card"><h3>Längsschnitt durch die Pinreihe, Lötenden nach rechts, im Maßstab</h3><svg id="dock" role="img" aria-label="Schnitt durch ein Dock mit Kabelnische, Anschlag und herabhängenden Adern"></svg></div>
+    <div class="card"><h3>Längsschnitt durch die Pinreihe, Lötenden nach rechts, im Maßstab</h3><svg id="dock" role="img" aria-label="Schnitt durch ein Dock mit aufgeklebter Leiste, Steckerraum und Powerbank"></svg></div>
     <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
       <ul>
-        <li><b>Vorher:</b> Schlitz nur <span class="num" id="oldSlot"></span> hinter der Leiste, darunter ein Anschlagblock. Die Adern hatten keinen Raum, um nach unten zu fallen. Die Decke über der Nische liegt <span class="num" id="roofTxt"></span> unter dem Muldenboden.</li>
-        <li><b>Jetzt:</b> hinter der Körpertasche eine Kabelnische, <span class="num" id="nW"></span> breit und <span class="num" id="nL"></span> lang, Decke
-          <span class="num" id="nH"></span> über dem Bett (Höhe der Stufe aus der Steckprobe). Von dort fallen die Adern frei in den Unterkasten.</li>
-        <li>Eine Nische ohne Fenster und Stege, halb so groß wie in Steckprobe 2 (Nutzer); gedruckt mit Support. Alle Mündungen am Bett haben
-          <span class="num" id="nCh"></span> Fase.</li>
-        <li>Darunter ist der Unterkasten <span class="num" id="ukH"></span> hoch hohl. In der Dockzone (<span class="num" id="zoneTxt"></span>) stehen weder Stütze noch Zaun,
-          und die Powerbank liegt nicht darunter: Sie hat nur <span class="num" id="clrZ"></span> Luft nach oben.</li>
-        <li>Der Anschlag ist jetzt ein Steg (<span class="num" id="ansTxt"></span>) unter dem Körper, mit <span class="num" id="airTxt"></span> Luft und zwei Streben nach vorn. Die Kabelseite bleibt offen.</li>
+        <li>Die Unterseite der Oberplatte ist <b>flach</b>: <span class="num" id="plT"></span> dick (Mulde + Muldenboden 0,4), keine Tasche, keine Stufe, keine Nische, kein Support. Der Muldenboden ist die unterste Schicht auf dem Bett.</li>
+        <li>Die Winkelleiste wird von unten angeklebt; ihr Körper (2,0) hängt unter der Platte, die Pins gehen durch den Muldenboden in die Kassette. Lötenden und Draht reichen etwa 2,9 mm unter die Platte (geschätzt).</li>
+        <li>Darunter ist der Unterkasten <span class="num" id="ukH"></span> hoch hohl, mit einem <b>durchgehenden Steckerraum</b>: <span class="num" id="gapTxt"></span> Luft zwischen Plattenunterseite und Powerbank. Die Powerbank liegt <b>unter</b> den Docks und darf an jeder Stelle liegen; nur Stützen müssen den Dockzonen (<span class="num" id="zoneTxt"></span> je Dock) ausweichen.</li>
+        <li>Alle Mündungen am Bett haben <span class="num" id="nCh"></span> Fase. Zapfen 2,5 (Test-Dock), Zapfenlöcher 2,8 tief nur dort, wo über dem Loch Platte steht (nicht unter Mulde und Hof).</li>
       </ul>
     </div>
   </div>
@@ -259,8 +253,7 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     <div class="card"><h3>Fuß in der Mulde, Schnitt im Maßstab</h3><svg id="chfig" role="img" aria-label="Schnitt durch Fuß und Mulde mit den Fasen"></svg></div>
     <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
       <ul>
-        <li>Die Gebäude haben jetzt im Modell die <b>Fußfase</b> (<span class="num" id="chFoot"></span>) aus dem Probestück, die Mulden die <b>Muldenfase</b>
-          (<span class="num" id="chPocket"></span>). Beides kommt aus <code>plug/institute.py</code>.</li>
+        <li>Die Mulde ist eine Ebene ohne Stufen und ohne Fase (<code>scale.md</code>); die <b>Fußfase</b> (<span class="num" id="chFoot"></span>) setzt der Gebäude-Generator, im Konzept ist sie noch nicht modelliert.</li>
         <li>Alle Teile, die am Bett liegen, haben an Außenkanten und Mündungen <span class="num" id="chBed"></span> Fase (Elefantenfuß, L02, L03).</li>
         <li>Noch nicht im Konzept: Schachteingang der Kassette im Gebäude-Generator, <code>innenhof.py</code> und die Stoßkanten beim Teilen. Das sind drei Aufgaben für den Generator.</li>
       </ul>
@@ -272,10 +265,10 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 <section aria-labelledby="h-fit">
   <h2 id="h-fit">Wie die Teile zusammenpassen</h2>
   <ol>
-    <li>Winkelleisten von unten in die Taschen der Oberplatte stecken, Heißkleber, Adern anlöten und nach unten hängen lassen.</li>
+    <li>Winkelleisten von unten auf die flache Plattenunterseite kleben (Pins durch den Muldenboden), Adern anlöten und hängen lassen.</li>
     <li>Oberplatte umdrehen, Fäden durch die V-Kanäle ziehen (gebogene Nadel oder Draht), Enden hängen lassen.</li>
     <li>Unterkasten bestücken: Elektronik, Sammelleitung, Powerbank mit USB-A-Kabel im Zaun.</li>
-    <li>Oberplatte aufsetzen: Zapfen in die Löcher, Stege unter den Leisten mit <span class="num" id="stampTxt"></span> Luft, Fadenenden durch die Eckaussparungen.</li>
+    <li>Oberplatte aufsetzen: Zapfen in die Löcher, Steckerraum <span class="num" id="gapTxt2"></span> über der Powerbank, Fadenenden durch die Eckaussparungen.</li>
     <li>Auf den Doktorhut nähen und festziehen. Innenhof einlegen, Gebäude stecken. Laden über USB-C durch das Fenster in der Kante.</li>
   </ol>
   <div class="scroll"><table id="fits"></table></div>
@@ -332,17 +325,15 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   const kw = DK.kass_w, kl = DK.kass1 - DK.kass0;
   set('hutTxt', fmt(D.hut / 10, 0) + ' × ' + fmt(D.hut / 10, 0) + ' cm');
   set('kassTxt', fmt(kw, 1) + ' × ' + fmt(kl, 1) + ' mm'); set('kwallTxt', '1,2 mm');
-  set('oldSlot', mm(3.0 + 0.7, 1)); set('roofTxt', mm(-H.F - H.z_slot)); set('nW', mm(NI.w, 0)); set('nL', mm(DK.y_slot - DK.niche_end, 1)); set('nH', mm(H.z_slot - H.z_bb));
+  set('plT', mm(H.plate_t)); set('gapTxt', mm(H.deck - (H.uk_bot + UK.floor + PB.T))); set('gapTxt2', mm(H.deck - (H.uk_bot + UK.floor + PB.T)));
   set('nCh', mm(CHD.bed)); set('ukH', mm(H.uk_t));
-  set('zoneTxt', fmt(NI.w + 4, 0) + ' × ' + fmt(DK.y_front + 2 - (DK.niche_end - 2), 0) + ' mm'); set('clrZ', mm(PB.clr_z));
-  set('ansTxt', fmt(UK.anschlag.w, 0) + ' × ' + fmt(UK.anschlag.t, 1) + ' mm'); set('airTxt', mm(H.z_bb - H.stamp_top));
+  set('zoneTxt', fmt(2 * DK.hw + 4, 0) + ' × ' + fmt(DK.y_front + 2 - (DK.y_tail - 4), 0) + ' mm');
   const hs = D.v_hs, hs2 = D.v_plan2.apex * D.v_plan2.slope;
   set('vAng', fmt(D.v_angle, 0) + '°'); set('vAng2', fmt(D.v_plan2.angle, 0) + '°');
   set('vTurn', fmt(2 * D.v_angle, 0) + '°'); set('vTurn2', fmt(2 * D.v_plan2.angle, 0) + '°');
   set('vApex', mm(VV.apex)); set('vLeg', 'Ø ' + mm(VV.leg_d)); set('vR', 'R ' + mm(VV.entry_r)); set('vWall', mm(VV.wall));
   set('vOver', mm(0.2 * VV.slope, 2)); set('vSpan', mm(2 * hs));
-  set('chFoot', mm(CHD.foot)); set('chPocket', mm(CHD.pocket)); set('chBed', mm(CHD.bed));
-  set('stampTxt', mm(H.z_bb - H.stamp_top));
+  set('chFoot', mm(CHD.foot)); set('chBed', mm(CHD.bed));
   set('plugTxt', mm(PB.plug, 0)); set('cableTxt', mm(PB.cable, 0)); set('winTxt', mm(FA.win[1] - FA.win[0], 0));
   set('fenceTxt', fmt(UK.fence[0], 1) + ' × ' + fmt(UK.fence[1], 0) + ' mm'); set('clrTxt', mm(PB.clr));
   set('fachTxt', fmt(FA.L, 0) + ' × ' + fmt(FA.W, 0) + ' × ' + fmt(FA.H, 1) + ' mm'); set('pbDims', fmt(PB.L, 0) + ' × ' + fmt(PB.W, 0) + ' × ' + fmt(PB.T, 1) + ' mm');
@@ -351,14 +342,13 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   const nOk = (v) => v.docks.filter((d) => d.ok).length;
   const nFit = (v) => Object.values(v.cand).filter((c) => c > 0).length;
   const gsum = (v) => v.material.ober[0] + v.material.uk[0];
-  const v1 = V[1000];
   $('answer').innerHTML =
     `<div class="rec"><span class="lbl">Maßstab für den Hut</span><span class="big">1:${rec.scale}</span>
-      <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt mit ${fmt(-rec.hut.over, 1)} mm Rand je Seite auf den 24-cm-Hut (bei 1:1000 stünde sie ${fmt(v1.hut.over, 1)} mm über). <b>Preis:</b> LED-Docks sind nur an ${nOk(rec)} von 6 Gebäuden frei (${rec.docks.filter((d) => d.ok).map((d) => short[d.slug]).join(', ')}); ${rec.docks.filter((d) => !d.ok).map((d) => short[d.slug] + (d.why.startsWith('Kassette') ? ' (Kassette passt nicht in den Fuß)' : ' (Powerbank liegt im Weg)')).join(', ')} bleiben ohne. Die Elektronik schrumpft auf ${rec.esp[0]} × ${rec.esp[1]} mm (Soll ${D.esp[0]} × ${D.esp[1]}).</span></div>
+      <span class="small">Platte <span class="num">${dimsOf(rec)}</span>, ${fmt(rec.plate[1] / 10, 1)} cm lang, passt mit ${fmt(-rec.hut.over, 1)} mm Rand je Seite auf den 24-cm-Hut. <b>Alle ${nOk(rec)} Docks</b> sitzen an den festgelegten Lagen; die Powerbank liegt im Unterkasten unter dem Steckerraum und nimmt keinem Dock den Platz. Elektronik ${rec.esp[0]} × ${rec.esp[1]} mm.</span></div>
     <div><span class="lbl">Fasen</span><span class="big">geprüft</span>
-      <span class="small">Fußfase ${fmt(CHD.foot)} und Muldenfase ${fmt(CHD.pocket)} sind jetzt im Modell, dazu ${fmt(CHD.bed)} an allen Bettkanten und Mündungen. Drei Stellen liegen im Generator und fehlen noch (Tabelle unten).</span></div>
-    <div><span class="lbl">Lötenden</span><span class="big">${fmt(NI.w, 0)} × ${fmt(DK.y_slot - DK.niche_end, 1)} mm Nische</span>
-      <span class="small">Hinter der Körpertasche ein offener Raum, darunter der Unterkasten ${fmt(H.uk_t)} hoch hohl. Die Docks liegen nicht über der Powerbank. ${Object.entries(rec.sides).map(([k, q]) => ({ N: 'Nordkante', S: 'Südkante' })[k] + ': ' + q.ok + ' von ' + rec.n_possible + ' Docks frei, ' + q.under_hof + ' % unter dem Hof').join('; ')}. Die Suche nimmt die Lage mit den meisten freien Docks.</span></div>
+      <span class="small">Mulde ohne Stufen und ohne Fase (scale.md), Fußfase ${fmt(CHD.foot)} kommt aus dem Gebäude-Generator; ${fmt(CHD.bed)} an allen Bettkanten und Mündungen der Platten (Tabelle unten).</span></div>
+    <div><span class="lbl">Dock</span><span class="big">flach, ${fmt(H.plate_t)} mm</span>
+      <span class="small">Leiste von unten aufgeklebt, darunter ein durchgehender Steckerraum von ${fmt(H.deck - (H.uk_bot + UK.floor + PB.T))} mm bis zur Powerbank. Der Unterkasten ist ${fmt(H.uk_t)} hoch hohl. Keine Nische, kein Steg, kein Support in der Platte.</span></div>
     <div><span class="lbl">Faden</span><span class="big">${fmt(D.v_angle, 0)}° statt ${fmt(D.v_plan2.angle, 0)}°</span>
       <span class="small">Der Faden knickt am Scheitel um ${fmt(2 * D.v_angle, 0)}° statt ${fmt(2 * D.v_plan2.angle, 0)}°. Überhang ${fmt(0.2 * VV.slope, 2)} mm je Schicht statt 0,15: Das muss T1 zeigen.</span></div>`;
 
@@ -366,24 +356,18 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   $('seg').innerHTML = D.variants.map((v) => `<input type="radio" name="v" id="v-${v.scale}" value="${v.scale}" ${v.scale === cur ? 'checked' : ''}><label for="v-${v.scale}">1:${v.scale} <span class="dims">${dimsOf(v)}</span></label>`).join('');
   document.querySelectorAll('input[name=v]').forEach((r) => r.addEventListener('change', () => { cur = +r.value; render(); }));
   const NOTE = (v) => {
-    const parts = [];
-    if (v.scale === 1000) parts.push('Referenz, wie bisher. Die Kassette passt in alle sechs Gebäude und die Powerbank liegt an der Nordkante zu ' + v.under_hof + ' % unter dem Innenhof, aber die Platte ist ' + fmt(v.plate[1], 0) + ' mm lang und steht ' + fmt(v.hut.over, 1) + ' mm je Seite über den Hut.');
-    else parts.push('Die Platte passt auf den 24-cm-Hut (' + fmt(v.plate[1], 1) + ' mm lang). Die Kassette passt in ' + nFit(v) + ' von 6 Gebäuden (' + v.docks.filter((d) => !d.ok && d.why.startsWith('Kassette')).map((d) => short[d.slug]).join(' und ') + ' zu eng); ein Dock ist an ' + nOk(v) + ' Gebäuden frei' + (v.esp[0] < D.esp[0] ? '; die Elektronik hat nur ' + v.esp[0] + ' × ' + v.esp[1] + ' mm statt ' + D.esp[0] + ' × ' + D.esp[1] + ' mm' : '') + '.');
-    parts.push('Die Powerbank liegt an der ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side] + 'kante, zu ' + v.under_hof + ' % unter dem Innenhof.');
-    const alt = Object.entries(v.sides).filter(([k]) => k !== v.side).map(([k, q]) => 'Alternative ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[k] + 'kante: ' + q.ok + ' von ' + v.n_possible + ' Docks frei' + (q.fail.length ? ' (kein Platz für ' + q.fail.map((t) => t.split(' ')[0]).join(', ') + ')' : '') + ', ' + q.under_hof + ' % unter dem Hof.');
-    parts.push(...alt);
-    const nd = v.docks.filter((d) => !d.ok && !d.why.startsWith('Kassette'));
-    if (nd.length) parts.push('Kein freies Dock für ' + nd.map((d) => short[d.slug]).join(', ') + '.');
+    const parts = ['Die Platte passt auf den 24-cm-Hut (' + fmt(v.plate[1], 1) + ' mm lang). Alle ' + nOk(v) + ' Docks sitzen an den festgelegten Lagen (scale.md).'];
+    parts.push('Die Powerbank liegt im Unterkasten an der ' + ({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side] + 'kante, zu ' + v.under_hof + ' % unter dem Innenhof; sie liegt unter dem Steckerraum und darf unter den Docks liegen. Elektronik ' + v.esp[0] + ' × ' + v.esp[1] + ' mm.');
     return parts.join(' ');
   };
   function table() {
     const st = (ok, t) => `<span class="pill ${ok}">${t}</span>`;
-    let h = '<thead><tr><th>Maßstab</th><th>Platte B × T × H</th><th>Hut</th><th>Kassette passt in</th><th>Dock frei</th><th>Powerbank</th><th>Material</th></tr></thead><tbody>';
+    let h = '<thead><tr><th>Maßstab</th><th>Platte B × T × H</th><th>Hut</th><th>Kassette je Gebäude</th><th>Dock</th><th>Powerbank</th><th>Material</th></tr></thead><tbody>';
     for (const v of D.variants) {
       const chips = v.docks.map((d) => `<span class="pill ${d.ok ? 'ok' : d.why.startsWith('Kassette') ? 'warn' : 'mid'}" title="${d.ok ? 'Dock frei' : d.why}">${short[d.slug]}</span>`).join('');
       const hut = v.hut.fits ? st('ok', fmt(-v.hut.over, 1) + ' mm Rand') : st('warn', fmt(v.hut.over, 1) + ' mm über');
       h += `<tr class="${v.scale === cur ? 'sel' : ''}"><td>1:${v.scale}</td><td class="num">${dimsOf(v)}</td><td>${hut}</td><td><div class="chips">${chips}</div></td>
-        <td class="num">${v.docks_ok} von ${nFit(v)}</td><td>${({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side]}kante, ${v.under_hof} % unter dem Hof</td><td class="num">≈ ${gsum(v)} g</td></tr>`;
+        <td class="num">${v.docks_ok} von 6</td><td>${({ N: 'Nord', S: 'Süd', W: 'West', O: 'Ost' })[v.side]}kante, ${v.under_hof} % unter dem Hof</td><td class="num">≈ ${gsum(v)} g</td></tr>`;
     }
     $('vtab').innerHTML = h + '</tbody>';
   }
@@ -491,44 +475,35 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
 
   /* ---------- Dock im Längsschnitt ---------- */
   (function dock() {
-    // w = −y (Lötenden nach rechts); z wie in der Maßkette (0 = Plattenoberseite)
-    const wMin = -13, wMax = -DK.niche_end + 4;
+    // w = −y (Lötenden nach rechts); z wie in der Maßkette (0 = Plattenoberseite); flache Unterseite, Leiste aufgeklebt
+    const wMin = -13, wMax = -DK.y_tail + 16;
     const zT = -H.F + 3.2, zB = H.uk_bot - 1.2;
     const k = 15, X = (w) => 16 + (w - wMin) * k, Y = (z) => 12 + (zT - z) * k;
     const R = (a, b, z0, z1, fill, extra = '') => `<rect x="${X(a)}" y="${Y(Math.max(z0, z1))}" width="${(b - a) * k}" height="${Math.abs(z1 - z0) * k}" style="fill:${fill}" ${extra}/>`;
     const st = 'stroke="var(--edge)" stroke-width="0.8"';
-    const zf = H.uk_bot + UK.floor, wEnd = -DK.niche_end, wSl = -DK.y_slot, wSE = -DK.slot_end, wt = -DK.y_tail;
-    const hd = DK.hd, wb0 = -(DK.yb + hd), wb1 = -(DK.yb - hd), at = UK.anschlag.t, ya = -DK.yb - at / 2;
+    const zf = H.uk_bot + UK.floor, wt = -DK.y_tail, zpb = zf + PB.T;
+    const hd = DK.hd, wb0 = -(DK.yb + hd), wb1 = -(DK.yb - hd);
     let s = '';
     s += R(wMin, wMax, -H.F, zT, 'var(--c-bld)', st);                       // Gebäudefuß in der Mulde
-    s += R(wMin, wMax, H.deck, -H.F, 'var(--c-plate)', st);                 // Oberplatte unter dem Muldenboden
+    s += R(wMin, wMax, H.deck, -H.F, 'var(--c-plate)', st);                 // Oberplatte: nur der Muldenboden unter dem Fuß
     s += R(wMin, wMax, zf, zB, 'var(--c-under)', st);                       // Boden des Unterkastens
-    s += R(wMin, wMax, zf - 0.01, H.deck, 'var(--panel)');                  // Unterkasten hohl
-    s += R(wb0, wb1, H.z_bb - 0.01, H.z_hb, 'var(--panel)');                // Körpertasche, nach unten offen
-    s += R(-0.9, wb0, H.z_bb - 0.01, H.z_hb, 'var(--panel)');               // Raum für Knick und Pins
-    s += R(wSl, wEnd, H.z_bb - 0.01, H.z_slot, 'var(--panel)');             // Schlitz und Kabelnische
-    s += R(wb0 + 0.1, wb1 - 0.1, H.z_bb, H.z_hb, 'var(--c-port)');          // Körper der Winkelleiste
+    s += R(wMin, wMax, zf - 0.01, H.deck, 'var(--panel)');                  // Unterkasten hohl: Steckerraum und Powerbank
+    s += R(wMin + 0.5, wMax - 0.5, zf, zpb, 'var(--c-pb)', st);     // Powerbank liegt unter dem Steckerraum
+    s += R(wb0, wb1, H.z_bb, H.deck, 'var(--c-port)');                      // Körper der Winkelleiste, aufgeklebt unter die Platte
     s += R(-0.32, 0.32, H.z_bm - 0.32, -H.F + 0.0, 'var(--c-port)');        // senkrechter Pin im Pinloch (durch den Muldenboden)
     s += R(-0.32, wt, H.z_bm - 0.32, H.z_bm + 0.32, 'var(--c-port)');        // Lötende nach hinten
-    // Anschlag-Steg unter dem Körper, Strebe nach vorn
-    s += R(ya, ya + at, zf, H.stamp_top, 'var(--c-under)', st);
-    s += `<polygon points="${X(ya)},${Y(zf)} ${X(ya - UK.anschlag.gusset)},${Y(zf)} ${X(ya)},${Y(H.stamp_top - 2)}" style="fill:var(--c-under)" ${st}/>`;
-    // Adern, fallen vom Lötende frei nach unten und laufen zur Sammelleitung
     for (const [dx, c] of [[0, 'var(--c-thread)'], [0.8, 'var(--warn)'], [1.6, 'var(--c-niche)'], [2.4, 'var(--fg)']]) {
-      s += `<path d="M${X(wt - 0.2 + dx * 0.15)} ${Y(H.z_bm)}C${X(wt + 1.5 + dx * 0.4)} ${Y(H.z_bm - 0.1)} ${X(wt + 2.3 + dx * 0.6)} ${Y(H.z_bm - 3)} ${X(wt + 2.6 + dx * 0.9)} ${Y(zf + 2.5)}S${X(wt + 4 + dx)} ${Y(zf + 0.6)} ${X(wt + 8 + dx)} ${Y(zf + 0.6)}" style="fill:none;stroke:${c};stroke-width:1.8;stroke-linecap:round"/>`;
+      s += `<path d="M${X(wt - 0.2 + dx * 0.15)} ${Y(H.z_bm)}C${X(wt + 1.2 + dx * 0.3)} ${Y(H.z_bm - 0.1)} ${X(wt + 1.8 + dx * 0.4)} ${Y(H.z_bm - 1.4)} ${X(wt + 2.4 + dx * 0.6)} ${Y(H.deck - 2.9)}" style="fill:none;stroke:${c};stroke-width:1.8;stroke-linecap:round"/>`;
     }
     const lab = (w, z, t, a = 'start', c = '') => `<text x="${X(w)}" y="${Y(z)}" text-anchor="${a}" ${c}>${t}</text>`;
     s += lab(wMin + 0.3, zT - 0.5, 'Gebäudefuß in der Mulde', 'start', 'class="mut"');
-    s += lab(wMin + 0.3, -H.F - 1.5, 'Oberplatte', 'start');
-    s += `<text x="${X(wSE + 1.0)}" y="${Y(H.z_bb + 0.55) + 4}" style="font-weight:600;font-size:12px">Kabelnische ${fmt(NI.w, 0)} × ${fmt(wEnd - wSl, 1)} mm, Decke ${fmt(H.z_slot - H.z_bb)} hoch</text>`;
-    s += lab(wb1 + 0.1, H.z_bb - 0.9, 'Körper', 'start', 'class="mut"');
-    s += lab(ya - UK.anschlag.gusset - 0.4, (zf + H.stamp_top) / 2, 'Anschlag-Steg', 'end');
-    s += lab(wt + 4.3, H.z_bm - 4.2, 'Adern fallen frei in den Unterkasten', 'start');
+    s += lab(wMin + 0.3, -H.F - 1.5, 'Oberplatte, Unterseite flach', 'start');
+    s += lab(wb0 - 0.3, H.z_bb - 0.9, 'Leiste (aufgeklebt)', 'end', 'class="mut"');
+    s += lab(wt + 4.2, H.deck - 2.6, 'Draht und Lötstelle', 'start');
+    s += lab(wMin + 0.8, zf + PB.T / 2 - 0.3, 'Powerbank (liegt unter dem Steckerraum)', 'start', 'style="fill:var(--on-pb);font-weight:600"');
     s += `<text x="${X(wMin + 0.4)}" y="${Y(zf) + 0.6 * k + 5}" class="inv">Boden Unterkasten</text>`;
-    const dimh = (a, b, z, t) => `<path class="dim" d="M${X(a)} ${Y(z) - 4}v8M${X(b)} ${Y(z) - 4}v8M${X(a)} ${Y(z)}H${X(b)}"/><text x="${(X(a) + X(b)) / 2}" y="${Y(z) + 16}" text-anchor="middle">${t}</text>`;
     const dv = (z0, z1, w, t) => `<path class="dim" d="M${X(w) - 4} ${Y(z0)}h8M${X(w) - 4} ${Y(z1)}h8M${X(w)} ${Y(z0)}V${Y(z1)}"/><text x="${X(w) - 7}" y="${(Y(z0) + Y(z1)) / 2 + 4}" text-anchor="end">${t}</text>`;
-    s += dv(H.deck, zf, wMax - 0.3, 'frei ' + fmt(H.deck - zf));
-    s += dv(H.deck, H.z_slot, wSE + 0.3, '');
+    s += dv(H.deck, zpb, wMax - 0.3, 'Luft ' + fmt(H.deck - zpb));
     $('dock').setAttribute('viewBox', `0 0 ${X(wMax) + 12} ${Y(zB) + 28}`);
     $('dock').innerHTML = s;
   })();
@@ -569,16 +544,13 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
     const X = (x) => 20 + (x - x0) * k, Y = (z) => 12 + (zT - z) * k;
     const poly = (pts, fill, extra = '') => `<polygon points="${pts.map(([x, z]) => X(x) + ',' + Y(z)).join(' ')}" style="fill:${fill}" ${extra}/>`;
     const st = 'stroke="var(--edge)" stroke-width="0.8"';
-    const wall = [[x0, zT], [-clr - cP, zT], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]];
-    let s = poly([[x0, 0], [-clr - cP, 0], [-clr, -cP], [-clr, -cP - band], [-clr - relief, -cP - band], [-clr - relief, -F], [x0, -F]], 'var(--c-plate)', st);
+        let s = poly([[x0, 0], [-clr, 0], [-clr, -F], [x0, -F]], 'var(--c-plate)', st);
     s += poly([[0, -0.0], [x1, 0], [x1, -F + 0.0], [cF, -F], [0, -F + cF]], 'var(--c-bld)', st);
     s += poly([[0, 0.0], [0, zT * 0 + 1.0], [x1, 1.0], [x1, 0]], 'var(--c-bld)', st);
     s += `<path d="M${X(x0)} ${Y(0)}H${X(x1)}" class="dim" style="stroke-dasharray:3 3;stroke:var(--muted)"/>`;
     const lab = (x, z, t, a = 'start', c = '') => `<text x="${X(x)}" y="${Y(z)}" text-anchor="${a}" ${c}>${t}</text>`;
     s += lab(x0 + 0.2, 1.1, 'Plattenoberseite', 'start', 'class="mut"');
-    s += lab(-clr - cP - 0.2, -cP / 2, 'Muldenfase ' + fmt(cP) + ' (Einführung)', 'end');
-    s += lab(-clr - 0.3, -cP - band / 2, 'Band ' + fmt(band, 0) + ' mm, Spiel 0,10', 'end');
-    s += lab(-clr - relief - 0.3, -cP - band - 1.6, 'darunter 0,30 mehr', 'end');
+    s += lab(-clr - 0.3, -F / 2, 'gerade Wand, Spiel 0,10, keine Fase', 'end');
     s += lab(cF + 0.5, -F + 0.5, 'Fußfase ' + fmt(cF) + ' (Bett)', 'start');
     s += lab(x1 - 0.3, -F / 2, 'Fuß ' + fmt(F) + ' mm tief', 'end', 'style="font-weight:600"');
     s += lab(x0 + 0.2, -F - 0.9, 'Muldenboden ' + fmt(H.ceil) + ' mm über der Leiste', 'start', 'class="mut"');
@@ -596,19 +568,18 @@ tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent);
   /* ---------- Testdrucke ---------- */
   const fl = FA.L + 2 * UK.wall + 4, fw = FA.W + 2 * UK.wall + 4;
   $('tests').innerHTML = [
-    ['rec', 'T1 · Steckprobe 2 im neuen Aufbau', 'Mini-Oberplatte 12,6 + Mini-Unterkasten 14,4 · Gebäude und Kassette aus dem Plan Steckprobe 2 · beide Gebäude mit Fußfase',
-      ['Alles aus Steckprobe 2 (Taschenhöhe 14,60, Schacht + 0,3, Fase 0,5, Pins, Kontakt, Licht)', 'Dock mit der einen Kabelnische: Adern anlöten, hängen sie frei?',
-        'Steg-Anschlag mit 1,2 Luft plus Heißkleber: kippt der Körper noch?', 'Zapfen und Löcher (Gleitspiel 0,15): sitzt die Oberplatte ohne Klemmen?',
-        'Faden an zwei Ecken, <b>ein V mit 53° und eines mit 40°</b>: drucken beide sauber, läuft der Faden leichter?', 'Fasen: Fuß 0,8, Mulde 1,0, Bettkanten 0,5: bleibt ein Wulst?']],
+    ['rec', 'T1 · Test-Dock (flache Unterseite)', 'Mini-Oberplatte 10,6 ohne Tasche + Füße 3,5 und 2,5 · gebaut, wartet auf den Druck (stl/steckmodul_testdock/)',
+      ['Leiste aufkleben: hält der Kleber, wenn man zehnmal aufsteckt?', 'Luft 3,5 und 2,5 unter der Platte: reicht sie für Körper, Draht und Lötstelle?',
+        'Zapfen 2,5 in Löchern 2,8: sitzt die Oberplatte ohne Klemmen?', 'Faden an zwei Ecken, <b>ein V mit 53° und eines mit 40°</b> (Plan Faden: anderer Chat)']],
     ['rec', 'T2 · Fachprobe Powerbank', 'Unterkasten-Ausschnitt etwa ' + fmt(fl, 0) + ' × ' + fmt(fw, 0) + ' mm, ' + fmt(H.uk_t) + ' hoch, mit Deckplatte 2 mm',
       ['Powerbank im Zaun (Spiel ' + fmt(PB.clr, 1) + ', ' + fmt(PB.clr_z, 1) + ' Luft oben)', 'Fenster trifft LEDs, microUSB und USB-C', 'Gerader USB-A-Stecker passt in ' + fmt(PB.plug, 0) + ' mm, Kabel in den Kanal von ' + fmt(PB.cable, 0) + ' mm']],
     ['', 'T3 · später: Stoß der Druckteile', 'Streifen über den Stoß von Oberplatte und Unterkasten', ['Versetzte Stöße und Zapfen: bleibt die Platte eben?', 'erst nach T1']]
   ].map(([c, t, m, l]) => `<div class="card ${c}"><h3>${t}</h3><span class="meta">${m}</span><ul>${l.map((x) => '<li>' + x + '</li>').join('')}</ul></div>`).join('');
   $('decide').innerHTML = [
-    '<b>Maßstab 1:1300</b> (gesetzt): Seminargebäude und City-Hochhaus nehmen die Kassette nicht auf; das Hörsaalgebäude verliert sein Dock an die Powerbank. Seminargebäude und Institut zusammenlegen (ein Dock) und die Kassette für die schlanken Gebäude neu entwerfen (eigener Chat), oder die Powerbank in die Nordkante und das Hörsaalgebäude statt drei anderer anschließen?',
-    '<b>Elektronik:</b> bei 1:1300 bleiben nur 50 × 30 mm statt 60 × 35 mm. Reicht ein ESP32-DevKit ohne Beiwerk, oder muss das Zubehör (Pegelwandler, Kondensator, Schalter) auf eine Huckepack-Platine?',
-    '<b>Faden-Neigung:</b> 40° (flacher, mehr Überhang) in T1 gegen 53° testen, ja?',
-    'Fachprobe T2 mitdrucken oder erst Powerbank und USB-Stecker nachmessen?',
+    '<b>Steckerraum:</b> 3,5 mm unter der Platte (2,9 + 0,6 Spiel) oder knapper mit 2,5: das entscheidet das Test-Dock.',
+    '<b>Powerbank-Lage:</b> der Unterkasten ist an keiner Stelle durch die Docks eingeschränkt; Nordkante (Anschluss am Rand) wie in der Seite, oder lieber die Südkante?',
+    '<b>Elektronik:</b> ' + rec.esp[0] + ' × ' + rec.esp[1] + ' mm passen unten; Zubehör (Pegelwandler, Kondensator, Schalter) darf darunter mit.',
+    '<b>Nische des Test-Docks:</b> entfällt im Konzept, ebenso Stößel und Taste.',
     'Doktorhut messen (Kantenlänge, Knopf in der Mitte): 24 cm ist angenommen; bestimmt den Rand der Platte bei 1:1300.'
   ].map((x) => '<li>' + x + '</li>').join('');
 
