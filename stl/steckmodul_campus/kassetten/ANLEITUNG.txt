@@ -1,0 +1,36 @@
+Kassetten für die steckbaren Gebäude (Maßstab 1:1300)
+=====================================================
+
+Je Gebäude wird genau EINE Kassette gedruckt (Buchse, Adern und LED-Streifen sitzen darin).
+Es gibt drei Bauformen, je nachdem, wie viel Platz das Gebäude hat:
+
+Datei                | Form | Stückzahl | Gebäude                                                         | Maße (B x T x H, mm)
+---------------------|------|-----------|-----------------------------------------------------------------|---------------------
+kassette_v4.stl      | v4   | 3         | 01 Paulinum, 02 Neues Augusteum, 03 Hörsaalgebäude              | 13,5 x 29,4 x 17,1
+kassette_V1RS.stl    | V1RS | 2         | 04 Seminargebäude, 05 Institutsgebäude                          | 19,2 x 6,4 x 27,7
+kassette_V2R.stl     | V2R  | 1         | 06 City-Hochhaus (gilt auch für die Fase-2-Variante)            | 13,0 x 6,4 x 36,9
+
+Insgesamt 6 Kassetten (3 x v4, 2 x V1RS, 1 x V2R). Der Innenhof-Einsatz braucht keine Kassette.
+Tipp: ein bis zwei Reserve von v4 mitdrucken (die Form ist bewährt, aber das Einpressen ist knapp).
+
+Die Formen NICHT vertauschen: Schacht und Platz im Gebäude sind genau auf die jeweilige Form berechnet.
+
+Drucken
+-------
+- Lage wie die STL: Unterseite (Buchsentasche, offen) liegt auf dem Bett, Kassette steht aufrecht.
+- 0,2 mm Schicht, Düse 0,4, mindestens 2 Wandlinien, kein Support, ohne Brim nötig.
+- V1RS und V2R haben ein dünnes, frei stehendes Blatt (1,2 mm) für den LED-Streifen; V2R ist in dieser Form
+  schon ohne Support sauber gedruckt worden (r8).
+- Plattenteile und Gebäude: siehe stl/steckmodul_campus/gebaeude/README.md und plug/slicer.md.
+
+Zusammenbau
+-----------
+1. Dupont-Buchse mit der Steckseite auf einen flachen Tisch stellen, Kassette von oben darüberstülpen
+   (so sitzt die Buchse bündig). Adern durch den Schlitz nach oben führen.
+2. LED-Streifen (10 mm breit) auf das Blatt kleben; bei V1RS/V2R sind es zwei Streifen (vorn und hinten, der
+   hintere um 180 Grad gedreht), verkettet DOUT -> DIN mit drei kurzen Adern.
+3. Kassette von unten in den Schacht des Gebäudes einpressen (Presssitz, hält beim Schütteln).
+   Die Unterkante der Kassette steht danach etwa 0,2 mm heraus.
+
+Stand: V4 bewährt (Steckprobe 1/2), V2R als Passform gedruckt (r8). V1RS ist noch nicht gedruckt.
+Quelle: plug/buildings.py (Variante je Gebäude in plug/scale1176/placements_1300.json).
