@@ -139,8 +139,30 @@ def roof_over(solid, fp, rect, hmax):
 
 
 def mulde_body(slug_fp, d):
-    """Mulde: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (eine Ebene, keine Stufen)."""
-    return G.extrude(slug_fp.buffer(P.OUTLINE_CLR_T, join_style=2), -d["F"] - 0.0, 0.01)
+    """Mulde: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (eine Ebene, keine Stufen), oben mit Einführfase MULDE_CH_T.
+    Die Fase wächst in Stufen nach oben (wie die Bettfasen, BC.mouth_ch) und reicht bis über die Oberkante, damit sich die Öffnung nicht zuzieht
+    und kein Rest-Überhang bleibt."""
+    poly = slug_fp.buffer(P.OUTLINE_CLR_T, join_style=2)
+    ch = P.MULDE_CH_T
+    n = BC.n_layers(ch)
+    dz = ch / n
+    parts = [G.extrude(poly, -d["F"], -ch + 0.01)]
+    for k in range(n):
+        top = 1.0 if k == n - 1 else -ch + dz * (k + 1) + 0.01
+        parts.append(G.extrude(slug_fp.buffer(P.OUTLINE_CLR_T + dz * (k + 0.5), join_style=2), -ch + dz * k, top))
+    return G.union(parts)
+
+
+def top_edge(outline, T, ch):
+    """Körper, der die Platte an der oberen Außenkante mit einer 45°-Fase ch (in Stufen) begrenzt; mit der Platte schneiden."""
+    n = BC.n_layers(ch)
+    dz = ch / n
+    z0 = T - ch
+    parts = [G.extrude(outline, 0.0, z0 + 0.01)]
+    for k in range(n):
+        top = T + 1.0 if k == n - 1 else z0 + dz * (k + 1) + 0.01
+        parts.append(G.extrude(outline.buffer(-dz * (k + 0.5)), z0 + dz * k, top))
+    return G.union(parts)
 
 
 def dock_local(var, wall, d):
@@ -245,7 +267,8 @@ def build(scale=P.SCALE_PLAN, replace=False):
     T = plate_thickness(d)
     hof_solid = models[G.HOF["slug"]][0]
     plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T)           # Bettkante mit Fase gegen den Elefantenfuß
-    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan")
+    plate = plate ^ top_edge(outline, T, P.PLATE_TOP_CH_T)    # obere Außenkante gefast (Wulst im Druck)
+    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan", raised=P.LABEL_RAISE_T)
     cut_all, report, envs = [], [], []
     for slug, p in places.items():
         w, dep = shaft_size(p["var"])
@@ -257,7 +280,7 @@ def build(scale=P.SCALE_PLAN, replace=False):
         bad = env.difference(outline.buffer(-1.0)).area + sum(env.intersection(o).area for o in envs)
         envs.append(env)
         report.append((slug, p["var"], p["wall"], p.get("led_dist"), bad))
-        # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante
+        # Mulde: voller Gebäudeumriss, durchgehend bis zur Fußunterkante, oben mit Einführfase
         cut_all.append(mulde_body(fps[slug], d).translate([0, 0, T]))
         # Muldenboden bleibt 0,4 mm und ist die unterste Schicht; die Pin-Löcher kommen aus pin_holes
     # Hof-Aussparung: HOF_DEPTH_T tief, Einsatz mit Fuge HOF_CLR_T und Einführfase unten (innenhof.model); ohne Fase oben, damit die Wand

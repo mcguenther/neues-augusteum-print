@@ -281,6 +281,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Fachprobe Powerbank | `plug/power/feedback_fach.html` | https://claude.ai/artifact/FKLje3Pq8eSphqzvaohz7W |
 | Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
+| Steckplatte Änderungsvorschau (3D, neu und gedruckt) | `plug/views/campus/view.html` | https://claude.ai/artifact/K9Bv3YubjhJxxokDKZ11og |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.

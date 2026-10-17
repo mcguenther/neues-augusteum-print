@@ -1,0 +1,247 @@
+<title>Steckplatte Vorschau</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: links die 3D-Ansicht (Bühne), rechts die Liste der Änderungen aus dem Druck; unter 860 px untereinander. */
+:root {
+  --bg: #f3f4f5;
+  --panel: #ffffff;
+  --fg: #1d2329;
+  --muted: #5d6873;
+  --line: #d4d9de;
+  --accent: #b4541a;
+  --accent-soft: #f4e3d8;
+  --stage: #dfe3e7;
+  --model: #8c9aa9;
+  --ok: #2c7a4b;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316; --model: #8a98a8; --ok: #6cc08a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316; --model: #8a98a8; --ok: #6cc08a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-size: 1.5rem; line-height: 1.2; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 0.78rem; margin: 0; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.sub { color: var(--muted); margin: 4px 0 0; max-width: 70ch; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.stagebox { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+button {
+  font: inherit; font-size: 0.88rem; cursor: pointer; padding: 6px 12px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--panel); color: var(--fg);
+}
+button:hover { background: var(--accent-soft); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] button[aria-pressed="true"] { color: #1a1008; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button[aria-pressed="true"] { color: #1a1008; } }
+#stage { position: relative; height: min(66vh, 640px); min-height: 360px; background: var(--stage); touch-action: none; }
+#stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+#stage canvas:active { cursor: grabbing; }
+.hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; }
+.tag { position: absolute; right: 10px; top: 10px; font-family: var(--mono); font-size: 0.78rem; padding: 3px 9px; border-radius: 4px;
+  background: var(--panel); border: 1px solid var(--line); }
+.tag b { color: var(--accent); font-weight: 600; }
+.cap { padding: 10px 12px; border-top: 1px solid var(--line); min-height: 3.4em; color: var(--muted); font-size: 0.9rem; }
+.cap strong { color: var(--fg); }
+.side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.chg { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--line); }
+.chg:first-of-type { border-top: 0; padding-top: 2px; }
+.chg .head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.chg .name { font-weight: 600; }
+.val { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); white-space: nowrap; }
+.chg p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.chg button { align-self: flex-start; margin-top: 2px; font-size: 0.82rem; padding: 4px 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+td, th { text-align: left; padding: 4px 6px 4px 0; border-top: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 500; }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.ok { color: var(--ok); }
+.note { color: var(--muted); font-size: 0.85rem; margin: 0; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Steckplatte 1:1300, Änderungsvorschau</h1>
+    <p class="sub">Rückmeldung zum ersten Druck: Schrift erhaben, Fase an der Oberkante, Einführfase an den Mulden. Links die neue Platte, mit „Gedruckt“ die Platte aus dem ersten Druck daneben gelegt.</p>
+  </header>
+  <div class="main">
+    <section class="stagebox" aria-label="3D-Ansicht">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Fassung">
+          <button type="button" id="b-neu" aria-pressed="true">Neu</button>
+          <button type="button" id="b-alt" aria-pressed="false">Gedruckt</button>
+        </div>
+        <div class="seg" role="group" aria-label="Ansicht" id="views"></div>
+      </div>
+      <div id="stage"><canvas id="cv" aria-label="3D-Modell der Steckplatte"></canvas>
+        <div class="tag" id="tag"><b>Neu</b> · @DIM@</div>
+        <div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div>
+      </div>
+      <div class="cap" id="cap"></div>
+    </section>
+    <aside class="side">
+      <div class="card">
+        <h2>Änderungen</h2>
+        <div id="chg"></div>
+      </div>
+      <div class="card">
+        <h2>Unverändert</h2>
+        <p class="note">Flache Unterseite ohne Elefantenfuß (gut), 24 Pin-Löcher, Mulde 14,2, Muldenboden 0,4. Der Hof wird erst nach den Gebäuden eingesetzt, die Trennwand von nur 0,4 mm entfällt (Nutzer: so in Ordnung).</p>
+      </div>
+      <div class="card">
+        <h2>Prüfung des Neubaus</h2>
+        <table>
+          <tr><th>dicht</th><td class="n ok">@DICHT@</td></tr>
+          <tr><th>Überhang unten</th><td class="n">@OVERHANG@</td></tr>
+          <tr><th>Höhe mit Schrift</th><td class="n">@HOEHE@ mm</td></tr>
+          <tr><th>Volumen</th><td class="n">@VOL@ cm³</td></tr>
+          <tr><th>Schrift im Rand</th><td class="n ok">@TEXT_OK@</td></tr>
+        </table>
+        <p class="note">Planwerte, ungetestet. Ob 1,5 mm Fase oben den Wulst beseitigt, zeigt erst der nächste Druck.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = @DATA@;
+const b64 = (s) => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Float32Array(u.buffer); };
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+const canvas = document.getElementById('cv'), stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35, 1, 0.5, 4000);
+camera.up.set(0, 0, 1);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x7a8696, 1.0));
+const sun = new THREE.DirectionalLight(0xffffff, 0.55); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, 0.25); scene.add(fill);
+
+function mesh(b64s) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(b64(b64s), 3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: css('--model'), roughness: 0.82, metalness: 0.0 }));
+  scene.add(m);
+  return m;
+}
+const meshes = { neu: mesh(DATA.neu), alt: mesh(DATA.alt) };
+let which = 'neu';
+function setWhich(w) {
+  which = w;
+  meshes.neu.visible = w === 'neu'; meshes.alt.visible = w === 'alt';
+  document.getElementById('b-neu').setAttribute('aria-pressed', w === 'neu');
+  document.getElementById('b-alt').setAttribute('aria-pressed', w === 'alt');
+  document.getElementById('tag').innerHTML = w === 'neu' ? '<b>Neu</b> · ' + DATA.dimNeu : '<b>Gedruckt</b> · ' + DATA.dimAlt;
+  draw();
+}
+document.getElementById('b-neu').onclick = () => setWhich('neu');
+document.getElementById('b-alt').onclick = () => setWhich('alt');
+
+// Kamera um ein Ziel (z oben): Azimut 0 = Blick von Osten, -90 = von Süden
+const cam = { t: new THREE.Vector3(), d: 300, az: -60, el: 45 };
+function place() {
+  const a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  camera.position.set(cam.t.x + cam.d * Math.cos(e) * Math.cos(a), cam.t.y + cam.d * Math.cos(e) * Math.sin(a), cam.t.z + cam.d * Math.sin(e));
+  camera.lookAt(cam.t);
+  sun.position.copy(camera.position).add(new THREE.Vector3(60, -40, 120)); fill.position.copy(camera.position).add(new THREE.Vector3(-80, 60, 20));
+}
+function draw() { place(); renderer.render(scene, camera); }
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); draw();
+}
+function theme() { renderer.setClearColor(css('--stage')); meshes.neu.material.color.set(css('--model')); meshes.alt.material.color.set(css('--model')); draw(); }
+
+let anim = null;
+function goTo(v) {
+  const from = { x: cam.t.x, y: cam.t.y, z: cam.t.z, d: cam.d, az: cam.az, el: cam.el };
+  const to = { x: v.t[0], y: v.t[1], z: v.t[2], d: v.d, az: v.az, el: v.el };
+  let daz = to.az - from.az; daz = ((daz + 540) % 360) - 180;
+  const t0 = performance.now(), dur = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700;
+  cancelAnimationFrame(anim);
+  const step = (now) => {
+    const k = dur ? Math.min(1, (now - t0) / dur) : 1, s = k * k * (3 - 2 * k);
+    cam.t.set(from.x + (to.x - from.x) * s, from.y + (to.y - from.y) * s, from.z + (to.z - from.z) * s);
+    cam.d = from.d + (to.d - from.d) * s; cam.az = from.az + daz * s; cam.el = from.el + (to.el - from.el) * s;
+    draw(); if (k < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+
+const views = document.getElementById('views'), cap = document.getElementById('cap');
+function showView(i) {
+  const v = DATA.views[i];
+  [...views.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+  cap.innerHTML = '<strong>' + v.name + '.</strong> ' + v.text;
+  if (v.which) setWhich(v.which);
+  goTo(v);
+}
+DATA.views.forEach((v, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = v.name; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => showView(i); views.appendChild(b);
+});
+const chg = document.getElementById('chg');
+DATA.changes.forEach((c) => {
+  const d = document.createElement('div'); d.className = 'chg';
+  d.innerHTML = '<div class="head"><span class="name">' + c.name + '</span><span class="val">' + c.val + '</span></div><p>' + c.text + '</p>';
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Ansehen';
+  b.onclick = () => showView(c.view); d.appendChild(b); chg.appendChild(d);
+});
+
+// Maus, Touch: drehen, schieben (Shift, rechte Taste, zwei Finger), zoomen
+const ptrs = new Map(); let last = null, pinch = 0;
+canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); last = [e.clientX, e.clientY]; pinch = 0; cancelAnimationFrame(anim); });
+canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+canvas.addEventListener('pointermove', (e) => {
+  if (!ptrs.has(e.pointerId)) return;
+  const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+  const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+  if (ptrs.size === 2) {
+    const [p, q] = [...ptrs.values()]; const dist = Math.hypot(p[0] - q[0], p[1] - q[1]);
+    if (pinch) cam.d = Math.min(900, Math.max(6, cam.d * pinch / dist));
+    pinch = dist; panBy(dx / 2, dy / 2);
+  } else if (e.shiftKey || e.buttons === 2) panBy(dx, dy);
+  else { cam.az -= dx * 0.4; cam.el = Math.max(-89, Math.min(89, cam.el + dy * 0.4)); }
+  draw();
+});
+function panBy(dx, dy) {
+  const k = cam.d * 0.0016, a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  const right = new THREE.Vector3(-Math.sin(a), Math.cos(a), 0);
+  const up = new THREE.Vector3(-Math.sin(e) * Math.cos(a), -Math.sin(e) * Math.sin(a), Math.cos(e));
+  cam.t.addScaledVector(right, -dx * k).addScaledVector(up, dy * k);
+}
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); cam.d = Math.min(900, Math.max(6, cam.d * Math.exp(e.deltaY * 0.0012))); draw(); }, { passive: false });
+
+new ResizeObserver(resize).observe(stage);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+theme();
+showView(0);
+</script>
