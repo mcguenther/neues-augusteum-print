@@ -20,6 +20,7 @@ Zusätzlich entstehen die Gebäude als Hohlkörper (hohl.py, Wand 0,8 mm, unten 
 Danach werden automatisch Vorschaubilder nach vorschau/ gerendert (preview.py).
 """
 import argparse
+import itertools
 import math
 import os
 import sys
@@ -469,30 +470,49 @@ def source_models(quelle, s):
     raise ValueError(quelle)
 
 
-def colour_hohl(slug, solid_tm, shell_tm, lay, s):
-    """Fassadenfarben für die Hohlschale (Koordinaten wie der massive Körper). Zonen und Seitenmaße kommen vom massiven Körper,
-    die Innenflächen des Hohlraums bekommen die häufigste Wandfarbe (kein Filamentwechsel innen). Liefert (Netz, Hex je Dreieck)."""
+def colour_hohl(slug, solid_tm, cav, s, cache=None):
+    """Hohlschale mit Fassadenfarben (Koordinaten wie der massive Körper). Der massive Körper wird wie für die Komplettmodelle an den
+    Zonengrenzen zerschnitten und gefärbt; dann zieht Manifold den Hohlraum ab und trägt die Farbe jedes Dreiecks als face_id mit.
+    Die Innenflächen bekommen die häufigste Wandfarbe (kein Filamentwechsel innen). Liefert (Netz, Hex je Dreieck).
+    Gegenüber dem Zerschneiden der fertigen Schale etwa 20-mal schneller und mit einem Drittel der Dreiecke.
+    cache: der Farb-Cache von colourise; der zerschnittene massive Körper wird dort abgelegt und für die Komplettmodelle wiederverwendet."""
     global _ROOF_CLASS
     import fassaden
-    import hohl
     farben, plate = colour_table()
     e = farben.get(slug)
-    if not e:
-        return shell_tm, np.array([plate] * len(shell_tm.faces), dtype=object)
-    if _ROOF_CLASS is None:
+    if e and _ROOF_CLASS is None:
         import farben as F
         _ROOF_CLASS = F.roof_classifier(farben)
-    mesh, hexes = fassaden.colour_mesh(shell_tm, slug, ((0, 0, 0), s), e, _ROOF_CLASS, ref=solid_tm)
-    if not mesh.is_watertight:
-        print("  Warnung: %s (hohl) nach dem Zerschneiden nicht dicht" % slug)
-    inner = hohl.inner_mask(mesh, lay)
-    walls = (np.abs(mesh.face_normals[:, 2]) <= ROOF_NZ) & ~inner
+    if e and cache is not None and slug in cache:
+        mesh, hexes = cache[slug]
+    elif e:
+        mesh, hexes = fassaden.colour_mesh(solid_tm, slug, ((0, 0, 0), s), e, _ROOF_CLASS)
+        if cache is not None:                       # wie in colourise: Netz relativ zum Versatz (hier 0), Farben je Dreieck
+            cache[slug] = (trimesh.Trimesh(mesh.vertices, mesh.faces, process=False), hexes)
+    else:
+        mesh, hexes = solid_tm, np.array([plate] * len(solid_tm.faces), dtype=object)
+    if cav is None:
+        return mesh, hexes
+    keys, ids = np.unique(hexes.astype(str), return_inverse=True)
+    inner_id = len(keys)
+    man = m3d.Manifold(m3d.Mesh(vert_properties=np.array(mesh.vertices, np.float32, order="C"),
+                                tri_verts=np.array(mesh.faces, np.uint32, order="C"), face_id=np.array(ids, np.uint32)))
+    cm = cav.to_mesh()
+    cav_id = m3d.Manifold(m3d.Mesh(vert_properties=np.array(np.asarray(cm.vert_properties)[:, :3], np.float32, order="C"),
+                                   tri_verts=np.array(cm.tri_verts, np.uint32, order="C"),
+                                   face_id=np.full(len(cm.tri_verts), inner_id, np.uint32)))
+    out = (man - cav_id).to_mesh()
+    fid = np.asarray(out.face_id)
+    tm = trimesh.Trimesh(np.asarray(out.vert_properties)[:, :3], np.asarray(out.tri_verts), process=False)
+    inner = fid == inner_id
+    hexes = np.array([keys[i] if i < inner_id else None for i in fid], dtype=object)
+    walls = (np.abs(tm.face_normals[:, 2]) <= ROOF_NZ) & ~inner
     vals, cnt = np.unique(hexes[walls].astype(str), return_counts=True)
-    hexes[inner] = vals[cnt.argmax()]
-    return mesh, hexes
+    hexes[inner] = vals[cnt.argmax()] if len(vals) else plate
+    return tm, hexes
 
 
-def hohl_models(solids, buildings, outdir, s):
+def hohl_models(solids, buildings, outdir, s, colour_cache=None):
     """Gebäude als Hohlkörper (hohl.py): einzeln_hohl/<slug>.stl (einfarbig, hell druckbar) und <slug>_farbig.3mf (Fassadenfarben),
     zentriert mit flacher Unterseite auf z=0 wie einzeln/. Komplettmodell, Grundplatte und 3MF-Objekte bleiben massiv."""
     import hohl
@@ -501,9 +521,11 @@ def hohl_models(solids, buildings, outdir, s):
         if b["slug"] == HOF["slug"]:
             continue
         solid = solids[b["slug"]]
-        shell, lay = hohl.hohl(solid)
+        shell, _, cav = hohl.hohl(solid, mit_hohlraum=True, lagen=False)
         tm = to_trimesh(shell)
-        mesh, hexes = colour_hohl(b["slug"], to_trimesh(solid), tm, lay, s)
+        mesh, hexes = colour_hohl(b["slug"], to_trimesh(solid), cav, s, colour_cache)
+        if not mesh.is_watertight:
+            print("  Warnung: %s (hohl, farbig) nicht dicht" % b["slug"])
         c = tm.bounds.mean(axis=0)
         move = [-c[0], -c[1], -tm.bounds[0][2]]
         tm.apply_translation(move)
@@ -537,7 +559,7 @@ def build_scale(quelle, scale, outdir):
         export(tm, os.path.join(outdir, "einzeln", b["slug"] + ".stl"))
 
     if HOHL:
-        hohl_models(solids, buildings, outdir, s)
+        hohl_models(solids, buildings, outdir, s, colour_cache)
 
     for variant, groups in (("campus", {"campus"}), ("campus_mit_extras", {"campus", "extra"})):
         sel = [b for b in buildings if b["group"] in groups]
@@ -712,21 +734,30 @@ def export_3mf(objs, path, profil=None):
         for h in set(hexes):
             if h not in nr_of:
                 nr_of[h] = F.filament_nr(farben, h) if farben else 1
-        nrs = np.array([nr_of[h] for h in hexes])
+        uniq, inv = np.unique(np.asarray(list(hexes), dtype=object).astype(str), return_inverse=True)
+        lut = {str(h): nr_of[h] for h in set(hexes)}
+        nrs = np.array([lut[u] for u in uniq], dtype=np.int64)[inv.ravel()]
         walls = np.abs(tm.face_normals[:, 2]) <= ROOF_NZ
         wall = int(np.bincount(nrs[walls] if walls.any() else nrs).argmax())
-        v = "".join('<vertex x="%.4f" y="%.4f" z="%.4f"/>' % tuple(p) for p in tm.vertices)
-        tris = []
-        for (a, b_, c), n in zip(tm.faces, nrs):
-            if n != wall:
-                code = paint_code(int(n))
-                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d" paint_color="%s" '
-                            'slic3rpe:mmu_segmentation="%s"/>' % (a, b_, c, n - 1, code, code))
-            else:
-                tris.append('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>' % (a, b_, c, n - 1))
+        # Formatieren in wenigen großen %-Operationen statt je Ecke und Dreieck (gleicher Text, etwa 5-mal schneller)
+        vert = np.asarray(tm.vertices, dtype=np.float64)
+        v = ('<vertex x="%.4f" y="%.4f" z="%.4f"/>' * len(vert)) % tuple(vert.ravel().tolist())
+        faces = np.asarray(tm.faces, dtype=np.int64)
+        tris = np.empty(len(faces), dtype=object)
+        plain = nrs == wall
+        if plain.any():
+            rows = np.column_stack([faces[plain], nrs[plain] - 1]).ravel().tolist()
+            tris[plain] = (('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d"/>\x00' * int(plain.sum())) % tuple(rows)).split("\x00")[:-1]
+        if (~plain).any():
+            pf, pn = faces[~plain], nrs[~plain]
+            codes = [paint_code(int(n)) for n in pn]
+            rows = list(itertools.chain.from_iterable(zip(pf[:, 0].tolist(), pf[:, 1].tolist(), pf[:, 2].tolist(),
+                                                          (pn - 1).tolist(), codes, codes)))
+            tris[~plain] = (('<triangle v1="%d" v2="%d" v3="%d" pid="1" p1="%d" paint_color="%s" '
+                             'slic3rpe:mmu_segmentation="%s"/>\x00' * int((~plain).sum())) % tuple(rows)).split("\x00")[:-1]
         objects.append('<object id="%d" name="%s" type="model" pid="1" pindex="%d"><mesh><vertices>%s'
                        '</vertices><triangles>%s</triangles></mesh></object>'
-                       % (oid, escape(name), wall - 1, v, "".join(tris)))
+                       % (oid, escape(name), wall - 1, v, "".join(tris.tolist())))
         items.append('<item objectid="%d"/>' % oid)
         bambu.append('<object id="%d"><metadata key="name" value="%s"/><metadata key="extruder" value="%d"/>'
                      '</object>' % (oid, escape(name), wall))

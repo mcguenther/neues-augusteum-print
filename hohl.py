@@ -87,6 +87,18 @@ class Raster:
         return m.astype(bool)
 
 
+def _box(mask, margin):
+    """Ausschnitt (Zeilen, Spalten) um die gesetzten Pixel einer Maske, um `margin` Pixel erweitert."""
+    ys, xs = np.nonzero(mask)
+    return (slice(max(0, ys.min() - margin), min(mask.shape[0], ys.max() + margin + 1)),
+            slice(max(0, xs.min() - margin), min(mask.shape[1], xs.max() + margin + 1)))
+
+
+def _edt(zero):
+    """Abstand (Pixel) zum nächsten True-Pixel; ohne True-Pixel sehr groß."""
+    return cv2.distanceTransform(np.where(zero, 0, 1).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+
+
 def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
     """Kegelfläche des Gewölbes als Höhenfeld (mm) auf dem Raster, +inf wo kein Gewölbe wirkt. Liefert (Raster, hc, Ziel-Höhenfeld H)."""
     R = Raster(secs[0][1].bounds, px)
@@ -105,12 +117,15 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
     d = d * px
     # Frei hängende Deckenstellen: weiter als BRUECKE/2 von allem, was mindestens eine Lage tiefer liegt (Wand oder tiefere Decke).
     # Nur sie brauchen das Gewölbe; die übrigen Decken spannen höchstens BRUECKE weit und bleiben, wie sie sind.
+    # Je Höhe nur im Ausschnitt um die Pixel dieser Höhe rechnen: Liegt die nächste Stütze außerhalb, ist sie weiter weg als die
+    # Schwelle, und das Ergebnis ist dasselbe wie auf dem ganzen Raster.
     frei = np.zeros(H.shape, bool)
+    thr = max(TOL, bruecke / 2)
     for z in np.unique(H[omega]):
         at = omega & (H == z)
-        lower = anchor | (omega & (H <= z - step + 1e-4))
-        dz = cv2.distanceTransform(np.where(lower, 0, 1).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE) * px
-        frei |= at & (dz > max(TOL, bruecke / 2))
+        b = _box(at, int(np.ceil(thr / px)) + 2)
+        lower = anchor[b] | (omega[b] & (H[b] <= z - step + 1e-4))
+        frei[b] |= at[b] & (_edt(lower) * px > thr)
     # Je tragendem Pixel w: phi(w) = kleinster Wert von H - d über die frei hängenden Stellen in seinem Einzugsgebiet (höchstens die
     # Höhe der Wand selbst) und tau(w) = höchste dieser Decken. Wände ohne frei hängende Decke im Einzugsgebiet tragen kein Gewölbe.
     n = int(lab.max()) + 1
@@ -134,12 +149,16 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
         m = max(1, int(round(RAND / step)))
         G = np.full(H.shape, np.inf, np.float32)
         done = np.zeros(H.shape, bool)
+        hmax = float(H.max())
         for t in range(int(kH.max()) + m, -1, -1):
             new = use & (ktau == t)
             for kp in np.unique(kphi[new]):
                 sel = new & (kphi == kp)
-                dk = cv2.distanceTransform(np.where(sel, 0, 1).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE) * px
-                np.minimum(G, kp * step + slope * dk, out=G)
+                # Nur im Ausschnitt, in dem der Kegel unter der höchsten Ziel-Decke bleibt; außerhalb liegt er über dem Gebäude
+                # und schneidet nichts (der Hohlraum bleibt derselbe).
+                reach = max(0.0, hmax - kp * step) / slope
+                b = _box(sel, int(np.ceil(reach / px)) + 2)
+                np.minimum(G[b], kp * step + slope * _edt(sel[b]) * px, out=G[b])
             fin = omega & (kH == t + m) & ~done
             h[fin] = G[fin]
             done |= fin
@@ -175,9 +194,12 @@ def vault_solid(R, hc, zmax, sub=2):
     return man.simplify(0.02)
 
 
-def _cs_poly(cs):
-    """CrossSection -> shapely-Fläche nach der Gerade-Ungerade-Regel (Löcher heben sich über die symmetrische Differenz auf).
-    Jeder Ring wird vorher repariert; Manifold-Schnitte können Ringe liefern, die sich in einem Punkt selbst berühren."""
+def _ring_area(r):
+    return 0.5 * float(np.sum(r[:, 0] * np.roll(r[:, 1], -1) - np.roll(r[:, 0], -1) * r[:, 1]))
+
+
+def _cs_poly_xor(cs):
+    """Langsamer, robuster Weg: alle Ringe nach der Gerade-Ungerade-Regel verknüpfen (symmetrische Differenz), jeder Ring repariert."""
     import shapely
     g = Polygon()
     for c in cs.to_polygons():
@@ -191,6 +213,26 @@ def _cs_poly(cs):
         except shapely.errors.GEOSException:
             g = shapely.make_valid(g).buffer(0).symmetric_difference(p.buffer(1e-6).buffer(-1e-6))
     return g.buffer(0)
+
+
+def _cs_poly(cs):
+    """CrossSection -> shapely-Fläche. Je zusammenhängendem Teil (decompose) ein Polygon aus dem Außenring (positiv orientiert) und den
+    Löchern; nur ungültige Teile werden repariert oder über die symmetrische Differenz gebaut. Ergebnis wie _cs_poly_xor, etwa
+    7-mal schneller bei Hohlraum-Schnitten mit vielen Ringen."""
+    import shapely
+    polys = []
+    for comp in cs.decompose():
+        rings = [np.asarray(r) for r in comp.to_polygons() if len(r) >= 3]
+        if not rings:
+            continue
+        area = [_ring_area(r) for r in rings]
+        outer = [r for r, a in zip(rings, area) if a > 0]
+        if len(outer) != 1:
+            polys.append(_cs_poly_xor(comp))
+            continue
+        p = Polygon(outer[0], [r for r, a in zip(rings, area) if a < 0])
+        polys.append(p if p.is_valid else shapely.make_valid(p).buffer(0))
+    return shapely.union_all(polys).buffer(0) if polys else Polygon()
 
 
 def target(man, wand=WAND, dach=DACH, step=STEP):
@@ -222,24 +264,35 @@ def cavity(lay, step=STEP):
     return m3d.Manifold.batch_boolean(slabs, m3d.OpType.Add) if slabs else None
 
 
-def hohl(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
-    """(Schale als Manifold, Lagen [(z_oben, C, Hohlraum dieser Lage)]). Ist kein Hohlraum möglich, kommt der Volumenkörper zurück."""
+def hohlraum(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
+    """(Hohlraum als Manifold oder None, Ziel-Lagen ohne Gewölbe)."""
     lay0 = target(solid, wand, dach, step)
     cav = cavity(lay0, step)
-    if cav is None:
-        return solid, lay0
-    if gewoelbe:
+    if cav is not None and gewoelbe:
         R, hc, _ = ceiling([(z1, c) for z1, c, _ in lay0], [e for _, _, e in lay0], step, winkel=winkel, first=first, bruecke=bruecke)
         if np.isfinite(hc).any():
             cav = cav ^ vault_solid(R, hc, lay0[-1][0])
+    return cav, lay0
+
+
+def hohl(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, mit_hohlraum=False,
+         lagen=True):
+    """(Schale als Manifold, Lagen [(z_oben, C, Hohlraum dieser Lage)]), mit mit_hohlraum=True dazu der Hohlraum (Manifold).
+    lagen=False spart das Schneiden der Lagen (dann None), wenn nur die Schale gebraucht wird (generate.py).
+    Ist kein Hohlraum möglich, kommt der Volumenkörper zurück."""
+    cav, lay0 = hohlraum(solid, wand, dach, step, gewoelbe, winkel, first, bruecke)
+    if cav is None:
+        return (solid, lay0, None) if mit_hohlraum else (solid, lay0)
     shell = (solid - cav).simplify(VEREINFACHEN)
+    if not lagen:
+        return (shell, None, cav) if mit_hohlraum else (shell, None)
     lay = []
     z0 = 0.0
     for z1, c, _ in lay0:
         k = _cs_poly(cav.slice((z0 + z1) / 2))
         lay.append((z1, c, Polygon() if k.is_empty or k.area < 0.5 else k))
         z0 = z1
-    return shell, lay
+    return (shell, lay, cav) if mit_hohlraum else (shell, lay)
 
 
 def layers(man, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
