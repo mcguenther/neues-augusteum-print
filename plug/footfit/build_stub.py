@@ -146,7 +146,7 @@ def main(hoehe):
     kas_w = place_k(kas)
 
     rep("Passform-Stummel City-Hochhaus: Höhe über der Platte %.1f mm (gesamt %.1f mm mit Fuß %.1f), Spiel 0,10, Fuß-Fase 2,0, Wand 0,8, Kassette V2R (Probeteil)" % (hoehe, hoehe + F, F))
-    rep("Quelle: %s (Hohlgebäude aus Branch jolly-pascal, Fuß-Fase nach plug/footfit/buildings_fuss_fase.patch)" % os.path.relpath(MODEL, HERE))
+    rep("Quelle: %s (Hohlgebäude aus Branch jolly-pascal, Fuß-Fase 2,0 aus plug/buildings.py FUSS_FASE_T)" % os.path.relpath(MODEL, HERE))
 
     # Teile in Druckausrichtung: Stummel mit dem Fuß auf dem Bett (nur verschoben), Kassette mit der Tasche am Bett
     b = stub_w.bounding_box()

@@ -3,6 +3,12 @@
 Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
+## VORGABE DES NUTZERS für den nächsten Probedruck (2026-10-17, r8)
+
+**Beim nächsten Probedruck mit Gebäuden in der Steckplatte das Spiel 0,15 mm je Seite testen** (nicht 0,10). Grund: r8, Hochhaus-Stummel mit 0,10 geht nur mit Kraft hinein und sitzt sehr fest (Fase 2,0 und Kassette V2R waren gut). Die gedruckte Platte hat Spiel 0,10; ein Stummel mit 0,15 bekommt den Umriss 0,05 mm je Seite kleiner (oder die Platte wird mit `OUTLINE_CLR_T = 0.15` neu gebaut). `OUTLINE_CLR_T` bleibt 0,10, bis der Test bestätigt; danach in `params.py` und `scale.md` umstellen, Gebäude und Platte neu bauen. Einzelheiten: `rounds/r8_passform_hochhaus/summary.md`, Lehre L43.
+
+Offene Folge aus r8: `plug/buildings.py` baut jetzt die Fuß-Fase 2,0 (`FUSS_FASE_T`); die eingecheckten Gebäude-STL in `stl/steckmodul_campus/gebaeude/` sind noch mit Fase 0,5 und müssen mit `python3 -m plug.buildings` neu gebaut werden.
+
 ## Geklärt (2026-10-16)
 
 - **Platte B** ist die getestete Platte (W, S, D); die Druckmängel gehören zu Platte A. Basis ist B.
@@ -46,9 +52,9 @@ Ergänzung (Nutzer): eine **Auflage für die Lötenden** einplanen, damit Löten
 
 **Test-Dock gebaut, wartet auf den Druck (`stl/steckmodul_testdock/`, Testbogen `plug/power/feedback_dock.html`; Plan abgenickt vom Nutzer: „ok, passt“). Prüfbericht: alle Teile dicht, keine Kollisionen, kein Support nötig, ≈ 10 g.** Plan `plug/power/plan_dock.html`, Stand nach der Vereinfachung des Nutzers (2026-10-16): alles auf gleicher Höhe, keine Tasche, keine Stufe, kein Support.** Mini-Oberplatte 40 × 50,4 × 10,6 mm mit Mulde und vier Pin-Löchern, flache Unterseite; der Körper der Leiste (2,0) liegt unter der Platte und wird aufgeklebt (Sekundenkleber, dann Heißkleber testen); Draht und Lötstelle bis etwa 2,9 unter der Platte; Luft zur Powerbank 3,5 (Gesamthöhe etwa 27,9 mm, wie vorher); zwei Füße-Sätze 3,5 und 2,5 mm mit Zapfen 2,5; Gebäude und Kassette aus Steckprobe 2. Hauptrisiko: der Kleber hält das Aufstecken (Druck zieht die Leiste von der Platte weg).
 
-## Passform-Runde Hochhaus (gebaut, wartet auf den Druck, 2026-10-17)
+## Passform-Runde Hochhaus (r8, gedruckt und ausgewertet, 2026-10-17)
 
-Plan `plug/footfit/plan.html`; STL, README, ZIP, Prüfbericht in `stl/steckmodul_footfit/` (Stummel 25 mm über der Platte, Spiel 0,10 wie in r4 bewährt, Fuß-Fase 2,0 mm statt 0,5; Probeteil Kassette V2R, Konzept). Fragen im Druck: Einführen mit 2,0-mm-Fase ohne Muldenfase, Wulst unten, Sitz der V2R-Kassette im Schacht, Pins treffen die Buchse. Der Patch für die Fuß-Fase in `plug/buildings.py` (`plug/footfit/buildings_fuss_fase.patch`) ist noch nicht im Branch jolly-pascal.
+Siehe `rounds/r8_passform_hochhaus/summary.md`: Fase 2,0 und Kassette V2R gut, Spiel 0,10 zu eng bei großem Umriss, nächster Test mit 0,15 (Vorgabe oben).
 
 ## Priorität 1 neu: Steckprobe 3 (r6, nach r4 und r5)
 

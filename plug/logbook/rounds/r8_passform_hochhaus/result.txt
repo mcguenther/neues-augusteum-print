@@ -1,0 +1,15 @@
+Testbogen Passform Hochhaus (Stummel 25 mm, Spiel 0,10, Fase 2,0, Kassette V2R)
+Einsetzen: nur mit Kraft
+Wackeln: nein
+Fase fängt: ja
+Wulst unten: keiner
+Sitzt auf: ja
+Herausziehen: sehr fest
+Kassette Druck: sauber
+Kassette Sitz: gut
+Wand gerissen: nein
+Bündig: ja
+Pins treffen: ja
+ZIP: passform_stummel_hochhaus.zip (Höhe 25, Fase 2,0)
+Druckzeit: ca 55 min min
+Bemerkung: soweit super, ABER mehr spiel: bitte mal 0,15 probieren.. das machen wir beim nächsten probedruck, merk dir das irgendwo im repo für zukünftige agenten

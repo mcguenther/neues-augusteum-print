@@ -54,6 +54,7 @@ from plug.testcase import variants as V  # noqa: E402
 
 OUT = os.path.join(HERE, "stl", "steckmodul_campus", "gebaeude")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_campus", "gebaeude")
+FUSS_FASE_T = 2.0      # Fase am Fuß an der Bettkante (Einführung in die Mulde; die Campus-Platte hat oben keine Muldenfase). r8: 2,0 mm fängt das Gebäude, kein Wulst. Wird nach dem Aushöhlen angebracht
 BODEN_T = 1.2          # Boden des Gebäudes (3 Wände, liegt auf dem Bett)
 FREI_T = 0.3           # Spiel um alles, was über dem Unterbau der Kassette liegt
 ANSCHLAG_T = 1.2       # Mindestbreite des Anschlagrands (wie LIP_X/E_LIP der Steckprobe 1)
@@ -183,7 +184,7 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
     F = d["F"]
     var = p["var"]
     yc = C.foot_local(var, 0.0).centroid.y
-    fuss = BC.slab_ch(fp, -F, 0.02, P.EF_CH_T)                      # Fuß mit Fase an der Bettkante
+    fuss = ext(fp, -F, 0.02)                                        # Fuß ohne Fase (die Fase FUSS_FASE_T kommt nach dem Aushöhlen, siehe unten)
     voll = solid + fuss
     rohr, cut, platz, bedarf, kas, zs, z_rohr = schacht_teile(var, min(ROHR_T, p["wall"]), F)
     T = lambda m: place(m.translate([0, 0, -F]), p, yc)
@@ -214,6 +215,12 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
     body = body - cut.trim_by_plane([0, 0, -1], -zs)
     oben = ((platz ^ ziel) + cut).trim_by_plane([0, 0, 1], zs - 0.02)
     body = body - dach45(oben, cav - rohr, bedarf, zs - 0.02)
+    # Fuß-Fase FUSS_FASE_T: außen abschrägen, innen die Wand nachführen (0,8 horizontal), damit keine Schneide entsteht. Nach dem Aushöhlen,
+    # weil hohl.py einen nach oben nur abnehmenden Querschnitt erwartet (eine Fase im Volumenkörper macht die Wände darüber zu Gewölbe).
+    zc = -F + BC.n_layers(FUSS_FASE_T) * BC.L + 0.02
+    ch_out = BC.slab_ch(fp, -F, zc, FUSS_FASE_T)
+    ch_in = BC.slab_ch(fp.buffer(-hohl.WAND), -F, zc, FUSS_FASE_T)
+    body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
     body = body.simplify(hohl.VEREINFACHEN)
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze)
     kol = (body ^ kas).volume()
