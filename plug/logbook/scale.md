@@ -150,6 +150,55 @@ Der Nutzer hat die Lagen in der Platzierungs-App eingestellt (`plug/scale1176/pl
 - Die Seite `plug/power/layout.html` (Lösungsfindung „Fach gegen Docks“) ist überholt und trägt einen Hinweis.
 - Test-Dock und Fachprobe bleiben bei den Steckprobe-2-Werten (`params.stack()`, F 10,2); nur das Konzept nutzt `stack_plan()`.
 
+### Steckbare Hohlgebäude (2026-10-17, `plug/buildings.py`, ungedruckt)
+
+Die sechs Laserscan-Gebäude bei 1:1300 als steckbare Hohlkörper: Fuß über den vollen Grundriss bis 14,2 mm unter die Plattenoberseite (wie die Mulde in `plug/campus.py`, Bettkante mit Fase), Gebäude und Fuß gemeinsam mit `hohl.py` ausgehöhlt (Wand 0,8), Boden 1,2 mm, Schachtrohr (Wand höchstens 1,2, im Paulinum die 1,2 aus der Platzierung), Aufnahme je Kassette (v4 / V1RS / V2R aus `params.CASSETTE`): Schacht mit Einpressspiel und Einführfase, Anschlag 1,2 mm breit mit 45°-Unterseite, darüber Freiraum für LED, Streifen und Blatt (Spiel 0,3) mit 45°-Walm.
+
+Druckbarkeit ohne Support im Gebäude (Gebäude steht auf dem Boden, Schacht nach unten offen):
+- **Gewölbe streng**: Decken ab 2 mm Spannweite werden 45°-Gewölbe (`BRUECKE_T` 2, im Generator 10). Mit 10 blieben unter den Dächern Decken mit bis zu 4,3 mm Auskragung (Neues Augusteum 540 mm²).
+- **45°-Dach über allen Schnitten** (`dach45`): wo das niedrige Dach den Freiraum über der Kassette kappt, wird er von oben in 45° beschnitten; nur der echte Bedarf der Kassette bleibt.
+- Prüfung je 0,2-mm-Lage, getrennt nach Brücken (ringsum getragen) und Kragstücken (freie Kante).
+
+| Gebäude | Kassette | Volumen | Kollision | Brücken | Kragstücke |
+|---|---|---|---|---|---|
+| Paulinum | v4 | 7,9 cm³ | 0 | – | 22 mm², bis 0,7 mm |
+| Neues Augusteum | v4 | 36,1 cm³ | 0 | – | 24 mm², bis 2,1 mm (über der LED-Box unter dem niedrigen Dach, unvermeidbar) |
+| Hörsaalgebäude | v4 | 56,3 cm³ | 0 | bis 0,8 mm | – |
+| Seminargebäude | V1RS | 11,7 cm³ | 0 | – | 5 mm², bis 0,7 mm |
+| Institutsgebäude | V1RS | 18,7 cm³ | 0 | 4 mm², bis 1,4 mm | 13 mm², bis 0,7 mm |
+| City-Hochhaus | V2R | 13,6 cm³ | 0 | bis 0,8 mm | 7 mm², bis 0,7 mm |
+
+Alle dicht, Platz für die Kassette überall vollständig. Kragstücke bis 0,7 mm sind 45°-Treppen der Schichtung und unkritisch. Preis: mehr Material, weil das Gewölbe die Räume unter den Dächern füllt (Neues Augusteum 36 statt 21 cm³ mit Brücke 10). Schnittbilder: `vorschau/steckmodul_campus/gebaeude/` (`uebersicht_schnitte.png`).
+
+#### Gewölbe überarbeitet (2026-10-17, Nutzer: „zu viel gewinkelt, das Gewölbe kann von mehreren Seiten und von der Aufnahme aus kommen“)
+
+Befund: Das Gewölbe ist ein Feld aus 45°-Kegeln, die von den tragenden Teilen aufsteigen; jeder Wandpunkt bekommt seine Starthöhe aus dem entferntesten Deckenpunkt in seinem Einzugsgebiet. Tragend waren nur die Außenwände; das Schachtrohr in der Mitte zählte nicht. So reichten die Einzugsgebiete quer durchs Gebäude, das Gewölbe setzte sehr tief an (Neues Augusteum links bei −11 mm) und stieg nur von einer Seite auf. Wo zwei Kegel mit sehr verschiedenen Starthöhen aneinanderstoßen, blieben dünne Spalten im Hohlraum (Hörsaalgebäude bei x ≈ 16, Institutsgebäude bei −9 und 6 mm).
+
+Umgesetzt (`hohl.py`, Optionen nur in `plug/buildings.py` an; `generate.py` unverändert):
+- **Rohr als Stütze** (`hohl.ceiling(stuetzen=…)`): von der Rohroberkante (aufs Lagenraster abgerundet) steigen ebenfalls Kegel auf; jeder Raum wird von Wand und Rohr aus überwölbt, das Gewölbe setzt höher an. Stützpunkte, deren Oberkante unter der Starthöhe ihres Einzugsgebiets liegt, tragen nicht (sonst füllte der niedrige Rohrkopf einen hohen Raum, City-Hochhaus 54,9 statt 13,7 cm³); danach werden die Einzugsgebiete neu gerechnet.
+- **Säule über dem Rohr** bis 0,4 mm über die Walmspitze, darüber flache Taschen unter 2 mm gefüllt: sonst griffe das Gewölbe eines Nachbarraums über den Rohrkopf und zwischen ihm und dem Walm über der LED bliebe eine nach unten hängende Kante (4,6 mm, gefunden in der Lagenprüfung).
+- **Spalten füllen** (`hohl.spalten`, 2 mm): schmalere Teile des Hohlraums werden Material, gedruckt mit Füllung statt zwei Wänden und Spalt.
+- **Je Gebäude mit und ohne Rohrstütze gebaut, das leichtere genommen**: das Rohr hilft unter niedrigen Dächern, in hohen, schmalen Gebäuden kostet die Säule nur.
+- Geprüft und verworfen als Standard: `--umkreis 2` (Kegel nur im eigenen Bereich): Neues Augusteum 21,9 statt 23,7 cm³, aber senkrechte Stufen in der Decke statt glatter Grate.
+
+| Gebäude | vorher | nachher | Rohrstütze | Kragstücke | Brücken |
+|---|---|---|---|---|---|
+| Paulinum | 7,9 cm³ | 8,0 cm³ | ohne (mit 10,3) | bis 1,0 mm | bis 2,1 mm |
+| Neues Augusteum | 36,1 cm³ | **25,2 cm³** | mit (ohne 36,3) | bis 2,1 mm (über der LED-Box) | – |
+| Hörsaalgebäude | 56,3 cm³ | **44,7 cm³** | mit (ohne 56,7) | bis 1,2 mm | – |
+| Seminargebäude | 11,7 cm³ | 12,0 cm³ | ohne (mit 13,4) | bis 1,0 mm | – |
+| Institutsgebäude | 18,7 cm³ | 19,0 cm³ | ohne (mit 19,9) | bis 1,5 mm | bis 1,7 mm |
+| City-Hochhaus | 13,6 cm³ | 13,7 cm³ | ohne (mit 15,5) | bis 1,2 mm | bis 1,7 mm |
+| zusammen | 144,2 cm³ | **122,5 cm³** (−15 %) | | | |
+
+Alle dicht, keine Kollision, Platz für die Kassette vollständig. Die kleinen Zunahmen ohne Rohrstütze kommen vom Füllen der Spalten (Material statt zwei Wänden mit Spalt; gedruckt mit Füllung sparsamer als es das Volumen zeigt). Vorher/Nachher: Schnittbilder in `vorschau/steckmodul_campus/gebaeude/`.
+
+#### Füllung im Slicer (Empfehlung, ungetestet)
+
+Steht in [`plug/slicer.md`](../slicer.md) (eine Quelle für alle Slicer-Einstellungen der steckbaren Gebäude): Gyroid 10 %, 2 untere Deckschichten, „Ensure vertical shell thickness“ aus, Support aus.
+
+Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) und durch die Füllung der Keile; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
+
 ## Ungetestete Planwerte (müssen noch getestet werden)
 
 Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `plug/testcase/params.py` (`MULDE_EXTRA_T`, `CASSETTE`, `HOF_*`, `OUTLINE_CLR_T`, `SCALE_PLAN`) und `plug/scale1176/placements_1300.json`; `plug/parts.py` bleibt unverändert, bis ein Test sie bestätigt hat. Test: Steckprobe 3 (Reserve-Druck, `next.md`).

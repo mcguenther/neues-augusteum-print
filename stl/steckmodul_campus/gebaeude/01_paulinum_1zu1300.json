@@ -1,0 +1,44 @@
+{
+ "slug": "01_paulinum",
+ "var": "v4",
+ "wall": 1.2,
+ "F": 14.200000000000001,
+ "rohrstuetze": false,
+ "kollision_mm3": 0.0,
+ "platz_fehlt_mm3": 0.0,
+ "volumen_cm3": 7.96,
+ "volumen_varianten_cm3": {
+  "mit_rohrstuetze": 10.27,
+  "ohne_rohrstuetze": 7.96
+ },
+ "ueberhang": {
+  "bruecke_mm2": 13.16,
+  "bruecke_mm": 1.03,
+  "krag_mm2": 40.24,
+  "krag_mm": 1.03,
+  "stellen": [
+   [
+    "krag",
+    22.7,
+    5.5,
+    1.0,
+    -35.4,
+    57.8
+   ],
+   [
+    "bruecke",
+    39.1,
+    5.1,
+    1.0,
+    -37.4,
+    46.4
+   ]
+  ]
+ },
+ "dicht": true,
+ "mass_mm": [
+  45.6,
+  31.8,
+  59.4
+ ]
+}

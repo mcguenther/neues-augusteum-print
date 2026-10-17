@@ -29,9 +29,11 @@ def starmap(func, arglist):
     arglist = list(arglist)
     if JOBS <= 1 or len(arglist) <= 1:
         return [func(*a) for a in arglist]
-    # Aufgaben mit chunksize 1 verteilen: die Laufzeiten sind sehr verschieden
-    with mp.get_context("fork").Pool(min(JOBS, len(arglist))) as pool:
-        out = pool.map(_run, [(func, a) for a in arglist], chunksize=1)
+    # Aufgaben einzeln verteilen: die Laufzeiten sind sehr verschieden. ProcessPoolExecutor statt Pool: Stirbt ein Prozess
+    # (z. B. Speichermangel, OOM), bricht der Lauf mit BrokenProcessPool ab, statt ewig auf das verlorene Ergebnis zu warten.
+    from concurrent.futures import ProcessPoolExecutor
+    with ProcessPoolExecutor(min(JOBS, len(arglist)), mp_context=mp.get_context("fork")) as ex:
+        out = list(ex.map(_run, [(func, a) for a in arglist], chunksize=1))
     for _, text in out:
         sys.stdout.write(text)
     return [r for r, _ in out]
