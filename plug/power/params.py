@@ -73,6 +73,12 @@ ESP_BOX = (60.0, 35.0)    # S  ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter
 ESP_BOXES = (ESP_BOX, (50.0, 30.0))   # Rückfall bei knappem Platz (1:1300): nur ESP32-DevKit 51 × 28 mm ohne Beiwerk (S)
 HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemessen
 
+# ---- Hauptschalter (Wippe KCD11 10 × 15, Kasten 13 × 8, Frontplatte 15 × 10), Probeteil T2 gedruckt und bewährt (r9, 2026-10-17)
+SW_HOLE = (13.7, 9.0)     # B  Loch in der Wand, Langseite waagerecht: T1 13,6 × 8,6 war sehr stramm, T2 "sehr gut einzusetzen und hält trotzdem sehr fest"
+SW_WALL = 1.2             # B  Wand am Loch (drei Linien), sonst UK_WALL 2,4; mit T1 und T2 getestet
+SW_POCKET_PAD = (4.0, 3.0)   # B  Innentasche = Loch + 4,0 (Länge) + 3,0 (Höhe), 1,2 tief, oben 45°-Dach; in T1 und T2 gedruckt
+SW_Y = 40.0               # E  Lage auf der Westwand (Platte 1:1300, Süden 0): Mitte zwischen den Stützen bei y 17 bis 23 und 57 bis 63, kleinster Abstand 9,3 mm (bei 36: 6,0); frei von Konflikten, noch nicht in der echten Platte gedruckt
+
 # ---- Druck und Material
 BED = 250.0               # Druckbett Bambu A1 (256, mit Rand)
 SCALES = (1300,)        # 1300 aus Platzgründen gewählt (Nutzer), Platte passt dann mit Rand auf den Hut; keine Referenz mehr (Lagen der Docks nur für 1300)

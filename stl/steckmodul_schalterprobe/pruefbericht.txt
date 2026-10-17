@@ -1,0 +1,15 @@
+Probeteil T1 Hauptschalter: Wand 24.0 × 17.4 × 2.4 mm, Loch 13.6 × 8.6, Wand am Loch 1.2, Tasche 17.6 × 11.6 × 1.2 tief, Bodenstreifen 6 mm
+  T1_wand_schalter.stl  24.0 × 8.4 × 17.4 mm  0.78 cm³  ≈ 1.1 g  dicht=True
+      waagerechte Decken: z=13.0: 16 mm² (13.6 × 1.2)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+      (die einzige Brücke ist die Oberkante des Lochs, 13.6 mm lang bei 1.2 mm Wand)
+
+Prüfung (Überschneidungsvolumen, mm³; muss 0 sein):
+  Kasten 13,0 × 8,0 im Loch                                                   0.000  ok
+  Frontplatte 15 × 10 liegt außen auf (nur Berührung)                         0.000  ok
+  Haken (Spanne 13,7) hinter der Wand, in der Tasche                          0.000  ok
+  Kasten 13,4 × 8,4 (Druckabweichung 0,2 je Maß) im Loch                      0.000  ok
+  Kontrolle: Kasten 13,8 breit stößt an                                       1.920  stößt an (wie erwartet)
+  Kontrolle: Haken auf Höhe der Restwand stoßen an                            1.600  stößt an (wie erwartet)
+  -> keine Kollisionen
+Schalter eingesetzt: Frontplatte außen, Kasten 9.0 tief (ab Außenfläche), Wand am Loch 1.2.
+Druckzeit grob: 88 Schichten, ≈ 1 g, etwa 5 bis 10 Minuten.
