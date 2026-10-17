@@ -74,7 +74,7 @@ Chat-Runden unten ist es Runde 2 (= „v4“) und Runde 3 (= „v5“). Die Spal
 Commit-Nachrichten und Code-Kommentare sind dabei nicht ganz konsistent (z. B. nennt Commit `013b5af` „Passprobe v5“
 für einen Stand vor der heutigen Runde 3); die Tabelle unten folgt dem Chat.
 
-- **2026-10-17, r9 Schalterprobe Hauptschalter (gedruckt, ausgewertet):** Wippenschalter KCD11 in 1,2 mm Wand: T1 (Loch 13,6 × 8,6) sehr stramm, T2 (13,7 × 9,0) „sehr gut einzusetzen und hält sehr fest“, Werte in `plug/power/params.py` (`SW_*`). Siehe `logbook/rounds/r9_schalterprobe/summary.md`, Lehre L46, Doku `docs/wippenschalter-kcd11.md`.
+- **2026-10-17, r9 Schalterprobe Hauptschalter (gedruckt, ausgewertet):** Wippenschalter KCD11 in 1,2 mm Wand: T1 (Loch 13,6 × 8,6) sehr stramm, T2 (13,7 × 9,0) „sehr gut einzusetzen und hält sehr fest“, Werte in `plug/power/params.py` (`SW_*`). Siehe `logbook/rounds/r9_schalterprobe/summary.md`, Lehre L46, Doku `docs/wippenschalter-kcd11.md`. Loch und Tasche sind im Unterkasten-Generator (`build_concept.switch_cut`), Prüfung `python3 -m plug.power.check_switch`.
 - **2026-10-17, r8 Passform Hochhaus (gedruckt, ausgewertet):** Stummel (25 mm über der Platte, Fuß-Fase 2,0, Spiel 0,10) und Kassette V2R: Fase und Kassette gut, Spiel 0,10 bei großem Umriss zu eng (nur mit Kraft, sehr fest); **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)**. Siehe `logbook/rounds/r8_passform_hochhaus/summary.md`, Lehren L43 bis L45.
 
 ## 3. Passprobe-Ergebnisse und Herkunft der Konstanten

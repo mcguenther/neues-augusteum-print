@@ -32,7 +32,7 @@ import innenhof  # noqa: E402
 from plug import dupont as sd  # noqa: E402
 from plug import institute as I  # noqa: E402
 from plug.geom import box as mbox  # noqa: E402
-from plug.geom import encode, prism_x  # noqa: E402
+from plug.geom import encode, prism_x, prism_y, vol_int  # noqa: E402
 from plug.power import params as PP  # noqa: E402
 from plug.testcase import build as TB  # noqa: E402
 from plug.testcase import params as TP  # noqa: E402
@@ -523,6 +523,30 @@ def unterkasten_cut(length, deck_cuts, avoid):
     return cuts
 
 
+def switch_cut(minx, miny, bot, h=H0):
+    """Loch und Innentasche des Hauptschalters (Wippe KCD11) in der Westwand des Unterkastens, Rohkoordinaten der Platte.
+
+    Maße vom Probeteil T2 (r9, bewährt): Loch `SW_HOLE` mit der Langseite waagerecht (entlang y), Wand am Loch `SW_WALL`, Innentasche
+    Loch + `SW_POCKET_PAD`, oben mit 45°-Dach (keine Brücke). Mitte in der Höhe: halbe Wandhöhe; Lage entlang der Wand: `SW_Y` ab Südkante.
+    Rückgabe: Schnittkörper und der Schalterraum (Kasten samt Pins und Draht) für die Kollisionsprüfung.
+    """
+    hy, hz = PP.SW_HOLE
+    py, pz = hy + PP.SW_POCKET_PAD[0], hz + PP.SW_POCKET_PAD[1]
+    yc, zc = miny + PP.SW_Y, bot + h["uk_t"] / 2
+    x_out, x_in = minx, minx + PP.UK_WALL
+    x_pocket = x_in - (PP.UK_WALL - PP.SW_WALL)            # Grund der Tasche: Wand am Loch SW_WALL
+    z0, z1 = zc - pz / 2, zc + pz / 2
+    roof = (x_in + 0.1) - x_pocket                          # 45°-Dach: oben um die Taschentiefe höher an der Innenseite
+    hole = mbox(x_out - 0.1, x_in + 0.1, yc - hy / 2, yc + hy / 2, zc - hz / 2, zc + hz / 2)
+    pocket = prism_y([(x_pocket, z0), (x_in + 0.1, z0), (x_in + 0.1, z1 + roof), (x_pocket, z1)], yc - py / 2, yc + py / 2)
+    room = mbox(x_in, x_in + (SW_DEPTH - PP.UK_WALL), yc - 7.0, yc + 7.0, zc - 4.5, zc + 4.5)
+    return dict(cut=G.union([hole, pocket]), room=room, y=PP.SW_Y, hole=PP.SW_HOLE, z=round(zc - bot, 2))
+
+
+LAST = {}
+SW_DEPTH = 20.0      # Schalter ab Außenfläche: Kasten 9 + Pins 7 + Lötstelle 4 (plug/power/build_plan_switch.py, DEPTH_OUT)
+
+
 def variant(scale, h=H0, dk=DK):
     s = 1000.0 / scale
     G.FAST = True                              # Laser-Raster 0,6 m wie plug/campus.py (gleiche Grundrisse wie scale.md)
@@ -617,6 +641,10 @@ def variant(scale, h=H0, dk=DK):
     holes = [G.extrude(n, bot - 1, deck + 2) for n in notches] + [mouth_ch(n, bot, PP.CH_BED) for n in notches] + \
             [G.extrude(fp["window"], zf, zf + PP.PB_T + 1.0)]
     uk = G.union(solids) - G.union(holes)
+    sw = switch_cut(minx, miny, bot, h)
+    uk = uk - sw["cut"]
+    LAST["uk"], LAST["sh"] = uk, (-minx, -miny)           # für plug/power/check_switch.py
+    sw_free = float(vol_int(sw["room"], uk)) < 0.05      # Schalterraum frei von Stützen, Zaun, Fach
 
     # --- Innenhof-Teil unten gefast ---
     env = slab_ch(hof_fp, -TP.HOF_DEPTH_T, 40.0, PP.CH_HOF)
@@ -633,6 +661,7 @@ def variant(scale, h=H0, dk=DK):
     uk_cuts = unterkasten_cut(Ln, deck_cuts, [affinity.translate(g, *sh) for g in [fp["fach"], elec] + notches] +
                               [affinity.translate(d["zone"], *sh) for d in docks if d["ok"]])
     mat = dict(ober=grams(ober), uk=grams(uk))
+    print("Schalter: Loch %.1f × %.1f, Wand %.1f, Westwand y = %.1f, Mitte %.1f über dem Boden, Schalterraum frei: %s" % (*sw["hole"], PP.SW_WALL, sw["y"], sw["z"], sw_free), flush=True)
     print("1:%d Platte %.1f × %.1f × %.1f mm, Kante %s, Powerbank %d %% unter dem Hof, Stoß %s / %s, Material %s, Docks %s, V %s" % (
         scale, W, Ln, h["total"], side, fp["body"].intersection(hof_fp).area / fp["body"].area * 100, deck_cuts, uk_cuts, mat,
         ["%s%s" % (d["slug"][:2], "" if d["ok"] else "!") for d in docks],
@@ -655,6 +684,7 @@ def variant(scale, h=H0, dk=DK):
         under_hof=round(fp["body"].intersection(hof_fp).area / fp["body"].area * 100),
         hut=dict(size=PP.HUT, fits=bool(W <= PP.HUT and Ln <= PP.HUT), over=round((Ln - PP.HUT) / 2, 1)),
         section=section(outline, fps, hof_fp, f), material=mat, docks_ok=sum(1 for d in docks if d["ok"]),
+        switch=dict(y=sw["y"], hole=list(sw["hole"]), wall=PP.SW_WALL, z=sw["z"], free=sw_free),
         meshes=dict(ober=mesh(ober, sh), uk=mesh(uk, sh), buildings={k: mesh(v, sh) for k, v in bld.items()},
                     hof=mesh(hof_c, sh)),
     )

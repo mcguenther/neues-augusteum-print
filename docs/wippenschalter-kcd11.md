@@ -23,7 +23,7 @@ Aufdruck „O“ (aus) und „I“ (ein). Er schaltet im Projekt das **Plus der 
 ## Einbau im Projekt
 
 Der Schalter sitzt in der Westwand des Unterkastens (Seite gegenüber dem Paulinum, bei y = 36 mm südlich der Elektronikbox), die Frontplatte liegt
-außen auf. Die Langseite liegt waagerecht, weil die Wand nur 17,4 mm hoch ist. Planseite mit Schieber und Warnungen: `plug/power/plan_switch.html`
+außen auf. Die Langseite liegt waagerecht, weil die Wand nur 17,4 mm hoch ist. Im Generator des Unterkastens ist das Loch samt Tasche eingebaut (`plug/power/build_concept.py`, `switch_cut`; Prüfung `python3 -m plug.power.check_switch`, Bild `vorschau/steckmodul_schalterprobe/unterkasten_schalter.png`). Planseite mit Schieber und Warnungen: `plug/power/plan_switch.html`
 (Artifact, Link in `plug/STATUS.md`), Generator `plug/power/build_plan_switch.py`.
 
 | Größe | Wert | Status |
