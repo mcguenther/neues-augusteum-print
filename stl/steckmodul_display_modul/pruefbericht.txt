@@ -31,7 +31,7 @@ Prüfung im Zusammenbau (Überschneidungsvolumen, mm³; muss 0 sein):
 Abstände (mm):
   Zapfen Ø2.5 im Modulloch Ø3.0: 0.25 je Seite (Lochlage aus dem Foto ± 0,5; ab 0,3 Versatz stößt der Zapfen an der Platine)
   Zapfen A Ende Ø2.5 im Sackloch Ø2.5: 0.02 je Seite, B Ø2.5: 0.02 je Seite; Tiefe im Sackloch 2.4 (Probedruck 1: 1,0)
-  Im echten Körper (Grundriss und Rückenkeil) bleibt hinter dem Grund des Sacklochs mindestens 1.23 mm Material (Aufnahme: 1.00)
+  Im echten Körper (Grundriss und Rückenkeil) bleibt hinter dem Grund des Sacklochs mindestens 0.85 mm Material (Aufnahme: 1.00)
   Taschenhöhe 34.10 für Modul 33.80: oben 0.30 Luft (liegt das Modul auf dem Boden)
 
 Druckzeit geschätzt (nicht kalibriert): M1 25 min, M2 14 min, M3 14 min, zusammen 52 min

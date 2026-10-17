@@ -10,7 +10,7 @@ Was sich gegenüber Modulprobe 1 geändert hat
   Tasche           Breite 35,94 (0,32 Luft je Seite), Höhe 34,10 (Modul als 33,80 angenommen, oben 0,30 Luft), Dicke 5,00.
   Sackloch         Ø 2,55 (Modulprobe 1: 2,5), 2,6 tief, Einführfase 0,3.
   Zapfen P1        Spitze Ø 1,8, Kegel über 2,2 mm (11 Lagen) auf den vollen Durchmesser, dann zylindrisch. Blende M2: Enddurchmesser 2,5, Blende M3: 2,5
-                   (etwas fester). Im Sackloch 2,4 tief. Im echten Körper bleibt hinter dem Sackloch mindestens 1,2 mm Material.
+                   (etwas fester). Im Sackloch 2,4 tief. Im echten Körper bleibt hinter dem Sackloch mindestens 0,9 mm Material.
 
 Teile
   M1_aufnahme.stl             8,6 × 38,3 × 35,3 mm  Kopf mit Tasche (oben und vorn offen), Kabelfenster in der Rückwand, vier Sacklöcher

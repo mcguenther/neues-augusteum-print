@@ -41,7 +41,7 @@ WINDOW_MARGIN = 0.4    # E  Sichtfenster im Rahmen größer als die aktive Fläc
 WALL = 1.2             # E  Wand um Modul und Kassette (wie KASS_WALL)
 CLR = 0.3              # E  Spiel um die Platine: Dicke (je Seite) und Höhe (oben)
 CLR_W = 0.32           # E  Spiel um die Platine in der Breite je Seite (Probedruck 1: Breite passte, Nutzer: 0,1 mm mehr Luft; vorher 0,3)
-BACK = 3.0             # E  Rückwand/Deckel hinter dem Modul
+BACK = 2.6             # E  Rückwand/Deckel hinter dem Modul
 CAVITY = 4.0           # S  Kabelkanal zwischen Modul und Kassette bei direkt angelöteten Adern (= CHAN; mit Dupont-Buchse auf der Pinleiste etwa 17: Entscheidungskarte)
 CAVITY_DUPONT = 17.0    # S  Kabelraum hinter dem Modul mit aufgesteckter Dupont-Buchse (Pinleiste 2,5 + Gehäuse etwa 14) und Biegung der Adern
 GAP_FRONT = 1.5        # E  Unterkante des Sichtfensters über der Plattenoberfläche (Nutzer: möglichst nah am Boden)
