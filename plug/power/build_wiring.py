@@ -125,9 +125,8 @@ def netlist():
     row("P3", "INA226 VIN−", "Knoten K5", "24 AWG rot; Zusatzwiderstand 0,1 Ω parallel zum Shunt")
     row("P4", "INA226 VBUS", "VIN−", "meist schon auf dem Modul verbunden, Durchgang prüfen")
     row("P5", "Knoten K5", "ESP32 VIN", "Dupont-Ader rot")
-    row("P6", "Knoten K5", "D1 Anode (ohne Strich)", "Bein der Diode")
-    row("P7", "D1 Kathode (Strich)", "+5-V-LED-Schiene", "Bein der Diode")
-    row("P8", "+5-V-LED-Schiene", "C1 Plus und Pin 3 aller 6 Docks", "28 AWG orange; Elko liegend, Plus ohne Streifen")
+    row("P6", "Knoten K5", "+5-V-LED-Schiene", "24 AWG rot, 3 cm: Drahtbrücke, Platzhalter für die geparkte Diode D1")
+    row("P7", "+5-V-LED-Schiene", "C1 Plus und Pin 3 aller 6 Docks", "28 AWG orange; Elko liegend, Plus ohne Streifen")
     grp("Masse")
     row("G1", "USB-A-Stecker schwarz", "GND-Schiene", "24 AWG schwarz")
     row("G2", "ESP32 GND (linke Reihe)", "GND-Schiene", "Dupont-Ader schwarz")
@@ -144,10 +143,10 @@ def netlist():
     for n in range(6):
         row(f"E{n + 1}", f"ESP32 GPIO{DETECT[n]}", f"Pin 4 (DETECT) Dock {n + 1}", "Dupont-Ader grün")
     grp("Optional: Strompuls-Last")
-    row("L1", "Knoten K5", "47 Ω, 1 W, dann MOSFET Drain", "Bein des Widerstands")
-    row("L2", "MOSFET Source", "GND-Schiene", "kurzer Draht")
-    row("L3", "ESP32 GPIO14", "100 Ω, dann MOSFET Gate", "Dupont-Ader grau")
-    row("L4", "MOSFET Gate", "10 kΩ, dann MOSFET Source", "Widerstand direkt zwischen den Beinchen")
+    row("L1", "Knoten K5", "47 Ω, 1 W, dann MOSFET Drain (Bein 2, Mitte)", "rote Ader")
+    row("L2", "MOSFET Source (Bein 3, rechts)", "GND-Schiene", "schwarze Ader")
+    row("L3", "ESP32 GPIO14", "100 Ω, dann MOSFET Gate (Bein 1, links)", "Dupont-Ader grau")
+    row("L4", "graue Ader (GPIO14)", "10 kΩ, dann GND-Schiene", "Widerstand zwischen Ader und Schiene, nicht am MOSFET")
     return "".join(CELLS)
 
 

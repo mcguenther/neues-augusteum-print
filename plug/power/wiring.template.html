@@ -124,7 +124,7 @@ ol.steps ul { gap: 4px; }
     <p class="lead">Elektronik im Unterkasten der Steckplatte: ESP32-DevKit (WROOM-32, USB-C), INA226, OLED, Kippschalter, Powerbank und sechs LED-Docks. Ohne Platine, mit Dupont-Buchsen am ESP32 und frei verdrahteten Bauteilen. Pins und Docks stammen aus <code>plug/power/pinout.html</code>.</p>
     <nav class="jump" aria-label="Abschnitte">
       <a href="#antworten">Antworten</a><a href="#bauteile">Bauteile</a><a href="#schaltplan">Schaltplan</a><a href="#spannungen">3,3 V und 5 V</a><a href="#hoehe">Einbauhöhe</a>
-      <a href="#ohneplatine">Ohne Platine</a><a href="#ina">INA226</a><a href="#verbindungen">Verbindungen</a><a href="#anleitung">Anleitung</a><a href="#einkauf">Einkauf</a><a href="#offen">Offen</a>
+      <a href="#ohneplatine">Ohne Platine</a><a href="#ina">INA226</a><a href="#mosfet">MOSFET</a><a href="#verbindungen">Verbindungen</a><a href="#anleitung">Anleitung</a><a href="#einkauf">Einkauf</a><a href="#offen">Offen</a>
     </nav>
   </header>
 
@@ -156,8 +156,8 @@ ol.steps ul { gap: 4px; }
         <tr><td><b>ESP32</b> DevKit WROOM-32</td><td>steuert LEDs, liest Docks, Display, INA226</td><td>VIN <span class="chip warn">5 V</span>, Pins <span class="chip info">3,3 V</span></td><td>Boardregler macht aus VIN die 3,3 V für Chip und Pin 3V3</td></tr>
         <tr><td><b>OLED</b> 1,3″ SH1106</td><td>Anzeige</td><td><span class="chip info">3,3 V</span></td><td>etwa 8 mA, I²C 0x3C, Pinfolge VDD, GND, SCK, SDA</td></tr>
         <tr><td><b>6 × Dock</b> mit WS2812B-Streifenstück</td><td>Licht je Gebäude, Gebäude-Erkennung</td><td>LED an <span class="chip warn">≈ 4 V</span>, Daten <span class="chip info">3,3 V</span></td><td>Winkelleiste 1×4: 1 GND, 2 DIN, 3 +5 V, 4 DETECT; je LED bis 60 mA</td></tr>
-        <tr><td><b>D1</b> Diode 1N4007</td><td>senkt die LED-Spannung, damit 3,3 V Daten reichen</td><td>5 V → ≈ 4 V</td><td>eine für alle Docks, Strich zur LED-Seite</td></tr>
-        <tr><td><b>C1</b> 1000 µF</td><td>puffert Einschaltstrom und Stecken unter Spannung</td><td>5 V-LED-Seite</td><td>Elko 10 V oder 16 V, liegend einbauen (Ø 10 × 16 mm)</td></tr>
+        <tr><td><b>D1</b> Diode 1N4007</td><td>würde die LED-Spannung senken, damit 3,3 V Daten sicher reichen</td><td>5 V → ≈ 4 V</td><td><span class="chip neutral">geparkt</span> erst mit einer Drahtbrücke bauen, siehe „Geparkt: Diode D1“</td></tr>
+        <tr><td><b>C1</b> 1000 µF</td><td>puffert Einschaltstrom und Stecken unter Spannung</td><td>5 V</td><td>Elko 10 V oder 16 V, liegend einbauen (Ø 10 × 16 mm)</td></tr>
         <tr><td><b>6 × 330 Ω</b></td><td>je eine in jeder Datenleitung</td><td>3,3 V Signal</td><td>mitten in die Ader gelötet</td></tr>
         <tr><td><b>Last</b> 47 Ω, MOSFET, 100 Ω, 10 kΩ</td><td>Strompuls gegen das Abschalten der Powerbank</td><td>5 V schalten, Gate <span class="chip info">3,3 V</span></td><td><span class="chip neutral">optional</span> erst bauen, wenn der Test es verlangt</td></tr>
       </tbody>
@@ -187,13 +187,13 @@ ol.steps ul { gap: 4px; }
           <text class="tm" x="365" y="96" text-anchor="middle">Shunt 0,1 Ω</text>
           <text class="tm" x="365" y="112" text-anchor="middle">0x40</text>
 
-          <path class="w w5" d="M420 90 H548 M577 90 H760"/>
+          <path class="w w5" d="M420 90 H760"/>
           <path class="w w5" d="M470 90 V270 M520 224 H470 M470 270 H450"/>
           <circle class="d5" cx="470" cy="90" r="4"/><circle class="d5" cx="470" cy="224" r="4"/><circle class="d5" cx="470" cy="270" r="4"/>
           <text class="tm t5" x="470" y="76" text-anchor="middle">+5 V</text>
-          <polygon class="syf" points="548,80 548,100 574,90"/><path class="syl" d="M578 79 V101"/>
-          <text class="tm" x="562" y="68" text-anchor="middle">D1</text>
-          <text class="tm" x="562" y="120" text-anchor="middle">1N4007</text>
+          <rect class="bxd" x="545" y="80" width="34" height="20" rx="3"/>
+          <text class="tm" x="562" y="68" text-anchor="middle">Brücke</text>
+          <text class="tm" x="562" y="120" text-anchor="middle">später D1</text>
           <circle class="d5" cx="640" cy="90" r="4"/>
           <path class="w w5" d="M640 90 V108 M640 116 V128"/>
           <path class="syl" d="M628 108 H652 M628 116 H652"/>
@@ -244,7 +244,7 @@ ol.steps ul { gap: 4px; }
           <path class="syl" d="M640 446 H660 M644 451 H656 M648 456 H652"/><text class="tm" x="668" y="456">GND-Zeichen = eine gemeinsame Masse</text>
         </svg>
       </div>
-      <figcaption>Die Bündel stehen für mehrere Drähte. Rot ist alles, was 5 V führt, vom Schalter bis zur Diode. Hinter D1 sinkt die Spannung auf etwa 4 V für die LEDs. Teal führt 3,3 V Versorgung, GND und die zwei I²C-Leitungen zu INA226 und OLED. Die Last hängt vor der Diode, damit der INA226 ihren Strom mitmisst.</figcaption>
+      <figcaption>Die Bündel stehen für mehrere Drähte. Rot ist alles, was 5 V führt. Die Drahtbrücke zwischen Knoten und LED-Schiene ist der Platzhalter für die geparkte Diode D1. Teal führt 3,3 V Versorgung, GND und die zwei I²C-Leitungen zu INA226 und OLED. Die Last hängt vor der Diode, damit der INA226 ihren Strom mitmisst.</figcaption>
     </figure>
 
     <h3>Bild 2: Der Stromweg im Detail</h3>
@@ -280,16 +280,16 @@ ol.steps ul { gap: 4px; }
           <text class="tb" x="540" y="234" text-anchor="middle">ESP32</text>
           <text class="tm" x="540" y="250" text-anchor="middle">Pin VIN</text>
 
-          <path class="w w5" d="M540 100 H702 M729 100 H830"/>
+          <path class="w w5" d="M540 100 H830"/>
           <circle class="d5" cx="640" cy="100" r="4"/>
           <path class="w w5 dash" d="M640 100 V215"/>
           <rect class="bxd" x="610" y="215" width="120" height="44" rx="6"/>
           <text class="tb" x="670" y="234" text-anchor="middle">Last-Zweig</text>
           <text class="tm" x="670" y="250" text-anchor="middle">optional, Bild 5</text>
 
-          <polygon class="syf" points="702,90 702,110 726,100"/><path class="syl" d="M730 89 V111"/>
-          <text class="tm" x="716" y="76" text-anchor="middle">D1 1N4007</text>
-          <text class="tm" x="716" y="132" text-anchor="middle">Strich zur LED</text>
+          <rect class="bxd" x="698" y="90" width="36" height="20" rx="3"/>
+          <text class="tm" x="716" y="76" text-anchor="middle">Brücke</text>
+          <text class="tm" x="716" y="132" text-anchor="middle">später D1</text>
           <circle class="d5" cx="780" cy="100" r="4"/>
           <path class="w w5" d="M780 100 V138 M780 146 V160"/>
           <path class="syl" d="M768 138 H792 M768 146 H792"/>
@@ -305,16 +305,16 @@ ol.steps ul { gap: 4px; }
           <text class="tm tg" x="480" y="324" text-anchor="middle">GND-Schiene: eine gemeinsame Masse für alles</text>
         </svg>
       </div>
-      <figcaption>Der Schalter sitzt vor dem Shunt. Ausgeschaltet ist der INA226 damit stromlos. Hinter dem Shunt liegt der Knoten K5: Er versorgt den ESP32, die optionale Last und, über D1, die LED-Schiene mit C1. Der INA226 sieht deshalb den gesamten Strom aus der Powerbank.</figcaption>
+      <figcaption>Der Schalter sitzt vor dem Shunt. Ausgeschaltet ist der INA226 damit stromlos. Hinter dem Shunt liegt der Knoten K5: Er versorgt den ESP32, die optionale Last und, über eine Drahtbrücke (Platzhalter für D1), die LED-Schiene mit C1. Der INA226 sieht deshalb den gesamten Strom aus der Powerbank.</figcaption>
     </figure>
 
     <h3>Bild 3: Ein Dock mit LED-Streifenstück</h3>
     <figure>
       <div class="diagram">
-        <svg viewBox="0 0 960 340" role="img" aria-label="Ein Dock: GND-Schiene an Pin 1, GPIO über 330 Ohm an Pin 2 DIN, 5 V hinter D1 an Pin 3, GPIO an Pin 4 DETECT; im Gebäude hängen GND, DIN und 5 V am LED-Streifenstück und Pin 4 liegt an GND">
+        <svg viewBox="0 0 960 340" role="img" aria-label="Ein Dock: GND-Schiene an Pin 1, GPIO über 330 Ohm an Pin 2 DIN, 5 V von der LED-Schiene an Pin 3, GPIO an Pin 4 DETECT; im Gebäude hängen GND, DIN und 5 V am LED-Streifenstück und Pin 4 liegt an GND">
                     <text class="tm tg" x="20" y="84">GND-Schiene</text>
           <text class="tm td" x="20" y="144">ESP32 GPIO23</text>
-          <text class="tm t5" x="20" y="204">+5 V hinter D1</text>
+          <text class="tm t5" x="20" y="204">+5 V LED-Schiene</text>
           <text class="tm tt" x="20" y="264">ESP32 GPIO32</text>
           <path class="w wg" d="M150 80 H470"/>
           <path class="w wd" d="M150 140 H230 M270 140 H470"/>
@@ -392,28 +392,28 @@ ol.steps ul { gap: 4px; }
       <div class="diagram">
         <svg viewBox="0 0 640 250" role="img" aria-label="Last: 47 Ohm vom 5-V-Knoten über den N-MOSFET nach GND, Gate von GPIO14 über 100 Ohm mit 10 kOhm nach GND">
           <path class="w w5" d="M40 40 H440"/>
-          <text class="tm t5" x="40" y="28">+5 V (Knoten K5, vor der Diode)</text>
+          <text class="tm t5" x="40" y="28">+5 V (Knoten K5)</text>
           <path class="w w5" d="M440 40 V55 M440 105 V125"/>
           <rect class="sy" x="430" y="55" width="20" height="50" rx="2"/>
           <text class="tm" x="462" y="84">47 Ω · 1 W</text>
           <path class="w wg" d="M440 125 V185"/><path class="w wg" d="M424 125 V185"/>
           <path class="w wg" d="M440 185 V210"/>
-          <text class="tm" x="454" y="130">D</text><text class="tm" x="454" y="190">S</text><text class="tm" x="408" y="158" text-anchor="end">G</text>
-          <text class="tm" x="454" y="152">N-MOSFET</text><text class="tm" x="454" y="168">IRLZ44N</text>
+          <text class="tm" x="454" y="130">D Drain</text><text class="tm" x="454" y="190">S Source</text><text class="tm" x="408" y="146" text-anchor="end">G Gate</text>
+          <text class="tm" x="454" y="148">N-MOSFET</text><text class="tm" x="454" y="164">IRLZ44N</text>
           <rect class="bx" x="10" y="135" width="100" height="40" rx="4"/>
           <text class="tb" x="60" y="160" text-anchor="middle">GPIO14</text>
           <path class="w wd" d="M110 155 H230 M290 155 H424"/>
           <rect class="sy" x="230" y="145" width="60" height="20" rx="2"/>
           <text class="tm" x="260" y="138" text-anchor="middle">100 Ω</text>
-          <circle class="dg" cx="350" cy="155" r="3.5" style="fill:var(--cdin)"/>
-          <path class="w wd" d="M350 155 V170"/><path class="w wg" d="M350 200 V210"/>
-          <rect class="sy" x="342" y="170" width="16" height="30" rx="2"/>
-          <text class="tm" x="366" y="189">10 kΩ</text>
+          <circle class="dg" cx="170" cy="155" r="3.5" style="fill:var(--cdin)"/>
+          <path class="w wd" d="M170 155 V170"/><path class="w wg" d="M170 200 V210"/>
+          <rect class="sy" x="162" y="170" width="16" height="30" rx="2"/>
+          <text class="tm" x="186" y="189">10 kΩ</text>
           <path class="w wg" d="M40 210 H480"/>
           <text class="tm tg" x="40" y="230">GND</text>
         </svg>
       </div>
-      <figcaption>Der 10-kΩ-Widerstand hält den MOSFET beim Start aus, der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. 47 Ω ziehen 106 mA, Pulslänge 300 ms alle 5 s. Werte und Alternativen (33, 22, 100 Ω) stehen auf der Pinout-Seite.</figcaption>
+      <figcaption>Der 10-kΩ-Widerstand hält den MOSFET beim Start aus, der 100-Ω-Widerstand am Gate begrenzt den Umladestrom. Die 10 kΩ liegen hier auf der GPIO-Seite des 100-Ω-Widerstands, nicht am Gate: elektrisch gleichwertig (das Gate bleibt über 10 kΩ auf GND), aber der MOSFET bekommt so an jedes Bein genau ein Teil. 47 Ω ziehen 106 mA, Pulslänge 300 ms alle 5 s. Werte und Alternativen (33, 22, 100 Ω) stehen auf der Pinout-Seite. Welches Bein welches ist, zeigt der Abschnitt „MOSFET“.</figcaption>
     </figure>
   </section>
 
@@ -422,16 +422,20 @@ ol.steps ul { gap: 4px; }
     <div class="tbl"><table>
       <thead><tr><th>Netz</th><th>kommt von</th><th>hängt daran</th><th>nie verbinden mit</th></tr></thead>
       <tbody>
-        <tr><td><span class="net n5"><i></i>+5 V (K5)</span></td><td>Powerbank über Schalter und Shunt</td><td>ESP32 VIN, D1, optionale Last, INA226 VIN−/VBUS (nur gemessen)</td><td>3V3, jedem GPIO, INA226-VCC</td></tr>
-        <tr><td><span class="net n5"><i></i>+5 V LED</span></td><td>K5 hinter D1, etwa 3,9 bis 4,3 V</td><td>6 × Dock Pin 3, C1</td><td>ESP32 VIN (hängt an K5)</td></tr>
+        <tr><td><span class="net n5"><i></i>+5 V (K5)</span></td><td>Powerbank über Schalter und Shunt</td><td>ESP32 VIN, Drahtbrücke zur LED-Schiene, optionale Last, INA226 VIN−/VBUS (nur gemessen)</td><td>3V3, jedem GPIO, INA226-VCC</td></tr>
+        <tr><td><span class="net n5"><i></i>+5 V LED</span></td><td>K5 über die Drahtbrücke, volle 5 V (mit D1 später etwa 4 V)</td><td>6 × Dock Pin 3, C1</td><td>ESP32 VIN (hängt an K5)</td></tr>
         <tr><td><span class="net n3"><i></i>3,3 V</span></td><td>ESP32-Pin 3V3 (Boardregler)</td><td>INA226 VCC, OLED VDD</td><td>5 V, GND</td></tr>
         <tr><td><span class="net nd"><i></i>3,3-V-Signale</span></td><td>ESP32-GPIOs</td><td>DIN (über 330 Ω), DETECT, Gate, SDA, SCL</td><td>5 V an einem GPIO zerstört ihn</td></tr>
         <tr><td><span class="net ng"><i></i>GND</span></td><td>Powerbank</td><td>alles</td><td>–</td></tr>
       </tbody>
     </table></div>
-    <h3>Warum die Diode D1 nötig ist</h3>
-    <p>Der ESP32 gibt 3,3 V an DIN aus, das WS2812B-Datenblatt verlangt für High mindestens 0,7 × VDD, bei 5 V also 3,5 V. Eine Siliziumdiode (1N4007) nimmt etwa 0,7 V bei 60 mA und etwa 0,9 V bei allen sechs LEDs weiß. Die LEDs bekommen dann 3,9 bis 4,3 V, ihre Schwelle sinkt auf 2,7 bis 3,0 V, und 3,3 V haben 0,3 bis 0,6 V Reserve. Die Mindestspannung des WS2812B (3,5 V) bleibt eingehalten. Eine Schottky-Diode (1N5819) wäre schlechter, sie nimmt nur 0,3 V und lässt die Schwelle bei 3,2 V.</p>
-    <p class="note">Der Weg ohne Pegelwandler ist ungetestet. Erster Test: ein Dock auf dem Steckbrett, LED an, auch beim Stecken unter Spannung. Der ESP32 hängt am Knoten K5 vor der Diode und sieht die vollen 5 V.</p>
+    <h3>Geparkt: Diode D1 für den Datenpegel</h3>
+    <p>Der ESP32 gibt 3,3 V an DIN aus, die LEDs hängen an vollen 5 V. Das WS2812B-Datenblatt verlangt für High mindestens 0,7 × VDD, also 3,5 V. Das liegt knapp außerhalb der Angabe, klappt in der Praxis aber meistens. Deshalb wird zuerst ohne Diode gebaut und getestet (Schritt 1). Merkzettel für den Fall, dass die LED flackert oder Farben springen:</p>
+    <ul>
+      <li>Eine Siliziumdiode 1N4007 in der 5-V-Leitung der Docks senkt VDD an den LEDs auf etwa 3,9 bis 4,3 V und damit die Schwelle auf 2,7 bis 3,0 V. Eine Schottky-Diode (1N5819) hilft nicht, sie nimmt nur 0,3 V.</li>
+      <li>Nachrüsten ist ein Schnitt: Zwischen Knoten K5 und LED-Schiene sitzt eine Drahtbrücke. Sie wird durchtrennt, die Diode kommt hinein: Anode (ohne Strich) zu K5, Strich zur LED-Schiene. ESP32, INA226 und Last bleiben an K5 und sehen weiter volle 5 V.</li>
+      <li>Der größere Umbau wäre ein Pegelwandler (74AHCT125) in den Datenleitungen.</li>
+    </ul>
     <h3>Strombudget</h3>
     <div class="tbl"><table>
       <thead><tr><th>Verbraucher</th><th class="num">typisch</th><th class="num">Spitze</th><th>Quelle</th></tr></thead>
@@ -518,6 +522,146 @@ ol.steps ul { gap: 4px; }
     <p class="note info" style="margin-top:12px">Ohne den Zusatzwiderstand merkst du die Grenze im Log: Der Stromwert bleibt bei etwa 0,82 A stehen, obwohl die LEDs mehr ziehen. Nachrüsten geht jederzeit, solange der Kasten offen ist.</p>
   </section>
 
+  <section id="mosfet">
+    <h2>MOSFET: was kommt wohin</h2>
+    <p>Die Last gehört nur in den Kasten, wenn die Powerbank im Test abschaltet (Schritt 12). Sie zieht alle 5 s für 300 ms etwa 106 mA, damit die Powerbank nicht einschläft. Der MOSFET ist dabei der Schalter, den der ESP32 mit 3,3 V bedient. Angenommen ist ein <b>IRLZ44N</b> im Gehäuse TO-220.</p>
+
+    <h3>Die drei Beine</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 370" role="img" aria-label="IRLZ44N von vorn: links Gate, Mitte Drain, rechts Source; die Metallfahne ist mit dem Drain verbunden">
+          <text class="tm" x="240" y="14" text-anchor="middle">Metallfahne = Drain, innen mit Bein 2 verbunden</text>
+          <rect class="mod" x="130" y="24" width="220" height="66"/>
+          <circle class="bx" cx="240" cy="52" r="12"/>
+          <rect class="pcb" x="130" y="90" width="220" height="110"/>
+          <text class="tb tl" x="240" y="138" text-anchor="middle">IRLZ44N</text>
+          <text class="tm tl" x="240" y="160" text-anchor="middle">Schrift zeigt zu dir</text>
+          <rect x="165" y="200" width="10" height="100" style="fill:var(--cdin)"/>
+          <rect x="235" y="200" width="10" height="100" style="fill:var(--c5)"/>
+          <rect x="305" y="200" width="10" height="100" style="fill:var(--cgnd)"/>
+          <text class="tb" x="170" y="334" text-anchor="middle" style="font-size:20px;fill:var(--cdin)">G</text>
+          <text class="tb" x="240" y="334" text-anchor="middle" style="font-size:20px;fill:var(--c5)">D</text>
+          <text class="tb" x="310" y="334" text-anchor="middle" style="font-size:20px;fill:var(--cgnd)">S</text>
+          <text class="tm" x="170" y="352" text-anchor="middle">1 links</text>
+          <text class="tm" x="240" y="352" text-anchor="middle">2 Mitte</text>
+          <text class="tm" x="310" y="352" text-anchor="middle">3 rechts</text>
+
+          <rect x="430" y="96" width="14" height="14" style="fill:var(--cdin)"/>
+          <text class="tb" x="454" y="108">G · Gate · Bein 1, links</text>
+          <text class="tm" x="454" y="126">Schalteingang. Hier kommt die graue Ader vom ESP32 hin,</text>
+          <text class="tm" x="454" y="142">über 100 Ω.</text>
+          <rect x="430" y="186" width="14" height="14" style="fill:var(--c5)"/>
+          <text class="tb" x="454" y="198">D · Drain · Bein 2, Mitte</text>
+          <text class="tm" x="454" y="216">Zur Last. Von hier über 47 Ω an +5 V (Knoten K5).</text>
+          <text class="tm" x="454" y="232">Auch die Metallfahne hängt daran.</text>
+          <rect x="430" y="276" width="14" height="14" style="fill:var(--cgnd)"/>
+          <text class="tb" x="454" y="288">S · Source · Bein 3, rechts</text>
+          <text class="tm" x="454" y="306">Zu Masse. Schwarze Ader zur GND-Schiene.</text>
+        </svg>
+      </div>
+      <figcaption>Ansicht von vorn: Schrift zu dir, Metallfahne oben, Beine nach unten. Links Gate, Mitte Drain, rechts Source. Drei Beine, drei verschiedene Aufgaben, kein Bein bleibt frei.</figcaption>
+    </figure>
+    <p class="note info">Merkhilfe: <b>Gate</b> ist der Schalter (vom ESP32), <b>Drain</b> ist der Abfluss (zur Last), <b>Source</b> ist die Quelle (an Minus). Im Schaltplan (Bild 5) sitzt D oben und S unten, am Bauteil stehen die Beine nebeneinander. Gehe immer nach dem Buchstaben, nie nach der Lage im Plan.</p>
+
+    <h3>Anderes Gehäuse oder anderer Typ?</h3>
+    <p>Die Reihenfolge hängt vom Gehäuse ab, nicht vom Buchstaben auf dem Plan. Nimm das Datenblatt deines Teils, die Hersteller weichen teilweise ab.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Typ</th><th>Gehäuse</th><th>Ansicht</th><th>Reihenfolge der Beine</th></tr></thead>
+      <tbody>
+        <tr><td><b>IRLZ44N</b>, IRLB8721, IRLB3034</td><td>TO-220</td><td>Schrift zu dir, Fahne oben</td><td class="mono">G · D · S (links nach rechts)</td></tr>
+        <tr><td>2N7000</td><td>TO-92</td><td>flache Seite zu dir, Beine nach unten</td><td class="mono">S · G · D (nicht geeignet bei 3,3 V)</td></tr>
+        <tr><td>BS170</td><td>TO-92</td><td>flache Seite zu dir, Beine nach unten</td><td class="mono">D · G · S</td></tr>
+        <tr><td>AO3400, IRLML6344</td><td>SOT-23 (SMD)</td><td>von oben, zwei Beine unten</td><td class="mono">links unten G, rechts unten S, oben allein D</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Welches Bein ist welches? Prüfen mit dem Multimeter</h3>
+    <p>Wenn du dem Aufdruck nicht traust, prüfe vor dem Löten im Diodentest (Piepton-Stellung):</p>
+    <ul>
+      <li><b>Rote Prüfspitze an Source, schwarze an Drain:</b> etwa 0,5 V. Das ist die Schutzdiode im MOSFET.</li>
+      <li><b>Rote an Drain, schwarze an Source:</b> „OL“ (nichts).</li>
+      <li><b>Gate gegen jedes andere Bein:</b> „OL“ in beiden Richtungen. Das Gate ist isoliert.</li>
+      <li>Stimmt das, sind Source und Drain richtig erkannt, das übrige Bein ist das Gate.</li>
+    </ul>
+
+    <h3>Aufbau frei verlötet</h3>
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 960 420" role="img" aria-label="Aufbau: Gate-Bein über 100 Ohm an die graue Ader zum ESP32, Drain-Bein über 47 Ohm an die rote Ader zu plus 5 Volt, Source-Bein direkt an die schwarze Ader zu GND, 10 kOhm von der grauen Ader zur GND-Schiene">
+          <rect class="mod" x="180" y="20" width="280" height="50"/>
+          <circle class="bx" cx="320" cy="42" r="10"/>
+          <rect class="pcb" x="180" y="70" width="280" height="70"/>
+          <text class="tb tl" x="320" y="104" text-anchor="middle">IRLZ44N</text>
+          <text class="tm tl" x="320" y="124" text-anchor="middle">Schrift zu dir</text>
+          <rect x="225" y="140" width="10" height="65" style="fill:var(--cdin)"/>
+          <rect x="315" y="140" width="10" height="65" style="fill:var(--c5)"/>
+          <rect x="405" y="140" width="10" height="65" style="fill:var(--cgnd)"/>
+          <text class="tb" x="218" y="178" text-anchor="end" style="fill:var(--cdin)">G</text>
+          <text class="tb" x="308" y="178" text-anchor="end" style="fill:var(--c5)">D</text>
+          <text class="tb" x="398" y="178" text-anchor="end" style="fill:var(--cgnd)">S</text>
+
+          <path class="w wd" d="M230 205 V212"/><rect class="sy" x="222" y="212" width="16" height="44" rx="2"/><path class="w wd" d="M230 256 V360"/>
+          <text class="tm" x="214" y="238" text-anchor="end">100 Ω</text>
+          <path class="w w5" d="M320 205 V212"/><rect class="sy" x="312" y="212" width="16" height="44" rx="2"/><path class="w w5" d="M320 256 V360"/>
+          <text class="tm" x="336" y="238">47 Ω · 1 W</text>
+          <path class="w wg" d="M410 205 V360"/>
+
+          <circle class="dg" cx="230" cy="310" r="3.5" style="fill:var(--cdin)"/>
+          <path class="w wd" d="M230 310 H178"/><rect class="sy" x="134" y="302" width="44" height="16" rx="2"/><path class="w wd" d="M134 310 H100"/>
+          <text class="tm" x="156" y="294" text-anchor="middle">10 kΩ</text>
+          <path class="w wg" d="M100 270 V350" style="stroke-width:5"/><circle class="dg" cx="100" cy="310" r="4"/>
+          <text class="tm tg" x="100" y="262" text-anchor="middle">GND-Schiene</text>
+
+          <text class="tm" x="230" y="382" text-anchor="middle">graue Ader</text><text class="tm" x="230" y="398" text-anchor="middle">→ ESP32 GPIO14</text>
+          <text class="tm" x="320" y="382" text-anchor="middle">rote Ader</text><text class="tm" x="320" y="398" text-anchor="middle">→ +5 V (K5)</text>
+          <text class="tm" x="410" y="382" text-anchor="middle">schwarze Ader</text><text class="tm" x="410" y="398" text-anchor="middle">→ GND-Schiene</text>
+
+          <text class="tb t5" x="500" y="44">Metallfahne = Drain</text>
+          <text class="tm" x="500" y="62">Bei ausgeschaltetem MOSFET liegt sie an +5 V. Sie darf keine</text>
+          <text class="tm" x="500" y="78">blanke Ader und kein GND berühren: Schrumpfschlauch drüber.</text>
+          <text class="tb" x="500" y="130">Jedes Bein bekommt genau ein Teil</text>
+          <text class="tm" x="500" y="148">G → 100 Ω, D → 47 Ω, S → schwarze Ader.</text>
+          <text class="tm" x="500" y="164">Die 10 kΩ hängen nicht am MOSFET, sondern an der grauen Ader.</text>
+          <text class="tb" x="500" y="214">Beine nicht kürzer als 8 mm abschneiden</text>
+          <text class="tm" x="500" y="232">Sonst wird das Anlöten der Widerstände eng, und die Lötstellen</text>
+          <text class="tm" x="500" y="248">liegen zu nah an der Fahne.</text>
+        </svg>
+      </div>
+      <figcaption>Der MOSFET hängt frei in der Luft (Fahne oben, Beine nach unten). Die Widerstände sind die Verlängerung der Beine, die Adern hängen unten dran. Alle blanken Stellen bekommen Schrumpfschlauch. Die Linienfarben sind die Netzfarben der Seite (blau = 3,3-V-Signal), nicht die Aderfarben.</figcaption>
+    </figure>
+    <ol style="margin-top:14px">
+      <li><b>Beine kennzeichnen.</b> Schrift zu dir, Fahne oben: links G, Mitte D, rechts S. Mit dem Diodentest prüfen (siehe oben). Mit Filzstift oder einem Stück Klebeband je Bein den Buchstaben markieren.</li>
+      <li><b>MOSFET fixieren.</b> Fahne in eine „dritte Hand“ klemmen oder mit etwas Heißkleber auf einen Streifen Pappe setzen, Beine zeigen nach unten.</li>
+      <li><b>G-Bein:</b> Das eine Ende des 100-Ω-Widerstands um das linke Bein biegen, verzinnen, löten. Das Bein und das Widerstandsbein sind dann eine gerade Linie nach unten.</li>
+      <li><b>D-Bein:</b> Ebenso den 47-Ω-Widerstand (1 W) ans mittlere Bein. Er ist dicker, lass 2 mm Luft zum linken Widerstand.</li>
+      <li><b>S-Bein:</b> Die schwarze Ader (24 AWG, 5 cm) direkt ans rechte Bein löten.</li>
+      <li><b>Freie Enden verbinden:</b> Am freien Ende des 100-Ω-Widerstands die graue Dupont-Ader löten (zum ESP32, GPIO14). Am freien Ende des 47-Ω-Widerstands eine rote Ader (zu Knoten K5).</li>
+      <li><b>Pulldown 10 kΩ:</b> Ein Bein an die graue Ader löten, ein paar Zentimeter vom MOSFET weg. Das andere Bein an die GND-Schiene (oder an die schwarze Ader der Source, aber weit unten, nicht am Bein).</li>
+      <li><b>Isolieren.</b> Schrumpfschlauch 3 mm über jeden Widerstand samt Lötstellen, Schlauch über die blanken Beine, Fahne in Schrumpfschlauch oder mit Heißkleber abdecken.</li>
+      <li><b>Platz im Kasten.</b> Der 47-Ω-Widerstand wird beim Puls kurz warm. Nicht an die Kastenwand drücken (PLA wird ab etwa 60 °C weich), 5 mm Luft lassen.</li>
+    </ol>
+    <div class="check" style="margin-top:12px"><b>Prüfen</b>Mit dem Multimeter im Widerstandsbereich, ohne Strom: graue Ader gegen GND-Schiene etwa 10 kΩ. Rote Ader gegen Drain-Fahne etwa 47 Ω. Graue Ader gegen rote Ader und gegen schwarze Ader: kein Durchgang.</div>
+
+    <h3>Funktionstest mit Strom</h3>
+    <ol>
+      <li>Alles andere ist fertig, Schalter ein, INA226 zeigt etwa 5 V und den Ruhestrom.</li>
+      <li>Die graue Ader (Gate) mit dem anderen Ende an den 3V3-Pin des ESP32 tippen. Der Strom steigt um etwa 100 mA. Wieder loslassen: Strom fällt zurück.</li>
+      <li>Höchstens 5 Sekunden am Stück, der 47-Ω-Widerstand nimmt dabei dauerhaft 0,5 W auf und wird warm.</li>
+      <li>Danach die Dupont-Ader auf GPIO14 stecken. Die ESPHome-Skizze unten schaltet alle 5 s für 300 ms.</li>
+    </ol>
+    <pre style="margin-top:12px">output:
+  - platform: gpio
+    id: powerbank_last
+    pin: GPIO14
+
+interval:
+  - interval: 5s
+    then:
+      - output.turn_on: powerbank_last
+      - delay: 300ms
+      - output.turn_off: powerbank_last</pre>
+  </section>
+
   <section id="verbindungen">
     <h2>Alle Verbindungen</h2>
     <h3>Liste der Drähte</h3>
@@ -550,7 +694,7 @@ ol.steps ul { gap: 4px; }
           <li>ESP32, OLED und INA226 mit Jumperdrähten auf dem Steckbrett verbinden (Bild 4).</li>
           <li>Per USB-C die ESPHome-Firmware einspielen (Skizze auf der Pinout-Seite), I²C-Scan im Log ansehen: 0x3C und 0x40 müssen erscheinen.</li>
           <li>OLED mit <code>SH1106 128x64</code> testen: Rahmen und Diagonale. Ergebnis in <code>docs/oled-1k3-i2c.md</code> eintragen.</li>
-          <li>Ein Dock testen: LED, 1N4007, 330 Ω, DETECT an GND. Leuchtet die LED bei 3,3 V Daten?</li>
+          <li>Ein Dock testen: LED an 5 V, 330 Ω in der Datenleitung, DETECT an GND. Leuchtet die LED bei 3,3 V Daten?</li>
         </ul>
         <div class="check"><b>Prüfen</b>I²C-Scan zeigt beide Adressen, LED reagiert, DETECT schaltet im Log.</div>
       </li>
@@ -595,15 +739,19 @@ ol.steps ul { gap: 4px; }
         <ul>
           <li>Zwei Stücke verzinnter Kupferdraht 1 mm, etwa 45 mm, gerade biegen. Eine ist die <b>GND-Schiene</b>, die andere die <b>+5-V-LED-Schiene</b>.</li>
           <li>Die GND-Schiene bekommt 10 Drähte: USB-Kabel schwarz, ESP32 GND (linke Reihe), C1 Minus, 6 × Dock Pin 1 (braun) und die Last-Source.</li>
-          <li>Die LED-Schiene bekommt 8 Drähte: D1 Kathode, C1 Plus und 6 × Dock Pin 3 (orange).</li>
+          <li>Die LED-Schiene bekommt 8 Drähte: die Drahtbrücke zu K5 (Platzhalter für D1), C1 Plus und 6 × Dock Pin 3 (orange).</li>
           <li>Jeden Draht mit ca. 4 mm Abstand anlöten, die fertige Schiene in Schrumpfschlauch 6 mm schieben (vorher auf einen Draht aufschieben).</li>
         </ul>
         <div class="check"><b>Prüfen</b>Zwischen GND-Schiene und LED-Schiene kein Durchgang. Dock-Pins 1 und 3 sind je mit ihrer Schiene verbunden.</div>
       </li>
       <li>
-        <h3>D1 und C1 <span class="time">10 Minuten</span></h3>
+        <h3>C1 und die Platzhalter-Brücke <span class="time">10 Minuten</span></h3>
         <ul>
-          <li><b>D1</b> 1N4007: Anode (ohne Strich) an Knoten K5, Kathode (Strich) an die LED-Schiene. Der Strich zeigt zu den LEDs.</li>
+          <li><b>C1</b> 1000 µF: Plus (längeres Bein, ohne Streifen) an die LED-Schiene, Minus (Streifen) an die GND-Schiene. Liegend einbauen, Beine kurz.</li>
+          <li><b>Brücke</b> statt D1: ein 3 cm langer Draht (24 AWG rot) zwischen Knoten K5 und LED-Schiene. Hier kommt später bei Bedarf die Diode hinein (Abschnitt „Geparkt: Diode D1“).</li>
+        </ul>
+        <div class="check"><b>Prüfen</b>Elko-Polung nochmal anschauen, falsch herum platzt er. Brücke: Durchgang zwischen K5 und LED-Schiene.</div>
+      </li>
           <li><b>C1</b> 1000 µF: Plus (längeres Bein, ohne Streifen) an die LED-Schiene, Minus (Streifen) an die GND-Schiene. Liegend einbauen, Beine kurz.</li>
         </ul>
         <div class="check"><b>Prüfen</b>Diodentest am Multimeter: Anode zu Kathode zeigt 0,5 bis 0,7 V, rückwärts „OL“. Elko-Polung nochmal anschauen, falsch herum platzt er.</div>
@@ -622,7 +770,7 @@ ol.steps ul { gap: 4px; }
         <ul>
           <li>USB-A-Kabel aufschneiden, nur rot (+5 V) und schwarz (GND) benutzen, Datenadern kürzen und isolieren. Mit dem Multimeter Rot und Schwarz am Stecker prüfen.</li>
           <li><b>Schalter:</b> rot an eine Lötfahne, die andere Lötfahne an INA226 VIN+. Fahnen vorher verzinnen, höchstens 3 Sekunden. Je Fahne Schrumpfschlauch 2 mm.</li>
-          <li><b>INA226:</b> VIN− zum Knoten K5. K5 ist ein Lötknoten aus VIN− (dicker Draht), ESP32 VIN (Dupont-Ader, rot), D1 Anode und, falls gebaut, die Last. Danach den Zusatzwiderstand parallel zum Shunt (Abschnitt INA226) und den VBUS-Durchgang prüfen.</li>
+          <li><b>INA226:</b> VIN− zum Knoten K5. K5 ist ein Lötknoten aus VIN− (dicker Draht), ESP32 VIN (Dupont-Ader, rot), die Brücke zur LED-Schiene und, falls gebaut, die Last. Danach den Zusatzwiderstand parallel zum Shunt (Abschnitt INA226) und den VBUS-Durchgang prüfen.</li>
           <li>Schwarz vom USB-Kabel an die GND-Schiene.</li>
         </ul>
         <div class="check"><b>Prüfen</b>Schalter aus: kein Durchgang vom USB-Rot zu K5. Schalter ein: Durchgang. Kein Durchgang zwischen +5 V und GND.</div>
@@ -631,6 +779,9 @@ ol.steps ul { gap: 4px; }
         <h3>Optional: Last-Schaltung <span class="time">20 Minuten</span></h3>
         <ul>
           <li>Nur bauen, wenn die Powerbank im Test abschaltet (Schritt 12).</li>
+          <li>Schritt für Schritt mit Zeichnung der Beine: Abschnitt „MOSFET“.</li>
+        </ul>
+      </li>
           <li>10 kΩ zwischen Gate- und Source-Beinchen, 100 Ω ans Gate, 47 Ω (1 W) ans Drain, die freien Enden an K5 (Drain-Seite), GND-Schiene (Source) und die Dupont-Ader von GPIO14 (grau, über den 100 Ω).</li>
           <li>Der IRLZ44N liegt flach, Kühlfahne zeigt nach oben, die Lötstellen mit Schrumpfschlauch isolieren.</li>
         </ul>
@@ -660,7 +811,7 @@ ol.steps ul { gap: 4px; }
         <h3>Einbauen und sichern <span class="time">30 Minuten</span></h3>
         <ul>
           <li>ESP32 mit Heißkleber in der Elektronikbox befestigen (zwei Punkte an den Befestigungslöchern).</li>
-          <li>Sammelschienen, Knoten, D1, C1 und Last auf den Boden kleben. Adern mit Heißkleber in Bündeln fixieren, nichts darf über der Powerbank in die Adernzone hängen.</li>
+          <li>Sammelschienen, Knoten, C1 und Last auf den Boden kleben. Adern mit Heißkleber in Bündeln fixieren, nichts darf über der Powerbank in die Adernzone hängen.</li>
           <li>Schalter in die Westwand einschnappen lassen, Kabel zum INA226 entlasten.</li>
           <li>Beim Zudecken alle Adern kontrollieren: nirgends gequetscht, keine blanke Stelle.</li>
         </ul>
@@ -683,16 +834,17 @@ ol.steps ul { gap: 4px; }
         <tr><td>Winkelstiftleiste 40-polig, 2,54 mm</td><td class="num">1</td><td>zwei 1×15 für den ESP32</td><td>Körper etwa 2 mm hoch, wie die Dock-Leisten</td></tr>
         <tr><td>Jumperdrähte Buchse–Buchse, 20 cm</td><td class="num">20</td><td>19 Dupont-Adern</td><td>bunte Farben, in der Mitte durchschneiden</td></tr>
         <tr><td>Widerstand 330 Ω, ¼ W</td><td class="num">6</td><td>DIN der Docks</td><td></td></tr>
-        <tr><td>Diode 1N4007</td><td class="num">1</td><td>D1</td><td>nicht Schottky</td></tr>
-        <tr><td>Elko 1000 µF, 10 V oder 16 V</td><td class="num">1</td><td>C1</td><td>Ø bis 10 mm, liegend</td></tr>
+                <tr><td>Elko 1000 µF, 10 V oder 16 V</td><td class="num">1</td><td>C1</td><td>Ø bis 10 mm, liegend</td></tr>
         <tr><td>Widerstand 0,1 Ω, 1 %, ≥ 0,5 W</td><td class="num">1</td><td>parallel zum Shunt</td><td>1 W axial oder SMD 1206</td></tr>
         <tr><td>USB-A-Stecker mit Lötanschlüssen oder altes USB-Kabel</td><td class="num">1</td><td>Anschluss Powerbank</td><td>nur rot und schwarz</td></tr>
         <tr><td>Silikonlitze 24 AWG rot und schwarz</td><td class="num">1 m</td><td>Hauptstrom</td><td>für die Zuleitung bis zum Knoten K5</td></tr>
         <tr><td>Verzinnter Kupferdraht 1 mm</td><td class="num">0,1 m</td><td>zwei Sammelschienen</td><td></td></tr>
         <tr><td>Schrumpfschlauch Ø 1,5, 2, 3 und 6 mm</td><td class="num">Sortiment</td><td>alle Lötstellen</td><td></td></tr>
         <tr><td>Heißkleber, Flussmittel, Klebeband für Fähnchen</td><td class="num">–</td><td>Fixieren, Kennzeichnen</td><td></td></tr>
+        <tr class="grp"><td colspan="4">Geparkt: Diode für den Datenpegel</td></tr>
+        <tr><td>Diode 1N4007</td><td class="num">1</td><td>D1, nur falls die LED flackert</td><td>nicht Schottky</td></tr>
         <tr class="grp"><td colspan="4">Nur wenn die Last gebraucht wird</td></tr>
-        <tr><td>IRLZ44N (N-Kanal, Logic Level)</td><td class="num">1</td><td>Last schalten</td><td>2N7000 nicht nehmen, schaltet bei 3,3 V schlecht</td></tr>
+        <tr><td>IRLZ44N (N-Kanal, Logic Level)</td><td class="num">1</td><td>Last schalten</td><td>Beine von vorn: G, D, S (Abschnitt MOSFET). 2N7000 nicht nehmen, schaltet bei 3,3 V schlecht</td></tr>
         <tr><td>Widerstand 47 Ω, 1 W</td><td class="num">1</td><td>Last</td><td>oder zwei 100 Ω, ½ W parallel</td></tr>
         <tr><td>Widerstand 100 Ω und 10 kΩ</td><td class="num">je 1</td><td>Gate</td><td></td></tr>
       </tbody>
@@ -705,7 +857,7 @@ ol.steps ul { gap: 4px; }
       <li><b>Alle Zahlen zur Höhe sind typische Werte.</b> ESP32-Board, Dupont-Gehäuse und Winkelleisten mit der Schieblehre nachmessen. Der Unterkasten ist noch nicht gedruckt (Konzept Stand 6).</li>
       <li><b>Elektronikbox 60 × 35 mm</b> reicht für Aufbau A nicht. Wert in <code>plug/power/params.py</code> (<code>ESP_BOX</code>) und im Generator anpassen. PR #28 ändert die Lage der Box und der Docks.</li>
       <li><b>Zuordnung Dock zu Gebäude</b> ist nicht festgelegt. Die Reihenfolge in der Tabelle ist ein Vorschlag, die Nummern sind austauschbar.</li>
-      <li><b>3,3 V Daten an 4-V-LEDs</b> ohne Pegelwandler sind ungetestet (Schritt 1).</li>
+      <li><b>3,3 V Daten an LEDs mit 5 V</b> liegen knapp außerhalb des Datenblatts (3,5 V verlangt) und klappen meist. Ungetestet, Schritt 1 zeigt es. Falls nicht: Diode D1 (geparkt).</li>
       <li><b>Powerbank schaltet ein und bleibt an?</b> Ob sie ohne Tastendruck startet und wie lange sie bei geringer Last an bleibt, ist unbekannt. Der Test steht in Schritt 12.</li>
       <li><b>Einschaltstrom von C1.</b> 1000 µF hinter einem harten Schalter belasten die Powerbank kurz stark. Schaltet sie dabei ab, C1 auf 470 µF verkleinern.</li>
       <li><b>RMT-Kanäle beim ESP32-C6</b> prüfen, bevor die Platine gekauft wird (siehe oben).</li>
