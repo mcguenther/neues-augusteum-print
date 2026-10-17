@@ -1,0 +1,445 @@
+<title>Hauptschalter Westwand</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: Zeichenblatt, Schieber mit Platte und Ausschnitt oben, Schnitt und Ansicht nebeneinander, darunter Maßtabelle und Entscheidungskarten */
+:root {
+  --bg:#f3f5f6; --paper:#ffffff; --ink:#1d2a33; --mute:#5d6c76; --line:#c9d2d8;
+  --wall:#cdd7de; --wallline:#44525c; --accent:#d9480f; --accent-soft:#fde8dc; --ok:#2b7a4b; --warn:#a86a00; --bad:#c0262d; --pb:#dfe6ea; --chan:#e7f0f6;
+  --font-sans:"IBM Plex Sans",system-ui,sans-serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#12181c; --paper:#1a2227; --ink:#e4ebef; --mute:#97a6b0; --line:#34414a;
+  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --bad:#ff6b6b; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; } }
+:root[data-theme="dark"] {
+  --bg:#12181c; --paper:#1a2227; --ink:#e4ebef; --mute:#97a6b0; --line:#34414a;
+  --wall:#2b3840; --wallline:#8fa2ae; --accent:#ff8a4c; --accent-soft:#3a2417; --ok:#6cc790; --warn:#e0a53a; --bad:#ff6b6b; --pb:#26323a; --chan:#1f2d37; color-scheme:dark; }
+body { background:var(--bg); color:var(--ink); font-family:var(--font-sans); font-size:15px; line-height:1.5;
+  padding-block:24px 48px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+h1 { font-size:28px; line-height:1.2; margin:0; text-wrap:balance; }
+h2 { font-size:18px; margin:0 0 4px; text-wrap:balance; }
+p { margin:0; max-width:70ch; }
+.kicker { font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--mute); }
+.sheet { background:var(--paper); border:1px solid var(--line); padding:16px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+.scroll { overflow-x:auto; }
+.row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+@media (max-width:820px) { .row { grid-template-columns:minmax(0,1fr); } }
+svg { display:block; width:100%; height:auto; max-width:560px; margin:0 auto; }
+svg .wall { fill:var(--wall); stroke:var(--wallline); stroke-width:1.2; }
+svg .fach { fill:var(--paper); stroke:var(--wallline); stroke-width:.8; }
+svg .win { fill:var(--paper); stroke:var(--accent); stroke-width:1; stroke-dasharray:3 2; }
+svg .chan { fill:var(--chan); stroke:var(--line); }
+svg .bld { fill:none; stroke:var(--mute); stroke-width:.8; }
+svg .bld.hot { stroke:var(--accent); stroke-width:1.2; stroke-dasharray:4 3; }
+svg .elec { fill:var(--chan); stroke:var(--wallline); stroke-dasharray:5 3; }
+svg .swlead { stroke:var(--accent); stroke-width:1.2; }
+svg .pb { fill:var(--pb); stroke:var(--wallline); stroke-width:1; }
+svg .plate { fill:var(--pb); stroke:var(--wallline); }
+svg .cab { fill:none; stroke:var(--mute); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+svg .sw, svg .swf { fill:var(--accent); stroke:var(--ink); stroke-width:1; }
+svg .swf { fill-opacity:.85; }
+svg .hook { fill:var(--ink); }
+svg .pin { stroke:var(--ink); stroke-width:2.2; }
+svg .wire { fill:none; stroke:var(--accent); stroke-width:2; stroke-linejoin:round; }
+svg .pocket { fill:var(--paper); stroke:var(--wallline); stroke-dasharray:4 3; }
+svg .hole { fill:var(--bg); stroke:var(--ink); stroke-width:1.4; }
+svg .dim { stroke:var(--mute); stroke-width:1; }
+svg text { font-family:var(--font-mono); font-size:11px; fill:var(--ink); }
+svg .lbl { fill:var(--mute); }
+svg .hl { fill:var(--accent); font-weight:500; }
+table { border-collapse:collapse; width:100%; font-size:14px; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--mute); font-weight:500; }
+td.n { font-family:var(--font-mono); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.st { display:inline-block; font-family:var(--font-mono); font-size:11px; font-weight:500; min-width:1.5em; text-align:center; padding:0 5px; border:1px solid var(--line); margin-right:6px; }
+.st-M, .st-B { color:var(--ok); border-color:var(--ok); }
+.st-S, .st-A { color:var(--warn); border-color:var(--warn); }
+.st-E { color:var(--accent); border-color:var(--accent); }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+.card { background:var(--paper); border:1px solid var(--line); padding:14px; display:flex; flex-direction:column; gap:8px; min-width:0; }
+.card h3 { font-size:15px; margin:0; }
+.card ul { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:4px; }
+.card .pick { background:var(--accent-soft); border:1px solid var(--accent); padding:6px 8px; font-size:13px; }
+.note { border-left:3px solid var(--accent); padding:4px 0 4px 12px; }
+.circ { font-family:var(--font-mono); font-size:13px; white-space:pre; overflow-x:auto; background:var(--bg); border:1px solid var(--line); padding:10px 12px; }
+a { color:var(--accent); }
+</style>
+<main>
+<header style="display:flex;flex-direction:column;gap:8px">
+  <div class="kicker">Plan · Konzept, noch keine STL · Stand 17.10.2026 · Platte 1:1300</div>
+  <h1>Hauptschalter in der Westwand des Unterkastens</h1>
+  <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, bei y = 40.0 südlich vom Fach, und schnappt von außen in ein Loch von 13.7 × 9.0 mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
+</header>
+
+<section class="sheet" id="mover">
+  <h2>Schalter an der Westwand verschieben</h2>
+  <p>Den orangen Schalter an der Wand ziehen, auf die Leiste links daneben klicken oder den Schieber benutzen. Die Leiste zeigt für jede Lage: grün frei, gelb weniger als 2 mm Luft zu einem Teil, rot Kollision. Alles ist gerechnet gegen Fach, Stützen, Eckaussparungen, Dockzonen und die Elektronikbox aus dem Konzept (Platte 1:1300).</p>
+  <div class="mv">
+    <div class="mv-plate"><svg id="pl" role="img" aria-label="Platte von oben mit verschiebbarem Schalter"></svg></div>
+    <div class="mv-side">
+      <div class="ctl">
+        <label for="ysl">Lage y auf der Platte (Süden 0, Norden 220,8)</label>
+        <div class="ctl-row">
+          <input id="ysl" type="range" min="10" max="211" step="0.5" value="116">
+          <input id="ynum" type="number" min="10" max="211" step="0.5" value="116" aria-label="y in mm">
+          <span>mm</span>
+        </div>
+        <div class="btns">
+          <button type="button" id="bS">↓ nächste freie Lage nach Süden</button>
+          <button type="button" id="bN">↑ nach Norden</button>
+          <button type="button" id="bSS">südlichste freie Lage</button>
+          <button type="button" id="bA">Ausgangslage</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="ig"> Elektronikbox ignorieren (sie lässt sich verlegen)</label>
+      </div>
+      <div id="verdict" class="verdict" role="status"></div>
+      <ul id="msgs" class="msgs"></ul>
+      <dl id="facts" class="facts"></dl>
+      <svg id="dt" role="img" aria-label="Ausschnitt um den Schalter"></svg>
+    </div>
+  </div>
+</section>
+<style>
+.mv { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; align-items:start; }
+@media (max-width:820px) { .mv { grid-template-columns:minmax(0,1fr); } }
+.mv-plate svg { max-width:420px; touch-action:none; cursor:ns-resize; }
+.mv-side { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.ctl { display:flex; flex-direction:column; gap:8px; }
+.ctl label { font-size:13px; color:var(--mute); }
+.ctl-row { display:flex; gap:8px; align-items:center; }
+.ctl-row input[type=range] { flex:1; min-width:0; accent-color:var(--accent); }
+.ctl-row input[type=number] { width:5.5em; font:inherit; font-family:var(--font-mono); padding:4px 6px; background:var(--paper); color:var(--ink); border:1px solid var(--line); }
+.btns { display:flex; flex-wrap:wrap; gap:6px; }
+.btns button { font:inherit; font-size:13px; padding:5px 9px; background:var(--paper); color:var(--ink); border:1px solid var(--wallline); cursor:pointer; }
+.btns button:hover { border-color:var(--accent); color:var(--accent); }
+.btns button:focus-visible, input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.chk { display:flex; gap:8px; align-items:center; color:var(--ink) !important; }
+.verdict { font-weight:600; padding:8px 12px; border:1px solid var(--line); border-left-width:6px; }
+.verdict.g { border-left-color:var(--ok); }
+.verdict.y { border-left-color:var(--warn); }
+.verdict.r { border-left-color:var(--bad); }
+.msgs { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:14px; }
+.msgs li { padding-left:12px; border-left:4px solid var(--line); }
+.msgs li.r { border-left-color:var(--bad); }
+.msgs li.y { border-left-color:var(--warn); }
+.msgs li.i { border-left-color:var(--mute); color:var(--mute); }
+.facts { display:grid; grid-template-columns:auto 1fr; gap:2px 14px; margin:0; font-size:14px; }
+.facts dt { color:var(--mute); }
+.facts dd { margin:0; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+svg .post { fill:var(--line); stroke:var(--wallline); stroke-width:.6; }
+svg .postpin { fill:var(--wallline); }
+svg .notch { fill:var(--bad); fill-opacity:.18; stroke:var(--bad); stroke-width:.8; stroke-dasharray:3 2; }
+svg .zone { fill:var(--warn); fill-opacity:.14; stroke:var(--warn); stroke-width:.8; stroke-dasharray:3 2; }
+svg .halo { fill:none; stroke:var(--accent); stroke-width:1; stroke-dasharray:3 2; }
+svg .sg { stroke:none; }
+svg .sg.g { fill:var(--ok); } svg .sg.y { fill:var(--warn); } svg .sg.r { fill:var(--bad); }
+svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
+</style>
+<script>
+(function () {
+  var D = {"plate":[115.6,220.8],"outline":[[[115.6,3.0],[115.6,2.7],[115.5,2.4],[115.5,2.1],[115.3,1.9],[115.2,1.6],[115.1,1.3],[114.9,1.1],[114.7,0.9],[114.5,0.7],[114.2,0.5],[114.0,0.3],[113.7,0.2],[113.5,0.1],[113.2,0.1],[112.9,0.0],[112.6,0.0],[3.0,0.0],[2.7,0.0],[2.4,0.1],[2.1,0.1],[1.9,0.2],[1.6,0.3],[1.3,0.5],[1.1,0.7],[0.9,0.9],[0.7,1.1],[0.5,1.3],[0.3,1.6],[0.2,1.9],[0.1,2.1],[0.1,2.4],[0.0,2.7],[0.0,3.0],[0.0,217.8],[0.0,218.1],[0.1,218.4],[0.1,218.7],[0.2,219.0],[0.3,219.3],[0.5,219.5],[0.7,219.8],[0.9,220.0],[1.1,220.2],[1.3,220.3],[1.6,220.5],[1.9,220.6],[2.1,220.7],[2.4,220.8],[2.7,220.8],[3.0,220.8],[112.6,220.8],[112.9,220.8],[113.2,220.8],[113.5,220.7],[113.7,220.6],[114.0,220.5],[114.2,220.3],[114.5,220.2],[114.7,220.0],[114.9,219.8],[115.1,219.5],[115.2,219.3],[115.3,219.0],[115.5,218.7],[115.5,218.4],[115.6,218.1],[115.6,217.8]]],"buildings":[{"slug":"01_paulinum","title":"Paulinum","poly":[[[66.3,166.2],[66.3,166.2],[64.0,166.7],[65.4,173.5],[67.3,182.7],[86.3,178.8],[90.7,178.9],[90.5,182.8],[93.1,182.2],[95.5,181.7],[95.9,181.6],[96.5,176.7],[108.3,174.2],[109.3,174.0],[108.9,171.9],[109.6,171.8],[108.1,164.8],[106.7,157.9],[106.0,158.0],[105.3,154.5],[104.7,154.6],[104.3,154.7],[105.0,158.2],[97.7,159.7],[96.8,155.0],[91.9,156.0],[89.7,156.4],[90.0,157.7],[90.4,159.6],[90.7,161.2],[84.7,162.4]],[[90.5,182.9],[90.5,182.9],[94.5,182.1],[95.3,186.3],[95.4,186.2],[95.1,185.2],[95.1,185.2],[94.6,182.4],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.5,182.1],[94.2,182.1]]]},{"slug":"02_neues_augusteum","title":"Neues Augusteum","poly":[[[65.4,162.1],[65.4,162.2],[66.3,166.2],[84.2,162.5],[90.7,161.2],[90.0,157.7],[89.7,156.4],[90.8,156.2],[91.1,157.4],[91.1,157.4],[91.8,160.9],[99.8,159.3],[105.0,158.2],[104.3,154.7],[104.7,154.6],[104.3,152.6],[100.6,135.1],[102.2,134.7],[102.0,133.6],[102.7,133.4],[102.6,133.1],[101.1,127.1],[101.6,127.0],[102.1,126.9],[101.6,125.0],[102.2,124.9],[102.2,124.8],[102.3,124.8],[102.3,124.8],[102.1,124.8],[101.2,121.1],[101.4,121.0],[101.3,121.0],[101.2,121.0],[101.2,120.9],[100.6,121.0],[100.1,118.8],[99.6,118.9],[99.1,119.0],[97.6,112.7],[96.8,112.9],[96.6,111.8],[95.4,112.1],[95.1,110.7],[90.4,111.6],[89.3,106.3],[80.6,108.1],[80.5,108.1],[71.0,110.0],[71.0,110.0],[69.4,110.4],[69.4,110.4],[68.4,110.6],[68.9,113.0],[69.6,116.5],[57.7,119.0],[56.5,119.2],[56.8,120.5],[57.4,123.7],[57.0,123.8],[57.4,125.8],[56.7,125.9],[57.5,129.9],[58.3,129.8],[58.7,131.7],[59.1,131.6],[59.6,134.2],[59.2,134.5],[58.7,135.0],[58.5,135.8],[58.5,136.4],[58.7,138.2],[59.3,141.8],[60.7,148.7],[62.1,154.9],[63.2,158.7],[63.7,159.4],[64.4,159.8],[65.0,159.9]]]},{"slug":"03_hoersaalgebaeude","title":"Hörsaalgebäude","poly":[[[21.0,31.7],[6.0,79.8],[11.1,104.2],[17.0,103.0],[18.0,107.7],[20.1,107.3],[19.1,102.6],[25.9,101.2],[25.2,97.7],[33.2,96.0],[34.4,95.8],[36.5,105.8],[38.1,113.4],[39.1,118.4],[40.0,122.7],[56.5,119.2],[57.7,119.0],[65.3,117.3],[69.6,116.5],[68.9,113.0],[68.4,110.6],[69.4,110.4],[67.2,99.7],[65.1,90.0],[66.0,90.0],[66.0,85.1],[65.5,80.2],[64.5,75.4],[63.0,70.8],[61.0,66.3],[60.2,66.7],[58.2,57.0],[54.5,39.3],[46.4,33.4],[35.5,25.5],[25.3,18.0]]]},{"slug":"04_seminargebaeude","title":"Seminargebäude","poly":[[[21.4,181.7],[21.9,184.4],[21.9,184.8],[26.5,183.8],[27.2,183.7],[27.1,183.4],[42.2,180.3],[42.3,180.7],[42.4,180.7],[41.9,178.5],[42.4,178.4],[38.9,161.6],[38.4,161.8],[36.2,151.6],[36.8,151.4],[33.3,134.7],[32.7,134.8],[30.6,124.6],[31.2,124.5],[27.7,107.9],[12.1,111.1],[15.6,127.7],[15.7,127.7],[17.9,137.9],[17.7,137.9],[21.2,154.7],[21.4,154.7],[23.5,164.8],[23.3,164.9],[26.6,180.6],[23.0,181.3],[22.9,181.4],[22.6,181.4],[22.5,181.4],[22.2,181.5],[22.1,181.5],[21.9,181.6],[21.7,181.6],[21.4,181.7]]]},{"slug":"05_institutsgebaeude","title":"Institutsgebäude","poly":[[[22.6,189.1],[22.8,189.0],[23.6,193.2],[17.5,194.4],[17.1,194.4],[16.7,194.5],[16.7,194.7],[17.4,197.9],[20.9,214.8],[33.2,212.3],[48.0,209.2],[97.8,197.8],[95.6,187.4],[95.1,185.2],[95.1,185.2],[94.5,182.1],[90.5,182.9],[81.9,184.7],[44.9,192.4],[42.4,180.7],[42.3,180.7],[42.2,180.3],[27.1,183.4],[27.2,183.7],[26.5,183.8],[21.9,184.8]]]},{"slug":"06_city_hochhaus","title":"City-Hochhaus","poly":[[[78.2,64.1],[73.8,61.9],[71.1,60.2],[70.1,59.4],[69.2,58.7],[68.7,59.2],[68.9,59.4],[67.6,60.9],[65.8,62.7],[63.7,64.2],[61.5,65.6],[61.3,65.3],[60.7,65.8],[61.0,66.3],[61.0,66.3],[63.0,70.8],[64.5,75.4],[65.5,80.2],[66.0,85.1],[66.0,90.0],[66.0,90.0],[65.9,90.7],[66.6,90.8],[66.7,90.6],[69.9,91.0],[73.0,91.9],[76.0,93.3],[75.9,93.6],[76.5,93.8],[77.4,92.2],[79.6,88.7],[81.8,90.4],[84.4,87.1],[82.3,85.4],[85.1,82.5],[87.4,80.4],[89.7,78.7],[92.7,76.6],[95.9,74.8],[96.8,74.3],[96.7,73.7],[96.4,73.8],[95.9,72.3],[95.5,70.8],[95.5,69.2],[95.7,69.2],[95.6,68.5],[94.6,68.4],[91.5,68.1],[87.3,67.4],[82.7,66.0]]]}],"hof":[[[33.8,134.0],[37.5,151.9],[37.0,152.0],[38.8,161.1],[39.4,160.9],[43.1,178.8],[42.6,178.9],[43.0,180.5],[45.3,191.7],[67.6,187.0],[66.8,183.3],[65.0,174.4],[64.8,173.7],[63.2,166.2],[65.6,165.7],[64.8,162.3],[64.8,162.2],[64.5,160.6],[64.1,160.4],[63.2,159.9],[62.6,158.9],[61.6,155.1],[60.1,148.8],[58.7,141.9],[58.1,138.3],[57.9,136.4],[57.9,135.7],[58.2,134.7],[58.6,134.2],[58.2,132.3],[57.8,130.5],[57.1,130.6],[56.0,125.5],[56.7,125.3],[56.4,123.5],[55.6,120.0],[39.5,123.4],[38.9,120.3],[31.3,122.0],[31.9,125.0],[31.3,125.1],[33.2,134.1]]],"fach":[[[10.4,218.4],[80.4,218.4],[80.4,92.4],[10.4,92.4]]],"channel":[[[74.4,183.4],[80.4,183.4],[80.4,92.4],[74.4,92.4]]],"body":[[[10.9,182.9],[73.9,182.9],[73.9,92.9],[10.9,92.9]]],"elec":[[[107.4,53.4],[107.4,88.4],[47.4,88.4],[47.4,53.4]]],"window":[[[11.4,221.8],[56.9,221.8],[56.9,217.9],[11.4,217.9]]],"cable":[[64.4,182.9],[64.4,207.9],[70.9,212.9],[77.4,207.9],[77.4,92.4],[77.4,80.4]],"posts":[{"r":[[23.0,17.0],[23.0,23.0],[17.0,23.0],[17.0,17.0]],"pin":true},{"r":[[23.0,57.0],[23.0,63.0],[17.0,63.0],[17.0,57.0]],"pin":false},{"r":[[63.0,17.0],[63.0,23.0],[57.0,23.0],[57.0,17.0]],"pin":false},{"r":[[103.0,17.0],[103.0,23.0],[97.0,23.0],[97.0,17.0]],"pin":false},{"r":[[103.0,97.0],[103.0,103.0],[97.0,103.0],[97.0,97.0]],"pin":false},{"r":[[103.0,137.0],[103.0,143.0],[97.0,143.0],[97.0,137.0]],"pin":false},{"r":[[103.0,177.0],[103.0,183.0],[97.0,183.0],[97.0,177.0]],"pin":true}],"notches":[[[7.3,-1.0],[7.3,14.5],[-1.0,14.5],[-1.0,-1.0]],[[116.6,-1.0],[116.6,14.5],[108.3,14.5],[108.3,-1.0]],[[7.3,206.4],[7.3,221.8],[-1.0,221.8],[-1.0,206.4]],[[116.6,206.4],[116.6,221.8],[108.3,221.8],[108.3,206.4]]],"zones":[{"slug":"01_paulinum","title":"Paulinum","zone":[[66.7,167.1],[77.5,164.8],[80.6,179.3],[69.8,181.7]]},{"slug":"02_neues_augusteum","title":"Neues Augusteum","zone":[[84.7,110.7],[86.7,121.6],[72.0,124.2],[70.1,113.2]]},{"slug":"03_hoersaalgebaeude","title":"Hörsaalgebäude","zone":[[42.0,50.1],[43.9,61.0],[29.3,63.6],[27.4,52.7]]},{"slug":"04_seminargebaeude","title":"Seminargebäude","zone":[[39.4,151.9],[28.6,154.0],[25.7,139.4],[36.6,137.3]]},{"slug":"05_institutsgebaeude","title":"Institutsgebäude","zone":[[62.4,187.9],[64.7,198.7],[50.2,201.8],[47.9,191.0]]},{"slug":"06_city_hochhaus","title":"City-Hochhaus","zone":[[88.0,74.5],[79.1,81.2],[70.2,69.3],[79.0,62.6]]}],"step":0.5,"table":[["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["notch:r","corner:r"],["post:y","notch:r","corner:r"],["post:y","notch:r","corner:r"],["post:y","notch:r","corner:r"],["post:y","notch:r","corner:r"],["post:r","notch:r","corner:r"],["post:r","notch:r","corner:r"],["post:r","notch:r","corner:r"],["post:r","notch:r","corner:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:r"],["post:r","notch:y","notch:r"],["post:r","notch:y","notch:r"],["post:r","notch:y","notch:r"],["post:r","notch:y"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:y"],["post:y"],["post:y"],["post:y"],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],["post:y"],["post:y"],["post:y"],["post:y"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:r"],["post:y"],["post:y"],["post:y"],["post:y"],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],["fach:y"],["fach:y"],["fach:y"],["fach:y"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["fach:r"],["notch:y","fach:r"],["notch:y","fach:r","notch:r"],["notch:y","fach:r","notch:r"],["notch:y","fach:r","notch:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"],["notch:r","fach:r","corner:r"]],"over":[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[2,3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[3],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[4],[],[],[],[],[],[],[]],"sw":{"y0":40.0,"depth":20.0,"wall":2.4,"halo":2.0,"half_int":7.0,"flange_l":15.0,"flange_w":10.0,"flange_t":1.2,"body_l":13.0,"body_w":8.0,"body_depth":9.0,"pin_len":7.0,"pin_pitch":4.8,"pocket_l":17.7,"fach_x0":10.4,"margin":-9.6}};
+  var NS = 'http://www.w3.org/2000/svg';
+  var $ = function (id) { return document.getElementById(id); };
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fx(x) { return x.toFixed(1).replace('.', ','); }
+  var SW = D.sw, STEP = D.step, PW = D.plate[0], PL = D.plate[1];
+  var YMIN = 10, YMAX = 211;
+  var state = { y: SW.y0, ig: false };
+  var bbx = function (r) { var xs = r.map(function (p) { return p[0]; }), ys = r.map(function (p) { return p[1]; }); return [Math.min.apply(null, xs), Math.max.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, ys)]; };
+  var CABX = D.cable[D.cable.length - 1][0], CABYS = D.cable.filter(function (p) { return p[0] === CABX; }).map(function (p) { return p[1]; }), CAB0 = Math.min.apply(null, CABYS), CAB1 = Math.max.apply(null, CABYS);
+  var EB = bbx(D.elec[0]), FY = [bbx(D.fach[0])[2], bbx(D.fach[0])[3]];
+  var NAMES = ['Paulinum', 'Neues Augusteum', 'Hörsaalgebäude', 'Seminargebäude', 'Institutsgebäude', 'City-Hochhaus'];
+  var TEXT = {
+    elec: ['Die Elektronikbox (60 × 35 mm, x ' + fx(EB[0]) + ' bis ' + fx(EB[1]) + ', y ' + fx(EB[2]) + ' bis ' + fx(EB[3]) + ') liegt im Weg. Sie müsste verlegt werden.', 'Weniger als 2 mm Luft zur Elektronikbox.'],
+    post: ['Eine Stütze unter der Oberplatte (6 × 6 mm) steht im Weg. Der Generator muss sie an dieser Stelle weglassen.', 'Weniger als 2 mm Luft zu einer Stütze.'],
+    notch: ['Eckaussparung für den Faden-V der Oberplatte im Weg.', 'Weniger als 2 mm Luft zur Eckaussparung.'],
+    fach: ['Das Fach der Powerbank ragt in den Schalterraum.', 'Weniger als 2 mm Luft zum Fach (Zaun, Kabelkanal).'],
+    corner: ['Plattenecke: Die Wand ist hier gerundet, die Tasche reicht in die Rundung.', '']
+  };
+  var i, z;
+  for (i = 0; i < D.zones.length; i++) {
+    TEXT['zone' + i] = ['Dockzone ' + D.zones[i].title + ': Dort muss der Unterkasten leer bleiben (Leiste und Drähte der Kassette).',
+                        'Weniger als 2 mm Luft zur Dockzone ' + D.zones[i].title + '.'];
+  }
+  function ring(r, X, Y) { return 'M' + r.map(function (p) { return X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1); }).join('L') + 'Z'; }
+  function clampY(y) { return Math.min(YMAX, Math.max(YMIN, Math.round(y / STEP) * STEP)); }
+  function entry(y) { return D.table[Math.round(y / STEP)] || []; }
+  function codes(y) {
+    return entry(y).filter(function (c) { return !(state.ig && c.indexOf('elec') === 0); });
+  }
+  function sev(y) {
+    var c = codes(y), s = 'g';
+    for (var k = 0; k < c.length; k++) {
+      if (c[k].slice(-1) === 'r') return 'r';
+      s = 'y';
+    }
+    return s;
+  }
+
+  // ---------------- Platte
+  var pl = $('pl'), S = 2.4, OX = 76, OY = 24;
+  var PX = function (x) { return OX + x * S; };
+  var PY = function (y) { return OY + (PL - y) * S; };
+  pl.setAttribute('viewBox', '0 0 ' + (OX + PW * S + 14) + ' ' + (OY + PL * S + 24));
+  var gStatic = el('g', {}, pl), gStrip = el('g', {}, pl), gSw = el('g', {}, pl);
+  function drawPlateStatic() {
+    el('path', { 'class': 'wall', d: ring(D.outline[0], PX, PY) }, gStatic);
+    D.buildings.forEach(function (b) {
+      var hot = b.slug === '01_paulinum' || b.slug === '04_seminargebaeude';
+      el('path', { 'class': 'bld' + (hot ? ' hot' : ''), d: b.poly.map(function (r) { return ring(r, PX, PY); }).join(' ') }, gStatic);
+    });
+    el('path', { 'class': 'bld', d: D.hof.map(function (r) { return ring(r, PX, PY); }).join(' '), 'stroke-dasharray': '3 2' }, gStatic);
+    el('path', { 'class': 'fach', d: ring(D.fach[0], PX, PY) }, gStatic);
+    el('path', { 'class': 'chan', d: ring(D.channel[0], PX, PY) }, gStatic);
+    el('path', { 'class': 'pb', d: ring(D.body[0], PX, PY) }, gStatic);
+    el('path', { 'class': 'elec', d: ring(D.elec[0], PX, PY) }, gStatic);
+    el('path', { 'class': 'win', d: ring(D.window[0], PX, PY) }, gStatic);
+    D.zones.forEach(function (zz) { el('path', { 'class': 'zone', d: ring(zz.zone, PX, PY) }, gStatic); });
+    D.notches.forEach(function (n) { el('path', { 'class': 'notch', d: ring(n, PX, PY) }, gStatic); });
+    D.posts.forEach(function (p) { el('path', { 'class': 'post', d: ring(p.r, PX, PY) }, gStatic); });
+    el('polyline', { 'class': 'cab', points: D.cable.map(function (p) { return PX(p[0]).toFixed(1) + ',' + PY(p[1]).toFixed(1); }).join(' ') }, gStatic);
+    var t;
+    t = el('text', { 'class': 'lbl', x: PX((EB[0] + EB[1]) / 2), y: PY((EB[2] + EB[3]) / 2) + 4, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Elektronik';
+    var BB = bbx(D.body[0]);
+    t = el('text', { 'class': 'lbl', x: PX((BB[0] + BB[1]) / 2), y: PY(BB[2] + 20), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Powerbank';
+    t = el('text', { 'class': 'lbl', x: PX(PW / 2), y: OY - 8, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Nord (Anschlussseite)';
+    t = el('text', { 'class': 'lbl', x: PX(PW / 2), y: OY + PL * S + 16, 'text-anchor': 'middle' }, gStatic); t.textContent = 'Süd';
+    t = el('text', { 'class': 'lbl', x: PX(90), y: PY(168), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Paulinum';
+    t = el('text', { 'class': 'lbl', x: PX(26), y: PY(122), 'text-anchor': 'middle' }, gStatic); t.textContent = 'Seminar';
+  }
+  function drawStrip() {
+    while (gStrip.firstChild) gStrip.removeChild(gStrip.firstChild);
+    var n = D.table.length, k0 = Math.round(YMIN / STEP), k1 = Math.round(YMAX / STEP), cur = null, start = k0, k;
+    function flush(end) {
+      if (cur === null) return;
+      var ya = PY((end + 0.5) * STEP), yb = PY((start - 0.5) * STEP);
+      el('rect', { 'class': 'sg ' + cur, x: 14, y: ya.toFixed(1), width: 12, height: Math.max(0.5, yb - ya).toFixed(1) }, gStrip);
+    }
+    for (k = k0; k <= k1 && k < n; k++) {
+      var sv = sev(k * STEP);
+      if (sv !== cur) { flush(k - 1); cur = sv; start = k; }
+    }
+    flush(k1);
+    el('rect', { 'class': 'mark', x: 14, y: PY(YMAX), width: 12, height: PY(YMIN) - PY(YMAX) }, gStrip);
+  }
+  function drawPlateSwitch() {
+    while (gSw.firstChild) gSw.removeChild(gSw.firstChild);
+    var y = state.y;
+    el('rect', { 'class': 'halo', x: PX(SW.wall), y: PY(y + SW.half_int + SW.halo), width: (SW.depth + SW.halo - SW.wall) * S, height: (2 * (SW.half_int + SW.halo)) * S }, gSw);
+    el('rect', { 'class': 'swf', x: PX(-SW.flange_t) - 1, y: PY(y + SW.flange_l / 2), width: SW.flange_t * S + 2, height: SW.flange_l * S }, gSw);
+    el('rect', { 'class': 'sw', x: PX(0), y: PY(y + SW.body_l / 2), width: SW.body_depth * S, height: SW.body_l * S }, gSw);
+    var t = el('text', { 'class': 'hl', x: 70, y: PY(y) - 2, 'text-anchor': 'end' }, gSw); t.textContent = 'y ' + fx(y);
+    el('line', { x1: 26, x2: PX(-2), y1: PY(y), y2: PY(y), stroke: 'var(--accent)', 'stroke-width': 1 }, gSw);
+  }
+
+  // ---------------- Ausschnitt
+  var dt = $('dt'), DS = 8, DX0 = -3, DX1 = 46, DOX = 64;
+  function render_detail() {
+    while (dt.firstChild) dt.removeChild(dt.firstChild);
+    var y = state.y, y0 = y - 30, y1 = y + 30;
+    var X = function (x) { return DOX + (x - DX0) * DS; };
+    var Y = function (v) { return 12 + (y1 - v) * DS; };
+    var W = DOX + (DX1 - DX0) * DS + 12, H = 12 + (y1 - y0) * DS + 14;
+    dt.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    var defs = el('defs', {}, dt), cp = el('clipPath', { id: 'dtclip' }, defs);
+    el('rect', { x: X(DX0), y: Y(y1), width: (DX1 - DX0) * DS, height: (y1 - y0) * DS }, cp);
+    el('rect', { x: X(DX0), y: Y(y1), width: (DX1 - DX0) * DS, height: (y1 - y0) * DS, fill: 'var(--paper)', stroke: 'var(--line)' }, dt);
+    var g = el('g', { 'clip-path': 'url(#dtclip)' }, dt);
+    var bb = function (r) { var xs = r.map(function (p) { return p[0]; }), ys = r.map(function (p) { return p[1]; }); return [Math.min.apply(null, xs), Math.max.apply(null, xs), Math.min.apply(null, ys), Math.max.apply(null, ys)]; };
+    var rectOf = function (r, cls) { var b = bb(r); el('rect', { 'class': cls, x: X(b[0]), y: Y(b[3]), width: (b[1] - b[0]) * DS, height: (b[3] - b[2]) * DS }, g); return b; };
+    D.buildings.forEach(function (b) {
+      var hot = b.slug === '01_paulinum' || b.slug === '04_seminargebaeude';
+      el('path', { 'class': 'bld' + (hot ? ' hot' : ''), d: b.poly.map(function (r) { return ring(r, X, Y); }).join(' ') }, g);
+    });
+    el('rect', { 'class': 'wall', x: X(0), y: Y(y1), width: SW.wall * DS, height: (y1 - y0) * DS }, g);
+    var fb = rectOf(D.fach[0], 'fach'); rectOf(D.channel[0], 'chan');
+    var eb = rectOf(D.elec[0], 'elec');
+    D.zones.forEach(function (zz) { el('path', { 'class': 'zone', d: ring(zz.zone, X, Y) }, g); });
+    D.notches.forEach(function (n) { el('path', { 'class': 'notch', d: ring(n, X, Y) }, g); });
+    D.posts.forEach(function (p) { el('path', { 'class': 'post', d: ring(p.r, X, Y) }, g); });
+    el('polyline', { 'class': 'cab', points: D.cable.map(function (p) { return X(p[0]) + ',' + Y(p[1]); }).join(' ') }, g);
+    // Schalter
+    el('rect', { 'class': 'halo', x: X(SW.wall), y: Y(y + SW.half_int + SW.halo), width: (SW.depth + SW.halo - SW.wall) * DS, height: 2 * (SW.half_int + SW.halo) * DS }, g);
+    el('rect', { 'class': 'swf', x: X(-SW.flange_t), y: Y(y + SW.flange_l / 2), width: SW.flange_t * DS, height: SW.flange_l * DS }, g);
+    el('rect', { 'class': 'sw', x: X(0), y: Y(y + SW.body_l / 2), width: SW.body_depth * DS, height: SW.body_l * DS }, g);
+    var pe = SW.body_depth + SW.pin_len, pn = y + SW.pin_pitch / 2, ps = y - SW.pin_pitch / 2;
+    [pn, ps].forEach(function (py) { el('line', { 'class': 'pin', x1: X(SW.body_depth), x2: X(pe), y1: Y(py), y2: Y(py) }, g); });
+    var cx = CABX;
+    var tap = Math.min(CAB1, Math.max(CAB0, y));
+    var ye = Math.min(eb[3], Math.max(eb[2], y));
+    el('polyline', { 'class': 'wire', points: [X(pe) + ',' + Y(pn), X(pe + 2) + ',' + Y(pn), X(pe + 2) + ',' + Y(tap), X(cx) + ',' + Y(tap)].join(' ') }, g);
+    el('polyline', { 'class': 'wire', points: [X(pe) + ',' + Y(ps), X(12) + ',' + Y(ps), X(12) + ',' + Y(ye)].join(' ') }, g);
+    var t = el('text', { 'class': 'hl', x: X(-SW.flange_t) - 4, y: Y(y) + 4, 'text-anchor': 'end' }, dt); t.textContent = 'y ' + fx(y);
+    t = el('text', { 'class': 'lbl', x: X(DX1) - 4, y: Y(y1) + 14, 'text-anchor': 'end' }, dt); t.textContent = 'Ausschnitt ±30 mm, 8 : 1';
+    // Maßlinie Einbautiefe
+    var ym = Y(y + SW.flange_l / 2) - 14;
+    el('line', { 'class': 'dim', x1: X(0), x2: X(SW.depth), y1: ym, y2: ym }, dt);
+    t = el('text', { 'class': 'lbl', x: X(0), y: ym - 4 }, dt); t.textContent = 'Tiefe ' + fx(SW.depth);
+    // Draht
+    var L1 = Math.abs(y - tap) + (cx - pe) + 10, L2 = Math.abs(y - ye) + Math.abs(pe - 12) + 10;
+    return { L1: L1, L2: L2 };
+  }
+
+  // ---------------- Auswertung
+  function over(y) {
+    var o = D.over[Math.round(y / STEP)] || [];
+    return o.map(function (k) { return NAMES[k] || ''; });
+  }
+  function update() {
+    var y = state.y, c = codes(y), s = sev(y);
+    $('ysl').value = y; $('ynum').value = y;
+    drawStrip(); drawPlateSwitch();
+    var wires = render_detail();
+    var v = $('verdict');
+    v.className = 'verdict ' + s;
+    v.textContent = s === 'g' ? 'Passt: frei, mit mehr als 2 mm Luft rundherum.' : s === 'y' ? 'Passt mit Warnung: mindestens ein Teil ist näher als 2 mm.' : 'Geht so nicht: der Schalterraum kollidiert.';
+    var ul = $('msgs'); ul.innerHTML = '';
+    c.forEach(function (code) {
+      var parts = code.split(':'), t = TEXT[parts[0]];
+      if (!t) return;
+      var txt = parts[1] === 'r' ? t[0] : t[1];
+      if (!txt) return;
+      var li = document.createElement('li'); li.className = parts[1]; li.textContent = txt; ul.appendChild(li);
+    });
+    if (SW.margin >= 0 && y + SW.half_int > FY[0] && y - SW.half_int < FY[1]) {
+      var li = document.createElement('li'); li.className = 'i';
+      li.textContent = 'Hinweis: Neben dem Fach bleiben ' + fx(SW.margin) + ' mm Luft zwischen Draht und Fach.'; ul.appendChild(li);
+    }
+    if (!ul.firstChild) {
+      var l0 = document.createElement('li'); l0.className = 'i'; l0.textContent = 'Keine Konflikte gefunden.'; ul.appendChild(l0);
+    }
+    var f = $('facts'); f.innerHTML = '';
+    function row(a, b) { var dt1 = document.createElement('dt'), dd = document.createElement('dd'); dt1.textContent = a; dd.textContent = b; f.appendChild(dt1); f.appendChild(dd); }
+    var ov = over(y);
+    row('Darüber in der Platte', ov.length ? ov.join(', ') : 'kein Gebäude (Rand)');
+    row('Roter Draht, Kabel → Schalter', 'ca. ' + Math.round(wires.L1) + ' mm');
+    row('Roter Draht, Schalter → INA226', 'ca. ' + Math.round(wires.L2) + ' mm' + (state.ig ? ' (Box dort, wo sie jetzt liegt)' : ''));
+    row('Abstand zur Südkante', fx(y - SW.flange_l / 2) + ' mm');
+  }
+  function set(y) { state.y = clampY(y); update(); }
+  function search(dir, level) {
+    var y = state.y + dir * STEP, lim = dir > 0 ? YMAX : YMIN;
+    while (dir > 0 ? y <= lim : y >= lim) {
+      var s = sev(y);
+      if (s === 'g' || (level === 1 && s !== 'r')) return y;
+      y += dir * STEP;
+    }
+    return null;
+  }
+  function jump(dir) {
+    var y = search(dir, 0);
+    if (y === null) y = search(dir, 1);
+    if (y === null) { $('verdict').textContent = 'In dieser Richtung gibt es keine freie Lage mehr.'; return; }
+    set(y);
+  }
+  $('ysl').addEventListener('input', function (e) { set(parseFloat(e.target.value)); });
+  $('ynum').addEventListener('change', function (e) { var v = parseFloat(e.target.value); if (!isNaN(v)) set(v); });
+  $('bS').addEventListener('click', function () { jump(-1); });
+  $('bN').addEventListener('click', function () { jump(1); });
+  $('bA').addEventListener('click', function () { set(SW.y0); });
+  $('bSS').addEventListener('click', function () {
+    var y;
+    for (y = YMIN; y <= YMAX; y += STEP) { if (sev(y) !== 'r') { set(y); return; } }
+  });
+  $('ig').addEventListener('change', function (e) { state.ig = e.target.checked; update(); });
+  var dragging = false;
+  function toY(ev) {
+    var pt = pl.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    var p = pt.matrixTransform(pl.getScreenCTM().inverse());
+    return PL - (p.y - OY) / S;
+  }
+  pl.addEventListener('pointerdown', function (ev) {
+    var pt = pl.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    var p = pt.matrixTransform(pl.getScreenCTM().inverse());
+    if (p.x > PX(24)) return;                       // nur Leiste, Wand und der Streifen bis zum Fach
+    dragging = true; pl.setPointerCapture(ev.pointerId); set(toY(ev)); ev.preventDefault();
+  });
+  pl.addEventListener('pointermove', function (ev) { if (dragging) set(toY(ev)); });
+  pl.addEventListener('pointerup', function () { dragging = false; });
+  pl.addEventListener('pointercancel', function () { dragging = false; });
+  $('bA').textContent = 'Ausgangslage (' + fx(SW.y0) + ')';
+  drawPlateStatic();
+  update();
+})();
+</script>
+
+
+<div class="row">
+  <section class="sheet">
+    <h2>Schnitt durch die Schalterachse, 13 : 1</h2>
+    <p>Außenwand links, Schnitt quer zur 13-mm-Seite. Die Haken sitzen laut Foto an den beiden Enden der 13-mm-Seite, im Schnitt also seitlich nicht zu sehen. Sie fassen hinter die 1.2 mm dünne Wand am Loch, die Innentasche (17.7 lang) gibt ihnen Platz zum Ausfedern.</p>
+    <div class="scroll"><svg viewBox="0 0 498.0 318.2" role="img" aria-label="Schnitt durch Rückwand und Schalter"><polygon class="wall" points="150.0,262.2 181.2,262.2 181.2,227.1 165.6,227.1 165.6,207.6 150.0,207.6"/><polygon class="wall" points="150.0,90.6 165.6,90.6 165.6,71.1 181.2,71.1 181.2,36.0 150.0,36.0"/><rect class="wall" x="181.2" y="246.6" width="260.0" height="15.6"/><rect class="plate" x="150.0" y="24.0" width="312.0" height="12"/><text class="lbl" x="462.0" y="20.0" text-anchor="end">Oberplatte</text><rect class="swf" x="134.4" y="84.1" width="15.6" height="130.0"/><rect class="sw" x="150.0" y="97.1" width="117.0" height="104.0"/><polygon class="sw" points="134.4,120.5 95.4,133.5 95.4,188.1 134.4,188.1"/><line class="pin" x1="267.0" x2="358.0" y1="136.1" y2="136.1"/><path class="wire" d="M 345.0 136.1 q 40 0 60 30"/><line class="dim" x1="150.0" x2="165.6" y1="276.2" y2="276.2"/><text class="lbl" x="150.0" y="290.2">Wand am Loch 1.2</text><line class="dim" x1="150.0" x2="410.0" y1="304.2" y2="304.2"/><text class="lbl" x="280.0" y="315.2" text-anchor="middle">Einbautiefe ab Außenfläche ≈ 20.0</text><text class="lbl" x="89.4" y="153.1" text-anchor="end">außen</text><text class="lbl" x="196.8" y="65.1">Innentasche 17.7 × 12.0, 1.2 tief</text></svg></div>
+  </section>
+  <section class="sheet">
+    <h2>Westwand von außen, 11 : 1</h2>
+    <p>Wand 17.4 hoch, Frontplatte 10 hoch. Langseite waagerecht: Stehend (13.7 hoch) blieben nur 1.8 mm Wand oben und unten. Norden liegt links.</p>
+    <div class="scroll"><svg viewBox="0 0 524.0 267.4" role="img" aria-label="Westwand von außen mit Schalterausschnitt"><rect class="wall" x="48.0" y="40.0" width="440.0" height="191.4"/><rect class="pocket" x="170.7" y="69.7" width="194.7" height="132.0"/><rect class="swf" x="185.5" y="80.7" width="165.0" height="110.0" fill-opacity=".55"/><rect class="hole" x="192.7" y="86.2" width="150.7" height="99.0"/><line class="dim" x1="192.7" x2="343.4" y1="241.4" y2="241.4"/><text class="lbl" x="268.0" y="254.4" text-anchor="middle">Loch 13.7</text><line class="dim" x1="498.0" x2="498.0" y1="86.2" y2="185.2"/><text class="lbl" x="502.0" y="139.7">9.0</text><line class="dim" x1="38.0" x2="38.0" y1="40.0" y2="231.4"/><text class="lbl" x="34.0" y="139.7" text-anchor="end">17.4</text><text class="lbl" x="268.0" y="61.7" text-anchor="middle">Frontplatte 15 × 10 liegt außen auf</text></svg></div>
+  </section>
+</div>
+
+<section class="sheet">
+  <h2>Warum dort</h2>
+  <table>
+    <tr><th>Stelle</th><th>Urteil</th></tr>
+    <tr><td>Westwand, y = 40.0</td><td><b>Vorschlag.</b> Gegenüber dem Paulinum, von außen erreichbar, ohne Ausbuchtung: Der Schalter braucht 20.0 mm Tiefe; der Streifen bis zum Fach ist 10.4 mm breit, deshalb geht er nur südlich vom Fach (y unter 85.4). Das Kabel liegt im Kanal bei x = 77.4, die Elektronikbox bei x 47.4 bis 107.4.</td></tr>
+    <tr><td>Ostwand (Paulinum-Seite)</td><td>Entfällt nach deiner Vorgabe (Seite gegenüber dem Paulinum); der Kabelkanal liegt im aktuellen Layout auf dieser Seite (x = 77.4).</td></tr>
+    <tr><td>Südwand</td><td>Nicht geprüft; nicht die Seite gegenüber dem Paulinum.</td></tr>
+    <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
+  </table>
+  <p class="note"><b>Stand:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist 2.4 mm dick, am Loch nur 1.2 mm (Tasche 1.2 tief, drei Linien). Mit dem Probeteil T2 hat sich der Schalter sehr gut einsetzen lassen und hält sehr fest; die Werte sind bewährt und stehen in <code>plug/power/params.py</code>. Die Brücke über dem Loch war sauber. Offen sind der Einbau in den echten Unterkasten und die Hakenspanne.</p>
+</section>
+
+<section class="sheet">
+  <h2>Maße und Maßkette</h2>
+  <div class="scroll"><table>
+    <tr><th>Größe</th><th>Wert in mm</th><th>Status und Herkunft</th></tr>
+    <tr><td>Kasten (verschwindet in der Wand), B × L</td><td class='n'>8.0 × 13.0</td><td><span class='st st-M'>M</span>  vom Nutzer grob gemessen; Händler: Ausschnitt 13,5 × 8,5 bis 9</td></tr><tr><td>Frontplatte B × L (Rand etwa 1 je Seite)</td><td class='n'>10.0 × 15.0</td><td><span class='st st-M'>M</span>  Nutzer; passt zur Bauform 10 × 15 (KCD11)</td></tr><tr><td>Loch in der Wand</td><td class='n'>13.7 × 9.0</td><td><span class='st st-B'>B</span>  bewährt mit T2 (13,6 × 8,6 in T1 war sehr stramm, jetzt +0,1 horizontal und +0,4 vertikal); Händler nennen 13,5 × 8,5 bis 9</td></tr><tr><td>Wand am Loch</td><td class='n'>1.2</td><td><span class='st st-B'>B</span>  bewährt mit T1 und T2 (Nutzer: hält sehr fest); Hakenabstand bleibt nachzumessen</td></tr><tr><td>Außenwand sonst, Innentasche</td><td class='n'>2.4 / 17.7 × 12.0 × 1.2</td><td><span class='st st-E'>E</span>  Tasche von innen, damit die Haken ausfedern können</td></tr><tr><td>Höhe der Wand außen / Schaltermitte</td><td class='n'>17.4 / 8.7</td><td><span class='st st-A'>A</span>  Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten 17.4 = 32.0), Frontplatte 10 hoch lässt je 3.7 Rand</td></tr><tr><td>Lage auf der Platte</td><td class='n'>Westwand, y = 40.0</td><td><span class='st st-E'>E</span>  Wunsch des Nutzers: südlich vom Fach (Fach ab y = 92.4), die Elektronikbox liegt weiter östlich (x 47.4 bis 107.4, y 53.4 bis 88.4)</td></tr><tr><td>Einbautiefe ab Außenfläche</td><td class='n'>≈ 20.0</td><td><span class='st st-A'>A</span>  Kasten 9.0 + Pins 7.0 (aus Foto) + 4.0 Lötstelle und Biegung</td></tr><tr><td>Platz bis zum Fach (Westkante x = 10.4)</td><td class='n'>10.4 frei: nur südlich vom Fach (y unter 85.4)</td><td><span class='st st-A'>A</span>  Streifen westlich des Fachs; Stützen, Zapfen und Dockzonen sind bei y = 40.0 frei</td></tr>
+  </table></div>
+  <p>Status: M gemessen, A abgeleitet, S geschätzt, E Entscheidung, wie im Logbuch. Der Händler-Ausschnitt 13,5 × 8,5 bis 9 stammt aus Angeboten für den KCD11 (<a href="https://makerselectronics.com/product/kcd11-101-on-off-switch-250v-3a/">Makers Electronics</a>, <a href="https://www.ebay.com/p/13026640396">eBay</a>). Eine Plattenstärke für den Einschnapp-Sitz steht dort nicht. Lage der Teile aus `plug/power/build_concept.py` (Stand 1:1300, Fach an der Nordkante, Spiegelung sgn −1).</p>
+</section>
+
+<section class="sheet">
+  <h2>Verdrahtung</h2>
+  <div class="circ">Powerbank USB  ──rot (+5 V)──▶ [ Schalter ] ──▶ INA226 VIN+ ──(Shunt)── VIN− ──▶ ESP32 und LEDs
+Powerbank USB  ──schwarz (GND)────────────────────────▶ INA226 GND / gemeinsame Masse</div>
+  <p>Der Schalter liegt vor dem Shunt, damit der INA226 beim Ausschalten stromlos ist. Auf dem Schalter steht 3 A bei 250 V AC; bei 5 V und höchstens 2,1 A (Powerbank) ist das reichlich. Das Kabel wird im Kanal bei y ≈ 95 aufgetrennt, der rote Draht läuft zum Schalter und von dort zur Elektronik. Lötstellen mit Schrumpfschlauch isolieren.</p>
+</section>
+
+<section>
+  <h2 style="margin-bottom:12px">Entscheidungen</h2>
+  <div class="cards">
+    <div class="card"><h3>1. Lage entlang der Westwand</h3>
+      <ul><li><b>A</b> y = 40.0, südlich vom Fach (Wunsch des Nutzers)</li><li>Frei (grün) sind laut Rechnung: y 30.5 bis 49.5, y 70.5 bis 85.0. Weiter nördlich liegt das Fach im Weg.</li></ul>
+      <div class="pick">Vorschlag: A</div></div>
+    <div class="card"><h3>2. Loch</h3>
+      <ul><li><b>13.7 × 9.0</b></li><li>Wand am Loch 1.2 mit Innentasche 1.2</li></ul>
+      <div class="pick">Loch und Wand bewährt (T2): 13.7 × 9.0, Wand 1.2</div></div>
+    <div class="card"><h3>3. Oberkante des Lochs</h3>
+      <ul><li><b>Brücke</b> über 13.7 mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
+      <div class="pick">Brücke bewährt: in T2 sauber ohne Stützen</div></div>
+  </div>
+</section>
+
+<section class="sheet">
+  <h2>Bitte nachmessen (Schieblehre)</h2>
+  <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+    <li>Abstand von der Unterseite der Frontplatte bis zur Hakenkante: das ist die maximale Wandstärke, in die der Schalter einrastet.</li>
+    <li>Spanne über die beiden Haken an der 13-mm-Seite: Sie muss größer sein als das Loch (13.7), sonst hält der Schalter nicht.</li>
+    <li>Kasten genau (B × L) und Frontplatte genau (B × L), Dicke der Frontplatte.</li>
+    <li>Tiefe des Kastens hinter der Frontplatte und Länge der Pins.</li>
+    <li>Pinabstand und Pinbreite (Lötfahne oder 4,8-mm-Flachstecker?).</li>
+  </ul>
+</section>
+
+<section class="sheet">
+  <h2>Probeteile T1 und T2 (gedruckt)</h2>
+  <p><b>T1</b> (Loch 13,6 × 8,6, Wand am Loch 1,2): passt, aber sehr stramm. <b>T2</b> (Loch 13.7 × 9.0, horizontal +0,1, vertikal +0,4, Wand weiter 1.2, Tasche 17.7 × 12.0): <b>lässt sich sehr gut einsetzen und hält trotzdem sehr fest.</b> Damit sind Loch, Wand und Tasche bewährt.</p>
+  <p>Beide sind ein Wandstück 24.0 × 17.4 × 2.4 mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen 6.0 mm tief (Loch ab z = 4.2 über dem Bett). STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code>, erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>; der Satz ist eingefroren in <code>plug/logbook/rounds/r9_schalterprobe/</code>.</p>
+</section>
+</main>

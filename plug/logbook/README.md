@@ -20,6 +20,7 @@ Runden: [r0 Passproben und Probestück](rounds/r0_fitprobes/summary.md) ·
 [r4 Steckprobe 2 (gedruckt, ausgewertet)](rounds/r4_steckprobe2/summary.md) ·
 [r5 Fachprobe Powerbank (gedruckt, ausgewertet)](rounds/r5_fachprobe/summary.md) ·
 [r8 Passform Hochhaus (gedruckt, ausgewertet)](rounds/r8_passform_hochhaus/summary.md) ·
+[r9 Schalterprobe Hauptschalter (gedruckt, ausgewertet)](rounds/r9_schalterprobe/summary.md) ·
 [r7 Steckplatte 1:1300 (gedruckt, Rückmeldung)](rounds/r7_steckplatte/summary.md)
 
 ## Begriffe

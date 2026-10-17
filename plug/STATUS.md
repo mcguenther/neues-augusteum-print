@@ -74,6 +74,7 @@ Chat-Runden unten ist es Runde 2 (= „v4“) und Runde 3 (= „v5“). Die Spal
 Commit-Nachrichten und Code-Kommentare sind dabei nicht ganz konsistent (z. B. nennt Commit `013b5af` „Passprobe v5“
 für einen Stand vor der heutigen Runde 3); die Tabelle unten folgt dem Chat.
 
+- **2026-10-17, r9 Schalterprobe Hauptschalter (gedruckt, ausgewertet):** Wippenschalter KCD11 in 1,2 mm Wand: T1 (Loch 13,6 × 8,6) sehr stramm, T2 (13,7 × 9,0) „sehr gut einzusetzen und hält sehr fest“, Werte in `plug/power/params.py` (`SW_*`). Siehe `logbook/rounds/r9_schalterprobe/summary.md`, Lehre L46, Doku `docs/wippenschalter-kcd11.md`. Loch und Tasche sind im Unterkasten-Generator (`build_concept.switch_cut`), Prüfung `python3 -m plug.power.check_switch`.
 - **2026-10-17, r8 Passform Hochhaus (gedruckt, ausgewertet):** Stummel (25 mm über der Platte, Fuß-Fase 2,0, Spiel 0,10) und Kassette V2R: Fase und Kassette gut, Spiel 0,10 bei großem Umriss zu eng (nur mit Kraft, sehr fest); **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)**. Siehe `logbook/rounds/r8_passform_hochhaus/summary.md`, Lehren L43 bis L45.
 
 ## 3. Passprobe-Ergebnisse und Herkunft der Konstanten
@@ -290,6 +291,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
+| Plan Hauptschalter Westwand | `plug/power/plan_switch.html` | https://claude.ai/artifact/1B2dQEZPG32R1xqXzWnG16 |
 | Innenhof-Einsatz: Original gegen neu (Grundrisse, Höhenplan, Gang und Treppen, Schnitte, 3D Mulde und Stecker) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
 | ESP32-Pinout (WROOM-32, 6 Docks, INA226 und 1,3″-OLED am I²C-Bus, Strompuls-Last GPIO14, ESPHome-Skizze, Pins zum Meiden, Schaltung) | `plug/power/pinout.html` | https://claude.ai/artifact/WnrSS5r9uZcTFur5SPE3oE |
 
