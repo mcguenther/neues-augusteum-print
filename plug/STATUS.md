@@ -283,6 +283,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
 | Steckplatte Änderungsvorschau (3D, neu und gedruckt) | `plug/views/campus/view.html` | https://claude.ai/artifact/K9Bv3YubjhJxxokDKZ11og |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
+| Plan Display-Gebäude (OLED, INA226, Lage am Ostrand, Entwürfe E1 bis E3) | `plug/display/plan.html` | https://claude.ai/artifact/AdGcLrXcg6yQhcpZGxymrS |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

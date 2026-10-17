@@ -55,6 +55,7 @@ Aufrufe (aus dem Repo-Wurzelverzeichnis, die Ausgabe muss `dicht=True` und „ke
 | `python3 -m plug.power.build_plan_dock` (ca. 5 s) | Plan Test-Dock mit durchgehendem Steckerraum (Schnitt, Unterseite, Maßkette, Entscheidungskarten) `plug/power/plan_dock.html`; Werte in `PROP` der Datei, STL erst nach dem Abnicken |
 | `python3 -m plug.power.build_dock` (ca. 2 min) | Test-Dock flache Unterseite (Mini-Oberplatte ohne Tasche, Stufe und Support, zwei Sätze Füße 3,5 und 2,5), Prüfbericht, README, ZIP nach `stl/steckmodul_testdock/`, Bilder nach `vorschau/steckmodul_testdock/` |
 | `python3 -m plug.power.build_feedback_dock` | Testbogen Test-Dock (Leiste ankleben, Stecken, Halt des Klebers, Luft, Zapfen) `plug/power/feedback_dock.html` |
+| `python3 -m plug.display.build_plan [--cache datei.json]` (ca. 30 s, mit Cache 3 s) | Plan Display-Gebäude (OLED 1,3″ mit INA226, steckbare Stele am Ostrand der Platte 1:1300; Entwürfe E1 kompakt, E2 Display vorn, E3 Pult, Lagekarte mit Schieber, Schnitte, Schaltbild, Entscheidungskarten) `plug/display/plan.html`; Werte in `plug/display/params.py` (Modulmaße geschätzt, vor dem Bau messen), Geometrie der Lage in `plug/display/layout.py`, Zeichnungen in `plug/display/figures.py`; noch keine STL |
 | `python3 -m plug.build_all [--skip-institute]` | alles nacheinander |
 | `python3 -m plug.check [--skip-institute]` | führt die Generatoren aus und bricht ab, wenn eine STL nicht dicht ist oder eine Kollision gemeldet wird |
 
