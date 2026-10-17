@@ -190,6 +190,40 @@ def _xcyl(r, x0, x1, y, z, n=24):
     return c.translate([lo - bb[0], y, z])
 
 
+def _xcone(r_lo, r_hi, x0, x1, y, z, n=24):
+    """Kegelstumpf mit Achse in x: Radius r_lo bei x0 (kleineres x), r_hi bei x1."""
+    c = m3d.Manifold.cylinder(x1 - x0, r_lo, r_hi, n).rotate([0, 90, 0])
+    bb = c.bounding_box()
+    return c.translate([x0 - bb[0], y, z])
+
+
+def peg_centres(d):
+    """Lage der vier Zapfen (y, z) = Befestigungslöcher des Moduls."""
+    hz = [d["mb"] + P["hole_edge"], d["mb"] + P["hole_edge"] + P["hole_dy"]]
+    hy = [-P["hole_dx"] / 2, P["hole_dx"] / 2]
+    return [(y, z) for y in hy for z in hz]
+
+
+def peg_hole(d, y, z):
+    """Sackloch in der Rückwand von der Taschenrückseite aus, mit Einführfase am Eingang."""
+    r, x0 = D.PEG_HOLE_D / 2, d["x_slot0"]
+    return _xcyl(r, x0 + 0.05, x0 - D.PEG_HOLE_T, y, z) + _xcone(r, r + D.PEG_HOLE_CH, x0 - D.PEG_HOLE_CH, x0 + 0.05, y, z)
+
+
+def peg(d, y, z, dia=None):
+    """Zapfen der Frontblende von der Rückseite der Blende bis kurz vor den Grund des Sacklochs, Spitze gefast."""
+    r = (dia or D.PEG_D) / 2
+    x_tip = d["x_slot0"] - D.PEG_HOLE_T + D.PEG_TIP_GAP
+    return _xcyl(r, d["x_blende"] + 0.05, x_tip + D.PEG_TIP_CH, y, z) + _xcone(r - D.PEG_TIP_CH, r, x_tip, x_tip + D.PEG_TIP_CH + 0.01, y, z)
+
+
+def make_blende(d, dia=None):
+    """Frontblende (Weltlage) mit Sichtfenster und vier Zapfen vom Durchmesser dia (Standard PEG_D)."""
+    wy = P["aa_w"] / 2 + D.WINDOW_MARGIN
+    blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"]) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, d["wb"], d["wt"])
+    return blende + g.union([peg(d, y, z, dia) for y, z in peg_centres(d)])
+
+
 def lid_frame(d):
     """Punktfunktion P(u, v) in (x, z): u entlang der Schräge vom oberen Ende (Kopfdach) nach unten, v von außen (0) nach innen (Deckeldicke)."""
     pts, (nx, nz) = lid_poly(d)
@@ -233,7 +267,7 @@ def parts(d=None):
     foot = chamfered_prism(fp, d["foot"], d["z_hb"] + 1.0, ch_edges)
     body = env + foot
     # Modultasche: von vorn offen, Tiefe = Modul plus Spiel, Höhe bis unter das Kopfdach
-    hw = P["pcb_w"] / 2 + D.CLR
+    hw = P["pcb_w"] / 2 + D.CLR_W
     pocket = g.box(d["x_slot0"], 0.05, -hw, hw, d["mb"], d["mb"] + P["pcb_h"] + D.CLR)
     # Kabelfenster in der Rückwand mit gerundeten Ecken (Pins und Header gehen hindurch)
     win = window_poly(d)
@@ -269,21 +303,16 @@ def parts(d=None):
     # die Öffnung im Körper reicht von der Schrägwand bis in die Kammer (Kammer ist darunter schon frei)
     front_rebate = g.box(d["x_blende"], 0.1, -d["W"] / 2 - 0.1, d["W"] / 2 + 0.1, d["z_hb"] - 0.1, d["z_top"] + 0.1)      # die Frontblende steht vor dem Körper
     # Sacklöcher für die Zapfen der Frontblende (Lage der Befestigungslöcher des Moduls)
-    hz = [d["mb"] + P["hole_edge"], d["mb"] + P["hole_edge"] + P["hole_dy"]]
     hy = [-P["hole_dx"] / 2, P["hole_dx"] / 2]
-    peg_holes = g.union([_xcyl(D.PEG_HOLE_D / 2, d["x_slot0"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T, y, z) for y in hy for z in hz])
+    peg_holes = g.union([peg_hole(d, y, z) for y, z in peg_centres(d)])
     body = body - pocket - window - chamber - shaft - ledge - lid_cut - front_rebate - peg_holes
     lid = lid ^ env
     # Frontblende: liegt in Ost-Fläche, Fenster als Loch
-    wb, wt = d["wb"], d["wt"]
-    wy = P["aa_w"] / 2 + D.WINDOW_MARGIN
-    blende = g.box(d["x_blende"], 0.0, -d["W"] / 2, d["W"] / 2, d["z_hb"], d["z_top"]) - g.box(d["x_blende"] - 0.05, 0.05, -wy, wy, wb, wt)
-    pegs = g.union([_xcyl(D.PEG_D / 2, d["x_blende"] + 0.05, d["x_slot0"] - D.PEG_HOLE_T + 0.2, y, z) for y in hy for z in hz])
-    blende = blende + pegs
+    blende = make_blende(d)
     # Kassette (vereinfacht) und Modul
     cas = kassette_k0(d)
     mb = d["mb"]
-    glass_z0 = mb + P["pcb_h"] - 3.3 - P["panel_h"]
+    glass_z0 = mb + 6.7                                   # Glas sitzt 6,7 über der Pin-Kante (Foto, Platine 33,0 hoch: 33,0 - 3,3 - 23,0)
     pcb = g.box(d["x_pcb0"], d["x_pcb1"], -P["pcb_w"] / 2, P["pcb_w"] / 2, mb, mb + P["pcb_h"]) - \
         g.box(d["x_pcb0"] - 0.05, d["x_pcb1"] + 0.05, -P["notch_w"] / 2, P["notch_w"] / 2, mb + P["pcb_h"] - P["notch_d"], mb + P["pcb_h"] + 0.1)
     pcb = pcb - g.union([_xcyl(P["hole_d"] / 2, d["x_pcb0"] - 0.1, d["x_pcb1"] + 0.1, y, z) for y in (-P["hole_dx"] / 2, P["hole_dx"] / 2)

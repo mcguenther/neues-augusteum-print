@@ -15,7 +15,7 @@ from plug.testcase import variants as V
 # Glas vor der Platine 1,3 bis 1,7, Platine 1,0, Bauteile hinten bis 1,2 (Header 2,5). Keine Schieblehre vorhanden: Passprobe (Schlitz in drei Breiten) klärt es.
 DISP = dict(
     pcb_w=35.3,        # M  Platine, Breite (Foto ± 0,5; Schwestermodul -79: 35,5 ± 0,2)
-    pcb_h=33.0,        # M  Platine, Höhe (Foto ± 0,5; Schwestermodul -79: 32,0, andere Platine)
+    pcb_h=34.05,       # M  Platine, Höhe: Probedruck 1 (2026-10-17) passte das Modul nicht in die Tasche 33,3, es war etwa 0,75 höher (Foto sagte 33,0); Wert = 33,3 + 0,75, ± 0,3
     pcb_t=1.0,         # S  Platinendicke (Schwestermodul -79: 1,0)
     mod_t=4.5,         # S  Dicke Glas 1,7 + Platine 1,0 + Bauteile 1,2 = 3,9, ohne Header; mit 0,6 Reserve
     hdr_t=2.5,         # B  Kunststoff der Pinleiste hinten (Zeichnung -79: 2,5 max; die Pins ragen bis 11,3 von der Glasfront)
@@ -31,7 +31,7 @@ DISP = dict(
     panel_h=23.0,      # B
     aa_w=29.42,        # B  aktive Fläche 128 × 64 Pixel, Pixel 0,21 mm
     aa_h=14.70,        # B
-    aa_top=9.4,        # M  Abstand der aktiven Fläche vom Platinenrand gegenüber den Pins (Glas 3,3 + Rand 6,4 mit dem Controllerstreifen)
+    aa_top=10.45,      # M  Abstand der aktiven Fläche vom Platinenrand gegenüber den Pins (aus pcb_h − aa_bottom − aa_h; das Foto gab 9,4 bei Höhe 33,0)
     aa_bottom=8.9,     # M  Abstand der aktiven Fläche vom Platinenrand mit den Pins (Glas 7,0 darüber + Rand 1,9)
     vdd_max=3.5,       # B  VDD1 1,65 bis 3,5 V des Panels; ein SOT-23-Bauteil neben C9 ist vermutlich ein Regler (nicht belegt)
 )
@@ -39,7 +39,8 @@ WINDOW_MARGIN = 0.4    # E  Sichtfenster im Rahmen größer als die aktive Fläc
 
 # ---- Gehäuse
 WALL = 1.2             # E  Wand um Modul und Kassette (wie KASS_WALL)
-CLR = 0.3              # E  Spiel um die Platine
+CLR = 0.3              # E  Spiel um die Platine: Dicke (je Seite) und Höhe (oben)
+CLR_W = 0.4            # E  Spiel um die Platine in der Breite je Seite (Probedruck 1: Breite passte, Nutzer: 0,1 mm mehr Luft; vorher 0,3)
 BACK = 1.6             # E  Rückwand/Deckel hinter dem Modul
 CAVITY = 4.0           # S  Kabelkanal zwischen Modul und Kassette bei direkt angelöteten Adern (= CHAN; mit Dupont-Buchse auf der Pinleiste etwa 17: Entscheidungskarte)
 CAVITY_DUPONT = 17.0    # S  Kabelraum hinter dem Modul mit aufgesteckter Dupont-Buchse (Pinleiste 2,5 + Gehäuse etwa 14) und Biegung der Adern
@@ -96,7 +97,11 @@ FOOT_CH_FRONT = 2.0    # B  Fase vorn und an der Kodierecke: FUSS_FASE_T 2,0 (pl
 FOOT_CH_SIDE = 0.6     # E  Fase an den Längsseiten und hinten: Wand um den Schacht ist 1,2, bei 2,0 würde die Fase in den Schacht schneiden
 CLR_MULDE = 0.15       # E  Spiel Fuß zur Mulde je Seite (Vorgabe des Nutzers für den nächsten Probedruck, r8; 0,10 war an der kleinen Lehre bewährt)
 PEG_D = 2.4            # E  Zapfen der Frontblende durch die Befestigungslöcher des Moduls (Loch etwa Ø 3,0)
-PEG_HOLE_D = 2.6       # E  Sackloch in der Rückwand
-PEG_HOLE_T = 1.2       # E  Tiefe des Sacklochs in der Rückwand (Wand 1,6)
+PEG_D_B = 2.5          # E  Variante B für die Modulprobe: Zapfen ohne Spiel im Sackloch
+PEG_HOLE_D = 2.5       # E  Sackloch in der Rückwand; Probedruck 1: Ø 2,6 (0,1 je Seite) ließ den Zapfen nur gleiten, jetzt 0,05 je Seite wie die bewährte Kassette (0,06)
+PEG_HOLE_T = 2.6       # E  Tiefe des Sacklochs; Probedruck 1: 1,2, Zapfen griff nur 1,0 tief. Dahinter bleibt im Körper mindestens 1,0 Material
+PEG_TIP_CH = 0.4       # E  Fase an der Zapfenspitze (45°)
+PEG_HOLE_CH = 0.3      # E  Einführfase am Eingang des Sacklochs (45°)
+PEG_TIP_GAP = 0.2      # E  Luft zwischen Zapfenspitze und Grund des Sacklochs
 CHAMBER_FRONT_W = WIN_W   # E  Breite der Kammer am Kabelfenster, nach hinten bis auf die Breite des Schachts schmaler
 BUMP = dict(h=0.4, len=3.0, t=0.8, groove=0.5, u=(6.0, 22.0))   # E  Rastnasen an den Längskanten des Rückdeckels (je Seite zwei) und Nuten im Körper; u = Abstand vom oberen Ende entlang der Schräge

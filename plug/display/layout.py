@@ -16,7 +16,7 @@ BELOW_WINDOW = D.DISP["pcb_h"] - D.DISP["aa_top"] - D.DISP["aa_h"] - D.WINDOW_MA
 WIN_H = D.DISP["aa_h"] + 2 * D.WINDOW_MARGIN
 
 # Entwürfe: Mulde (Fuß) als Rechteck Breite × Tiefe, Lage der Pin-Reihe von der Ostkante der Mulde nach Westen
-W_FOOT = D.DISP["pcb_w"] + 2 * (D.CLR + D.WALL)                      # 30,3
+W_FOOT = D.DISP["pcb_w"] + 2 * (D.CLR_W + D.WALL)                    # Breite des Kopfs: Platine, Spiel, Wand
 SLAB = D.WALL + D.CLR + D.DISP["mod_t"] + D.CLR + D.BACK              # Wand vorn + Spiel + Modul + Spiel + Rückwand
 KD = D.KASS_D + 2 * D.WALL                                            # Kassettenfuß mit Wand in x-Richtung (Tiefe)
 DESIGNS = {
