@@ -30,7 +30,7 @@ Maßstab **1:1300** (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14
 
 **Ungetestet:** alle Planwerte der Festlegung stehen mit Test in [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“; `plug/parts.py` erst nach bestandenem Test ändern.
 
-**Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. **Stand 2026-10-16 abends: Steckplatte auf flache Unterseite umgestellt (14,6 mm, Pin-Löcher, keine Docks im Körper), siehe `scale.md`, Abschnitt „Umstellung auf flache Unterseite“.** Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
+**Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. **Stand 2026-10-17: Rückmeldung zum Druck eingetragen (`rounds/r7_steckplatte/`), Fase oben 1,5, Mulden-Einführfase 0,5, Schrift erhaben als Vorschlag umgesetzt, 3D-Seite zur Prüfung.** **Stand 2026-10-16 abends: Steckplatte auf flache Unterseite umgestellt (14,6 mm, Pin-Löcher, keine Docks im Körper), siehe `scale.md`, Abschnitt „Umstellung auf flache Unterseite“.** Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
 
 **To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.
 
