@@ -544,6 +544,7 @@ def switch_cut(minx, miny, bot, h=H0):
 
 
 LAST = {}
+WINDOW_OPEN = False  # True: Fenster in der Kante bis zur Oberkante offen (keine 45-mm-Brücke über dem Fenster), Batteriefach final
 FENCE_ON = True      # False: Unterkasten ohne Zaun um die Powerbank (Batteriefach final, plug/power/build_batteriefach.py)
 SW_DEPTH = 20.0      # Schalter ab Außenfläche: Kasten 9 + Pins 7 + Lötstelle 4 (plug/power/build_plan_switch.py, DEPTH_OUT)
 
@@ -640,7 +641,7 @@ def variant(scale, h=H0, dk=DK):
     solids += [G.extrude(r, zf - 0.01, deck) for r in posts]
     solids += [pin_solid_at(posts[i].centroid, deck, PP.PIN_PLAN, PP.CH_PIN) for i in pins]
     holes = [G.extrude(n, bot - 1, deck + 2) for n in notches] + [mouth_ch(n, bot, PP.CH_BED) for n in notches] + \
-            [G.extrude(fp["window"], zf, zf + PP.PB_T + 1.0)]
+            [G.extrude(fp["window"], zf, deck + 2.0 if WINDOW_OPEN else zf + PP.PB_T + 1.0)]
     uk = G.union(solids) - G.union(holes)
     sw = switch_cut(minx, miny, bot, h)
     uk = uk - sw["cut"]

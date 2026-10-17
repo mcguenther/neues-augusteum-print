@@ -64,10 +64,16 @@ def interface(v):
     )
 
 
-def main():
+def final_variant():
+    """Platte 1:1300 mit Unterkasten Stand 7 (ohne Zaun, ESP32-Fläche); `BC.LAST` hält danach den Kasten als Manifold (Rohkoordinaten)."""
     BC.FENCE_ON = False
+    BC.WINDOW_OPEN = True
     with BC.patched(PP, ESP_BOXES=PP.ESP_ZONES):
-        v = BC.variant(1300)
+        return BC.variant(1300)
+
+
+def main():
+    v = final_variant()
     meshes = v.pop("meshes")
     h = BC.H0
     ifc = interface(v)
