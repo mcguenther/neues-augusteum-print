@@ -7,12 +7,12 @@ Teile (Druckausrichtung, Bett z = 0):
       waagerechte Decken: z=32.0: 7 mm² (3.6 × 2.1); z=31.9: 6 mm² (3.6 × 3.8); z=31.7: 6 mm² (3.6 × 5.7)
       Lagenprüfung: Brücken 2.8 mm² (bis 0.2 mm), Kragstücke 24.7 mm² (bis 1.2 mm)
          krag bei z=32.1: 8 mm², Reichweite 1.2 mm, Mitte (-2.6, 0.0)
-  M2_blende_A_zapfen_2_4.stl   36.9 ×   38.3 ×   8.7 mm   1.62 cm³  dicht=True (Manifold: NoError)
-      waagerechte Decken: z=1.2: 15 mm² (0.4 × 38.3)
-      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 5.8 mm² (bis 0.2 mm)
-  M3_blende_B_zapfen_2_5.stl   36.9 ×   38.3 ×   8.7 mm   1.63 cm³  dicht=True (Manifold: NoError)
-      waagerechte Decken: z=1.2: 15 mm² (0.4 × 38.3)
-      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 5.8 mm² (bis 0.2 mm)
+  M2_blende_A_zapfen_2_4.stl   36.3 ×   38.3 ×   8.7 mm   1.47 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: keine
+      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 0.0 mm² (bis 0.0 mm)
+  M3_blende_B_zapfen_2_5.stl   36.3 ×   38.3 ×   8.7 mm   1.48 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: keine
+      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 0.0 mm² (bis 0.0 mm)
 
 Prüfung im Zusammenbau (Überschneidungsvolumen, mm³; muss 0 sein):
   Aufnahme und Modulplatine (35.30 × 33.80 in Tasche 35.94 × 34.10)                  0.000  ok
