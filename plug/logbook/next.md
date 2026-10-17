@@ -30,7 +30,7 @@ Maßstab **1:1300** (Platte 115,6 × 220,8 mm), Mulde überall 4 mm tiefer (F 14
 
 **Ungetestet:** alle Planwerte der Festlegung stehen mit Test in [`scale.md`](scale.md), Abschnitt „Ungetestete Planwerte“; `plug/parts.py` erst nach bestandenem Test ändern.
 
-**Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. **Stand 2026-10-16 abends: Steckplatte auf flache Unterseite umgestellt (14,6 mm, Pin-Löcher, keine Docks im Körper), siehe `scale.md`, Abschnitt „Umstellung auf flache Unterseite“.** Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
+**Umgesetzt (Planwerte, Steckplatte `python3 -m plug.campus`):** siehe `scale.md`, Abschnitt „Umgesetzt“. **Stand 2026-10-17: Rückmeldung zum Druck eingetragen (`rounds/r7_steckplatte/`), Fase oben 1,5, Mulden-Einführfase 0,5, Schrift erhaben als Vorschlag umgesetzt, 3D-Seite zur Prüfung.** **Stand 2026-10-16 abends: Steckplatte auf flache Unterseite umgestellt (14,6 mm, Pin-Löcher, keine Docks im Körper), siehe `scale.md`, Abschnitt „Umstellung auf flache Unterseite“.** Offen: Gebäude mit Fuß und Schacht, Kabelführung zwischen den Docks.
 
 **To-do (anderer Chat):** Gebäude im Generator als Hohlkörper bauen (Aufnahme für die Kassette, Lichtfenster); heute Vollkörper.
 
@@ -107,6 +107,20 @@ Steg-Anschlag 1,2 Luft, Zentrierzapfen Ø 4 / Loch 4,3, Kabelnische hinter den L
 
 Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die Gebäude zurückgestellt, bis der Maßstab feststeht. Danach: Probedruck (Kassetten V1/V2 plus Mini-Gebäude auf dem bisherigen L-Fuß), Werte nach `params.py`, STL, Testbogen. Offene Punkte: Adernweg V1, Blattdicke V2, Licht (Hotspot im schmalen Gebäude), Anschlagleiste im Schacht.
 
+## Hohlkörper-Gebäude (beschlossen und im Generator umgesetzt, Plan `plug/hollow/plan.html`)
+
+Beschlossen (2026-10-16): Wand und Dach 0,8 mm, unten offen, keine Lichtfenster; Decke glatt, wo sie höchstens 10 mm frei spannt, sonst 45°-Gewölbe (für alle Gebäude, bei denen es nicht gut passt); Nachtrag: das Gewölbe ist eine glatte 45°-Fläche von den Wänden bis zum First, ohne Stufen, Kanten nach unten, Brücke oben oder Taschen darüber (`hohl.FIRST = 0`; mit 10 statt 0 bliebe oben ein 10-mm-Streifen, siehe Tabelle im Plan); Ausgabe zusätzlich in `einzeln_hohl/` (alle Quellen und Maßstäbe, `--no-hohl` lässt sie weg); Fuß und Kassette getrennt (kommen aus `plug/`); Licht wie die Kassette liegt; Farbe **beide Versionen**: STL einfarbig hell und `_farbig.3mf` mit Fassadenfarben.
+Umsetzung: `hohl.py` (Verfahren), `generate.py` (`hohl_models`, `colour_hohl`), `fassaden.colour_mesh(ref=…)`; Studie, Ansichten (`views.py`, Bilder `vorschau/hohl/`) und Plan in `plug/hollow/`.
+
+Offen:
+1. **Lichtprobe** Wandstreifen 0,4 / 0,8 / 1,2 mit LED (Schritt L in Steckprobe 2): bestätigt oder ändert `hohl.WAND`.
+2. **Brückenprobe**: Mini-Gebäude mit Decke 10 mm Spannweite und einem Gewölbe, im selben Druck wie die Lichtprobe; die Gewölbe sind ungedruckt.
+3. **Fuß und Kassette in der Schale**: als Prototyp gebaut (2026-10-17, `python3 -m plug.buildings`, siehe `scale.md`, Abschnitt „Steckbare Hohlgebäude“); Gewölbe überarbeitet (Rohr als Stütze, Spalten gefüllt, zusammen −15 %), Füllungs-Empfehlung Gyroid 10 % dort; ungedruckt.
+4. Licht in hohen Gebäuden (City-Hochhaus 96 mm, Paulinum 39 mm) und durch farbige Wände: ungetestet.
+5. Slicer prüfen: 0,8-mm-Wände, `_farbig.3mf` mit bemalten Dreiecken (Innenflächen einfarbig).
+
+Zahlen (Laserscan 1:1500, glattes Gewölbe bis zum First): alle sechs Hohlkörper dicht; freie Spannweite vorher bis 30 mm (Hörsaalgebäude), nachher höchstens etwa 10 mm; vom Hohlraum bleiben Paulinum und City-Hochhaus 100 %, Institutsgebäude 91 %, Seminargebäude 83 %, Neues Augusteum 79 %, Hörsaalgebäude 59 % (mit 10-mm-Streifen oben: 100 / 99 / 100 / 92 / 80 %).
+
 ## Priorität 2
 
 | Thema | Idee | Bedingung |
@@ -123,5 +137,5 @@ Register und Maße aller Varianten: [`cassettes.md`](cassettes.md). Fit in die G
 - Federzunge in der Mulde: bei CLR 0,10 vielleicht unnötig; „wenn es sich anbietet, mitdrucken, keine Priorität“.
 - Heißkleber als Ausweg dokumentieren: Klecks Heißkleber auf die Winkelleiste, Stempel weglassen oder nachträglich abschneiden.
 - Nach bewährter Steckprobe: Werte in `plug/parts.py` übernehmen, Probestück und Institutsgebäude umbauen (kein Schieber mehr, Einpress-Kassette, Podest), Seiten neu veröffentlichen.
-- Licht durch die Wand (Lichtfenster) mit LED prüfen, sobald die LED sitzt.
+- Licht durch die Wand (Lichtfenster bzw. dünne Wand des Hohlkörpers) mit LED prüfen, sobald die LED sitzt.
 - Paket `plug/testcase/` in `plug/steckprobe/` umbenennen (nur, wenn gewünscht).

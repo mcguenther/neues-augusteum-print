@@ -534,11 +534,12 @@ Chronologie, Passprobe-Ergebnisse und offene Aufgaben: `plug/STATUS.md`.
 
 Die Ausgabe von `plug.dupont`, `plug.institute` und `plug.sample` muss je Teil `dicht=True` und „keine Kollisionen“ zeigen.
 
-## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 5)
+## 6. Grundplatte mit Powerbank, Unterkasten und Faden (Konzept, Stand 6)
 
 Stand: Konzept, nichts davon ist im Generator der Platte gebaut. Seite `plug/power/concept.html` (`python3 -m plug.power.build_concept`,
 rund 30 s: zwei Maßstäbe mit Draufsicht, 3D, Schnitten, Dock, Ecke, Fasen, Passmaßen, Testdrucken). Werte in `plug/power/params.py`; was aus der
 Steckprobe kommt, liest diese Datei aus `plug/testcase/params.py` und `build_plan2.PROP` (Regel 8 im Logbuch: neue Werte nicht in `parts.py`).
+**Stand 6 (2026-10-17, Sockelplatte):** Oberplatte = `plug.campus`-Steckplatte (flache Unterseite 14,6, Leiste aufgeklebt, keine Tasche/Nische/Steg), Laserscan-Grundrisse, Platte 115,6 × 220,8 mm, alle 6 Docks an den festgelegten Lagen (`scale.md`), darunter durchgehender Steckerraum 3,5 und die Powerbank im Unterkasten (17,4, zusammen 32,0 mm), Elektronik 60 × 35. Zahlen und Texte weiter unten (12,6, Nische, Dockzone, 114 × 223 mm, „Dock frei nur an …“) sind der Stand 5.
 Stand 4 folgte auf die Rückmeldung zu Stand 3 (Fasen, Maßstab, Lötenden, Faden). Stand 5: **Maßstab 1:1300 gesetzt** (Nutzer, aus Platzgründen; Seminargebäude und Institut notfalls zusammenlegen, kleinere Kassette im separaten Chat), Steckprobe 2 ist gebaut (`python3 -m plug.testcase.build2`, Testbogen `build_feedback2`).
 
 ### 6.1 Aufbau

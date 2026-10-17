@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Lösungsfindung 1:1300: interaktive Seite zur Lage der Powerbank und zu den freien Docks: plug/power/layout.html.
+"""ÜBERHOLT (2026-10-17): Seit der flachen Unterseite liegt die Powerbank unter den Docks, alle sechs Docks passen an den festgelegten Lagen; `--collect` läuft nicht mehr
+(`build_concept.variant` kennt nur noch 1:1300). Die Seite bleibt als Rückblick, nur `python3 -m plug.power.build_layout` ohne `--collect` baut sie neu.
+
+Lösungsfindung 1:1300: interaktive Seite zur Lage der Powerbank und zu den freien Docks: plug/power/layout.html.
 
 Zweistufig, weil die Rechnung lange dauert:
     python3 -m plug.power.build_layout --collect   # rechnet Daten (einige Minuten) nach plug/power/layout_data.json
@@ -30,6 +33,8 @@ WIDTHS = [13.62, 13.0, 12.4, 11.8, 11.2, 10.6, 10.0]      # Breite der Kassette 
 
 
 def poly(p, sh):
+    if p.geom_type == "MultiPolygon":          # Laserscan-Grundrisse sind teils mehrteilig: größten Teil zeichnen
+        p = max(p.geoms, key=lambda g: g.area)
     return [[round(x + sh[0], 2), round(y + sh[1], 2)] for x, y in list(p.exterior.coords)[:-1]]
 
 
@@ -60,17 +65,18 @@ def cand_list(cands, sh, cap=1400):
 def collect():
     t0 = time.time()
     s = 1000.0 / SCALE
-    m = G.osm_models(s)
-    fps = {k: v[1] for k, v in m.items()}
-    hof_solid, hof_fp, _ = BC.innenhof.model(s, list(fps.values()))
+    G.FAST = True                              # wie build_concept.variant: Laserscan-Grundrisse, F 14,2, Hof 6 mm
+    m = G.source_models("laserscan", s)
+    fps = {k: v[1] for k, v in m.items() if k in BC.TP.CASSETTE}
+    hof_solid, hof_fp, _ = BC.innenhof.model(s, list(fps.values()), BC.TP.HOF_DEPTH_T, BC.TP.HOF_CLR_T)
     sel = list(G.BUILDINGS)
     foot = unary_union([fps[b["slug"]] for b in sel])
     outline = G.plate_outline(unary_union([foot, hof_fp]))
     minx, miny, maxx, maxy = outline.bounds
     sh = (-minx, -miny)
     inner = outline.buffer(-PP.UK_WALL, join_style=2)
-    pocket_fp = hof_fp.buffer(G.POCKET_CLEARANCE, join_style=2)
-    mulden = foot.buffer(PP.MULDE_CLR)
+    pocket_fp = BC.innenhof.flaeche_mm(list(fps.values()), s)
+    mulden = foot.buffer(BC.TP.OUTLINE_CLR_T)
     vs = BC.place_vs(outline, unary_union([mulden.buffer(BC.V["wall"]), pocket_fp.buffer(BC.V["wall"])]))
     vzones = [n["notch"].buffer(1.0) for n in vs] + [v["foot"].buffer(1.0) for v in vs]
     dk_half = dock_dk(12.0, 9.54)
@@ -90,7 +96,7 @@ def collect():
     width_rows, cand_sets = [], {}
     for w in WIDTHS:
         dk = dict(dk_half, kass_w=w)
-        c = BC.kass_candidates(fps, dk)
+        c = BC.kass_candidates(fps, dk, uniform=True)
         width_rows.append(dict(w=w, n={k: len(v) for k, v in c.items()}))
         cand_sets[w] = c
         print("Kassette %.2f: %s %.0f s" % (w, {k[:2]: len(v) for k, v in c.items()}, time.time() - t0), flush=True)

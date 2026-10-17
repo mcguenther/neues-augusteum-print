@@ -202,6 +202,7 @@ Die Generatoren, Seiten und Dokumente liegen im Paket `plug/` (englische Namen).
 | `plug/build/institute/` | gitignored, erzeugt | `gebaeude.stl` (4,9 MB), `data.json`, `view.html` (je etwa 5 MB); mit `python3 -m plug.build_all` neu erzeugen |
 | `plug/check.py`, `plug/build_all.py` | Hilfsskripte | prüfen bzw. alles neu erzeugen |
 | `plug/power/` | Konzept | `build_concept.py`, `concept.template.html`, `concept.html`: Powerbank Intenso XS5000 in der Platte (PLAN Kapitel 6) |
+| `plug/buildings.py` | Generator | steckbare Hohlgebäude zur Steckplatte 1:1300: Fuß 14,2, Boden, Schachtrohr, Aufnahme je Kassette (v4/V1RS/V2R), 45°-Anschlag und 45°-Dach, Prüfung Kollision/Platz/Brücken/Kragstücke; nach `stl/steckmodul_campus/gebaeude/` (Logbuch `scale.md`) |
 | `plug/PLAN.md`, `plug/STATUS.md` | handgeschrieben | Plan (Dupont, Institut, JST-Archiv) und diese Datei |
 | `plug/archive/jst/` | archiviert | JST-Variante: `jst.py`, `PLAN.md`, `view.template.html`, `build_view.py`, `view.html`, `data.json`, `stl/`, `preview/` (nicht gepflegt) |
 | `stl/steckmodul_dupont/`, `stl/steckmodul_institut/`, `stl/steckmodul_probe/` | Ausgabe, eingecheckt | STL, `README.txt` und ZIP des Probestücks (`gebaeude.stl` des Instituts nicht) |
@@ -269,6 +270,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
 | Entscheidungen Nachtdruck 2 | `plug/decision/page.html` | https://claude.ai/artifact/6JoAe2iL2YDrvqFVppF8Fo |
 | Kassette V2 (Höhe, Rücken-LED) | `plug/testcase/plan3.html` | https://claude.ai/artifact/RqSFYxH8ZggxvdjQY93nTe |
+| Hohlkörper-Gebäude (Plan) | `plug/hollow/plan.html` | https://claude.ai/artifact/MdFviu85xDhz3gUNth4QiS |
 | Testbogen Nachtdruck 2 | `plug/feedback/page_night2.html` | https://claude.ai/artifact/BFNzrL5xcJZBBbW3ULtvzz |
 | Planung Testfall Kassette | `plug/testcase/plan.html` | https://claude.ai/artifact/Y5FH7ahYKUr2DsKCUGw6KH |
 | Testbogen Testfall Kassette | `plug/testcase/feedback.html` | https://claude.ai/artifact/3TZghRTrEaS9ypnGfxyZKM |
@@ -281,6 +283,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Testbogen Fachprobe Powerbank | `plug/power/feedback_fach.html` | https://claude.ai/artifact/FKLje3Pq8eSphqzvaohz7W |
 | Testbogen Steckprobe 2 | `plug/testcase/feedback2.html` | https://claude.ai/artifact/W51dFmAeAUjF6gNUwPC3SB |
 | Maßstab 1:1300, Varianten, Muldentiefe | `plug/scale1176/page.html` | https://claude.ai/artifact/S3qGmVQRr9tAPNqm2NyLQx |
+| Steckplatte Änderungsvorschau (3D, neu und gedruckt) | `plug/views/campus/view.html` | https://claude.ai/artifact/K9Bv3YubjhJxxokDKZ11og |
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
@@ -323,7 +326,7 @@ und die Ordner `stl/steckmodul_*`, `vorschau/steckmodul_*` sind noch deutsch; di
    Institut und Seiten neu bauen (kein Schieber mehr, Einpress-Kassette, Podest).
 8. Die Vorgaben aus CLAUDE.md gelten weiter: nach Generatoränderungen `python3 -m plug.check`, Vorschaubilder im Chat zeigen,
    Commits mit dem Trailer.
-9. Grundplatte mit Powerbank (Konzept, Stand 5, Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
+9. Grundplatte mit Powerbank (Konzept, Stand 6 = Sockelplatte: Oberplatte aus `plug.campus` mit flacher Unterseite 14,6, Laserscan, Platte 115,6 × 220,8 mm, alle 6 Docks an den festgelegten Lagen, Powerbank im Unterkasten unter dem Steckerraum 3,5, Gesamtdicke 32,0, Elektronik 60 × 35; die folgenden Zahlen sind der ältere Stand 5 mit Tasche, Nische und OSM-Grundrissen; Maßstab **1:1300**): Oberplatte 12,6 über hohlem Unterkasten 14,6 (27,2 mm; nach r5 mit Luft 0,8, vorher 14,4 / 27,0), Werte der Steckprobe in `plug/power/params.py`.
    Fasen geprüft und im Modell (Fußfase 0,8, Muldenfase 1,0, Bettkanten 0,5). Maßstab 1:1300 (Nutzer, Platzgründe; Platte 114 × 223 mm, 8,5 mm Rand auf dem 24-cm-Hut). Die Kassette passt nur
    in 4 von 6 Gebäuden (nicht Seminargebäude, City-Hochhaus; Seminar und Institut notfalls zusammenlegen, Kassetten-Redesign im separaten Chat); bei 1:1300 und der halben Nische (12 × 9,5 mm, eine Öffnung, Nutzer) sind
    4 Docks frei, Elektronik 60 × 35 mm (mit der alten Nische 24 × 19 mm waren es 3 und 50 × 30). Dock mit Steg-Anschlag, keine Taste, kein Stößel; Powerbank-Lage Süd (4 Docks, nicht unter

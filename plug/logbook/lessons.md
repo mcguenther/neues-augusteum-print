@@ -7,6 +7,9 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 
 | Nr. | Beobachtung | Regel | Runde |
 |---|---|---|---|
+| L40 | Steckplatte: oben bildet sich ein Wulst über die letzten 5 bis 7 Schichten, Gegenstück zum Elefantenfuß unten (der durch die Bettfase 0,5 weg war) | Obere Außenkanten großer Platten mit Fase mindestens 1,5 mm (45°, in Stufen) versehen; die Fase muss tiefer sein als der Wulst (5 bis 7 Schichten) | r7 |
+| L41 | Öffnungen der Mulden ohne Fase: Zuquetschung befürchtet | Einführfase an jeder Mulden-Öffnung mindestens 0,5 mm, in Stufen bis über die Oberkante der Platte (endet sie darunter, bleibt ein Rest-Überhang) | r7 |
+| L42 | Gravierte Schrift und Nordpfeil auf der Steckplatte nicht lesbar (wie L01) | Beschriftung immer erhaben 0,6 mm, auch auf großen Platten | r7 |
 | L01 | Gravierte Schrift in schwarzem PLA kaum lesbar | Schrift **erhaben** (0,5 bis 0,6 mm), Rang als **Kerben** in einer Kante; nie in Passflächen (dort fehlt das Spiel) | r1, r2 |
 | L02 | Pin-Löcher auf der ersten Schicht schließen sich (Elefantenfuß); einzelne Löcher auch sonst zugequollen | Lochmündungen nie unfasst am Bett; Fase beidseitig (0,3, in dünnen Platten höchstens die halbe Dicke) | r0, r1, r3 |
 | L03 | Elefantenfuß etwa 0,2 mm; Fase 0,3 an Bettkanten half nur teilweise, mit 0,4 bleibt ein leichter Wulst | Bettkanten von Steckteilen anfasen (0,4), Schachteingang am Bett zugleich als Einführfase; nächster Test 0,5 | r1 bis r3 |
