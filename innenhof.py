@@ -46,6 +46,7 @@ ROOF_NZ = G.ROOF_NZ
 
 # Blockiger Umriss (Aussparung und Einsatz sind ein Klotz, keine Stege): Form und Treppen in data/innenhof.json, "form"
 HOF_UEBERMASS = 2.0     # m: OSM-Fläche wird um so viel vergrößert, damit sie bis an die Laser-Grundrisse der Gebäude reicht
+KRONE_ABZUG = 1.0       # mm: Kronenradius der Bäume wird um so viel verkleinert (Nutzer 17.10.: Kronen stoßen sonst beim Einsetzen an)
 HOF_MIN_BREITE = 4.0    # mm: Zungen und Zähne im Umriss, die schmaler sind, entfallen (Einsatz bricht dort, Aussparung wird zum Steg)
 
 # Teile, denen data/fassaden/08_innenhof.json Farben zuordnet
@@ -212,7 +213,7 @@ def denkmal(o, s, data):
 
 def baum(o, s):
     """Baum: Stamm + Krone als Drehkörper; unten Kegel mit 45° (stützenfrei druckbar)."""
-    R = o["krone_radius"] * s
+    R = max(o["krone_radius"] * s - KRONE_ABZUG, G.MIN_FEATURE)   # Kronen etwas kleiner, damit sie beim Einsetzen nicht an Gebäuden anstoßen
     top = o["hoehe"] * s
     zb = o["krone_unten"] * s
     r0 = max(o.get("stamm_radius", 0.2) * s, G.MIN_FEATURE / 2)
