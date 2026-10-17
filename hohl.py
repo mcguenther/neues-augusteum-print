@@ -17,6 +17,11 @@ Verfahren (je 0,4 mm Höhe eine Lage):
      45°-Flächen statt Lagenstufen). Weil jede Grundrissstelle eine Säule bis zur Decke ist, gibt es keine Taschen über dem Gewölbe.
   4. Den Hohlraum (nach unten offen) vom Volumenkörper abziehen und das Netz leicht vereinfachen (`VEREINFACHEN`).
 Die Kegelfläche wird auf einem Raster von `PX` mm gerechnet (OpenCV-Distanztransformation); die Wände bleiben exakt.
+
+Optionen (Standard aus, so nutzt sie `generate.py`; `plug/buildings.py` schaltet sie ein):
+  * stuetzen: weitere tragende Teile im Hohlraum mit Oberkante (Schachtrohr der Kassette); auch von dort steigen Kegel auf.
+  * umkreis: Kegel nur nahe ihrer Stütze wirken lassen (weniger Material, senkrechte Stufen statt glatter Decke).
+  * fuellen: Spalten im Hohlraum, die schmaler sind, werden Material.
 """
 import cv2
 import numpy as np
@@ -35,6 +40,7 @@ WINKEL = 45.0     # Grad, Neigung des Gewölbes gegen die Senkrechte (45 = Stand
 FIRST = 0.0       # mm, Breite des flachen Streifens oben im Gewölbe (0 = Gewölbe schließt in einem First, keine Brücke)
 RAND = 0.4        # mm, Gewölbe einer Decke greift in bis zu so viel höhere Decken daneben (mehr kostet viel Hohlraum, z. B. Hörsaalgebäude)
 BRUECKE = 10.0    # mm, so weit darf eine Decke ohne Gewölbe frei spannen (Abstand zur nächsten Stütze höchstens die Hälfte)
+FUELLEN = 0.0     # mm, Teile des Hohlraums, die schmaler sind, werden Material (Spalten zwischen Gewölben; 0 = aus, plug/buildings.py nutzt 2)
 VEREINFACHEN = 0.03  # mm, Netz nach dem Abziehen so weit vereinfachen (Manifold.simplify; hält die STL klein, bleibt dicht)
 SAME_AREA = 0.05  # mm², Lagen, die sich weniger unterscheiden, werden zu einer Platte zusammengefasst (hält die STL klein)
 
@@ -99,8 +105,14 @@ def _edt(zero):
     return cv2.distanceTransform(np.where(zero, 0, 1).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
 
 
-def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
-    """Kegelfläche des Gewölbes als Höhenfeld (mm) auf dem Raster, +inf wo kein Gewölbe wirkt. Liefert (Raster, hc, Ziel-Höhenfeld H)."""
+def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, stuetzen=None, umkreis=None):
+    """Kegelfläche des Gewölbes als Höhenfeld (mm) auf dem Raster, +inf wo kein Gewölbe wirkt. Liefert (Raster, hc, Ziel-Höhenfeld H).
+    stuetzen: weitere tragende Teile im Hohlraum [(Grundriss, Oberkante)], die vom Boden an gedruckt werden (z. B. das Schachtrohr der
+    Kassette); von ihrer Oberkante aus steigen ebenfalls 45°-Kegel auf, so wird jeder Raum von mehreren Seiten überwölbt.
+    umkreis: None = jeder Kegel wirkt überall (glatte Decke, nur Grate). Sonst wirkt der Kegel einer Stütze nur dort, wo sie höchstens
+    `umkreis` mm weiter weg ist als die nächste Stütze: Eine niedrige Stütze (Rohrkopf) überwölbt dann nur ihren eigenen Bereich, die
+    Wand daneben setzt höher an. Druckbar bleibt es (jeder Punkt fällt in 45° zu seiner Stütze ab); an den Grenzen entstehen senkrechte
+    Stufen in der Decke statt Grate."""
     R = Raster(secs[0][1].bounds, px)
     H = np.zeros((R.h, R.w), np.float32)                         # Oberkante des Ziel-Hohlraums je Pixel
     T = np.zeros((R.h, R.w), np.float32)                         # Oberkante des Materials je Pixel
@@ -110,32 +122,48 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
             H[R.mask(e)] = z1
     omega = H > 0                                                # Grundriss des Hohlraums
     anchor = (T > 0) & ~omega                                    # tragende Wände: Material vom Boden an
+    sup = np.zeros(H.shape, bool)                                # Stützen im Hohlraum (Schachtrohr)
+    for g, zt in stuetzen or []:
+        m = R.mask(g) & omega
+        anchor |= m
+        sup |= m
+        T[m] = np.floor(zt / step + 1e-6) * step                 # trägt bis zur Oberkante, abgerundet aufs Lagenraster (die Kegel starten
+                                                                 # auf dem Raster; aufgerundet bliebe ein Spalt über der Stütze)
     if not omega.any() or not anchor.any():
         return R, np.full(H.shape, np.inf, np.float32), H
-    src = np.where(anchor, 0, 1).astype(np.uint8)
-    d, lab = cv2.distanceTransformWithLabels(src, cv2.DIST_L2, 5, labelType=cv2.DIST_LABEL_PIXEL)
-    d = d * px
-    # Frei hängende Deckenstellen: weiter als BRUECKE/2 von allem, was mindestens eine Lage tiefer liegt (Wand oder tiefere Decke).
-    # Nur sie brauchen das Gewölbe; die übrigen Decken spannen höchstens BRUECKE weit und bleiben, wie sie sind.
-    # Je Höhe nur im Ausschnitt um die Pixel dieser Höhe rechnen: Liegt die nächste Stütze außerhalb, ist sie weiter weg als die
-    # Schwelle, und das Ergebnis ist dasselbe wie auf dem ganzen Raster.
-    frei = np.zeros(H.shape, bool)
-    thr = max(TOL, bruecke / 2)
-    for z in np.unique(H[omega]):
-        at = omega & (H == z)
-        b = _box(at, int(np.ceil(thr / px)) + 2)
-        lower = anchor[b] | (omega[b] & (H[b] <= z - step + 1e-4))
-        frei[b] |= at[b] & (_edt(lower) * px > thr)
-    # Je tragendem Pixel w: phi(w) = kleinster Wert von H - d über die frei hängenden Stellen in seinem Einzugsgebiet (höchstens die
-    # Höhe der Wand selbst) und tau(w) = höchste dieser Decken. Wände ohne frei hängende Decke im Einzugsgebiet tragen kein Gewölbe.
-    n = int(lab.max()) + 1
-    phi = np.full(n, np.inf, np.float64)
-    tau = np.full(n, -np.inf, np.float64)
     slope = 1.0 / np.tan(np.radians(winkel))                     # Höhe je mm waagerecht
-    np.minimum.at(phi, lab[frei], (H - slope * np.maximum(d - first / 2, 0.0))[frei])
-    np.maximum.at(tau, lab[frei], H[frei])
-    tw = np.zeros(n, np.float64)
-    tw[lab[anchor]] = T[anchor]
+    for runde in range(4):
+        src = np.where(anchor, 0, 1).astype(np.uint8)
+        d, lab = cv2.distanceTransformWithLabels(src, cv2.DIST_L2, 5, labelType=cv2.DIST_LABEL_PIXEL)
+        d = d * px
+        # Frei hängende Deckenstellen: weiter als BRUECKE/2 von allem, was mindestens eine Lage tiefer liegt (Wand oder tiefere Decke).
+        # Nur sie brauchen das Gewölbe; die übrigen Decken spannen höchstens BRUECKE weit und bleiben, wie sie sind.
+        # Je Höhe nur im Ausschnitt um die Pixel dieser Höhe rechnen: Liegt die nächste Stütze außerhalb, ist sie weiter weg als die
+        # Schwelle, und das Ergebnis ist dasselbe wie auf dem ganzen Raster.
+        frei = np.zeros(H.shape, bool)
+        thr = max(TOL, bruecke / 2)
+        for z in np.unique(H[omega]):
+            at = omega & (H == z)
+            b = _box(at, int(np.ceil(thr / px)) + 2)
+            lower = anchor[b] | (omega[b] & (H[b] <= z - step + 1e-4))
+            frei[b] |= at[b] & (_edt(lower) * px > thr)
+        # Je tragendem Pixel w: phi(w) = kleinster Wert von H - d über die frei hängenden Stellen in seinem Einzugsgebiet (höchstens die
+        # Höhe der Wand selbst) und tau(w) = höchste dieser Decken. Wände ohne frei hängende Decke im Einzugsgebiet tragen kein Gewölbe.
+        n = int(lab.max()) + 1
+        phi = np.full(n, np.inf, np.float64)
+        tau = np.full(n, -np.inf, np.float64)
+        np.minimum.at(phi, lab[frei], (H - slope * np.maximum(d - first / 2, 0.0))[frei])
+        np.maximum.at(tau, lab[frei], H[frei])
+        tw = np.zeros(n, np.float64)
+        tw[lab[anchor]] = T[anchor]
+        # Eine Stütze, deren Oberkante unter der Starthöhe liegt, die ihr Einzugsgebiet bräuchte, trüge einen zu niedrigen Kegel: er läge
+        # unter dem Gewölbe der Wände und füllte den Raum (City-Hochhaus: Rohrkopf 5 mm im 125-mm-Turm). Solche Stützpunkte tragen nicht;
+        # danach die Einzugsgebiete neu rechnen.
+        weg = sup & anchor & (phi[lab] > T + step)
+        if runde == 3 or not weg.any():
+            break
+        anchor &= ~weg
+        sup &= ~weg
     phi = np.minimum(phi, tw)
     use = anchor & np.isfinite(tau[lab])
     h = np.full(H.shape, np.inf, np.float32)
@@ -148,6 +176,9 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
         kH = np.round(H / step).astype(np.int64)
         m = max(1, int(round(RAND / step)))
         G = np.full(H.shape, np.inf, np.float32)
+        if umkreis is not None:
+            dU = _edt(use) * px                                  # Abstand zur nächsten tragenden Stütze
+            G2 = np.full(H.shape, np.inf, np.float32)            # ohne Beschränkung, falls im Umkreis keine Stütze trägt
         done = np.zeros(H.shape, bool)
         hmax = float(H.max())
         for t in range(int(kH.max()) + m, -1, -1):
@@ -158,12 +189,18 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
                 # und schneidet nichts (der Hohlraum bleibt derselbe).
                 reach = max(0.0, hmax - kp * step) / slope
                 b = _box(sel, int(np.ceil(reach / px)) + 2)
-                np.minimum(G[b], kp * step + slope * _edt(sel[b]) * px, out=G[b])
+                e = _edt(sel[b]) * px
+                cone = kp * step + slope * e
+                if umkreis is None:
+                    np.minimum(G[b], cone, out=G[b])
+                else:
+                    np.minimum(G2[b], cone, out=G2[b])
+                    np.minimum(G[b], np.where(e <= dU[b] + umkreis, cone, np.inf), out=G[b])
             fin = omega & (kH == t + m) & ~done
-            h[fin] = G[fin]
+            h[fin] = G[fin] if umkreis is None else np.where(np.isfinite(G[fin]), G[fin], G2[fin])
             done |= fin
         rest = omega & ~done
-        h[rest] = G[rest]
+        h[rest] = G[rest] if umkreis is None else np.where(np.isfinite(G[rest]), G[rest], G2[rest])
     h = np.where(omega, h, np.inf).astype(np.float32)
     return R, h, H
 
@@ -264,14 +301,42 @@ def cavity(lay, step=STEP):
     return m3d.Manifold.batch_boolean(slabs, m3d.OpType.Add) if slabs else None
 
 
-def hohlraum(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE):
-    """(Hohlraum als Manifold oder None, Ziel-Lagen ohne Gewölbe)."""
+def spalten(cav, breite=FUELLEN, step=STEP):
+    """Teile des Hohlraums, die schmaler als `breite` sind (je Lage: Hohlraum ohne seine Öffnung mit breite/2), als Körper. Abgezogen
+    vom Hohlraum werden sie Material: ein voller Streifen druckt mit Füllung statt mit zwei Wänden und einem Spalt dazwischen. Neue Decken
+    sind dabei höchstens `breite` weit (Brücke über den gefüllten Spalt). None, wenn nichts zu füllen ist."""
+    if breite <= 0:
+        return None
+    r = breite / 2
+    zmax = cav.bounding_box()[5]
+    parts, z0 = [], 0.0
+    while z0 < zmax - 1e-6:
+        z1 = min(z0 + step, zmax)
+        k = _cs_poly(cav.slice((z0 + z1) / 2))
+        if not k.is_empty:
+            o = k.buffer(-r, join_style=2).buffer(r, join_style=2)
+            thin = k.difference(o).buffer(-0.02, join_style=2).buffer(0.03, join_style=2)
+            thin = MultiPolygon([q for q in _parts(thin) if q.area > 0.05]) if not thin.is_empty else thin
+            if not thin.is_empty:
+                parts.append(prism(thin, z0 - 0.001, z1 + 0.001))
+        z0 = z1
+    return m3d.Manifold.batch_boolean(parts, m3d.OpType.Add) if parts else None
+
+
+def hohlraum(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, stuetzen=None,
+             fuellen=FUELLEN, umkreis=None):
+    """(Hohlraum als Manifold oder None, Ziel-Lagen ohne Gewölbe). stuetzen, umkreis: siehe ceiling; fuellen: siehe spalten."""
     lay0 = target(solid, wand, dach, step)
     cav = cavity(lay0, step)
     if cav is not None and gewoelbe:
-        R, hc, _ = ceiling([(z1, c) for z1, c, _ in lay0], [e for _, _, e in lay0], step, winkel=winkel, first=first, bruecke=bruecke)
+        R, hc, _ = ceiling([(z1, c) for z1, c, _ in lay0], [e for _, _, e in lay0], step, winkel=winkel, first=first, bruecke=bruecke,
+                           stuetzen=stuetzen, umkreis=umkreis)
         if np.isfinite(hc).any():
             cav = cav ^ vault_solid(R, hc, lay0[-1][0])
+    if cav is not None and fuellen > 0:
+        sp = spalten(cav, fuellen, step)
+        if sp is not None:
+            cav = cav - sp
     return cav, lay0
 
 

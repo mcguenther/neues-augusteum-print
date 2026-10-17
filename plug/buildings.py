@@ -14,7 +14,13 @@ Aufbau je Gebäude (z = 0 ist die Plattenoberseite, das Gebäude reicht bis zur 
   * 45°-Dach (`dach45`): alle Schnitte über dem Anschlag werden von oben nach unten so beschnitten, dass keine flache Decke entsteht (wo das
     niedrige Gebäudedach den Walm kappt); nur der Raum, den die Kassette wirklich braucht, bleibt unangetastet.
   * Gewölbe streng (BRUECKE_T 2 statt 10 wie in `generate.py`): fast jede Decke im Hohlraum wird 45°-Gewölbe, damit im Gebäude keine
-    Brücken unter dem Dach bleiben. Kostet Material (Neues Augusteum 36 statt 21 cm³), spart Support und Durchhang.
+    Brücken unter dem Dach bleiben.
+  * Das Schachtrohr trägt das Gewölbe mit (STUETZE_ROHR, `hohl.ceiling(stuetzen=…)`): Von der Rohroberkante steigen ebenfalls 45°-Kegel
+    auf, jeder Raum wird von Wand und Rohr aus überwölbt und das Gewölbe setzt höher an (Neues Augusteum 23,7 statt 36,1 cm³,
+    Hörsaalgebäude 43,2 statt 56,3 cm³).
+  * Spalten im Hohlraum unter FUELLEN_T (2 mm) werden Material (`hohl.spalten`): ein voller Streifen druckt mit Füllung statt mit zwei
+    Wänden und Spalt.
+  * `--umkreis 2`: Kegel nur im eigenen Bereich (weniger Material, aber senkrechte Stufen in der Decke); Standard ist die glatte Decke.
 
 Prüfungen (je Gebäude): dicht; Kollision der Kassette (mit Streifen) mit dem Gebäude; Überhang: das fertige Gebäude in Lagen von 0,2 mm
 geschnitten, Material jeder Lage, das weiter als UEBERHANG_T vom Material der Lage darunter liegt (über Luft, flacher als 45°), getrennt nach
@@ -53,6 +59,9 @@ FREI_T = 0.3           # Spiel um alles, was über dem Unterbau der Kassette lie
 ANSCHLAG_T = 1.2       # Mindestbreite des Anschlagrands (wie LIP_X/E_LIP der Steckprobe 1)
 ROHR_T = 1.2           # Wand des Schachtrohrs (höchstens; im Paulinum lässt die Lage nur weniger zu, dann die Wand aus der Platzierung)
 BRUECKE_T = 2.0        # größte freie Spannweite einer Decke ohne Gewölbe (hohl.BRUECKE ist 10); 2 = fast überall Gewölbe, keine Decken über Luft
+STUETZE_ROHR = True    # Schachtrohr trägt das Gewölbe mit
+UMKREIS_T = None       # Kegel nur im eigenen Bereich (hohl.ceiling umkreis); None = überall
+FUELLEN_T = 2.0        # Spalten im Hohlraum, die schmaler sind, werden gefüllt (hohl.spalten)
 LAYER = 0.2            # Schichthöhe für die Überhangprüfung
 UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut 45°)
 
@@ -139,7 +148,7 @@ def schacht_teile(var, wall, F):
         platz.append(ext(g, zk + t - 0.005, zk + t + 0.1 + 0.005))
         t += 0.1
     platz = G.union(platz)
-    return rohr, cut, platz, bedarf, kas, zs
+    return rohr, cut, platz, bedarf, kas, zs, z_rohr
 
 
 def dach45(X, frei, schutz, z0, dz=0.1):
@@ -166,22 +175,34 @@ def dach45(X, frei, schutz, z0, dz=0.1):
     return G.union(slabs) if slabs else m3d.Manifold()
 
 
-def gebaeude(slug, solid, fp, p, s):
-    """Steckbares Hohlgebäude (Manifold, Weltlage, z = 0 Plattenoberseite) und Prüfwerte."""
+def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
+    """Steckbares Hohlgebäude (Manifold, Weltlage, z = 0 Plattenoberseite) und Prüfwerte. rohrstuetze: Rohr trägt das Gewölbe mit
+    (Standard STUETZE_ROHR)."""
+    rohrstuetze = STUETZE_ROHR if rohrstuetze is None else rohrstuetze
     d = P.dims_plan()
     F = d["F"]
     var = p["var"]
     yc = C.foot_local(var, 0.0).centroid.y
     fuss = BC.slab_ch(fp, -F, 0.02, P.EF_CH_T)                      # Fuß mit Fase an der Bettkante
     voll = solid + fuss
-    # Hohlraum: hohl.py rechnet mit Boden bei z = 0, also um F nach oben schieben und zurück
-    cav, lay0 = hohl.hohlraum(voll.translate([0, 0, F]), bruecke=BRUECKE_T)
-    cav = cav.translate([0, 0, -F])
-    ziel = hohl.cavity(lay0).translate([0, 0, -F])                  # Ziel-Hohlraum ohne Gewölbe (Wand und Dach 0,8)
-    rohr, cut, platz, bedarf, kas, zs = schacht_teile(var, min(ROHR_T, p["wall"]), F)
+    rohr, cut, platz, bedarf, kas, zs, z_rohr = schacht_teile(var, min(ROHR_T, p["wall"]), F)
     T = lambda m: place(m.translate([0, 0, -F]), p, yc)
     rohr, cut, platz, bedarf, kas = T(rohr), T(cut), T(platz), T(bedarf), T(kas)
     zs -= F
+    # Hohlraum: hohl.py rechnet mit Boden bei z = 0, also um F nach oben schieben und zurück. Das Schachtrohr wird vom Bett an gedruckt
+    # und trägt das Gewölbe mit (Stütze bis zur Rohroberkante): die Räume werden von Wand und Rohr aus überwölbt.
+    rohr_fp = hohl._cs_poly(rohr.slice(-F + 0.5))
+    stuetzen = [(rohr_fp, z_rohr)] if rohrstuetze else None
+    cav, lay0 = hohl.hohlraum(voll.translate([0, 0, F]), bruecke=BRUECKE_T, stuetzen=stuetzen, fuellen=FUELLEN_T,
+                              umkreis=UMKREIS_T)
+    cav = cav.translate([0, 0, -F])
+    if rohrstuetze:
+        # Über dem Rohr kein Gewölbe-Hohlraum: das Rohr setzt sich nach oben als Säule fort, frei bleibt dort nur der Raum über der
+        # Kassette (Platz mit 45°-Walm, unten). Sonst griffe das Gewölbe eines Nachbarraums über den Rohrkopf, wo das Rohr nicht trägt,
+        # und zwischen ihm und dem Walm bliebe eine nach unten hängende Kante.
+        # Die Säule reicht bis 0,4 mm über die Walmspitze; darüber darf das Gewölbe wieder über das Rohr greifen (hohe Gebäude).
+        cav = cav - ext(rohr_fp, -F - 1.0, float(platz.bounding_box()[5]) + 0.4)
+    ziel = hohl.cavity(lay0).translate([0, 0, -F])                  # Ziel-Hohlraum ohne Gewölbe (Wand und Dach 0,8)
     boden = ext(fp, -F - 0.01, -F + BODEN_T)
     body = (voll - cav) + (boden ^ voll) + (rohr ^ voll)
     # unterhalb des Anschlags der Schacht wie er ist; darüber Platz und Fenster mit 45°-Dach (keine flache Decke unter dem Gebäudedach)
@@ -189,7 +210,7 @@ def gebaeude(slug, solid, fp, p, s):
     oben = ((platz ^ ziel) + cut).trim_by_plane([0, 0, 1], zs - 0.02)
     body = body - dach45(oben, cav - rohr, bedarf, zs - 0.02)
     body = body.simplify(hohl.VEREINFACHEN)
-    info = dict(slug=slug, var=var, wall=p["wall"], F=F)
+    info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze)
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
@@ -243,12 +264,17 @@ def build(scale=P.SCALE_PLAN, slugs=None):
         if slugs and slug not in slugs:
             continue
         solid, fp, _ = models[slug]
-        body, kas, info = gebaeude(slug, solid, fp, p, s)
+        # Mit und ohne Rohrstütze bauen, das leichtere nehmen: Unter niedrigen Dächern (Neues Augusteum, Hörsaalgebäude) setzt das Gewölbe
+        # mit der Rohrstütze viel höher an; in hohen, schmalen Gebäuden trägt das Rohr kaum und die Säule über ihm kostet nur.
+        varianten = [gebaeude(slug, solid, fp, p, s, r) for r in ((True, False) if STUETZE_ROHR else (False,))]
+        body, kas, info = min(varianten, key=lambda v: v[2]["volumen_cm3"])
+        info["volumen_varianten_cm3"] = {("mit" if v[2]["rohrstuetze"] else "ohne") + "_rohrstuetze": v[2]["volumen_cm3"] for v in varianten}
         info["ueberhang"] = ueberhang(body)
         out.append((slug, body, kas, info))
         u = info["ueberhang"]
-        print("  %-22s %-5s %6.2f cm³  Kollision %.3f mm³  Platz fehlt %.2f mm³  Brücken %.0f mm² (Spannweite bis %.1f mm)  "
-              "Kragstücke %.1f mm² (bis %.1f mm)" % (slug, info["var"], info["volumen_cm3"], info["kollision_mm3"], info["platz_fehlt_mm3"],
+        print("  %-22s %-5s %6.2f cm³ (%s)  Kollision %.3f mm³  Platz fehlt %.2f mm³  Brücken %.0f mm² (Spannweite bis %.1f mm)  "
+              "Kragstücke %.1f mm² (bis %.1f mm)" % (slug, info["var"], info["volumen_cm3"],
+                                                    " / ".join("%s %.2f" % kv for kv in info["volumen_varianten_cm3"].items()), info["kollision_mm3"], info["platz_fehlt_mm3"],
                                                     u["bruecke_mm2"], 2 * u["bruecke_mm"], u["krag_mm2"], u["krag_mm"]), flush=True)
         for st in sorted(u["stellen"], key=lambda t: (t[0] != "krag", -t[3]))[:6]:
             print("      %-7s z=%5.1f  %5.1f mm²  Reichweite %.1f mm  bei (%.1f, %.1f)" % st)
@@ -256,13 +282,22 @@ def build(scale=P.SCALE_PLAN, slugs=None):
 
 
 def main():
-    global BRUECKE_T
+    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, OUT, PREV
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("slugs", nargs="*")
     ap.add_argument("--bruecke", type=float, default=BRUECKE_T, help="größte freie Spannweite einer Decke ohne Gewölbe (mm)")
+    ap.add_argument("--ohne-rohrstuetze", action="store_true", help="Gewölbe nur von den Außenwänden (Stand vor 2026-10-17)")
+    ap.add_argument("--fuellen", type=float, default=FUELLEN_T, help="Spalten schmaler als dies füllen (mm, 0 = aus)")
+    ap.add_argument("--umkreis", type=float, default=UMKREIS_T, help="Kegel einer Stütze nur bis so viel weiter als die nächste Stütze (mm)")
+    ap.add_argument("--out", help="Ausgabeordner für STL und Bilder (Standard: die eingecheckten Ordner)")
     a = ap.parse_args()
     BRUECKE_T = a.bruecke
+    STUETZE_ROHR = not a.ohne_rohrstuetze
+    FUELLEN_T = a.fuellen
+    UMKREIS_T = a.umkreis
+    if a.out:
+        OUT = PREV = a.out
     os.makedirs(OUT, exist_ok=True)
     os.makedirs(PREV, exist_ok=True)
     res = build(a.scale, a.slugs)
