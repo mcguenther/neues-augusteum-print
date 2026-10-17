@@ -25,13 +25,14 @@ SW = dict(
     pin_pitch=4.8,                       # A  Pinabstand (Foto 4)
     wire=4.0,                            # E  Platz für Lötstelle, Schrumpfschlauch und Biegung
 )
-HOLE_CLR = 0.15                          # E  Spiel je Seite, wie der Nutzer-Vorgabe 0,15 bei Passungen (r8)
-HOLE = (SW["body_l"] + 2 * HOLE_CLR, SW["body_w"] + 2 * HOLE_CLR)   # 13,3 x 8,3 (Händler nennen 13,5 x 8,5 bis 9)
-WALL_AT_HOLE = 1.6                       # S  Wand am Loch (Schnapphaken brauchen etwa 0,8 bis 2,0; Messung offen)
+HOLE_CLR = 0.3                           # E  Spiel je Seite (Nutzer: lieber reichlicher, 13,6 × 8,6; vorher 0,15)
+HOLE = (SW["body_l"] + 2 * HOLE_CLR, SW["body_w"] + 2 * HOLE_CLR)   # 13,6 x 8,6 (Händler nennen 13,5 x 8,5 bis 9)
+WALL_AT_HOLE = 1.2                       # E  Wand am Loch (Nutzer: erst dünn probieren; Schnapphaken brauchen etwa 0,8 bis 2,0, Messung offen)
 POCKET = (HOLE[0] + 4.0, HOLE[1] + 3.0)  # E  Innentasche: lässt die Haken beim Einschnappen ausfedern
-POCKET_T = PP.UK_WALL - WALL_AT_HOLE     # 0,8 tief
+POCKET_T = PP.UK_WALL - WALL_AT_HOLE     # 1,2 tief
 H_WALL = BC.H0["uk_t"]                   # 14,6 Außenhöhe des Unterkastens
 Z_MID = H_WALL / 2
+T1_W, T1_FLOOR_D = 24.0, 6.0           # E  Probeteil: Breite (Tasche 17,6 + je 3,2 Rand) und Tiefe des Bodenstreifens
 DEPTH_OUT = SW["body_depth"] + SW["pin_len"] + SW["wire"]               # ab Außenfläche
 LAYOUT_JSON = os.path.join(HERE, "switch_layout.json")
 
@@ -55,7 +56,7 @@ if "--refresh" in sys.argv:
     refresh_layout()
 LAYOUT = json.load(open(LAYOUT_JSON))   # Lage aus build_concept.variant(1300), Platte 115,6 × 220,8
 FACH_X0 = min(p[0] for p in LAYOUT["fach"][0])                          # Westkante des Fachs (22,4); Plattenaußenwand liegt bei x = 0
-Y_SW = 116.0                                                            # E  Mitte des Schalters auf der Platte (Nord = größeres y), unter dem Südende des Seminargebäudes
+Y_SW = 36.0                                                             # E  Mitte des Schalters auf der Platte (Nord = größeres y), Wunsch des Nutzers, südlich der Elektronikbox
 MARGIN = round(FACH_X0 - DEPTH_OUT, 1)                                  # Luft zwischen den Pins mit Draht und dem Fach
 
 
@@ -233,11 +234,6 @@ def fig_section():
     t.append(f'<rect class="sw" x="{f(D(0))}" y="{f(Z(zc + SW["body_w"] / 2))}" width="{f(SW["body_depth"] * s)}" height="{f(SW["body_w"] * s)}"/>')
     t.append(f'<polygon class="sw" points="{f(D(-SW["flange_t"]))},{f(Z(zc + 2.2))} {f(D(-SW["flange_t"] - SW["rocker"]))},{f(Z(zc + 1.2))} '
              f'{f(D(-SW["flange_t"] - SW["rocker"]))},{f(Z(zc - 3.0))} {f(D(-SW["flange_t"]))},{f(Z(zc - 3.0))}"/>')
-    # Haken
-    for sgn in (1, -1):
-        zz = zc + sgn * SW["body_w"] / 2
-        t.append(f'<polygon class="hook" points="{f(D(WALL_AT_HOLE))},{f(Z(zz))} {f(D(WALL_AT_HOLE + 0.9))},{f(Z(zz))} '
-                 f'{f(D(WALL_AT_HOLE))},{f(Z(zz + sgn * 0.7))}"/>')
     # Pins + Draht
     t.append(f'<line class="pin" x1="{f(D(SW["body_depth"]))}" x2="{f(D(SW["body_depth"] + SW["pin_len"]))}" y1="{f(Z(zc + 1))}" y2="{f(Z(zc + 1))}"/>')
     t.append(f'<path class="wire" d="M {f(D(SW["body_depth"] + SW["pin_len"] - 1))} {f(Z(zc + 1))} q 40 0 60 30"/>')
@@ -291,11 +287,11 @@ def build():
     dims = [
         ("Kasten (verschwindet in der Wand), B × L", f"{f(SW['body_w'])} × {f(SW['body_l'])}", "M vom Nutzer grob gemessen; Händler: Ausschnitt 13,5 × 8,5 bis 9"),
         ("Frontplatte B × L (Rand etwa 1 je Seite)", f"{f(SW['flange_w'])} × {f(SW['flange_l'])}", "M Nutzer; passt zur Bauform 10 × 15 (KCD11)"),
-        ("Loch in der Wand (Spiel 0,15 je Seite)", f"{f(HOLE[0])} × {f(HOLE[1])}", "E vom Nutzer übernommen; Testprobe T1 prüft 13,1 / 13,3 / 13,5"),
-        ("Wand am Loch", f"{f(WALL_AT_HOLE)}", "S Schnapphaken greifen je nach Typ bei 0,8 bis 2,0; Abstand Frontplatte bis Hakenkante messen"),
+        ("Loch in der Wand (Spiel 0,15 je Seite)", f"{f(HOLE[0])} × {f(HOLE[1])}", "E reichlicher als vorher (0,3 je Seite, Nutzer); Händler nennen 13,5 × 8,5 bis 9; Testprobe T1"),
+        ("Wand am Loch", f"{f(WALL_AT_HOLE)}", "E Nutzer: erst dünn probieren; Schnapphaken greifen je nach Typ bei 0,8 bis 2,0, Abstand Frontplatte bis Hakenkante messen"),
         ("Außenwand sonst, Innentasche", f"{f(PP.UK_WALL)} / {f(POCKET[0])} × {f(POCKET[1])} × {f(POCKET_T)}", "E Tasche von innen, damit die Haken ausfedern können"),
         ("Höhe der Wand außen / Schaltermitte", f"{f(H_WALL)} / {f(Z_MID)}", f"A Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten {f(H_WALL)} = {f(LAYOUT['thick'])}), Frontplatte 10 hoch lässt je {f((H_WALL - 10) / 2)} Rand"),
-        ("Lage auf der Platte", f"Westwand, y = {f(Y_SW)}", "E unter dem Südende des Seminargebäudes (y 108 bis 185), 20 mm vor der Elektronik (y bis 88,4)"),
+        ("Lage auf der Platte", f"Westwand, y = {f(Y_SW)}", "E Wunsch des Nutzers: südlich der Elektronikbox (y 53,4 bis 88,4), 10 mm Luft zur Box, darüber das Hörsaalgebäude"),
         ("Einbautiefe ab Außenfläche", f"≈ {f(DEPTH_OUT)}", f"A Kasten {f(SW['body_depth'])} + Pins {f(SW['pin_len'])} (aus Foto) + {f(SW['wire'])} Lötstelle und Biegung"),
         ("Platz bis zum Fach (Westkante x = %s)" % f(FACH_X0), f"{f(FACH_X0)} frei, Luft {f(MARGIN)}", "A Streifen westlich des Fachs, an der Stelle ohne Stützen, Zapfen und Dockzone"),
     ]
@@ -370,7 +366,7 @@ a {{ color:var(--accent); }}
 <header style="display:flex;flex-direction:column;gap:8px">
   <div class="kicker">Plan · Konzept, noch keine STL · Stand 17.10.2026 · Platte 1:1300</div>
   <h1>Hauptschalter in der Westwand des Unterkastens</h1>
-  <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, unter dem Seminargebäude, und schnappt von außen in ein Loch von {f(HOLE[0])} × {f(HOLE[1])} mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
+  <p>Wippenschalter 10 × 15 mm (KCD11, 2 Pins) schaltet das Plus der Powerbank. Er sitzt in der Außenwand des Unterkastens auf der Seite gegenüber dem Paulinum, bei y = {f(Y_SW)} südlich der Elektronik, und schnappt von außen in ein Loch von {f(HOLE[0])} × {f(HOLE[1])} mm. Das Kabel geht von dort zum INA226 in der Elektronik.</p>
 </header>
 
 {mover_html()}
@@ -378,12 +374,12 @@ a {{ color:var(--accent); }}
 <div class="row">
   <section class="sheet">
     <h2>Schnitt durch die Schalterachse, 13 : 1</h2>
-    <p>Außenwand links. Die Haken (schwarz) fassen hinter der {f(WALL_AT_HOLE)} mm dünnen Wand am Loch; die Innentasche gibt ihnen Platz zum Ausfedern.</p>
+    <p>Außenwand links, Schnitt quer zur 13-mm-Seite. Die Haken sitzen laut Foto an den beiden Enden der 13-mm-Seite, im Schnitt also seitlich nicht zu sehen. Sie fassen hinter die {f(WALL_AT_HOLE)} mm dünne Wand am Loch, die Innentasche ({f(POCKET[0])} lang) gibt ihnen Platz zum Ausfedern.</p>
     <div class="scroll">{fig_section()}</div>
   </section>
   <section class="sheet">
     <h2>Westwand von außen, 11 : 1</h2>
-    <p>Wand {f(H_WALL)} hoch, Frontplatte 10 hoch. Langseite waagerecht: Stehend (13,3 hoch) blieben nur 2 mm Wand oben und unten. Norden liegt links.</p>
+    <p>Wand {f(H_WALL)} hoch, Frontplatte 10 hoch. Langseite waagerecht: Stehend ({f(HOLE[0])} hoch) blieben nur {f((H_WALL - HOLE[0]) / 2)} mm Wand oben und unten. Norden liegt links.</p>
     <div class="scroll">{fig_front()}</div>
   </section>
 </div>
@@ -397,7 +393,7 @@ a {{ color:var(--accent); }}
     <tr><td>Südwand</td><td>Dahinter liegt die Elektronik direkt an der Wand (x 3 bis 63, y 53 bis 88), kein Platz.</td></tr>
     <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
   </table>
-  <p class="note"><b>Zu klären:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist 2,4 mm dick, mit Tasche 1,6 mm. Ob sie dort steif genug ist, zeigt die Probe T1. Die Stützen-Raster (Kante 6, alle 40 mm) liegen ohnehin weiter innen.</p>
+  <p class="note"><b>Zu klären:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, das sind drei Linien). Ob sie dort steif genug ist und die Haken fassen, zeigt die Probe T1. Die Stützen-Raster (Kante 6, alle 40 mm) liegen ohnehin weiter innen.</p>
 </section>
 
 <section class="sheet">
@@ -420,13 +416,13 @@ Powerbank USB  ──schwarz (GND)───────────────�
   <h2 style="margin-bottom:12px">Entscheidungen</h2>
   <div class="cards">
     <div class="card"><h3>1. Lage entlang der Westwand</h3>
-      <ul><li><b>A</b> y = {f(Y_SW)}, unter dem Südende des Seminargebäudes</li><li>B y = 100, näher an der Elektronik, kürzere Drähte</li><li>C y = 150, Mitte unter dem Seminargebäude, die Dockzone des Seminars (y 137 bis 154) liegt dann nebenan</li></ul>
+      <ul><li><b>A</b> y = {f(Y_SW)}, südlich der Elektronikbox (Wunsch des Nutzers)</li><li>B y = 116, unter dem Südende des Seminargebäudes, Platz frei</li><li>C y = 150, Mitte unter dem Seminargebäude</li></ul>
       <div class="pick">Vorschlag: A</div></div>
     <div class="card"><h3>2. Loch</h3>
-      <ul><li><b>{f(HOLE[0])} × {f(HOLE[1])}</b></li><li>Wand am Loch 1,6 mit Innentasche 0,8</li></ul>
-      <div class="pick">Loch übernommen; Wand 1,6 klärt Probe T1</div></div>
+      <ul><li><b>{f(HOLE[0])} × {f(HOLE[1])}</b></li><li>Wand am Loch {f(WALL_AT_HOLE)} mit Innentasche {f(POCKET_T)}</li></ul>
+      <div class="pick">Loch reichlicher (0,3 je Seite), Wand zuerst {f(WALL_AT_HOLE)}; Probe T1 klärt beides</div></div>
     <div class="card"><h3>3. Oberkante des Lochs</h3>
-      <ul><li><b>Brücke</b> über 13,3 mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
+      <ul><li><b>Brücke</b> über {f(HOLE[0])} mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
       <div class="pick">Vorschlag: Brücke, in T1 prüfen</div></div>
   </div>
 </section>
@@ -435,6 +431,7 @@ Powerbank USB  ──schwarz (GND)───────────────�
   <h2>Bitte nachmessen (Schieblehre)</h2>
   <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">
     <li>Abstand von der Unterseite der Frontplatte bis zur Hakenkante: das ist die maximale Wandstärke, in die der Schalter einrastet.</li>
+    <li>Spanne über die beiden Haken an der 13-mm-Seite: Sie muss größer sein als das Loch ({f(HOLE[0])}), sonst hält der Schalter nicht.</li>
     <li>Kasten genau (B × L) und Frontplatte genau (B × L), Dicke der Frontplatte.</li>
     <li>Tiefe des Kastens hinter der Frontplatte und Länge der Pins.</li>
     <li>Pinabstand und Pinbreite (Lötfahne oder 4,8-mm-Flachstecker?).</li>
@@ -442,8 +439,8 @@ Powerbank USB  ──schwarz (GND)───────────────�
 </section>
 
 <section class="sheet">
-  <h2>Testprobe T1, wenn der Plan passt</h2>
-  <p>Ein Wandstück 30 × {f(H_WALL)} × 2,4 mm mit drei Löchern nebeneinander (13,1 × 8,1, 13,3 × 8,3 und 13,5 × 8,5), je mit Innentasche und Wand am Loch 1,2, 1,6 und 2,0. So ist an einem kleinen Druck (etwa 10 Minuten) klar, welcher Sitz hält, und ob die Brücke über dem Loch sauber wird. Erst nach dem Abnicken entsteht die STL.</p>
+  <h2>Testprobe T1 (Wand 1,2, Loch 13,6 × 8,6)</h2>
+  <p>Ein Wandstück {f(T1_W)} × {f(H_WALL)} × {f(PP.UK_WALL)} mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen {f(T1_FLOOR_D)} mm tief, damit es steht wie in der Wand (Loch ab z = {f(Z_MID - HOLE[1] / 2)} über dem Bett). Zusammen etwa 1 g und 5 bis 10 Minuten Druck. Es zeigt, ob die {f(WALL_AT_HOLE)} mm dünne Wand hält, ob die Haken fassen, ob das Loch mit 0,3 Spiel klappert und ob die Brücke über dem Loch sauber wird. STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code>, erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>.</p>
 </section>
 </main>
 """

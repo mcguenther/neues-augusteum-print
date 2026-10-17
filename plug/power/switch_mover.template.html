@@ -15,7 +15,7 @@
           <button type="button" id="bS">↓ nächste freie Lage nach Süden</button>
           <button type="button" id="bN">↑ nach Norden</button>
           <button type="button" id="bSS">südlichste freie Lage</button>
-          <button type="button" id="bA">Vorschlag (116)</button>
+          <button type="button" id="bA">Ausgangslage</button>
         </div>
         <label class="chk"><input type="checkbox" id="ig"> Elektronikbox ignorieren (sie lässt sich verlegen)</label>
       </div>
@@ -285,6 +285,7 @@ svg .mark { fill:none; stroke:var(--ink); stroke-width:1.4; }
   pl.addEventListener('pointermove', function (ev) { if (dragging) set(toY(ev)); });
   pl.addEventListener('pointerup', function () { dragging = false; });
   pl.addEventListener('pointercancel', function () { dragging = false; });
+  $('bA').textContent = 'Ausgangslage (' + fx(SW.y0) + ')';
   drawPlateStatic();
   update();
 })();
