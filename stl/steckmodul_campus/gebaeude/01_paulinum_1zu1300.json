@@ -1,0 +1,22 @@
+{
+ "slug": "01_paulinum",
+ "var": "v4",
+ "wall": 1.2,
+ "F": 14.200000000000001,
+ "kollision_mm3": 0.0,
+ "platz_fehlt_mm3": 0.0,
+ "volumen_cm3": 7.88,
+ "ueberhang": {
+  "bruecke_mm2": 0.0,
+  "bruecke_mm": 0.0,
+  "krag_mm2": 21.78,
+  "krag_mm": 0.72,
+  "stellen": []
+ },
+ "dicht": true,
+ "mass_mm": [
+  45.6,
+  31.8,
+  59.4
+ ]
+}

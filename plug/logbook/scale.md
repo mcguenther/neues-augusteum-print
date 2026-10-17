@@ -141,6 +141,28 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 
 Der Nutzer hat die Lagen in der Platzierungs-App eingestellt (`plug/scale1176/placements_user_1300.json`); `python3 -m plug.scale1176.nudge` hat sie minimal angepasst, bis die Wand um den Schacht mindestens 1,2 mm beträgt (Verschiebung bis 0,8 mm, Drehung bis 3°), und `placements_1300.json` geschrieben. Ergebnis: nur das Paulinum musste (um dx −0,10, dy −0,10 mm, Wand 1,10 → 1,21 mm); alle anderen Lagen sind unverändert (Wand: Neues Augusteum 4,8, Hörsaal 6,7, Seminar 4,1, Institut 1,5, Hochhaus 4,7 mm). Docks innerhalb der Platte und ohne Überlappung. Grafik `vorschau/steckmodul_campus/positionen_diff.png` (`python3 -m plug.scale1176.nudge_plot`). Die Platte `stl/steckmodul_campus/steckplatte_1zu1300.stl` ist damit neu erzeugt. Die LED-Lage ist nicht mehr mittig erzwungen, sondern die des Nutzers.
 
+### Steckbare Hohlgebäude (2026-10-17, `plug/buildings.py`, ungedruckt)
+
+Die sechs Laserscan-Gebäude bei 1:1300 als steckbare Hohlkörper: Fuß über den vollen Grundriss bis 14,2 mm unter die Plattenoberseite (wie die Mulde in `plug/campus.py`, Bettkante mit Fase), Gebäude und Fuß gemeinsam mit `hohl.py` ausgehöhlt (Wand 0,8), Boden 1,2 mm, Schachtrohr (Wand höchstens 1,2, im Paulinum die 1,2 aus der Platzierung), Aufnahme je Kassette (v4 / V1RS / V2R aus `params.CASSETTE`): Schacht mit Einpressspiel und Einführfase, Anschlag 1,2 mm breit mit 45°-Unterseite, darüber Freiraum für LED, Streifen und Blatt (Spiel 0,3) mit 45°-Walm.
+
+Druckbarkeit ohne Support im Gebäude (Gebäude steht auf dem Boden, Schacht nach unten offen):
+- **Gewölbe streng**: Decken ab 2 mm Spannweite werden 45°-Gewölbe (`BRUECKE_T` 2, im Generator 10). Mit 10 blieben unter den Dächern Decken mit bis zu 4,3 mm Auskragung (Neues Augusteum 540 mm²).
+- **45°-Dach über allen Schnitten** (`dach45`): wo das niedrige Dach den Freiraum über der Kassette kappt, wird er von oben in 45° beschnitten; nur der echte Bedarf der Kassette bleibt.
+- Prüfung je 0,2-mm-Lage, getrennt nach Brücken (ringsum getragen) und Kragstücken (freie Kante).
+
+| Gebäude | Kassette | Volumen | Kollision | Brücken | Kragstücke |
+|---|---|---|---|---|---|
+| Paulinum | v4 | 7,9 cm³ | 0 | – | 22 mm², bis 0,7 mm |
+| Neues Augusteum | v4 | 36,1 cm³ | 0 | – | 24 mm², bis 2,1 mm (über der LED-Box unter dem niedrigen Dach, unvermeidbar) |
+| Hörsaalgebäude | v4 | 56,3 cm³ | 0 | bis 0,8 mm | – |
+| Seminargebäude | V1RS | 11,7 cm³ | 0 | – | 5 mm², bis 0,7 mm |
+| Institutsgebäude | V1RS | 18,7 cm³ | 0 | 4 mm², bis 1,4 mm | 13 mm², bis 0,7 mm |
+| City-Hochhaus | V2R | 13,6 cm³ | 0 | bis 0,8 mm | 7 mm², bis 0,7 mm |
+
+Alle dicht, Platz für die Kassette überall vollständig. Kragstücke bis 0,7 mm sind 45°-Treppen der Schichtung und unkritisch. Preis: mehr Material, weil das Gewölbe die Räume unter den Dächern füllt (Neues Augusteum 36 statt 21 cm³ mit Brücke 10). Schnittbilder: `vorschau/steckmodul_campus/gebaeude/` (`uebersicht_schnitte.png`).
+
+Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) in den gefüllten Gebäuden; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
+
 ## Ungetestete Planwerte (müssen noch getestet werden)
 
 Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `plug/testcase/params.py` (`MULDE_EXTRA_T`, `CASSETTE`, `HOF_*`, `OUTLINE_CLR_T`, `SCALE_PLAN`) und `plug/scale1176/placements_1300.json`; `plug/parts.py` bleibt unverändert, bis ein Test sie bestätigt hat. Test: Steckprobe 3 (Reserve-Druck, `next.md`).

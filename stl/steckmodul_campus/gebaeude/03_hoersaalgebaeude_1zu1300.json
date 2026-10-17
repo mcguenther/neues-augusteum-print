@@ -1,0 +1,22 @@
+{
+ "slug": "03_hoersaalgebaeude",
+ "var": "v4",
+ "wall": 6.6,
+ "F": 14.200000000000001,
+ "kollision_mm3": -0.0,
+ "platz_fehlt_mm3": 0.0,
+ "volumen_cm3": 56.29,
+ "ueberhang": {
+  "bruecke_mm2": 0.4,
+  "bruecke_mm": 0.41,
+  "krag_mm2": 0.0,
+  "krag_mm": 0.0,
+  "stellen": []
+ },
+ "dicht": true,
+ "mass_mm": [
+  63.6,
+  104.7,
+  33.1
+ ]
+}
