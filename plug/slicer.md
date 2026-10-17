@@ -47,5 +47,6 @@ bestimmt also, wie gleichmäßig das Gebäude leuchtet.
 
 ## Erfahrungen
 
-Noch keine (ungedruckt). Nach dem ersten Druck hier eintragen: Drucker, Slicer und Version, Abweichungen von den Werten oben, Ergebnis
-(Gewölbe sauber? Licht gleichmäßig? Kassette passt?).
+- **r8 (2026-10-17), Passform-Stummel Hochhaus und Kassette V2R, Bambu A1, schwarzes PLA, Düse 0,4, 0,2 mm, Wände 2 oder mehr, kein Support:** beide Teile ohne Support sauber gedruckt, auch das frei stehende 1,2-mm-Blatt der Kassette; Fuß-Fase 2,0 mm ohne Elefantenfuß-Wulst; Druckzeit beide Teile ca. 55 min (Schätzung der Planseite 47 min). Das ganze Gebäude (Gyroid 10 %, Brim) ist noch nicht gedruckt.
+
+Weitere Erfahrungen hier eintragen: Drucker, Slicer und Version, Abweichungen von den Werten oben, Ergebnis (Gewölbe sauber? Licht gleichmäßig? Kassette passt?).

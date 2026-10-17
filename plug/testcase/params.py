@@ -42,7 +42,7 @@ HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie 
 HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
 HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite; die Wand zwischen Hof- und Gebäude-Aussparung bleibt 0,4 mm (Fuge Hof zu Gebäude 0,5 minus 0,1)
 MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
-OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
+OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite. r8: bei großem Umriss zu eng (nur mit Kraft); NÄCHSTER PROBEDRUCK MIT 0,15 (Vorgabe des Nutzers, next.md)
 
 # ---- Fasen
 ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)

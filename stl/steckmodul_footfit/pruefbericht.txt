@@ -1,0 +1,22 @@
+Passform-Stummel City-Hochhaus: Höhe über der Platte 25.0 mm (gesamt 39.2 mm mit Fuß 14.2), Spiel 0,10, Fuß-Fase 2,0, Wand 0,8, Kassette V2R (Probeteil)
+Quelle: stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300_fase2.stl (Hohlgebäude aus Branch jolly-pascal, Fuß-Fase nach plug/footfit/buildings_fuss_fase.patch)
+
+Teile (Druckausrichtung, Bett z = 0):
+  H1_stummel_hochhaus.stl   36.1 ×   35.0 ×  39.2 mm   4.76 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: z=0.2: 28 mm² (31.5 × 30.2); z=0.4: 28 mm² (32.0 × 30.7); z=1.8: 23 mm² (35.9 × 34.8); z=1.6: 23 mm² (35.4 × 34.3)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.27 mm² (bis 0.25 mm), Kragstücke 1.08 mm² (bis 0.72 mm), Stellen über 1 mm: keine
+  H2_kassette_V2R.stl      13.0 ×    6.4 ×  36.9 mm   1.11 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: keine
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
+
+Prüfung der Passungen (Überschneidungsvolumen, mm³; muss 0 sein):
+  Kassette V2R im Schacht des Stummels                                         0.000  ok
+  Stummel in der Mulde der Steckplatte (Spiel 0,10)                            0.000  ok
+  Kontrolle: Stummel 0,12 mm in +x verschoben stößt an der Mulde an            0.000  ok
+  Kontrolle: Stummel 0,12 mm in +y verschoben stößt an der Mulde an            0.000  ok
+  Kontrolle: Kassette 0,2 mm breiter (kein Spiel mehr) stößt im Schacht an     0.000  ok
+  Kassette unten bündig mit der Fußunterkante: Unterkante Kassette z=-14.20, Fußunterkante z=-14.20
+  -> keine Kollisionen
+
+Stummel: Fläche der ersten Lage (Bett) 378 mm², Fase unten 2,0 mm: Außenmaß am Bett 31.0 × 29.7 mm, ab 2,0 mm Höhe 36.1 × 35.0 mm
+Druckzeit geschätzt (nicht kalibriert): Stummel 29 min, Kassette 24 min, zusammen auf einem Bett etwa 47 min
