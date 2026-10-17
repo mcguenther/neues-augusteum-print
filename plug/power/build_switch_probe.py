@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Probeteil T1 für den Hauptschalter (Wippe KCD11 10 × 15): STL, README, ZIP, Prüfbericht und Vorschau nach stl/steckmodul_schalterprobe/.
+"""Probeteil T2 für den Hauptschalter (Wippe KCD11 10 × 15): STL, README, ZIP, Prüfbericht und Vorschau nach stl/steckmodul_schalterprobe/.
 
-Plan: plug/power/plan_switch.html (Nutzer: Loch reichlicher 13,6 × 8,6, Wand am Loch zuerst 1,2 mm). Möglichst sparsam: ein Wandstück der Westwand
+Plan: plug/power/plan_switch.html (Nutzer nach T1: Loch 13,7 × 9,0 (T1 mit 13,6 × 8,6 war sehr stramm), Wand am Loch weiter 1,2 mm). Möglichst sparsam: ein Wandstück der Westwand
 des Unterkastens mit einem Loch und der Innentasche, dazu ein Bodenstreifen, damit es steht wie in der Wand. Maße kommen aus
 `plug/power/build_plan_switch.py` (HOLE, WALL_AT_HOLE, POCKET, H_WALL, Z_MID).
 Koordinaten: x entlang der Wand, y Wanddicke (Außenfläche y = 0, Innenseite y = 2,4), z über dem Bett (Boden des Unterkastens z = 0).
@@ -33,7 +33,7 @@ def part():
     wall = box(0, W, 0, T, 0, H)
     floor = box(0, W, T - 0.01, T + FLOOR_D, 0, FLOOR_T)
     hole = box(CX - HOLE[0] / 2, CX + HOLE[0] / 2, -0.1, T + 0.1, ZC - HOLE[1] / 2, ZC + HOLE[1] / 2)
-    # Innentasche für die Haken (an den kurzen Enden der 13-mm-Seite); oben mit 45°-Dach, damit keine Brücke von 17,6 mm entsteht
+    # Innentasche für die Haken (an den kurzen Enden der 13-mm-Seite); oben mit 45°-Dach, damit keine Brücke von 17,7 mm entsteht
     z0, z1 = ZC - POCKET[1] / 2, ZC + POCKET[1] / 2
     roof = (T + 0.1) - Y_POCKET
     pocket = prism_x([(Y_POCKET, z0), (T + 0.1, z0), (T + 0.1, z1 + roof), (Y_POCKET, z1)], CX - POCKET[0] / 2, CX + POCKET[0] / 2)
@@ -53,7 +53,7 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     os.makedirs(PREV, exist_ok=True)
     for f in os.listdir(OUT):
-        if f.endswith((".stl", ".zip", ".txt")):
+        if "T2" in f:
             os.remove(os.path.join(OUT, f))
     lines = []
 
@@ -63,12 +63,12 @@ def main():
 
     man = part()
     tm = to_tm(man)
-    tm.export(os.path.join(OUT, "T1_wand_schalter.stl"))
+    tm.export(os.path.join(OUT, "T2_wand_schalter.stl"))
     g, nl = SR.estimate(man)
-    ov = overhangs(man, "T1")
-    rep("Probeteil T1 Hauptschalter: Wand %.1f × %.1f × %.1f mm, Loch %.1f × %.1f, Wand am Loch %.1f, Tasche %.1f × %.1f × %.1f tief, Bodenstreifen %.0f mm" % (
+    ov = overhangs(man, "T2")
+    rep("Probeteil T2 Hauptschalter: Wand %.1f × %.1f × %.1f mm, Loch %.1f × %.1f, Wand am Loch %.1f, Tasche %.1f × %.1f × %.1f tief, Bodenstreifen %.0f mm" % (
         W, H, T, *HOLE, BS.WALL_AT_HOLE, *POCKET, BS.POCKET_T, FLOOR_D))
-    rep("  T1_wand_schalter.stl  %.1f × %.1f × %.1f mm  %.2f cm³  ≈ %.1f g  dicht=%s" % (*tm.extents, tm.volume / 1000.0, g, tm.is_watertight))
+    rep("  T2_wand_schalter.stl  %.1f × %.1f × %.1f mm  %.2f cm³  ≈ %.1f g  dicht=%s" % (*tm.extents, tm.volume / 1000.0, g, tm.is_watertight))
     rep("      waagerechte Decken: %s   Überhang flacher als 45° zur Senkrechten: %.0f mm²" % (
         "; ".join("z=%.1f: %.0f mm² (%.1f × %.1f)" % f for f in sorted(ov["flat"], key=lambda t: -t[1])[:4]) or "keine", ov["steep_area"]))
     rep("      (die einzige Brücke ist die Oberkante des Lochs, %.1f mm lang bei %.1f mm Wand)" % (HOLE[0], BS.WALL_AT_HOLE))
@@ -98,14 +98,14 @@ def main():
     rep("  -> %s" % ("keine Kollisionen" if not bad else "%d Fehler!" % bad))
     rep("Schalter eingesetzt: Frontplatte außen, Kasten %.1f tief (ab Außenfläche), Wand am Loch %.1f." % (SW["body_depth"], BS.WALL_AT_HOLE))
     rep("Druckzeit grob: %.0f Schichten, ≈ %.0f g, etwa 5 bis 10 Minuten." % (nl, g))
-    with open(os.path.join(OUT, "pruefbericht.txt"), "w", encoding="utf-8") as fh:
+    with open(os.path.join(OUT, "pruefbericht_T2.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
     write_readme(g)
     previews(man)
-    zpath = os.path.join(OUT, "schalterprobe.zip")
+    zpath = os.path.join(OUT, "schalterprobe_T2.zip")
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(os.listdir(OUT)):
-            if f.endswith(".stl") or f == "README.txt":
+            if "T2" in f and (f.endswith(".stl") or f == "README_T2.txt"):
                 z.write(os.path.join(OUT, f), f)
     rep("%s: %.1f kB" % (os.path.relpath(zpath, ROOT), os.path.getsize(zpath) / 1024))
     return bad
@@ -123,20 +123,20 @@ def previews(man):
     sheet = Image.new("RGB", (2700, 800), "white")
     for i, im in enumerate((a, b, c)):
         sheet.paste(im, (900 * i, 0))
-    sheet.save(os.path.join(PREV, "T1.png"))
+    sheet.save(os.path.join(PREV, "T2.png"))
     print("Vorschau: %s" % os.path.relpath(PREV, ROOT))
 
 
 def write_readme(g):
-    txt = f"""PROBETEIL T1 HAUPTSCHALTER (Plan: plug/power/plan_switch.html)
+    txt = f"""PROBETEIL T2 HAUPTSCHALTER (Plan: plug/power/plan_switch.html)
 ==============================================================
 
 Ein Stück der Westwand des Unterkastens mit dem Loch für den Wippenschalter (KCD11, 10 × 15 mm, 2 Pins). Geprüft wird, ob der Schalter mit der
-dünnen Wand von {de(BS.WALL_AT_HOLE, 1)} mm einrastet und hält, ob das Loch {de(HOLE[0], 1)} × {de(HOLE[1], 1)} mm (Spiel 0,3 je Seite) sitzt oder klappert und ob die Brücke
+dünnen Wand von {de(BS.WALL_AT_HOLE, 1)} mm einrastet und hält, ob das Loch {de(HOLE[0], 1)} × {de(HOLE[1], 1)} mm (T1 hatte 13,6 × 8,6 und war sehr stramm: horizontal +0,1, vertikal +0,4) sitzt oder klappert und ob die Brücke
 über dem Loch sauber wird. Nur ein Teil, ≈ {de(g, 1)} g, etwa 5 bis 10 Minuten.
 
 Datei (Druckausrichtung, keine Stützen)
-  T1_wand_schalter.stl  Wand {de(W, 0)} × {de(H, 1)} × {de(T, 1)} mm, steht senkrecht auf dem Bodenstreifen ({de(FLOOR_D, 0)} mm tief, {de(FLOOR_T, 1)} dick).
+  T2_wand_schalter.stl  Wand {de(W, 0)} × {de(H, 1)} × {de(T, 1)} mm, steht senkrecht auf dem Bodenstreifen ({de(FLOOR_D, 0)} mm tief, {de(FLOOR_T, 1)} dick).
                         Loch {de(HOLE[0], 1)} × {de(HOLE[1], 1)} mit der Langseite waagerecht, Mitte {de(ZC, 1)} mm über dem Bett (wie in der echten Wand).
                         Innentasche {de(POCKET[0], 1)} × {de(POCKET[1], 1)} mm, {de(BS.POCKET_T, 1)} tief, oben mit 45°-Dach: In der Tasche bleibt die Wand {de(BS.WALL_AT_HOLE, 1)} mm dick.
 
@@ -156,7 +156,7 @@ Spanne über die Haken an der 13-mm-Seite (muss größer als {de(HOLE[0], 1)} se
 
 Prüfbericht: pruefbericht.txt. Ergebnistext bitte im Chat einfügen (Wand ok oder zu dünn, Sitz leicht oder fest, Haken fassen ja oder nein, Brücke ok).
 """
-    with open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8") as fh:
+    with open(os.path.join(OUT, "README_T2.txt"), "w", encoding="utf-8") as fh:
         fh.write(txt)
 
 

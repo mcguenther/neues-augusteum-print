@@ -25,8 +25,7 @@ SW = dict(
     pin_pitch=4.8,                       # A  Pinabstand (Foto 4)
     wire=4.0,                            # E  Platz für Lötstelle, Schrumpfschlauch und Biegung
 )
-HOLE_CLR = 0.3                           # E  Spiel je Seite (Nutzer: lieber reichlicher, 13,6 × 8,6; vorher 0,15)
-HOLE = (SW["body_l"] + 2 * HOLE_CLR, SW["body_w"] + 2 * HOLE_CLR)   # 13,6 x 8,6 (Händler nennen 13,5 x 8,5 bis 9)
+HOLE = (13.7, 9.0)                       # E  T1 (13,6 × 8,6) passte, war aber sehr stramm: Nutzer 17.10.2026 horizontal +0,1, vertikal +0,4 (Händler: 13,5 × 8,5 bis 9)
 WALL_AT_HOLE = 1.2                       # E  Wand am Loch (Nutzer: erst dünn probieren; Schnapphaken brauchen etwa 0,8 bis 2,0, Messung offen)
 POCKET = (HOLE[0] + 4.0, HOLE[1] + 3.0)  # E  Innentasche: lässt die Haken beim Einschnappen ausfedern
 POCKET_T = PP.UK_WALL - WALL_AT_HOLE     # 1,2 tief
@@ -287,7 +286,7 @@ def build():
     dims = [
         ("Kasten (verschwindet in der Wand), B × L", f"{f(SW['body_w'])} × {f(SW['body_l'])}", "M vom Nutzer grob gemessen; Händler: Ausschnitt 13,5 × 8,5 bis 9"),
         ("Frontplatte B × L (Rand etwa 1 je Seite)", f"{f(SW['flange_w'])} × {f(SW['flange_l'])}", "M Nutzer; passt zur Bauform 10 × 15 (KCD11)"),
-        ("Loch in der Wand (Spiel 0,15 je Seite)", f"{f(HOLE[0])} × {f(HOLE[1])}", "E reichlicher als vorher (0,3 je Seite, Nutzer); Händler nennen 13,5 × 8,5 bis 9; Testprobe T1"),
+        ("Loch in der Wand", f"{f(HOLE[0])} × {f(HOLE[1])}", "E nach T1 (13,6 × 8,6: passte, aber sehr stramm) horizontal +0,1, vertikal +0,4 (Nutzer); Händler nennen 13,5 × 8,5 bis 9; Testprobe T2"),
         ("Wand am Loch", f"{f(WALL_AT_HOLE)}", "E Nutzer: erst dünn probieren; Schnapphaken greifen je nach Typ bei 0,8 bis 2,0, Abstand Frontplatte bis Hakenkante messen"),
         ("Außenwand sonst, Innentasche", f"{f(PP.UK_WALL)} / {f(POCKET[0])} × {f(POCKET[1])} × {f(POCKET_T)}", "E Tasche von innen, damit die Haken ausfedern können"),
         ("Höhe der Wand außen / Schaltermitte", f"{f(H_WALL)} / {f(Z_MID)}", f"A Unterkasten im Plan 1:1300 (Platte 14,6 + Unterkasten {f(H_WALL)} = {f(LAYOUT['thick'])}), Frontplatte 10 hoch lässt je {f((H_WALL - 10) / 2)} Rand"),
@@ -393,7 +392,7 @@ a {{ color:var(--accent); }}
     <tr><td>Südwand</td><td>Dahinter liegt die Elektronik direkt an der Wand (x 3 bis 63, y 53 bis 88), kein Platz.</td></tr>
     <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
   </table>
-  <p class="note"><b>Zu klären:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, das sind drei Linien). Ob sie dort steif genug ist und die Haken fassen, zeigt die Probe T1. Die Stützen-Raster (Kante 6, alle 40 mm) liegen ohnehin weiter innen.</p>
+  <p class="note"><b>Zu klären:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, das sind drei Linien). Ob sie dort steif genug ist und die Haken fassen, zeigt die Probe T2 (T1 passte mit dieser Wand). Die Stützen-Raster (Kante 6, alle 40 mm) liegen ohnehin weiter innen.</p>
 </section>
 
 <section class="sheet">
@@ -420,10 +419,10 @@ Powerbank USB  ──schwarz (GND)───────────────�
       <div class="pick">Vorschlag: A</div></div>
     <div class="card"><h3>2. Loch</h3>
       <ul><li><b>{f(HOLE[0])} × {f(HOLE[1])}</b></li><li>Wand am Loch {f(WALL_AT_HOLE)} mit Innentasche {f(POCKET_T)}</li></ul>
-      <div class="pick">Loch reichlicher (0,3 je Seite), Wand zuerst {f(WALL_AT_HOLE)}; Probe T1 klärt beides</div></div>
+      <div class="pick">Loch nach T1 etwas größer, Wand weiter {f(WALL_AT_HOLE)}; Probe T2 klärt den Sitz</div></div>
     <div class="card"><h3>3. Oberkante des Lochs</h3>
       <ul><li><b>Brücke</b> über {f(HOLE[0])} mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
-      <div class="pick">Vorschlag: Brücke, in T1 prüfen</div></div>
+      <div class="pick">Vorschlag: Brücke, in T2 prüfen</div></div>
   </div>
 </section>
 
@@ -439,8 +438,9 @@ Powerbank USB  ──schwarz (GND)───────────────�
 </section>
 
 <section class="sheet">
-  <h2>Testprobe T1 (Wand 1,2, Loch 13,6 × 8,6)</h2>
-  <p>Ein Wandstück {f(T1_W)} × {f(H_WALL)} × {f(PP.UK_WALL)} mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen {f(T1_FLOOR_D)} mm tief, damit es steht wie in der Wand (Loch ab z = {f(Z_MID - HOLE[1] / 2)} über dem Bett). Zusammen etwa 1 g und 5 bis 10 Minuten Druck. Es zeigt, ob die {f(WALL_AT_HOLE)} mm dünne Wand hält, ob die Haken fassen, ob das Loch mit 0,3 Spiel klappert und ob die Brücke über dem Loch sauber wird. STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code>, erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>.</p>
+  <h2>Probeteile T1 und T2</h2>
+  <p><b>T1</b> (Loch 13,6 × 8,6, Wand am Loch 1,2) ist gedruckt: passt, aber sehr stramm. <b>T2</b> nimmt das Loch {f(HOLE[0])} × {f(HOLE[1])} (horizontal +0,1, vertikal +0,4), Wand weiter {f(WALL_AT_HOLE)} mm, Tasche {f(POCKET[0])} × {f(POCKET[1])}.</p>
+  <p>Beide sind ein Wandstück {f(T1_W)} × {f(H_WALL)} × {f(PP.UK_WALL)} mm mit einem Loch und der Innentasche, dazu ein Bodenstreifen {f(T1_FLOOR_D)} mm tief, damit es steht wie in der Wand (Loch ab z = {f(Z_MID - HOLE[1] / 2)} über dem Bett). Zusammen etwa 1 g und 5 bis 10 Minuten Druck. T2 zeigt, ob der Sitz jetzt leichtgängig ohne Klappern ist und die Haken noch fassen. STL, Prüfbericht und README stehen in <code>stl/steckmodul_schalterprobe/</code> (Dateien mit T2), erzeugt mit <code>python3 -m plug.power.build_switch_probe</code>.</p>
 </section>
 </main>
 """

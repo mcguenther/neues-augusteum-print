@@ -28,23 +28,28 @@ außen auf. Die Langseite liegt waagerecht, weil die Wand nur 17,4 mm hoch ist. 
 
 | Größe | Wert | Status |
 |---|---|---|
-| Loch in der Wand | **13,6 × 8,6 mm** (0,3 mm Spiel je Seite, Händler 13,5 × 8,5 bis 9) | Entscheidung des Nutzers, Test offen |
-| Wand am Loch | **1,2 mm** (drei Linien), sonst 2,4 mm; Innentasche 17,6 × 11,6 × 1,2 tief mit 45°-Dach | Entscheidung des Nutzers, Test offen |
+| Loch in der Wand | **13,7 × 9,0 mm** (T1 mit 13,6 × 8,6 passte, war aber sehr stramm: horizontal +0,1, vertikal +0,4; Händler 13,5 × 8,5 bis 9) | Entscheidung des Nutzers nach T1, T2 gebaut, Druck offen |
+| Wand am Loch | **1,2 mm** (drei Linien), sonst 2,4 mm; Innentasche 17,7 × 12,0 × 1,2 tief mit 45°-Dach | Entscheidung des Nutzers, in T1 getestet (passte), Halt der Haken ungeprüft |
 | Lage | Westwand, y = 36 (Platte 1:1300, Süden 0, Norden 220,8) | Wunsch des Nutzers; Schieber zeigt frei von Konflikten |
 | Schalterraum | etwa 20 mm tief ab Außenfläche, 14 mm breit; 2,4 mm Luft bis zum Fach (Streifen 22,4 mm) | abgeleitet |
 
 Verdrahtung: roter Draht der Powerbank-Zuleitung durch den Schalter, danach zu INA226 VIN+ und Shunt; Masse (schwarz) direkt an INA226 GND.
 Schalter vor dem Shunt, damit der INA226 beim Ausschalten stromlos ist. Lötstellen mit Schrumpfschlauch isolieren.
 
-## Probeteil T1
+## Probeteile T1 und T2
 
-Wandstück 24 × 17,4 × 2,4 mm mit Loch und Tasche, dazu Bodenstreifen (≈ 1 g, 5 bis 10 Minuten): `stl/steckmodul_schalterprobe/T1_wand_schalter.stl`
-mit README, Prüfbericht und ZIP, Bild `vorschau/steckmodul_schalterprobe/T1.png`, Generator `python3 -m plug.power.build_switch_probe`.
-Geprüft wird, ob die dünne Wand hält, ob die Haken fassen, ob das Loch klappert und ob die Brücke über dem Loch sauber wird.
+Wandstück 24 × 17,4 × 2,4 mm mit Loch und Tasche, dazu Bodenstreifen (≈ 1 g, 5 bis 10 Minuten), Generator `python3 -m plug.power.build_switch_probe`.
+
+| Teil | Loch | Wand am Loch | Ergebnis |
+|---|---|---|---|
+| T1 (`stl/steckmodul_schalterprobe/T1_wand_schalter.stl`, Bild `vorschau/steckmodul_schalterprobe/T1.png`) | 13,6 × 8,6 | 1,2 | gedruckt am 17.10.2026: „passt schon so, aber sehr stramm“ (Nutzer); Halt der Haken und Brücke nicht gesondert gemeldet |
+| T2 (`stl/steckmodul_schalterprobe/T2_wand_schalter.stl`, README_T2, pruefbericht_T2, schalterprobe_T2.zip, Bild `T2.png`) | 13,7 × 9,0 | 1,2 | gebaut, noch nicht gedruckt |
+
+T2 prüft, ob der Sitz jetzt leichtgängig ist, ohne zu klappern, und ob die Haken noch fassen: Das Loch ist jetzt 13,7 lang, die Haken müssen breiter sein.
 
 ## Noch nachzumessen (Schieblehre)
 
-1. Spanne über die beiden Haken an der 13-mm-Seite; muss größer als das Loch (13,6 mm) sein, sonst hält der Schalter nicht.
+1. Spanne über die beiden Haken an der 13-mm-Seite; muss größer als das Loch (13,7 mm) sein, sonst hält der Schalter nicht.
 2. Abstand von der Unterseite der Frontplatte bis zur Hakenkante: maximale Wandstärke, in die er einrastet (Wand am Loch ist 1,2).
 3. Kasten (B × L), Frontplatte (B × L) und deren Dicke, Wippe über der Frontplatte.
 4. Tiefe des Kastens hinter der Frontplatte, Länge, Breite und Abstand der Pins (Lötfahne oder 4,8-mm-Flachstecker).
