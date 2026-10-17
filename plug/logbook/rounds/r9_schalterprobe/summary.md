@@ -18,10 +18,11 @@ Ob der Wippenschalter KCD11 (10 × 15, Kasten 13 × 8) in der 1,2 mm dünnen Wan
 | T2, Loch 13,7 × 9,0, Wand 1,2 | **lässt sich sehr gut einsetzen und hält trotzdem sehr fest** | **bewährt** |
 | Wand am Loch 1,2 mm (drei Linien) | hält mit T1 und T2 | **bewährt** |
 | Innentasche mit 45°-Dach | gedruckt, keine Beanstandung | bewährt (nicht gesondert bewertet) |
-| Brücke über dem Loch (13,7 mm), Hakenspanne, Zug an der Wippe | nicht gesondert gemeldet | offen |
+| Brücke über dem Loch (13,7 mm, ohne Stützen gedruckt) | **sauber** (Nutzer, nachgemeldet) | **bewährt** |
+| Hakenspanne, Zug an der Wippe | Hakenspanne ungemessen; Halt „sehr fest“ | Spanne offen |
 
 ## Entscheidungen und Folgen
 
 - Werte stehen in `plug/power/params.py` (`SW_HOLE`, `SW_WALL`, `SW_POCKET_PAD`, `SW_Y`) und werden vom Plan `build_plan_switch.py` gelesen.
 - Lage: Westwand, y = 36 (Platte 1:1300, südlich der Elektronikbox); der Schieber der Planseite zeigt sie frei von Konflikten. Sie ist noch nicht in der echten Platte gedruckt.
-- Offen: Einbau in den echten Unterkasten (Generator `hohl`/`build_concept` kennt die Wand und das Loch noch nicht), Hakenspanne mit der Schieblehre nachmessen, Brücke im echten Teil prüfen.
+- Offen: Einbau in den echten Unterkasten (Generator `hohl`/`build_concept` kennt die Wand und das Loch noch nicht), Hakenspanne mit der Schieblehre nachmessen, Brücke im echten Teil nur noch gegenzuprüfen (im Probeteil sauber).

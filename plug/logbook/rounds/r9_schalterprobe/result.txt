@@ -1,3 +1,4 @@
 Rückmeldung Schalterprobe T1 und T2 (Hauptschalter, Westwand), 2026-10-17, wörtlich aus dem Chat
 T1 (Loch 13,6 x 8,6, Wand am Loch 1,2): passt schon so, aber sehr stramm. noch 0,4 mm mehr luft in vertikale richtung, 0,1mm mehr spiel in horizontale richtung wäre gut.
 T2 (Loch 13,7 x 9,0, Wand am Loch 1,2): jetzt lässt er sich sehr gut einsetzen und hält trotzdem sehr fest! super! so abspeichern
+Nachtrag zur Brücke über dem Loch: die brücke war sauber

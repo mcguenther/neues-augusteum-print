@@ -45,7 +45,7 @@ Wandstück 24 × 17,4 × 2,4 mm mit Loch und Tasche, dazu Bodenstreifen (≈ 1 g
 | T1 (`stl/steckmodul_schalterprobe/T1_wand_schalter.stl`, Bild `vorschau/steckmodul_schalterprobe/T1.png`) | 13,6 × 8,6 | 1,2 | gedruckt am 17.10.2026: „passt schon so, aber sehr stramm“ (Nutzer); Halt der Haken und Brücke nicht gesondert gemeldet |
 | T2 (`stl/steckmodul_schalterprobe/T2_wand_schalter.stl`, README_T2, pruefbericht_T2, schalterprobe_T2.zip, Bild `T2.png`) | 13,7 × 9,0 | 1,2 | gedruckt am 17.10.2026: „jetzt lässt er sich sehr gut einsetzen und hält trotzdem sehr fest, super“ (Nutzer); **bewährt** |
 
-Eingefroren in `plug/logbook/rounds/r9_schalterprobe/` (ZIP, `summary.md`, `result.txt`). Nicht gesondert bewertet: die Brücke über dem Loch; die Hakenspanne ist weiter ungemessen.
+Eingefroren in `plug/logbook/rounds/r9_schalterprobe/` (ZIP, `summary.md`, `result.txt`). Die Brücke über dem Loch war sauber (ohne Stützen gedruckt); die Hakenspanne ist weiter ungemessen.
 
 ## Noch nachzumessen (Schieblehre)
 

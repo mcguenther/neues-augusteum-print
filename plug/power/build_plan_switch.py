@@ -392,7 +392,7 @@ a {{ color:var(--accent); }}
     <tr><td>Südwand</td><td>Dahinter liegt die Elektronik direkt an der Wand (x 3 bis 63, y 53 bis 88), kein Platz.</td></tr>
     <tr><td>Nordwand (Plattenkante, Anschlussseite)</td><td>Fenster für LEDs und Buchsen, dann USB-A-Stecker und Kabelkanal belegen die Breite.</td></tr>
   </table>
-  <p class="note"><b>Stand:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, drei Linien). Mit dem Probeteil T2 hat sich der Schalter sehr gut einsetzen lassen und hält sehr fest; die Werte sind bewährt und stehen in <code>plug/power/params.py</code>. Offen sind der Einbau in den echten Unterkasten und die Hakenspanne.</p>
+  <p class="note"><b>Stand:</b> Der Unterkasten ist hohl und hat an dieser Stelle keine Stützen. Die Wand ist {f(PP.UK_WALL)} mm dick, am Loch nur {f(WALL_AT_HOLE)} mm (Tasche {f(POCKET_T)} tief, drei Linien). Mit dem Probeteil T2 hat sich der Schalter sehr gut einsetzen lassen und hält sehr fest; die Werte sind bewährt und stehen in <code>plug/power/params.py</code>. Die Brücke über dem Loch war sauber. Offen sind der Einbau in den echten Unterkasten und die Hakenspanne.</p>
 </section>
 
 <section class="sheet">
@@ -422,7 +422,7 @@ Powerbank USB  ──schwarz (GND)───────────────�
       <div class="pick">Loch und Wand bewährt (T2): {f(HOLE[0])} × {f(HOLE[1])}, Wand {f(WALL_AT_HOLE)}</div></div>
     <div class="card"><h3>3. Oberkante des Lochs</h3>
       <ul><li><b>Brücke</b> über {f(HOLE[0])} mm drucken (Bambu A1 schafft das meist)</li><li>Dachform mit 45°, dann bleibt oben ein Dreieck offen</li></ul>
-      <div class="pick">Vorschlag: Brücke, im echten Unterkasten prüfen</div></div>
+      <div class="pick">Brücke bewährt: in T2 sauber ohne Stützen</div></div>
   </div>
 </section>
 
