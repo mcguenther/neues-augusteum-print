@@ -7,6 +7,9 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 
 | Nr. | Beobachtung | Regel | Runde |
 |---|---|---|---|
+| L40 | Steckplatte: oben bildet sich ein Wulst über die letzten 5 bis 7 Schichten, Gegenstück zum Elefantenfuß unten (der durch die Bettfase 0,5 weg war) | Obere Außenkanten großer Platten mit Fase mindestens 1,5 mm (45°, in Stufen) versehen; die Fase muss tiefer sein als der Wulst (5 bis 7 Schichten) | r7 |
+| L41 | Öffnungen der Mulden ohne Fase: Zuquetschung befürchtet | Einführfase an jeder Mulden-Öffnung mindestens 0,5 mm, in Stufen bis über die Oberkante der Platte (endet sie darunter, bleibt ein Rest-Überhang) | r7 |
+| L42 | Gravierte Schrift und Nordpfeil auf der Steckplatte nicht lesbar (wie L01) | Beschriftung immer erhaben 0,6 mm, auch auf großen Platten | r7 |
 | L01 | Gravierte Schrift in schwarzem PLA kaum lesbar | Schrift **erhaben** (0,5 bis 0,6 mm), Rang als **Kerben** in einer Kante; nie in Passflächen (dort fehlt das Spiel) | r1, r2 |
 | L02 | Pin-Löcher auf der ersten Schicht schließen sich (Elefantenfuß); einzelne Löcher auch sonst zugequollen | Lochmündungen nie unfasst am Bett; Fase beidseitig (0,3, in dünnen Platten höchstens die halbe Dicke) | r0, r1, r3 |
 | L03 | Elefantenfuß etwa 0,2 mm; Fase 0,3 an Bettkanten half nur teilweise, mit 0,4 bleibt ein leichter Wulst | Bettkanten von Steckteilen anfasen (0,4), Schachteingang am Bett zugleich als Einführfase; nächster Test 0,5 | r1 bis r3 |
@@ -14,17 +17,23 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L05 | Muldenboden 0,4 mm über der Körpertasche (etwa 11 × 6 mm) mit Pin-Löchern: stark durchgehängt, Löcher zu; Kabelraum-Decke 15 × 15 hing durch, trotz Thick bridges | Löcher nie in dünne Brücken legen. Entweder mit Support drucken oder Hohlräume als 45°-Böschung bauen (Platte B: 37°, 0,15 Überhang je Schicht) | r3 |
 | L06 | Freistehende Stempel am Deckel (1,35 × 2 mm, 3,6 hoch) brachen sofort ab | Freistehende Teile mindestens etwa 2,5 × 1,7 mm Querschnitt, mit Streben (45°); besser das Konzept vermeiden (Heißkleber als Ausweg) | r3 |
 | L07 | Teile ohne Blick auf die Druckausrichtung entworfen | je Teil festlegen, welche Seite am Bett liegt, und die Überhänge dazu zeigen | r0, r3 |
+| L32 | Faden-V (Kanal Ø 2,2, 53° und 40°): Faden geht durch keins; Öffnungen gut, der untertauchende Kanal zu eng | Kanal mindestens 1 mm weiter (Ø 3,2 oder mehr), Fadenwege großzügig; der Nutzer druckt ohne Rücksicht auf kleine Überhänge mit **Support** | r4 |
+| L33 | Nische mit drei Fenstern und Stegen nur, um Brücken zu vermeiden; Nutzer: unnötig und zu groß | Der Nutzer druckt mit Support (einmal bereinigen): Konstruktionen, die nur Brücken vermeiden, vereinfachen. Eine mittelgroße Nische statt drei Fenstern | r4 |
 
 ## Passung und Maße
 
 | Nr. | Beobachtung | Regel | Runde |
 |---|---|---|---|
+| L37 | Fachprobe Powerbank: Luft über der Powerbank 0,6 bei Datenblattdicke 12,6; die echte Powerbank ist „minimal dicker“, die Deckplatte wackelte (Nutzer: ca. 0,2 mm mehr Höhe). Der Prüfbericht hatte den Worst-Case 13,0 mit nur 0,2 Luft noch als „ok“ gemeldet | Bei ungemessenen Kaufteilen Luft aus dem **Worst-Case** wählen, nicht aus dem Nennmaß (hier 13,0 + 0,6 Luft), und die Dicke vor der nächsten Runde mit der Schieblehre notieren; lose aufliegende Deckel brauchen Luft und Halt (Zapfen, Faden) | r5 |
+| L38 | Zaun der Fachprobe: README und Prüfbericht nennen einen Zaun um die Powerbank, der Nutzer sagt, nur der Ausschnitt am Anschlussende sei gedruckt | Bei Ausschnitt-Proben (Variante B) im Plan und im Testbogen ausdrücklich benennen, **was nicht im Druck ist**, und das Ergebnis dazu abfragen (Sitz im Zaun nur mit vollem Zaun testbar) | r5 |
 | L08 | Datenblattmaße wichen vom Kit ab: Körper der Winkelleiste 2,0 statt 2,54; Buchse etwa 14,5 statt 14,0 hoch | Kaufteile am echten Teil messen, bevor Geometrie daran hängt; ungemessene Werte im Plan als „ungemessen“ markieren | r0, r3 |
 | L09 | Spalt unter 0,5 mm nicht messbar | Spielwerte als Serie mit Kennzeichnung drucken, nach Gefühl beurteilen (1 bis 5) | r1 |
 | L10 | Kassette im Schacht: 0,05 passt nicht, 0,10 nur mit Kraft, 0,15 ideal zum Gleiten, **0,06 eingepresst** ideal | Einpressen: 0,06 je Seite durchgehend; mit Passzone und Entlastung (8 mm + 0,20) zu lose | r1, r3 |
 | L11 | Test mit 7 mm Berührungslänge sagte nichts über 17 mm im echten Aufbau | Passungen in der echten Länge und Druckrichtung testen | r2, r3 |
 | L12 | Kassette ragt nach dem Einpressen etwa 0,2 mm unten heraus | Schachttiefe = Kassettenhöhe + mindestens 0,3 | r3 |
 | L13 | Buchse sitzt in Tasche 14,15 nicht (keine passt), in 14,45 steht sie noch minimal heraus | Taschenhöhe aus der **gemessenen** Buchsenhöhe plus Spiel; mindestens 14,55 bis zur Messung | r3 |
+| L34 | Zapfen Ø 4 / Loch 4,3, nur 1,5 mm hoch: wackelt deutlich (5) | Zapfen und Loch mindestens 1 mm länger (2,5), Gleitspiel 0,15 bleibt | r4 |
+| L36 | Schachttiefe Kassette + 0,30: Kassette sitzt, aber Nutzer wünscht noch 0,05 Luft | Kassette + 0,35 | r4 |
 | L14 | Ein Schieber in einer Schwalbenschwanz-Nut klemmte bei allen Spielen (0,05 bis 0,20), Nut durch die Wand | Schieber und Trichterplatte entfallen; sie kosten Pin-Länge | r1 |
 
 ## Kontakt
@@ -57,6 +66,7 @@ Neue Lehren oben in der jeweiligen Gruppe ergänzen.
 | L26 | Ein Generatorlauf überschreibt die Dateien in `stl/` | getesteten Satz einfrieren (ZIP im Rundenordner, Commit-Hash) | r3 |
 | L28 | Schrauben nicht vorhanden; Befestigung des Bodens am Hut ist genäht | Deckel und Platte mit Löchern für Fäden planen, keine Schrauben; vor der Planung fragen, welche Verbindungsmittel vorhanden sind | r3 |
 | L29 | Faden zunächst durch Löcher geplant, die oben austreten würden; gemeint war ein Austritt an der Unterseite durch eine Lasche | Bei Verbindungsmitteln den Weg des Fadens oder Teils ganz abfragen (Eintritt, Austritt, welche Seite zugänglich) und im Plan als Schnitt zeigen | r3 Nachtrag |
+| L35 | Im Ergebnistext von Steckprobe 2 fehlte, welche ZIP gedruckt wurde (L25 noch einmal); zwischen erstem Bau und Neubau lag eine Änderung (eine statt zwei Kassetten) | Der Testbogen fragt Datum oder Kommit der ZIP ab und trägt es in den Ergebnistext; Neubau nach Rückmeldung nur mit neuer Versionsnummer in README und Dateinamen | r4 |
 | L27 | Wertänderungen in `plug/parts.py` würden Probestück und Institut brechen (sie rechnen mit Schieber) | neue Werte in `plug/<paket>/params.py`; `parts.py` erst nach bewährter Runde ändern | r3 |
 
 ## Vorab-Checkliste vor jeder STL

@@ -7,7 +7,7 @@ der Universität Leipzig – aus drei Datenquellen zum Vergleich:
     laserscan  Laserscan-Punktwolke GeoSN 2023 (dl-de/by-2-0), siehe laserscan.py
 
 Aufruf:
-    python3 generate.py                 # alle Quellen, Maßstäbe 1:1000 und 1:1500
+    python3 generate.py                 # alle Quellen, Maßstäbe 1:1000, 1:1300 und 1:1500
     python3 generate.py --quelle lod2   # nur eine Quelle (mehrfach angebbar)
     python3 generate.py --scale 750     # beliebiger Maßstab
     python3 generate.py --fetch         # Quelldaten vorher neu herunterladen
@@ -385,22 +385,30 @@ ATTRIBUTION = {
 }
 
 
-def engrave_labels(plate, outline, scale, title, top_z, quelle="osm"):
+def engrave_labels(plate, outline, scale, title, top_z, quelle="osm", raised=0.0, inset=0.0):
+    """Schrift und Nordpfeil in die Oberseite gravieren; mit raised > 0 stattdessen so viel mm erhaben auf die Oberseite setzen.
+    inset: Block der Beschriftung um so viel mm von linkem, rechtem und unterem Rand nach innen (Breite der Randfase)."""
     minx, miny, maxx, maxy = outline.bounds
+    minx, miny, maxx = minx + inset, miny + inset, maxx - inset
     cuts = []
     avail = maxx - minx - 22  # Platz links vom Nordpfeil
     t1 = text_cross_section(title, 4.2, minx + 5, miny + LABEL_BAND / 2 - 0.3, max_width=avail)
     t2 = text_cross_section("1:%d  ·  %s" % (scale, ATTRIBUTION[quelle]), 2.4,
                             minx + 5, miny + 2.4, max_width=avail)
+    if raised > 0:
+        def mark(cs):
+            return m3d.Manifold.extrude(cs, raised + 0.01).translate([0, 0, top_z - 0.01])
+    else:
+        def mark(cs):
+            return m3d.Manifold.extrude(cs, ENGRAVE_DEPTH + 1).translate([0, 0, top_z - ENGRAVE_DEPTH])
     for t in (t1, t2):
         if t is not None:
-            cuts.append(m3d.Manifold.extrude(t, ENGRAVE_DEPTH + 1).translate([0, 0, top_z - ENGRAVE_DEPTH]))
-    na = north_arrow(maxx - 9, miny + 2.5, 7)
-    cuts.append(m3d.Manifold.extrude(na, ENGRAVE_DEPTH + 1).translate([0, 0, top_z - ENGRAVE_DEPTH]))
+            cuts.append(mark(t))
+    cuts.append(mark(north_arrow(maxx - 9, miny + 2.5, 7)))
     nt = text_cross_section("N", 3.0, maxx - 9, miny + 10, anchor="center")
     if nt is not None:
-        cuts.append(m3d.Manifold.extrude(nt, ENGRAVE_DEPTH + 1).translate([0, 0, top_z - ENGRAVE_DEPTH]))
-    return plate - union(cuts)
+        cuts.append(mark(nt))
+    return plate + union(cuts) if raised > 0 else plate - union(cuts)
 
 
 def tile_cuts(outline, fp_mm):
@@ -923,7 +931,7 @@ FAST_RASTER = 0.6  # m, Laserscan-Höhenraster im Schnelllauf (Standard 0.3)
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, action="append",
-                    help="Maßstab 1:N (mehrfach möglich, Standard: 1000 und 1500)")
+                    help="Maßstab 1:N (mehrfach möglich, Standard: 1000, 1300 und 1500)")
     ap.add_argument("--quelle", action="append", choices=QUELLEN,
                     help="Datenquelle (mehrfach möglich, Standard: alle)")
     ap.add_argument("--filamente", type=int, action="append", choices=[3, 4],
@@ -971,7 +979,7 @@ def main():
         laserscan.fetch()
     with parallel.phase("Farben messen (nur bei Änderung)"):
         refresh_colours()
-    scales = args.scale or ([1500] if args.fast else [1000, 1500])
+    scales = args.scale or ([1500] if args.fast else [1000, 1300, 1500])
     tasks = [(q, sc, os.path.join(args.out, q, "1zu%d" % sc)) for q in quellen for sc in scales]
     with parallel.phase("Modelle bauen, färben, exportieren"):
         results = parallel.starmap(build_scale, tasks)

@@ -1,0 +1,9 @@
+Rückmeldung des Nutzers zum Druck der Steckplatte 1:1300 (flache Unterseite, 14,6 mm), 2026-10-17, sinngemäß aus dem Chat (Sprachnachricht, leicht gekürzt):
+
+- Prinzipiell hat der Druck funktioniert.
+- Zwischen dem Innenhof und dem Institutsgebäude bzw. dem Seminargebäude gibt es keine Trennwand. Die Wand ist zu dünn, das ist wahrscheinlich auch okay: man setzt den Hof einfach ein, wenn die anderen Gebäude schon dastehen, dann sind die Gebäude die Trennwände. Der Hof muss ja auch nicht in Pins einrasten.
+- Die Schrift, die Nord-Pin-Marke und so sind nicht lesbar, weil sie eingelassen sind. Sie sollen in die andere Richtung, herausragen und oben drauf sitzen.
+- Unten gibt es keinen Elefantenfuß, das ist sehr gut. Dafür gibt es oben eine Art Elefantenfuß auf den letzten 5, 6, 7 Ebenen. Das ist nicht gut: oben auch eine Fase einplanen, die mehr als nur 2, 3 Ebenen tief ist, so 2 mm oder 1,5 mm.
+- Bei den Mulden der Gebäude eine ganz kleine Fase von mindestens 1/2 mm einplanen, an den Öffnungen der Mulden, damit es keine Zuquetschung wie beim Elefantenfuß gibt.
+- Ansonsten ganz zufrieden. Änderungen erst merken; kurz prüfen, dass es passt, ein kleines interaktives 3D-Vorschaumodell (HTML) erzeugen; nach der Prüfung durch den Nutzer als Änderung aufnehmen.
+Variante/ZIP: Steckplatte vom 2026-10-16 abends (Commit „Steckplatte 1:1300 auf flache Unterseite umgestellt“); eingefroren als steckplatte_v1_gedruckt.stl in diesem Ordner.

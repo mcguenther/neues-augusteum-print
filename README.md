@@ -49,9 +49,9 @@ Bildmaßstab):
 
 <!-- AUTO:massstaebe -->
 <table>
-<tr><th align="center"><b>1:1500</b><br><sub>kompakt</sub></th><th align="center"><b>1:1000</b><br><sub>groß, mehr Detail</sub></th></tr>
-<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1500.png" alt="1:1500" width="317"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1000.png" alt="1:1000" width="452"></td></tr>
-<tr><td align="center"><sub>102 × 195 × 98 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>147 × 280 × 147 mm<br>in 2 Teile geteilt</sub></td></tr>
+<tr><th align="center"><b>1:1500</b><br><sub>kompakt</sub></th><th align="center"><b>1:1300</b><br><sub>Maßstab der Steckplatte, Platte ≤ 230 mm</sub></th><th align="center"><b>1:1000</b><br><sub>groß, mehr Detail</sub></th></tr>
+<tr><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1500.png" alt="1:1500" width="317"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1300.png" alt="1:1300" width="359"></td><td align="center" valign="bottom"><img src="vorschau/readme/campus_laserscan_1zu1000.png" alt="1:1000" width="452"></td></tr>
+<tr><td align="center"><sub>102 × 195 × 98 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>116 × 221 × 113 mm<br>passt auf ein Druckbett</sub></td><td align="center"><sub>147 × 280 × 147 mm<br>in 2 Teile geteilt</sub></td></tr>
 </table>
 <!-- /AUTO:massstaebe -->
 

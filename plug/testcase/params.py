@@ -29,13 +29,30 @@ MULDE_CLR_T = 0.10      # Fuß in der Mulde (Fuß-Lehre: 0,10 und 0,15 gut, 0,20
 STEP_H_T = 1.8          # Stufe für das Lötende wie für Körperhöhe 1,8 (2,0 und 1,8 liegen flach)
 BODY_EXT_T = 1.5        # Körpertasche zum Lötende hin länger
 
+# ---- Festlegung Maßstab 1:1300 (plug/logbook/scale.md); ALLE folgenden Planwerte sind NOCH NICHT GETESTET (Liste: scale.md, „Ungetestete Planwerte“): Mulde überall 4 mm tiefer, damit die LED nicht direkt unter dem Dach sitzt.
+# Die Steckprobe 1 (getestet, eingefroren) bleibt bei 0: dims() ohne Argument ist unverändert, dims(MULDE_EXTRA_T) ist der Planwert.
+# Die Mulde ist eine einzige Ebene: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (F 14,2); keine Stufe, keine zweite Ebene in Form der
+# Kassette. Die Kassette sitzt im Gebäudekörper und schließt unten bündig mit ihm ab; die Umrisse der Gebäude sind auf der Platte erkennbar.
+MULDE_EXTRA_T = 4.0
+SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchstens 230 × 230 mm)
+# Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
+CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
+            "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
+HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
+HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
+HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite; die Wand zwischen Hof- und Gebäude-Aussparung bleibt 0,4 mm (Fuge Hof zu Gebäude 0,5 minus 0,1)
+MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
+OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite
+
 # ---- Fasen
-ENTRY_CH_T = 0.4        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus)
-EF_CH_T = 0.4           # Fase an Bettkanten von Steckteilen (0,3 ließ einen leichten Wulst)
+ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)
+PLATE_TOP_CH_T = 1.5    # Steckplatte: Fase an der oberen Außenkante (45°); der Druck zeigte oben einen Wulst über die letzten 5 bis 7 Schichten (Nutzer: 1,5 bis 2 mm)
+LABEL_RAISE_T = 0.6     # Steckplatte: Schrift und Nordpfeil erhaben statt graviert (graviert nicht lesbar, L01)
+EF_CH_T = 0.5           # Fase an Bettkanten von Steckteilen; Steckprobe 2: 0,5 (0,3 und 0,4 ließen einen leichten Wulst)
 
 # ---- Taschenhöhe über der Buchse: sie bestimmt, wie weit die Buchse hinter der Kassettenunterkante sitzen kann (Einstecktiefe E sinkt um diesen Wert)
-HSG_TOL_SAFE = 0.45     # Kassette 1: wie Nacht 2 (Buchse ging ganz hinein)
-HSG_TOL_TIGHT = 0.15    # Kassette 2: engere Tasche, begrenzt den Verlust an E auf 0,15 (Buchse muss dazu höchstens 14,15 mm hoch sein)
+HSG_TOL_SAFE = 0.60     # Steckprobe 2: Tasche 14,60 (Buchse etwa 14,55; bei 14,45 stand sie 0,1 heraus). Steckprobe 1: 0,45
+HSG_TOL_TIGHT = 0.15    # nur Steckprobe 1 (Kassette 2, passte keine Buchse); in Steckprobe 2 entfällt die Variante
 
 # ---- Kassette v4: Oberseite als Podest über der Buchse
 PODEST_T = 2.0          # LED-Fläche so viel höher als in Kassette v2 (dort 0,5 über der Taschenoberkante)
@@ -47,6 +64,15 @@ BOX_W, BOX_L = 24.0, 38.0          # Grundriss des Mini-Gebäudes (Hauptbalken-A
 NOTCH_W, NOTCH_L = 3.5, 9.0        # Ausschnitt an der Ecke (+x, −y): konkave Ecke wie bei echten Grundrissen
 PLATE_MARGIN = 7.0                 # Platte ragt so weit über den Fuß hinaus (Mulde + Fase + Wand)
 LID_T_T = 2.0
+
+
+# ---- Steckprobe 2 (Plan plug/testcase/plan2.html, Empfehlungen A abgenickt am 2026-10-16; Zwei-Lagen-Aufbau und Faden-V 40° neu aus plug/power/)
+SHAFT_EXTRA_T = 0.30    # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
+SLOT_END_T = -8.0       # Lötende-Schlitz 1 mm länger (Ende bei −8,0 statt −7,0), L20
+STAMP_AIR_T = 1.2       # Luft zwischen Anschlag-Steg und Körper der Winkelleiste (Karte D)
+S2_MARGIN = 8.0         # Rand der Mini-Oberplatte um den Fuß: Wand zwischen Mulde und Faden-V mindestens 1,4 (bei 7,0 nur 1,2)
+V_LEG_D, V_APEX, V_ENTRY_R, V_WALL = 2.2, 3.4, 2.0, 1.4      # Faden-V (Plan Steckprobe 2, Karte F)
+V_SLOPE_A, V_SLOPE_B = 0.75, 1.2   # Böschung: A = 53° zur Waagerechten (Plan, 0,15 mm Überhang je Schicht), B = 40° (flacher, 0,24 mm je Schicht)
 
 
 def e_of_t():
@@ -64,10 +90,11 @@ def kass_dims(tol=None):
     return k
 
 
-def dims():
-    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0."""
+def dims(extra=0.0):
+    """Maßkette im gesteckten Zustand: z = 0 Plattenoberseite (= Mulden-Oberkante), Fußunterkante bei −F, Pin-Reihe bei y = 0.
+    extra: Zusatztiefe der Mulde (mm); 0 = getestete Steckprobe 1, MULDE_EXTRA_T = Planwert (dims_plan())."""
     g1 = sd.HDR_UP - CEIL_T
-    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P)
+    F = sd.layer_up(g1 + sd.GUIDE + sd.CH_F + sd.CH_P + extra)
     z_hb = -F - CEIL_T                       # Oberkante Winkelleistenkörper
     z_bb = z_hb - sd.HDR_BODY                # Unterkante
     z_tip = z_hb + sd.HDR_UP
@@ -86,6 +113,11 @@ def dims():
                 y_off=y_off, yb=yb, y_tail=y_tail, y_kass0=y_kass0, y_kass1=y_kass1, yc=yc, kass_top=top,
                 kass_h=k["top"], box_top=top + STOP_T, box_h=F + top + STOP_T,
                 guide=F - g1 - sd.CH_F - sd.CH_P, step=sd.step_z(z_hb, STEP_H_T, sd.STEP_CLR))
+
+
+def dims_plan():
+    """Maßkette mit der festgelegten Zusatztiefe (F 14,2; die alte Platte B wäre 20,2 mm dick, die Steckplatte `plug/campus.py` ist F + CEIL_T = 14,6 mm)."""
+    return dims(MULDE_EXTRA_T)
 
 
 def footprint():
