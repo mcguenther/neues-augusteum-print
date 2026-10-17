@@ -141,6 +141,15 @@ Der Nutzer (2026-10-16): Steckprobe 3 ist nicht wichtig (Reserve-Druck), weil sc
 
 Der Nutzer hat die Lagen in der Platzierungs-App eingestellt (`plug/scale1176/placements_user_1300.json`); `python3 -m plug.scale1176.nudge` hat sie minimal angepasst, bis die Wand um den Schacht mindestens 1,2 mm beträgt (Verschiebung bis 0,8 mm, Drehung bis 3°), und `placements_1300.json` geschrieben. Ergebnis: nur das Paulinum musste (um dx −0,10, dy −0,10 mm, Wand 1,10 → 1,21 mm); alle anderen Lagen sind unverändert (Wand: Neues Augusteum 4,8, Hörsaal 6,7, Seminar 4,1, Institut 1,5, Hochhaus 4,7 mm). Docks innerhalb der Platte und ohne Überlappung. Grafik `vorschau/steckmodul_campus/positionen_diff.png` (`python3 -m plug.scale1176.nudge_plot`). Die Platte `stl/steckmodul_campus/steckplatte_1zu1300.stl` ist damit neu erzeugt. Die LED-Lage ist nicht mehr mittig erzwungen, sondern die des Nutzers.
 
+### Abgleich mit dem Powerbank-Konzept (2026-10-17)
+
+`plug/power/build_concept.py` (Konzeptseite, Stand 6) nutzt jetzt dieselbe Grundlage wie `plug/campus.py`: Laserscan-Grundrisse, Maßkette `params.stack_plan()` (F 14,2), die Oberplatte ist die **Steckplatte aus `plug.campus.build()`** (flache Unterseite 14,6 mm, Pin-Löcher, Hof 6 mm, Gravur), dazu nur V-Kanäle und Zapfenlöcher. Die Docks sitzen **alle sechs an den festgelegten Lagen** (`placements_1300.json`); die Powerbank liegt im Unterkasten unter dem durchgehenden Steckerraum (`STECKERRAUM` 3,5 mm Luft zwischen Plattenunterseite und Powerbank) und darf unter den Docks liegen. Nur die Stützen weichen den Dockzonen aus. Ergebnis bei 1:1300: Platte **115,6 × 220,8 mm**, Oberplatte 14,6 + Unterkasten 17,4 = **32,0 mm**, Powerbank-Fach Nordkante, Elektronik 60 × 35 mm, kein Dock fehlt.
+
+- Der erste Abgleich (2026-10-16) rechnete noch mit der Tasche und der Nische in der Platte und zog die Powerbank von den Docks fern; das ist überholt. Die Nische (12 × 9,5 mm) entfällt im Konzept ebenso wie Steg-Anschlag, Stößel und Taste.
+- Zapfen 2,5 (`PIN_PLAN`, wie das Test-Dock), Zapfenloch 2,8 tief nur außerhalb von Mulden und Hof, damit über dem Loch Platte steht. Der Unterkasten ist an keiner Stelle durch die Docks eingeschränkt.
+- Die Seite `plug/power/layout.html` (Lösungsfindung „Fach gegen Docks“) ist überholt und trägt einen Hinweis.
+- Test-Dock und Fachprobe bleiben bei den Steckprobe-2-Werten (`params.stack()`, F 10,2); nur das Konzept nutzt `stack_plan()`.
+
 ## Ungetestete Planwerte (müssen noch getestet werden)
 
 Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `plug/testcase/params.py` (`MULDE_EXTRA_T`, `CASSETTE`, `HOF_*`, `OUTLINE_CLR_T`, `SCALE_PLAN`) und `plug/scale1176/placements_1300.json`; `plug/parts.py` bleibt unverändert, bis ein Test sie bestätigt hat. Test: Steckprobe 3 (Reserve-Druck, `next.md`).

@@ -12,7 +12,7 @@ Dateien (alle in Druckausrichtung, einfarbig, keine Stützen nötig)
   3_schieber.stl      Schieber (Trichterplatte, 1 mm dick): liegt flach                (0.6 cm³)
   4_platte.stl        Mini-Platte mit Mulde, Dock A und Federzunge                     (16.2 cm³)
   5_deckel.stl        Deckel mit zwei Stempeln (Stempel zeigen nach oben)              (3.3 cm³)
-  0_passprobe.stl     Passprobe Winkelleiste (flach, 1.8 cm³): drei Felder mit Stufenhöhe für Körperhöhe 2,0 / 1,8 / 1,6 mm; Schriftseite aufs Bett
+  0_passprobe.stl     Passprobe Winkelleiste (flach, 1.9 cm³): drei Felder mit Stufenhöhe für Körperhöhe 2,0 / 1,8 / 1,6 mm; Schriftseite aufs Bett
                       (Anleitung: plug/fit_test/page.html). Nicht Teil des Probestücks, sondern vorher zu drucken.
 
   Reihenfolge: zuerst 0 (Passprobe), dann 3 und 2 (klein, schnell), dann 1, dann 4 und 5.
