@@ -98,7 +98,7 @@ Eingefroren: `rounds/r8_passform_hochhaus/passform_stummel_hochhaus.zip`.
 | Loch für den Wippenschalter KCD11 (Kasten 13 × 8), Langseite waagerecht | **13,7 × 9,0 mm**; T1 mit 13,6 × 8,6 war sehr stramm | **bewährt** | r9 T1, T2 | `SW_HOLE` (`plug/power/params.py`) |
 | Wand am Loch (Schalter rastet ein) | **1,2 mm** (drei Linien), sonst 2,4; „hält sehr fest“ | **bewährt** | r9 T1, T2 | `SW_WALL` |
 | Innentasche für die Haken | Loch + 4,0 × + 3,0, 1,2 tief, oben 45°-Dach | bewährt (gedruckt, nicht gesondert bewertet) | r9 | `SW_POCKET_PAD` |
-| Lage des Schalters | Westwand, y = 36 (südlich vom Fach), frei von Konflikten; Loch und Tasche **im Unterkasten-Generator** (dicht, Schalterraum frei, Kasten im Loch ohne Kollision) | vorläufig, noch nicht im echten Unterkasten gedruckt | Plan `plan_switch.html`, `check_switch.py` | `SW_Y`, `build_concept.switch_cut` |
+| Lage des Schalters | Westwand, y = 40 (südlich vom Fach, Mitte zwischen den Stützen), frei von Konflikten; Loch und Tasche **im Unterkasten-Generator** (dicht, Schalterraum frei, Kasten im Loch ohne Kollision) | vorläufig, noch nicht im echten Unterkasten gedruckt | Plan `plan_switch.html`, `check_switch.py` | `SW_Y`, `build_concept.switch_cut` |
 | Brücke über dem Loch (13,7 mm, ohne Stützen) | sauber | **bewährt** | r9 T2 | – |
 | Hakenspanne an der 13-mm-Seite | ungemessen | offen | r9 | – |
 

@@ -77,7 +77,7 @@ HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemesse
 SW_HOLE = (13.7, 9.0)     # B  Loch in der Wand, Langseite waagerecht: T1 13,6 × 8,6 war sehr stramm, T2 "sehr gut einzusetzen und hält trotzdem sehr fest"
 SW_WALL = 1.2             # B  Wand am Loch (drei Linien), sonst UK_WALL 2,4; mit T1 und T2 getestet
 SW_POCKET_PAD = (4.0, 3.0)   # B  Innentasche = Loch + 4,0 (Länge) + 3,0 (Höhe), 1,2 tief, oben 45°-Dach; in T1 und T2 gedruckt
-SW_Y = 36.0               # E  Lage auf der Westwand (Platte 1:1300, Süden 0); frei von Konflikten, noch nicht in der echten Platte gedruckt
+SW_Y = 40.0               # E  Lage auf der Westwand (Platte 1:1300, Süden 0): Mitte zwischen den Stützen bei y 17 bis 23 und 57 bis 63, kleinster Abstand 9,3 mm (bei 36: 6,0); frei von Konflikten, noch nicht in der echten Platte gedruckt
 
 # ---- Druck und Material
 BED = 250.0               # Druckbett Bambu A1 (256, mit Rand)

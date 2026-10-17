@@ -22,7 +22,7 @@ Aufdruck „O“ (aus) und „I“ (ein). Er schaltet im Projekt das **Plus der 
 
 ## Einbau im Projekt
 
-Der Schalter sitzt in der Westwand des Unterkastens (Seite gegenüber dem Paulinum, bei y = 36 mm südlich vom Fach), die Frontplatte liegt
+Der Schalter sitzt in der Westwand des Unterkastens (Seite gegenüber dem Paulinum, bei y = 40 mm südlich vom Fach), die Frontplatte liegt
 außen auf. Die Langseite liegt waagerecht, weil die Wand nur 17,4 mm hoch ist. Im Generator des Unterkastens ist das Loch samt Tasche eingebaut (`plug/power/build_concept.py`, `switch_cut`; Prüfung `python3 -m plug.power.check_switch`, Bild `vorschau/steckmodul_schalterprobe/unterkasten_schalter.png`). Planseite mit Schieber und Warnungen: `plug/power/plan_switch.html`
 (Artifact, Link in `plug/STATUS.md`), Generator `plug/power/build_plan_switch.py`.
 
@@ -30,7 +30,7 @@ außen auf. Die Langseite liegt waagerecht, weil die Wand nur 17,4 mm hoch ist. 
 |---|---|---|
 | Loch in der Wand | **13,7 × 9,0 mm** (T1 mit 13,6 × 8,6 passte, war aber sehr stramm: horizontal +0,1, vertikal +0,4; Händler 13,5 × 8,5 bis 9) | **bewährt** (T2: „sehr gut einzusetzen, hält trotzdem sehr fest“) |
 | Wand am Loch | **1,2 mm** (drei Linien), sonst 2,4 mm; Innentasche 17,7 × 12,0 × 1,2 tief mit 45°-Dach | **bewährt** (T1 und T2), Werte in `plug/power/params.py` (`SW_*`) |
-| Lage | Westwand, y = 36 (Platte 1:1300, Süden 0, Norden 220,8) | Wunsch des Nutzers; Schieber zeigt frei von Konflikten |
+| Lage | Westwand, y = 40 (Platte 1:1300, Süden 0, Norden 220,8) | Nutzer wollte y ≈ 36 bis 40; bei 40 liegt der Schalter mittig zwischen zwei Stützen (kleinster Abstand 9,3 statt 6,0 mm); frei von Konflikten |
 | Schalterraum | etwa 20 mm tief ab Außenfläche, 14 mm breit; geht nur südlich vom Fach (im Layout nach dem Innenhof-Merge liegt das Fach ab x = 10,4, y ab 92,4; Streifen daneben zu schmal) | abgeleitet |
 
 Verdrahtung: roter Draht der Powerbank-Zuleitung durch den Schalter, danach zu INA226 VIN+ und Shunt; Masse (schwarz) direkt an INA226 GND.
