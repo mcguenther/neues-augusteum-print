@@ -12,3 +12,4 @@ Fotos in `bilder/`, Hersteller-Datenblätter in `datenblaetter/`. Was gemessen u
 Steckmechanismus und LED-Gebäude (Controller, 74AHCT125 usw.): `plug/PLAN.md`.
 Pinbelegung des ESP32 (Docks, I²C für INA226 und Display, ESPHome-Skizze): `plug/power/pinout.html` (Artifact, Quelle `plug/power/build_pinout.py`).
 Schaltplan, Einbauhöhe, Verbindungsliste und Lötanleitung der Elektronik: `plug/power/wiring.html` (Artifact, Quelle `plug/power/build_wiring.py`).
+ESPHome-Firmware (Docks, INA226, Display, Strompuls) mit der Pinbelegung als Config: `esphome/doktorhut-max.yaml`, Beschreibung `esphome/README.md`.

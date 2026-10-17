@@ -5,3 +5,8 @@ stl-fast/
 vorschau-fast/
 # große erzeugte Dateien (Institutsgebäude): lokal mit python3 -m plug.build_all erzeugen
 plug/build/
+
+# ESPHome: Zugangsdaten und Build-Ordner
+esphome/secrets.yaml
+esphome/.esphome/
+esphome/build/

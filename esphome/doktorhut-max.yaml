@@ -1,0 +1,355 @@
+# Doktorhut Max: ESPHome-Konfiguration für den ESP32 (WROOM-32, 30 Pin) in der Steckplatte.
+# Pinbelegung, Schaltung und Begründung: plug/power/pinout.html und plug/power/wiring.html
+# (Quellen plug/power/build_pinout.py, build_wiring.py). Erster Entwurf, noch nicht auf der Hardware getestet.
+#
+# Was die Firmware tut:
+#   - 6 Docks: Steckt ein Gebäude (DETECT = LOW), blinkt seine LED kurz grün und bleibt dann warmweiß an.
+#     Wird es abgezogen, geht die LED aus. In Home Assistant lässt sich jede LED auch von Hand schalten und färben.
+#   - INA226 misst Spannung, Strom und Leistung der Powerbank (an Pin-Tabelle: SDA GPIO21, SCL GPIO22).
+#   - OLED 1,3" (SH1106) zeigt Messwerte und welche Docks belegt sind.
+#   - Strompuls gegen das Abschalten der Powerbank (GPIO14 -> MOSFET -> Lastwiderstand), in HA abschaltbar.
+#   - Der Kippschalter in der Westwand trennt das Plus der Powerbank. Er hat keinen GPIO, Firmware ist dann aus.
+
+substitutions:
+  name: doktorhut-max
+  friendly_name: Doktorhut Max
+  # Welches Gebäude auf welchem Dock steht, ist noch nicht festgelegt (Reihenfolge wie 01_ bis 06_ im Konzept).
+  # Hier ändern, sobald es feststeht; die Namen erscheinen in Home Assistant.
+  dock1_name: Paulinum
+  dock2_name: Neues Augusteum
+  dock3_name: Hörsaalgebäude
+  dock4_name: Seminargebäude
+  dock5_name: Institutsgebäude
+  dock6_name: City-Hochhaus
+  # Strompuls der Last (Startwerte laut Pinout-Seite: 300 ms alle 5 s, erst am Gerät mit dem INA226 abstimmen)
+  last_dauer: 300ms
+  last_abstand: 5s
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  min_version: 2026.4.0
+  name_add_mac_suffix: false
+
+esp32:
+  variant: esp32
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow Over-The-Air updates
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# ---------------------------------------------------------------------------------------------
+# I²C: INA226 (0x40) und OLED (0x3C) teilen sich GPIO21 (SDA) und GPIO22 (SCL)
+# ---------------------------------------------------------------------------------------------
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true    # im Log müssen 0x3C und 0x40 erscheinen
+
+# ---------------------------------------------------------------------------------------------
+# Docks: je Dock DIN (LED-Daten, RMT) und DETECT (Steckerkennung)
+#   Dock 1: DIN GPIO23, DETECT GPIO32     Dock 4: DIN GPIO17, DETECT GPIO26
+#   Dock 2: DIN GPIO19, DETECT GPIO33     Dock 5: DIN GPIO16, DETECT GPIO27
+#   Dock 3: DIN GPIO18, DETECT GPIO25     Dock 6: DIN GPIO4,  DETECT GPIO13
+# Im Gebäude liegt DETECT an GND, gesteckt = LOW. Der interne Pull-up genügt für kurze Adern.
+# ---------------------------------------------------------------------------------------------
+light:
+  - platform: esp32_rmt_led_strip
+    id: dock1_led
+    name: "Dock 1 ${dock1_name}"
+    pin: GPIO23
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64     # sechs Strips mit je 64 von 512 Symbolen; reicht, ob alle sechs laufen, zeigt der erste Lauf
+    use_psram: false    # WROOM-32 hat kein PSRAM
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+  - platform: esp32_rmt_led_strip
+    id: dock2_led
+    name: "Dock 2 ${dock2_name}"
+    pin: GPIO19
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64
+    use_psram: false
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+  - platform: esp32_rmt_led_strip
+    id: dock3_led
+    name: "Dock 3 ${dock3_name}"
+    pin: GPIO18
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64
+    use_psram: false
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+  - platform: esp32_rmt_led_strip
+    id: dock4_led
+    name: "Dock 4 ${dock4_name}"
+    pin: GPIO17
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64
+    use_psram: false
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+  - platform: esp32_rmt_led_strip
+    id: dock5_led
+    name: "Dock 5 ${dock5_name}"
+    pin: GPIO16
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64
+    use_psram: false
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+  - platform: esp32_rmt_led_strip
+    id: dock6_led
+    name: "Dock 6 ${dock6_name}"
+    pin: GPIO4
+    num_leds: 1
+    chipset: ws2812
+    rgb_order: GRB
+    rmt_symbols: 64
+    use_psram: false
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 300ms
+
+# Kurzes Blinken beim Einstecken (zweimal grün), danach warmweißes Dauerlicht.
+# mode: parallel, damit zwei Gebäude kurz nacheinander gesteckt werden können, ohne sich zu stören.
+script:
+  - id: einstecken
+    mode: parallel
+    parameters:
+      led: light::LightState*
+    then:
+      - lambda: led->make_call().set_state(true).set_rgb(0, 1, 0).set_brightness(1).set_transition_length(0).perform();
+      - delay: 150ms
+      - lambda: led->make_call().set_state(false).set_transition_length(0).perform();
+      - delay: 120ms
+      - lambda: led->make_call().set_state(true).set_rgb(0, 1, 0).set_brightness(1).set_transition_length(0).perform();
+      - delay: 150ms
+      - lambda: led->make_call().set_state(true).set_rgb(1, 0.7, 0.35).set_brightness(0.7).set_transition_length(400).perform();
+
+binary_sensor:
+  - platform: gpio
+    id: dock1_steckt
+    name: "Dock 1 ${dock1_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO32
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms     # Plan 2.7: Daten erst 100 ms nach DETECT = LOW
+      - delayed_off: 100ms    # entprellen beim Abziehen
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock1_led);
+    on_release:
+      - light.turn_off: dock1_led
+  - platform: gpio
+    id: dock2_steckt
+    name: "Dock 2 ${dock2_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO33
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock2_led);
+    on_release:
+      - light.turn_off: dock2_led
+  - platform: gpio
+    id: dock3_steckt
+    name: "Dock 3 ${dock3_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO25
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock3_led);
+    on_release:
+      - light.turn_off: dock3_led
+  - platform: gpio
+    id: dock4_steckt
+    name: "Dock 4 ${dock4_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO26
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock4_led);
+    on_release:
+      - light.turn_off: dock4_led
+  - platform: gpio
+    id: dock5_steckt
+    name: "Dock 5 ${dock5_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO27
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock5_led);
+    on_release:
+      - light.turn_off: dock5_led
+  - platform: gpio
+    id: dock6_steckt
+    name: "Dock 6 ${dock6_name} steckt"
+    device_class: connectivity
+    pin:
+      number: GPIO13
+      mode: INPUT_PULLUP
+      inverted: true
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_press:
+      - script.execute:
+          id: einstecken
+          led: !lambda return id(dock6_led);
+    on_release:
+      - light.turn_off: dock6_led
+
+# ---------------------------------------------------------------------------------------------
+# INA226: misst den gesamten Strom aus der Powerbank (Shunt zwischen USB-A-Buchse und Knoten K5)
+# ---------------------------------------------------------------------------------------------
+sensor:
+  - platform: ina226
+    address: 0x40
+    shunt_resistance: 0.1 ohm    # Aufdruck auf dem Modul prüfen: R100 = 0,1 Ω, R010 = 0,01 Ω, R002 = 0,002 Ω
+    max_current: 1A              # erwartet unter 0,7 A (6 × 60 mA LED plus ESP32 mit WLAN)
+    bus_voltage:
+      id: powerbank_spannung
+      name: "Powerbank Spannung"
+    current:
+      id: strom_gesamt
+      name: "Strom gesamt"
+    power:
+      id: leistung_gesamt
+      name: "Leistung gesamt"
+    update_interval: 1s
+
+  - platform: template
+    id: anzahl_gebaeude
+    name: "Gebäude gesteckt"
+    icon: mdi:office-building
+    accuracy_decimals: 0
+    update_interval: 1s
+    lambda: |-
+      return id(dock1_steckt).state + id(dock2_steckt).state + id(dock3_steckt).state +
+             id(dock4_steckt).state + id(dock5_steckt).state + id(dock6_steckt).state;
+
+  - platform: wifi_signal
+    name: "WLAN-Signal"
+    update_interval: 60s
+
+# ---------------------------------------------------------------------------------------------
+# Strompuls gegen das Abschalten der Powerbank: GPIO14 -> Gate des MOSFET -> Lastwiderstand an 5 V
+# Ob der Puls nötig ist, klärt der Test mit INA226; bis der MOSFET gebaut ist, hängt GPIO14 frei.
+# ---------------------------------------------------------------------------------------------
+output:
+  - platform: gpio
+    id: powerbank_last
+    pin: GPIO14
+
+switch:
+  - platform: template
+    id: puls_aktiv
+    name: "Powerbank-Puls"
+    icon: mdi:battery-heart-variant
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+
+interval:
+  - interval: ${last_abstand}
+    then:
+      - if:
+          condition:
+            switch.is_on: puls_aktiv
+          then:
+            - output.turn_on: powerbank_last
+            - delay: ${last_dauer}
+            - output.turn_off: powerbank_last
+
+# ---------------------------------------------------------------------------------------------
+# OLED 1,3" 128 × 64 (SH1106 wahrscheinlich, Funktionstest offen: docs/oled-1k3-i2c.md)
+# Bleibt das Display leer: model auf "SSD1306 128x64" oder Adresse auf 0x3D ändern.
+# ---------------------------------------------------------------------------------------------
+font:
+  - file: "gfonts://Roboto"
+    id: font_gross
+    size: 18
+  - file: "gfonts://Roboto"
+    id: font_klein
+    size: 12
+
+display:
+  - platform: ssd1306_i2c
+    model: "SH1106 128x64"
+    address: 0x3C
+    update_interval: 1s
+    lambda: |-
+      // Zeile 1: Spannung, Zeile 2: Strom und Leistung, unten sechs Kästchen für die Docks
+      if (id(powerbank_spannung).has_state())
+        it.printf(0, 0, id(font_gross), "%.2f V", id(powerbank_spannung).state);
+      else
+        it.print(0, 0, id(font_gross), "--- V");
+      if (id(strom_gesamt).has_state())
+        it.printf(0, 22, id(font_klein), "%.0f mA  %.2f W", id(strom_gesamt).state * 1000.0f,
+                  id(leistung_gesamt).state);
+      it.print(127, 0, id(font_klein), TextAlign::TOP_RIGHT, wifi::global_wifi_component->is_connected() ? "WLAN" : "kein WLAN");
+      it.printf(0, 38, id(font_klein), "Gebäude: %.0f von 6", id(anzahl_gebaeude).state);
+      // Docks 1 bis 6: gefülltes Kästchen = Gebäude steckt, Rahmen = leer
+      bool steckt[6] = {id(dock1_steckt).state, id(dock2_steckt).state, id(dock3_steckt).state,
+                        id(dock4_steckt).state, id(dock5_steckt).state, id(dock6_steckt).state};
+      for (int i = 0; i < 6; i++) {
+        int x = 2 + i * 21;
+        if (steckt[i])
+          it.filled_rectangle(x, 52, 16, 11);
+        else
+          it.rectangle(x, 52, 16, 11);
+      }

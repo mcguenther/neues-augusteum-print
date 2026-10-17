@@ -50,6 +50,7 @@ stl-fast/ vorschau-fast/   Ausgabe von `--fast` (gitignored)
 plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/); Slicer-Einstellungen der steckbaren Gebäude: plug/slicer.md
 werkzeuge/             Hilfsskripte: farbmessung/, performance/ (Messung der Laufzeit), innenhof_messen.py, rosette_kamera.py
 archiv/                zurückgestellte Gebäude (moritzbastei/)
+esphome/               ESPHome-Firmware des ESP32 (`doktorhut-max.yaml`, Pinbelegung und Verhalten in `esphome/README.md`; `secrets.yaml` nicht im Repo)
 docs/                  Komponenten-Doku (Display, Hauptschalter, ESP32 …): je Bauteil eine .md, Fotos in docs/bilder/, Datenblätter in docs/datenblaetter/
 README.md FOTOQUELLEN.md   README (Blöcke AUTO), Foto-Urheber und Lizenzen
 ```
