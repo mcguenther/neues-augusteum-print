@@ -152,15 +152,17 @@ def platte_aufbau_mm(fp, s, data=None):
     """Aufbauten der Steckplatte außerhalb des Einsatzes: [(Name, [(Polygon mm, Oberkante mm über der Plattenoberfläche), …])]. Rechtecke im
     Hofsystem, auf die OSM-Fußgängerfläche begrenzt und bis an die Gebäude geführt (die Mulden schneiden sie zu); fp, der Umriss der Hof-Aussparung,
     wird um 0,05 mm überlappt, die Aussparung schneidet den Rest. gang_sued: der Gang zwischen Seminar- und Hörsaalgebäude auf Terrassenhöhe, am
-    Westende (dort enden die Gebäude) in Stufen auf Plattenhöhe. nordost: Treppe aus dem Gang am Paulinum (Plattenhöhe) auf den Hofboden."""
+    Westende (dort enden die Gebäude) in Stufen auf Plattenhöhe. nordost: Treppe aus der Gasse zwischen Paulinum und Institutsgebäude (Plattenhöhe am Ostende, Ende der früheren Brücke) auf den Hofboden, 9 Stufen
+    à 0,2 mm; nicht auf die OSM-Fläche begrenzt (sie deckt den Durchgang nicht ab)."""
     data = data or load()
     f = data["form"]["platte"]
     hb, h0 = hub(data, s), data["terrasse_hoehe"] * s
     osm = hof_polygon_local().buffer(HOF_UEBERMASS)
     frei = fp.buffer(-0.05, join_style=2)
 
-    def band(u, t):
-        return G.clean(G.scale_geom(osm.intersection(block_m(data, u, t)), s).difference(frei))
+    def band(u, t, osm_grenze=True):
+        flaeche = block_m(data, u, t)
+        return G.clean(G.scale_geom(osm.intersection(flaeche) if osm_grenze else flaeche, s).difference(frei))
     out = []
     g = f["gang_sued"]
     (u0, u1), (t0, t1), n = g["u"], g["t"], g["stufen"]
@@ -171,7 +173,7 @@ def platte_aufbau_mm(fp, s, data=None):
     g = f["nordost"]
     (u0, u1), (t0, t1), n = g["u"], g["t"], g["stufen"]
     tr = g["lauf"] / n
-    bands = [(band((u0 + k * tr - (2.0 if k == 0 else 0.0), u0 + (k + 1) * tr), (t0, t1)), hb * (n - 1 - k) / n) for k in range(n - 1)]
+    bands = [(band((u0 + k * tr - (2.0 if k == 0 else 0.0), u0 + (k + 1) * tr), (t0, t1), False), hb * (n - 1 - k) / n) for k in range(n - 1)]
     out.append(("nordost", [(p, z) for p, z in bands if not p.is_empty]))
     return out
 

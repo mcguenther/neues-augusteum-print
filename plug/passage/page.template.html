@@ -1,0 +1,476 @@
+<title>Durchgang am Paulinum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte, Abschnitte nacheinander (Befund, Vorschlag, Schnitte mit Regler, 3D, Druck und Entscheidungen, Prüfung).
+   Farben wie die anderen Seiten des Repos (kühles Grau, Kupfer als Akzent); Rot = Ist, Blau = Neu. */
+:root {
+  --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
+  --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #dfe3e7;
+  --alt: #b3392b; --va: #2a6db0; --ok: #2c7a4b; --bad: #b3392b;
+  --plate: #8c9aa9; --pau: #7f93ad; --ins: #cfa57a; --bruecke: #1f8a7e; --bruecke-soft: #cfe9e5;
+  --bld: #d9dee3; --bld-line: #a2adb7; --hof: #efd3a6; --hof-line: #9c5a14;
+  --z-lo: #f6e8cc; --z-hi: #a24f16;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+    --alt: #ee8a7c; --va: #6aa6e8; --ok: #6cc08a; --bad: #ee8a7c;
+    --plate: #78879a; --pau: #6d819b; --ins: #b98f65; --bruecke: #4fc0b2; --bruecke-soft: #1f3b38;
+    --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
+    --z-lo: #4a3a22; --z-hi: #e5aa62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #101316;
+  --alt: #ee8a7c; --va: #6aa6e8; --ok: #6cc08a; --bad: #ee8a7c;
+  --plate: #78879a; --pau: #6d819b; --ins: #b98f65; --bruecke: #4fc0b2; --bruecke-soft: #1f3b38;
+  --bld: #2c343c; --bld-line: #4a5560; --hof: #6a5231; --hof-line: #d6a35e;
+  --z-lo: #4a3a22; --z-hi: #e5aa62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1140px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 1.28rem; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; text-wrap: balance; font-weight: 600; }
+h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 72ch; margin-top: 8px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
+.sec { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { color: var(--muted); font-size: 0.86rem; max-width: 80ch; }
+code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+
+/* Kurzvergleich */
+.sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 22px 0 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.sum > div { padding: 12px 16px; border-left: 1px solid var(--line); min-width: 0; }
+.sum > div:first-child { border-left: 0; }
+.sum dt { font-size: 0.78rem; color: var(--muted); }
+.sum dd { margin: 2px 0 0; font-family: var(--mono); font-size: 0.98rem; font-variant-numeric: tabular-nums; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
+.sum .o { color: var(--alt); } .sum .a { color: var(--va); font-weight: 500; }
+.sum .arrow { color: var(--muted); }
+@media (max-width: 760px) { .sum { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sum > div:nth-child(3) { border-left: 0; } .sum > div:nth-child(n+3) { border-top: 1px solid var(--line); } }
+
+/* Befund */
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 860px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+.fact { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fact .v { font-family: var(--mono); color: var(--accent); font-size: 0.82rem; }
+.fact p { color: var(--muted); font-size: 0.88rem; }
+
+/* Grundrisse und Schnitte */
+.plan { width: 100%; height: auto; display: block; max-width: 100%; }
+.plan text { font-family: var(--font); }
+.plan .hof { fill: var(--hof); }
+.plan .bld { fill: var(--bld); stroke: var(--bld-line); stroke-width: 1; }
+.plan .bname { font-size: 11px; fill: var(--muted); }
+.plan .zone { fill: color-mix(in srgb, var(--z-hi) calc(var(--p) * 100%), var(--z-lo)); }
+.plan .stufe { fill: none; stroke: var(--fg); stroke-opacity: 0.45; stroke-width: 0.7; }
+.plan .block { fill: var(--alt); fill-opacity: 0.35; }
+.plan .tunnel-ist { fill: none; stroke: var(--alt); stroke-width: 1.8; stroke-dasharray: 6 4; }
+.plan .tunnel-neu { fill: none; stroke: var(--bruecke); stroke-width: 1.8; }
+.plan .lab2 { font-size: 11.5px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.plan .tiny { font-size: 9.5px; fill: var(--muted); font-family: var(--mono); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.plan .bar { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.sec-svg .gnd { fill: var(--plate); }
+.sec-svg .hofb { fill: var(--hof); stroke: var(--hof-line); stroke-width: 1; }
+.sec-svg .m-pau { fill: var(--pau); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .m-ins { fill: var(--ins); stroke: var(--fg); stroke-opacity: 0.5; stroke-width: 0.8; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .m-alt { fill: var(--alt); fill-opacity: 0.16; stroke: var(--alt); stroke-width: 1.3; stroke-dasharray: 5 4; stroke-linejoin: round; fill-rule: evenodd; }
+.sec-svg .st-alt { fill: none; stroke: var(--alt); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.sec-svg .st-neu { fill: color-mix(in srgb, var(--va) 30%, transparent); stroke: var(--va); stroke-width: 1.6; }
+.sec-svg .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.sec-svg .dt { font-size: 12px; fill: var(--fg); font-weight: 500; paint-order: stroke; stroke: var(--panel); stroke-width: 3.5px; stroke-linejoin: round; }
+.sec-svg .dt.sm { font-size: 10.5px; font-family: var(--mono); font-weight: 400; fill: var(--muted); }
+.sec-svg .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+.sec-svg text { font-family: var(--font); }
+.panels { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.panels.one { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 760px) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.panel { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; min-width: 0; }
+.panel figcaption { font-size: 0.8rem; color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+.panel .plan { max-height: 520px; }
+.hscroll { overflow-x: auto; }
+.hscroll .plan { min-width: 560px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+.sw { display: inline-flex; align-items: center; gap: 6px; }
+.sw i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* Regler und Messwerte */
+.ctl { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.lift { display: inline-flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--fg); font-weight: 500; }
+.lift input { width: 220px; max-width: 100%; accent-color: var(--accent); }
+.lift output { font-family: var(--mono); font-size: 0.86rem; min-width: 4.6em; color: var(--accent); font-weight: 500; }
+.reads { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.84rem; color: var(--muted); }
+.reads b { font-family: var(--mono); font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+button { font: inherit; font-size: 0.86rem; cursor: pointer; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--fg); }
+button:hover { background: var(--accent-soft); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] button[aria-pressed="true"] { color: #1a1008; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button[aria-pressed="true"] { color: #1a1008; } }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+
+/* Tabellen, Karten */
+.tw { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; color: var(--muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+tbody th { font-weight: 400; }
+td.n { font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+td.n.a, thead th.a { color: var(--va); } thead th.o { color: var(--alt); } td.n.o { color: var(--alt); }
+td.hint2 { color: var(--muted); font-size: 0.84rem; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card.rec { border-color: var(--va); }
+.card h3 span { font-family: var(--mono); font-weight: 500; color: var(--muted); font-size: 0.8rem; margin-left: 6px; }
+.card .tag2 { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.card.rec .tag2 { color: var(--va); }
+ul.plain { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 0.9rem; }
+ul.plain strong { color: var(--fg); font-weight: 600; }
+.reco { background: var(--accent-soft); border-radius: 8px; padding: 12px 16px; font-size: 0.92rem; max-width: 80ch; }
+.cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+@media (max-width: 760px) { .cols2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* 3D */
+.stagebox { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.bar2 { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.bar2.views { border-bottom: 0; border-top: 1px solid var(--line); }
+#stage { height: min(62vh, 600px); min-height: 340px; background: var(--line); display: flex; gap: 2px; touch-action: none; }
+.pane { position: relative; flex: 1 1 0; min-width: 0; background: var(--stage); }
+.pane[hidden] { display: none; }
+.pane canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.pane canvas:active { cursor: grabbing; }
+@media (max-width: 640px) { #stage.multi { flex-direction: column; height: min(130vh, 1000px); } }
+.hint { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+.tag { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 0.78rem; padding: 2px 9px; border-radius: 4px; background: var(--panel); border: 1px solid var(--line); pointer-events: none; }
+.tag.alt { color: var(--alt); } .tag.neu { color: var(--va); }
+.cap { padding: 10px 14px; color: var(--muted); font-size: 0.9rem; min-height: 3.4em; border-top: 1px solid var(--line); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Durchgang am Paulinum</h1>
+    <p class="lead">Zwischen Paulinum und Institutsgebäude führt eine Gasse vom Augustusplatz zum Hof. Im Laserscan-Modell füllt dort ein Vollblock mit senkrechten Streifen die Gasse. Der Vorschlag nimmt das ganze Teil weg, Block und Brücke. Die Nordwand des Paulinums wird gerade, die Gasse ist auf ganzer Länge frei, und die Treppe der Platte reicht bis zum Ostende.</p>
+    <div class="meta"><span class="chip">1:1300</span><span class="chip">Laserscan</span><span class="chip">Stand 17.10.2026</span><span class="chip">umgesetzt, ungedruckt</span></div>
+    <dl class="sum" aria-label="Kurzvergleich Ist und Neu">
+      <div><dt>Block im Durchgang</dt><dd><span class="o">Vollblock</span><span class="arrow">→</span><span class="a">entfällt</span></dd></div>
+      <div><dt>Engste freie Breite</dt><dd><span class="a">@ENG@ m</span><span class="arrow">=</span><span class="a">@ENG_MM@ mm</span></dd></div>
+      <div><dt>Brücke</dt><dd><span class="o">im Block</span><span class="arrow">→</span><span class="a">weggelassen</span></dd></div>
+      <div><dt>Treppe im Nordosten</dt><dd><span class="o">6 Stufen</span><span class="arrow">→</span><span class="a">@STUFEN@ Stufen</span></dd></div>
+    </dl>
+  </header>
+
+  <section class="sec" id="befund">
+    <div>
+      <h2>Was im Modell steckt</h2>
+      <p class="lead">Der Scan fliegt von oben. Er sieht das Dach der Brücke über der Gasse und den Boden an ihrer Westmündung, aber nichts dazwischen, und das Modell füllt die Lücke bis zum Boden. Beim Zuschnitt der Gebäude kam dieser Block zum Paulinum. Die Streifen an seiner Ostwand sind Rasterfacetten zwischen Dachzellen und Bodenzellen.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="v">LoD2, Stadt Leipzig</span><h3>Brücke von @ZC_ABS@ bis @ZT_ABS@ m</h3><p>In der Wirklichkeit liegt die Brücke zwischen 131,1 und 145,0 m ü. NHN, ihre Unterkante rund @ZC_M@ m über dem Boden. Das Modell lässt sie weg, damit nichts über der Gasse hängt.</p></div>
+      <div class="fact"><span class="v">Laserscan, Bodenpunkte</span><h3>Boden bei @BODEN_ABS@ m ü. NHN</h3><p>An der Westmündung liegt der Boden rund einen Meter über der Platte und steigt zum Hof (116,8 m) an. Dort setzt die Treppe der Platte an.</p></div>
+      <div class="fact"><span class="v">Grundriss des Blocks</span><h3>@LAENGE_M@ × @BREITE_M@ m, @FLAECHE_M@ m²</h3><p>Die Südwand der Gasse ist die Nordwand des Paulinums, die Nordwand die Südwand des Institutsgebäudes. Die Gasse läuft rund 12° gedreht zur Karte, wie beide Gebäude.</p></div>
+    </div>
+  </section>
+
+  <section class="sec" id="vorschlag">
+    <div>
+      <h2>Vorschlag</h2>
+      <p class="lead">Links der Ist-Zustand mit dem roten Vollblock. Rechts der Vorschlag: Das Paulinum endet an seiner geraden Nordwand, die Gasse ist leer, die Stufen der Platte laufen bis zum Ostende. Gefärbt ist nach Höhe über der Platte, Hofboden @HUB@ mm.</p>
+    </div>
+    <div class="panels">@FIG_IST@@FIG_NEU@</div>
+    <div class="legend"><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span><span class="sw"><i style="background:color-mix(in srgb, var(--z-hi) 60%, var(--z-lo))"></i>Stufen, heller = tiefer</span><span class="sw"><i style="background:var(--bld)"></i>Gebäude (Mulde)</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Block (Ist)</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Kennzahl</th><th class="o">Ist</th><th class="a">Neu</th><th>Bemerkung</th></tr></thead>
+      <tbody>@TABELLE@</tbody>
+    </table></div>
+  </section>
+
+  <section class="sec" id="schnitte">
+    <div>
+      <h2>Schnitte</h2>
+      <p class="lead">Beide Schnitte sind echte Schnitte durch die Laserscan-Körper. Gestrichelt rot ist der Block, der entfällt.</p>
+    </div>
+    <div class="panels one">
+      <figure class="panel"><figcaption>Querschnitt quer durch die Gasse, Blick nach Westen</figcaption><div class="hscroll"><svg id="sq" class="plan sec-svg" role="img" aria-label="Querschnitt durch die Gasse"></svg></div></figure>
+      <figure class="panel"><figcaption>Längsschnitt durch die Gasse, Hof links, Augustusplatz rechts</figcaption><div class="hscroll"><svg id="sl" class="plan sec-svg" role="img" aria-label="Längsschnitt durch die Gasse mit Treppe"></svg></div></figure>
+    </div>
+    <div class="legend"><span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--alt);opacity:.4"></i>Block (Ist)</span><span class="sw"><i style="background:var(--hof)"></i>Hofboden</span></div>
+  </section>
+
+  <section class="sec" id="drei-d">
+    <div>
+      <h2>Ist und Neu in 3D</h2>
+      <p class="lead">Ausschnitt um die Gasse, beide Felder teilen eine Kamera. Ziehen dreht, Shift oder rechte Taste schiebt, das Rad zoomt. Die Mulden der Platte sind nicht dargestellt.</p>
+    </div>
+    <section class="stagebox" aria-label="3D-Ansicht">
+      <div class="bar2">
+        <div class="seg" role="group" aria-label="Stände">
+          <button type="button" id="t-alt" aria-pressed="true">Ist</button>
+          <button type="button" id="t-neu" aria-pressed="true">Neu</button>
+        </div>
+        <span class="sw"><i style="background:var(--pau)"></i>Paulinum</span><span class="sw"><i style="background:var(--ins)"></i>Institutsgebäude</span><span class="sw"><i style="background:var(--plate)"></i>Platte</span>
+      </div>
+      <div id="stage" class="multi">
+        <div class="pane" id="pane-alt"><canvas id="cv-alt" aria-label="3D-Modell Ist"></canvas><div class="tag alt">Ist</div></div>
+        <div class="pane" id="pane-neu"><canvas id="cv-neu" aria-label="3D-Modell Neu"></canvas><div class="tag neu">Neu</div><div class="hint">ziehen: drehen · Shift/rechts: schieben · Rad: zoomen</div></div>
+      </div>
+      <div class="cap" id="cap"></div>
+      <div class="bar2 views"><div class="seg" role="group" aria-label="Ansicht" id="views"></div></div>
+    </section>
+  </section>
+
+  <section class="sec" id="frei">
+    <div>
+      <h2>Ist die Gasse frei?</h2>
+      <p class="lead">Ich habe beide neuen Körper in 18 Höhen von 0,2 bis 28 mm waagerecht geschnitten und in der Gasse zwischen Hof und Augustusplatz nach Material gesucht, im Streifen zwischen den Wänden von Paulinum und Institutsgebäude. Ergebnis: @FREI@. Im Ist-Zustand liegen dort dagegen bis zu @FREI_ALT@. Die engste freie Breite ist @ENG@ m (@ENG_MM@ mm).</p>
+    </div>
+    <div class="cols2">
+      <div><h3>Was die Prüfung gefunden und entfernt hat</h3>
+        <ul class="plain">
+          <li><strong>Block und Brücke</strong> im Paulinum: weg.</li>
+          <li><strong>Absatz</strong> in der Nordwand des Paulinums (rund 1 m weit in die Gasse, ein Rest des Zuschnitts): weg, die Wand ist gerade.</li>
+          <li><strong>Splitter</strong> an der Ostwand des Institutsgebäudes und ein dünner Grat an der Ostmündung: weg.</li>
+          <li>Das Institutsgebäude bleibt unverändert, seine Südwand steht zurück von der Gasse.</li>
+        </ul></div>
+      <div><h3>Noch offen</h3>
+        <ul class="plain">
+          <li><strong>Brücke:</strong> nur wenn du sie später doch als Modell willst; dafür bräuchte es Support und eine Deckenhöhe (LoD2: @ZC_M@ m).</li>
+          <li><strong>Plattenseite:</strong> die Stufen bis zum Ostende (@STUFEN@ à @RISER@ mm, je @TREAD@ m lang) sind nur gezeichnet. Ob eine Stufe von einer Schicht im Druck ankommt, zeigt erst der Druck.</li>
+          <li><strong>Quellen:</strong> der Vorschlag gilt für den Laserscan. OSM und LoD2 haben dieselbe Lücke und sind nicht angefasst.</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="sec" id="pruefung">
+    <div>
+      <h2>Umsetzung und Prüfung</h2>
+      <p class="lead">Umgesetzt ist der Schnitt im Laserscan-Modell (<code>laserscan.durchgang_schnitt</code>), die Treppe der Platte (<code>data/innenhof.json</code>), die Steckplatte (<code>plug.campus</code>) und alle sechs Gebäude (<code>plug.buildings</code>). Alle STL sind dicht, es gibt keine Kollisionen, der volle Lauf von <code>generate.py</code> und <code>plug.check</code> ist grün. Volumen Paulinum @VOL_P@ cm³.</p>
+    </div>
+    <div class="cols2">
+      <div><h3>Dabei aufgefallen</h3>
+        <ul class="plain">
+          <li><strong>Fuß-Fase 2,0 mm (r8, bewährt):</strong> Die Gebäude-STL waren noch mit Fase 0,5 gebaut. Mit 2,0 mm kollidierte beim Paulinum die Fase mit der Kassette (Wand nur 1,2 mm, schon mit dem alten Grundriss). Auf dem Randstück vor dem Schachtrohr (280 mm²) entfällt die Fase deshalb. Ungetestet im Druck.</li>
+          <li>Die Kassettenlage des Paulinums blieb unverändert. Ihre Wand (1,2 mm) liegt schon bisher dicht an der Nordwand zur Gasse; der Schnitt ändert diese Wand nicht, die Wandlinie ist dieselbe.</li>
+          <li>Die Gasse ist in allen Höhen frei, engste Breite @ENG@ m.</li>
+        </ul></div>
+      <div><h3>Noch offen</h3>
+        <ul class="plain">
+          <li>Stufen von einer Schicht (0,2 mm) und die neue gerade Nordwand des Paulinums im Druck prüfen.</li>
+          <li>OSM und LoD2 haben dieselbe Lücke und sind nicht angefasst.</li>
+          <li>Die Brücke fehlt im Modell. Sie ließe sich später mit Support nachrüsten.</li>
+        </ul></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = @DATA@;
+const b64 = (s) => { const bin = atob(s), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Float32Array(u.buffer); };
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const $ = (id) => document.getElementById(id);
+const nf = (v, d = 1) => v.toFixed(d).replace('.', ',');
+const SC = DATA.z, S13 = 1000 / 1300;
+const state = { show: { alt: true, neu: true } };
+
+/* ---------- Schnitte ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function ringsPath(polys, X, Y) {
+  return polys.map((p) => p.map((r) => 'M' + r.map((q) => X(q[0]).toFixed(1) + ' ' + Y(q[1]).toFixed(1)).join(' L') + 'Z').join(' ')).join(' ');
+}
+function dimV(svg, x, y0, y1, text, anchor) {
+  el('path', { class: 'dim', d: 'M' + x + ' ' + y0 + ' L' + x + ' ' + y1 + ' M' + (x - 4) + ' ' + y0 + ' L' + (x + 4) + ' ' + y0 + ' M' + (x - 4) + ' ' + y1 + ' L' + (x + 4) + ' ' + y1 }, svg);
+  const t = el('text', { class: 'dt', x: x + (anchor === 'end' ? -7 : 7), y: (y0 + y1) / 2 + 4, 'text-anchor': anchor || 'start' }, svg); t.textContent = text;
+}
+function dimH(svg, y, x0, x1, text) {
+  el('path', { class: 'dim', d: 'M' + x0 + ' ' + y + ' L' + x1 + ' ' + y + ' M' + x0 + ' ' + (y - 4) + ' L' + x0 + ' ' + (y + 4) + ' M' + x1 + ' ' + (y - 4) + ' L' + x1 + ' ' + (y + 4) }, svg);
+  const t = el('text', { class: 'dt', x: (x0 + x1) / 2, y: y - 6, 'text-anchor': 'middle' }, svg); t.textContent = text;
+}
+function drawQuer() {
+  const q = DATA.schnitt.quer, svg = $('sq'), k = 22, zmax = 27, padL = 16, padT = 14, padB = 40;
+  const [t0, t1] = q.fenster, W = (t1 - t0) * k + padL * 2, H = zmax * k + padT + padB;
+  svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 ' + W.toFixed(0) + ' ' + H.toFixed(0));
+  const X = (t) => padL + (t - t0) * k, Y = (z) => padT + (zmax - z) * k;
+  el('rect', { class: 'gnd', x: 0, y: Y(0), width: W, height: padB - 6 }, svg);
+  el('path', { class: 'm-alt', d: ringsPath(q.paulinum_alt, X, Y) }, svg);
+  el('path', { class: 'm-pau', d: ringsPath(q.paulinum_neu, X, Y) }, svg);
+  el('path', { class: 'm-ins', d: ringsPath(q.institut, X, Y) }, svg);
+  const [f0, f1] = q.frei;
+  dimH(svg, Y(0) + 22, X(f0), X(f1), 'Gasse ' + nf(f1 - f0) + ' mm breit');
+  const a = el('text', { class: 'dt sm', x: X(t0) + 4, y: Y(zmax) + 14 }, svg); a.textContent = 'Paulinum';
+  const b = el('text', { class: 'dt sm', x: X(t1) - 4, y: Y(zmax) + 14, 'text-anchor': 'end' }, svg); b.textContent = 'Institutsgebäude';
+}
+function drawLaengs() {
+  const l = DATA.schnitt.laengs, svg = $('sl'), k = 20, zmax = 27, padL = 16, padT = 14, padB = 30;
+  const [u0, u1] = l.fenster, W = (u1 - u0) * k + padL * 2, H = zmax * k + padT + padB;
+  svg.innerHTML = ''; svg.setAttribute('viewBox', '0 0 ' + W.toFixed(0) + ' ' + H.toFixed(0));
+  const X = (u) => padL + (u - u0) * k, Y = (z) => padT + (zmax - z) * k, hb = SC.hb;
+  el('rect', { class: 'gnd', x: 0, y: Y(0), width: W, height: padB - 6 }, svg);
+  el('rect', { class: 'hofb', x: 0, y: Y(hb), width: X(l.hof_u), height: hb * k }, svg);
+  el('path', { class: 'm-alt', d: ringsPath(l.block, X, Y) }, svg);
+  const alt = ['M' + X(l.hof_u) + ' ' + Y(hb)];
+  l.alt.forEach((s) => alt.push('L' + X(s[0]) + ' ' + Y(s[2]) + ' L' + X(s[1]) + ' ' + Y(s[2])));
+  alt.push('L' + X(l.alt[l.alt.length - 1][1]) + ' ' + Y(0) + ' L' + X(u1) + ' ' + Y(0));
+  el('path', { class: 'st-alt', d: alt.join(' ') }, svg);
+  const neu = ['M' + X(l.hof_u) + ' ' + Y(0), 'L' + X(l.hof_u) + ' ' + Y(hb)];
+  l.neu.forEach((s) => neu.push('L' + X(s[0]) + ' ' + Y(s[2]) + ' L' + X(s[1]) + ' ' + Y(s[2])));
+  const last = l.neu[l.neu.length - 1][1];
+  neu.push('L' + X(last) + ' ' + Y(0) + ' Z');
+  el('path', { class: 'st-neu', d: neu.join(' ') }, svg);
+  const [b0, b1] = l.bruecke;
+  dimH(svg, Y(0) - 8, X(b0), X(b1), 'frühere Brücke, ' + nf(b1 - b0) + ' mm');
+  const h = el('text', { class: 'dt sm', x: X(u0) + 6, y: Y(hb) - 8 }, svg); h.textContent = 'Hofboden ' + nf(hb) + ' mm';
+  const s1 = el('text', { class: 'dt sm', x: X(l.hof_u) + 8, y: Y(0) + 18 }, svg); s1.textContent = 'Stufen: ' + (l.neu.length + 1) + ' à ' + nf(hb / (l.neu.length + 1), 2) + ' mm (neu), gestrichelt: 6 à 0,30 mm (Ist)';
+  const bl = l.block.length ? el('text', { class: 'dt sm', x: X(b0) - 6, y: Y(12), 'text-anchor': 'end' }, svg) : null; if (bl) bl.textContent = 'Ist: Vollblock';
+}
+/* ---------- 3D ---------- */
+const stage = $('stage');
+function makeView(which) {
+  const canvas = $('cv-' + which), pane = $('pane-' + which);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.5, 3000);
+  camera.up.set(0, 0, 1);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x7a8696, 1.0));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.6), fill = new THREE.DirectionalLight(0xffffff, 0.25);
+  scene.add(sun); scene.add(fill);
+  const v = { which, canvas, pane, renderer, scene, camera, sun, fill, part: {} };
+  ['platte', 'paulinum', 'institut'].forEach((kind) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(b64(DATA[kind + '_' + which]), 3));
+    g.computeVertexNormals();
+    const mat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.85, metalness: 0.0, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+    const lines = new THREE.LineSegments(new THREE.EdgesGeometry(g, 35), new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.32 }));
+    const holder = new THREE.Group(); holder.add(new THREE.Mesh(g, mat)); holder.add(lines);
+    scene.add(holder);
+    v.part[kind] = { holder, mat, lines };
+  });
+  return v;
+}
+const V = ['alt', 'neu'].map(makeView);
+const cam = { t: new THREE.Vector3(), d: 150, az: -12, el: 12 };
+function draw() {
+  const a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  V.forEach((v) => {
+    if (v.pane.hidden) return;
+    v.camera.position.set(cam.t.x + cam.d * Math.cos(e) * Math.cos(a), cam.t.y + cam.d * Math.cos(e) * Math.sin(a), cam.t.z + cam.d * Math.sin(e));
+    v.camera.lookAt(cam.t);
+    v.sun.position.copy(v.camera.position).add(new THREE.Vector3(60, -40, 120)); v.fill.position.copy(v.camera.position).add(new THREE.Vector3(-80, 60, 20));
+    v.renderer.render(v.scene, v.camera);
+  });
+}
+function resize() {
+  V.forEach((v) => {
+    if (v.pane.hidden) return;
+    const w = v.pane.clientWidth, h = v.pane.clientHeight;
+    if (!w || !h) return;
+    v.renderer.setSize(w, h, false); v.camera.aspect = w / h; v.camera.updateProjectionMatrix();
+  });
+  draw();
+}
+function applyShow() {
+  const n = V.filter((v) => state.show[v.which]).length;
+  V.forEach((v) => { v.pane.hidden = !state.show[v.which]; });
+  stage.classList.toggle('multi', n > 1);
+  ['alt', 'neu'].forEach((k) => $('t-' + k).setAttribute('aria-pressed', state.show[k]));
+  resize();
+}
+['alt', 'neu'].forEach((k) => {
+  $('t-' + k).onclick = () => {
+    const on = Object.values(state.show).filter(Boolean).length;
+    if (state.show[k] && on === 1) return;
+    state.show[k] = !state.show[k]; applyShow();
+  };
+});
+function theme() {
+  const ink = new THREE.Color(css('--fg'));
+  V.forEach((v) => {
+    v.renderer.setClearColor(css('--stage'));
+    v.part.platte.mat.color.set(css('--plate')); v.part.paulinum.mat.color.set(css('--pau')); v.part.institut.mat.color.set(css('--ins'));
+    ['platte', 'paulinum', 'institut'].forEach((k) => v.part[k].lines.material.color.copy(ink));
+  });
+  draw();
+}
+
+let anim = null;
+function goTo(v) {
+  const from = { x: cam.t.x, y: cam.t.y, z: cam.t.z, d: cam.d, az: cam.az, el: cam.el };
+  const to = { x: v.t[0], y: v.t[1], z: v.t[2], d: v.d, az: v.az, el: v.el };
+  let daz = to.az - from.az; daz = ((daz + 540) % 360) - 180;
+  const t0 = performance.now(), dur = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 650;
+  cancelAnimationFrame(anim);
+  const step = (now) => {
+    const k = dur ? Math.min(1, (now - t0) / dur) : 1, s = k * k * (3 - 2 * k);
+    cam.t.set(from.x + (to.x - from.x) * s, from.y + (to.y - from.y) * s, from.z + (to.z - from.z) * s);
+    cam.d = from.d + (to.d - from.d) * s; cam.az = from.az + daz * s; cam.el = from.el + (to.el - from.el) * s;
+    draw(); if (k < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+const views = $('views'), cap = $('cap');
+function showView(i) {
+  const v = DATA.views[i];
+  [...views.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+  cap.innerHTML = '<strong style="color:var(--fg)">' + v.name + '.</strong> ' + v.text;
+  goTo(v);
+}
+DATA.views.forEach((v, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = v.name; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => showView(i); views.appendChild(b);
+});
+
+const ptrs = new Map(); let pinch = 0;
+function panBy(dx, dy) {
+  const k = cam.d * 0.0016, a = cam.az * Math.PI / 180, e = cam.el * Math.PI / 180;
+  const right = new THREE.Vector3(-Math.sin(a), Math.cos(a), 0);
+  const up = new THREE.Vector3(-Math.sin(e) * Math.cos(a), -Math.sin(e) * Math.sin(a), Math.cos(e));
+  cam.t.addScaledVector(right, -dx * k).addScaledVector(up, dy * k);
+}
+V.forEach((v) => {
+  const c = v.canvas;
+  c.addEventListener('contextmenu', (e) => e.preventDefault());
+  c.addEventListener('pointerdown', (e) => { c.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; cancelAnimationFrame(anim); });
+  c.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId));
+  c.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+  c.addEventListener('pointermove', (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+    if (ptrs.size === 2) {
+      const [p, q] = [...ptrs.values()]; const dist = Math.hypot(p[0] - q[0], p[1] - q[1]);
+      if (pinch) cam.d = Math.min(500, Math.max(6, cam.d * pinch / dist));
+      pinch = dist; panBy(dx / 2, dy / 2);
+    } else if (e.shiftKey || e.buttons === 2) panBy(dx, dy);
+    else { cam.az -= dx * 0.4; cam.el = Math.max(-89, Math.min(89, cam.el + dy * 0.4)); }
+    draw();
+  });
+  c.addEventListener('wheel', (e) => { e.preventDefault(); cam.d = Math.min(500, Math.max(6, cam.d * Math.exp(e.deltaY * 0.0012))); draw(); }, { passive: false });
+  new ResizeObserver(resize).observe(v.pane);
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+const v0 = DATA.views[0];
+cam.t.set(v0.t[0], v0.t[1], v0.t[2]); cam.d = v0.d; cam.az = v0.az; cam.el = v0.el;
+drawQuer(); drawLaengs(); applyShow(); theme(); showView(0);
+</script>

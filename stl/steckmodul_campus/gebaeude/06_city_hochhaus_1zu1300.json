@@ -6,40 +6,40 @@
  "rohrstuetze": false,
  "kollision_mm3": 0.0,
  "platz_fehlt_mm3": 0.0,
- "volumen_cm3": 13.68,
+ "volumen_cm3": 13.54,
  "volumen_varianten_cm3": {
-  "mit_rohrstuetze": 15.49,
-  "ohne_rohrstuetze": 13.68
+  "mit_rohrstuetze": 15.35,
+  "ohne_rohrstuetze": 13.54
  },
  "ueberhang": {
-  "bruecke_mm2": 3.07,
+  "bruecke_mm2": 2.95,
   "bruecke_mm": 0.87,
-  "krag_mm2": 61.14,
-  "krag_mm": 1.18,
+  "krag_mm2": 56.37,
+  "krag_mm": 1.34,
   "stellen": [
    [
     "krag",
-    84.3,
-    2.3,
-    1.2,
-    -49.2,
-    -35.7
+    86.7,
+    3.9,
+    1.3,
+    -61.2,
+    -34.5
    ],
    [
     "krag",
     89.5,
-    8.0,
+    8.7,
     1.0,
     -54.6,
-    -38.2
+    -38.4
    ],
    [
     "krag",
-    97.1,
-    3.0,
+    90.3,
+    3.6,
     1.0,
-    -41.0,
-    -48.6
+    -57.3,
+    -52.3
    ]
   ]
  },
