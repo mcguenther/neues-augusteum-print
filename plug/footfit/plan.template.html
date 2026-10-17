@@ -35,7 +35,9 @@ p { margin: 0; max-width: 65ch; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: start; }
 @media (max-width: 760px) { .cols { grid-template-columns: minmax(0, 1fr); } }
 .slicer { display: flex; gap: 6px; align-items: stretch; }
-.slicer svg { flex: 1 1 auto; min-width: 0; max-width: 360px; height: auto; }
+#gl { flex: 1 1 auto; min-width: 0; height: 520px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); position: relative; overflow: hidden; touch-action: none; }
+#gl canvas { display: block; width: 100%; height: 100%; }
+.glmsg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; color: var(--muted); font-size: 13px; }
 .vrange { writing-mode: vertical-lr; direction: rtl; width: 34px; accent-color: var(--accent); }
 .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .kpi { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
@@ -56,32 +58,41 @@ button.ghost { background: transparent; color: var(--accent); }
 button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 textarea { width: 100%; min-height: 150px; font-family: var(--mono); font-size: 12.5px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 10px; resize: vertical; }
 details summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+ul.list li, p, .hint { overflow-wrap: anywhere; }
 ul.list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
 svg text { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
 svg .t-fg { fill: var(--fg); }
 .plan svg { width: 100%; max-height: 440px; }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <main>
   <header style="display:flex;flex-direction:column;gap:10px">
     <h1>Passform-Stummel Hochhaus</h1>
-    <p class="sub">Erste Testrunde: nur das City-Hochhaus, nur ein Stück Fuß plus Wand über der Platte. Geprüft wird, ob der Umriss in die gedruckte Mulde passt und ob die Kassette in den Schacht geht.</p>
+    <p class="sub">Erste Testrunde: nur das City-Hochhaus, das echte Hohlgebäude unten abgeschnitten (Fuß plus ein Stück über der Platte). Geprüft wird, ob der Umriss in die gedruckte Mulde passt und ob die Kassette in den Schacht geht.</p>
     <div class="status">
       <span class="pill ok">Platte: flach, 14,6 mm (Stand hopeful-mccarthy)</span>
       <span class="pill">Maßstab 1:1300</span>
       <span class="pill warn">Kassette V2R: Konzept, noch kein STL, nie gedruckt</span>
-      <span class="pill warn">Hohlgebäude (Branch jolly-pascal) noch nicht integriert</span>
+      <span class="pill ok">Hohlgebäude aus jolly-pascal: 1:1300, mit Fuß, Boden und V2R-Schacht, dicht, keine Kollision</span>
     </div>
   </header>
 
   <section class="panel cols">
     <div>
-      <h2>Schnitt durch den Schacht</h2>
+      <h2>3D-Vorschau des Abschneidens</h2>
       <div class="slicer">
         <input class="vrange" id="hSlider" type="range" min="4" max="111" step="0.2" value="25" aria-label="Höhe des Stummels über der Plattenoberfläche">
-        <svg id="section" viewBox="0 0 300 560" role="img" aria-label="Schnitt: Platte mit Mulde, Stummel, Kassette"></svg>
+        <div id="gl" role="img" aria-label="3D-Ansicht des Hohlgebäudes, oben abgeschnitten"></div>
       </div>
-      <p class="hint" style="margin-top:8px">Regler von unten nach oben: bis wohin gedruckt wird. Maße in mm, alles maßstäblich außer dem Spiel (zu fein, um es zu sehen).</p>
+      <div class="row" style="margin-top:8px">
+        <button class="ghost" data-view="iso" type="button">Schräg</button>
+        <button class="ghost" data-view="side" type="button">Seite</button>
+        <button class="ghost" data-view="top" type="button">Von oben</button>
+        <label class="hint" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="ghost" checked> Rest als Schatten</label>
+      </div>
+      <p class="hint" style="margin-top:8px">Regler von unten nach oben: bis wohin gedruckt wird. Ziehen dreht, Mausrad oder Zwei-Finger-Geste zoomt. Blaue Fläche: Schnitt. Graues Quadrat: Plattenoberfläche (z = 0).</p>
     </div>
 
     <div>
@@ -104,19 +115,8 @@ svg .t-fg { fill: var(--fg); }
         <span class="hint">Die Mulde ist gedruckt und lässt sich nicht mehr ändern; das Spiel stellen wir über den Umriss des Stummels ein. Jedes Häkchen ergibt ein Stück. Ohne Messschieber vergleichst du nur von Hand: lässt sich 0,10 ohne Kraft einsetzen, wackelt 0,20?</span>
       </div>
       <div class="field">
-        <label for="cass">Kassette</label>
-        <select id="cass">
-          <option value="v2r">Schacht V2R mit Kassette V2R (Konzept, muss erst gebaut werden)</option>
-          <option value="none">Ohne Schacht, nur Umriss</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="wall">Wandstärke</label>
-        <select id="wall"><option value="0.8" selected>0,8 mm (wie Hohlgebäude)</option><option value="1.2">1,2 mm (steifer)</option></select>
-      </div>
-      <div class="field">
-        <label for="rad">Eckenradius am Umriss</label>
-        <select id="rad"><option value="0">0 (Umriss wie im Scan)</option><option value="0.3" selected>0,3 mm (druckt die Mulde auch rund)</option></select>
+        <span class="lab">Im Modell enthalten</span>
+        <span class="hint">Boden 1,2 mm, Schachtrohr mit Aufnahme für Kassette V2R (Anschlag, 45°-Auflage), Wand 0,8 mm, 45°-Gewölbe; Fuß 14,2 mm mit Fase an der Bettkante. Die Kassette V2R selbst fehlt noch und wird als Probeteil gebaut.</span>
       </div>
     </div>
   </section>
@@ -138,10 +138,10 @@ svg .t-fg { fill: var(--fg); }
   </section>
 
   <section class="panel plan">
-    <h2>Grundriss in der Platte</h2>
+    <h2>Maße im Schnitt und im Grundriss</h2>
     <div class="cols">
-      <svg id="plan" viewBox="0 0 400 400" role="img" aria-label="Grundriss des Hochhauses mit Schacht und Pin-Reihe"></svg>
-      <div style="display:flex;flex-direction:column;gap:12px">
+      <svg id="section" viewBox="0 0 300 560" role="img" aria-label="Schnitt: Platte mit Mulde, Stummel, Kassette" style="max-width:380px"></svg>
+      <div style="display:flex;flex-direction:column;gap:12px"><svg id="plan" viewBox="0 0 400 400" role="img" aria-label="Grundriss des Hochhauses mit Schacht und Pin-Reihe"></svg>
         <ul class="list">
           <li>Umriss des Hochhauses: Laserscan 1:1300, Fläche <span class="mono" id="area"></span> mm², Umfang <span class="mono" id="perim"></span> mm.</li>
           <li>Der Schacht liegt um <span class="mono">53°</span> gedreht, 4,7 mm Wand zum Rand (Lage aus der Platzierungs-App).</li>
@@ -149,7 +149,7 @@ svg .t-fg { fill: var(--fg); }
         </ul>
         <svg id="gap" viewBox="0 0 260 150" role="img" aria-label="Fuge zwischen Mulde und Wand, 60-fach vergrößert"></svg>
         <span class="hint">Fuge zwischen Mulde (links) und Stummelwand (rechts), 60-fach vergrößert. Wand und Spiel folgen den Einstellungen.</span>
-      </div>
+      </div></div>
     </div>
   </section>
 
@@ -159,7 +159,7 @@ svg .t-fg { fill: var(--fg); }
       <li>Einsetzen in die Mulde: geht es ohne Kraft, hakt es an einer Ecke, in welcher Drehlage geht es?</li>
       <li>Wackeln im eingesetzten Zustand und Zugkraft beim Herausziehen (fühlbar: 1 locker bis 5 fest).</li>
       <li>Sitzt der Stummel auf dem Muldenboden auf? Falls nicht, fehlt Tiefe oder die Fase unten liegt auf.</li>
-      <li>Kassette von unten in den Schacht pressen: Sitz, Wand um den Schacht gerissen?</li>
+      <li>Kassette (Probeteil V2R) von unten in den Schacht pressen: Sitz, Wand um den Schacht gerissen?</li>
       <li>Kassette im eingesteckten Stummel: Pins treffen die Buchse?</li>
       <li>Jedes Stück vorher beschriften (Spiel), damit die Reihe zuzuordnen ist.</li>
     </ul>
@@ -168,15 +168,17 @@ svg .t-fg { fill: var(--fg); }
   <section class="panel">
     <h2>Offen</h2>
     <ul class="list">
-      <li><b>Kassette V2R:</b> bisher nur Konzept (<span class="mono">plug/logbook/cassettes.md</span>), die Streifendicke 2,2 mm ist nicht gemessen. Für diese Runde baue ich die V2R-Kassette als Probeteil; bewährt ist nur v4.</li>
-      <li><b>Hohlgebäude:</b> der Branch <span class="mono">jolly-pascal</span> erzeugt die Schale ohne Fuß und Schacht. Ab hier ist die Seite ein Platzhalter: der graue Bereich über dem Stummel zeigt das spätere Gebäude, das Dach mit 45°-Gewölbe kommt erst nach der Integration.</li>
-      <li>Rechteckiger Schacht-Block im Stummel statt echter Hohlstruktur; Wand 0,8 mm ist wie beim Hohlgebäude gewählt, aber nicht gedruckt getestet.</li>
+      <li><b>Kassette V2R:</b> bisher nur Konzept (<span class="mono">plug/logbook/cassettes.md</span>), die Streifendicke 2,2 mm ist nicht gemessen. Für diese Runde baue ich sie als Probeteil; bewährt ist nur v4.</li>
+      <li><b>Hohlgebäude:</b> Dateien aus <span class="mono">jolly-pascal</span> (<span class="mono">plug.buildings</span>) übernommen: <span class="mono">stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300.stl</span>. Der Branch ist nicht gemerged, nur diese Dateien liegen hier.</li>
+      <li><b>Spiel-Reihe:</b> Das Modell hat das Spiel 0,10 (Umriss gleich Scan, Mulde 0,10 größer). Die anderen Stücke entstehen durch Verkleinern des Umrisses; wie genau, lege ich beim STL fest.</li>
+      <li>Beim Abschneiden entsteht oben eine offene Kante. Der Stummel ist dünnwandig (0,8 mm) und deshalb weicher als das ganze Gebäude.</li>
     </ul>
   </section>
 </main>
 
 <script>
 const D = /*DATA*/null;
+const M = /*MESH*/null;
 const $ = id => document.getElementById(id);
 const CLRS = [0.05, 0.10, 0.15, 0.20, 0.25];
 const NF = (x, n = 1) => x.toFixed(n).replace(".", ",");
@@ -207,26 +209,21 @@ $("clrChecks").innerHTML = CLRS.map(c => `<label><input type="checkbox" class="c
 
 function state() {
   const h = parseFloat($("hNum").value);
-  return { h, clrs: [...document.querySelectorAll(".clr:checked")].map(e => parseFloat(e.value)), cass: $("cass").value,
-    wall: parseFloat($("wall").value), rad: parseFloat($("rad").value) };
+  return { h, clrs: [...document.querySelectorAll(".clr:checked")].map(e => parseFloat(e.value)), cass: "v2r", wall: 0.8 };
 }
 
-// Druckzeit und Material: Lage für Lage
+// Druckzeit und Material aus den echten Lagen des Hohlgebäudes (Pfadlänge = Fläche / Linienbreite 0,42)
 function estimate(s) {
   const v = +$("vEff").value, tMin = +$("tMin").value, tOv = +$("tOv").value, tStart = +$("tStart").value;
-  const n = Math.max(s.clrs.length, 1), LH = 0.2, total = FOOT + s.h, layers = Math.round(total / LH);
-  const shaftPer = s.cass === "none" ? 0 : 2 * ((D.shaft_w + 2 * s.wall) + (D.shaft_d + 2 * s.wall)) * 2;  // Außenring plus Innenring des Schacht-Blocks
-  const shaftTop = FOOT + Math.min(s.h, NEED);
+  const n = Math.max(s.clrs.length, 1), top = FOOT + s.h;       // Höhe über dem Bett
+  const layers = Math.min(Math.round(top / M.layer), M.layers.length);
   let sec = 0, vol = 0;
   for (let i = 0; i < layers; i++) {
-    const z = (i + 0.5) * LH;
-    let len = 2 * D.perimeter;                                // zwei Bahnen am Umriss
-    if (shaftPer && z < shaftTop) len += shaftPer;
-    // Bahn 0,4 breit, Lage 0,2 hoch
-    vol += len * 0.4 * LH;
+    const area = M.layers[i][1], len = area / 0.42;
+    vol += area * M.layer;
     sec += Math.max(n * (len / v + tOv), tMin);
   }
-  return { min: sec / 60 * 1 + tStart, mm3: vol * n, layers, n };
+  return { min: sec / 60 + tStart, mm3: vol * n, layers, n };
 }
 const fmtT = m => m >= 60 ? `${Math.floor(m / 60)} h ${String(Math.round(m % 60)).padStart(2, "0")} min` : `${Math.round(m)} min`;
 
@@ -244,7 +241,7 @@ function drawSection(s) {
   const top = s.h;
   outIv.forEach(([a, b]) => { g += rect(a, b, top, HMAX, `fill="none" stroke="var(--muted)" stroke-dasharray="3 3"`, `stroke-width="1"`); });
   const mid = X((x0 + x1) / 2);
-  if (HMAX - top > 12) g += `<text x="${mid}" y="${Z((top + HMAX) / 2)}" text-anchor="middle">Platzhalter Hohlgebäude</text><text x="${mid}" y="${Z((top + HMAX) / 2) + 12}" text-anchor="middle">Dach bei ${NF(HMAX)} mm</text>`;
+  if (HMAX - top > 12) g += `<text x="${mid}" y="${Z((top + HMAX) / 2)}" text-anchor="middle">wird nicht gedruckt</text><text x="${mid}" y="${Z((top + HMAX) / 2) + 12}" text-anchor="middle">Dach bei ${NF(HMAX)} mm</text>`;
   // Platte mit Mulde
   const pa = x0 - 12, pb = x1 + 12;
   let platePath = rect(pa, pb, -PLATE, 0, `fill="var(--plate)" stroke="var(--muted)"`, `stroke-width="1"`);
@@ -270,7 +267,7 @@ function drawSection(s) {
   // Maßlinien rechts
   const xr = X(pb) + 8;
   const labels = [[0, "Plattenoberfläche 0", ""], [-FOOT, `Mulde −${NF(FOOT)}`, ""], [-PLATE, `Unterseite −${NF(PLATE)}`, ""], [top, `Stummel +${NF(top)}`, "t-fg"]];
-  if (s.cass !== "none") labels.push([NEED, `Anschlag +${NF(NEED)}`, ""]);
+  if (s.cass !== "none") labels.push([CASS_TOP, `Kassette oben +${NF(CASS_TOP)}`, ""]);
   labels.sort((p, q) => q[0] - p[0]);
   let lastY = -99;
   labels.forEach(([z, t, cls]) => {
@@ -316,19 +313,19 @@ function render() {
   $("kTime").textContent = fmtT(e.min);
   $("kVol").textContent = NF(e.mm3 / 1000, 1) + " cm³";
   const w = $("warn"), msgs = [];
-  if (s.cass !== "none" && s.h < NEED) msgs.push(`Mit Kassette V2R braucht der Stummel mindestens ${NF(NEED)} mm über der Platte (Kassette ${NF(CASS_TOP)} + 1,2 Anschlag). Darunter ragt die Kassette heraus und der Schacht hat keinen Anschlag.`);
+  if (s.cass !== "none" && s.h < NEED) msgs.push(`Mit Kassette V2R braucht der Stummel mindestens ${NF(NEED)} mm über der Platte (Kassette oben bei ${NF(CASS_TOP)} plus Dach). Darunter ragt die Kassette aus dem Stummel heraus.`);
   if (!s.clrs.length) msgs.push("Kein Spiel gewählt: Es wird kein Stück gedruckt.");
-  if (s.h >= HMAX - 0.5) msgs.push("Das ist das ganze Hochhaus. Dach und Gewölbe fehlen noch, solange das Hohlgebäude nicht integriert ist.");
+  if (s.h >= HMAX - 0.5) msgs.push("Das ist das ganze Hochhaus mit Dach (111 mm über der Platte, 125 mm hoch gedruckt).");
   w.hidden = !msgs.length; w.innerHTML = msgs.join("<br>");
-  drawSection(s); drawGap(s);
+  drawSection(s); drawGap(s); setCut(s.h);
   const txt = [
     "Passform-Stummel City-Hochhaus (1:1300, Platte 14,6 mm flach)",
     `Höhe über der Plattenoberfläche: ${NF(s.h)} mm (Gesamthöhe ${NF(FOOT + s.h)} mm mit Fuß 14,2)`,
     `Spiel-Reihe je Seite: ${s.clrs.map(c => NF(c, 2)).join(" / ") || "keine"} mm (${s.clrs.length} Stück${s.clrs.length === 1 ? "" : "e"})`,
-    `Kassette: ${s.cass === "none" ? "ohne Schacht" : "Schacht V2R mit Kassette V2R (Konzept)"}`,
-    `Wand: ${NF(s.wall)} mm, Eckenradius: ${NF(s.rad)} mm, unten offen, oben offen`,
+    "Modell: stl/steckmodul_campus/gebaeude/06_city_hochhaus_1zu1300.stl (Hohlgebäude mit Fuß, Boden 1,2, Schacht V2R), oben bei der Höhe abgeschnitten",
+    "Kassette V2R: Probeteil dazu (Konzept)",
     `Druckzeit geschätzt: ${fmtT(e.min)} (alle Stücke), Material ca. ${NF(e.mm3 / 1000, 1)} cm³`,
-    "", JSON.stringify({ gebaeude: D.slug, hoehe_ueber_platte: +s.h.toFixed(1), spiel: s.clrs, kassette: s.cass, wand: s.wall, eckenradius: s.rad, zeit_min: Math.round(e.min) })
+    "", JSON.stringify({ gebaeude: D.slug, hoehe_ueber_platte: +s.h.toFixed(1), spiel: s.clrs, modell: "06_city_hochhaus_1zu1300", kassette_probeteil: "V2R", zeit_min: Math.round(e.min) })
   ].join("\n");
   $("out").value = txt;
 }
@@ -336,12 +333,71 @@ function render() {
 ["hSlider", "hNum"].forEach(id => $(id).addEventListener("input", ev => {
   const v = ev.target.value; $("hSlider").value = v; $("hNum").value = v; render();
 }));
-document.querySelectorAll(".clr, #cass, #wall, #rad, #vEff, #tMin, #tOv, #tStart").forEach(el => el.addEventListener("input", render));
+document.querySelectorAll(".clr, #vEff, #tMin, #tOv, #tStart").forEach(el => el.addEventListener("input", render));
 $("hSlider").max = HMAX; $("hNum").max = HMAX; $("hSlider").value = 25; $("hNum").value = 25;
 $("copy").addEventListener("click", async () => {
   const t = $("out").value, ok = $("copied");
   try { await navigator.clipboard.writeText(t); ok.textContent = "Kopiert."; }
   catch (e) { $("out").focus(); $("out").select(); ok.textContent = "Markiert, bitte mit Strg+C kopieren."; }
 });
-drawPlan(); render();
+
+// ---- 3D-Vorschau (three.js): Hohlgebäude, oben bei der Schnitthöhe abgeschnitten, Rest als Schatten ----
+let GL = null;
+function cssv(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function setCut(h) {
+  if (!GL) return;
+  GL.keep.constant = h; GL.rest.constant = -h; GL.cutPlane.position.z = h; GL.draw();
+}
+function initGL() {
+  const host = $("gl");
+  if (typeof THREE === "undefined") { host.innerHTML = '<div class="glmsg">3D-Ansicht nicht geladen (three.js blockiert). Der Schnitt unten zeigt dieselben Maße.</div>'; return; }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true }); } catch (e) { host.innerHTML = '<div class="glmsg">Dieser Browser kann kein WebGL. Der Schnitt unten zeigt dieselben Maße.</div>'; return; }
+  renderer.localClippingEnabled = true;
+  host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(32, 1, 1, 2000);
+  camera.up.set(0, 0, 1);
+  const bin = atob(M.tris), buf = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+  const q = new Int16Array(buf.buffer), pos = new Float32Array(q.length);
+  for (let i = 0; i < q.length; i += 3) { pos[i] = q[i] * M.quant + M.center[0]; pos[i + 1] = q[i + 1] * M.quant + M.center[1]; pos[i + 2] = q[i + 2] * M.quant + M.center[2]; }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.BufferAttribute(pos, 3)); geo.computeVertexNormals();
+  const keep = new THREE.Plane(new THREE.Vector3(0, 0, -1), 25), rest = new THREE.Plane(new THREE.Vector3(0, 0, 1), -25);
+  const mKeep = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: .85, metalness: 0, clippingPlanes: [keep] });
+  const mRest = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, transparent: true, opacity: .13, depthWrite: false, clippingPlanes: [rest] });
+  const meshKeep = new THREE.Mesh(geo, mKeep), meshRest = new THREE.Mesh(geo, mRest);
+  scene.add(meshKeep, meshRest);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, .9));
+  const sun = new THREE.DirectionalLight(0xffffff, .8); sun.position.set(-1, -2, 3); scene.add(sun);
+  const b = M.bounds, cx = (b[0][0] + b[1][0]) / 2, cy = (b[0][1] + b[1][1]) / 2, span = Math.max(b[1][0] - b[0][0], b[1][1] - b[0][1]) + 14;
+  const mPlate = new THREE.LineBasicMaterial(), mCutM = new THREE.MeshBasicMaterial({ transparent: true, opacity: .09, side: THREE.DoubleSide, depthWrite: false });
+  const sq = new THREE.BufferGeometry().setFromPoints([[-1, -1], [1, -1], [1, 1], [-1, 1]].map(p => new THREE.Vector3(cx + p[0] * span / 2, cy + p[1] * span / 2, 0)));
+  const plate = new THREE.LineLoop(sq, mPlate); scene.add(plate);
+  const cutPlane = new THREE.Mesh(new THREE.PlaneGeometry(span, span), mCutM); cutPlane.position.set(cx, cy, 25); scene.add(cutPlane);
+  const ctl = new THREE.OrbitControls(camera, renderer.domElement);
+  const views = { iso: [1.5, -2.2, .9], side: [0, -1, .08], top: [0.0001, -0.0001, 1] };
+  function setView(name) {
+    const v = views[name], zc = name === "top" ? 20 : 34, d = name === "top" ? 150 : 250;
+    const len = Math.hypot(...v); camera.position.set(cx + v[0] / len * d, cy + v[1] / len * d, zc + v[2] / len * d);
+    ctl.target.set(cx, cy, zc); ctl.update(); draw();
+  }
+  function colors() {
+    mKeep.color.set(cssv("--stub")); mRest.color.set(cssv("--muted")); mPlate.color.set(cssv("--muted")); mCutM.color.set(cssv("--accent"));
+    renderer.setClearColor(new THREE.Color(cssv("--bg")), 1);
+  }
+  function resize() {
+    const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); draw();
+  }
+  function draw() { meshRest.visible = $("ghost").checked; renderer.render(scene, camera); }
+  GL = { keep, rest, cutPlane, draw, colors };
+  ctl.addEventListener("change", draw);
+  new ResizeObserver(resize).observe(host);
+  document.querySelectorAll("[data-view]").forEach(bt => bt.addEventListener("click", () => setView(bt.dataset.view)));
+  $("ghost").addEventListener("input", draw);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { colors(); draw(); });
+  new MutationObserver(() => { colors(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  colors(); resize(); setView("iso");
+}
+drawPlan(); initGL(); render();
 </script>

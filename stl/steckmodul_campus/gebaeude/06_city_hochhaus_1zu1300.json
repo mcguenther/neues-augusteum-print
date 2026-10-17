@@ -1,0 +1,22 @@
+{
+ "slug": "06_city_hochhaus",
+ "var": "V2R",
+ "wall": 4.7,
+ "F": 14.200000000000001,
+ "kollision_mm3": 0.0,
+ "platz_fehlt_mm3": 0.0,
+ "volumen_cm3": 13.6,
+ "ueberhang": {
+  "bruecke_mm2": 0.67,
+  "bruecke_mm": 0.41,
+  "krag_mm2": 7.11,
+  "krag_mm": 0.72,
+  "stellen": []
+ },
+ "dicht": true,
+ "mass_mm": [
+  36.1,
+  35.0,
+  125.5
+ ]
+}
