@@ -550,7 +550,8 @@ SW_DEPTH = 20.0      # Schalter ab Außenfläche: Kasten 9 + Pins 7 + Lötstelle
 def variant(scale, h=H0, dk=DK):
     s = 1000.0 / scale
     G.FAST = True                              # Laser-Raster 0,6 m wie plug/campus.py (gleiche Grundrisse wie scale.md)
-    m = G.source_models("laserscan", s)
+    from plug import campus as C                # lazy: campus importiert dieses Modul
+    m = C.models_plan(s, scale)                # Grundrisse mit Fuge an den Nähten wie plug/campus.py
     fps = {k: v[1] for k, v in m.items() if k in TP.CASSETTE}
     hof_solid, hof_fp, _ = innenhof.model(s, list(fps.values()), TP.HOF_DEPTH_T, TP.HOF_CLR_T)
     hof_cut = innenhof.flaeche_mm(list(fps.values()), s)      # Aussparung der Platte (ohne Fase oben), wie plug/campus.py

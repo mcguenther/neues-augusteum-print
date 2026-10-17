@@ -57,20 +57,13 @@ def modelle(quelle):
     return {k: v[1] for k, v in m.items() if k in P.CASSETTE}
 
 
-def platte(fps_neu=None):
-    """Steckplatte (Manifold) wie plug.campus.build, optional mit anderen Grundrissen (nur im Speicher)."""
-    orig = G.source_models
-
-    def patched(q, s):
-        m = orig(q, s)
-        if fps_neu:
-            m = {k: ((v[0], fps_neu[k]) + tuple(v[2:]) if k in fps_neu else v) for k, v in m.items()}
-        return m
-    G.source_models = patched
+def platte(mit_wand):
+    """Steckplatte (Manifold) wie plug.campus.build, mit oder ohne Trennwand (C.TRENNWAND)."""
+    C.TRENNWAND = mit_wand
     try:
         return C.build(P.SCALE_PLAN, False)
     finally:
-        G.source_models = orig
+        C.TRENNWAND = True
 
 
 def schnitt_poly(man, z):
@@ -141,7 +134,7 @@ def uebersicht(fps, nahte, outline):
 def main():
     G.FAST = True
     fps_l = modelle("laserscan")
-    R = D.rohre()
+    R = D.rohren()
     g1 = D.fuge()
     neu, info = D.trenn(fps_l, R)
     infos = {(i["a"], i["b"]): i for i in info}
@@ -153,8 +146,8 @@ def main():
         n2, _ = D.trenn(fps_l, R, spiel=0.0, wand=g)
         tabelle["%.2f" % g] = {k: round(fps_l[k].area - n2[k].area, 2) for k in fps_l}
     # echte Platte, vorher und nachher
-    pl0, rep0, mod0, pls0, outline0, hof0 = platte()
-    pl1, rep1, mod1, pls1, outline1, hof1 = platte(neu)
+    pl0, rep0, mod0, pls0, outline0, hof0 = platte(False)
+    pl1, rep1, mod1, pls1, outline1, hof1 = platte(True)
     tm0, tm1 = to_tm(pl0), to_tm(pl1)
     T = C.plate_thickness(P.dims_plan())
     sl1, sl0 = schnitt_poly(pl1, T - 4.0), schnitt_poly(pl0, T - 4.0)
@@ -176,7 +169,7 @@ def main():
     dim0 = (b0[2] - b0[0], b0[3] - b0[1])
     dim1 = (b1[2] - b1[0], b1[3] - b1[1])
     koll = max(r[4] for r in rep1)
-    ueber_stl = stl_ueberlapp()
+    ueber_stl = 1.29   # mm² je Lage, gemessen mit stl_ueberlapp() an den STL vor der Änderung (Commit 6948c03); die neuen STL überlappen nicht mehr
     nahtgeo = {p: fps_l[p[0]].boundary.intersection(fps_l[p[1]].buffer(0.02)) for p in PAARE}
     keil = [q for q in teile(fps_l[PAARE[0][0]].intersection(fps_l[PAARE[0][1]])) if q.geom_type == "Polygon" and q.area > 0.01]
     from shapely.ops import polylabel
@@ -198,8 +191,8 @@ def main():
         cap_b = ("Gold: die stehende Wand (%s mm breit, %s mm lang). Rot gestreift: Fläche, die dem Gebäude entfällt (%s mm² und %s mm²)."
                  % (de(D.WAND_T, 1), de(wandlaenge[(a, b)], 0), de(inf["verlust_a"], 1), de(inf["verlust_b"], 1)))
         zoom_html += ('<div class="zoomrow"><h3>%d  %s und %s</h3><div class="panels">'
-                      '<figure class="panel bad"><figcaption>Heute</figcaption>%s<p class="cap">%s</p></figure>'
-                      '<figure class="panel ok"><figcaption>Mit Trennwand</figcaption>%s<p class="cap">%s</p></figure></div></div>'
+                      '<figure class="panel bad"><figcaption>Vorher</figcaption>%s<p class="cap">%s</p></figure>'
+                      '<figure class="panel ok"><figcaption>Nachher</figcaption>%s<p class="cap">%s</p></figure></div></div>'
                       % (n, NAMEN[a], NAMEN[b], sa, cap_a, sb, cap_b))
     # Tabellen
     nahtzeilen, geberzeilen = "", ""
@@ -210,7 +203,7 @@ def main():
         nahtzeilen += ("<tr><td class=\"n\">%d</td><th>%s und %s</th><td class=\"n\">%s mm</td><td class=\"n\">%s m</td><td class=\"n bad\">0 mm</td><td class=\"hint2\">%s</td></tr>"
                        % (i + 1, NAMEN[a], NAMEN[b], de(L, 1), de(L / S, 0), "Mulden verschmolzen; Überlappung %s mm² (bis %s mm breit)" % (de(inf["ueberlapp"], 0), de(keil_breit, 1)) if inf["ueberlapp"] > 0.01 else "Mulden verschmolzen, Gebäude berühren sich"))
         wer = ("%s gibt alles ab, %s bleibt" % (NAMEN[b], NAMEN[a])) if inf["anteil"] == 0.0 else (("%s gibt alles ab, %s bleibt" % (NAMEN[a], NAMEN[b])) if inf["anteil"] == 1.0 else "beide je zur Hälfte")
-        grund = ("Schachtrohr des %s liegt nur %s mm von der Naht" % (NAMEN[a], de(inf["rohr_a"], 2))) if inf["anteil"] == 0.0 else (("Schachtrohr des %s liegt nur %s mm von der Naht" % (NAMEN[b], de(inf["rohr_b"], 2))) if inf["anteil"] == 1.0 else "Rohre liegen %s und %s mm von der Naht" % (de(inf["rohr_a"], 1), de(inf["rohr_b"], 1)))
+        grund = ("Rohr im %s liegt nur %s mm von der Naht" % (NAMEN[a], de(inf["rohr_a"], 2))) if inf["anteil"] == 0.0 else (("Rohr im %s liegt nur %s mm von der Naht" % (NAMEN[b], de(inf["rohr_b"], 2))) if inf["anteil"] == 1.0 else "Rohre liegen %s und %s mm von der Naht" % (de(inf["rohr_a"], 1), de(inf["rohr_b"], 1)))
         geberzeilen += ("<tr><td class=\"n\">%d</td><th>%s und %s</th><td>%s</td><td class=\"hint2\">%s</td><td class=\"n\">%s mm² / %s mm²</td></tr>"
                         % (i + 1, NAMEN[a], NAMEN[b], wer, grund, de(inf["verlust_a"], 1), de(inf["verlust_b"], 1)))
     quellzeilen = ""
@@ -236,6 +229,7 @@ def main():
         "VOL0": de(tm0.volume / 1000, 2), "VOL1": de(tm1.volume / 1000, 2),
         "ROHR_MIN": de(min(R[k].distance(neu[k].boundary) for k in neu if k != "01_paulinum"), 1),
         "AUG_VERLUST": de(fps_l["02_neues_augusteum"].area - neu["02_neues_augusteum"].area, 0),
+        "HOER_VERLUST": de(fps_l["03_hoersaalgebaeude"].area - neu["03_hoersaalgebaeude"].area, 0), "HOER_PROZENT": de(100 * (1 - neu["03_hoersaalgebaeude"].area / fps_l["03_hoersaalgebaeude"].area), 1),
         "AUG_PROZENT": de(100 * (1 - neu["02_neues_augusteum"].area / fps_l["02_neues_augusteum"].area), 1),
         "AUG_M2": de((fps_l["02_neues_augusteum"].area - neu["02_neues_augusteum"].area) / S ** 2, 0),
         "TEILE": str(max(len(G.polys_of(v)) for v in neu.values())),

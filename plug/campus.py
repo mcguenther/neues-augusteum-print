@@ -246,6 +246,7 @@ def place_all(models, scale, replace=False):
 
 
 OUTLINE = None
+TRENNWAND = True         # False: Grundrisse ohne Fuge (Stand vor 17.10., nur für Vorher/Nachher-Seiten und Vergleiche)
 SCHNITT_OBEN = 3.0       # mm über der Plattenoberfläche: so hoch schneiden die Mulden (die Aufbauten der Platte, Gang und Treppe, sind bis 2,35 mm hoch)
 # Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
 PREFER_ROOF = {"02_neues_augusteum"}
@@ -260,13 +261,23 @@ def hof_abstand(wand):
     return P.OUTLINE_CLR_T + wand
 
 
+def models_plan(s, scale=P.SCALE_PLAN):
+    """Laserscan-Modelle mit Fuge an den Nähten zwischen Gebäuden (plug/divider/geom.py: Wand HOF_WALL_T zwischen den Mulden, Neues Augusteum weicht
+    dem Paulinum, sonst teilen sich beide die Fuge)."""
+    models = G.source_models("laserscan", s)
+    if not TRENNWAND:
+        return models
+    from plug.divider import geom as DV
+    return DV.getrennt(models, scale)
+
+
 def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     """hof_wand: Trennwand zwischen Hof-Aussparung und Gebäude-Mulden in mm (Standard P.HOF_WALL_T)."""
     global OUTLINE
     s = 1000.0 / scale
     G.FAST = True
     abstand = hof_abstand(P.HOF_WALL_T if hof_wand is None else hof_wand)
-    models = G.source_models("laserscan", s)
+    models = models_plan(s, scale)
     models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T, abstand)
     fps = {k: v[1] for k, v in models.items()}
     outline = G.plate_outline(unary_union(list(fps.values())))

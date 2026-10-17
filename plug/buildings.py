@@ -281,7 +281,7 @@ def ueberhang(body, step=LAYER, tol=UEBERHANG_T):
 
 def build(scale=P.SCALE_PLAN, slugs=None):
     s = 1000.0 / scale
-    models = G.source_models("laserscan", s)
+    models = C.models_plan(s, scale)
     places = json.load(open(C.CACHE % scale))
     out = []
     for slug, p in places.items():
