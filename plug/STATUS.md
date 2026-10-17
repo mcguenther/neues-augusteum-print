@@ -287,6 +287,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Kassetten-Platzierung (App, Lagen ziehen, Warnungen, Kopieren) | `plug/scale1176/placer.html` | https://claude.ai/artifact/8DHMHzJuPVhD9cAyWWUkA2 |
 | Plan Display-Gebäude (OLED, INA226, Lage am Ostrand, Entwürfe E1 bis E3) | `plug/display/plan.html` | https://claude.ai/artifact/AdGcLrXcg6yQhcpZGxymrS |
 | Plan 2 Display-Gebäude (Aufbau und Zusammenbau, Körper E2b) | `plug/display/plan2.html` | https://claude.ai/artifact/NBFuN7QfeQDaLr9qCWXUVp |
+| Plan 3 Display-Gebäude (Körper E4: Kopf über der Platte, Rückenkeil, 3D mit Explosionsregler) | `plug/display/plan3.html` | https://claude.ai/artifact/SaQwh1G2dLRt7m8tw3wX37 |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 

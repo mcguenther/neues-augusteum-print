@@ -50,7 +50,7 @@ AIR_MIN = 4.0          # E  Luft über der Kassettenoberkante, Mindestmaß (Nutz
 AIR = 4.5              # E  Plan: 0,5 Reserve
 LID_T = 1.2            # E  Deckel der Kabelkammer, bündig im Blockdach
 CHAN = 4.0             # S  Kabelkanal hinter der Rückwand des Moduls (vier Adern 28 AWG, Silikon, bündeln etwa 2,5 mm)
-SLIT_W = 14.0          # E  Kabelfenster in der Rückwand für die Adern (Pin-Reihe 7,6 plus Löt- und Biegeraum)
+SLIT_W = 13.2          # E  Kabelfenster in der Rückwand für die Adern, so breit wie der Schacht (Pin-Reihe 10,2 mit Header)
 TOP_CAP = 1.2          # E  Kopfdach über dem Modul (Teil des Körpers; das Modul geht von vorn hinein, die Frontblende schließt)
 BLENDE_T = 1.2         # E  Frontblende (eigenes Teil, liegend gedruckt, Fenster als Loch)
 WIRE_LEN = 55.0        # A  Länge der Adern: Weg etwa 22 mm plus 30 mm zum Anlöten außerhalb des Körpers
@@ -67,3 +67,15 @@ V_PAD = 3.0            # E  Abstand zu den Fadenkerben in den Ecken
 
 # ---- Sicht
 VIEW_ANGLES = (15, 25, 35, 45)   # Blickwinkel über der Waagerechten, aus Osten
+
+
+# ---- Plan 3 (Nutzer 2026-10-17): Kopf ganz über der Platte, Hals = Halter der Kassette, Header bleibt am Modul (Adern an die Pinenden)
+WIN_BOTTOM = 10.0      # E  Unterkante des Sichtfensters über der Platte (Nutzer: 5 bis 10 mm; 10 mm = Modul sitzt ganz über der Platte)
+FLOOR_T = 1.2          # E  Boden der Modultasche (drei Wände)
+PIN_TIP = 11.3         # B  Stiftspitze von der Glasfront (Zeichnung GME12864-79; ± 0,5, Pinlänge dieses Moduls ungemessen)
+GLASS_T = 1.7          # S  Glas vor der Platine (Zeichnung -79: 1,3 bis 1,7)
+PIN_CLEAR = 3.5        # E  Raum zwischen den Stiftspitzen (Lötstelle) und der Säule der Kassette
+ROUND_R = 2.0          # E  Innenkanten der Kabelkammer in der Biegeebene, Radius
+FOOT_CH = 1.0          # E  Fase unten am Hals wie bei den Gebäuden (bewährt 0,5; im Passform-Branch 2,0, ungetestet)
+SPILL = 0.15           # E  Spiel um den Rückdeckel
+LID_W = 14.4           # E  Breite des Rückdeckels (Kammer 13,2 plus 0,6 Auflage je Seite)
