@@ -1,0 +1,38 @@
+Modulprobe Display-Gebäude: Aufnahme und Frontblende mit Zapfen (plug/display/params.py, body4.py)
+Modul angenommen 35.30 × 33.80 × 4.4 (Platine); Tasche 35.94 × 34.10 × 5.00, Luft je Seite 0.32, oben 0.30, Dicke je Seite 0.30
+Kopf 38.34 breit × 35.30 hoch × 8.60 tief (Aufnahme), Rückwand 3.60 dick, Sacklöcher Ø2.55 × 2.60 tief, Zapfen Ø2.5 / Ø2.5
+
+Teile (Druckausrichtung, Bett z = 0):
+  M1_aufnahme.stl               8.6 ×   38.3 ×  35.3 mm   3.47 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: z=30.8: 7 mm² (3.6 × 2.1); z=30.7: 6 mm² (3.6 × 3.8); z=30.5: 6 mm² (3.6 × 5.7)
+      Lagenprüfung: Brücken 2.8 mm² (bis 0.2 mm), Kragstücke 24.7 mm² (bis 1.2 mm)
+         krag bei z=30.9: 8 mm², Reichweite 1.2 mm, Mitte (-2.5, 0.0)
+  M2_blende_A_zapfen_2_4.stl   36.3 ×   38.3 ×   8.6 mm   1.47 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: keine
+      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 0.0 mm² (bis 0.0 mm)
+  M3_blende_B_zapfen_2_5.stl   36.3 ×   38.3 ×   8.6 mm   1.47 cm³  dicht=True (Manifold: NoError)
+      waagerechte Decken: keine
+      Lagenprüfung: Brücken 0.0 mm² (bis 0.0 mm), Kragstücke 0.0 mm² (bis 0.0 mm)
+
+Prüfung im Zusammenbau (Überschneidungsvolumen, mm³; muss 0 sein):
+  Aufnahme und Modulplatine (35.30 × 33.80 in Tasche 35.94 × 34.10)                  0.000  ok
+  Aufnahme und Modulglas, Header, Pins (Kabelfenster)                                0.000  ok
+  Blende A (Ø2.5) und Aufnahme (Zapfen im Sackloch, Blende vor der Aufnahme)         0.000  ok
+  Blende A (Ø2.5) und Modulplatine, Header (Zapfen durch die Löcher Ø3.0)            0.000  ok
+  Hinweis Blende A (Ø2.5) und Modulglas (Lage des Glases nur aus dem Foto, ± 0,5): Überschneidung 0.064 mm³ (obere Zapfen laufen an der Glaskante entlang)
+  Blende B (Ø2.5) und Aufnahme (Zapfen im Sackloch, Blende vor der Aufnahme)         0.000  ok
+  Blende B (Ø2.5) und Modulplatine, Header (Zapfen durch die Löcher Ø3.0)            0.000  ok
+  Hinweis Blende B (Ø2.5) und Modulglas (Lage des Glases nur aus dem Foto, ± 0,5): Überschneidung 0.064 mm³ (obere Zapfen laufen an der Glaskante entlang)
+  Kontrollen (müssen stoßen):
+  Zapfen Ø2.6 (0,05 größer als das Sackloch) stößt an die Aufnahme                   0.089  ok
+  Blende A um 0,2 mm nach oben versetzt: Zapfen stoßen am Sackloch (Spiel 0,05)      0.658  ok
+  Blende A um 0,04 mm nach oben versetzt: noch kein Anstoß (Spiel 0,05 je Seite)     0.000  ok
+
+Abstände (mm):
+  Zapfen Ø2.5 im Modulloch Ø3.0: 0.25 je Seite (Lochlage aus dem Foto ± 0,5; ab 0,3 Versatz stößt der Zapfen an der Platine)
+  Zapfen A Ende Ø2.5 im Sackloch Ø2.5: 0.02 je Seite, B Ø2.5: 0.02 je Seite; Tiefe im Sackloch 2.4 (Probedruck 1: 1,0)
+  Im echten Körper (Grundriss und Rückenkeil) bleibt hinter dem Grund des Sacklochs mindestens 0.85 mm Material (Aufnahme: 1.00)
+  Taschenhöhe 34.10 für Modul 33.80: oben 0.30 Luft (liegt das Modul auf dem Boden)
+
+Druckzeit geschätzt (nicht kalibriert): M1 25 min, M2 14 min, M3 14 min, zusammen 52 min
+  -> alle Prüfungen bestanden

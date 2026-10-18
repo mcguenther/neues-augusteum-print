@@ -1,0 +1,360 @@
+<title>Plan 4 Display-Aufnahme und Zapfen</title>
+<meta name="description" content="Entwurf nach der Modulprobe: Kappe statt dünner Decke, Zapfen mit langer Verjüngung">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Textspalte mit Antwort oben, darunter Varianten-Umschalter für Draufsicht, 3D und Schnitt; Maße in Monospace.
+   Gleiches System wie plug/views/dupont/view.template.html, dazu Farben für Powerbank, Unterkasten und Innenhof. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
+  --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
+  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-niche: #d97a1f; --c-hut: #2b2f33;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+    --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+header { display: flex; flex-direction: column; gap: 14px; }
+.small { font-size: 0.88rem; }
+.muted { color: var(--muted); }
+ul, ol { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+
+/* Antwort */
+.answer { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.answer > div { background: var(--panel); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.answer .big { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.answer .lbl { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.answer .rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+
+/* Umschalter */
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.seg label .num { font-size: 0.85rem; color: var(--muted); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+.seg input:checked + label .num { color: var(--on-accent); }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sticky { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; display: flex; flex-direction: column; gap: 6px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.vnote { font-size: 0.92rem; color: var(--muted); max-width: 80ch; }
+
+/* Draufsicht + 3D */
+.views { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .views { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 0.95rem; }
+#plan { width: 100%; height: auto; max-height: 78vh; display: block; }
+#plan text { font-family: var(--font); fill: var(--fg); }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.ctrl input[type=range] { width: 160px; accent-color: var(--accent); }
+.ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.ctrl button:focus-visible, .ctrl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+
+/* Schnitt */
+.scroll { overflow-x: auto; }
+#sect { width: 100%; min-width: 640px; height: auto; display: block; }
+#sect text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#sect .mut { fill: var(--muted); }
+#sect .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+
+/* Tabellen */
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent); }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
+.src { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+
+/* Rechner */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 720px) { .calc { grid-template-columns: 1fr; } }
+.field { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+.field label { font-size: 0.92rem; }
+.field input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.result { display: flex; flex-direction: column; gap: 8px; }
+.result .big { font-family: var(--mono); font-size: 2.2rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent-fill); }
+.flag { font-size: 0.9rem; padding: 8px 12px; border-radius: 6px; border: 1px solid; }
+.flag.warn { color: var(--warn); border-color: currentColor; }
+.flag.ok { color: var(--ok); border-color: currentColor; }
+
+#wiring { width: 100%; min-width: 640px; height: auto; display: block; }
+#wiring text { font-family: var(--font); font-size: 13px; fill: var(--fg); }
+#wiring .mut { fill: var(--muted); font-size: 11.5px; }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--fg); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.seg label .dims { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.seg input:checked + label .dims { color: var(--on-accent); }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.cmp .card .big { font-family: var(--mono); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+#oese { width: 100%; max-width: 560px; height: auto; display: block; }
+#oese text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#oese .mut { fill: var(--muted); }
+.tests { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.tests .card { gap: 8px; }
+.tests .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.tests h3 { font-size: 1.05rem; }
+.tests ul { font-size: 0.93rem; }
+.meta { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.parts .card { gap: 4px; }
+.parts .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+#corner { width: 100%; max-width: 640px; height: auto; display: block; }
+#corner text { font-family: var(--font); font-size: 11px; fill: var(--fg); }
+#corner .mut { fill: var(--muted); }
+.pill.no { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips .pill { font-size: 0.7rem; padding: 0 6px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+#dock, #chfig { width: 100%; height: auto; display: block; }
+#dock text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+#chfig text { font-family: var(--font); font-size: 10.5px; fill: var(--fg); }
+#dock .mut, #chfig .mut { fill: var(--muted); }
+.inv { fill: var(--panel) !important; }
+#dock .dim, #chfig .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.legend .sw2::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--sw); }
+
+.fig { width: 100%; height: auto; display: block; min-width: 520px; }
+.fig text { font-family: var(--font); fill: var(--fg); font-size: 11.5px; }
+.fig .mut { fill: var(--muted); } .fig .ok { fill: var(--ok); font-weight: 600; } .fig .num { font-family: var(--mono); font-size: 10.5px; }
+.fig .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .8; }
+.fig .foot { fill: var(--c-bld); stroke: var(--edge); stroke-width: .7; }
+.fig .void { fill: var(--panel); stroke: var(--edge); stroke-width: .5; stroke-dasharray: 3 2; }
+.fig .kass { fill: var(--c-under); stroke: var(--edge); stroke-width: .7; }
+.fig .pcb { fill: var(--c-elec); stroke: var(--edge); stroke-width: .7; }
+.fig .aa { stroke: var(--accent-fill); stroke-width: 3; fill: none; }
+.fig .body { fill: var(--c-port); stroke: var(--edge); stroke-width: .6; }
+.fig .pin { stroke: var(--accent-fill); stroke-width: 1.6; }
+.fig .tail { stroke: var(--accent-fill); stroke-width: 2.4; stroke-linecap: round; fill: none; }
+.fig .wire { stroke: var(--c-thread); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.fig .dim { stroke: var(--fg); stroke-width: .8; fill: none; } .fig .okl { stroke: var(--ok); stroke-width: 2.4; }
+.fig .tablel { stroke: var(--muted); stroke-width: .8; stroke-dasharray: 4 3; }
+#wiring { min-width: 700px; }
+.fig.sec { min-width: 0; max-width: 100%; }
+#wiring .ln-ig { stroke: var(--muted); }
+#wiring .blk { fill: var(--panel); stroke: var(--edge); stroke-width: 1; }
+#wiring .blk.hot { stroke: var(--accent-fill); stroke-width: 2; }
+#wiring .blk.disp { stroke: var(--c-cut2); stroke-width: 2; }
+#wiring .bt { font-weight: 600; font-size: 13px; }
+#wiring .ln { fill: none; stroke-width: 2.2; stroke-linejoin: round; }
+#wiring .v5 { stroke: var(--accent-fill); } #wiring .v3 { stroke: var(--c-elec); } #wiring .i2c { stroke: var(--c-cut2); } #wiring .sig { stroke: var(--muted); stroke-dasharray: 4 3; }
+#wiring .v5s { fill: var(--accent-fill); } #wiring .v3s { fill: var(--c-elec); } #wiring .i2s { fill: var(--c-cut2); } #wiring .sgs { fill: var(--muted); }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
+#map { width: 100%; height: auto; display: block; background: var(--canvas); border-radius: 6px; }
+#map .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .8; }
+#map .bld { fill: var(--c-bld); stroke: var(--edge); stroke-width: .5; fill-opacity: .85; }
+#map .hof { fill: var(--c-hof); stroke: var(--edge); stroke-width: .4; fill-opacity: .85; }
+#map .pb { fill: none; stroke: var(--c-pb); stroke-width: 1.2; stroke-dasharray: 5 3; }
+#map .win { fill: var(--c-pb); fill-opacity: .55; }
+#map .esp { fill: var(--c-elec); fill-opacity: .25; stroke: var(--c-elec); stroke-width: 1; stroke-dasharray: 4 2; }
+#map .v { fill: var(--c-thread); fill-opacity: .55; }
+#map .dock { fill: var(--c-niche); fill-opacity: .3; stroke: var(--c-niche); stroke-width: .8; }
+#map .post { fill: var(--c-under); fill-opacity: .35; } #map .post.gone { fill: var(--warn); fill-opacity: .5; }
+#map .lbl { fill: var(--edge); fill-opacity: .12; stroke: var(--edge); stroke-opacity: .35; stroke-width: .6; stroke-dasharray: 3 2; }
+#map text { font-family: var(--font); font-size: 9.5px; fill: var(--fg); } #map text.mut { fill: var(--muted); }
+#map .mulde { fill: var(--accent-fill); fill-opacity: .55; stroke: var(--edge); stroke-width: 1; }
+#map .mulde.no { fill: var(--warn); fill-opacity: .5; }
+#map .zone { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 4 3; }
+#map .slab { fill: var(--c-cut2); fill-opacity: .6; }
+#map .cab { fill: none; stroke: var(--c-thread); stroke-width: 1.6; stroke-dasharray: 5 3; }
+#map .eye { fill: none; stroke: var(--fg); stroke-width: 1; }
+.ro { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.ro .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: .92rem; }
+.ro .kv dt { color: var(--muted); } .ro .kv dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.stat { font-size: 1rem; font-weight: 600; padding: 8px 12px; border: 1px solid; border-radius: 6px; }
+.stat.ok { color: var(--ok); } .stat.no { color: var(--warn); }
+.ro ul { font-size: .9rem; }
+.dec { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.dec .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.dec h3 .tag { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .06em; margin-right: 8px; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; font-size: .92rem; }
+.opt.pick { border-color: var(--accent-fill); background: color-mix(in srgb, var(--accent-fill) 12%, transparent); }
+.opt b { font-weight: 600; } .opt .num2 { color: var(--muted); font-size: .8rem; }
+.figs3 { display: flex; flex-direction: column; gap: 16px; }
+.figs3 .card { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 8px 24px; align-items: start; }
+.figs3 .card h3 { grid-column: 1 / -1; }
+.figs3 .scroll { grid-column: 1; }
+.figs3 .card > p { grid-column: 2; align-self: center; font-size: 1rem; }
+@media (max-width: 760px) { .figs3 .card { grid-template-columns: 1fr; } .figs3 .scroll, .figs3 .card > p { grid-column: 1; } }
+.ro ul:empty { display: none; }
+.figs3 .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.todo { counter-reset: t; list-style: none; padding: 0; }
+.todo li { counter-increment: t; padding-left: 2.2em; position: relative; }
+.todo li::before { content: counter(t); position: absolute; left: 0; top: 0; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: .8rem; display: grid; place-items: center; }
+
+.fig .foot { fill: var(--c-bld); stroke: var(--edge); stroke-width: .6; }
+.fig .foot2 { fill: color-mix(in srgb, var(--c-bld) 55%, var(--panel)); stroke: var(--edge); stroke-width: .5; stroke-dasharray: 3 2; }
+.fig .foot3 { fill: none; stroke: var(--edge); stroke-width: .8; stroke-dasharray: 4 2; }
+.fig .lid { fill: var(--accent-fill); stroke: var(--edge); stroke-width: .6; fill-opacity: .9; }
+.fig .blende { fill: var(--c-cut2); stroke: var(--edge); stroke-width: .6; fill-opacity: .85; }
+.fig .kass { fill: var(--c-under); stroke: var(--edge); stroke-width: .6; }
+.fig .pcb { fill: var(--c-elec); stroke: var(--edge); stroke-width: .6; }
+.fig .glass { fill: color-mix(in srgb, var(--c-port) 60%, var(--panel)); stroke: var(--edge); stroke-width: .5; }
+.fig .aa3 { fill: var(--accent-fill); stroke: none; }
+.fig .hdr { fill: var(--c-port); stroke: var(--edge); stroke-width: .5; }
+.fig .pin3 { fill: var(--accent-fill); stroke: var(--accent); stroke-width: .5; }
+.fig .wire { stroke: var(--c-thread); stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fig .inv { fill: var(--panel); } .fig text.inv { fill: var(--panel); } .fig text.onfill { fill: #fff; }
+.fig .mulde4 { fill: none; stroke: var(--c-niche); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.fig .void2 { fill: var(--panel); stroke: var(--edge); stroke-width: .5; }
+.done { display: flex; flex-direction: column; gap: 6px; }
+.done .it { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: .93rem; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.done .it:last-child { border-bottom: 0; }
+.done .ok { font-family: var(--mono); font-size: .74rem; color: var(--ok); letter-spacing: .06em; text-transform: uppercase; padding-top: 3px; }
+.chg { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.chg .card { gap: 6px; } .chg .card p { font-size: .93rem; }
+.chg .tag2 { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; }
+.view3 { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .view3 { grid-template-columns: 1fr; } }
+.stage3 { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage3 canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.stage3 .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: .8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--fg); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.side3 { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.side3 .field label { font-size: .92rem; }
+.side3 .parts { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
+.side3 .parts label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.side3 .parts i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+.side3 .row { display: flex; flex-wrap: wrap; gap: 6px; }
+.side3 .row button { font: inherit; font-size: .85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.side3 .row button[aria-pressed=true] { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+.twofig { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .twofig { grid-template-columns: 1fr; } }
+.twofig svg { max-width: 100%; }
+.qa { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.qa .card { gap: 6px; }
+.qa .card h3 { font-size: 1rem; }
+.qa .card p { font-size: .93rem; }
+.qa .yes { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; color: var(--ok); text-transform: uppercase; }
+.qa .mid { font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; color: var(--mid); text-transform: uppercase; }
+.mapcol { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 720px) { .mapcol { grid-template-columns: 1fr; } }
+.mini { width: 100%; height: auto; display: block; background: var(--canvas); border-radius: 6px; max-width: 240px; }
+.mini .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .6; }
+.mini .bld { fill: var(--c-bld); stroke: var(--edge); stroke-width: .4; fill-opacity: .85; }
+.mini .hof { fill: var(--c-hof); fill-opacity: .85; }
+.mini .lbl { fill: var(--edge); fill-opacity: .12; }
+.mini .v { fill: var(--c-thread); fill-opacity: .55; }
+.mini .env { fill: var(--c-cut2); fill-opacity: .55; stroke: var(--c-cut2); stroke-width: 1; }
+.mini .neck { fill: var(--accent-fill); stroke: var(--edge); stroke-width: .6; }
+.mini .dock { fill: var(--c-niche); fill-opacity: .35; stroke: var(--c-niche); stroke-width: .6; }
+
+.p4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 280px)); gap: 14px; }
+.p4 figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.p4 figcaption { font-size: .85rem; color: var(--muted); }
+.p4 figcaption b { color: var(--fg); }
+.fig .sup { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 2; }
+.fig .holeL { stroke: var(--edge); stroke-width: 1.2; fill: none; }
+.fig .holeE { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 2; fill: none; }
+.fig .peg4 { fill: var(--c-cut2); stroke: var(--edge); stroke-width: .8; fill-opacity: .9; }
+.p4 svg { height: auto; min-width: 0 !important; width: 100% !important; max-width: 280px !important; } .p4 svg text { font-size: 11px; fill: var(--fg); }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 4, Entwurf, noch keine STL</div>
+  <h1>Aufnahme und Zapfen nach der Modulprobe</h1>
+  <p class="lead">Das Modul passt mit 0,4 mm Luft, die Tasche sitzt. Zwei Dinge sind noch zu lösen: Die dünne Decke über dem Modul löst sich beim Druck vom Support, und die Zapfen kommen nur etwa 0,5 mm ins Sackloch. Hier steht, was ich ändern würde, mit Zeichnungen und einer Testlehre, bevor der Körper neu entsteht.</p>
+</header>
+
+<section>
+  <h2>Maße nach deiner Rückmeldung</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Maß</th><th>Modulprobe</th><th>Neu</th><th>Grund</th></tr></thead>
+    <tbody>
+      <tr><td>Luft in der Breite je Seite</td><td class="num">0,40</td><td class="num">0,32</td><td>Nutzer: horizontal minimal zu viel Spiel</td></tr>
+      <tr><td>Modulhöhe (Annahme)</td><td class="num">34,05</td><td class="num">33,80</td><td>Nutzer: 33,8 reicht vermutlich</td></tr>
+      <tr><td>Taschenhöhe (0,3 Luft oben)</td><td class="num">34,35</td><td class="num">34,10</td><td>folgt aus der Modulhöhe</td></tr>
+      <tr><td>Taschenbreite</td><td class="num">36,10</td><td class="num">35,94</td><td>35,3 plus 2 × 0,32</td></tr>
+    </tbody></table></div>
+</section>
+
+<section>
+  <h2>Aufnahme robuster: die Decke weglassen</h2>
+  <p>Die Decke über der Tasche ist nur 1,2 mm dick und überbrückt 5,1 mm nach vorn ins Leere. Der Support klebt daran, beim Lösen verzieht sie sich. Vier Wege:</p>
+  <div class="p4">
+    <figure><svg class="fig" viewBox="0 0 280 250" width="100%" role="img" aria-label="Schnitt durch den Kopf, so gedruckt" style="max-width:280px;overflow:hidden"><rect class="foot" x="20" y="20.0" width="50.4" height="168.0"/><rect class="foot" x="20" y="188" width="121.79999999999998" height="19.599999999999998"/><rect class="foot" x="20" y="20" width="121.79999999999998" height="16.8"/><rect class="sup" x="70.4" y="36.8" width="71.39999999999999" height="22.400000000000002"/><rect class="blende" x="141.79999999999998" y="20" width="16.8" height="187.6"/><rect class="pcb" x="74.6" y="41.0" width="34.650000000000006" height="147.0"/><text x="20" y="223.6">so gedruckt</text></svg><figcaption><b>So gedruckt.</b> Decke 1,2 dünn, Support in der Tasche.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 280 250" width="100%" role="img" aria-label="Schnitt durch den Kopf, Kappe (empfohlen)" style="max-width:280px;overflow:hidden"><rect class="foot" x="20" y="42.400000000000006" width="50.4" height="145.6"/><rect class="foot" x="20" y="188" width="121.79999999999998" height="19.599999999999998"/><rect class="blende" x="141.79999999999998" y="20" width="16.8" height="187.6"/><rect class="blende" x="31.200000000000003" y="20" width="110.6" height="22.400000000000002"/><rect class="pcb" x="74.6" y="46.6" width="34.650000000000006" height="141.4"/><text x="20" y="223.6">Kappe (empfohlen)</text></svg><figcaption><b>A Kappe.</b> Die Aufnahme ist oben offen, die Blende bekommt eine Lippe 1,6 × 5,1 mm als Dach. Kein Support, nichts Dünnes über Luft.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 280 250" width="100%" role="img" aria-label="Schnitt durch den Kopf, Rampe 45°" style="max-width:280px;overflow:hidden"><rect class="foot" x="20" y="20.0" width="50.4" height="168.0"/><rect class="foot" x="20" y="188" width="121.79999999999998" height="19.599999999999998"/><polygon class="foot" points="70.4,20 141.79999999999998,20 141.79999999999998,36.8 70.4,36.8"/><polygon class="foot" points="20,20 70.4,20 70.4,36.8 20,36.8"/><polygon class="void2" points="70.4,36.8 141.79999999999998,36.8 141.79999999999998,108.2"/><rect class="blende" x="141.79999999999998" y="20" width="16.8" height="187.6"/><rect class="pcb" x="74.6" y="41.0" width="34.650000000000006" height="147.0"/><text x="20" y="223.6">Rampe 45°</text></svg><figcaption><b>B Rampe.</b> Dach mit 45° nach vorn ansteigend, trägt sich selbst. Der Kopf wird etwa 5 mm höher.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 280 250" width="100%" role="img" aria-label="Schnitt durch den Kopf, liegend" style="max-width:280px;overflow:hidden"><rect class="foot" x="20" y="20.0" width="50.4" height="168.0"/><rect class="foot" x="20" y="188" width="121.79999999999998" height="19.599999999999998"/><rect class="blende" x="141.79999999999998" y="20" width="16.8" height="187.6"/><rect class="pcb" x="74.6" y="41.0" width="34.650000000000006" height="147.0"/><text x="20" y="223.6">liegend</text></svg><figcaption><b>C Liegend drucken.</b> Rückseite auf dem Bett, kein Support. Die Sacklöcher werden dann senkrecht gedruckt und fallen anders aus als im Körper.</figcaption></figure>
+  </div>
+  <p class="small muted">Empfehlung A. Die Lippe liegt auf den Seitenwänden, Zapfen und Blende halten sie, im Notfall ein Tropfen Kleber. Mit A entfällt der Support im Körper ganz, die Blende bleibt flach druckbar (Lippe steht als Rippe nach oben).</p>
+</section>
+
+<section>
+  <h2>Zapfen: lange, flache Verjüngung</h2>
+  <p>Was du gefühlt hast, passt zur Zeichnung: Die Fase war nur 0,4 mm lang. Danach steht der volle Durchmesser im Loch, das waagerecht gedruckt etwa 0,1 mm enger ausfällt als gezeichnet. Dicke Zapfen (Ø 2,5) im Loch Ø 2,5 hatten deshalb keine Chance. Die Kraft muss sich über viele Lagen aufbauen und erst am Ende ihren Höchstwert erreichen.</p>
+  <div class="p4">
+    <figure><svg class="fig" viewBox="0 0 180 120" width="100%" role="img" aria-label="Zapfen ist" style="max-width:180px;overflow:hidden"><polygon class="peg4" points="26.0,31.0 38.0,19.0 152.0,19.0 152.0,91.0 38.0,91.0 26.0,79.0"/><line class="holeL" x1="20" x2="98.0" y1="17.5" y2="17.5"/><line class="holeE" x1="20" x2="98.0" y1="21.1" y2="21.1"/><line class="holeL" x1="20" x2="98.0" y1="92.5" y2="92.5"/><line class="holeE" x1="20" x2="98.0" y1="88.9" y2="88.9"/><line class="holeL" x1="20" x2="20" y1="17.5" y2="92.5"/><text x="20" y="118.5">Loch Ø 2,50</text></svg><figcaption><b>So gedruckt.</b> Ø 2,4, Fase 0,4, Loch Ø 2,5: Klemmen nach 0,5 mm.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 180 120" width="100%" role="img" aria-label="Zapfen p1" style="max-width:180px;overflow:hidden"><polygon class="peg4" points="26.0,28.0 92.0,19.0 152.0,19.0 152.0,91.0 92.0,91.0 26.0,82.0"/><line class="holeL" x1="20" x2="98.0" y1="16.0" y2="16.0"/><line class="holeE" x1="20" x2="98.0" y1="19.599999999999994" y2="19.599999999999994"/><line class="holeL" x1="20" x2="98.0" y1="94.0" y2="94.0"/><line class="holeE" x1="20" x2="98.0" y1="90.4" y2="90.4"/><line class="holeL" x1="20" x2="20" y1="16.0" y2="94.0"/><text x="20" y="120.0">Loch Ø 2,60</text></svg><figcaption><b>P1 (empfohlen).</b> Spitze Ø 1,8, Kegel über 2,2 mm (11 Lagen, 0,03 mm je Lage) auf Ø 2,4, Loch Ø 2,6. Kraft erst auf den letzten Millimetern.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 180 120" width="100%" role="img" aria-label="Zapfen p2" style="max-width:180px;overflow:hidden"><polygon class="peg4" points="26.0,28.0 92.0,17.5 152.0,17.5 152.0,92.5 92.0,92.5 26.0,82.0"/><line class="holeL" x1="20" x2="98.0" y1="16.0" y2="16.0"/><line class="holeE" x1="20" x2="98.0" y1="19.599999999999994" y2="19.599999999999994"/><line class="holeL" x1="20" x2="98.0" y1="94.0" y2="94.0"/><line class="holeE" x1="20" x2="98.0" y1="90.4" y2="90.4"/><line class="holeL" x1="20" x2="20" y1="16.0" y2="94.0"/><text x="20" y="120.0">Loch Ø 2,60</text></svg><figcaption><b>P2 fester.</b> Wie P1, Kegel endet bei Ø 2,5. Greift stärker, wenn P1 zu locker ist.</figcaption></figure>
+    <figure><svg class="fig" viewBox="0 0 180 120" width="100%" role="img" aria-label="Zapfen p3" style="max-width:180px;overflow:hidden"><polygon class="peg4" points="26.0,31.0 98.0,19.0 152.0,19.0 152.0,91.0 98.0,91.0 26.0,79.0"/><rect x="62.0" y="12.999999999999993" width="54.0" height="6.0" class="peg4"/><rect x="62.0" y="91.0" width="54.0" height="6.0" class="peg4"/><line class="holeL" x1="20" x2="98.0" y1="16.0" y2="16.0"/><line class="holeE" x1="20" x2="98.0" y1="19.599999999999994" y2="19.599999999999994"/><line class="holeL" x1="20" x2="98.0" y1="94.0" y2="94.0"/><line class="holeE" x1="20" x2="98.0" y1="90.4" y2="90.4"/><line class="holeL" x1="20" x2="20" y1="16.0" y2="94.0"/><text x="20" y="120.0">Loch Ø 2,60</text></svg><figcaption><b>P3 Quetschrippen.</b> Kernzapfen Ø 2,4 mit zwei 0,2 mm hohen Rippen. Die Rippen geben nach, das Loch muss nicht auf 0,05 stimmen. Aufwendiger zu drucken.</figcaption></figure>
+  </div>
+  <p class="small muted">Schwarz: Loch wie gezeichnet, orange gestrichelt: so klein fällt es waagerecht gedruckt etwa aus (Schätzung, 0,12 weniger).</p>
+  <p>Das Loch bekommt wieder eine Einführfase von 0,3 mm und bleibt 2,6 tief; der Zapfen reicht 2,4 hinein.</p>
+</section>
+
+<section>
+  <h2>Zapfenlehre statt gleich der ganzen Aufnahme</h2>
+  <p>Damit der nächste Druck sitzt, schlage ich eine kleine Lehre vor (etwa 15 min), gedruckt in der Lage wie der Körper (Löcher waagerecht): ein Block mit fünf Sacklöchern Ø 2,50 / 2,55 / 2,60 / 2,65 / 2,70, 2,6 tief, und eine Leiste mit drei Zapfen nach P1 mit Enddurchmesser 2,3 / 2,4 / 2,5. Du probierst jeden Zapfen in jedem Loch und meldest, welche Paarung am Ende Druck braucht, aber nicht klemmt. Danach stehen Loch und Zapfen fest.</p>
+</section>
+
+<section>
+  <h2>Entscheidungen</h2>
+  <div class="dec">
+    <div class="card rec"><h3><span class="tag">M</span> Decke über dem Modul</h3><div class="opts">
+      <div class="opt pick"><b>A Kappe an der Blende</b><span class="num2">kein Support, robust. Empfohlen.</span></div>
+      <div class="opt"><b>B Rampe 45°</b><span class="num2">Kopf 5 mm höher.</span></div>
+      <div class="opt"><b>C liegend drucken</b><span class="num2">nur für die Probe, Löcher anders.</span></div></div></div>
+    <div class="card rec"><h3><span class="tag">N</span> Zapfenform</h3><div class="opts">
+      <div class="opt pick"><b>P1 lange Verjüngung</b><span class="num2">erst Lehre, dann übernehmen. Empfohlen.</span></div>
+      <div class="opt"><b>P2 Kegel bis Ø 2,5</b><span class="num2">falls P1 zu locker.</span></div>
+      <div class="opt"><b>P3 Quetschrippen</b><span class="num2">unempfindlich gegen Lochmaß.</span></div></div></div>
+    <div class="card"><h3><span class="tag">O</span> Reihenfolge</h3><div class="opts">
+      <div class="opt pick"><b>Lehre, dann Aufnahme mit Kappe</b><span class="num2">Lehre und Aufnahme-Probe zusammen drucken, 25 min.</span></div>
+      <div class="opt"><b>Gleich der ganze Körper mit integrierter Kassette</b><span class="num2">schneller, aber Zapfenmaß ungeprüft.</span></div></div></div>
+  </div>
+</section>
+</div>
