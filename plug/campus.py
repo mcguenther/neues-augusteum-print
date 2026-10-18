@@ -14,6 +14,8 @@ Unten außerdem (plug/campus_underside.py, Lagen aus dem Konzept `plug/power/bui
 der Stützen des Unterkastens) und an den vier Ecken je eine Fadentasche („halbe Pille mit Steg“ aus plug/thread/, für den Faden zum Doktorhut); beide
 sind nach unten offen (Bett), kein Support. `UNTEN = False` baut die Platte ohne (Stand davor).
 
+Display-Gebäude (plug/campus_display.py, Korrektur 7 in scale.md): Mulde und vier Pin-Löcher am Ostrand (Maße des ersten Satzes, Lage DISPLAY_LAGE); `--ohne-display` gibt den Stand davor.
+
 Aufruf (aus dem Wurzelverzeichnis):
     python3 -m plug.campus [--scale 1300] [--replace] [--unten-neu]   # STL nach stl/steckmodul_campus/, Bilder nach vorschau/steckmodul_campus/
                                                                        # (--unten-neu: Lagen der Zapfenaufnahmen aus dem Konzept neu lesen)
@@ -143,18 +145,19 @@ def roof_over(solid, fp, rect, hmax):
     return lo
 
 
-def mulde_body(slug_fp, d):
+def mulde_body(slug_fp, d, clr=None):
     """Mulde: der volle Gebäudeumriss, durchgehend bis zur Fußunterkante (eine Ebene, keine Stufen), oben mit Einführfase MULDE_CH_T.
     Die Fase wächst in Stufen nach oben (wie die Bettfasen, BC.mouth_ch) und reicht bis über die Oberkante, damit sich die Öffnung nicht zuzieht
-    und kein Rest-Überhang bleibt."""
-    poly = slug_fp.buffer(P.OUTLINE_CLR_T, join_style=2)
+    und kein Rest-Überhang bleibt. clr: Spiel je Seite (Standard OUTLINE_CLR_T; das Display-Gebäude nimmt sein eigenes, plug/campus_display.py)."""
+    clr = P.OUTLINE_CLR_T if clr is None else clr
+    poly = slug_fp.buffer(clr, join_style=2)
     ch = P.MULDE_CH_T
     n = BC.n_layers(ch)
     dz = ch / n
     parts = [G.extrude(poly, -d["F"], -ch + 0.01)]
     for k in range(n):
         top = SCHNITT_OBEN if k == n - 1 else -ch + dz * (k + 1) + 0.01
-        parts.append(G.extrude(slug_fp.buffer(P.OUTLINE_CLR_T + dz * (k + 0.5), join_style=2), -ch + dz * k, top))
+        parts.append(G.extrude(slug_fp.buffer(clr + dz * (k + 0.5), join_style=2), -ch + dz * k, top))
     return G.union(parts)
 
 
@@ -253,6 +256,8 @@ OUTLINE = None
 UNTEN = True             # False: Platte ohne Zapfenaufnahmen und Fadentaschen (Stand davor); wird nur bei der Standard-Trennwand und dem Standard-Hof gebaut
 REFRESH_UNTEN = False    # True: Lagen der Zapfen aus dem Konzept neu lesen (plug/scale1176/underside_<Maßstab>.json)
 UNTEN_INFO = {}          # Lage, Platte ohne Unterseite und Sperrfläche des letzten build() (für die Prüfung in main und plug.campus_underside)
+DISPLAY = True           # False: Platte ohne Mulde und Pin-Löcher des Display-Gebäudes (Stand davor, `--ohne-display`); gebaut nur bei der Standard-Trennwand und dem Standard-Hof
+DISPLAY_INFO = {}        # Lage, Platte ohne Display-Dock, Dockzonen und Hüllkurven der Gebäude-Docks des letzten build() (für die Prüfung in main und plug.campus_display)
 TRENNWAND = True         # False: Grundrisse ohne Fuge (Stand vor 17.10., nur für Vorher/Nachher-Seiten und Vergleiche)
 SCHNITT_OBEN = 3.0       # mm über der Plattenoberfläche: so hoch schneiden die Mulden (die Aufbauten der Platte, Gang und Treppe, sind bis 2,35 mm hoch)
 # Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
@@ -304,10 +309,12 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     for _, bands in innenhof.platte_aufbau_mm(hof, s):
         for poly, top in bands:
             plate = plate + G.extrude(G.clean(poly.intersection(inner)), T - 0.01, T + top)
-    cut_all, report, envs = [], [], []
+    cut_all, report, envs, zones_geb = [], [], [], []
     for slug, p in places.items():
         w, dep = shaft_size(p["var"])
         yc = foot_local(p["var"], 0.0).centroid.y
+        a_ = math.radians(p["angle"])                          # Dockzone unter der Platte (Raum für Leiste, Lötenden, Draht) wie BC.fixed_docks
+        zones_geb.append(BC.poly_world(BC.dock_zone(), p["angle"], (p["cx"] + yc * math.sin(a_), p["cy"] - yc * math.cos(a_))))
         cuts, env_local = dock_local(p["var"], p["wall"], d)
         for c in cuts:
             cut_all.append(c.translate([0.0, -yc, 0.0]).rotate([0.0, 0.0, p["angle"]]).translate([p["cx"], p["cy"], T]))
@@ -322,9 +329,19 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     # zu den Gebäude-Mulden (hof_wand) ihre Breite behält
     cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + SCHNITT_OBEN))
     plate = diff(plate, *cut_all)
-    global UNTEN_INFO
+    global UNTEN_INFO, DISPLAY_INFO
     blocked = unary_union([fps[s_].buffer(P.OUTLINE_CLR_T, join_style=2) for s_ in places] + [hof])   # Mulden und Hof
-    UNTEN_INFO = dict(blocked=blocked, T=T, base=plate)
+    DISPLAY_INFO = dict(T=T, zones=zones_geb, envs=list(envs))
+    dcuts, base_u = [], plate
+    if DISPLAY and TRENNWAND and hof_wand is None:
+        # Display-Gebäude (plug/campus_display.py): Mulde und vier Pin-Löcher am Ostrand; die Mulde sperrt Zapfenlöcher und Fadentaschen weiter unten
+        from plug import campus_display as DP
+        minx_, miny_ = outline.bounds[:2]
+        dcuts = DP.cuts(T, minx_, miny_, mulde_body, pin_holes, d)
+        blocked = unary_union([blocked, affinity.translate(DP.mulde_poly(), minx_, miny_)])
+        base_u = diff(plate, *dcuts)                          # Platte mit Display-Dock, ohne Unterseite (Vergleichsstand für plug.campus_underside.report)
+        DISPLAY_INFO.update(on=True, minx=minx_, miny=miny_)
+    UNTEN_INFO = dict(blocked=blocked, T=T, base=base_u)
     if UNTEN and TRENNWAND and hof_wand is None:
         # Unterseite: Zapfenaufnahmen und Fadentaschen (plug/campus_underside.py); frei von Mulden und Hof, Wand 0,8 bzw. 1,4
         from plug import campus_underside as U
@@ -333,6 +350,9 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
         for a_ in U.adds(lay):                                 # Steg in jeder Fadentasche
             plate = plate + a_
         UNTEN_INFO["lay"] = lay
+    if dcuts:
+        DISPLAY_INFO["base"] = plate                           # Platte mit Unterseite, ohne Display-Dock (Vergleichsstand für plug.campus_display.report)
+        plate = diff(plate, *dcuts)
     return plate, report, models, places, outline, hof_solid
 
 
@@ -343,10 +363,12 @@ def main():
     ap.add_argument("--unten-neu", action="store_true", help="Lagen der Zapfenaufnahmen aus dem Konzept (plug/power/build_concept.py) neu lesen")
     ap.add_argument("--faden", choices=("pille", "v"), help="Form der Fadenösen: pille (Standard, plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
     ap.add_argument("--ohne-unten", action="store_true", help="ohne Zapfenaufnahmen und Fadenösen bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
+    ap.add_argument("--ohne-display", action="store_true", help="ohne Mulde und Pin-Löcher des Display-Gebäudes bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     a = ap.parse_args()
-    global UNTEN, REFRESH_UNTEN
+    global UNTEN, REFRESH_UNTEN, DISPLAY
     REFRESH_UNTEN = a.unten_neu
     UNTEN = not a.ohne_unten
+    DISPLAY = not a.ohne_display
     if a.faden:
         from plug import campus_underside as U_
         U_.FADEN = a.faden
@@ -375,6 +397,9 @@ def main():
     if UNTEN_INFO.get("lay"):
         from plug import campus_underside as U
         ok &= U.report(plate, UNTEN_INFO["lay"], outline, plate_thickness(P.dims_plan()), UNTEN_INFO["base"])
+    if DISPLAY_INFO.get("on"):
+        from plug import campus_display as DP
+        ok &= DP.report(plate, outline, DISPLAY_INFO, UNTEN_INFO.get("lay"))
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
     import preview
     preview.render([(tm, "#9aa7b4")], size=(1000, 1300), azim=-90, elev=89).save(os.path.join(PREV, "steckplatte_1zu%d_oben.png" % a.scale))
