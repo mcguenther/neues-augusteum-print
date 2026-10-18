@@ -300,6 +300,44 @@ Steht in [`plug/slicer.md`](../slicer.md) (eine Quelle für alle Slicer-Einstell
 
 Offen: ungedruckt; Licht durch Rohr (1,2) und Wand (0,8) und durch die Füllung der Keile; ob Brücke 10 mit echten Brücken (statt Gewölbe) im Slicer auch ginge (spart Material); Farbversion der steckbaren Gebäude.
 
+#### Im Slicer massiv (2026-10-18, Nutzer: Paulinum „alles solid bis auf den Einsatz der Kassette“)
+
+Befund (nachgewiesen mit PrusaSlicer 2.7.2 ohne Oberfläche, `prusa-slicer --info` und `--export-gcode` mit den Werten aus `plug/slicer.md`):
+Geometrisch waren die STL hohl, aber der Slicer drehte beim Laden die ganze Innenschale des Paulinums um (18 772 Flächen umgedreht,
+Volumen nach der Reparatur 46,0 statt 7,5 cm³ = Außenschale 26,8 plus Innenschale 19,3). Damit galt der Innenraum als Material: im G-Code
+Gyroid-Füllung über den ganzen Grundriss ab etwa 18 mm über dem Bett (Höhe des Anschlagrings), darunter massive Füllung im Schacht und im
+Westraum (Filament 10,4 statt 7,3 cm³). Ursache sind Netzfehler aus der Ausgabe, nicht die Form: Manifold rechnet in double, die STL hat float32;
+dabei fielen 220 Splitterdreiecke (Paulinum; andere Gebäude 1 467 bis 6 962) auf Fläche null, dazu kamen 20 bis 708 Mikrohohlräume als eigene winzige
+Schalen (|Volumen| unter 1 mm³), die die Wände nur an Kanten berühren (Berührkanten). Der Slicer (admesh, in PrusaSlicer, Bambu Studio und Orca)
+löscht entartete Dreiecke, verbindet die Nachbarn neu und richtet danach die Normalen von Nachbar zu Nachbar aus; über die Berührkanten lief das
+in die nur an 4 Punkten angebundene Innenschale und drehte sie um. Bei den anderen fünf Gebäuden blieb das Volumen nach der Reparatur gleich
+(höchstens 124 umgedrehte Flächen, Neues Augusteum). Keine Ursache war die waagerechte Fläche über dem Schacht: der Anschlagring hat die
+freie Öffnung, darüber ist beim Paulinum kein Material, im G-Code ist der Schacht hohl. Die senkrechte helle Linie an der Vorderseite im
+Screenshot ist die Naht: 78 von 80 Schichten des Fußes beginnen die Außenwand an der Innenecke rechts neben dem Schachtvorsprung.
+
+Abhilfe (`plug/buildings.py`, `sauber()`, als letzter Schritt in `gebaeude()`): Netz aus dem float32-Netz neu als Manifold aufbauen (Manifold zieht
+die entarteten Dreiecke dabei selbst zusammen) und eigene Schalen mit |Volumen| unter `SPLITTER_MM3` (1 mm³) nach der Netztopologie (nicht nach Lage)
+weglassen; fällt auf den alten Körper zurück, wenn das Ergebnis ungültig wäre oder das Volumen um mehr als 0,2 % abweicht. Werte je Gebäude in der JSON
+(`netz`). `plug.export_campus` prüft zusätzlich entartete Dreiecke und, wenn PrusaSlicer installiert ist, das Volumen nach dessen Reparatur.
+
+| Gebäude | Volumen | entartete Dreiecke | Berührkanten | Mikroschalen weg | Slicer-Volumen vorher → nachher | Filament (PrusaSlicer) vorher → nachher |
+|---|---|---|---|---|---|---|
+| Paulinum | 7,49 cm³ | 220 → 0 | 217 → 2 | 20 | **46,02 → 7,49 cm³** | **10,42 → 7,33 cm³** |
+| Neues Augusteum | 24,04 → 24,05 | 4 902 → 3 | 3 998 → 5 | 325 | 24,04 → 24,05 | 14,47 → 14,26 |
+| Hörsaalgebäude | 43,78 → 43,80 | 6 962 → 8 | 5 587 → 15 | 708 | 43,78 → 43,80 | 24,78 → 24,50 |
+| Seminargebäude | 11,55 → 11,56 | 2 989 → 6 | 2 434 → 4 | 395 | 11,55 → 11,56 | 9,61 → 9,48 |
+| Institutsgebäude | 18,52 → 18,53 | 6 467 → 1 | 5 358 → 1 | 616 | 18,52 → 18,53 | 13,20 → 12,96 |
+| City-Hochhaus | 13,54 → 13,55 | 1 467 → 1 | 1 340 → 2 | 413 | 13,54 → 13,55 | 12,62 → 12,58 |
+
+(Entartet hier: Fläche null in float32; nach der Zählung des Slicers, zwei gleiche Ecken, sind es überall 0.) Alle dicht, Kollision 0, Platz fehlt 0,
+`plug.divider.check` ohne Kollisionen; Grundrisse, Schacht, Anschlag, Platte und Trennwand unverändert (Volumen +0,01 cm³ = entfernte Mikrohohlräume).
+Nach der Reparatur in PrusaSlicer ist beim Paulinum, Hochhaus und allen anderen keine Fläche mit Inhalt umgedreht (Hörsaalgebäude 11 Splitter mit
+zusammen 0,000 mm²). Nicht geprüft: Bambu Studio und Orca selbst (gleicher admesh-Kern, aber andere Versionen); der Druck.
+
+Lehre: Hohlkörper nach jedem Booleschen Aufbau mit einem echten Slicer-Kern prüfen (Volumen nach dessen Reparatur = Netzvolumen), nicht nur mit
+Manifold (das baut das Netz beim Laden selbst sauber auf und meldet „dicht“, auch wenn der Slicer es anders sieht). Die SLA-Ausgabe von PrusaSlicer
+taugt dafür nicht, sie füllt geschlossene Innenräume immer.
+
 ## Ungetestete Planwerte (müssen noch getestet werden)
 
 Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `plug/testcase/params.py` (`MULDE_EXTRA_T`, `CASSETTE`, `HOF_*`, `OUTLINE_CLR_T`, `SCALE_PLAN`) und `plug/scale1176/placements_1300.json`; `plug/parts.py` bleibt unverändert, bis ein Test sie bestätigt hat. Test: Steckprobe 3 (Reserve-Druck, `next.md`).

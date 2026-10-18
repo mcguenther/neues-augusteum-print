@@ -65,6 +65,7 @@ UMKREIS_T = None       # Kegel nur im eigenen Bereich (hohl.ceiling umkreis); No
 FUELLEN_T = 2.0        # Spalten im Hohlraum, die schmaler sind, werden gefüllt (hohl.spalten)
 LAYER = 0.2            # Schichthöhe für die Überhangprüfung
 UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut 45°)
+SPLITTER_MM3 = 1.0     # eigene Schalen mit kleinerem Betrag des Volumens sind Mikrohohlräume aus den Booleschen Schritten und entfallen (sauber)
 
 
 def ext(poly, z0, z1):
@@ -232,7 +233,8 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
     else:
         body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
     body = body.simplify(hohl.VEREINFACHEN)
-    info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze)
+    body, netz = sauber(body)
+    info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
     if not nah.is_empty and nah.area >= 0.05:
         info["fase_entfaellt_mm2"] = round(nah.area, 1)
     kol = (body ^ kas).volume()
@@ -240,6 +242,57 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
     info["volumen_cm3"] = round(body.volume() / 1000, 2)
     return body, kas, info
+
+
+def _netz_werte(v, f):
+    """Entartete Dreiecke (Fläche null in float32, wie in der STL) und Berührkanten (Kanten mit mehr als zwei Flächen, wenn man die Eckpunkte
+    nach Lage zusammenfasst wie ein Slicer beim Laden)."""
+    v = np.asarray(v, np.float32).astype(np.float64)
+    f = np.asarray(f, np.int64)
+    a = np.linalg.norm(np.cross(v[f[:, 1]] - v[f[:, 0]], v[f[:, 2]] - v[f[:, 0]]), axis=1) / 2
+    _, inv = np.unique(np.asarray(v, np.float32), axis=0, return_inverse=True)
+    g = inv.ravel()[f]
+    e = np.sort(np.concatenate([g[:, [0, 1]], g[:, [1, 2]], g[:, [2, 0]]]), axis=1)
+    _, cnt = np.unique(e, axis=0, return_counts=True)
+    return int((a < 1e-9).sum()), int((cnt > 2).sum())
+
+
+def sauber(body, splitter=SPLITTER_MM3):
+    """Netz so bereinigen, dass ein Slicer es beim Laden nicht umdreht (Befund 2026-10-18, Paulinum im Slicer massiv):
+    1. Über float32 neu aufbauen: Manifold rechnet in double, die STL hat float32. Dabei fallen Splitterdreiecke auf Fläche null; PrusaSlicer,
+       Bambu Studio und Orca (alle mit admesh) löschen solche Dreiecke beim Laden, verbinden die Nachbarn neu und richten die Normalen danach
+       aus. Beim Paulinum drehte das die ganze Innenschale um (18 772 Flächen, Slicer-Volumen 46,0 statt 7,5 cm³): der Innenraum wurde Füllung.
+       Der Neuaufbau aus dem float32-Netz lässt Manifold diese Dreiecke selbst sauber zusammenziehen.
+    2. Winzige eigene Schalen (Mikrohohlräume aus den Booleschen Schritten, |Volumen| < splitter mm³) weglassen; sie berühren die Wände nur an
+       Kanten und sind die meisten Berührkanten. Gezählt wird nach der Netztopologie (Eckpunkt-Indizes), nicht nach Lage, damit Wände aus
+       sich berührenden Teilen ganz bleiben.
+    Liefert (Körper, Werte vorher/nachher). Fällt auf den alten Körper zurück, wenn das Ergebnis nicht gültig wäre oder das Volumen abweicht."""
+    m = body.to_mesh()
+    v0, f0 = np.asarray(m.vert_properties)[:, :3], np.asarray(m.tri_verts)
+    werte = dict(vorher=dict(zip(("entartet", "beruehrkanten"), _netz_werte(v0, f0))))
+    neu = m3d.Manifold(m3d.Mesh(vert_properties=np.array(v0, np.float32, order="C"), tri_verts=np.array(f0, np.uint32, order="C")))
+    m = neu.to_mesh()
+    v, f = np.array(np.asarray(m.vert_properties)[:, :3], np.float32, order="C"), np.asarray(m.tri_verts).astype(np.int64)
+    # Schalen nach Topologie: Zusammenhangskomponenten der Eckpunkte über die Dreieckskanten
+    import scipy.sparse as sp
+    from scipy.sparse.csgraph import connected_components
+    n = len(v)
+    adj = sp.coo_matrix((np.ones(2 * len(f)), (np.r_[f[:, 0], f[:, 1]], np.r_[f[:, 1], f[:, 2]])), shape=(n, n))
+    k, lab = connected_components(adj, directed=False)
+    vd = v.astype(np.float64)
+    vol = np.einsum("ij,ij->i", vd[f[:, 0]], np.cross(vd[f[:, 1]], vd[f[:, 2]])) / 6.0
+    sv = np.bincount(lab[f[:, 0]], vol, minlength=k)
+    weg = np.abs(sv) < splitter
+    f2 = f[~weg[lab[f[:, 0]]]]
+    neu = m3d.Manifold(m3d.Mesh(vert_properties=v, tri_verts=np.array(f2, np.uint32, order="C")))
+    if neu.status() != m3d.Error.NoError or abs(neu.volume() - body.volume()) > 0.002 * abs(body.volume()):
+        werte["zurueckgefallen"] = True
+        return body, werte
+    m = neu.to_mesh()
+    werte["nachher"] = dict(zip(("entartet", "beruehrkanten"), _netz_werte(np.asarray(m.vert_properties)[:, :3], np.asarray(m.tri_verts))))
+    werte["schalen_entfernt"] = int(weg.sum())
+    werte["schalen"] = int(k - weg.sum())
+    return neu, werte
 
 
 def ueberhang(body, step=LAYER, tol=UEBERHANG_T):
@@ -300,6 +353,10 @@ def build(scale=P.SCALE_PLAN, slugs=None):
               "Kragstücke %.1f mm² (bis %.1f mm)" % (slug, info["var"], info["volumen_cm3"],
                                                     " / ".join("%s %.2f" % kv for kv in info["volumen_varianten_cm3"].items()), info["kollision_mm3"], info["platz_fehlt_mm3"],
                                                     u["bruecke_mm2"], 2 * u["bruecke_mm"], u["krag_mm2"], u["krag_mm"]), flush=True)
+        nz = info["netz"]
+        print("      Netz: entartete Dreiecke %d -> %s, Berührkanten %d -> %s, Mikroschalen entfernt %s%s" % (
+            nz["vorher"]["entartet"], nz.get("nachher", {}).get("entartet", "-"), nz["vorher"]["beruehrkanten"],
+            nz.get("nachher", {}).get("beruehrkanten", "-"), nz.get("schalen_entfernt", 0), "  ZURÜCKGEFALLEN" if nz.get("zurueckgefallen") else ""))
         for st in sorted(u["stellen"], key=lambda t: (t[0] != "krag", -t[3]))[:6]:
             print("      %-7s z=%5.1f  %5.1f mm²  Reichweite %.1f mm  bei (%.1f, %.1f)" % st)
     return out
