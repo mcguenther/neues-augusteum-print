@@ -1,0 +1,424 @@
+<title>Plan Display-Gebäude Aufbau</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Textspalte mit Antwort oben, darunter Varianten-Umschalter für Draufsicht, 3D und Schnitt; Maße in Monospace.
+   Gleiches System wie plug/views/dupont/view.template.html, dazu Farben für Powerbank, Unterkasten und Innenhof. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
+  --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-under: #5f7086; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
+  --c-elec: #2f7d4f; --c-cut: #b5471f; --on-pb: #1b2220; --c-cut2: #7a4fb0; --c-thread: #c8423b; --c-niche: #d97a1f; --c-hut: #2b2f33;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+    --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+    --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-under: #43526a; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+  --c-elec: #4c9a69; --c-cut: #ff8d62; --c-cut2: #b48ae6; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-hut: #3a4046;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 1.15rem; color: var(--muted); max-width: 64ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+header { display: flex; flex-direction: column; gap: 14px; }
+.small { font-size: 0.88rem; }
+.muted { color: var(--muted); }
+ul, ol { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+
+/* Antwort */
+.answer { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.answer > div { background: var(--panel); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.answer .big { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.answer .lbl { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.answer .rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+
+/* Umschalter */
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 14px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.seg label .num { font-size: 0.85rem; color: var(--muted); }
+.seg input:checked + label { background: var(--accent-fill); color: var(--on-accent); border-color: var(--accent-fill); }
+.seg input:checked + label .num { color: var(--on-accent); }
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sticky { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; display: flex; flex-direction: column; gap: 6px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.vnote { font-size: 0.92rem; color: var(--muted); max-width: 80ch; }
+
+/* Draufsicht + 3D */
+.views { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .views { grid-template-columns: 1fr; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 0.95rem; }
+#plan { width: 100%; height: auto; max-height: 78vh; display: block; }
+#plan text { font-family: var(--font); fill: var(--fg); }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.ctrl input[type=range] { width: 160px; accent-color: var(--accent); }
+.ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.ctrl button:focus-visible, .ctrl input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+
+/* Schnitt */
+.scroll { overflow-x: auto; }
+#sect { width: 100%; min-width: 640px; height: auto; display: block; }
+#sect text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#sect .mut { fill: var(--muted); }
+#sect .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+
+/* Tabellen */
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+tr.sel td { background: color-mix(in srgb, var(--accent-fill) 14%, transparent); }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
+.src { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+
+/* Rechner */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 720px) { .calc { grid-template-columns: 1fr; } }
+.field { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; }
+.field label { font-size: 0.92rem; }
+.field input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.result { display: flex; flex-direction: column; gap: 8px; }
+.result .big { font-family: var(--mono); font-size: 2.2rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent-fill); }
+.flag { font-size: 0.9rem; padding: 8px 12px; border-radius: 6px; border: 1px solid; }
+.flag.warn { color: var(--warn); border-color: currentColor; }
+.flag.ok { color: var(--ok); border-color: currentColor; }
+
+#wiring { width: 100%; min-width: 640px; height: auto; display: block; }
+#wiring text { font-family: var(--font); font-size: 13px; fill: var(--fg); }
+#wiring .mut { fill: var(--muted); font-size: 11.5px; }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--fg); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.seg label .dims { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.seg input:checked + label .dims { color: var(--on-accent); }
+.cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.cmp .card .big { font-family: var(--mono); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+#oese { width: 100%; max-width: 560px; height: auto; display: block; }
+#oese text { font-family: var(--font); font-size: 12px; fill: var(--fg); }
+#oese .mut { fill: var(--muted); }
+.tests { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.tests .card { gap: 8px; }
+.tests .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.tests h3 { font-size: 1.05rem; }
+.tests ul { font-size: 0.93rem; }
+.meta { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+.parts .card { gap: 4px; }
+.parts .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+#corner { width: 100%; max-width: 640px; height: auto; display: block; }
+#corner text { font-family: var(--font); font-size: 11px; fill: var(--fg); }
+#corner .mut { fill: var(--muted); }
+.pill.no { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips .pill { font-size: 0.7rem; padding: 0 6px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+#dock, #chfig { width: 100%; height: auto; display: block; }
+#dock text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+#chfig text { font-family: var(--font); font-size: 10.5px; fill: var(--fg); }
+#dock .mut, #chfig .mut { fill: var(--muted); }
+.inv { fill: var(--panel) !important; }
+#dock .dim, #chfig .dim { stroke: var(--fg); stroke-width: 1; fill: none; }
+.legend .sw2::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--sw); }
+
+.fig { width: 100%; height: auto; display: block; min-width: 520px; }
+.fig text { font-family: var(--font); fill: var(--fg); font-size: 11.5px; }
+.fig .mut { fill: var(--muted); } .fig .ok { fill: var(--ok); font-weight: 600; } .fig .num { font-family: var(--mono); font-size: 10.5px; }
+.fig .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .8; }
+.fig .foot { fill: var(--c-bld); stroke: var(--edge); stroke-width: .7; }
+.fig .void { fill: var(--panel); stroke: var(--edge); stroke-width: .5; stroke-dasharray: 3 2; }
+.fig .kass { fill: var(--c-under); stroke: var(--edge); stroke-width: .7; }
+.fig .pcb { fill: var(--c-elec); stroke: var(--edge); stroke-width: .7; }
+.fig .aa { stroke: var(--accent-fill); stroke-width: 3; fill: none; }
+.fig .body { fill: var(--c-port); stroke: var(--edge); stroke-width: .6; }
+.fig .pin { stroke: var(--accent-fill); stroke-width: 1.6; }
+.fig .tail { stroke: var(--accent-fill); stroke-width: 2.4; stroke-linecap: round; fill: none; }
+.fig .wire { stroke: var(--c-thread); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+.fig .dim { stroke: var(--fg); stroke-width: .8; fill: none; } .fig .okl { stroke: var(--ok); stroke-width: 2.4; }
+.fig .tablel { stroke: var(--muted); stroke-width: .8; stroke-dasharray: 4 3; }
+#wiring { min-width: 700px; }
+.fig.sec { min-width: 0; max-width: 100%; }
+#wiring .ln-ig { stroke: var(--muted); }
+#wiring .blk { fill: var(--panel); stroke: var(--edge); stroke-width: 1; }
+#wiring .blk.hot { stroke: var(--accent-fill); stroke-width: 2; }
+#wiring .blk.disp { stroke: var(--c-cut2); stroke-width: 2; }
+#wiring .bt { font-weight: 600; font-size: 13px; }
+#wiring .ln { fill: none; stroke-width: 2.2; stroke-linejoin: round; }
+#wiring .v5 { stroke: var(--accent-fill); } #wiring .v3 { stroke: var(--c-elec); } #wiring .i2c { stroke: var(--c-cut2); } #wiring .sig { stroke: var(--muted); stroke-dasharray: 4 3; }
+#wiring .v5s { fill: var(--accent-fill); } #wiring .v3s { fill: var(--c-elec); } #wiring .i2s { fill: var(--c-cut2); } #wiring .sgs { fill: var(--muted); }
+.mapgrid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .mapgrid { grid-template-columns: 1fr; } }
+#map { width: 100%; height: auto; display: block; background: var(--canvas); border-radius: 6px; }
+#map .plate { fill: var(--c-plate); stroke: var(--edge); stroke-width: .8; }
+#map .bld { fill: var(--c-bld); stroke: var(--edge); stroke-width: .5; fill-opacity: .85; }
+#map .hof { fill: var(--c-hof); stroke: var(--edge); stroke-width: .4; fill-opacity: .85; }
+#map .pb { fill: none; stroke: var(--c-pb); stroke-width: 1.2; stroke-dasharray: 5 3; }
+#map .win { fill: var(--c-pb); fill-opacity: .55; }
+#map .esp { fill: var(--c-elec); fill-opacity: .25; stroke: var(--c-elec); stroke-width: 1; stroke-dasharray: 4 2; }
+#map .v { fill: var(--c-thread); fill-opacity: .55; }
+#map .dock { fill: var(--c-niche); fill-opacity: .3; stroke: var(--c-niche); stroke-width: .8; }
+#map .post { fill: var(--c-under); fill-opacity: .35; } #map .post.gone { fill: var(--warn); fill-opacity: .5; }
+#map .lbl { fill: var(--edge); fill-opacity: .12; stroke: var(--edge); stroke-opacity: .35; stroke-width: .6; stroke-dasharray: 3 2; }
+#map text { font-family: var(--font); font-size: 9.5px; fill: var(--fg); } #map text.mut { fill: var(--muted); }
+#map .mulde { fill: var(--accent-fill); fill-opacity: .55; stroke: var(--edge); stroke-width: 1; }
+#map .mulde.no { fill: var(--warn); fill-opacity: .5; }
+#map .zone { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 4 3; }
+#map .slab { fill: var(--c-cut2); fill-opacity: .6; }
+#map .cab { fill: none; stroke: var(--c-thread); stroke-width: 1.6; stroke-dasharray: 5 3; }
+#map .eye { fill: none; stroke: var(--fg); stroke-width: 1; }
+.ro { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.ro .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: .92rem; }
+.ro .kv dt { color: var(--muted); } .ro .kv dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.stat { font-size: 1rem; font-weight: 600; padding: 8px 12px; border: 1px solid; border-radius: 6px; }
+.stat.ok { color: var(--ok); } .stat.no { color: var(--warn); }
+.ro ul { font-size: .9rem; }
+.dec { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.dec .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.dec h3 .tag { font-family: var(--mono); font-size: .72rem; color: var(--accent); letter-spacing: .06em; margin-right: 8px; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; font-size: .92rem; }
+.opt.pick { border-color: var(--accent-fill); background: color-mix(in srgb, var(--accent-fill) 12%, transparent); }
+.opt b { font-weight: 600; } .opt .num2 { color: var(--muted); font-size: .8rem; }
+.figs3 { display: flex; flex-direction: column; gap: 16px; }
+.figs3 .card { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 8px 24px; align-items: start; }
+.figs3 .card h3 { grid-column: 1 / -1; }
+.figs3 .scroll { grid-column: 1; }
+.figs3 .card > p { grid-column: 2; align-self: center; font-size: 1rem; }
+@media (max-width: 760px) { .figs3 .card { grid-template-columns: 1fr; } .figs3 .scroll, .figs3 .card > p { grid-column: 1; } }
+.ro ul:empty { display: none; }
+.figs3 .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.todo { counter-reset: t; list-style: none; padding: 0; }
+.todo li { counter-increment: t; padding-left: 2.2em; position: relative; }
+.todo li::before { content: counter(t); position: absolute; left: 0; top: 0; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--accent-fill); color: var(--on-accent); font-family: var(--mono); font-size: .8rem; display: grid; place-items: center; }
+
+.fig .notch { fill: var(--panel); stroke: var(--edge); stroke-width: .5; }
+.fig .glass { fill: color-mix(in srgb, var(--c-port) 55%, var(--panel)); stroke: var(--edge); stroke-width: .5; }
+.fig .aa2 { fill: color-mix(in srgb, var(--accent-fill) 40%, var(--panel)); stroke: var(--accent); stroke-width: .8; }
+.fig .win2 { fill: none; stroke: var(--ok); stroke-width: 1.2; stroke-dasharray: 4 2; }
+.fig .hole { fill: var(--panel); stroke: var(--edge); stroke-width: .7; }
+.fig .pin { fill: var(--accent-fill); stroke: var(--accent-fill); stroke-width: 1.6; }
+.fig .lid { fill: var(--accent-fill); stroke: var(--edge); stroke-width: .7; fill-opacity: .85; }
+.fig .lidv { fill: var(--accent-fill); stroke: var(--accent); stroke-width: 1; fill-opacity: .25; }
+.fig .blende { fill: var(--c-cut2); stroke: var(--edge); stroke-width: .7; fill-opacity: .8; }
+.fig .ghost { fill: none; stroke: var(--muted); stroke-width: .8; stroke-dasharray: 3 2; }
+.fig .arrow { stroke: var(--warn); stroke-width: 2; fill: none; }
+.fig .arrowhead { fill: var(--warn); }
+.fig .inv { fill: var(--panel); }
+.fig text.inv { fill: var(--panel); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.steps .card { gap: 8px; }
+.steps .card h3 .n { font-family: var(--mono); color: var(--accent); margin-right: 8px; }
+.twofig { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .twofig { grid-template-columns: 1fr; } }
+.twofig svg { max-width: 100%; }
+.part { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; vertical-align: -1px; border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Steckmechanismus · Display-Gebäude · Plan 2, noch nicht abgenickt</div>
+  <h1>Display-Gebäude: Aufbau und Zusammenbau</h1>
+  <p class="lead">Der Block hinter dem Display ist jetzt einstufig und lässt mindestens 4 mm Luft über der Kassette, damit die Adern dort umbiegen können. Das Modul wurde aus deinen Fotos ausgemessen. Dieser Plan zeigt, aus welchen Teilen der Körper besteht und in welcher Reihenfolge man ihn zusammensetzt. Erst nach deinem Okay entstehen STL.</p>
+</header>
+
+<section aria-labelledby="h-ans">
+  <h2 id="h-ans">Kurz</h2>
+  <div class="answer">
+    <div class="rec"><span class="lbl">Luft über der Kassette</span><span class="big">4,5 mm</span>
+      <span class="small">Mindestens 4 mm, im Plan 0,5 mm mehr. Dort liegen die Adern in einer Schleife, bevor sie im Kanal nach unten zum Modul laufen.</span></div>
+    <div class="rec"><span class="lbl">Block, eine Stufe</span><span class="big">8,6 mm</span>
+      <span class="small">Der Block um die Kassette steht gleichmäßig 8,6 mm über der Platte. Der Deckel liegt bündig im Dach. Es gibt keinen Kragen mehr.</span></div>
+    <div class="rec"><span class="lbl">Teile</span><span class="big">4 gedruckt</span>
+      <span class="small">Körper, Frontblende, Kassette, Deckel. Das Modul geht von vorn hinein, die Frontblende hält es. Kein Teil braucht Support, wenn der Körper steht.</span></div>
+    <div><span class="lbl">Adern</span><span class="big">55 mm</span>
+      <span class="small">Der Weg im Körper ist 24,4 mm lang. Die übrigen 30 mm brauchst du zum Anlöten, danach schiebst du sie in die Kammer.</span></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-mod">
+  <h2 id="h-mod">Das Modul aus den Fotos</h2>
+  <p>Der Maßstab kommt aus zwei Dingen auf dem Rückseitenfoto: dem Pinraster (4 Pins mit 2,54 mm, der Header ist 10,2 mm lang) und dem Lochabstand, den ein veröffentlichter Halter für dieses 1,3-Zoll-Modul mit 30,3 × 28,4 mm angibt. Beide ergeben 31,3 und 31,2 Pixel je Millimeter. Die Genauigkeit liegt bei etwa 0,5 mm. Eine Schieblehre hast du nicht, deshalb sind Dicke und Feinmaße über eine kleine Passprobe zu klären (letzter Abschnitt).</p>
+  <div class="twofig">
+    <div class="card"><h3>Vorderansicht in Einbaulage (Pins unten)</h3><div class="scroll"><svg id="modfront" viewBox="0 0 508 442" role="img" aria-label="Vorderansicht des Moduls in Einbaulage" class="fig sec" style="max-width:508px"><polygon points="68.0,356.0 385.7,356.0 385.7,59.0 68.0,59.0" class="pcb"/><polygon points="162.0,95.0 291.6,95.0 291.6,58.6 162.0,58.6" class="notch"/><polygon points="71.6,295.7 382.1,295.7 382.1,88.7 71.6,88.7" class="glass"/><polygon points="94.5,275.9 359.2,275.9 359.2,143.6 94.5,143.6" class="aa2"/><polygon points="90.9,279.5 362.8,279.5 362.8,140.0 90.9,140.0" class="win2"/><polygon points="77.0,349.7 104.0,349.7 104.0,322.7 77.0,322.7" class="hole"/><polygon points="77.0,92.3 104.0,92.3 104.0,65.3 77.0,65.3" class="hole"/><polygon points="349.7,349.7 376.7,349.7 376.7,322.7 349.7,322.7" class="hole"/><polygon points="349.7,92.3 376.7,92.3 376.7,65.3 349.7,65.3" class="hole"/><polygon points="188.5,343.8 196.6,343.8 196.6,335.8 188.5,335.8" class="pin"/><polygon points="211.4,343.8 219.5,343.8 219.5,335.8 211.4,335.8" class="pin"/><polygon points="234.2,343.8 242.3,343.8 242.3,335.8 234.2,335.8" class="pin"/><polygon points="257.1,343.8 265.2,343.8 265.2,335.8 257.1,335.8" class="pin"/><text x="392.9" y="343.8" class="mut" text-anchor="start">4 Pins</text><polyline points="68.0,377.6 385.7,377.6" class="dim"/><polyline points="68.0,384.8 68.0,370.4" class="dim"/><polyline points="385.7,384.8 385.7,370.4" class="dim"/><text x="226.8" y="390.0" class="num" text-anchor="middle">35,3</text><polyline points="44.6,356.0 44.6,59.0" class="dim"/><polyline points="37.4,356.0 51.8,356.0" class="dim"/><polyline points="37.4,59.0 51.8,59.0" class="dim"/><text x="33.8" y="211.5" class="num" text-anchor="end"></text><text x="37.4" y="211.5" class="num" text-anchor="end">33,0</text><polyline points="409.1,275.9 409.1,143.6" class="dim"/><polyline points="401.9,275.9 416.3,275.9" class="dim"/><polyline points="401.9,143.6 416.3,143.6" class="dim"/><text x="419.9" y="213.8" class="num" text-anchor="start"></text><text x="416.3" y="213.8" class="ok" text-anchor="start">aktiv 14,7</text><text x="226.8" y="46.8" class="mut" text-anchor="middle">oben: Ausschnitt für das FPC, Controllerstreifen</text><text x="226.8" y="415.8" class="mut" text-anchor="middle">unten: Pins, im Fuß</text></svg></div>
+      <p class="small muted">Grün die Platine, grau das Glas, gelb die aktive Fläche, grün gestrichelt das Sichtfenster in der Frontblende (30,2 × 15,5 mm).</p></div>
+    <div class="card"><h3>Was die Fotos zeigen</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Maß</th><th>Wert</th><th>Quelle</th></tr></thead>
+        <tbody>
+          <tr><td>Platine</td><td class="num">35,3 × 33,0</td><td class="src">Foto ± 0,5</td></tr>
+          <tr><td>Löcher</td><td class="num">Ø 3,0, 30,3 × 28,6</td><td class="src">Foto, Halter 30,3 × 28,4</td></tr>
+          <tr><td>Glas</td><td class="num">34,5 × 23,0</td><td class="src">Datenblatt</td></tr>
+          <tr><td>Aktive Fläche</td><td class="num">29,42 × 14,70</td><td class="src">Datenblatt</td></tr>
+          <tr><td>Aktive Fläche bis Pinkante</td><td class="num">8,9</td><td class="src">Foto</td></tr>
+          <tr><td>Aktive Fläche bis Gegenkante</td><td class="num">9,4</td><td class="src">Foto</td></tr>
+          <tr><td>Pin-Reihe bis Kante</td><td class="num">1,8</td><td class="src">Foto</td></tr>
+          <tr><td>Ausschnitt (FPC)</td><td class="num">14,4 × 4,0</td><td class="src">Foto</td></tr>
+          <tr><td>Dicke ohne Header</td><td class="num">≈ 4,5</td><td class="src">Zeichnung Schwestermodul: Glas 1,7 + Platine 1,0 + Bauteile 1,2</td></tr>
+        </tbody></table></div></div>
+  </div>
+  <ul class="small">
+    <li><b>Header sitzt hinten.</b> Der Kunststoff (2,5 mm) liegt auf der Rückseite, die Pins sind vorn verlötet und ragen nach hinten. Mit aufgestecktem Dupont-Gehäuse brauchte das Modul etwa 12 mm Tiefe hinter der Platine. Deshalb löten wir die Adern nach dem Auslöten des Headers direkt an.</li>
+    <li><b>Pins am unteren Ende:</b> Die Beschriftung VDD GND SCK SDA steht für Pins oben. In Einbaulage sind sie unten, das Bild wird per Software um 180° gedreht (zum Beispiel U8g2 mit Drehung R2).</li>
+    <li><b>Adresse:</b> Auf der Rückseite sitzen zwei Paare Lötplätze „1 (VDD) 1 (GND) 2 (VDD) 2 (GND)“. Sie wählen vermutlich die I²C-Adresse. Ein Scan zeigt 0x3C oder 0x3D.</li>
+    <li><b>Spannungsregler:</b> Neben C9 sitzt ein SOT-23-Bauteil, vermutlich ein Regler. Das wäre ein Grund, dass die Herstellerseite „3 bis 5 V“ nennt. Wir bleiben bei 3,3 V vom ESP, das geht mit und ohne Regler. Belegt ist das Bauteil nicht, ich korrigiere damit meine Aussage aus Plan 1, die Platine habe keinen Regler.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-aufb">
+  <h2 id="h-aufb">Aufbau im Schnitt und von oben</h2>
+  <p>Links der Längsschnitt mitten durch die Stele, das Display schaut nach rechts (Osten). Der Schnitt geht durch das Kabelfenster der Rückwand, deshalb ist die Rückwand dort offen. Rechts die Draufsicht. Der Körper steht 27,5 mm über der Platte, steckt 14,2 mm tief in der Mulde und ist 38,3 × 19,9 mm groß.</p>
+  <div class="twofig">
+    <div class="card"><h3>Längsschnitt, zusammengebaut</h3><div class="scroll"><svg id="sec-main" viewBox="0 0 420 427" role="img" aria-label="Schnitt A–A" class="fig sec" style="max-width:420px"><polygon points="14.0,347.2 280.7,347.2 280.7,245.0 14.0,245.0" class="plate"/><polyline points="14.0,245.0 280.7,245.0" class="tablel"/><text x="18.2" y="298.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,344.4 243.6,344.4 243.6,245.0 112.8,245.0" class="foot"/><polygon points="243.6,344.4 252.0,344.4 252.0,298.2 243.6,298.2" class="foot"/><polygon points="112.8,245.0 121.2,245.0 121.2,184.8 112.8,184.8" class="foot"/><polygon points="160.3,245.0 196.7,245.0 196.7,224.7 160.3,224.7" class="foot"/><polygon points="196.7,238.0 207.9,238.0 207.9,52.5 196.7,52.5" class="foot"/><polygon points="196.7,60.9 243.6,60.9 243.6,52.5 196.7,52.5" class="foot"/><polygon points="121.2,344.4 160.3,344.4 160.3,224.7 121.2,224.7" class="void"/><polygon points="168.7,298.2 196.7,298.2 196.7,245.0 168.7,245.0" class="void"/><polygon points="196.7,298.2 207.9,298.2 207.9,238.0 196.7,238.0" class="void"/><polygon points="207.9,298.2 243.6,298.2 243.6,245.0 207.9,245.0" class="void"/><polygon points="196.7,298.2 207.9,298.2 207.9,298.2 196.7,298.2" class="ghost"/><polygon points="121.9,344.4 159.6,344.4 159.6,224.7 121.9,224.7" class="kass"/><polygon points="117.0,193.2 200.9,193.2 200.9,184.8 117.0,184.8" class="lid"/><polygon points="210.0,294.0 241.5,294.0 241.5,63.0 210.0,63.0" class="pcb"/><polyline points="241.5,231.7 241.5,128.8" class="aa"/><polygon points="243.6,298.2 252.0,298.2 252.0,234.5 243.6,234.5" class="blende"/><polygon points="243.6,126.0 252.0,126.0 252.0,52.5 243.6,52.5" class="blende"/><polyline points="140.8,224.7 140.8,209.0 182.7,209.0 182.7,270.9 233.1,281.4" class="wire"/><polygon points="133.8,361.2 147.8,361.2 147.8,347.2 133.8,347.2" class="body"/><polyline points="140.8,347.2 140.8,307.3" class="pin"/><polyline points="140.8,354.2 96.7,354.2" class="tail"/><polyline points="91.8,224.7 91.8,193.2" class="dim"/><polyline points="86.2,224.7 97.4,224.7" class="dim"/><polyline points="86.2,193.2 97.4,193.2" class="dim"/><text x="83.4" y="213.0" class="num" text-anchor="end"></text><text x="84.8" y="213.0" class="ok" text-anchor="end">Luft 4,5</text><polyline points="287.0,245.0 287.0,52.5" class="dim"/><polyline points="281.4,245.0 292.6,245.0" class="dim"/><polyline points="281.4,52.5 292.6,52.5" class="dim"/><text x="295.4" y="152.8" class="num" text-anchor="start"></text><text x="292.6" y="152.8" class="num" text-anchor="start">27,5</text><text x="18.2" y="32.0" class="lab" text-anchor="start">Schnitt A–A</text></svg></div>
+      <p class="small muted">Gelb der Deckel, violett die Frontblende, dunkelblau die Kassette, grün das Modul, rot die Adern. Die Adern laufen aus der Kassette nach oben, biegen in der Kammer (4,5 mm Luft) in den Kanal und gehen unten durch das Kabelfenster von hinten ans Modul. Orange unter der Platte: Winkelleiste mit Lötenden.</p></div>
+    <div class="card"><h3>Grundriss</h3><div class="scroll"><svg id="topv" viewBox="0 0 467 511" role="img" aria-label="Draufsicht auf den Display-Körper" class="fig sec" style="max-width:467px"><polygon points="174.0,447.0 372.8,447.0 372.8,64.0 174.0,64.0" class="foot"/><polygon points="309.8,435.0 360.8,435.0 360.8,76.0 309.8,76.0" class="void"/><polygon points="312.8,432.0 357.8,432.0 357.8,79.0 312.8,79.0" class="pcb"/><polygon points="292.8,325.5 310.8,325.5 310.8,185.5 292.8,185.5" class="void"/><polygon points="253.8,325.5 293.8,325.5 293.8,185.5 253.8,185.5" class="void"/><polygon points="186.0,321.5 241.8,321.5 241.8,189.5 186.0,189.5" class="void"/><polygon points="187.0,320.5 240.8,320.5 240.8,190.5 187.0,190.5" class="kass"/><polygon points="180.0,331.5 299.8,331.5 299.8,179.5 180.0,179.5" class="lidv"/><polygon points="360.8,447.0 372.8,447.0 372.8,64.0 360.8,64.0" class="blende"/><polygon points="359.8,406.6 373.8,406.6 373.8,104.4 359.8,104.4" class="void"/><polyline points="213.9,255.5 273.8,255.5 312.8,255.5" class="wire"/><polyline points="174.0,473.0 372.8,473.0" class="dim"/><polyline points="174.0,481.0 174.0,465.0" class="dim"/><polyline points="372.8,481.0 372.8,465.0" class="dim"/><text x="273.4" y="487.0" class="num" text-anchor="middle">Tiefe 19,9</text><polyline points="150.0,447.0 150.0,64.0" class="dim"/><polyline points="142.0,447.0 158.0,447.0" class="dim"/><polyline points="142.0,64.0 158.0,64.0" class="dim"/><text x="138.0" y="259.5" class="num" text-anchor="end"></text><text x="142.0" y="259.5" class="num" text-anchor="end">Breite 38,3</text><text x="380.8" y="53.0" class="mut" text-anchor="start">Osten</text><text x="335.3" y="56.0" class="lab" text-anchor="middle">Tasche</text><text x="273.8" y="341.5" class="lab" text-anchor="middle">Kanal</text><text x="213.9" y="167.5" class="lab" text-anchor="middle">Kassette</text></svg></div>
+      <p class="small muted">Von oben: vorn die Frontblende mit dem Sichtfenster, dahinter die Tasche mit dem Modul, die Rückwand mit dem Kabelfenster, der Kanal (4,0 mm), der Schacht der Kassette und der Deckel über Kammer und Kanal.</p></div>
+  </div>
+  <div class="card"><h3>Die wichtigen Höhen und Maße</h3>
+    <div class="scroll"><table>
+      <thead><tr><th>Maß</th><th>Wert (mm)</th><th>Herkunft</th></tr></thead>
+      <tbody>
+        <tr><td>Kassettenoberkante über der Platte</td><td class="num">2,9</td><td class="src">Maßkette Campus, Fuß 14,2 + 2,9 = Kassette 17,1</td></tr>
+        <tr class="sel"><td>Luft über der Kassette bis zum Deckel</td><td class="num">4,5 (mindestens 4,0)</td><td class="src">Nutzer, 0,5 Reserve</td></tr>
+        <tr><td>Deckel, bündig im Blockdach</td><td class="num">7,4 bis 8,6</td><td class="src">E, 1,2 dick</td></tr>
+        <tr><td>Kanal hinter der Rückwand (Tiefe)</td><td class="num">4,0</td><td class="src">S, vier Adern 28 AWG</td></tr>
+        <tr><td>Kabelfenster in der Rückwand</td><td class="num">14,0 breit, z -7,6 bis 1,0</td><td class="src">E</td></tr>
+        <tr><td>Unterkante des Moduls</td><td class="num">-7,0 (Taschenboden -7,6)</td><td class="src">A aus Fenster 1,5 und Foto</td></tr>
+        <tr><td>Sichtfenster über der Platte</td><td class="num">1,5 bis 17,0</td><td class="src">Nutzer: nah am Boden</td></tr>
+        <tr><td>Oberkante des Körpers</td><td class="num">27,5</td><td class="src">Modul 33,0 + 0,3 + Dach 1,2</td></tr>
+        <tr><td>Tasche für das Modul</td><td class="num">35,9 × 5,1</td><td class="src">Platine + 0,3 Spiel je Seite</td></tr>
+      </tbody></table></div></div>
+</section>
+
+<section aria-labelledby="h-teile">
+  <h2 id="h-teile">Die Teile</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Teil</th><th>Maße</th><th>Drucklage</th><th>Anmerkung</th></tr></thead>
+    <tbody>
+      <tr><td><b>1 Körper</b></td><td class="num">38,3 × 19,9 × 41,7</td><td>stehend, Fußunterseite auf dem Bett</td><td>Fuß mit Fußfase, Block, Rückwand mit Kabelfenster, Tasche, Kopfdach. Die Tasche überbrückt oben nur 5,1 mm, das Kabelfenster 14,0 mm. Schachtanschlag 0,5 mm. Kein Support.</td></tr>
+      <tr><td><b>2 Frontblende</b></td><td class="num">38,3 × 35,1 × 1,2</td><td>liegend, Außenseite unten</td><td>Das Sichtfenster ist ein glattes Loch (30,2 × 15,5). Klickt von vorn auf die Tasche. Gut in schwarz, weil sie die sichtbare Front ist.</td></tr>
+      <tr><td><b>3 Kassette</b></td><td class="num">13,2 × 5,6 × 17,1</td><td>stehend, wie die Kassetten der Gebäude</td><td>Unterbau der V2 ohne Blatt und Streifen: Buchsentasche, Aderschlitz, Schultern. Ist neu zu zeichnen, der Entwurf der V2 ist ungetestet.</td></tr>
+      <tr><td><b>4 Deckel</b></td><td class="num">12,0 × 15,2 × 1,2</td><td>liegend</td><td>Schließt Kammer und Kanal, liegt bündig im Dach, zwei kleine Haken oder Zapfen halten ihn.</td></tr>
+      <tr><td>Kaufteile</td><td colspan="3">Modul, Dupont-Buchse 4-polig mit Kontakten, vier Silikon-Adern 28 AWG, 55 mm, Winkelleiste für das Dock (wie bei den Gebäuden).</td></tr>
+    </tbody></table></div>
+</section>
+
+<section aria-labelledby="h-zus">
+  <h2 id="h-zus">Zusammenbau in sechs Schritten</h2>
+  <div class="card"><h3>Explosion</h3><div class="scroll"><svg id="sec-expl" viewBox="0 0 420 609" role="img" aria-label="Explosion" class="fig sec" style="max-width:420px"><polygon points="14.0,466.2 280.7,466.2 280.7,364.0 14.0,364.0" class="plate"/><polyline points="14.0,364.0 280.7,364.0" class="tablel"/><text x="18.2" y="417.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,463.4 243.6,463.4 243.6,364.0 112.8,364.0" class="foot"/><polygon points="243.6,463.4 252.0,463.4 252.0,417.2 243.6,417.2" class="foot"/><polygon points="112.8,364.0 121.2,364.0 121.2,303.8 112.8,303.8" class="foot"/><polygon points="160.3,364.0 196.7,364.0 196.7,343.7 160.3,343.7" class="foot"/><polygon points="196.7,357.0 207.9,357.0 207.9,171.5 196.7,171.5" class="foot"/><polygon points="196.7,179.9 243.6,179.9 243.6,171.5 196.7,171.5" class="foot"/><polygon points="121.2,463.4 160.3,463.4 160.3,343.7 121.2,343.7" class="void"/><polygon points="168.7,417.2 196.7,417.2 196.7,364.0 168.7,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,357.0 196.7,357.0" class="void"/><polygon points="207.9,417.2 243.6,417.2 243.6,364.0 207.9,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,417.2 196.7,417.2" class="ghost"/><polygon points="121.9,603.4 159.6,603.4 159.6,483.7 121.9,483.7" class="kass"/><polygon points="117.0,214.2 200.9,214.2 200.9,205.8 117.0,205.8" class="lid"/><polygon points="322.0,413.0 353.5,413.0 353.5,182.0 322.0,182.0" class="pcb"/><polyline points="353.5,350.7 353.5,247.8" class="aa"/><polygon points="355.6,417.2 364.0,417.2 364.0,353.5 355.6,353.5" class="blende"/><polygon points="355.6,245.0 364.0,245.0 364.0,171.5 355.6,171.5" class="blende"/><polygon points="133.8,480.2 147.8,480.2 147.8,466.2 133.8,466.2" class="body"/><polyline points="140.8,466.2 140.8,426.3" class="pin"/><polyline points="140.8,473.2 96.7,473.2" class="tail"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Explosion</text></svg></div>
+    <p class="small muted">Die Kassette kommt von unten, der Deckel von oben, Modul und Frontblende von vorn. Alle vier Bewegungen gehen gerade, nichts muss gedreht oder verklemmt werden.</p></div>
+  <div class="steps"><div class="card"><h3><span class="n">1</span>Kassette bestücken</h3><p class="small">Dupont-Buchse mit vier Adern (55 mm) crimpen und in die Kassette drücken. Die Adern kommen oben aus dem Aderschlitz.</p></div><div class="card"><h3><span class="n">2</span>Kassette von unten einschieben</h3><div class="scroll"><svg id="step1" viewBox="0 0 420 539" role="img" aria-label="Schritt 2" class="fig sec" style="max-width:420px"><polygon points="14.0,396.2 280.7,396.2 280.7,294.0 14.0,294.0" class="plate"/><polyline points="14.0,294.0 280.7,294.0" class="tablel"/><text x="18.2" y="347.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,393.4 243.6,393.4 243.6,294.0 112.8,294.0" class="foot"/><polygon points="243.6,393.4 252.0,393.4 252.0,347.2 243.6,347.2" class="foot"/><polygon points="112.8,294.0 121.2,294.0 121.2,233.8 112.8,233.8" class="foot"/><polygon points="160.3,294.0 196.7,294.0 196.7,273.7 160.3,273.7" class="foot"/><polygon points="196.7,287.0 207.9,287.0 207.9,101.5 196.7,101.5" class="foot"/><polygon points="196.7,109.9 243.6,109.9 243.6,101.5 196.7,101.5" class="foot"/><polygon points="121.2,393.4 160.3,393.4 160.3,273.7 121.2,273.7" class="void"/><polygon points="168.7,347.2 196.7,347.2 196.7,294.0 168.7,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,287.0 196.7,287.0" class="void"/><polygon points="207.9,347.2 243.6,347.2 243.6,294.0 207.9,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,347.2 196.7,347.2" class="ghost"/><polygon points="121.9,477.4 159.6,477.4 159.6,357.7 121.9,357.7" class="kass"/><polyline points="140.8,273.7 140.8,258.0 182.7,258.0 182.7,319.9 182.7,330.4 345.1,330.4" class="wire"/><polyline points="140.8,448.0 140.8,395.5" class="arrow"/><circle cx="140.8" cy="395.5" r="2.6" class="arrowhead"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Schritt 2</text></svg></div><p class="small">Die Kassette geht von der Fußunterseite in den Schacht, bis die Schultern an der Anschlagleiste im Schacht anliegen. Die Adern ziehst du oben durch Kammer, Kanal und Kabelfenster in die Tasche und vorn heraus.</p></div><div class="card"><h3><span class="n">3</span>Adern am Modul anlöten</h3><div class="scroll"><svg id="step2" viewBox="0 0 420 546" role="img" aria-label="Schritt 3" class="fig sec" style="max-width:420px"><polygon points="14.0,466.2 280.7,466.2 280.7,364.0 14.0,364.0" class="plate"/><polyline points="14.0,364.0 280.7,364.0" class="tablel"/><text x="18.2" y="417.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,463.4 243.6,463.4 243.6,364.0 112.8,364.0" class="foot"/><polygon points="243.6,463.4 252.0,463.4 252.0,417.2 243.6,417.2" class="foot"/><polygon points="112.8,364.0 121.2,364.0 121.2,303.8 112.8,303.8" class="foot"/><polygon points="160.3,364.0 196.7,364.0 196.7,343.7 160.3,343.7" class="foot"/><polygon points="196.7,357.0 207.9,357.0 207.9,171.5 196.7,171.5" class="foot"/><polygon points="196.7,179.9 243.6,179.9 243.6,171.5 196.7,171.5" class="foot"/><polygon points="121.2,463.4 160.3,463.4 160.3,343.7 121.2,343.7" class="void"/><polygon points="168.7,417.2 196.7,417.2 196.7,364.0 168.7,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,357.0 196.7,357.0" class="void"/><polygon points="207.9,417.2 243.6,417.2 243.6,364.0 207.9,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,417.2 196.7,417.2" class="ghost"/><polygon points="121.9,463.4 159.6,463.4 159.6,343.7 121.9,343.7" class="kass"/><polygon points="322.0,413.0 353.5,413.0 353.5,182.0 322.0,182.0" class="pcb"/><polyline points="353.5,350.7 353.5,247.8" class="aa"/><polyline points="140.8,343.7 140.8,327.9 182.7,327.9 182.7,389.9 182.7,400.4 345.1,400.4" class="wire"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Schritt 3</text></svg></div><p class="small">Header am Modul auslöten. Die Adern von hinten durch die Löcher stecken und vorn verlöten. Das Modul hängt dabei vor dem Körper an den Adern.</p></div><div class="card"><h3><span class="n">4</span>Modul von vorn in die Tasche schieben</h3><div class="scroll"><svg id="step3" viewBox="0 0 420 476" role="img" aria-label="Schritt 4" class="fig sec" style="max-width:420px"><polygon points="14.0,396.2 280.7,396.2 280.7,294.0 14.0,294.0" class="plate"/><polyline points="14.0,294.0 280.7,294.0" class="tablel"/><text x="18.2" y="347.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,393.4 243.6,393.4 243.6,294.0 112.8,294.0" class="foot"/><polygon points="243.6,393.4 252.0,393.4 252.0,347.2 243.6,347.2" class="foot"/><polygon points="112.8,294.0 121.2,294.0 121.2,233.8 112.8,233.8" class="foot"/><polygon points="160.3,294.0 196.7,294.0 196.7,273.7 160.3,273.7" class="foot"/><polygon points="196.7,287.0 207.9,287.0 207.9,101.5 196.7,101.5" class="foot"/><polygon points="196.7,109.9 243.6,109.9 243.6,101.5 196.7,101.5" class="foot"/><polygon points="121.2,393.4 160.3,393.4 160.3,273.7 121.2,273.7" class="void"/><polygon points="168.7,347.2 196.7,347.2 196.7,294.0 168.7,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,287.0 196.7,287.0" class="void"/><polygon points="207.9,347.2 243.6,347.2 243.6,294.0 207.9,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,347.2 196.7,347.2" class="ghost"/><polygon points="121.9,393.4 159.6,393.4 159.6,273.7 121.9,273.7" class="kass"/><polygon points="266.0,343.0 297.5,343.0 297.5,112.0 266.0,112.0" class="pcb"/><polyline points="297.5,280.7 297.5,177.8" class="aa"/><polyline points="140.8,273.7 140.8,258.0 182.7,258.0 182.7,319.9 182.7,330.4 289.1,330.4" class="wire"/><polyline points="322.0,238.0 266.0,238.0" class="arrow"/><circle cx="266.0" cy="238.0" r="2.6" class="arrowhead"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Schritt 4</text></svg></div><p class="small">Das Modul gleitet in die Tasche, die überzähligen Adern schiebst du nach hinten in die Kammer über der Kassette. Dort werden sie gebogen (mindestens 4 mm Luft).</p></div><div class="card"><h3><span class="n">5</span>Deckel und Frontblende aufsetzen</h3><div class="scroll"><svg id="step4" viewBox="0 0 420 546" role="img" aria-label="Schritt 5" class="fig sec" style="max-width:420px"><polygon points="14.0,466.2 280.7,466.2 280.7,364.0 14.0,364.0" class="plate"/><polyline points="14.0,364.0 280.7,364.0" class="tablel"/><text x="18.2" y="417.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,463.4 243.6,463.4 243.6,364.0 112.8,364.0" class="foot"/><polygon points="243.6,463.4 252.0,463.4 252.0,417.2 243.6,417.2" class="foot"/><polygon points="112.8,364.0 121.2,364.0 121.2,303.8 112.8,303.8" class="foot"/><polygon points="160.3,364.0 196.7,364.0 196.7,343.7 160.3,343.7" class="foot"/><polygon points="196.7,357.0 207.9,357.0 207.9,171.5 196.7,171.5" class="foot"/><polygon points="196.7,179.9 243.6,179.9 243.6,171.5 196.7,171.5" class="foot"/><polygon points="121.2,463.4 160.3,463.4 160.3,343.7 121.2,343.7" class="void"/><polygon points="168.7,417.2 196.7,417.2 196.7,364.0 168.7,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,357.0 196.7,357.0" class="void"/><polygon points="207.9,417.2 243.6,417.2 243.6,364.0 207.9,364.0" class="void"/><polygon points="196.7,417.2 207.9,417.2 207.9,417.2 196.7,417.2" class="ghost"/><polygon points="121.9,463.4 159.6,463.4 159.6,343.7 121.9,343.7" class="kass"/><polygon points="117.0,270.2 200.9,270.2 200.9,261.8 117.0,261.8" class="lid"/><polygon points="210.0,413.0 241.5,413.0 241.5,182.0 210.0,182.0" class="pcb"/><polyline points="241.5,350.7 241.5,247.8" class="aa"/><polygon points="299.6,417.2 308.0,417.2 308.0,353.5 299.6,353.5" class="blende"/><polygon points="299.6,245.0 308.0,245.0 308.0,171.5 299.6,171.5" class="blende"/><polyline points="140.8,343.7 140.8,327.9 182.7,327.9 182.7,389.9 233.1,400.4" class="wire"/><polyline points="161.0,210.0 161.0,294.0" class="arrow"/><circle cx="161.0" cy="294.0" r="2.6" class="arrowhead"/><polyline points="350.0,266.0 280.0,266.0" class="arrow"/><circle cx="280.0" cy="266.0" r="2.6" class="arrowhead"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Schritt 5</text></svg></div><p class="small">Der Deckel schließt Kammer und Kanal bündig im Blockdach. Die Frontblende mit dem Fenster klickt von vorn auf die Tasche und hält das Modul.</p></div><div class="card"><h3><span class="n">6</span>Stecken und prüfen</h3><div class="scroll"><svg id="step5" viewBox="0 0 420 476" role="img" aria-label="Schritt 6" class="fig sec" style="max-width:420px"><polygon points="14.0,396.2 280.7,396.2 280.7,294.0 14.0,294.0" class="plate"/><polyline points="14.0,294.0 280.7,294.0" class="tablel"/><text x="18.2" y="347.0" class="mut" text-anchor="start">Platte</text><polygon points="112.8,393.4 243.6,393.4 243.6,294.0 112.8,294.0" class="foot"/><polygon points="243.6,393.4 252.0,393.4 252.0,347.2 243.6,347.2" class="foot"/><polygon points="112.8,294.0 121.2,294.0 121.2,233.8 112.8,233.8" class="foot"/><polygon points="160.3,294.0 196.7,294.0 196.7,273.7 160.3,273.7" class="foot"/><polygon points="196.7,287.0 207.9,287.0 207.9,101.5 196.7,101.5" class="foot"/><polygon points="196.7,109.9 243.6,109.9 243.6,101.5 196.7,101.5" class="foot"/><polygon points="121.2,393.4 160.3,393.4 160.3,273.7 121.2,273.7" class="void"/><polygon points="168.7,347.2 196.7,347.2 196.7,294.0 168.7,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,287.0 196.7,287.0" class="void"/><polygon points="207.9,347.2 243.6,347.2 243.6,294.0 207.9,294.0" class="void"/><polygon points="196.7,347.2 207.9,347.2 207.9,347.2 196.7,347.2" class="ghost"/><polygon points="121.9,393.4 159.6,393.4 159.6,273.7 121.9,273.7" class="kass"/><polygon points="117.0,242.2 200.9,242.2 200.9,233.8 117.0,233.8" class="lid"/><polygon points="210.0,343.0 241.5,343.0 241.5,112.0 210.0,112.0" class="pcb"/><polyline points="241.5,280.7 241.5,177.8" class="aa"/><polygon points="243.6,347.2 252.0,347.2 252.0,283.5 243.6,283.5" class="blende"/><polygon points="243.6,175.0 252.0,175.0 252.0,101.5 243.6,101.5" class="blende"/><polyline points="140.8,273.7 140.8,258.0 182.7,258.0 182.7,319.9 233.1,330.4" class="wire"/><polygon points="133.8,410.2 147.8,410.2 147.8,396.2 133.8,396.2" class="body"/><polyline points="140.8,396.2 140.8,356.3" class="pin"/><polyline points="140.8,403.2 96.7,403.2" class="tail"/><text x="18.2" y="32.0" class="lab" text-anchor="start">Schritt 6</text></svg></div><p class="small">Den Körper in die Mulde der Platte stecken (Kassette auf die Pins der Winkelleiste). Danach I²C-Scan: 0x3C oder 0x3D und 0x40 müssen erscheinen.</p></div></div>
+  <div class="card"><h3>Später das Modul wechseln</h3>
+    <p class="small">Frontblende abnehmen, das Modul herausziehen, die Adern ablöten. Den Deckel brauchst du nur, wenn die Kassette heraus soll: Die zieht man von unten aus dem Schacht, wenn der Körper nicht in der Platte steckt.</p></div>
+</section>
+
+<section aria-labelledby="h-kab">
+  <h2 id="h-kab">Kabelweg und Platz</h2>
+  <ul>
+    <li><b>Weg:</b> Kassettenoberkante, 2,2 mm nach oben, 6,0 mm nach vorn (Osten, zum Kanal), 8,9 mm im Kanal nach unten, 7,2 mm durch das Kabelfenster zum Modul. Zusammen 24,4 mm.</li>
+    <li><b>Biegungen:</b> Zwei Knicke von etwa 90° mit Radius ab 3 mm. Silikon-Litze 28 AWG (Ø etwa 1,0 mm) verträgt das. Das Bündel aus vier Adern misst 2,5 mm und passt in den Kanal (4,0 mm) und die Kammer (4,5 mm).</li>
+    <li><b>Reserve:</b> Beim Einschieben des Moduls sammeln sich etwa 30 mm Ader in der Kammer. Zwei bis drei Schleifen passen in 4,5 × 12 mm. Wenn das zu eng ist, hilft eine Kante mit 45° im Deckel (kein Quetschen) oder kürzere Adern.</li>
+    <li><b>Platz im Unterkasten:</b> Das Dock braucht wie bei den anderen Gebäuden 14,9 × 11,1 mm unter der Platte und den Steckerraum von 3,5 mm. Die vier Adern vom ESP-Feld laufen dort im Unterkasten (siehe Plan 1).</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-chain">
+  <h2 id="h-chain">Maßkette im Worst-Case</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Maß</th><th>Soll</th><th>Worst-Case</th><th>Ergebnis</th><th>Quelle</th></tr></thead>
+    <tbody>
+      <tr><td>Luft über der Kassette</td><td class="num">4,5</td><td class="num">Kassettenoberkante ± 0,2: 4,3 bis 4,7</td><td><span class="pill ok">≥ 4</span></td><td class="src">Nutzer, A</td></tr>
+      <tr><td>Breite der Tasche</td><td class="num">35,9 für Platine 35,3</td><td class="num">Platine 35,8: Spiel 0,05</td><td><span class="pill mid">Passprobe</span></td><td class="src">Foto ± 0,5</td></tr>
+      <tr><td>Tiefe der Tasche</td><td class="num">5,1 für Modul 4,5</td><td class="num">Modul 5,0: Spiel 0,05</td><td><span class="pill mid">Passprobe</span></td><td class="src">S, Dicke ungemessen</td></tr>
+      <tr><td>Fenster gegen aktive Fläche</td><td class="num">Rand 0,4 je Seite</td><td class="num">Modul ± 0,5 verschoben: Rand −0,1 bis 0,9</td><td><span class="pill mid">Passprobe</span></td><td class="src">M, Foto</td></tr>
+      <tr><td>Unterkante des Moduls</td><td class="num">-7,0, Fuß bis -14,2</td><td class="num">Fuß unter dem Taschenboden 6,6</td><td><span class="pill ok">frei</span></td><td class="src">A</td></tr>
+      <tr><td>Mulde der Platte</td><td class="num">38,3 × 19,9 × 14,2, Spiel 0,1 je Seite</td><td class="num">Druckmaß ± 0,1</td><td><span class="pill mid">Kippen ungetestet</span></td><td class="src">Plan Campus</td></tr>
+      <tr><td>Höhe des Körpers im Druck</td><td class="num">41,7</td><td class="num">Bett 250</td><td><span class="pill ok">frei</span></td><td class="src">A</td></tr>
+      <tr><td>Schacht für die Kassette</td><td class="num">13,2 × 5,6, Wand 1,2</td><td class="num">Spiel 0,06 je Seite wie bei den Kassetten der Steckprobe</td><td><span class="pill mid">V2 ungetestet</span></td><td class="src">Plan Campus</td></tr>
+    </tbody></table></div>
+</section>
+
+<section aria-labelledby="h-risk">
+  <h2 id="h-risk">Was beim Bau schiefgehen kann</h2>
+  <ul>
+    <li><b>Dünne Wände:</b> Die Seitenwände der Tasche sind 1,2 mm dick und bis 27,5 mm hoch. Sie hängen am Kopfdach und an der Rückwand und sollten stehen. Wenn sie wackeln, 1,6 mm nehmen (Körper wird 1,6 mm breiter).</li>
+    <li><b>Haken der Frontblende:</b> Dünne Haken in PLA brechen leicht. PETG oder zwei Schrauben M2 sind die Rückfälle.</li>
+    <li><b>Modulmaße:</b> Dicke und Lage der aktiven Fläche sind ± 0,5 mm genau. Ohne Schieblehre klärt das die Passprobe.</li>
+    <li><b>Adern quetschen:</b> Beim Aufsetzen des Deckels dürfen keine Adern zwischen Deckel und Block liegen. Ein Zapfen im Deckel hält sie unten.</li>
+    <li><b>Mulde groß:</b> 38,3 × 19,9 × 14,2 ist die größte Mulde der Platte. Kippen und Klemmen sind noch nicht getestet, wie bei der Campus-Platte insgesamt.</li>
+    <li><b>Kassette:</b> Die Version ohne Streifen gibt es nur als Konzept. Sie ist der Unterbau der V2, deren Einpressen noch nicht gedruckt wurde.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-dec">
+  <h2 id="h-dec">Entscheidungen</h2>
+  <div class="dec">
+    <div class="card rec"><h3><span class="tag">A</span> Anschluss am Modul</h3><div class="opts">
+      <div class="opt pick"><b>Header auslöten, Adern von hinten durch die Löcher</b><span class="num2">Flach, Kanal 4,0 mm. Empfohlen. Du brauchst Entlötlitze.</span></div>
+      <div class="opt"><b>Header bleibt, Adern an die Pinenden</b><span class="num2">Kanal etwa 10 mm statt 4,0; der Körper wird etwa 6 mm tiefer.</span></div>
+      <div class="opt"><b>Dupont-Buchse auf den Header</b><span class="num2">Tauschbar, aber etwa 17 mm Kanal; der Körper wird 13 mm tiefer, passt nur noch bei y 37 bis 42.</span></div></div></div>
+    <div class="card rec"><h3><span class="tag">B</span> Frontblende</h3><div class="opts">
+      <div class="opt pick"><b>Schnapphaken, schwarz, liegend gedruckt</b><span class="num2">Fenster als glattes Loch, keine Brücke. Empfohlen.</span></div>
+      <div class="opt"><b>Zwei Schrauben M2</b><span class="num2">stabiler, mehr Handarbeit.</span></div>
+      <div class="opt"><b>Aufkleben</b><span class="num2">einfachster Druck, Modul nicht mehr wechselbar.</span></div></div></div>
+    <div class="card"><h3><span class="tag">C</span> Luft über der Kassette</h3><div class="opts">
+      <div class="opt pick"><b>4,5 mm</b><span class="num2">4 mm Mindestmaß plus 0,5 Reserve. Block 8,6 hoch. Empfohlen.</span></div>
+      <div class="opt"><b>4 mm</b><span class="num2">Block 8,1 hoch, knapp für zwei Schleifen.</span></div>
+      <div class="opt"><b>6 mm</b><span class="num2">Block 10,1 hoch, viel Platz, aber höher als nötig.</span></div></div></div>
+    <div class="card"><h3><span class="tag">D</span> Deckel</h3><div class="opts">
+      <div class="opt pick"><b>Reibsitz mit zwei Haken</b><span class="num2">Bündig im Dach, abnehmbar. Die Deckplatte der Fachprobe wackelte, deshalb Haken statt nur aufgelegt.</span></div>
+      <div class="opt"><b>Eine Schraube M2</b><span class="num2">Gewinde in 1,2 mm Wand nur schneidend.</span></div>
+      <div class="opt"><b>Kleben</b><span class="num2">Kammer nicht mehr zugänglich.</span></div></div></div>
+    <div class="card"><h3><span class="tag">E</span> Wand der Tasche</h3><div class="opts">
+      <div class="opt pick"><b>1,2 mm</b><span class="num2">38,3 breit. Wie bei allen Wänden um Kassette und Modul.</span></div>
+      <div class="opt"><b>1,6 mm</b><span class="num2">39,1 breit, steifer. Rückfall, falls die Wände wackeln.</span></div></div></div>
+    <div class="card"><h3><span class="tag">F</span> Fenster</h3><div class="opts">
+      <div class="opt pick"><b>Unterkante 1,5 mm, Rand 0,4 mm</b><span class="num2">Nah am Boden, passend zum Wunsch.</span></div>
+      <div class="opt"><b>Unterkante 1,0 mm</b><span class="num2">noch tiefer, Modul sitzt 0,5 mm tiefer im Fuß.</span></div></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-next">
+  <h2 id="h-next">Nächster Schritt: ein Passdruck</h2>
+  <p>Nach deinem Okay würde ich einen Satz bauen, mit dem du alles zusammensetzen und stecken kannst, ohne Schieblehre:</p>
+  <ol class="todo">
+    <li><b>Modulprobe:</b> eine kleine Platte mit drei Taschen (Tiefe 4,5, 5,1, 5,7 mm) und vier Stiften im Lochraster 30,3 × 28,6. Das Modul zeigt, welche Tasche passt, ob die Löcher stimmen und wie das Fenster zur aktiven Fläche liegt.</li>
+    <li><b>Körper mit Frontblende, Kassette und Deckel</b> (alle vier Teile) und eine <b>Mini-Platte</b> mit Mulde und Dock wie bei der Steckprobe. Dort prüfst du den Zusammenbau in den sechs Schritten, das Stecken und den I²C-Scan am ESP.</li>
+    <li>Ein <b>Testbogen</b> als Formular (wie bei den anderen Runden) fragt nur fühlbare oder Ja/Nein-Punkte ab: Haken klicken, Modul sitzt, Adern passen, Deckel bündig, Mulde kippt.</li>
+  </ol>
+  <p class="small muted">Alle Maße der Platine sind aus den Fotos abgeleitet, die Dicke aus der Zeichnung eines Schwestermoduls. Die Werte stehen in <code>plug/display/params.py</code>, die Körperabmessungen in <code>plug/display/body.py</code>. Plan 1 (Lage am Ostrand) bleibt unverändert gültig.</p>
+</section>
+</div>
