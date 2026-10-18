@@ -50,6 +50,10 @@ PILLE_ACHSEN = None                                    # Ausrichtung der Taschen
 FACH_ECKEN = dict(N=("NW", "NO"), S=("SW", "SO"), W=("NW", "SW"), O=("NO", "SO"))
 
 # ---- Zapfenaufnahmen (Sacklöcher), Werte aus dem Konzept (plug/power/params.py, build_concept.variant)
+# Lage der Zapfenlöcher in Plattenkoordinaten (Ecke unten links, Süden y = 0, mm). Nutzer 18.10.: Position des zweiten Zapfens ändern, weil der Unterkasten
+# (Batteriefach, PR #32 Branch ccr-395903c6-2y3sex, Stand 7, `U_unterkasten.stl`) schon gedruckt wird: seine Zapfen stehen bei (20 | 20) und (100 | 180). Das Konzept
+# dieses Branches (ohne `FACH_FIX`) lieferte (100 | 20). None = Lagen aus dem Konzept.
+ZAPFEN_LOKAL = [(20.0, 20.0), (100.0, 180.0)]
 ZAPFEN = PP.PIN_PLAN                                   # Zapfen Ø 4,0 × 2,5, Gleitspiel 0,15 je Seite (Konzept; Test-Dock: 1 mm länger als r4); Zapfen 2,5 ungetestet
 LOCH_D = ZAPFEN["d"] + 2 * ZAPFEN["clr"]               # 4,3 (L10: 0,15 gleitet)
 LOCH_T = ZAPFEN["h"] + 0.3                             # 2,8 tief ab Plattenunterseite (0,3 Luft über der Zapfenspitze, wie build_concept.variant)
@@ -245,6 +249,10 @@ def zapfen_circle(c, extra=0.0):
 def layout(scale, outline, blocked, refresh=False):
     """Lage aller Aufnahmen: Zapfenlöcher (aus dem Konzept) und vier Fadenösen (Tasche: neu gesucht auf dem echten Umriss; V: aus dem Konzept)."""
     data = concept_layout(scale, outline, refresh)
+    if ZAPFEN_LOKAL:                                    # Zapfenlöcher an den Zapfen des gedruckten Unterkastens statt an den Konzept-Lagen
+        minx, miny = outline.bounds[:2]
+        pins = [[round(minx + x, 3), round(miny + y, 3)] for x, y in ZAPFEN_LOKAL]
+        data = dict(data, pins=pins, posts=data["posts"] + [p for p in pins if p not in data["posts"]])
     zap = unary_union([zapfen_circle(p, LOCH_FASE) for p in data["pins"]])
     axes = PILLE_ACHSEN
     if axes is None:                                    # an der Fach-Kante nur die schmale Ausrichtung (Kante N/S: lange Seite in y, Kante W/O: in x)
