@@ -18,6 +18,7 @@ from contextlib import redirect_stdout
 import manifold3d as m3d
 import numpy as np
 import trimesh
+from PIL import Image, ImageDraw
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
@@ -28,6 +29,27 @@ OUT = os.path.join(HERE, "stl", "steckmodul_campus")
 SCALE = P.SCALE_PLAN
 NAMEN = {"01_paulinum": "Paulinum", "02_neues_augusteum": "Neues Augusteum", "03_hoersaalgebaeude": "Hörsaalgebäude",
          "04_seminargebaeude": "Seminargebäude", "05_institutsgebaeude": "Institutsgebäude", "06_city_hochhaus": "City-Hochhaus"}
+
+
+def aufgeschnitten(path):
+    """Übersichtsbild: alle sechs Gebäude an einer senkrechten Ebene durch die Mitte aufgeschnitten (Blick von Osten), zeigt Wand, Gewölbe und Schacht."""
+    import preview
+    kacheln = []
+    for slug in DC.SLUGS:
+        tm = trimesh.load(os.path.join(OUT, "gebaeude", "%s_1zu%d.stl" % (slug, SCALE)))
+        man = m3d.Manifold(m3d.Mesh(vert_properties=np.asarray(tm.vertices, dtype=np.float32), tri_verts=np.asarray(tm.faces, dtype=np.uint32)))
+        lo, hi = tm.bounds
+        cx = (lo[0] + hi[0]) / 2
+        keep = m3d.Manifold.cube((cx - (lo[0] - 5), hi[1] - lo[1] + 10, hi[2] - lo[2] + 10)).translate((lo[0] - 5, lo[1] - 5, lo[2] - 5))
+        mesh = (man ^ keep).to_mesh()
+        ct = trimesh.Trimesh(np.asarray(mesh.vert_properties)[:, :3], np.asarray(mesh.tri_verts), process=False)
+        img = preview.render([(ct, "#b9c3cf")], size=(520, 520), azim=0, elev=18).convert("RGB")
+        ImageDraw.Draw(img).text((10, 8), NAMEN[slug] + " (aufgeschnitten)", fill="black")
+        kacheln.append(img)
+    bild = Image.new("RGB", (520 * 3, 520 * 2), "white")
+    for i, k in enumerate(kacheln):
+        bild.paste(k, ((i % 3) * 520, (i // 3) * 520))
+    bild.save(path)
 
 
 def main():
@@ -63,10 +85,13 @@ def main():
     open(os.path.join(OUT, "pruefbericht.txt"), "w", encoding="utf-8").write("\n".join(bericht) + "\n")
     readme = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "export_campus_readme.txt"), encoding="utf-8").read()
     open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(readme)
+    bild = os.path.join(OUT, "gebaeude", "uebersicht_aufgeschnitten.png")
+    aufgeschnitten(bild)
     zpath = os.path.join(OUT, "druckdaten_campus_1zu%d.zip" % SCALE)
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         z.write(os.path.join(OUT, "README.txt"), "README.txt")
         z.write(os.path.join(OUT, "pruefbericht.txt"), "pruefbericht.txt")
+        z.write(bild, "uebersicht_aufgeschnitten.png")
         for name, _, ordner in teile:
             z.write(os.path.join(ordner, name), name)
     print("\n".join(bericht))
