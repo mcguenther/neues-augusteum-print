@@ -52,6 +52,46 @@ def aufgeschnitten(path):
     bild.save(path)
 
 
+def schachtbilder(path_schnitt, path_unten):
+    """Zwei Übersichtsbilder zur Kassettenaufnahme: (1) Unterseiten aller sechs Gebäude, (2) Schnitte quer und längs durch die Schachtmitte der v4-Gebäude
+    (Anschlagring der v4 bei 4 bis 4,5 mm über der Platte, darüber Platz für LED und Streifen)."""
+    import preview
+    placements = json.load(open(os.path.join(HERE, "plug", "scale1176", "placements_%d.json" % SCALE)))
+    kacheln = []
+    for slug in DC.SLUGS:
+        tm = trimesh.load(os.path.join(OUT, "gebaeude", "%s_1zu%d.stl" % (slug, SCALE)))
+        img = preview.render([(tm, "#b9c3cf")], size=(520, 520), azim=-90, elev=-80).convert("RGB")
+        ImageDraw.Draw(img).text((10, 8), NAMEN[slug] + " von unten", fill="black")
+        kacheln.append(img)
+    bild = Image.new("RGB", (520 * 3, 520 * 2), "white")
+    for i, k in enumerate(kacheln):
+        bild.paste(k, ((i % 3) * 520, (i // 3) * 520))
+    bild.save(path_unten)
+    kacheln = []
+    for slug in [s for s in DC.SLUGS if placements[s]["var"] == "v4"]:
+        p = placements[slug]
+        a = np.radians(-p["angle"])
+        tm = trimesh.load(os.path.join(OUT, "gebaeude", "%s_1zu%d.stl" % (slug, SCALE)))
+        v = np.asarray(tm.vertices).copy()
+        v[:, 0] -= p["cx"]
+        v[:, 1] -= p["cy"]
+        v[:, :2] = v[:, :2] @ np.array([[np.cos(a), -np.sin(a)], [np.sin(a), np.cos(a)]]).T
+        man = m3d.Manifold(m3d.Mesh(vert_properties=v.astype(np.float32), tri_verts=np.asarray(tm.faces, dtype=np.uint32)))
+        big = 200.0
+        for art, azim in (("quer", 0), ("längs", 90)):
+            keep = (m3d.Manifold.cube((big, 2 * big, 2 * big)).translate((-big, -big, -big)) if art == "quer"
+                    else m3d.Manifold.cube((2 * big, big, 2 * big)).translate((-big, -big, -big)))
+            mesh = (man ^ keep).to_mesh()
+            ct = trimesh.Trimesh(np.asarray(mesh.vert_properties)[:, :3], np.asarray(mesh.tri_verts), process=False)
+            img = preview.render([(ct, "#b9c3cf")], size=(520, 560), azim=azim, elev=12).convert("RGB")
+            ImageDraw.Draw(img).text((10, 8), "%s, Schnitt %s durch die Schachtmitte" % (NAMEN[slug], art), fill="black")
+            kacheln.append(img)
+    bild = Image.new("RGB", (520 * 2, 560 * 3), "white")
+    for i, k in enumerate(kacheln):
+        bild.paste(k, ((i % 2) * 520, (i // 2) * 560))
+    bild.save(path_schnitt)
+
+
 def main():
     teile = [("steckplatte_1zu%d.stl" % SCALE, "Steckplatte (Sockelplatte oben, flache Unterseite)", OUT),
              ("hof_einsatz_1zu%d.stl" % SCALE, "Innenhof-Einsatz (kommt in die Aussparung der Platte)", OUT)]
@@ -87,11 +127,16 @@ def main():
     open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(readme)
     bild = os.path.join(OUT, "gebaeude", "uebersicht_aufgeschnitten.png")
     aufgeschnitten(bild)
+    bild_unten = os.path.join(OUT, "gebaeude", "uebersicht_unterseiten.png")
+    bild_schacht = os.path.join(OUT, "gebaeude", "uebersicht_schacht_schnitt.png")
+    schachtbilder(bild_schacht, bild_unten)
     zpath = os.path.join(OUT, "druckdaten_campus_1zu%d.zip" % SCALE)
     with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
         z.write(os.path.join(OUT, "README.txt"), "README.txt")
         z.write(os.path.join(OUT, "pruefbericht.txt"), "pruefbericht.txt")
         z.write(bild, "uebersicht_aufgeschnitten.png")
+        z.write(bild_unten, "uebersicht_unterseiten.png")
+        z.write(bild_schacht, "uebersicht_schacht_schnitt.png")
         for name, _, ordner in teile:
             z.write(os.path.join(ordner, name), name)
     print("\n".join(bericht))

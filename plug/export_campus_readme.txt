@@ -18,9 +18,14 @@ Inhalt
   06_city_hochhaus_1zu1300.stl
   pruefbericht.txt                     Prüfung: dicht, Maße, Volumen, Gebäude untereinander, Überhänge
   uebersicht_aufgeschnitten.png        alle sechs Gebäude aufgeschnitten: Wand 0,8, Gewölbe, Schacht für die Kassette
+  uebersicht_unterseiten.png           die Kassettenaufnahme von unten (Schacht im Boden)
+  uebersicht_schacht_schnitt.png       Schnitte durch die Schachtmitte der drei v4-Gebäude (Anschlagring, Platz darüber)
 
 Die Gebäude sind hohl (22 bis 41 % des Volumens eines massiven Gebäudes mit Fuß), aber geschlossen: Boden 1,2 mm unten, Dach oben.
 Von außen sieht man deshalb nur den Schacht für die Kassette; der Hohlraum zeigt sich im Schnitt und in der Schichtvorschau.
+
+Kassettenaufnahme: Der Schacht (13,6 x 29,6 bei v4, 19,3 x 6,5 bei V1RS, 13,1 x 6,5 bei V2R) ist von unten frei bis 4 mm über der Platte.
+Die v4-Gebäude haben dort einen Anschlagring (4 bis 4,5 mm, 45° auf der Unterseite) mit 11,3 mm freier Öffnung; V1RS und V2R haben keinen Ring.
 
 Aufbau und Maße
 ---------------
