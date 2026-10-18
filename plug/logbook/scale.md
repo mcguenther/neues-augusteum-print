@@ -170,6 +170,45 @@ Befund (Seite `plug/divider/page.html`): Vier Paare stoßen in OSM, LoD2 und Las
 - **Stand ohne gerade Naht, Zahlen für den Zipfel (dünner Zahn des Paulinums im Osten):** 1,0 mm breit (Mindestmaß 0,8), 3,3 mm lang, steht von z = -12,5 bis etwa 10 bis 20 mm über der Platte (rund 25 mm hoch, kein Zahn über die ganze Höhe); die Fuß-Fase 2,0 schneidet seine untersten 1,7 mm weg, die Spitze wächst zwischen z = -13 und -12,2 an (Kragstück bis 1,0 mm je Lage wie die übrigen Kragstücke des Paulinums, keine Stelle der Überhangprüfung liegt dort); in der Platte ein Schlitz 1,2 × 3,4 mm, Wand zum Augusteum 0,8. Das Neue Augusteum bleibt in diesem Stand 40,1 statt 43,0 mm hoch (der überlappende Block trägt seinen höchsten Punkt). Ungedruckt.
 - **Ungetestet:** Slicer und Druck der freistehenden Wand 0,8 × 14 mm (wie die Hof-Wand); Einsetzen aller sechs Gebäude gleichzeitig. Nicht neu erzeugt: Hof-Seite, Steckplatten-Ansicht (`plug.views.campus.build_view`) und Konzeptseite; sie nehmen die Fuge beim nächsten Lauf automatisch auf.
 
+### Korrektur 6 (2026-10-18): Zapfenaufnahmen und Fadenösen in der Steckplatte
+
+Die Steckplatte hatte unten nur die 24 Pin-Löcher. Jetzt hat sie auch die Teile, die sie mit dem Unterkasten des Konzepts (`plug/power/build_concept.py`, `variant(1300)`) verbinden. Code: neues Modul `plug/campus_underside.py`, eingehängt in `plug.campus.build` (`UNTEN = True`; `--ohne-unten` gibt den Stand davor); die Lagen der Zapfen werden einmal aus dem Konzept gelesen und in `plug/scale1176/underside_1300.json` zwischengespeichert (veraltet der Stand, rechnet `build` ihn neu; erzwingen mit `python3 -m plug.campus --unten-neu`). Passprobe im Rechner: `python3 -m plug.campus_underside` (ca. 20 s). Beides ist nach unten offen (Bett), kein Support. Platte, Pin-Löcher, Mulden, Hof, Aufbauten und Hof-Einsatz sind unverändert (Schnitte alt/neu bei z = 9 bis 14,5: Differenz 0,0000 mm²; `hof_einsatz_1zu1300.stl` byte-gleich).
+
+**Zapfenaufnahmen (Sacklöcher), 2 Stück** (Werte des Konzepts, `PP.PIN_PLAN`, `PP.POST`, Auswahl in `variant()`: von den 6 Stützen tragen nur 2 einen Zapfen):
+
+| Größe | Wert | Herkunft |
+|---|---|---|
+| Loch | Ø 4,3, 2,8 tief ab Plattenunterseite, Einführfase 0,5 am Bett | Konzept (Zapfen Ø 4,0 × 2,5, Gleitspiel 0,15 je Seite, 0,3 Luft über der Spitze; L10, L34) |
+| Lage (Rohkoordinaten der Platte) | (−108,75; −101,91) und (−28,75; −101,91), im Konzeptsystem (Südwestecke = 0; 0) (20; 20) und (100; 20), über den Stützen an der Südkante | `variant(1300)` |
+| Mindestwand | 1,71 mm zu Mulden und Pin-Löchern (gefordert 0,8), Hof 99 mm weit weg, Plattenrand 12,9 mm | gemessen in `plug.campus_underside.walls` (Schnitte der Platte ohne Unterseite bei z = 0,1 bis 8) |
+| Überhang | Decke Ø 4,3 bei z = 2,8 (Brücke 4,3 mm, unter 10 mm), Fase in 0,2-mm-Stufen | `layer_overhang` |
+
+Die Löcher liegen nirgends unter einer Mulde (die Mulden lassen nur 0,4 mm Boden): kein Zapfenloch schneidet Mulde, Hof, Pin-Loch oder Trennwand. Zapfen im Rechner eingesetzt: 0 mm³ Überschneidung (Konzept-Unterkasten ganz, und nur die Zapfen); Kontrollen greifen (Unterkasten 0,20 seitlich: 0,22 mm³, Zapfen 0,35 höher: 0,43 mm³).
+
+**Fadenösen: die „halbe Pille mit Steg“ aus `plug/thread/`, nicht der V-Kanal des Konzepts.** Der Auftrag nannte den V-Kanal (Ø 2,2, Scheitel 3,4, Trichter R 2,0) als getestet. Er wurde in Steckprobe 2 (r4) verworfen (der Faden kam durch keinen Kanal, Kanäle unter etwa 3 mm schließen sich im Druck, L32). Der Nachfolger `plug/thread/` (Plan Stand 2, abgenickt 16.10.; Eckmuster P3 und P45 gedruckt: Decke glatt, Faden geht durch, r6) ist der festgelegte Stand für die große Platte (`plug/thread/round/r6_eckmuster/summary.md`, „Folgen“), also gebaut:
+
+- **Maße** (`plug/thread/params.py`, `PILL`, `CHOSEN_AIR`, `WALL_MIN`, `NOTCH_PAD`): Luft über dem Steg 4,0, Steg 5,0 × 4,5, Decke 8,5, Taschenbreite 10, Länge am Boden 22, Mündung mit Fase 2,0 am Rand und 1,0 am Steg-Fuß 26 × 14, Wand zu Rand, Mulden, Hof und Zapfenlöchern mindestens 1,4, darüber 6,1 mm Platte (14,6 − 8,5). Faden Ø 0,8 (doppelt, ungemessen).
+- **Lagen** (Mitte der Mündung, Rohkoordinaten | Konzeptsystem; so nah an der Ecke wie möglich, Ausrichtung automatisch, an der Fach-Kante nur mit der schmalen Seite zur Kante):
+
+| Ecke | Mitte roh | Mitte Konzept | lange Seite | Abstand zur Ecke (Summe der Verschiebungen) | Eckaussparung im Unterkasten (Konzeptsystem, offen zum Rand) |
+|---|---|---|---|---|---|
+| SW | (−112,8; −113,0) | (15,9; 8,9) | x | 2,0 | x −1,0 bis 30,9, y −1,0 bis 17,9 (32 × 19) |
+| SO | (−29,1; −113,0) | (99,7; 8,9) | x | 2,0 | x 84,7 bis 116,6, y −1,0 bis 17,9 (32 × 19) |
+| NW | (−120,3; 58,0) | (8,5; 179,9) | y | 26,5 | x −1,0 bis 17,4, y 164,9 bis 194,9 (18 × 30); die Ecke ist von der Mulde fast bis an den Rand belegt, die Tasche sitzt erst an der Westkante weiter südlich (y 166,9 bis 192,9) |
+| NO | (−22,1; 83,0) | (106,7; 204,9) | y | 2,0 | x 97,7 bis 116,6, y 189,9 bis 221,8 (19 × 32) |
+
+- **Messwerte:** Wand zu Mulden und Pin-Löchern 1,78 mm, zum Plattenrand 1,40 (am Bett wegen der Randfase 0,5 nur 0,9), zum Zapfenloch 1,45, Hof 24 mm; Kuppel: größter Sprung 3,0 mm in der obersten Lage (flache Decke über dem Steg), in 7 Lagen über 0,25 mm; die Kuppel ist dieselbe Form wie in P3 und P45 (dort ohne Support gedruckt, Decke glatt). Volumen der Platte 215,16 → 209,26 cm³, dicht, 0 Berührkanten.
+- **Faden-Passprobe im Rechner** (Faden Ø 0,8 taut vom Hut unter dem Unterkasten durch Eingang, über die Stegkante, durch den Ausgang): 0,000 mm³ gegen die Platte an allen vier Ecken; gegen den Konzept-Unterkasten ohne neue Eckaussparung 1,09 mm³ (der Boden steht im Weg), mit der Eckaussparung der Tabelle 0,000 mm³.
+
+**Was sich gegenüber dem Konzept ändern muss (Unterkasten, noch nicht umgesetzt, nicht Teil dieser Änderung):**
+- Die Eckaussparungen sind größer als die V-Aussparungen des Konzepts (8 × 15): `build_concept.place_vs`/`v_solid` durch `plug.campus_underside` ersetzen (`notch_boxes(lay)`).
+- Die Aussparung SW und SO schneidet die Stützen bei (20; 20) und (100; 20) an (5,4 mm² je Ecke), NW die Stütze (20; 180) (2,4 mm²), NO das Powerbank-Fach (77,4 mm²). Das Konzept muss Stützen, Zapfen und Fach neu rechnen, mit diesen Aussparungen als Sperrfläche: dann hat das Fach an der Nordkante 6 Kandidaten (um etwa 8 mm nach Westen), die Elektronikbox 60 × 35 passt weiter; bei Aussparungen in 30 mm Breite an beiden Nordecken wäre es kein Kandidat (deshalb dort nur die schmale Ausrichtung). Die Zapfenlöcher der Platte folgen dann den neuen Zapfenstützen (`python3 -m plug.campus --unten-neu`).
+- Die Konzeptseite zeigt den V mit nur einem Schenkel: in `build_concept.v_solid` liegt das Polygon des Schenkels s = −1 im Uhrzeigersinn und fällt weg (`CrossSection` ohne `ccw`); `plug/campus_underside.v_cut` ist korrigiert.
+
+**Alternative V-Kanal (`python3 -m plug.campus --faden v`, `campus_underside.FADEN = "v"`):** die vier V des Konzepts an den Lagen des Konzepts (Mitten (−123,8; −113,9), (−18,1; −113,9), (−123,8; 91,0), (−18,1; 91,0), Achse y; Wand zum Rand 1,9, zu den Mulden 12 mm; Eckaussparung des Konzepts 8 × 15, kollidiert mit nichts), Ø `V_D` = 2,2 wie im Konzept (r4: „mindestens 1 mm weiter“, ändern in `campus_underside.V_D`); größter Überhang je Lage 1,19 mm am Übergang Trichter/Schenkel, 0,24 mm je Lage im Schenkel; Volumen nur 0,32 cm³ weniger. Passt zum Unterkasten des Konzepts, aber der Faden-Test r4 sagt: nicht durchfädelbar.
+
+**Ungetestet** (alles neu bei der großen Platte): Zapfen 2,5 mm lang (nie gedruckt; 1,5 wackelte), Druck der Zapfenloch-Decke Ø 4,3 und der Taschenkuppel in einer 14,6 mm dicken Platte ohne Support, Luft 4,0 (Kompromiss zwischen den gedruckten 3,0 und 4,5), Einfädeln und Zugprobe (offen seit r6), Lage der Taschen weit von der Ecke (NW 26,5 mm) und die Eckaussparungen im Unterkasten (gibt es noch nicht). Druck: nichts davon geprüft.
+
 ### Korrektur 2 (2026-10-16): keine Stufen in der Mulde, LED mittig im Gebäude
 
 - **Mulde ohne Stufen:** gerade Wände mit Spiel 0,1 (`MULDE_CLR_T`) über die ganze Tiefe von 10,2 mm, oben eine 45°-Fase von 0,5 mm (`MULDE_CH_T`). Weggefallen sind Entlastung (`RELIEF`), Führungsband (`BAND`) und die Treppenfase aus `institute.pocket_cuts`. Das ist eine Abweichung vom getesteten Aufbau der Steckprobe 1 (dort mit diesen Stufen), also in Steckprobe 3 zu prüfen (Einstecken, Wackeln, Kippen). Die einzige Stufe, die bleibt, ist der Boden der 4 mm tiefen Umriss-Aussparung.
@@ -272,6 +311,8 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | | Muldenboden 0,4 mm unter sehr großen Mulden | im Kleinen bewährt, groß ungetestet | Druck ohne Support, Halt beim Einstecken |
 | | Flache Unterseite 14,6 mm mit aufgeklebter Leiste (statt Dock in 20,2 mm) | ungetestet (Test-Dock steht aus) | Pin-Treffer, Halt des Klebers, Luft unter der Platte |
 | | Platte 14,6 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |
+| | Zapfenaufnahmen unten: 2 Sacklöcher Ø 4,3 × 2,8 mit Fase 0,5 für Zapfen Ø 4,0 × 2,5 (Korrektur 6) | ungetestet (Zapfen 1,5 wackelte in r4, 2,5 nie gedruckt) | Sitz, Wackeln, Druck der Lochdecke Ø 4,3 ohne Support |
+| | Fadentaschen unten: vier „halbe Pillen mit Steg“, Luft 4,0, Fase 2,0 / 1,0, Mündung 26 × 14 (Korrektur 6, `plug/thread/`) | P3 und P45 (Luft 3,0 und 4,5) gedruckt, Faden ging durch; Luft 4,0 und der Einbau in die große Platte ungetestet; Zugprobe offen (r6) | Einfädeln, Zug am Steg, Druck der Kuppel in der 14,6 mm Platte, Eckaussparungen im Unterkasten (noch nicht gebaut) |
 | Kassetten | V1RS (Seminar, Institut), V2R (Hochhaus) | nur Konzepte, nie gedruckt | Einpressen mit Streifen und Blatt, Adernweg, Verkettung der zwei LEDs |
 | | Streifendicke 2,2 mm | nicht gemessen | am echten Streifen messen, vor jeder STL |
 | | Blattdicke 1,2 oder 1,6 mm, 45°-Versatz über dem Aderschlitz | offen | Druckbarkeit, Bruch beim Biegen |

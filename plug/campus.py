@@ -10,9 +10,13 @@ Flache Unterseite (Konzept des Test-Docks, plug/power/build_dock.py): Die Platte
 unterste Schicht auf dem Bett, die Unterseite ist eben. Pin-Löcher mit Fase beidseitig, keine Tasche, keine Stufe, keine Hohlräume, kein Support.
 Die Winkelleiste wird von unten aufgeklebt (Körper hängt 2,0 mm unter der Platte, Lötenden und Draht darunter); der Steckerraum entsteht erst
 durch den Unterkasten (noch nicht Teil dieser Datei).
+Unten außerdem (plug/campus_underside.py, Lagen aus dem Konzept `plug/power/build_concept.py`): Zapfenaufnahmen (Sacklöcher Ø 4,3 × 2,8 für die Zapfen
+der Stützen des Unterkastens) und an den vier Ecken je eine Fadentasche („halbe Pille mit Steg“ aus plug/thread/, für den Faden zum Doktorhut); beide
+sind nach unten offen (Bett), kein Support. `UNTEN = False` baut die Platte ohne (Stand davor).
 
 Aufruf (aus dem Wurzelverzeichnis):
-    python3 -m plug.campus [--scale 1300] [--replace]    # STL nach stl/steckmodul_campus/, Bilder nach vorschau/steckmodul_campus/
+    python3 -m plug.campus [--scale 1300] [--replace] [--unten-neu]   # STL nach stl/steckmodul_campus/, Bilder nach vorschau/steckmodul_campus/
+                                                                       # (--unten-neu: Lagen der Zapfenaufnahmen aus dem Konzept neu lesen)
 Die Gebäude selbst (Fuß mit Schacht, Hohlkörper) sind noch nicht Teil davon (To-do, siehe plug/logbook/next.md).
 """
 import argparse
@@ -246,6 +250,9 @@ def place_all(models, scale, replace=False):
 
 
 OUTLINE = None
+UNTEN = True             # False: Platte ohne Zapfenaufnahmen und Fadentaschen (Stand davor); wird nur bei der Standard-Trennwand und dem Standard-Hof gebaut
+REFRESH_UNTEN = False    # True: Lagen der Zapfen aus dem Konzept neu lesen (plug/scale1176/underside_<Maßstab>.json)
+UNTEN_INFO = {}          # Lage, Platte ohne Unterseite und Sperrfläche des letzten build() (für die Prüfung in main und plug.campus_underside)
 TRENNWAND = True         # False: Grundrisse ohne Fuge (Stand vor 17.10., nur für Vorher/Nachher-Seiten und Vergleiche)
 SCHNITT_OBEN = 3.0       # mm über der Plattenoberfläche: so hoch schneiden die Mulden (die Aufbauten der Platte, Gang und Treppe, sind bis 2,35 mm hoch)
 # Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
@@ -315,6 +322,17 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     # zu den Gebäude-Mulden (hof_wand) ihre Breite behält
     cut_all.append(G.extrude(hof, T - P.HOF_DEPTH_T, T + SCHNITT_OBEN))
     plate = diff(plate, *cut_all)
+    global UNTEN_INFO
+    blocked = unary_union([fps[s_].buffer(P.OUTLINE_CLR_T, join_style=2) for s_ in places] + [hof])   # Mulden und Hof
+    UNTEN_INFO = dict(blocked=blocked, T=T, base=plate)
+    if UNTEN and TRENNWAND and hof_wand is None:
+        # Unterseite: Zapfenaufnahmen und Fadentaschen (plug/campus_underside.py); frei von Mulden und Hof, Wand 0,8 bzw. 1,4
+        from plug import campus_underside as U
+        lay = U.layout(scale, outline, blocked, refresh=REFRESH_UNTEN)
+        plate = diff(plate, *U.cuts(lay))
+        for a_ in U.adds(lay):                                 # Steg in jeder Fadentasche
+            plate = plate + a_
+        UNTEN_INFO["lay"] = lay
     return plate, report, models, places, outline, hof_solid
 
 
@@ -322,7 +340,16 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("--replace", action="store_true", help="Lage der Mulden neu suchen")
+    ap.add_argument("--unten-neu", action="store_true", help="Lagen der Zapfenaufnahmen aus dem Konzept (plug/power/build_concept.py) neu lesen")
+    ap.add_argument("--faden", choices=("pille", "v"), help="Form der Fadenösen: pille (Standard, plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
+    ap.add_argument("--ohne-unten", action="store_true", help="ohne Zapfenaufnahmen und Fadenösen bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     a = ap.parse_args()
+    global UNTEN, REFRESH_UNTEN
+    REFRESH_UNTEN = a.unten_neu
+    UNTEN = not a.ohne_unten
+    if a.faden:
+        from plug import campus_underside as U_
+        U_.FADEN = a.faden
     os.makedirs(OUT, exist_ok=True)
     os.makedirs(PREV, exist_ok=True)
     plate, report, models, places, outline, hof_solid = build(a.scale, a.replace)
@@ -345,10 +372,16 @@ def main():
         print("  %-22s %-5s Wand %.1f, %s, Dock außerhalb/überlappt %.2f mm²" % (
             slug, var, wall, "LED %.1f mm von der Mitte" % flip if flip is not None else "Lage aus der Platzierungs-App", bad))
         ok &= bad < 0.05
+    if UNTEN_INFO.get("lay"):
+        from plug import campus_underside as U
+        ok &= U.report(plate, UNTEN_INFO["lay"], outline, plate_thickness(P.dims_plan()), UNTEN_INFO["base"])
     print("keine Kollisionen" if ok else "ACHTUNG: Kollision oder Hohlraum außerhalb der Platte")
     import preview
     preview.render([(tm, "#9aa7b4")], size=(1000, 1300), azim=-90, elev=89).save(os.path.join(PREV, "steckplatte_1zu%d_oben.png" % a.scale))
     preview.render([(tm, "#9aa7b4")], size=(1100, 900), azim=-50, elev=35).save(os.path.join(PREV, "steckplatte_1zu%d_schraeg.png" % a.scale))
+    if UNTEN_INFO.get("lay"):                              # Unteransicht: Norden oben, Blick von unten durch die Platte (Osten links)
+        preview.render([(tm, "#9aa7b4")], size=(1000, 1300), azim=90, elev=-89, light_from_view=True).save(
+            os.path.join(PREV, "steckplatte_1zu%d_unten.png" % a.scale))
     if not ok:
         raise SystemExit(1)
 
