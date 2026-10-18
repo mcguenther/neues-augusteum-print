@@ -92,6 +92,21 @@ def schachtbilder(path_schnitt, path_unten):
     bild.save(path_schnitt)
 
 
+def slicer_volumen(path, soll):
+    """Volumen, das PrusaSlicer nach seiner Reparatur beim Laden sieht (`prusa-slicer --info`; admesh wie in Bambu Studio und Orca). Weicht es
+    vom Netzvolumen ab, hat der Slicer Flächen umgedreht und füllt Hohlräume (Befund Paulinum 2026-10-18: 46,0 statt 7,5 cm³).
+    Ohne installiertes PrusaSlicer (`apt-get install prusa-slicer`) entfällt die Prüfung."""
+    import shutil
+    import subprocess
+    if not shutil.which("prusa-slicer"):
+        return "Slicer-Prüfung entfällt", True
+    out = subprocess.run(["prusa-slicer", "--info", path], capture_output=True, text=True).stdout
+    w = {k.strip(): x.strip() for k, x in (l.split("=", 1) for l in out.splitlines() if "=" in l)}
+    v = float(w.get("volume", "nan"))
+    ok = abs(v - soll) <= 0.01 * abs(soll)
+    return "Slicer-Volumen %.2f cm³ (%s)" % (v / 1000, "gleich" if ok else "ABWEICHUNG, Slicer dreht Flächen um"), ok
+
+
 def main():
     teile = [("steckplatte_1zu%d.stl" % SCALE, "Steckplatte (Sockelplatte oben, flache Unterseite)", OUT),
              ("hof_einsatz_1zu%d.stl" % SCALE, "Innenhof-Einsatz (kommt in die Aussparung der Platte)", OUT)]
@@ -104,8 +119,13 @@ def main():
         dicht = man.status() == m3d.Error.NoError and abs(man.volume() - tm.volume) < 1e-3 * abs(tm.volume) and man.volume() > 0
         _, cnt = np.unique(tm.edges_sorted, axis=0, return_counts=True)
         beruehr = int((cnt != 2).sum())
-        ok &= dicht
-        zeilen.append("%-34s %6.1f × %6.1f × %6.1f mm  %8.2f cm³  dicht=%s  Berührkanten %4d   %s" % (name, *tm.extents, tm.volume / 1000, dicht, beruehr, titel))
+        # entartet wie admesh (Slicer): zwei Ecken eines Dreiecks an derselben Stelle; der Slicer löscht sie und verbindet neu
+        tv = np.asarray(tm.vertices, np.float32)[tm.faces]
+        entartet = int(((tv[:, 0] == tv[:, 1]).all(1) | (tv[:, 1] == tv[:, 2]).all(1) | (tv[:, 2] == tv[:, 0]).all(1)).sum())
+        sl, sl_ok = slicer_volumen(os.path.join(ordner, name), tm.volume)
+        ok &= dicht and sl_ok                     # entartete Dreiecke nur zur Info; entscheidend ist, dass der Slicer das Volumen gleich sieht
+        zeilen.append("%-34s %6.1f × %6.1f × %6.1f mm  %8.2f cm³  dicht=%s  Berührkanten %4d  entartet %d  %s   %s" % (
+            name, *tm.extents, tm.volume / 1000, dicht, beruehr, entartet, sl, titel))
     buf = io.StringIO()
     with redirect_stdout(buf):
         try:
@@ -115,7 +135,8 @@ def main():
             koll = False
     ok &= koll
     bericht = ["Prüfbericht Druckpaket Steckplatte 1:1300", "", "Dateien (dicht = Manifold-Prüfung der geladenen STL; Berührkanten = Kanten, an denen sich Flächen nur berühren, Slicer",
-               "melden das als nicht-mannigfaltige Kanten und reparieren es beim Laden; dieselben Stellen hatten die STL schon vor der Trennwand):"] + zeilen + ["", "Gebäude untereinander (python3 -m plug.divider.check):", buf.getvalue().rstrip(), ""]
+               "melden das als nicht-mannigfaltige Kanten und reparieren es beim Laden; entartet = Dreiecke mit zwei Ecken an derselben Stelle, der Slicer löscht",
+               "sie; Slicer-Volumen = Volumen nach der Reparatur in PrusaSlicer, muss gleich sein, sonst füllt der Slicer Hohlräume):"] + zeilen + ["", "Gebäude untereinander (python3 -m plug.divider.check):", buf.getvalue().rstrip(), ""]
     for slug in DC.SLUGS:
         j = json.load(open(os.path.join(OUT, "gebaeude", "%s_1zu%d.json" % (slug, SCALE))))
         u = j["ueberhang"]

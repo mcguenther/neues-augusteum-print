@@ -47,8 +47,12 @@ Slicer (Gebäude, ausführlich in plug/slicer.md)
 Hinweise
 --------
   * Farben sind nicht Teil dieses Pakets (kommen später); alle Dateien sind einfarbig.
-  * Der Slicer kann beim Laden "nicht-mannigfaltige Kanten" melden und reparieren (Berührstellen im Dach und Gewölbe, im Prüfbericht
-    als Berührkanten gezählt). Danach die Schichtvorschau auf Löcher in Wänden und Dach ansehen.
+  * Die Gebäude sind hohl (Wand 0,8, Gewölbe innen). In der Schichtvorschau zeigt jede Schicht im Fuß und im Gebäude nur dünne
+    Wandringe; Füllung (Gyroid) gibt es nur in den Keilen über den Gewölben. Ist der Innenraum gefüllt, hat der Slicer beim Laden
+    Flächen umgedreht: dann mit einer älteren Datei verwechselt (Stand vor dem 18.10.2026, Paulinum war betroffen) - neu laden.
+  * Der Slicer kann beim Laden einzelne "nicht-mannigfaltige Kanten" melden und reparieren (Berührstellen im Dach und Gewölbe, im
+    Prüfbericht als Berührkanten gezählt; dort steht auch das Volumen, das PrusaSlicer nach dem Laden sieht). Die senkrechte helle
+    Linie an der Außenwand in der Vorschau ist die Naht (Seam), kein Spalt.
   * Dünnste Stellen: Wände 0,8 mm (zwei Linien), Zipfel des Paulinums im Osten 1,0 x 3,3 mm, Stämme der Bäume 0,8 mm.
   * Die Platte hat ein Mulden-Spiel von 0,10 mm je Seite. Passt ein Gebäude nur mit Kraft, die Mulde nicht aufbohren,
     sondern Rückmeldung geben (Vorgabe: nächster Probedruck mit 0,15 mm).
