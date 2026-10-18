@@ -8,7 +8,10 @@ Inhalt
 ------
   steckplatte_1zu1300.stl              Platte 115,6 x 220,8 x 14,6 (mit Gang und Treppen im Süden und Nordosten bis 16,9 hoch) mit Mulden
                                        für alle sechs Gebäude, Aussparung für den Hof, Wänden zwischen den Mulden (0,8)
-                                       und Pin-Löchern (24 Stück, vier je Gebäude)
+                                       und Pin-Löchern (24 Stück, vier je Gebäude);
+                                       unten 2 Zapfenlöcher (20|20) und (100|180) und 4 Fadentaschen (halbe Pille) an den Ecken;
+                                       am Ostrand (y = 34,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des ersten,
+                                       gedruckten Satzes
   hof_einsatz_1zu1300.stl              Innenhof (Pflaster, Beete, Bänke, Denkmal, Bäume), 6 mm tief in die Aussparung
   01_paulinum_1zu1300.stl              je ein Hohlgebäude mit Fuß (14,2 mm) zum Stecken, Schacht für die LED-Kassette,
   02_neues_augusteum_1zu1300.stl       Boden unten, Gewölbe innen, ohne Support druckbar
@@ -43,6 +46,9 @@ Slicer (Gebäude, ausführlich in plug/slicer.md)
   City-Hochhaus: Rand (Brim) 5 mm, es ist 125 mm hoch auf 36 x 35 mm Grundfläche.
   Platte: flache Unterseite auf das Bett, Support aus; 220,8 mm Länge, Druckbett mindestens 230 x 230 mm.
   Hof-Einsatz: Support aus; die Bäume haben unten höchstens 45° Überhang, Stämme sind 0,8 mm dick.
+
+Display-Gebäude: Das Gebäude selbst liegt nicht im Paket (`stl/steckmodul_display/`). Seine Mulde in der Platte ist nach dem ersten Satz gebaut;
+der zweite Satz (kleinerer Hals) passt hinein, sitzt aber mit etwa 1,4 mm Luft je Seite lose.
 
 Hinweise
 --------
