@@ -27,7 +27,7 @@ def wire_len(d):
 # ---- Höhen (mm); ESP32-Maße typisch, Schieblehre nötig
 LAYER = 0.2
 UK_FLOOR = PP.UK_FLOOR
-UK_INNEN = ceil((PP.STECKERRAUM + PP.PB_T) / LAYER - 1e-9) * LAYER          # Innenhöhe wie im Konzept (auf Lagen gerundet)
+UK_INNEN = ceil((PP.STECKERRAUM + PP.PB_T + PP.PB_T_ZUSCHLAG) / LAYER - 1e-9) * LAYER          # Innenhöhe wie im Konzept (auf Lagen gerundet)
 UK_TOTAL = UK_INNEN + UK_FLOOR
 PCB, MODULE, USBC = 1.6, 3.1, 3.3
 SOLDER = 1.0                                                                 # gekürzte Lötstellen unter der Platine (Aufbau A)

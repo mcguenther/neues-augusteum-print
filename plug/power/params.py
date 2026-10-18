@@ -54,7 +54,10 @@ UK_FLOOR = 1.2            # E  Boden
 UK_WALL = 2.4             # E  Außenwand (3 Linien + Rand)
 POST = (6.0, 40.0)        # E  Stützen unter der Oberplatte: Kante, Raster
 PIN = dict(d=4.0, h=1.5, clr=0.15)   # E  Zentrierzapfen auf Stützen, Loch in der Oberplatte mit Gleitspiel 0,15 (L10)
-NOTCH_PAD = 0.4           # E  Eckaussparung im Unterkasten reicht so weit über die Fadentrichter hinaus
+NOTCH_PAD = 2.0           # E  Eckaussparung im Unterkasten reicht so weit über die Fadentrichter hinaus; war 0,4, jetzt 2,0 (Nutzer 2026-10-17: V-Kanäle der Oberplatte dürfen etwa ±1,6 mm wandern)
+FACH_FIX = ("N", 45.4)      # E  Fach (Powerbank) festgeschrieben: Nordkante, Mitte des Fachs bei x = 45,4 (Plattenkoordinaten). Die Suche nach dem Innenhof-Überdeckungswert ließ das Fach bei jeder Hof-Änderung wandern (Paulinum-Durchgang: 20 mm nach Osten); der Unterkasten soll von der Oberplatte unabhängig bleiben
+UK_OUTLINE = (115.6, 220.8)   # E  Außenmaß des Unterkastens, festgeschrieben (Nutzer 2026-10-17): die Steckplatte bleibt in diesem Rechteck; build_batteriefach prüft es
+PB_T_ZUSCHLAG = 0.2       # E  Dickenzuschlag der Powerbank aus der Fachprobe r5 ("ca. 0,2 mm mehr Höhe", Nutzer): Unterkasten innen für 12,8 statt 12,6, keine Messung
 
 # ---- Dock in der Oberplatte: Kabelnische hinter den Lötenden (Nutzer: Lötenden brauchen viel Freiluft, das Kabel muss nach unten fallen)
 SLOT_END = P2.PROP["SLOT_END"]   # Ende des Lötendenschlitzes -8,0 (Plan Steckprobe 2)
@@ -71,6 +74,12 @@ CH_PIN = 0.5                                        # Spitze der Zentrierzapfen
 # ---- Elektronik, Doktorhut
 ESP_BOX = (60.0, 35.0)    # S  ESP32-Board, 2 × 74AHCT125, 1000 µF, Schalter
 ESP_BOXES = (ESP_BOX, (50.0, 30.0))   # Rückfall bei knappem Platz (1:1300): nur ESP32-DevKit 51 × 28 mm ohne Beiwerk (S)
+ESP_BOARD = (51.8, 28.2)  # A  ESP32-DevKit WROOM-32 (30 Pin), Platine; typisch (docs/esp32-devkit-wroom32.md), ungemessen
+ESP_H = 5.9               # A  Aufbau A (Lötstellen 1,0 + Platine 1,6 + USB-C-Buchse 3,3), Einbauhöhe in plug/power/build_wiring.py
+ESP_TAPE = 1.0            # E  Isoband um das Board, je Seite (keine feste Box: das Board liegt lose, Leitungen hängen frei)
+ESP_RING = 5.0            # E  freier Rand um das Board ohne Stützen, damit die Leitungen biegen können
+ADERN_ZONE = 2.9          # A  Leiste 2,0 + Lötstelle/Draht unter der Platte (plug/power/build_wiring.py ZONE)
+ESP_ZONES = ((64.0, 40.5), (54.0, 30.5))   # E  Elektronikfläche final (Board + Isoband + Ring) und Rückfall ohne Ring; ersetzt 60 × 35 der Box im Batteriefach
 HUT = 240.0               # S  Doktorhut, Kantenlänge des Deckbretts; ungemessen
 
 # ---- Hauptschalter (Wippe KCD11 10 × 15, Kasten 13 × 8, Frontplatte 15 × 10), Probeteil T2 gedruckt und bewährt (r9, 2026-10-17)

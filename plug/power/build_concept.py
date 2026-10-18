@@ -64,7 +64,7 @@ def heights():
     """z-Lagen (Plattenoberseite = 0), Maßkette der Steckprobe."""
     d = PP.stack_plan()
     deck = d["z_hb"]                                    # flache Unterseite der Oberplatte = F + Muldenboden (Leiste hängt darunter)
-    uk_bot = deck - sd.layer_up(PP.STECKERRAUM + PP.PB_T) - PP.UK_FLOOR      # Steckerraum 3,5 über der Powerbank (die 0,8 Luft des Fachs sind darin enthalten)
+    uk_bot = deck - sd.layer_up(PP.STECKERRAUM + PP.PB_T + PP.PB_T_ZUSCHLAG) - PP.UK_FLOOR      # Steckerraum 3,5 über der Powerbank (die 0,8 Luft des Fachs sind darin enthalten)
     return dict(F=d["F"], E=d["E"], ceil=PP.CEIL, body=sd.HDR_BODY, z_hb=d["z_hb"], z_bb=d["z_bb"], z_tip=d["z_tip"],
                 z_bm=d["z_bm"], deck=deck, fach_h=FACH_H, floor=PP.UK_FLOOR, uk_bot=uk_bot, total=-uk_bot, uk_t=deck - uk_bot,
                 stamp_top=d["z_bb"] - PP.STAMP_AIR, pocket=TP.HOF_DEPTH_T, old=OLD["stand1"], old_ober=OLD["ober1"],
@@ -544,6 +544,9 @@ def switch_cut(minx, miny, bot, h=H0):
 
 
 LAST = {}
+WINDOW_OPEN = False  # True: Fenster in der Kante bis zur Oberkante offen (keine 45-mm-Brücke über dem Fenster), Batteriefach final
+FIX_ON = True         # True: Fach an der festgeschriebenen Stelle PP.FACH_FIX (Batteriefach final)
+FENCE_ON = True      # False: Unterkasten ohne Zaun um die Powerbank (Batteriefach final, plug/power/build_batteriefach.py)
 SW_DEPTH = 20.0      # Schalter ab Außenfläche: Kasten 9 + Pins 7 + Lötstelle 4 (plug/power/build_plan_switch.py, DEPTH_OUT)
 
 
@@ -574,6 +577,8 @@ def variant(scale, h=H0, dk=DK):
     n_possible = len(docks)
     best, sides = None, {}
     for ov, side_c, f_c in fach_candidates(outline, hof_fp, v_zone):      # Fach und Elektronik liegen unten, Docks stören nicht
+        if getattr(PP, "FACH_FIX", None) and FIX_ON and (side_c != PP.FACH_FIX[0] or abs(f_c.c[0] + sh[0] - PP.FACH_FIX[1]) > 0.5):
+            continue
         fp_c = fach_parts(f_c)
         elec_c = esp_c = None
         for sz in PP.ESP_BOXES:
@@ -635,15 +640,15 @@ def variant(scale, h=H0, dk=DK):
 
     # --- Unterkasten: Unterkante gefast, hohl, Stützen, Zapfen, Zaun, Eckaussparungen, Fenster (kein Anschlag: die Leiste ist aufgeklebt) ---
     shell = slab_ch(outline, bot, deck, PP.CH_BED) - G.extrude(outline.buffer(-PP.UK_WALL, join_style=2), zf, deck + 1)
-    solids = [shell, G.extrude(fp["fence"], zf - 0.01, zf + PP.FENCE[1])]
+    solids = [shell] + ([G.extrude(fp["fence"], zf - 0.01, zf + PP.FENCE[1])] if FENCE_ON else [])
     solids += [G.extrude(r, zf - 0.01, deck) for r in posts]
     solids += [pin_solid_at(posts[i].centroid, deck, PP.PIN_PLAN, PP.CH_PIN) for i in pins]
     holes = [G.extrude(n, bot - 1, deck + 2) for n in notches] + [mouth_ch(n, bot, PP.CH_BED) for n in notches] + \
-            [G.extrude(fp["window"], zf, zf + PP.PB_T + 1.0)]
+            [G.extrude(fp["window"], zf, deck + 2.0 if WINDOW_OPEN else zf + PP.PB_T + 1.0)]
     uk = G.union(solids) - G.union(holes)
     sw = switch_cut(minx, miny, bot, h)
     uk = uk - sw["cut"]
-    LAST["uk"], LAST["sh"] = uk, (-minx, -miny)           # für plug/power/check_switch.py
+    LAST["uk"], LAST["ober"], LAST["sh"] = uk, ober, (-minx, -miny)           # für plug/power/check_switch.py
     sw_free = float(vol_int(sw["room"], uk)) < 0.05      # Schalterraum frei von Stützen, Zaun, Fach
 
     # --- Innenhof-Teil unten gefast ---
