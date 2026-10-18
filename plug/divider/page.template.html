@@ -252,7 +252,7 @@ a { color: var(--blue); }
       <thead><tr><th>Nr.</th><th>Paar</th><th>Wer gibt ab</th><th>Grund</th><th>Verlust im Grundriss</th></tr></thead>
       <tbody>{{GEBERZEILEN}}</tbody>
     </table></div>
-    <p class="note" style="margin-top:8px">Das Neue Augusteum verliert {{AUG_VERLUST}} mm² ({{AUG_PROZENT}} %, etwa {{AUG_M2}} m² in echt), fast alles davon die Überlappung mit dem Paulinum. Das Hörsaalgebäude gibt die Fuge zum Neuen Augusteum und zum Hochhaus allein ab, weil dort die Rohre nur 3,2 und 3,4 mm von der Naht sitzen. Die Platzierungen der Kassetten bleiben gültig, kein Schachtrohr kommt dem Rand näher als vorher.</p>
+    <p class="note" style="margin-top:8px">Das Neue Augusteum verliert {{AUG_VERLUST}} mm² ({{AUG_PROZENT}} %, etwa {{AUG_M2}} m² in echt), das Paulinum {{PAU_VERLUST}} mm² ({{PAU_PROZENT}} %). Seit dem 18.10. läuft die Wand zwischen beiden gerade von West nach Ost: Zwei Zähne des Paulinums, die nach Süden in den Augusteum-Grundriss ragten (ein rechteckiger und ein dünner), fallen weg, und der Schlitz, den der große Zahn im Augusteum-Grundriss hinterließ (1 mm breit, 4 mm tief), ist gefüllt. Das Hörsaalgebäude gibt die Fuge zum Neuen Augusteum und zum Hochhaus allein ab, weil dort die Rohre nur 3,2 und 3,4 mm von der Naht sitzen. Die Platzierungen der Kassetten bleiben gültig, kein Schachtrohr kommt dem Rand näher als vorher.</p>
   </div>
   <figure class="panel">
     <figcaption>Verlust je Gebäude bei anderer Fuge</figcaption>
@@ -260,7 +260,7 @@ a { color: var(--blue); }
       <thead><tr><th>Gebäude</th><th>Grundriss heute</th><th>Verlust</th><th>Anteil</th><th>in echt</th></tr></thead>
       <tbody></tbody>
     </table></div>
-    <p class="cap">Folgt dem Regler oben (Fuge = 2 × Spiel + Wand). Das Paulinum behält seinen Grundriss, solange das Rohr an der Naht sitzt. Die Verteilung ist für jede Fuge nach der Regel oben neu gerechnet.</p>
+    <p class="cap">Folgt dem Regler oben (Fuge = 2 × Spiel + Wand). Das Paulinum verliert nur die beiden Zähne an der geraden Naht, das Rohr sitzt dort weiter an der Kante. Die Verteilung ist für jede Fuge nach der Regel oben neu gerechnet.</p>
   </figure>
 </section>
 
@@ -329,7 +329,8 @@ a { color: var(--blue); }
     <div class="q"><span class="n">1</span><div><p><strong>Fuge über die ganze Höhe: ja.</strong> Zwischen den Gebäuden steht ein Schlitz von {{FUGE}} mm. Er gilt für die Steckplatte und die steckbaren Gebäude, die Komplettmodelle bleiben unverändert.</p></div></div>
     <div class="q"><span class="n">2</span><div><p><strong>Wand {{WAND}} mm, Spiel {{SPIEL}} mm.</strong> Die Fuge ist damit {{FUGE}} mm.</p></div></div>
     <div class="q"><span class="n">3</span><div><p><strong>Neues Augusteum gibt die Überlappung ab, das Paulinum bleibt.</strong> Das Augusteum verliert {{AUG_VERLUST}} mm² ({{AUG_PROZENT}} %).</p></div></div>
-    <div class="q"><span class="n">4</span><div><p><strong>Eine Regel kam dazu, die vorher nicht auf der Seite stand.</strong> Mit der Teilung zur Hälfte kam das Schachtrohr des Hochhauses auf 2,68 mm an den Rand. Dann bleibt zwischen Rohr und Wand weniger als 2 mm Luft, <code>hohl.py</code> füllt den Spalt, und das Gewölbe wird zu Vollmaterial (27,9 statt 13,5 cm³). Darum gibt das Hörsaalgebäude die Fuge am Hochhaus und am Neuen Augusteum allein ab. Es verliert dadurch {{HOER_VERLUST}} mm² ({{HOER_PROZENT}} %).</p></div></div>
+    <div class="q"><span class="n">4</span><div><p><strong>Gerade Wand von West nach Ost (18.10.).</strong> Mit der Naht, wie sie in den Daten steht, wand sich die Wand um die zwei Zähne des Paulinums, und im Nordosten blieb ein kleiner Streifen des Augusteums zwischen den Zähnen stehen. Jetzt wird das Paulinum an der Geraden seiner Südkante abgeschnitten (<code>GERADE_NAHT</code>), der Schlitz im Augusteum gefüllt (<code>SCHLITZ_FENSTER</code>), und die Wand läuft in einer Linie. Das Schachtrohr des Paulinums braucht keine Ausnahme: Es sitzt auf der Paulinum-Seite der Kante, die Wand liegt auf der Augusteum-Seite. <strong>Preis:</strong> Der große Zahn trägt den höchsten Firstpunkt des Paulinums (Laserscan). Das Paulinum wird dadurch {{PAU_HOEHE}} mm niedriger (etwa {{PAU_HOEHE_M}} m in echt), die Platte bleibt gleich. Rückgängig: <code>GERADE_NAHT = {}</code> und <code>SCHLITZ_FENSTER = {}</code> in <code>plug/divider/geom.py</code>, dann <code>plug.campus</code> und <code>plug.buildings 01_paulinum 02_neues_augusteum</code>.</p></div></div>
+    <div class="q"><span class="n">5</span><div><p><strong>Eine Regel kam dazu, die vorher nicht auf der Seite stand.</strong> Mit der Teilung zur Hälfte kam das Schachtrohr des Hochhauses auf 2,68 mm an den Rand. Dann bleibt zwischen Rohr und Wand weniger als 2 mm Luft, <code>hohl.py</code> füllt den Spalt, und das Gewölbe wird zu Vollmaterial (27,9 statt 13,5 cm³). Darum gibt das Hörsaalgebäude die Fuge am Hochhaus und am Neuen Augusteum allein ab. Es verliert dadurch {{HOER_VERLUST}} mm² ({{HOER_PROZENT}} %).</p></div></div>
   </div>
 </section>
 
