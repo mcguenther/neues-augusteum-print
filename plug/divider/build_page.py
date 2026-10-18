@@ -169,21 +169,11 @@ def main():
     dim0 = (b0[2] - b0[0], b0[3] - b0[1])
     dim1 = (b1[2] - b1[0], b1[3] - b1[1])
     koll = max(r[4] for r in rep1)
-    PAU_H_ALT = float(G.to_trimesh(G.source_models('laserscan', S)['01_paulinum'][0]).bounds[1][2])   # höchster Punkt vor dem Beschnitt (mm über der Platte)
-    PAU_H_NEU = float(G.to_trimesh(C.models_plan(S)['01_paulinum'][0]).bounds[1][2])
     ueber_stl = 1.29   # mm² je Lage, gemessen mit stl_ueberlapp() an den STL vor der Änderung (Commit 6948c03); die neuen STL überlappen nicht mehr
     nahtgeo = {p: fps_l[p[0]].boundary.intersection(fps_l[p[1]].buffer(0.02)) for p in PAARE}
     keil = [q for q in teile(fps_l[PAARE[0][0]].intersection(fps_l[PAARE[0][1]])) if q.geom_type == "Polygon" and q.area > 0.01]
     from shapely.ops import polylabel
     keil_breit = max(2 * q.exterior.distance(polylabel(q, 0.001)) for q in keil)
-    # Verlust je Gebäude und Naht: Gesamtverlust abzüglich der Verluste an den anderen Nähten (für die erste Naht samt gerader Kante und gefülltem Schlitz)
-    def verlust(pair, slug):
-        k = 'verlust_a' if infos[pair]['a'] == slug else 'verlust_b'
-        v = infos[pair][k]
-        if pair == PAARE[0]:
-            rest = sum(infos[q]['verlust_a' if infos[q]['a'] == slug else 'verlust_b'] for q in infos if q != pair and slug in q)
-            v = fps_l[slug].area - neu[slug].area - rest
-        return v
     # Grafiken
     offs = [(-17, 14), (-22, 6), (8, 26), (-20, 2)]
     fig_ueber = uebersicht(fps_l, [(nahtgeo[p], offs[i]) for i, p in enumerate(PAARE)], outline0)
@@ -199,7 +189,7 @@ def main():
         cap_a = (("Rot: Fläche, auf der beide Grundrisse liegen (%s mm², bis %s mm breit)." % (de(inf["ueberlapp"], 0), de(keil_breit, 1)))
                  if inf["ueberlapp"] > 0.01 else "Beide Mulden gehen ohne Wand ineinander über.")
         cap_b = ("Gold: die stehende Wand (%s mm breit, %s mm lang). Rot gestreift: Fläche, die dem Gebäude entfällt (%s mm² und %s mm²)."
-                 % (de(D.WAND_T, 1), de(wandlaenge[(a, b)], 0), de(verlust((a, b), a), 1), de(verlust((a, b), b), 1)))
+                 % (de(D.WAND_T, 1), de(wandlaenge[(a, b)], 0), de(inf["verlust_a"], 1), de(inf["verlust_b"], 1)))
         zoom_html += ('<div class="zoomrow"><h3>%d  %s und %s</h3><div class="panels">'
                       '<figure class="panel bad"><figcaption>Vorher</figcaption>%s<p class="cap">%s</p></figure>'
                       '<figure class="panel ok"><figcaption>Nachher</figcaption>%s<p class="cap">%s</p></figure></div></div>'
@@ -212,13 +202,10 @@ def main():
         L = nahtgeo[(a, b)].length
         nahtzeilen += ("<tr><td class=\"n\">%d</td><th>%s und %s</th><td class=\"n\">%s mm</td><td class=\"n\">%s m</td><td class=\"n bad\">0 mm</td><td class=\"hint2\">%s</td></tr>"
                        % (i + 1, NAMEN[a], NAMEN[b], de(L, 1), de(L / S, 0), "Mulden verschmolzen; Überlappung %s mm² (bis %s mm breit)" % (de(inf["ueberlapp"], 0), de(keil_breit, 1)) if inf["ueberlapp"] > 0.01 else "Mulden verschmolzen, Gebäude berühren sich"))
-        if (a, b) == PAARE[0]:
-            wer = "%s gibt die Fuge ab, %s nur die zwei Zähne" % (NAMEN[b], NAMEN[a])
-        else:
-            wer = ("%s gibt alles ab, %s bleibt" % (NAMEN[b], NAMEN[a])) if inf["anteil"] == 0.0 else (("%s gibt alles ab, %s bleibt" % (NAMEN[a], NAMEN[b])) if inf["anteil"] == 1.0 else "beide je zur Hälfte")
+        wer = ("%s gibt alles ab, %s bleibt" % (NAMEN[b], NAMEN[a])) if inf["anteil"] == 0.0 else (("%s gibt alles ab, %s bleibt" % (NAMEN[a], NAMEN[b])) if inf["anteil"] == 1.0 else "beide je zur Hälfte")
         grund = ("Rohr im %s liegt nur %s mm von der Naht" % (NAMEN[a], de(inf["rohr_a"], 2))) if inf["anteil"] == 0.0 else (("Rohr im %s liegt nur %s mm von der Naht" % (NAMEN[b], de(inf["rohr_b"], 2))) if inf["anteil"] == 1.0 else "Rohre liegen %s und %s mm von der Naht" % (de(inf["rohr_a"], 1), de(inf["rohr_b"], 1)))
         geberzeilen += ("<tr><td class=\"n\">%d</td><th>%s und %s</th><td>%s</td><td class=\"hint2\">%s</td><td class=\"n\">%s mm² / %s mm²</td></tr>"
-                        % (i + 1, NAMEN[a], NAMEN[b], wer, grund, de(verlust((a, b), a), 1), de(verlust((a, b), b), 1)))
+                        % (i + 1, NAMEN[a], NAMEN[b], wer, grund, de(inf["verlust_a"], 1), de(inf["verlust_b"], 1)))
     quellzeilen = ""
     for a, b in PAARE:
         z = []
@@ -243,8 +230,6 @@ def main():
         "ROHR_MIN": de(min(R[k].distance(neu[k].boundary) for k in neu if k != "01_paulinum"), 1),
         "AUG_VERLUST": de(fps_l["02_neues_augusteum"].area - neu["02_neues_augusteum"].area, 0),
         "HOER_VERLUST": de(fps_l["03_hoersaalgebaeude"].area - neu["03_hoersaalgebaeude"].area, 0), "HOER_PROZENT": de(100 * (1 - neu["03_hoersaalgebaeude"].area / fps_l["03_hoersaalgebaeude"].area), 1),
-        "PAU_VERLUST": de(fps_l["01_paulinum"].area - neu["01_paulinum"].area, 0), "PAU_PROZENT": de(100 * (1 - neu["01_paulinum"].area / fps_l["01_paulinum"].area), 1),
-        "PAU_HOEHE": de(PAU_H_ALT - PAU_H_NEU, 1), "PAU_HOEHE_M": de((PAU_H_ALT - PAU_H_NEU) / S, 1),
         "AUG_PROZENT": de(100 * (1 - neu["02_neues_augusteum"].area / fps_l["02_neues_augusteum"].area), 1),
         "AUG_M2": de((fps_l["02_neues_augusteum"].area - neu["02_neues_augusteum"].area) / S ** 2, 0),
         "TEILE": str(max(len(G.polys_of(v)) for v in neu.values())),

@@ -36,8 +36,9 @@ MIN_STUECK = 0.3               # mm², kleinere Reste nach dem Beschnitt werden 
 # einen rechteckigen und einen dünnen Zahn nach Süden (zusammen 38 mm²), die in den Augusteum-Grundriss ragen; die Wand müsste sich um beide winden.
 # Nutzerwunsch 18.10.: Wand gerade von West nach Ost. Das Paulinum wird deshalb an der Geraden durch die beiden Endpunkte abgeschnitten (Zähne weg),
 # und der Schlitz im Augusteum, den der Zahn dort hinterlässt (1 mm breit, 4 mm tief), wird im Fenster gefüllt (Schließen mit Radius SCHLITZ_R).
-GERADE_NAHT = {"01_paulinum": ((-62.48, 44.28), (-22.08, 35.95))}   # mm, behalten wird die Seite mit der größeren Fläche
-SCHLITZ_FENSTER = {"02_neues_augusteum": (-40.5, 31.0, -23.0, 40.0)}  # mm (x0, y0, x1, y1)
+# Seit 18.10. wieder aus (Nutzer: vorher besser): Die Zähne tragen den höchsten Firstpunkt des Paulinums, der gerade Schnitt machte es 2,3 mm niedriger.
+GERADE_NAHT = {}   # {"01_paulinum": ((-62.48, 44.28), (-22.08, 35.95))}: mm, behalten wird die Seite mit der größeren Fläche
+SCHLITZ_FENSTER = {}   # {"02_neues_augusteum": (-40.5, 31.0, -23.0, 40.0)}: mm (x0, y0, x1, y1)
 SCHLITZ_R = 1.2                # mm
 
 
