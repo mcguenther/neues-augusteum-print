@@ -10,3 +10,4 @@ pillow
 pyproj
 laspy[lazrs]
 opencv-python-headless
+numba

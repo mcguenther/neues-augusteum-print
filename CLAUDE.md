@@ -70,8 +70,8 @@ pip install -r requirements.txt
 ## Laufzeit / Schnelllauf
 
 Ein voller `python3 generate.py` brauchte früher ~24 min, fast alles davon im
-Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: ~5 min auf
-4 Kernen (alle Optimierungen ergeben dasselbe Ergebnis; Details und Messung:
+Software-Renderer (`preview.render`) und nicht in den Laserdaten. Heute: unter 5 min auf
+4 Kernen (der Renderer läuft mit Numba, pixelgleich; ohne Numba oder mit `NO_NUMBA=1` der alte NumPy-Pfad) (alle Optimierungen ergeben dasselbe Ergebnis; Details und Messung:
 `werkzeuge/performance/`).
 
 - **Zum Testen/Iterieren: `python3 generate.py --fast`** – gleiche Daten, aber Laser-Raster
