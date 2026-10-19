@@ -8,7 +8,7 @@ Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude f�
                                  Das beige Institutsgebäude in jede Mulde stecken. Druckzeit etwa 125 min (Schätzung).
 Variante B: eigener kompakter Probedruck, kein Gebäude nötig
   B1_probefuss_fase4.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 4,0 (die Gebäude haben heute 2,0),
-                                 Schacht für die Kassette V1RS mit Walmdach, 20 mm hoch. Etwa 28 min.
+                                 Schacht für die Kassette V1RS mit Walmdach als Anschlag und Fenster 12 x 3 mm durch das Dach (Kassette von oben mit einem Stift herausdrücken), 20 mm hoch. Etwa 28 min.
   B3_mulden_block_probe.stl      GRAU. Platte 40 x 63 x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa 48 min.
 Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
@@ -17,7 +17,7 @@ Beide Varianten:
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block 125 min + Kassetten 49 min = 174 min
-  Variante B: Fuß 28 min + Block 48 min + Kassetten 49 min = 125 min 
+  Variante B: Fuß 28 min + Block 48 min + Kassetten 49 min = 124 min 
 
 Slicer: PLA, Düse 0,4, Schicht 0,2, Wände 3, Füllung 15 %, Support aus, Ausrichtung wie exportiert (Fuß bzw. Plattenunterseite und Kassettentasche am Bett).
 Filament: Fluss möglichst vorher kalibrieren (Plan, Abschnitt 6, Messplättchen T4).

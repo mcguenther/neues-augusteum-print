@@ -40,6 +40,7 @@ KASS_SPIEL = (0.12, 0.16, 0.20)          # Spiel im Modell je Seite (Einpressspi
 SCHACHT_EXTRA = 0.35
 PROBE_W, PROBE_D, PROBE_KEY = 31.0, 18.0, 3.0
 DACH = 1.2
+FENSTER_W, FENSTER_D = 12.0, 3.0      # Fenster im Dach des Probefußes (Stift zum Herausdrücken der Kassette)
 LAGE = 0.2
 BAR_W, BAR_GAP, BAR_L, BAR_H = 1.2, 1.0, 8.0, 0.6
 
@@ -75,13 +76,15 @@ def probefuss(fase):
     zs = V.dims(VAR)["z_b"] + SCHACHT_EXTRA
     parts = [ext(rect, -0.01, zs), BC.mouth_ch(rect, 0.0, P.ENTRY_CH_T)]
     t = 0.0
+    fenster = sbox(-FENSTER_W / 2, -FENSTER_D / 2, FENSTER_W / 2, FENSTER_D / 2)
     while True:
         g = rect.buffer(-(t + 0.05), join_style=2)
-        if g.is_empty or g.area < 0.05:
+        if g.is_empty or g.area < 0.05 or g.difference(fenster).is_empty:
             break
-        parts.append(ext(g, zs + t - 0.005, zs + t + 0.1 + 0.005))
+        parts.append(ext(g.union(fenster), zs + t - 0.005, zs + t + 0.1 + 0.005))
         t += 0.1
     top = zs + t + DACH
+    parts.append(ext(fenster, zs - 0.01, top + 1.0))             # Fenster durch das Dach: Kassette von oben mit einem Stift herausdrücken
     body = BC.slab_ch(fp, 0.0, top, fase)
     return body - G.union(parts), top
 
@@ -268,7 +271,7 @@ Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude f�
                                  Das beige Institutsgebäude in jede Mulde stecken. Druckzeit etwa {t_A1_mulden_block_institut} min (Schätzung).
 Variante B: eigener kompakter Probedruck, kein Gebäude nötig
   B1_probefuss_fase4.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 4,0 (die Gebäude haben heute 2,0),
-                                 Schacht für die Kassette V1RS mit Walmdach, 20 mm hoch. Etwa {t_B1_probefuss_fase4} min.
+                                 Schacht für die Kassette V1RS mit Walmdach als Anschlag und Fenster 12 x 3 mm durch das Dach (Kassette von oben mit einem Stift herausdrücken), 20 mm hoch. Etwa {t_B1_probefuss_fase4} min.
   B3_mulden_block_probe.stl      GRAU. Platte {bb:.0f} x {hb:.0f} x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa {t_B3_mulden_block_probe} min.
 Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
