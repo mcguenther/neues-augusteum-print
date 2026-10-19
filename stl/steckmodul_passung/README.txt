@@ -9,7 +9,7 @@ Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude f�
 Variante B: eigener kompakter Probedruck, kein Gebäude nötig
   B1_probefuss_fase4.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 4,0 (die Gebäude haben heute 2,0),
                                  oben offen (kein Dach): der Schacht der Kassette V1RS geht durch, die Kassette lässt sich von oben herausdrücken; 22 mm hoch, 7,8 mm ragen als Griff aus der Mulde. Kein Anschlag: Kassette bündig einsetzen, indem man sie mit der Unterseite auf den Tisch stellt und den Fuß darüberdrückt. Etwa 29 min.
-  B3_mulden_block_probe.stl      GRAU. Platte 40 x 63 x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa 48 min.
+  B3_mulden_block_probe.stl      GRAU. Platte 38 x 61 x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa 41 min.
 Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
   K2_kassette_V1RS_16.stl        Spiel im Schacht je Seite 0,12 / 0,16 / 0,20 (heute 0,06): Außenmaß 0,06 / 0,10 / 0,14 je Seite kleiner.
@@ -17,7 +17,7 @@ Beide Varianten:
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block 125 min + Kassetten 49 min = 174 min
-  Variante B: Fuß 29 min + Block 48 min + Kassetten 49 min = 126 min 
+  Variante B: Fuß 29 min + Block 41 min + Kassetten 49 min = 119 min 
 
 Slicer: PLA, Düse 0,4, Schicht 0,2, Wände 3, Füllung 15 %, Support aus, Ausrichtung wie exportiert (Fuß bzw. Plattenunterseite und Kassettentasche am Bett).
 Filament: Fluss möglichst vorher kalibrieren (Plan, Abschnitt 6, Messplättchen T4).

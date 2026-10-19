@@ -80,15 +80,15 @@ def probefuss(fase):
 
 
 # ---- Mulden-Block
-def mulden_block(poly, spiele, wand=2.4, rand=3.0):
+def mulden_block(poly, spiele, wand=2.4, rand=3.0, top_ch=None):
     """Platte mit je einer Mulde je Spiel (Boden 0,4, Fase oben 0,5, Plattenkante unten 0,5 und oben 1,5), erhabene Balken als Kennung (1 bis n)."""
     rand_l = 2.0 + len(spiele) * BAR_W + (len(spiele) - 1) * BAR_GAP + 1.0 + 1.0
     if wand < 2.0:                         # kompakt: Kennung als kurze Querbalken (3,5 lang) übereinander statt nebeneinander
-        rand_l = 1.8 + 3.5 + 1.2
+        rand_l = 0.8 + 2.5 + 1.4
     b = FG.block(poly, spiele, wand=wand, rand=rand, rand_l=rand_l)
     T = FG.PLATTE_T
     outline = b["platte"]
-    plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T) ^ C.top_edge(outline, T, P.PLATE_TOP_CH_T)
+    plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T) ^ C.top_edge(outline, T, P.PLATE_TOP_CH_T if top_ch is None else top_ch)
     ch = P.MULDE_CH_T
     n = BC.n_layers(ch)
     dz = ch / n
@@ -104,7 +104,7 @@ def mulden_block(poly, spiele, wand=2.4, rand=3.0):
         for j in range(i + 1):
             if wand < 2.0:
                 y0 = yc - ((i + 1) * BAR_W + i * BAR_GAP) / 2 + j * (BAR_W + BAR_GAP)
-                bars.append(box(1.8, 5.3, y0, y0 + BAR_W, T - 0.01, T + BAR_H))
+                bars.append(box(0.8, 3.3, y0, y0 + BAR_W, T - 0.01, T + BAR_H))
             else:
                 x0 = 2.0 + j * (BAR_W + BAR_GAP)
                 bars.append(box(x0, x0 + BAR_W, yc - BAR_L / 2, yc + BAR_L / 2, T - 0.01, T + BAR_H))
@@ -172,8 +172,8 @@ def main():
         teile["K%d_kassette_V1RS_%d" % (i + 1, round(s * 100))] = kassette(s)
     f4, h4 = probefuss(4.0)
     teile["B1_probefuss_fase4"] = f4
-    plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=2.5)
-    plate_b2, bb2 = mulden_block(probe_outline(), MULDEN_SPIEL[1:], wand=1.6, rand=2.5)
+    plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=1.6, top_ch=0.5)
+    plate_b2, bb2 = mulden_block(probe_outline(), MULDEN_SPIEL[1:], wand=1.6, rand=1.6, top_ch=0.5)
     teile["B3b_mulden_block_probe_2"] = plate_b2
     teile["B3_mulden_block_probe"] = plate_b
 
