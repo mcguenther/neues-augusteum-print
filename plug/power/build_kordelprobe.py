@@ -2,7 +2,7 @@
 """Probeteil K4 Kordelprobe (Mitte des Unterkastens Stand 8): STL, README, ZIP, Prüfbericht und Bilder nach stl/steckmodul_kordelprobe/.
 
 Teil (Druckausrichtung: Bett unten = Hut-Seite, Erhebung nach oben):
-  K4_stern_F-aussen.stl, K4_stern_F-innen.stl   Stern Ø 70 aus acht Höckern mit den Gängen (F-aussen: freies Rechteck 8 × 5, darüber 45°-Dachschrägen 1,5,
+  K4_stern_F-aussen.stl, K4_stern_F-innen.stl   Stern Ø 70 aus acht Höckern mit den Gängen (F-aussen: freies Rechteck 8 × 4, darüber 45°-Dachschrägen 1,5,
                   Höcker 11,4 × 7,7; F-innen: Fase 1,5 in den oberen Ecken, Höcker 10,4 × 6,2), in der Mitte die Erhebung über dem Knopf: Hohlraum am Bett Ø 39,4 auf Gang-Höhe, ab 8,7 mm vor dem
                   Knopfkörper 45°-Anstieg, Knopfraum Ø 25 × 13,0 frei (1 mm Luft über dem Knopf), flache Decke Ø 20 bei 15,5, Plateau Ø 28 bei 16,0.
                   Ohne Boden, Randwand und Deckplatte: nur das, was die Kordel und der Knopf brauchen; Geometrie wie im Kasten.
@@ -58,7 +58,7 @@ def stern():
 
 
 NAME = {"innen": "K4_stern_F-innen", "aussen": "K4_stern_F-aussen"}
-ERST = "aussen"               # zuerst drucken: Rechteck 8 × 5 ganz frei, kostet am Kasten keine Höhe
+ERST = "aussen"               # zuerst drucken: Rechteck 8 × 4 ganz frei, kostet am Kasten keine Höhe
 
 
 def main():
@@ -122,7 +122,7 @@ def main():
         else:
             chk("Gangprofil %.0f × %.0f mit Fase %.1f frei" % (K8.GANG_W, K8.GANG_H, K8.FASE),
                 vol_int(K8.gaenge_cut((0.0, 0.0), K8.GANG_W - 0.04, K8.GANG_H - 0.02, K8.FASE - 0.02, 8, z0=0.01, laenge=D / 2 - 0.1), sch))
-            rep("  (volles Rechteck 8 × 5 nicht frei: die gefasten Ecken nehmen %.0f mm³ weg, die Kordel passt trotzdem)" % rect)
+            rep("  (volles Rechteck 8 × 4 nicht frei: die gefasten Ecken nehmen %.0f mm³ weg, die Kordel passt trotzdem)" % rect)
         det = []
         ow, oa, oz = K8.ueberhang(sch, zmax=H + 0.3, detail=det)
         br = K8.brueckenbereiche(det, (0.0, 0.0))
@@ -168,8 +168,8 @@ def write_readme(info):
 Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedruckt, alle Werte sind Planwerte.
 
 Teil: K4_stern_F-innen.stl, Stern Ø 70 x %(h).1f mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support (siehe pruefbericht.txt)   ca. %(g).0f g
-Gänge 8 x 5 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 5,0; die Kordel 5 x 3 passt, 2 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
-x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 9,5 mm
+Gänge 8 x 4 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 4,0; die Kordel 5 x 3 passt, 1 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
+x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 43 auf Gang-Höhe 4, ab 10,5 mm
 vor dem Knopf steigt die Decke mit 45 Grad an, der Knopfraum Ø 25 x 13,0 (1 mm Luft über dem Knopf) ist überall frei (nichts davon beschnitten), oben eine flache Decke
 Ø 20 bei 15,5, darüber das Plateau Ø 28 bei %(pz).1f. Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten
 seitlich am Knopffuß heraus.

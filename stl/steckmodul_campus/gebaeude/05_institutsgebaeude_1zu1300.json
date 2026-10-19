@@ -6,29 +6,38 @@
  "rohrstuetze": false,
  "netz": {
   "vorher": {
-   "entartet": 6467,
-   "beruehrkanten": 5358
+   "entartet": 6542,
+   "beruehrkanten": 5329
   },
   "nachher": {
-   "entartet": 1,
+   "entartet": 5,
    "beruehrkanten": 1
   },
   "schalen_entfernt": 616,
   "schalen": 1
  },
+ "fase_entfaellt_mm2": 268.2,
  "kollision_mm3": 0.0,
  "platz_fehlt_mm3": 0.0,
- "volumen_cm3": 18.53,
+ "volumen_cm3": 18.19,
  "volumen_varianten_cm3": {
-  "mit_rohrstuetze": 19.5,
-  "ohne_rohrstuetze": 18.53
+  "mit_rohrstuetze": 19.15,
+  "ohne_rohrstuetze": 18.19
  },
  "ueberhang": {
   "bruecke_mm2": 4.01,
   "bruecke_mm": 0.87,
-  "krag_mm2": 130.14,
-  "krag_mm": 1.65,
+  "krag_mm2": 132.46,
+  "krag_mm": 4.44,
   "stellen": [
+   [
+    "krag",
+    -11.3,
+    2.3,
+    4.4,
+    -74.8,
+    69.7
+   ],
    [
     "krag",
     7.1,
@@ -59,7 +68,7 @@
     4.8,
     1.6,
     -68.0,
-    80.5
+    80.6
    ],
    [
     "krag",
@@ -74,7 +83,7 @@
     12.7,
     15.0,
     1.3,
-    -77.4,
+    -77.5,
     82.5
    ],
    [

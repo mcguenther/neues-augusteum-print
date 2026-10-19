@@ -114,7 +114,7 @@ neben der Knopfmitte). Die Klötze sind nicht angeformt: erst die Lage der Power
 Boden kleben (Heißkleber nur seitlich an den Fuß, nicht darunter, sonst steht die Powerbank höher als das Plateau). Nicht auf die Gänge stellen.
 
 Innen: Erhebung über dem Knopf des Huts (Knopf 11 bis 12 mm hoch, Raum Ø 25 x 13,0, 45°-Anstieg, Decke Ø 20 bei 15,5, Plateau Ø 28 bei 16,0),
-acht Kordelgänge 8 x 5 mit Fase innen (Wand 0,8, Decke 0,48 = 3 Lagen x 0,16), Powerbank auf Plateau und Klötzen bei z = 16,0,
+acht Kordelgänge 8 x 4 mit Fase innen (Wand 0,8, Decke 0,48 = 3 Lagen x 0,16), Powerbank auf Plateau und Klötzen bei z = 16,0,
 Steckerraum 6,0 darüber, Fenster in der Nordwand, Hauptschalter-Loch in der Westwand (Mitte 17,4 über dem Boden), zwei Zapfen für die Platte.
 
 Druck: PLA, Schicht 0,16 mm (die Decken 0,48 sind 3 Lagen), Support aus, Gyroid 10 %% wie plug/slicer.md, Brücken-Einstellungen normal.

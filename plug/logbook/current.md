@@ -1,4 +1,4 @@
-# Bewährter Stand (nach Steckprobe 2 und Fachprobe Powerbank, 2026-10-16)
+# Bewährter Stand (nach Steckprobe 2 und Fachprobe Powerbank, 2026-10-16; ergänzt bis r10, 2026-10-19)
 
 Status: **bewährt** = im Testbogen mit „passt“ bewertet · **vorläufig** = funktioniert, mit Einschränkung oder noch nicht ganz belegt ·
 **verworfen** = getestet, gestrichen · **offen** = nicht geklärt. Belege stehen in `rounds/`. Werte im Code: `plug/testcase/params.py`
@@ -84,7 +84,7 @@ Maßstab 1:1250, Mulde 4 mm tiefer (F 14,2, Platte 20,2), Standard-Kassette v4, 
 
 | Größe | Wert | Status | Beleg | Code |
 |---|---|---|---|---|
-| Spiel Mulde zu Gebäude bei großem Umriss (Hochhaus 36 × 35 mm) | 0,10: Einsetzen nur mit Kraft, Herausziehen sehr fest, kein Wackeln; **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)** | 0,10 verworfen für große Umrisse, 0,15 offen | r8 | `OUTLINE_CLR_T` (`params.py`, bleibt 0,10 bis zum Test) |
+| Spiel Mulde zu Gebäude bei großem Umriss (Hochhaus 36 × 35 mm) | 0,10: Einsetzen nur mit Kraft, Herausziehen sehr fest, kein Wackeln; **nächster Probedruck mit 0,15 (Vorgabe des Nutzers)** | 0,10 verworfen für große Umrisse; **0,15 in r10 bewährt** (siehe 2g) | r8, r10 | `OUTLINE_CLR_T` (`params.py`, jetzt 0,15) |
 | Fuß-Fase 2,0 mm (45°), keine Muldenfase an der Platte | fängt das Gebäude, kein Wulst, sitzt auf dem Muldenboden auf | **bewährt** | r8 | `FUSS_FASE_T` (`plug/buildings.py`) |
 | Kassette V2R (Unterbau im Schacht, Probeteil) | Druck sauber, Sitz gut, Wand ungerissen, unten bündig, Pins treffen die Buchse | bewährt (ohne Streifen, Adern, Licht) | r8 | `variants.kassette("V2R")` |
 | Hohlgebäude: Fuß 14,2, Boden 1,2, Wand 0,8, Schachtrohr | als Stummel (25 mm über der Platte) gedruckt, passt zur Kassette | bewährt (Teilhöhe) | r8 | `plug/buildings.py` |
@@ -103,6 +103,24 @@ Eingefroren: `rounds/r8_passform_hochhaus/passform_stummel_hochhaus.zip`.
 | Hakenspanne an der 13-mm-Seite | ungemessen | offen | r9 | – |
 
 Eingefroren: `rounds/r9_schalterprobe/schalterprobe_T1_T2.zip`.
+
+## 2g. Nach der Passung bei wechselnden Filamenten (r10, 2026-10-19; Bambu A1, PLA, beige auf grau, Fluss nicht kalibriert)
+
+| Größe | Wert | Status | Beleg | Code |
+|---|---|---|---|---|
+| Spiel Mulde zu Fuß je Seite (Probefuß, Fase 4,0) | **0,15** passt gut (minimal zu viel Spiel); 0,10 zu fest (nur mit Zange wieder raus), 0,20 wackelt; löst die Vorgabe aus r8 ein | **bewährt** (am Probefuß); Platte mit 0,15 gebaut, noch nicht gedruckt | r10 B3 | `OUTLINE_CLR_T` 0,15 (`plug/testcase/params.py`) |
+| Spiel Hof-Einsatz zu Aussparung | 0,15 wie die Mulden | beschlossen, ungetestet | r10 | `HOF_CLR_T` 0,15 |
+| Zuschnitt der Gebäude an den Nähten | bleibt Fuge 1,0 (Spiel 0,10 + Wand 0,8), STL der Gebäude unverändert | umgesetzt (Commit 0009967), ungedruckt | r10 | `ZUSCHNITT_CLR_T` 0,10 |
+| Gebäude auf der Platte je Naht 0,1 mm auseinander | Verschiebung höchstens 0,14 mm je Gebäude, Platte 115,63 × 220,90 (vorher 115,58 × 220,84); Wand zwischen den Mulden 0,80, an den Zahnflanken Paulinum/Augusteum 0,70 (offen); Docks höchstens 0,138 mm vom gedruckten Unterkasten entfernt | umgesetzt (Commit 0009967), ungedruckt | r10 | `fuge_platte`, `verschiebungen`, `schiebe` (`plug/divider/geom.py`), `plug/campus.py` |
+| Spiel der Kassette im Schacht je Seite (V1RS) | **0,13** (Außenmaß je Seite 0,07 schlanker als mit 0,06); K1 0,12 sehr stramm und rutscht mit Schwung zu tief, K2 0,16 minimale Reibung aber rutscht zu doll, K3 0,20 frei, K4 0,14 noch zu locker; K5 „passt super im Probefuß, schwerer bei bestehenden Gebäuden, passt aber so“ | **bewährt** als Sollwert (V1RS, beige); **nicht** in den echten Kassetten, v4 und V2R ungetestet | r10 K1 bis K5 | `spiel` in `plug/filament/build.py`; `KASS_CLR_T` bleibt 0,06 (`params.py`) |
+| Buchsentasche der Kassette (V1RS) | **10,46 × 2,84 × 14,40** (alt 10,56 × 2,94 × 14,60: zu viel Spiel); mit 14,60 tauchte die Buchse ca. 0,2 mm zu tief ein und kostete E (Grenze stabiler Durchgang 5,08 von 5,28), mit 14,40 „passt fantastisch“ | **bewährt** (V1RS); seit 2026-10-19 auf main übernommen (Commit `2531ac3`: `plug.filament.kassetten`, `variants.kassette(var, schlank, enger, flacher)`; Gebäude neu gebaut) | r10 K4, K5 | `plug/filament/kassetten.py` (Kassette je Gebäude im Stand K5, auch v4 und V2R, dort ungetestet); Probe `plug/filament/build.py`; `HSG_TOL_SAFE` bleibt 0,60 |
+| Kennung der Kassetten | Punkte (Anzahl = (Spiel − 0,10) / 0,02) statt Zuordnung nach Gefühl | bewährt (K4, K5) | r10 | `plug/filament/build.py` |
+| Fuß-Fase 4,0 (Probefuß) gegen 2,0 (Code, r8) | Probefuß hatte 4,0; Aufgabendatei will 4,0 für neue Gebäude; auf main sind die Gebäude mit Fase 4,0 neu gebaut (`2531ac3`) | **umgesetzt**, Sitz in den 0,15er Mulden der neuen Platte offen | r10, r8 | `FUSS_FASE_T` (`plug/buildings.py`) |
+| Schachttiefe 0,35 | 0,35 auf main umgesetzt (`2531ac3`, Gebäude neu gebaut) | umgesetzt, ungetestet | r4 E, r10 | `SHAFT_EXTRA_T` |
+| Passung hängt vom Filament ab | beige statt schwarz: Gebäude passten nicht in die Mulden, Kassetten nicht in die Gebäude; Fluss je Filament nicht kalibriert | offen (Kalibrierung läuft beim Nutzer, Messplättchen T4 nicht erzeugt) | r10 | – |
+| Nähte Paulinum/Neues Augusteum, Eckaussparung Nordwest | Wand 0,70 (für 0,80 Zuschnitt dieser Naht 1,1); Eckaussparung NW trifft laut Konzept das Fach (210 mm², Zwischenspeicher `underside_1300.json` war veraltet und neu gerechnet) | offen, zu prüfen | r10 | `plug/divider/geom.py`, `plug/campus_underside.py` |
+
+Eingefroren: `rounds/r10_passung_filament/` (`passung_variante_B.zip`, `passung_kassette_14.zip`, `passung_kassette_13.zip`; Commits Kassette K4 `93da3a4`, Platte `0009967`, K5 `7e1cfa5`).
 
 ## 3. Maßkette (gesteckt, z = 0 Plattenoberseite)
 

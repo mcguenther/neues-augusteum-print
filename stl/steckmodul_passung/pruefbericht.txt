@@ -1,0 +1,44 @@
+Passungs-Probedrucke (Plan plug/filament/plan.html); Spiele Mulde (0.1, 0.15, 0.2), Kassette im Modell (0.12, 0.16, 0.2), Schachtdecke +0.35
+
+Teile (Druckausrichtung, Bett z = 0), Druckzeit geschätzt nach dem Muster der r8-Schätzung (nicht kalibriert; Faktor 1,2 nach L45):
+  A1_mulden_block_institut.stl   91.7 ×   98.7 ×  15.2 mm  62.38 cm³  dicht=True (Manifold: NoError)  Zeit 105 min (mit Faktor 125)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
+  K1_kassette_V1RS_12.stl      19.1 ×    6.3 ×  15.1 mm   1.33 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
+  K2_kassette_V1RS_16.stl      19.0 ×    6.2 ×  15.1 mm   1.30 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
+  K3_kassette_V1RS_20.stl      18.9 ×    6.1 ×  15.1 mm   1.27 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
+  K4_kassette_V1RS_14.stl      19.0 ×    6.2 ×  15.3 mm   1.34 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 1.77 mm² (bis 0.41 mm), Stellen über 1 mm: keine
+  K5_kassette_V1RS_13.stl      19.1 ×    6.3 ×  15.3 mm   1.34 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 1.77 mm² (bis 0.41 mm), Stellen über 1 mm: keine
+  B1_probefuss_fase4.stl       31.0 ×   18.0 ×  22.0 mm   8.61 cm³  dicht=True (Manifold: NoError)  Zeit  25 min (mit Faktor  29)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
+  B3b_mulden_block_probe_2.stl   37.7 ×   41.5 ×  15.2 mm   6.70 cm³  dicht=True (Manifold: NoError)  Zeit  27 min (mit Faktor  32)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
+  B3_mulden_block_probe.stl    37.7 ×   61.3 ×  15.2 mm   9.65 cm³  dicht=True (Manifold: NoError)  Zeit  34 min (mit Faktor  41)
+      Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
+
+Prüfung der Passungen (Überschneidungsvolumen in mm³; muss 0 sein, die Kontrollen müssen anstoßen):
+  Kassette 1 (Spiel 0.12) im Schacht des Probefußes B1                              0.000  ok
+  Kassette 2 (Spiel 0.16) im Schacht des Probefußes B1                              0.000  ok
+  Kassette 3 (Spiel 0.20) im Schacht des Probefußes B1                              0.000  ok
+  Kassette 4 (Spiel 0,14, Tasche 0,10 enger und 0,20 flacher, 2 Punkte) im Schacht des Probefußes B1    0.000  ok
+  Kassette 5 (Spiel 0,13, Tasche 0,10 enger und 0,20 flacher, 1 Punkt) im Schacht des Probefußes B1    0.000  ok
+  Buchse (Nennmaß 10,16 x 2,54) in der Tasche von K4 (10,46 x 2,84 x 14.40, Kassette im Ursprung)    0.000  ok
+  Kontrolle: Buchse 0,16 seitlich verschoben stößt an die Tasche von K4 an          0.343  ok
+  Kontrolle: Kassette mit Spiel 0,06 (heute) liegt ohne Verschiebung im Schacht     0.000  ok
+  Kontrolle: um 0,15 je Seite zu breite Kassette stößt im Schacht an               66.345  ok
+  Probefuß B1 in der Mulde des Blocks B3 mit Spiel 0.10                             0.000  ok
+  Kontrolle: Probefuß um Spiel + 0,05 in +x verschoben stößt an (Mulde 0.10)        8.682  ok
+  Probefuß B1 in der Mulde des Blocks B3 mit Spiel 0.15                             0.000  ok
+  Kontrolle: Probefuß um Spiel + 0,05 in +x verschoben stößt an (Mulde 0.15)        8.657  ok
+  Probefuß B1 in der Mulde des Blocks B3 mit Spiel 0.20                             0.000  ok
+  Kontrolle: Probefuß um Spiel + 0,05 in +x verschoben stößt an (Mulde 0.20)        8.633  ok
+  -> keine Kollisionen
+
+Druckzeit je Variante (Summe der Einzelteile, nacheinander; mehrere Teile gleichzeitig auf einem Bett sparen nur den Start):
+  Variante A (Mulden-Block für die vorhandenen Gebäude + 3 Kassetten): 125 min Block + 49 min Kassetten = 174 min
+  Variante B (Probefuß Fase 4,0 + kleiner Mulden-Block + 3 Kassetten): 29 min Fuß + 41 min Block + 49 min Kassetten = 119 min
+  Eichung: dieselbe Schätzung ergab für den r8-Stummel 47 min bei gedruckten 55 min (Faktor 1,17); der Faktor 1,2 ist enthalten.
