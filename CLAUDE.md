@@ -40,7 +40,7 @@ parallel.py            Mehrprozess-Hilfe (`--jobs`), Laufzeit je Phase
 laserscan.py lod2.py   Geometrie je Datenquelle (Quelle osm steckt in generate.py)
 innenhof.py            Innenhof als eigenes Druckteil (blockiger Umriss ohne Stege, Treppen als Stufen auf dem Einsatz; Vergleich vorher/nachher: `plug/hof/`)
 hohl.py               Gebäude als Hohlkörper (Wand 0,8, unten offen, glattes 45°-Gewölbe bis zum First unter Decken mit mehr als 10 mm Spannweite); `generate.py` schreibt sie nach `einzeln_hohl/` (STL einfarbig, 3MF farbig), `--no-hohl` lässt sie weg; Plan: `plug/hollow/plan.html`
-farben.py              Farben und Filament-Profile (3/4/15) → data/farben.json
+farben.py              Farben, Filamente des Nutzers (farben.FILAMENTE) und Profile (3/4/15) → data/farben.json; farbige Steckgebäude: plug/colour.py
 fassaden.py            Fassaden-Zonen, Prüfansichten (`python3 fassaden.py <slug>`)
 farbmessung.py kamera.py skyline.py registrierung.py szene.py vergleich.py   Fotomessung der Fassadenfarben
 data/                  Rohdaten-Ausschnitte, Zonen je Gebäude (data/fassaden/), Katalog der Messfotos
@@ -50,6 +50,7 @@ stl-fast/ vorschau-fast/   Ausgabe von `--fast` (gitignored)
 plug/                  Steckmechanismus für LED-Gebäude (eigenes Paket, Logbuch in plug/logbook/); Slicer-Einstellungen der steckbaren Gebäude: plug/slicer.md
 werkzeuge/             Hilfsskripte: farbmessung/, performance/ (Messung der Laufzeit), innenhof_messen.py, rosette_kamera.py
 archiv/                zurückgestellte Gebäude (moritzbastei/)
+product/               Produktseite (Apple-Stil, Artifact): `index.html` von Hand, Daten mit `python3 -m product.build_assets` (reduzierte Netze aller Teile in Weltlage als `assets/model.json`, Bilder als WebP; nach Änderungen an Gebäuden, Platte oder Sockel neu erzeugen und die Seite neu veröffentlichen)
 docs/                  Komponenten-Doku (Display, Hauptschalter, ESP32 …): je Bauteil eine .md, Fotos in docs/bilder/, Datenblätter in docs/datenblaetter/
 README.md FOTOQUELLEN.md   README (Blöcke AUTO), Foto-Urheber und Lizenzen
 ```
