@@ -114,20 +114,15 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
 <div class="wrap">
 <header>
-  <div class="kicker">Steckmechanismus · Grundplatte 1:1300 · Unterkasten, Stand 8 (Plan)</div>
+  <div class="kicker">Steckmechanismus · Grundplatte 1:1300 · Unterkasten, Stand 8 (Plan, Fassung 2)</div>
   <h1>Batteriefach Stand 8</h1>
-  <p class="lead">Der Kasten unter der Steckplatte wird ohnehin neu gedruckt. Drei Änderungen kommen dazu: er wird 5 mm höher, in der Plattenmitte braucht er unten Platz für Knopf und Kordel des Doktorhuts (Ø 40 × 12 mm), und die Kordel muss in einem Gang (8 × 5 mm) in eine von acht Richtungen nach außen laufen. Diese Seite zeigt, was das heißt, mit allen Teilen im Zusammenbau. Es gibt noch keine STL.</p>
+  <p class="lead">Der Kasten unter der Steckplatte wird neu gedruckt: 5 mm höher, in der Plattenmitte unten ein flacher Raum für den Knopf des Doktorhuts (Ø 30 × 1,4 mm) und acht Gänge (8 × 5 mm), in denen die Kordel nach außen läuft. Die Powerbank bleibt, wo sie ist, und liegt über dem Knopf auf den Gangdächern. Befestigt wird mit Heißkleber; die Aussparungen für Fäden entfallen. Diese Seite zeigt alle Teile im Zusammenbau. Es gibt noch keine STL.</p>
 </header>
 
 <section aria-labelledby="h-ans">
   <h2 id="h-ans">Kurz</h2>
   <div class="answer" id="answer"></div>
 </section>
-
-<div class="varbar" role="group" aria-label="Variante wählen">
-  <span class="small muted">Variante für 3D, Draufsicht und Prüfung:</span>
-  <div class="seg" id="varSeg"></div>
-</div>
 
 <section aria-labelledby="h-view">
   <h2 id="h-view">Zusammenbau</h2>
@@ -148,13 +143,12 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
       <h3>Draufsicht Unterkasten <span class="muted small num" id="planDims"></span></h3>
       <svg id="plan" role="img" aria-label="Draufsicht des Unterkastens mit Knopfraum, Kordelgängen, Powerbank, Elektronik, Stützen und Zapfen"></svg>
       <div class="legend">
-        <span style="--sw:var(--c-knopf)">Knopfraum Ø 40</span><span style="--sw:var(--c-gang)">Kordelgang 8 breit</span>
+        <span style="--sw:var(--c-knopf)">Knopfraum Ø 30</span><span style="--sw:var(--c-gang)">Kordelgang 8 breit</span>
         <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Stecker, Fenster</span>
         <span style="--sw:var(--c-elec)">ESP32-Fläche</span><span style="--sw:var(--c-under)">Stütze (Ring = Zapfen)</span>
-        <span style="--sw:var(--c-niche)">Dockzone</span><span style="--sw:var(--c-thread)">Eckaussparung Faden</span>
-        <span style="--sw:var(--c-sw)">Hauptschalter</span><span style="--sw:var(--c-disp)">Display-Dock</span>
+        <span style="--sw:var(--c-niche)">Dockzone</span><span style="--sw:var(--c-sw)">Hauptschalter</span><span style="--sw:var(--c-disp)">Display-Dock</span>
       </div>
-      <p class="small muted">Gestrichelt: Lage der Powerbank im Stand 7 und Außenmaß, wenn die Platte nach dem Mulden-Plan 2 mm größer wird.</p>
+      <p class="small muted">Gestrichelt: Außenmaß, wenn die Platte nach dem Mulden-Plan 2 mm größer wird, und die Eckaussparungen von Stand 7, die jetzt entfallen.</p>
     </div>
   </div>
 </section>
@@ -162,7 +156,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 <section aria-labelledby="h-hk">
   <h2 id="h-hk">Höhenkette</h2>
   <p class="muted">Von der Hutoberfläche bis zur Plattenoberseite, an den Stellen, die eng werden. Maße in mm, z = 0 auf dem Hut.</p>
-  <div class="card scroll"><svg id="hk" role="img" aria-label="Höhenkette Stand 7 und beide Varianten von Stand 8"></svg></div>
+  <div class="card scroll"><svg id="hk" role="img" aria-label="Höhenkette Stand 7 und Stand 8"></svg></div>
 </section>
 
 <section aria-labelledby="h-mean">
@@ -172,7 +166,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
 <section aria-labelledby="h-chk">
   <h2 id="h-chk">Prüfung im Rechner</h2>
-  <p class="muted">Aus <code>python3 -m plug.power.kasten8</code>: Volumenkörper gegeneinander, Überschneidung muss 0 sein. Beide Varianten nebeneinander.</p>
+  <p class="muted">Aus <code>python3 -m plug.power.kasten8</code>: Volumenkörper gegeneinander, Überschneidung muss 0 sein.</p>
   <div class="card scroll"><table id="chk"></table></div>
 </section>
 
@@ -184,7 +178,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 <section aria-labelledby="h-next">
   <h2 id="h-next">Entscheidungen vor dem Bau</h2>
   <div class="cards" id="cards"></div>
-  <p class="meta">Quelle: plug/power/kasten8.py (Geometrie), plug/power/build_plan_kasten8.py (Seite), Werte in plug/power/params.py (UK_PLUS, HUT_KNOPF, KORDEL_GANG, KORDEL_DACH, PB_STECKER_QUER). Teile: stl/steckmodul_campus/ (Platte, Hof, Gebäude), plug/display/body4.py (Display, zweiter Satz), stl/steckmodul_unterkasten/U_unterkasten.stl (Stand 7).</p>
+  <p class="meta">Quelle: plug/power/kasten8.py (Geometrie), plug/power/build_plan_kasten8.py (Seite), Werte in plug/power/params.py (UK_PLUS, HUT_KNOPF, KORDEL_GANG, KORDEL_DACH, BEFESTIGUNG). Teile: stl/steckmodul_campus/ (Platte, Hof, Gebäude), plug/display/body4.py (Display, zweiter Satz), stl/steckmodul_unterkasten/U_unterkasten.stl (Stand 7).</p>
 </section>
 </div>
 
@@ -194,37 +188,29 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 (function () {
   const $ = (id) => document.getElementById(id);
   const D = JSON.parse($('data').textContent);
-  const W = D.W, L = D.L, C = D.c, VQ = D.vars.quer, VP = D.vars.podest;
+  const W = D.W, L = D.L, C = D.c, V = D.v;
   const fmt = (x, n = 1) => (+x).toFixed(n).replace('.', ',').replace('-', '−');
   const mm = (x, n = 1) => fmt(x, n) + ' mm';
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const NAME = { quer: 'A · Powerbank quer im Norden', podest: 'B · Powerbank auf Podest' };
-  let cur = 'quer';
-  const listeners = [];
-  const g = (x) => D.vars[x];
+  const bbox = (r) => { const xs = r.map((p) => p[0]), ys = r.map((p) => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+  const pbLuft = V.H - V.pb_top;
 
   /* ---------- Kurz ---------- */
   $('answer').innerHTML = [
-    ['bad', 'Kernkonflikt', 'Mitte unter Powerbank', 'Die Plattenmitte (' + fmt(C[0]) + ' | ' + fmt(C[1]) + ') liegt im Stand 7 mitten unter der Powerbank. Über einem 13,2 mm hohen Knopfraum hat die 12,8 mm dicke Powerbank bei nur +5 mm keinen Platz. Sie muss weg von der Mitte oder höher liegen.'],
-    ['rec', 'Empfehlung A', 'Kasten ' + mm(VQ.H) + ' (+' + fmt(VQ.plus) + ')', 'Powerbank quer im Nordteil, liegt auf den Dächern der Gänge N, NO, NW. Steckerraum darüber ' + mm(VQ.H - VQ.pb_top) + '. Braucht einen Winkelstecker (' + mm(D.stecker_quer) + ' statt ' + mm(D.plug7, 0) + ' vor der Buchse). Etwa ' + VQ.grams[0] + ' g.'],
-    ['', 'Rückfall B', 'Kasten ' + mm(VP.H) + ' (+' + fmt(VP.plus) + ')', 'Alles bleibt, wo es ist; die Powerbank liegt auf einem Podest über dem Knopfraum. Einfach, aber ' + mm(VP.H - VQ.H) + ' höher als geplant und ' + VP.grams[0] + ' g Kasten.'],
-    ['', 'Kordelgänge', D.gang.n + ' × ' + fmt(D.gang.w, 0) + ' × ' + fmt(D.gang.h, 0), 'Von der Mitte in 45°-Schritten zur Außenwand, 38 bis 90 mm lang. Innen werden sie zu Höckern ' + mm(D.gang_z) + ' hoch; darauf liegen Powerbank und ESP32 um 5 mm höher.'],
+    ['rec', 'Kasten', mm(V.H) + ' (+' + fmt(V.plus) + ')', 'Mit Platte ' + mm(V.total) + ' statt ' + mm(D.h7 + D.plate_t) + '. Etwa ' + V.grams[0] + ' g (Stand 7: ' + D.old.grams[0] + ' g). Außenmaß unverändert ' + fmt(W) + ' × ' + fmt(L) + '.'],
+    ['', 'Knopf in der Mitte', 'Ø ' + fmt(D.knopf.d, 0) + ' × ' + fmt(D.knopf_h), 'Knopf ' + mm(D.knopf.h) + ' hoch plus ' + mm(D.knopf.luft) + ' Luft. Innen nur ein flacher Teller ' + mm(D.knopf_z) + ' hoch; die Powerbank liegt ' + mm(V.pb_luft) + ' darüber.'],
+    ['', 'Powerbank', 'bleibt am Platz', 'Liegt auf den Dächern der acht Gänge (' + mm(D.gang_z) + ' über dem Boden), die sternförmig unter ihr zusammenlaufen. Darüber ' + mm(pbLuft) + ' Steckerraum (gefordert ' + mm(D.gap) + '). Diese 5 mm verbraucht die Kordel.'],
+    ['', 'Befestigung', 'Heißkleber', 'Kasten auf den Hut kleben, im Zweifel die Steckplatte auf den Kasten. Die vier Eckaussparungen für Fäden entfallen; die Fadentaschen in der Platte können beim Neudruck auch weg.'],
   ].map(([c, l, b, t]) => '<div class="' + c + '"><span class="lbl">' + l + '</span><span class="big">' + b + '</span><span class="small muted">' + t + '</span></div>').join('');
-
-  /* ---------- Variantenwahl ---------- */
-  $('varSeg').innerHTML = ['quer', 'podest'].map((k) => '<button type="button" data-var="' + k + '">' + NAME[k] + '<span>Kasten ' + mm(g(k).H) + ' · mit Platte ' + mm(g(k).total) + '</span></button>').join('');
-  function setVar(k) { cur = k; document.querySelectorAll('#varSeg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.var === k))); listeners.forEach((f) => f(k)); }
-  document.querySelectorAll('#varSeg button').forEach((b) => b.addEventListener('click', () => setVar(b.dataset.var)));
 
   /* ---------- Draufsicht ---------- */
   const PAD = 26, EXT = 2;
   const pts = (r) => r.map((p) => (p[0] + PAD).toFixed(2) + ',' + (L + PAD - p[1]).toFixed(2)).join(' ');
   const poly = (r, f, s, extra = '') => '<polygon points="' + pts(r) + '" fill="' + f + '" stroke="' + s + '" ' + extra + '/>';
   const rect = (b, f, s, extra = '') => poly([[b[0], b[1]], [b[2], b[1]], [b[2], b[3]], [b[0], b[3]]], f, s, extra);
-  const bbox = (r) => { const xs = r.map((p) => p[0]), ys = r.map((p) => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
   const SX = (x) => x + PAD, SY = (y) => L + PAD - y;
-  function plan(k) {
-    const V = g(k), o = [];
+  (function plan() {
+    const o = [];
     $('plan').setAttribute('viewBox', '0 0 ' + (W + 2 * PAD) + ' ' + (L + 2 * PAD));
     o.push(rect([-EXT / 2, -EXT / 2, W + EXT / 2, L + EXT / 2], 'none', 'var(--muted)', 'stroke-dasharray="2 2" stroke-width="0.5"'));
     o.push(rect([0, 0, W, L], 'color-mix(in srgb, var(--c-under) 16%, var(--panel))', 'var(--c-under)', 'stroke-width="1"'));
@@ -233,16 +219,14 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
     for (const r of D.hof) o.push(poly(r, 'none', 'var(--c-hof)', 'stroke-width="0.4" opacity="0.7"'));
     for (const d of D.docks) o.push(poly(d.zone, 'color-mix(in srgb, var(--c-niche) 22%, transparent)', 'var(--c-niche)', 'stroke-width="0.4"'));
     if (D.disp) o.push(poly(D.disp.zone, 'color-mix(in srgb, var(--c-disp) 22%, transparent)', 'var(--c-disp)', 'stroke-width="0.5"'));
-    for (const n of D.notches) o.push(poly(n, 'color-mix(in srgb, var(--c-thread) 30%, transparent)', 'var(--c-thread)', 'stroke-width="0.4"'));
+    for (const n of D.notches7) o.push(poly(n, 'none', 'var(--c-thread)', 'stroke-width="0.4" stroke-dasharray="1.5 1.5"'));
     for (const hs of D.hoecker) for (const r of hs) o.push(poly(r, 'color-mix(in srgb, var(--c-gang) 12%, transparent)', 'none'));
     for (const gs of D.gaenge) for (const r of gs) o.push(poly(r, 'color-mix(in srgb, var(--c-gang) 40%, transparent)', 'var(--c-gang)', 'stroke-width="0.3"'));
-    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.knopf.d / 2 + D.dach) + '" fill="color-mix(in srgb, var(--c-knopf) 25%, var(--panel))" stroke="var(--c-knopf)" stroke-width="0.5"/>');
-    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.knopf.d / 2) + '" fill="color-mix(in srgb, var(--c-knopf) 45%, var(--panel))" stroke="var(--c-knopf)" stroke-width="0.8"/>');
-    if (V.podest) o.push(poly(V.podest, 'color-mix(in srgb, var(--c-under) 30%, transparent)', 'var(--c-under)', 'stroke-width="0.4" stroke-dasharray="3 1.5"'));
-    o.push(poly(D.old.body, 'none', 'var(--muted)', 'stroke-dasharray="3 2" stroke-width="0.6"'));
     o.push(poly(D.elec, 'color-mix(in srgb, var(--c-elec) 18%, transparent)', 'var(--c-elec)', 'stroke-width="0.6"'));
     const eb = V.esp_box; o.push(rect([eb[0], eb[1], eb[3], eb[4]], 'color-mix(in srgb, var(--c-elec) 45%, transparent)', 'var(--c-elec)', 'stroke-width="0.4"'));
-    o.push(poly(V.body, 'color-mix(in srgb, var(--c-pb) 85%, transparent)', 'var(--fg)', 'stroke-width="0.7"'));
+    o.push(poly(V.body, 'color-mix(in srgb, var(--c-pb) 72%, transparent)', 'var(--fg)', 'stroke-width="0.7"'));
+    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.knopf.d / 2 + D.dach) + '" fill="color-mix(in srgb, var(--c-knopf) 25%, transparent)" stroke="var(--c-knopf)" stroke-width="0.5"/>');
+    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.knopf.d / 2) + '" fill="color-mix(in srgb, var(--c-knopf) 45%, transparent)" stroke="var(--c-knopf)" stroke-width="0.8"/>');
     o.push(poly(V.plug, 'color-mix(in srgb, var(--accent-fill) 55%, transparent)', 'var(--accent)', 'stroke-width="0.4"'));
     o.push(poly(V.win, 'var(--accent-fill)', 'var(--accent)', 'stroke-width="0.4"'));
     const sw = D.sw; o.push(rect([-1.5, sw.y - sw.hole[0] / 2, D.wall + 9, sw.y + sw.hole[0] / 2], 'color-mix(in srgb, var(--c-sw) 50%, transparent)', 'var(--c-sw)', 'stroke-width="0.4"'));
@@ -250,60 +234,59 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
       o.push(poly(p.r, 'var(--c-under)', 'var(--edge)', 'stroke-width="0.3"'));
       if (p.pin) { const b = bbox(p.r); o.push('<circle cx="' + SX((b[0] + b[2]) / 2) + '" cy="' + SY((b[1] + b[3]) / 2) + '" r="4.2" fill="none" stroke="var(--accent)" stroke-width="0.9"/>'); }
     }
-    for (const p of D.old.pins) o.push('<circle cx="' + SX(p[0]) + '" cy="' + SY(p[1]) + '" r="2.5" fill="none" stroke="var(--muted)" stroke-dasharray="1 1" stroke-width="0.5"/>');
     const bc = bbox(V.body);
-    o.push('<text x="' + SX((bc[0] + bc[2]) / 2) + '" y="' + SY((bc[1] + bc[3]) / 2) + '" font-size="5" text-anchor="middle">Powerbank</text>');
+    o.push('<text x="' + SX((bc[0] + bc[2]) / 2) + '" y="' + SY(bc[3] - 12) + '" font-size="5" text-anchor="middle">Powerbank</text>');
     o.push('<text x="' + SX((eb[0] + eb[3]) / 2) + '" y="' + (SY((eb[1] + eb[4]) / 2) + 2) + '" font-size="4.2" text-anchor="middle">ESP32</text>');
     for (const a of D.aus) {
       const r = a.ang * Math.PI / 180, lx = a.x + Math.cos(r) * 9, ly = a.y + Math.sin(r) * 9;
-      o.push('<text x="' + SX(lx) + '" y="' + (SY(ly) + 1.6) + '" font-size="4.6" text-anchor="middle" fill="var(--c-gang)" style="fill:var(--c-gang);font-weight:600">' + a.r + '</text>');
+      o.push('<text x="' + SX(lx) + '" y="' + (SY(ly) + 1.6) + '" font-size="4.6" text-anchor="middle" style="fill:var(--c-gang);font-weight:600">' + a.r + '</text>');
     }
     o.push('<text x="' + SX(C[0]) + '" y="' + (SY(C[1]) + 1.5) + '" font-size="4" text-anchor="middle">Knopf</text>');
     o.push('<text x="' + SX(W / 2) + '" y="' + (L + 2 * PAD - 4) + '" font-size="5" text-anchor="middle" class="mut">Süden · Westwand links mit Schalter</text>');
     $('plan').innerHTML = o.join('');
     $('planDims').textContent = fmt(W) + ' × ' + fmt(L) + ' × ' + fmt(V.H) + ' mm';
-  }
-  listeners.push(plan);
+  })();
 
   /* ---------- Höhenkette ---------- */
   (function hk() {
     const cols = [
       ['Stand 7 (gedruckt)', 'unter der Powerbank', [['Boden', D.floor, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', D.h7 - D.floor - D.pb_t, '--c-niche']], D.h7],
-      ['A · quer', 'Powerbank auf Gangdach', [['Gang', D.gang.h, '--c-gang'], ['Dach', D.dach, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', VQ.H - D.gang_z - D.pb_t, '--c-niche']], VQ.H],
-      ['A · quer', 'über dem Knopf', [['Knopfraum', D.knopf.h, '--c-knopf'], ['Dach', D.dach, '--c-under'], ['frei', VQ.H - D.knopf_z, '--canvas']], VQ.H],
-      ['A · quer', 'ESP32 auf Gangdach', [['Gang', D.gang.h, '--c-gang'], ['Dach', D.dach, '--c-under'], ['ESP32 mit Band', VQ.esp_top - D.gang_z, '--c-elec'], ['frei', VQ.H - VQ.esp_top, '--canvas']], VQ.H],
-      ['B · Podest', 'Powerbank über dem Knopf', [['Knopfraum', D.knopf.h, '--c-knopf'], ['Dach', D.dach, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', VP.H - D.knopf_z - D.pb_t, '--c-niche']], VP.H],
+      ['Stand 8', 'Powerbank auf Gangdach', [['Gang', D.gang.h, '--c-gang'], ['Dach', D.dach, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', V.H - D.gang_z - D.pb_t, '--c-niche']], V.H],
+      ['Stand 8', 'über dem Knopf', [['Knopf', D.knopf.h, '--c-knopf'], ['Luft', D.knopf.luft, '--canvas'], ['Dach', D.dach, '--c-under'], ['Luft', V.pb_luft, '--canvas'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', V.H - D.gang_z - D.pb_t, '--c-niche']], V.H],
+      ['Stand 8', 'ESP32 auf Gangdach', [['Gang', D.gang.h, '--c-gang'], ['Dach', D.dach, '--c-under'], ['ESP32 mit Band', V.esp_top - D.gang_z, '--c-elec'], ['frei', V.H - V.esp_top, '--canvas']], V.H],
+      ['Stand 8', 'zwischen den Gängen', [['Boden', D.floor, '--c-under'], ['frei für Kabel', V.H - D.floor, '--canvas']], V.H],
     ];
-    const k = 6.2, base = 30 + (VP.H + D.plate_t + 4) * k, cw = 120, gap = 44, x0 = 64;
+    const k = 7.2, base = 30 + (V.H + D.plate_t + 4) * k, cw = 120, gap = 44, x0 = 64;
     const Wd = x0 + cols.length * (cw + gap) + 10, Hd = base + 64;
-    const o = ['<rect x="0" y="0" width="' + Wd + '" height="' + Hd + '" fill="none"/>'];
-    for (let z = 0; z <= VP.H + D.plate_t + 1; z += 5) { const y = base - z * k; o.push('<line x1="' + (x0 - 8) + '" x2="' + (Wd - 8) + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/><text x="' + (x0 - 12) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" class="mut">' + z + '</text>'); }
+    const o = [];
+    for (let z = 0; z <= V.H + D.plate_t + 1; z += 5) { const y = base - z * k; o.push('<line x1="' + (x0 - 8) + '" x2="' + (Wd - 8) + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/><text x="' + (x0 - 12) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" class="mut">' + z + '</text>'); }
     cols.forEach(([t, s, segs, H], i) => {
-      const x = x0 + i * (cw + gap); let z = 0;
+      const x = x0 + i * (cw + gap); let z = 0, ly = 1e9;
       for (const [n, h, tok] of segs) {
         const y = base - (z + h) * k, hh = h * k;
         o.push('<rect x="' + x + '" y="' + y + '" width="' + cw + '" height="' + hh + '" fill="var(' + tok + ')" stroke="var(--fg)" stroke-width="0.6" ' + (tok === '--canvas' ? 'stroke-dasharray="3 2"' : '') + '/>');
         if (hh > 13) o.push('<text x="' + (x + 6) + '" y="' + (y + hh / 2 + 4) + '" font-size="11" style="fill:' + (tok === '--c-under' || tok === '--c-elec' || tok === '--c-knopf' ? '#fff' : 'var(--fg)') + '">' + n + ' ' + fmt(h) + '</text>');
-        else o.push('<text x="' + (x + cw + 3) + '" y="' + (y + hh / 2 + 4) + '" font-size="10" class="mut">' + fmt(h) + '</text>');
+        else { ly = Math.min(y + hh / 2 + 4, ly - 11); o.push('<text x="' + (x + cw + 3) + '" y="' + ly + '" font-size="10" class="mut">' + n + ' ' + fmt(h) + '</text>'); }
         z += h;
       }
       const yp = base - (H + D.plate_t) * k;
       o.push('<rect x="' + x + '" y="' + yp + '" width="' + cw + '" height="' + D.plate_t * k + '" fill="var(--c-plate)" stroke="var(--fg)" stroke-width="0.6"/><text x="' + (x + 6) + '" y="' + (yp + D.plate_t * k / 2 + 4) + '" font-size="11">Steckplatte ' + fmt(D.plate_t) + '</text>');
       o.push('<text x="' + (x + cw / 2) + '" y="' + (yp - 8) + '" font-size="12" text-anchor="middle" style="font-weight:600">' + fmt(H + D.plate_t) + '</text>');
-      o.push('<text x="' + x + '" y="' + (base + 18) + '" font-size="12" style="font-weight:600">' + t + '</text><text x="' + x + '" y="' + (base + 34) + '" font-size="11" class="mut">' + s + ' · Kasten ' + fmt(H) + '</text>');
+      o.push('<text x="' + x + '" y="' + (base + 18) + '" font-size="12" style="font-weight:600">' + t + '</text><text x="' + x + '" y="' + (base + 34) + '" font-size="11" class="mut">' + s + '</text><text x="' + x + '" y="' + (base + 50) + '" font-size="11" class="mut">Kasten ' + fmt(H) + '</text>');
     });
     o.push('<rect x="' + (x0 - 8) + '" y="' + base + '" width="' + (Wd - x0) + '" height="5" fill="var(--c-hut)"/>');
     const hkEl = $('hk'); hkEl.setAttribute('viewBox', '0 0 ' + Wd + ' ' + Hd); hkEl.innerHTML = o.join('');
   })();
 
   /* ---------- Bedeutung ---------- */
+  const pinTxt = V.pin_rows.map((p) => '(' + fmt(p.neu[0], 0) + ' | ' + fmt(p.neu[1], 0) + ')').join(' und ');
   const rows = [
-    ['Kasten 5 mm höher', 'Kasten ' + mm(D.h7) + ' → ' + mm(VQ.H) + '; mit Platte ' + mm(D.h7 + D.plate_t) + ' → ' + mm(VQ.total) + '.', 'Alle Wände, Stützen, Fenster und die Distanzplatten-Logik werden 5 mm höher. Der Hauptschalter sitzt auf halber Wandhöhe: Mitte ' + mm(D.sw.z7) + ' → ' + mm(VQ.sw_z) + ' über dem Boden. Unter den Docks und über der ESP32-Fläche bleibt mehr Luft für Adern.'],
-    ['Knopfraum Ø 40 × 12 in der Mitte', 'Kuppel innen ' + mm(D.knopf_z) + ' hoch, Ø ' + fmt(D.knopf.d + 2 * D.dach) + ' außen.', 'Die Powerbank kann dort nicht liegen (sie bräuchte ' + mm(D.knopf_z + D.pb_t + D.gap) + ' Kastenhöhe). Darum Variante A (Powerbank verlegen) oder B (Podest). Die Decke ist eine Brücke über 40 mm.'],
-    ['Acht Kordelgänge 8 × 5', 'Gänge O, W ' + mm(D.aus[0].len) + ', N, S ' + mm(D.aus[2].len) + ', schräg ' + mm(D.aus[1].len) + ' lang.', 'Innen je ein Höcker ' + fmt(D.gang.w + 2 * D.dach) + ' breit und ' + mm(D.gang_z) + ' hoch. Alles, was darauf liegt, rückt 5 mm nach oben: Powerbank (A) und ESP32 (beide). Die schrägen Gänge treten seitlich aus (bei y ' + fmt(D.aus[1].y) + ' und ' + fmt(D.aus[5].y) + '), das Loch in der Wand ist dort ' + mm(D.aus[1].wand) + ' lang.'],
-    ['Powerbank (A)', 'quer im Nordteil, Anschlüsse nach Westen.', 'Vor der Buchse nur ' + mm(D.stecker_quer) + ' statt ' + mm(D.plug7, 0) + ': USB-A-Winkelstecker oder kurzer Winkeladapter nötig. Fenster für LEDs und Buchsen in der Westwand statt in der Nordwand. Kein Kabelkanal mehr an der Längsseite; das USB-Kabel läuft an der Westwand an der Kuppel vorbei nach Süden.'],
-    ['Stützen und Zapfen', 'A: ' + VQ.posts.length + ' Stützen, B: ' + VP.posts.length + ' (Stand 7: ' + D.old.posts.length + ').', 'Stützen weichen Knopfraum und Höckern aus. In A trägt im Nordteil keine Stütze die Platte (dort liegt die Powerbank). Zapfen ' + VQ.pin_rows.map((p) => '(' + fmt(p.alt[0], 0) + '|' + fmt(p.alt[1], 0) + ') → (' + fmt(p.neu[0], 0) + '|' + fmt(p.neu[1], 0) + ')').join(', ') + ' in A: die Zapfenaufnahme in der Steckplatte muss mitwandern (Platte wird ohnehin neu gedruckt).'],
-    ['Hut', 'Hut ' + mm(D.hut, 0) + ' (ungemessen), Platte ' + fmt(W) + ' × ' + fmt(L) + '.', 'Plattenmitte und Hutmitte müssen beim Annähen genau übereinander liegen. Am Nord- und Südende bleiben ' + mm((D.hut - L) / 2) + ' Hut, an den Seiten ' + mm((D.hut - W) / 2) + '; die Kordel läuft aus dem Gang über diesen Rand.'],
+    ['Kasten 5 mm höher', 'Kasten ' + mm(D.h7) + ' → ' + mm(V.H) + '; mit Platte ' + mm(D.h7 + D.plate_t) + ' → ' + mm(V.total) + '.', 'Unter der Powerbank verbrauchen die Gänge diese 5 mm (Steckerraum bleibt ' + mm(pbLuft) + '). Zwischen den Gängen, über der ESP32-Fläche und unter den Docks ist der Raum 5 mm höher als bisher. Der Hauptschalter sitzt auf halber Wandhöhe: Mitte ' + mm(D.sw.z7) + ' → ' + mm(V.sw_z) + ' über dem Boden.'],
+    ['Knopfraum Ø 30 × 1,4', 'Teller innen Ø ' + fmt(D.knopf.d + 2 * D.dach) + ', ' + mm(D.knopf_z) + ' hoch.', 'Nur eine flache Mulde von unten; der Boden steigt dort um ' + mm(D.knopf_z - D.floor) + '. Die Decke ist eine Brücke über 30 mm in der 8. Lage. Die Powerbank liegt ' + mm(V.pb_luft) + ' darüber auf den Gangdächern, also nicht auf dem Teller selbst.'],
+    ['Acht Kordelgänge 8 × 5', 'Gänge O, W ' + mm(D.aus[0].len) + ', N, S ' + mm(D.aus[2].len) + ', schräg ' + mm(D.aus[1].len) + ' lang (ab Knopfrand).', 'Innen je ein Höcker ' + fmt(D.gang.w + 2 * D.dach) + ' breit und ' + mm(D.gang_z) + ' hoch. Alle acht laufen sternförmig unter der Powerbank zusammen; sie liegt auf ihnen eben. Auch das ESP32 liegt auf den Gängen S und SO. Die schrägen Gänge treten seitlich aus (bei y ' + fmt(D.aus[1].y) + ' und ' + fmt(D.aus[5].y) + '), das Loch in der Wand ist dort ' + mm(D.aus[1].wand) + ' lang.'],
+    ['Powerbank bleibt', 'Lage, Steckerraum ' + mm(D.plug7, 0) + ' und Fenster in der Nordwand wie Stand 7.', 'Nur 5 mm höher: das Fenster ist ab ' + mm(V.z0) + ' über dem Boden offen, der USB-Stecker sitzt 5 mm höher. Das USB-Kabel am Kanal der Längsseite liegt jetzt am Boden zwischen den Gängen und muss über den Höcker NO.'],
+    ['Heißkleber statt Fäden', 'Kasten auf Hut, ggf. Platte auf Kasten.', 'Die vier Eckaussparungen des Kastens entfallen (Ecken jetzt geschlossen, gestrichelt in der Draufsicht). In der neu gedruckten Steckplatte können die Fadentaschen weg. Die Zapfen ' + pinTxt + ' bleiben als Ausrichthilfe; beim Kleben halten sie Platte und Kasten deckungsgleich.'],
+    ['Stützen', V.posts.length + ' statt ' + D.old.posts.length + '.', 'Es entfallen (20 | 60), (60 | 20) und (100 | 140): sie stünden auf oder dicht an einem Gang (SW, S, NO). Die Platte liegt auf den Wänden und den übrigen Stützen; bei Bedarf Stützen neben die Gänge rücken statt ins 40-mm-Raster.'],
   ];
   $('mean').innerHTML = '<thead><tr><th>Änderung</th><th>Maß</th><th>Folge</th></tr></thead><tbody>' + rows.map((r) => '<tr><td><b>' + r[0] + '</b></td><td class="small">' + r[1] + '</td><td class="small">' + r[2] + '</td></tr>').join('') + '</tbody>';
 
@@ -311,49 +294,53 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
   (function chk() {
     const pill = (ok) => '<span class="pill ' + (ok ? 'ok' : 'warn') + '">' + (ok ? 'ok' : 'fehlt') + '</span>';
     const de = (t) => t.replace(/(\d)\.(\d)/g, '$1,$2');
-    let h = '<thead><tr><th>Prüfung</th><th>' + NAME.quer + '</th><th>' + NAME.podest + '</th></tr></thead><tbody>';
-    VQ.checks.forEach((c, i) => { const p = VP.checks[i]; h += '<tr><td>' + c.n + '</td><td class="small">' + pill(c.ok) + ' ' + de(c.t) + '</td><td class="small">' + pill(p.ok) + ' ' + de(p.t) + '</td></tr>'; });
-    h += '<tr><td>Material Kasten</td><td class="small num">' + VQ.grams[0] + ' g · ' + fmt(VQ.grams[1]) + ' cm³</td><td class="small num">' + VP.grams[0] + ' g · ' + fmt(VP.grams[1]) + ' cm³</td></tr>';
-    h += '<tr><td>zum Vergleich Stand 7</td><td class="small num" colspan="2">' + D.old.grams[0] + ' g · ' + fmt(D.old.grams[1]) + ' cm³, Kasten ' + mm(D.h7) + '</td></tr></tbody>';
+    let h = '<thead><tr><th>Prüfung</th><th>Ergebnis</th></tr></thead><tbody>';
+    for (const c of V.checks) h += '<tr><td>' + c.n + '</td><td class="small">' + pill(c.ok) + ' ' + de(c.t) + '</td></tr>';
+    h += '<tr><td>Material Kasten</td><td class="small num">' + V.grams[0] + ' g · ' + fmt(V.grams[1]) + ' cm³ (Stand 7: ' + D.old.grams[0] + ' g · ' + fmt(D.old.grams[1]) + ' cm³)</td></tr></tbody>';
     $('chk').innerHTML = h;
   })();
 
   /* ---------- Hinweise ---------- */
   const watch = [
-    ['Druck', 'warn', [
-      'Decke des Knopfraums ist eine Brücke über ' + mm(D.knopf.d, 0) + '. Auf dem A1 mit PLA meist machbar, hängt aber etwas durch: im Slicer Brückeneinstellungen prüfen oder 0,4 mm Zuschlag in der Höhe einplanen. Eine Kuppel mit 45° geht nicht, sie bräuchte 20 mm Höhe.',
+    ['Druck', 'mid', [
+      'Decke des Knopfraums: Brücke über ' + mm(D.knopf.d, 0) + ', nur ' + mm(D.knopf_h) + ' über dem Bett. Auf dem A1 mit PLA unkritisch; hängt sie etwas durch, berührt sie den Knopf (0,2 Luft). Im Slicer Brückeneinstellungen an.',
       'Gänge: Brücken 8 mm (in der Außenwand bei den schrägen Gängen ' + mm(D.aus[1].wand) + '). Unkritisch.',
-      'Mündungen von Knopfraum und Gängen unten mit Fase 0,5 gegen den Elefantenfuß (ist im Modell). Sonst wird der 5-mm-Gang unten enger.',
-      'Fenster der Powerbank bleibt nach oben offen (keine Brücke). In A in der Westwand, rund ' + mm(bbox(VQ.win)[3] - bbox(VQ.win)[1], 0) + ' lang.']],
+      'Mündungen von Knopfraum und Gängen unten mit Fase 0,5 gegen den Elefantenfuß (ist im Modell). Ohne Fase wird der Knopfraum unten enger und die 0,2 Luft sind weg.',
+      'Fenster der Powerbank bleibt nach oben offen (keine Brücke).']],
+    ['Kleben', 'warn', [
+      'Heißkleber nicht an die Mündungen der Gänge und nicht in den Knopfraum: Kleber auf die Bodenflächen zwischen den Gängen, Abstand zu den Gangrändern einige mm.',
+      'Kasten so aufsetzen, dass der Knopf im Knopfraum sitzt. Der Raum ist Ø ' + fmt(D.knopf.d, 0) + ': misst der Knopf selbst 30, gibt es seitlich keine Luft (Karte K2). Vorher Mitte am Hut markieren; Kordel schon in den gewählten Gang legen.',
+      'Platte auf Kasten kleben nur, wenn sie wackelt: dann einige Punkte auf die Wandoberkante, nicht an die Docks. Die Powerbank kommt dann nur noch durchs Fenster heraus; Laden über USB-C im Fenster geht weiter.',
+      'Heißkleber und PLA: der Kasten verträgt kurz die Klebertemperatur, aber nicht großflächig dick auftragen (PLA wird ab ca. 60 °C weich).']],
     ['Hut und Kordel', 'mid', [
-      'Knopf messen: Durchmesser, Höhe, und wie die Kordel daran hängt (oben, seitlich). Ø 40 × 12 ist eine Annahme.',
-      'Kordel messen: Durchmesser und ob ein Knoten oder eine Schlaufe durch den Gang muss. 8 × 5 lässt bei 3 mm Kordel genug Luft.',
-      'Plattenmitte = Hutmitte. Beim Annähen der vier Ecken ausrichten, sonst sitzt der Knopf nicht im Raum (Spiel nur ' + mm((D.knopf.d - 30) / 2, 0) + ' je Seite bei 30 mm Knopf).',
-      'Welche Richtung die Quaste nimmt, entscheidet der Träger. Alle acht Gänge offen lassen kostet nur Höcker im Innenraum.']],
+      'Knopf Ø 30 × 1,2 (Nutzer). Kordel messen: Durchmesser und ob sie am Knopf flach abgeht. Gang 8 × 5 lässt bei 3 mm Kordel genug Luft.',
+      'Am Übergang vom Knopf in den Gang steigt die Kordel von 1,4 auf bis zu 5 mm; dort nicht knicken.',
+      'Welche Richtung die Quaste nimmt, entscheidet sich beim Aufkleben. Alle acht Gänge offen lassen kostet nur Höcker im Innenraum.']],
     ['Innenraum', 'mid', [
-      'Höcker ' + mm(D.gang_z) + ' hoch über dem Boden: Powerbank und ESP32 liegen darauf, nicht flach am Boden. Beide liegen auf mehreren Höckern und damit eben.',
-      'Steckerraum über der Powerbank in A nur ' + mm(VQ.H - VQ.pb_top) + ' (gefordert ' + mm(D.gap) + '). Die Powerbank darf nicht dicker sein als 12,8; die Fachprobe r5 sagte schon „minimal dicker“.',
-      'Adern und USB-Kabel queren die Höcker. Kabel nicht unter der Powerbank einklemmen.',
-      'ESP32-Fläche liegt ' + mm(1.3) + ' neben der Kuppel. Das Board liegt auf den Gängen S und SO.']],
+      'Steckerraum über der Powerbank ' + mm(pbLuft) + ' (gefordert ' + mm(D.gap) + '). Die Powerbank darf nicht dicker sein als 12,8; die Fachprobe r5 sagte schon „minimal dicker“.',
+      'Adern und USB-Kabel queren die Höcker. Kabel nicht zwischen Powerbank und Höcker einklemmen.',
+      'ESP32-Fläche liegt auf den Gängen S und SO, ' + mm(V.esp_top - D.gang_z) + ' hoch mit Isoband, darüber noch ' + mm(V.H - V.esp_top) + ' bis zur Platte.']],
     ['Steckplatte (wird neu gedruckt)', 'mid', [
-      'Zapfenaufnahmen folgen den Zapfen des neuen Kastens (A: zweiter Zapfen wandert nach (100 | 100); <code>ZAPFEN_LOKAL</code> in <code>plug/campus_underside.py</code>).',
-      'Docks, Fadentaschen und Display-Dock liegen oben im Steckerraum und stoßen nicht an Gänge oder Knopfraum (die liegen unten). Die Dockzonen bleiben frei von Stützen.',
-      'Kasten-Außenmaß bleibt an die Platte gekoppelt (<code>UK_OUTLINE</code>).']],
+      'Fadentaschen an den vier Ecken der Platte können entfallen (Heißkleber). In <code>plug.campus</code> ein Schalter ohne Fadentaschen, aber mit Zapfenaufnahmen.',
+      'Zapfenaufnahmen bleiben an ' + pinTxt + '.',
+      'Docks und Display-Dock liegen oben im Steckerraum und stoßen nicht an Gänge oder Knopfraum (die liegen unten). Die Dockzonen bleiben frei von Stützen.']],
     ['Größere Mulden (Branch dazzling-davinci)', 'mid', [
       'Dort geplant: Spiel 0,15 bis 0,20 statt 0,10 und Karte K3 Variante D: Gebäude auseinanderrücken, Platte 1 bis 2 mm größer; „Docks, Hof-Aussparung, Unterkasten und Batteriefach folgen“.',
-      'Für diesen Kasten heißt das: Außenmaß wächst (gestrichelt in der Draufsicht), die Mitte wandert um bis zu 1 mm; Knopfraum und Gänge sind zur Mitte gerechnet und wandern mit.',
-      'Docks und Mulden verschieben sich um 0,1 bis 0,2 mm je Naht; Abstände zu Stützen nach dem Umbau neu prüfen. Erst nach dem Mulden-Entscheid bauen.']],
+      'Für diesen Kasten heißt das: Außenmaß wächst (gestrichelt), die Mitte wandert um bis zu 1 mm; Knopfraum und Gänge sind zur Mitte gerechnet und wandern mit.',
+      'Docks verschieben sich um 0,1 bis 0,2 mm je Naht; Abstände zu Stützen nach dem Umbau neu prüfen. Erst nach dem Mulden-Entscheid bauen.']],
   ];
-  $('watch').innerHTML = watch.map(([t, s, li]) => '<div class="card"><span class="sev pill ' + s + '">' + (s === 'warn' ? 'kritisch' : 'beachten') + '</span><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
+  $('watch').innerHTML = watch.map(([t, s, li]) => '<div class="card"><span class="sev pill ' + s + '">' + (s === 'warn' ? 'wichtig' : 'beachten') + '</span><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
 
   /* ---------- Entscheidungen ---------- */
   const cards = [
-    ['K1 · Lage der Powerbank', true, ['<b>A quer im Norden</b> (Empfehlung): bleibt bei +5 mm, braucht Winkelstecker, Fenster West.', '<b>B Podest</b>: nichts verlegen, aber +12 mm und rund ' + (VP.grams[0] - VQ.grams[0]) + ' g mehr.', 'C quer im Süden: ESP32 und Schalter müssten nach Norden (nicht gerechnet).']],
-    ['K2 · Knopfraum', true, ['<b>Ø 40 × 12 flach überbrückt</b> wie gerechnet; Maß nach dem Messen von Knopf und Kordel anpassen.', 'Kleiner, z. B. Ø 32: spart nichts an der Powerbank-Frage, die Mitte bleibt unter ihr.']],
-    ['K3 · Gänge', true, ['<b>Alle acht</b> (Vorgabe): Quaste kann jede Richtung nehmen.', 'Nur O, W, N, S: weniger Höcker unter Powerbank und ESP32, aber die Diagonalen fehlen.']],
-    ['K4 · Probeteil vorher', false, ['<b>Mittelstück</b> etwa 60 × 60 mit Knopfraum, Gangansätzen und Boden: prüft Brücke, Fase, Kordel und Knopf am echten Hut, kurz zu drucken.', 'Ohne Probe direkt den ganzen Kasten.']],
+    ['K1 · Gänge', true, ['<b>Alle acht</b> (Vorgabe): Quaste kann jede Richtung nehmen, Powerbank liegt eben auf dem Stern.', 'Nur einen oder zwei Gänge: weniger Höcker, aber die Richtung ist festgelegt, bevor der Hut da ist.']],
+    ['K2 · Gangdach unter der Powerbank', true, ['<b>Wie gerechnet</b>: Powerbank auf ' + mm(D.gang_z) + ', Steckerraum ' + mm(pbLuft) + '.', 'Flacherer Gang (z. B. 8 × 3): Powerbank 2 mm tiefer, mehr Steckerraum; nur wenn die Kordel dünn genug ist.']],
+    ['K2b · Knopfraum seitlich', true, ['<b>Ø 32</b>, wenn der Knopf selbst 30 misst: je 1 mm Luft zum Aufsetzen beim Kleben.', 'Ø 30 wie jetzt gerechnet, wenn 30 schon das Maß mit Luft ist.']],
+    ['K3 · Zapfen', true, ['<b>Behalten</b> als Ausrichthilfe beim Kleben (Platte und Kasten deckungsgleich).', 'Weglassen: Platte und Kasten nur nach Außenkante ausrichten.']],
+    ['K4 · Probeteil vorher', false, ['<b>Mittelstück</b> etwa 50 × 50 mit Knopfraum, Gangansätzen und Boden: prüft Knopf, Kordel und Brücke am echten Hut, kurz zu drucken.', 'Ohne Probe direkt den ganzen Kasten.']],
   ];
-  $('cards').innerHTML = cards.map(([t, rec, li]) => '<div class="card' + (rec ? ' rec' : '') + '"><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
+  $('cards').innerHTML = '<div class="card"><h3>Verworfen</h3><ul><li><b>Powerbank quer im Norden</b>: passt wegen des Steckers nicht, auch nicht mit 2 mm breiterer Basis (Nutzer).</li><li><b>Powerbank auf Podest</b> (+12 mm): nicht mehr nötig, der Knopf ist nur 1,2 mm hoch.</li><li><b>Knopfraum Ø 40 × 12</b>: ersetzt durch Ø 30 × 1,4.</li><li><b>Fäden an den Ecken</b>: ersetzt durch Heißkleber.</li></ul></div>' +
+    cards.map(([t, rec, li]) => '<div class="card' + (rec ? ' rec' : '') + '"><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
 
   /* ---------- 3D ---------- */
   const LAYERS = [
@@ -392,57 +379,47 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
     for (const s in M.display) G.disp.add(mk(M.display[s], mat('disp', '--c-disp')));
     G.hof.add(mk(M.hof, mat('hof', '--c-hof'))); G.plate.add(mk(M.plate, mat('plate', '--c-plate'), false));
     G.uk7.add(mk(M.uk7, mat('uk7', '--c-old')));
-    const VG = {};
-    for (const k of ['quer', 'podest']) {
-      const V = g(k), bot = D.deck - V.H, sub = { uk: new THREE.Group(), pb: new THREE.Group(), esp: new THREE.Group(), sw: new THREE.Group() };
-      sub.uk.add(mk(V.mesh, mat('uk', '--c-under')));
-      const sh = (b) => [b[0], b[1], b[2] + bot, b[3], b[4], b[5] + bot];
-      sub.pb.add(boxAt(sh(V.pb_box), mat('pb', '--c-pb')));
-      sub.pb.add(boxAt(sh(V.plug_box), mat('pb', '--accent-fill')));
-      const e = V.esp_box; sub.esp.add(boxAt(sh(e), mat('esp', '--c-elec')));
-      const swz = bot + V.sw_z;
-      sub.sw.add(boxAt([D.wall, D.sw.y - 6.3, swz - 4, D.wall + 9, D.sw.y + 6.3, swz + 4], mat('sw', '--c-sw')));
-      sub.sw.add(boxAt([-1.5, D.sw.y - 7.5, swz - 5, 0, D.sw.y + 7.5, swz + 5], mat('sw', '--c-sw')));
-      for (const n in sub) G[n].add(sub[n]);
-      VG[k] = sub;
-    }
-    // Hut, Knopf, Kordel (hängen an der Unterkante der gewählten Variante)
-    const hutG = new THREE.Group(); G.hut.add(hutG);
+    const bot = D.deck - V.H, sh = (b) => [b[0], b[1], b[2] + bot, b[3], b[4], b[5] + bot];
+    G.uk.add(mk(V.mesh, mat('uk', '--c-under')));
+    G.pb.add(boxAt(sh(V.pb_box), mat('pb', '--c-pb'))); G.pb.add(boxAt(sh(V.plug_box), mat('pb', '--accent-fill')));
+    G.esp.add(boxAt(sh(V.esp_box), mat('esp', '--c-elec')));
+    const swz = bot + V.sw_z;
+    G.sw.add(boxAt([D.wall, D.sw.y - 6.3, swz - 4, D.wall + 9, D.sw.y + 6.3, swz + 4], mat('sw', '--c-sw')));
+    G.sw.add(boxAt([-1.5, D.sw.y - 7.5, swz - 5, 0, D.sw.y + 7.5, swz + 5], mat('sw', '--c-sw')));
+    // Hut, Knopf (Ø 30 × 1,2), Kordel; z = 0 der Gruppen an der Kastenunterkante
+    const hutG = new THREE.Group(); G.hut.add(hutG); hutG.position.z = bot;
     const board = new THREE.Mesh(new THREE.BoxGeometry(D.hut, D.hut, 3), mat('hut', '--c-hut')); board.position.set(C[0], C[1], -1.5); hutG.add(board);
-    const knopf = new THREE.Mesh(new THREE.CylinderGeometry(11, 12, 7, 32), mat('hut', '--c-knopf')); knopf.rotation.x = Math.PI / 2; knopf.position.set(C[0], C[1], 3.5); hutG.add(knopf);
-    const kordG = new THREE.Group(); G.kordel.add(kordG);
+    const knopf = new THREE.Mesh(new THREE.CylinderGeometry(D.knopf.d / 2, D.knopf.d / 2, D.knopf.h, 48), mat('hut', '--c-knopf')); knopf.rotation.x = Math.PI / 2; knopf.position.set(C[0], C[1], D.knopf.h / 2); hutG.add(knopf);
+    const kordG = new THREE.Group(); G.kordel.add(kordG); kordG.position.z = bot;
+    const st = { view: null, target: [W / 2, L / 2, -20], dirty: true };
     function kordel() {
       while (kordG.children.length) { const c = kordG.children.pop(); c.geometry.dispose(); }
       const a = D.aus[+$('dir').value], r = a.ang * Math.PI / 180, dx = Math.cos(r), dy = Math.sin(r);
       const tEdge = Math.min(Math.abs(dx) > 1e-6 ? (D.hut / 2) / Math.abs(dx) : 1e9, Math.abs(dy) > 1e-6 ? (D.hut / 2) / Math.abs(dy) : 1e9);
-      const z = 2.2, p = (t, zz) => new THREE.Vector3(C[0] + dx * t, C[1] + dy * t, zz);
-      const pts = [new THREE.Vector3(C[0], C[1], 7), p(8, 4), p(16, z), p((a.len + D.knopf.d / 2) * 0.6, z), p(a.len + D.knopf.d / 2, z), p(tEdge - 4, z + 0.6), p(tEdge + 1.5, -2), p(tEdge + 2.5, -30), p(tEdge + 2, -60)];
-      kordG.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 1.5, 8, false), mat('kordel', '--c-kordel')));
+      const z = 2.0, p = (t, zz) => new THREE.Vector3(C[0] + dx * t, C[1] + dy * t, zz);
+      const R = D.knopf.d / 2, pts = [p(0, D.knopf.h + 0.1), p(R * 0.5, D.knopf.h + 0.1), p(R + 3, 1.6), p(R + 10, z), p((a.len + R) * 0.6, z), p(a.len + R, z), p(tEdge - 4, z + 0.4), p(tEdge + 1.5, -2), p(tEdge + 2.5, -30), p(tEdge + 2, -60)];
+      kordG.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 140, 1.5, 8, false), mat('kordel', '--c-kordel')));
       const q = new THREE.Mesh(new THREE.CylinderGeometry(3, 7, 40, 16), mat('kordel', '--c-kordel')); q.rotation.x = Math.PI / 2; q.position.copy(p(tEdge + 2, -80)); kordG.add(q);
       st.dirty = true;
     }
-    function placeHut() { const bot = D.deck - g(cur).H; hutG.position.z = bot; kordG.position.z = bot; }
-    const st = { view: null, target: [W / 2, L / 2, -20], dirty: true };
     function apply() {
       for (const l of LAYERS) {
         const s = state[l[0]]; G[l[0]].visible = s !== 2;
         for (const m of byLayer[l[0]] || []) { const ghost = s === 1; m.transparent = ghost; m.opacity = ghost ? 0.16 : 1; m.depthWrite = !ghost; m.needsUpdate = true; }
       }
-      for (const k in VG) for (const n in VG[k]) VG[k][n].visible = k === cur;
       st.dirty = true;
     }
     function explode() {
       const e = +$('explode').value;
       G.bld.position.z = e * 70; G.disp.position.z = e * 70; G.hof.position.z = e * 50; G.plate.position.z = e * 30;
-      G.uk.position.z = 0; G.uk7.position.z = 0; G.pb.position.z = e * 12; G.esp.position.z = e * 12; G.sw.position.z = 0;
-      G.hut.position.z = -e * 30; G.kordel.position.z = -e * 30; st.dirty = true;
+      G.pb.position.z = e * 12; G.esp.position.z = e * 12; G.hut.position.z = -e * 30; G.kordel.position.z = -e * 30; st.dirty = true;
     }
     function cut() { const t = +$('cut').value; clip.constant = t >= 0.999 ? L + 500 : t * L; st.dirty = true; }
     function theme() { for (const k in mats) mats[k].color.set(css(mats[k].tok)); renderer.setClearColor(css('--canvas')); edgeMat.color.set(css('--edge')); st.dirty = true; }
-    const VIEWS = { iso: { az: -60, el: 28, d: 2.2 }, top: { az: -90, el: 88, d: 2.2 }, under: { az: -120, el: -35, d: 2.2 }, mitte: { az: 70, el: 14, d: 1.0 }, hut: { az: -55, el: 18, d: 3.0 } };
+    const VIEWS = { iso: { az: -60, el: 28, d: 2.2 }, top: { az: -90, el: 88, d: 2.2 }, under: { az: -120, el: -35, d: 2.2 }, mitte: { az: 70, el: 14, d: 0.85 }, hut: { az: -55, el: 18, d: 3.0 } };
     function setView(n) {
       const vw = VIEWS[n]; st.view = { az: vw.az, el: vw.el, dist: Math.max(W, L) * vw.d }; st.target = [W / 2, L / 2, -20];
-      if (n === 'mitte') { st.target = [C[0], C[1], D.deck - g(cur).H + 8]; $('cut').value = 0.5; cut(); }
+      if (n === 'mitte') { st.target = [C[0], C[1], bot + 8]; $('cut').value = 0.5; cut(); }
       st.dirty = true;
     }
     function cam() { const a = st.view.az * Math.PI / 180, e = st.view.el * Math.PI / 180, t = st.target, r = st.view.dist; camera.position.set(t[0] + r * Math.cos(e) * Math.cos(a), t[1] + r * Math.cos(e) * Math.sin(a), t[2] + r * Math.sin(e)); camera.lookAt(t[0], t[1], t[2]); }
@@ -463,13 +440,12 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
     document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
     new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    listeners.push((k) => { placeHut(); apply(); $('tag3d').textContent = '1:1300 · ' + NAME[k].split(' · ')[0] + ' · Kasten ' + fmt(g(k).H) + ' mm'; });
+    $('tag3d').textContent = '1:1300 · Kasten ' + fmt(V.H) + ' mm · mit Platte ' + fmt(V.total) + ' mm';
     T3 = { apply };
-    setView('iso'); kordel(); explode(); cut(); theme(); resize();
+    setView('iso'); kordel(); explode(); cut(); theme(); apply(); resize();
     (function loop() { if (st.dirty && st.view) { cam(); renderer.render(scene, camera); st.dirty = false; } requestAnimationFrame(loop); })();
   })();
   document.querySelectorAll('.tri button').forEach((b) => b.addEventListener('click', () => { state[b.parentNode.dataset.l] = +b.dataset.s; paintTri(); if (T3) T3.apply(); }));
   paintTri();
-  setVar('quer');
 })();
 </script>

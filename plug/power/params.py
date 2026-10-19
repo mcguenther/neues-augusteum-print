@@ -96,9 +96,9 @@ PIN_PLAN = dict(PIN, h=2.5)   # E  Zentrierzapfen 2,5 (Test-Dock: 1 mm länger a
 PLA = 1.24                # g/cm³
 SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken/Böden), 15 % Füllung
 
-# ---- Stand 8 (Plan 19.10.2026, noch keine STL): Kasten höher, Kordel des Doktorhuts unter der Plattenmitte (plug/power/kasten8.py)
+# ---- Stand 8 (Plan, noch keine STL; Nutzer 19.10.2026): Kasten höher, Knopf und Kordel des Doktorhuts unter der Plattenmitte (plug/power/kasten8.py)
 UK_PLUS = 5.0             # E  Kasten 5 mm höher als Stand 7 (Nutzer, schon vor der Kordel beschlossen)
-HUT_KNOPF = dict(d=40.0, h=12.0)       # S  freier Raum für Knopf und Kordelanbringung des Huts in der Plattenmitte ("erstmal", ungemessen)
-KORDEL_GANG = dict(w=8.0, h=5.0, n=8)  # S  Gang für die Kordel, freier Querschnitt, in 45°-Schritten von der Mitte zur Außenwand (ungemessen)
-KORDEL_DACH = 1.2         # E  Decke über Knopfraum und Gängen (drei Lagen wie der Boden), Wand des Knopfraums ebenso
-PB_STECKER_QUER = 19.8    # A  Platz vor der Anschlussseite, wenn die Powerbank quer liegt (110,8 innen − 91 Fach); braucht Winkelstecker
+HUT_KNOPF = dict(d=30.0, h=1.2, luft=0.2)   # S  Knopf in der Hutmitte: Ø 30 (Nutzer, statt erst 40), 1,2 hoch, dazu 0,2 Luft; Knopfraum 1,4 hoch
+KORDEL_GANG = dict(w=8.0, h=5.0, n=8)       # S  Gang für die Kordel, freier Querschnitt, in 45°-Schritten von der Mitte zur Außenwand (ungemessen)
+KORDEL_DACH = 1.2         # E  Decke über Knopfraum und Gängen (drei Lagen wie der Boden)
+BEFESTIGUNG = "Heißkleber"   # E  Nutzer 19.10.: Kasten auf den Hut kleben, im Zweifel die Steckplatte auf den Kasten; Fäden und Ösen (Eckaussparungen, Fadentaschen) entfallen

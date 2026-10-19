@@ -1,6 +1,6 @@
-"""Planseite Unterkasten Stand 8: Kasten 5 mm höher, Knopfraum Ø 40 × 12 und acht Kordelgänge 8 × 5 für den Doktorhut.
+"""Planseite Unterkasten Stand 8: Kasten 5 mm höher, Knopfraum Ø 30 × 1,4 und acht Kordelgänge 8 × 5 für den Doktorhut, Heißkleber statt Fäden.
 
-Zeigt beide Varianten aus `plug/power/kasten8.py` (Powerbank quer im Norden bei +5 mm, Powerbank auf Podest bei +12 mm) im 3D-Zusammenbau mit
+Zeigt den Kasten aus `plug/power/kasten8.py` (Powerbank am Platz von Stand 7, auf den Gangdächern über dem Knopf) im 3D-Zusammenbau mit
 allen Teilen, die es gibt: Steckplatte, sechs Gebäude, Hof-Einsatz, Display-Gebäude (zweiter Satz), Unterkasten Stand 7 (gedruckt) zum Vergleich,
 Powerbank, ESP32, Hauptschalter, Doktorhut mit Knopf und Kordel. Dazu Draufsicht, Höhenkette, Prüfzeilen, Hinweise und Entscheidungen.
 Die Gebäude-STL werden für die Ansicht ausgedünnt (fast_simplification, sonst volle Netze).
@@ -61,12 +61,10 @@ def rings(g):
 
 
 def var_data(r):
-    pb = r["pb"]
     return dict(
-        var=r["var"], H=r["H"], plus=r["plus"], total=r["total"], grams=r["grams"], pb_top=r["pb_top"], esp_top=r["esp_top"], esp_z0=r["esp_z0"],
-        checks=[dict(n=n, ok=bool(ok), t=t) for n, ok, t, _ in r["checks"]],
-        body=ring(pb["body"]), plug=ring(pb["plug"]), win=ring(pb["win"]), z0=pb["z0"], ports=pb["ports"],
-        podest=ring(pb["podest"]) if pb["podest"] is not None else None,
+        H=r["H"], plus=r["plus"], total=r["total"], grams=r["grams"], pb_top=r["pb_top"], esp_top=r["esp_top"], esp_z0=r["esp_z0"],
+        checks=[dict(n=n, ok=bool(ok), t=t) for n, ok, t in r["checks"]],
+        body=ring(r["body"]), plug=ring(r["plug"]), win=ring(r["win"]), z0=r["z_pb"], unter_pb=r["unter_pb"], pb_luft=r["pb_luft"],
         posts=[dict(r=ring(p), pin=i in r["pins"]) for i, p in enumerate(r["posts"])], pin_rows=r["pin_rows"],
         esp_box=[round(float(x), 2) for x in G.to_trimesh(r["esp_m"]).bounds.flatten()],
         pb_box=[round(float(x), 2) for x in G.to_trimesh(r["pb_m"]).bounds.flatten()],
@@ -78,8 +76,8 @@ def var_data(r):
 def main():
     v = K8.stand7()
     W, L = v["plate"]
-    res = {var: K8.build(var, v) for var in ("quer", "podest")}
-    K = res["quer"]["K"]
+    res = K8.build(v)
+    K = res["K"]
 
     plate = trimesh.load(PLATE)
     minx, miny = plate.bounds[0][:2]
@@ -105,20 +103,20 @@ def main():
     data = dict(
         W=W, L=L, deck=DECK, plate_t=BC.H0["plate_t"], h7=K8.H7, floor=PP.UK_FLOOR, wall=PP.UK_WALL, gap=PP.STECKERRAUM, pb_t=K8.PB_T,
         adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, gang_z=K8.GANG_Z,
-        hut=PP.HUT, stecker_quer=PP.PB_STECKER_QUER, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
+        knopf_h=K8.KNOPF_H, hut=PP.HUT, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
         c=[round(K["c"][0], 2), round(K["c"][1], 2)], aus=K["aus"], gaenge=[rings(g) for g in K["gaenge"]], hoecker=[rings(g) for g in K["hoecker"]],
-        notches=[n["notch"] for n in v["vs"]], docks=[dict(slug=d["slug"], title=d["title"], zone=d["zone"]) for d in v["docks"] if d["ok"]],
+        notches7=[n["notch"] for n in v["vs"]], docks=[dict(slug=d["slug"], title=d["title"], zone=d["zone"]) for d in v["docks"] if d["ok"]],
         buildings=[dict(slug=b["slug"], title=b["title"], poly=b["poly"]) for b in v["buildings"]], hof=v["hof"], disp=disp,
         old=dict(body=v["body"][0], plug=v["plug"][0], win=v["window"][0], elec=v["elec"][0], posts=[p["r"] for p in v["posts"]], pins=pins7,
                  grams=v["material"]["uk"]),
         elec=v["elec"][0], sw=dict(y=PP.SW_Y, hole=PP.SW_HOLE, depth=BC.SW_DEPTH, z7=v["switch"]["z"]),
-        vars={k: var_data(r) for k, r in res.items()}, meshes=meshes,
+        v=var_data(res), meshes=meshes,
     )
     tpl = open(TEMPLATE, encoding="utf-8").read()
     html = tpl.replace("/*DATA*/", json.dumps(data, ensure_ascii=False, separators=(",", ":"), default=float))
     open(OUT, "w", encoding="utf-8").write(html)
-    for k, r in res.items():
-        print("%s: Kasten %.1f (+%.1f), mit Platte %.1f, %s g, Prüfung %s" % (k, r["H"], r["plus"], r["total"], r["grams"][0],
+    r = res
+    print("Stand 8: Kasten %.1f (+%.1f), mit Platte %.1f, %s g, Prüfung %s" % (r["H"], r["plus"], r["total"], r["grams"][0],
                                                                          "alles ok" if all(c[1] for c in r["checks"]) else [c[0] for c in r["checks"] if not c[1]]))
     print("geschrieben:", os.path.relpath(OUT, ROOT), "(%.1f MB)" % (len(html) / 1e6))
 
