@@ -98,8 +98,8 @@ SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken
 
 # ---- Stand 8 (Plan, noch keine STL; Nutzer 19.10.2026): Kasten höher, Knopf und Kordel des Doktorhuts unter der Plattenmitte (plug/power/kasten8.py)
 STECKERRAUM_8 = 6.0       # E  Luft über der Powerbank bis zur Platte (Nutzer 19.10.: am Ende liegen viele Leitungen dort; Stand 7: 3,5); der Kasten wird so hoch wie nötig
-HUT_KNOPF = dict(d=22.0, h=1.2, luft=0.2, spiel=1.0)   # M  Knopf in der Hutmitte Ø 22 × 1,2 (Nutzer 19.10.); Knopfraum 1,4 hoch (0,2 Luft) und Ø 24 (1,0 Spiel je Seite zum Aufsetzen)
+HUT_KNOPF = dict(d=22.0, h=1.2, luft=0.2, r=26.0)   # M  Knopf in der Hutmitte Ø 22 × 1,2 (Nutzer 19.10.); Knopfraum Radius 26 (Ø 52, Nutzer 20.10., größer gewünscht), 1,4 hoch (0,2 Luft oben), Wand 45° (oben Radius 24,6)
 KORDEL = dict(h=3.0, b=5.0)                 # M  Kordel des Huts etwa 3 hoch × 5 breit (Nutzer 19.10.)
-KORDEL_GANG = dict(w=8.0, h=5.0, n=8)       # S  Gang für die Kordel in 45°-Schritten von der Mitte zur Außenwand: 8 × 5 gibt der Kordel 3,0 seitlich und 2,0 in der Höhe Spiel zum Auflegen des Körpers
+KORDEL_GANG = dict(w=8.0, h=5.0, n=8, fase=1.5)   # S  Gang für die Kordel in 45°-Schritten von der Mitte zur Außenwand: 8 × 5, obere Kanten 1,5 × 45° gefast (Decke nur 5 breit, keine Brücke über 8; die Kordel 3 × 5 hat 2,0 in der Höhe und 3,0 seitlich Spiel)
 KORDEL_DACH = 1.2         # E  Decke über Knopfraum und Gängen (drei Lagen wie der Boden)
 BEFESTIGUNG = "Heißkleber"   # E  Nutzer 19.10.: Kasten auf den Hut kleben, im Zweifel die Steckplatte auf den Kasten; Fäden und Ösen (Eckaussparungen, Fadentaschen) entfallen

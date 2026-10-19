@@ -24,13 +24,15 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, ROOT)
 import generate as G  # noqa: E402
 from plug.geom import box as mbox  # noqa: E402
+from plug.geom import prism_y  # noqa: E402
+import manifold3d as m3d  # noqa: E402
 from plug.power import build_concept as BC  # noqa: E402
 from plug.power import params as PP  # noqa: E402
 
 H7 = round(BC.H0["uk_t"], 2)                         # 17,6
 PB_T = PP.PB_T + PP.PB_T_ZUSCHLAG                    # 12,8
 DACH = PP.KORDEL_DACH
-R_KNOPF = (PP.HUT_KNOPF["d"] + 2 * PP.HUT_KNOPF["spiel"]) / 2     # Knopfraum Ø 24
+R_KNOPF = PP.HUT_KNOPF["r"]                        # Knopfraum Radius 26 (Ø 52)
 KNOPF_H = round(PP.HUT_KNOPF["h"] + PP.HUT_KNOPF["luft"], 2)   # Knopfraum 1,4
 KNOPF_Z = round(KNOPF_H + DACH, 2)                   # Oberkante Knopfdach 2,6
 GANG_Z = PP.KORDEL_GANG["h"] + DACH                  # Oberkante Gangdach 6,2
@@ -60,6 +62,67 @@ def kordel(W, L):
                         len=round(math.hypot(p.x - c[0], p.y - c[1]) - R_KNOPF, 1),
                         wand=round(PP.KORDEL_GANG["w"] / (abs(d[0]) if min(p.x, W - p.x) < 1e-6 else abs(d[1])), 1)))
     return dict(c=c, frei=frei, kuppel=kuppel.intersection(inner), gaenge=gaenge, hoecker=hoecker, aus=aus)
+
+
+def gang_profil(w, h, fase, z0=-1.0):
+    """Querschnitt eines Gangs in (y, z): Breite w, Höhe h, obere Kanten mit Fase 45° (Decke nur w − 2·fase breit, keine Brücke über w)."""
+    hw = w / 2
+    return [(-hw, z0), (hw, z0), (hw, h - fase), (hw - fase, h), (-hw + fase, h), (-hw, h - fase)]
+
+
+def gaenge_cut(c, w, h, fase, n, z0=-1.0, laenge=200.0):
+    """Schnittkörper aller Gänge: je ein Prisma vom Mittelpunkt nach außen, in 45°-Schritten gedreht."""
+    one = prism_y_x(gang_profil(w, h, fase, z0), 0.0, laenge)
+    return G.union([one.rotate([0, 0, k * 360.0 / n]).translate([c[0], c[1], 0]) for k in range(n)])
+
+
+def prism_y_x(pts, x0, x1):
+    """Profil in (y, z), entlang x extrudiert (wie plug.geom.prism_x, aber mit Rückgabe im Ursprung)."""
+    from plug.geom import prism_x
+    return prism_x(pts, x0, x1)
+
+
+def knopf_cut(c, r, h, z0=-1.0):
+    """Knopfraum: Zylinder Radius r unten, Wand 45° nach innen (oben r − h), keine Stütze nötig."""
+    kegel = m3d.Manifold.cylinder(h, r, r - h, 128)
+    fuss = m3d.Manifold.cylinder(-z0, r, r, 128).translate([0, 0, z0])
+    return G.union([fuss, kegel]).translate([c[0], c[1], 0])
+
+
+def ueberhang(uk, zmax=8.0, dz=0.2):
+    """Überhang je 0,2-mm-Lage bis zmax: Fläche, die nicht von der Lage darunter (um dz nach außen = 45°) getragen wird.
+    Rückgabe: größte freie Breite (mm, Brücke) und größte Fläche (mm²) mit der Höhe z."""
+    from shapely.geometry import Polygon as SP
+
+    def cs(z):
+        rings = [SP(r) for r in uk.slice(z).to_polygons() if len(r) > 2]
+        out = None
+        for r in rings:
+            out = r.buffer(0) if out is None else out.symmetric_difference(r.buffer(0))
+        return out
+
+    worst_w, worst_a, worst_z = 0.0, 0.0, 0.0
+    prev = cs(dz / 2)
+    z = dz / 2 + dz
+    while z < zmax:
+        cur = cs(z)
+        if cur is not None and prev is not None:
+            un = cur.difference(prev.buffer(dz + 0.02))
+            parts = [un] if un.geom_type == "Polygon" else list(getattr(un, "geoms", []))
+            for q in parts:
+                if q.area < 0.3:
+                    continue
+                w, d = 0.0, 0.1
+                while not q.buffer(-d).is_empty and d < 40:
+                    w = 2 * d
+                    d += 0.1
+                if w > worst_w:
+                    worst_w = w
+                if q.area > worst_a:
+                    worst_a, worst_z = q.area, z
+        prev = cur
+        z += dz
+    return round(worst_w, 1), round(worst_a, 1), round(worst_z, 1)
 
 
 def build(v):
@@ -102,7 +165,9 @@ def build(v):
     solids += [G.extrude(r, PP.UK_FLOOR - 0.01, H) for r in posts]
     solids += [BC.pin_solid_at(posts[i].centroid, H, PP.PIN_PLAN, PP.CH_PIN) for i in pins]
     unten = unary_union([K["frei"], gang_all])
-    holes = [G.extrude(K["frei"], -1, KNOPF_H), G.extrude(gang_all, -1, PP.KORDEL_GANG["h"]), BC.mouth_ch(unten, 0, PP.CH_BED)]
+    gc = gaenge_cut(K["c"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"], PP.KORDEL_GANG["n"])
+    kc = knopf_cut(K["c"], R_KNOPF, KNOPF_H)
+    holes = [kc, gc, BC.mouth_ch(unten, 0, PP.CH_BED)]
     holes.append(G.extrude(win, z_pb, H + 2))
     sw = BC.switch_cut(0, 0, 0, dict(uk_t=H))
     holes.append(sw["cut"])
@@ -120,8 +185,13 @@ def build(v):
     pc = plug.bounds
     zm = z_pb + PB_T / 2
     plugm = mbox(pc[0] + 0.3, pc[2] - 0.3, pc[1] + 0.3, pc[3] - 0.3, zm - 4.0, zm + 4.0)
-    frei_m = G.extrude(K["frei"], 0.0, KNOPF_H - 0.01)
-    gang_m = G.extrude(gang_all.intersection(outline).difference(K["frei"]), 0.0, PP.KORDEL_GANG["h"] - 0.01)
+    frei_m = m3d.Manifold.cylinder(KNOPF_H - 0.02, R_KNOPF - 0.02, R_KNOPF - KNOPF_H + 0.0, 128).translate([K["c"][0], K["c"][1], 0.01])
+    kn = PP.HUT_KNOPF
+    knopf_m = m3d.Manifold.cylinder(kn["h"], kn["d"] / 2, kn["d"] / 2, 64).translate([K["c"][0], K["c"][1], 0.0])
+    gm = gaenge_cut(K["c"], PP.KORDEL_GANG["w"] - 0.04, PP.KORDEL_GANG["h"] - 0.04, PP.KORDEL_GANG["fase"], PP.KORDEL_GANG["n"], z0=0.01, laenge=min(W, L) / 2 - PP.UK_WALL - 0.02)
+    gang_m = gm
+    kb, kh = PP.KORDEL["b"], PP.KORDEL["h"]
+    kord_m = G.union([prism_y_x([(-kb / 2, 0.05), (kb / 2, 0.05), (kb / 2, kh), (-kb / 2, kh)], 0.0, min(W, L) / 2 - PP.UK_WALL - 0.02).rotate([0, 0, k * 45.0]).translate([K["c"][0], K["c"][1], 0]) for k in range(8)])
     pb_luft = z_pb - KNOPF_Z                         # Luft zwischen Knopfdach und Powerbank
 
     def iv(a):
@@ -131,10 +201,14 @@ def build(v):
     pb_top = z_pb + PB_T
     esp_top = esp_z0 + PP.ESP_H + 2 * PP.ESP_TAPE
     lie = len(unter_pb)
+    ow, oa, oz = ueberhang(uk, zmax=8.0)
     checks = [
         ("dicht", bool(tm.is_watertight), "Netz geschlossen (Manifold)"),
-        ("Knopfraum frei", iv(frei_m) == 0, "Ø %.0f × %.1f (Knopf Ø %.0f × %.1f, Spiel %.1f je Seite, Luft %.1f oben) gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H, PP.HUT_KNOPF["d"], PP.HUT_KNOPF["h"], PP.HUT_KNOPF["spiel"], PP.HUT_KNOPF["luft"], iv(frei_m))),
-        ("Gänge frei", iv(gang_m) == 0, "%d Gänge %.0f × %.0f bis zur Außenwand gegen Kasten: %.2f mm³" % (PP.KORDEL_GANG["n"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], iv(gang_m))),
+        ("Überhang ohne Support", ow <= 15.0, "je 0,2-mm-Lage bis 8 mm Höhe, Wände bis 45° getragen: breiteste freie Decke %.1f mm (Brücke, Sternmitte; Gangdecken 5,0 mm, gefordert höchstens 15)" % ow),
+        ("Knopfraum frei", iv(frei_m) < 0.05, "Ø %.0f × %.1f mit 45°-Wand (oben Ø %.1f) gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H, 2 * (R_KNOPF - KNOPF_H), iv(frei_m))),
+        ("Knopf im Raum", iv(knopf_m) < 0.05, "Knopf Ø %.0f × %.1f, Luft oben %.1f, seitlich bis zur Wand %.1f: Überschneidung %.2f mm³" % (kn["d"], kn["h"], kn["luft"], R_KNOPF - kn["d"] / 2, iv(knopf_m))),
+        ("Gänge frei", iv(gang_m) < 0.05, "%d Gänge %.0f × %.0f, obere Kanten %.1f × 45°, gegen Kasten: %.2f mm³" % (PP.KORDEL_GANG["n"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"], iv(gang_m))),
+        ("Kordel in allen Gängen", iv(kord_m) < 0.05, "Kordel %.0f × %.0f in jeder der 8 Richtungen bis zur Außenwand: Überschneidung %.2f mm³" % (kb, kh, iv(kord_m))),
         ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f auf %d Gangdächern (%s), Überschneidung %.2f mm³" % (z_pb, lie, ", ".join(unter_pb), iv(pbm))),
         ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM_8 - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM_8)),
         ("Kordel im Gang", PP.KORDEL["h"] < PP.KORDEL_GANG["h"] and PP.KORDEL["b"] < PP.KORDEL_GANG["w"], "Kordel %.0f × %.0f in Gang %.0f × %.0f (breit × hoch): Spiel %.1f hoch, %.1f seitlich" % (PP.KORDEL["b"], PP.KORDEL["h"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["h"] - PP.KORDEL["h"], PP.KORDEL_GANG["w"] - PP.KORDEL["b"])),

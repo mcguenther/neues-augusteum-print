@@ -116,7 +116,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 <header>
   <div class="kicker">Steckmechanismus · Grundplatte 1:1300 · Unterkasten, Stand 8 (Plan, Fassung 2)</div>
   <h1>Batteriefach Stand 8</h1>
-  <p class="lead">Der Kasten unter der Steckplatte wird neu gedruckt: 7,4 mm höher (6 mm Steckerraum über der Powerbank), in der Plattenmitte unten ein flacher Raum für den Knopf des Doktorhuts (Ø 22, Raum Ø 24 × 1,4 mm) und acht Gänge (8 × 5 mm), in denen die Kordel (3 × 5 mm) nach außen läuft. Die Powerbank bleibt, wo sie ist, und liegt über dem Knopf auf den Gangdächern. Befestigt wird mit Heißkleber; die Aussparungen für Fäden entfallen. Diese Seite zeigt alle Teile im Zusammenbau. Es gibt noch keine STL.</p>
+  <p class="lead">Der Kasten unter der Steckplatte wird neu gedruckt: 7,4 mm höher (6 mm Steckerraum über der Powerbank), in der Plattenmitte unten ein flacher Raum für den Knopf des Doktorhuts (Ø 22; Raum Radius 26, also Ø 52 × 1,4 mm) und acht Gänge (8 × 5 mm), in denen die Kordel (3 × 5 mm) nach außen läuft. Alle Decken von unten sind mit 45° gefast, damit kein Support nötig ist. Die Powerbank bleibt, wo sie ist, und liegt über dem Knopf auf den Gangdächern. Befestigt wird mit Heißkleber; die Aussparungen für Fäden entfallen. Diese Seite zeigt alle Teile im Zusammenbau. Es gibt noch keine STL.</p>
 </header>
 
 <section aria-labelledby="h-ans">
@@ -143,7 +143,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
       <h3>Draufsicht Unterkasten <span class="muted small num" id="planDims"></span></h3>
       <svg id="plan" role="img" aria-label="Draufsicht des Unterkastens mit Knopfraum, Kordelgängen, Powerbank, Elektronik, Stützen und Zapfen"></svg>
       <div class="legend">
-        <span style="--sw:var(--c-knopf)">Knopfraum Ø 24</span><span style="--sw:var(--c-gang)">Kordelgang 8 breit</span>
+        <span style="--sw:var(--c-knopf)">Knopfraum Ø 52</span><span style="--sw:var(--c-gang)">Kordelgang 8 breit</span>
         <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Stecker, Fenster</span>
         <span style="--sw:var(--c-elec)">ESP32-Fläche</span><span style="--sw:var(--c-under)">Stütze (Ring = Zapfen)</span>
         <span style="--sw:var(--c-niche)">Dockzone</span><span style="--sw:var(--c-sw)">Hauptschalter</span><span style="--sw:var(--c-disp)">Display-Dock</span>
@@ -172,7 +172,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
 <section aria-labelledby="h-k4">
   <h2 id="h-k4">K4 · Probeteil Mitte</h2>
-  <p class="muted">Prüft am echten Hut, was der Rechner nicht prüfen kann: sitzt der Knopf im Raum, lässt sich die Kordel in jeden der acht Gänge legen, trägt die Brücke über dem Knopf, und wie fühlt sich das Auflegen der Deckplatte auf die Kordel an.</p>
+  <p class="muted">Prüft am echten Hut, was der Rechner nicht prüfen kann: sitzt der Knopf im Raum, lässt sich die Kordel in jeden der acht Gänge legen, trägt die Decke ohne Support, und wie fühlt sich das Auflegen der Deckplatte auf die Kordel an.</p>
   <div class="two">
     <div class="card"><h3>Draufsicht und Schnitt</h3><svg id="k4" role="img" aria-label="Probeteil: Scheibe mit Knopfraum und acht Gängen, Schnitt durch einen Gang"></svg></div>
     <div class="card"><h3>Teile und Fragen</h3><ul id="k4list"></ul></div>
@@ -207,7 +207,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
   /* ---------- Kurz ---------- */
   $('answer').innerHTML = [
     ['rec', 'Kasten', mm(V.H) + ' (+' + fmt(V.plus) + ')', 'Mit Platte ' + mm(V.total) + ' statt ' + mm(D.h7 + D.plate_t) + '. Etwa ' + V.grams[0] + ' g (Stand 7: ' + D.old.grams[0] + ' g). Außenmaß unverändert ' + fmt(W) + ' × ' + fmt(L) + '.'],
-    ['', 'Knopf in der Mitte', 'Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h), 'Knopf Ø ' + fmt(D.knopf.d, 0) + ' × ' + fmt(D.knopf.h) + ', dazu ' + mm(D.knopf.spiel, 0) + ' Spiel je Seite und ' + mm(D.knopf.luft) + ' Luft oben. Innen nur ein flacher Teller ' + mm(D.knopf_z) + ' hoch; die Powerbank liegt ' + mm(V.pb_luft) + ' darüber.'],
+    ['', 'Knopf in der Mitte', 'Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h), 'Knopf Ø ' + fmt(D.knopf.d, 0) + ' × ' + fmt(D.knopf.h) + ', dazu ' + mm((D.raum_d - D.knopf.d) / 2, 0) + ' Platz je Seite und ' + mm(D.knopf.luft) + ' Luft oben. Innen nur ein flacher Teller ' + mm(D.knopf_z) + ' hoch; die Powerbank liegt ' + mm(V.pb_luft) + ' darüber.'],
     ['', 'Powerbank', 'bleibt am Platz', 'Liegt auf den Dächern der acht Gänge (' + mm(D.gang_z) + ' über dem Boden), die sternförmig unter ihr zusammenlaufen. Darüber ' + mm(pbLuft) + ' Steckerraum (gefordert ' + mm(D.gap) + '). Dort liegen am Ende viele Leitungen, deshalb 6 statt 3,5 mm.'],
     ['', 'Befestigung', 'Heißkleber', 'Kasten auf den Hut kleben, im Zweifel die Steckplatte auf den Kasten. Die vier Eckaussparungen für Fäden entfallen; die Fadentaschen in der Platte können beim Neudruck auch weg.'],
   ].map(([c, l, b, t]) => '<div class="' + c + '"><span class="lbl">' + l + '</span><span class="big">' + b + '</span><span class="small muted">' + t + '</span></div>').join('');
@@ -291,7 +291,7 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
   const pinTxt = V.pin_rows.map((p) => '(' + fmt(p.neu[0], 0) + ' | ' + fmt(p.neu[1], 0) + ')').join(' und ');
   const rows = [
     ['Kasten 7,4 mm höher, Steckerraum 6', 'Kasten ' + mm(D.h7) + ' → ' + mm(V.H) + '; mit Platte ' + mm(D.h7 + D.plate_t) + ' → ' + mm(V.total) + '.', 'Gangdach ' + mm(D.gang_z) + ' + Powerbank ' + mm(D.pb_t) + ' + Steckerraum ' + mm(pbLuft) + ' ergeben die Höhe. Zwischen den Gängen, über der ESP32-Fläche und unter den Docks ist der Raum jetzt ' + mm(V.plus) + ' höher als bisher. Der Hauptschalter sitzt auf halber Wandhöhe: Mitte ' + mm(D.sw.z7) + ' → ' + mm(V.sw_z) + ' über dem Boden.'],
-    ['Knopfraum Ø 24 × 1,4', 'Teller innen Ø ' + fmt(D.raum_d + 2 * D.dach) + ', ' + mm(D.knopf_z) + ' hoch.', 'Nur eine flache Mulde von unten; der Boden steigt dort um ' + mm(D.knopf_z - D.floor) + '. Die Decke ist eine Brücke über 24 mm in der 8. Lage. Die Powerbank liegt ' + mm(V.pb_luft) + ' darüber auf den Gangdächern, also nicht auf dem Teller selbst.'],
+    ['Knopfraum Ø 52 × 1,4', 'Teller innen Ø ' + fmt(D.raum_d + 2 * D.dach) + ', ' + mm(D.knopf_z) + ' hoch.', 'Nur eine flache Mulde von unten; der Boden steigt dort um ' + mm(D.knopf_z - D.floor) + '. Die Wand ist 45° nach innen geneigt (oben Ø ' + fmt(D.raum_d - 2 * D.knopf_h) + '), also ohne Support; die Decke ist nur zwischen den Gängen frei, höchstens etwa 13 mm breit. Die Powerbank liegt ' + mm(V.pb_luft) + ' darüber auf den Gangdächern, also nicht auf dem Teller selbst.'],
     ['Acht Kordelgänge 8 × 5', 'Gänge O, W ' + mm(D.aus[0].len) + ', N, S ' + mm(D.aus[2].len) + ', schräg ' + mm(D.aus[1].len) + ' lang (ab Knopfrand).', 'Innen je ein Höcker ' + fmt(D.gang.w + 2 * D.dach) + ' breit und ' + mm(D.gang_z) + ' hoch. Alle acht laufen sternförmig unter der Powerbank zusammen; sie liegt auf ihnen eben. Auch das ESP32 liegt auf den Gängen S und SO. Die schrägen Gänge treten seitlich aus (bei y ' + fmt(D.aus[1].y) + ' und ' + fmt(D.aus[5].y) + '), das Loch in der Wand ist dort ' + mm(D.aus[1].wand) + ' lang.'],
     ['Powerbank bleibt', 'Lage, Steckerraum ' + mm(D.plug7, 0) + ' und Fenster in der Nordwand wie Stand 7.', 'Nur höher: das Fenster ist ab ' + mm(V.z0) + ' über dem Boden offen, der USB-Stecker sitzt ' + mm(V.z0 - 1.2) + ' höher. Das USB-Kabel am Kanal der Längsseite liegt jetzt am Boden zwischen den Gängen und muss über den Höcker NO.'],
     ['Heißkleber statt Fäden', 'Kasten auf Hut, ggf. Platte auf Kasten.', 'Die vier Eckaussparungen des Kastens entfallen (Ecken jetzt geschlossen, gestrichelt in der Draufsicht). In der neu gedruckten Steckplatte können die Fadentaschen weg. Die Zapfen ' + pinTxt + ' bleiben als Ausrichthilfe; beim Kleben halten sie Platte und Kasten deckungsgleich.'],
@@ -311,30 +311,32 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
 
   /* ---------- K4 ---------- */
   (function k4() {
-    const R = 30, rr = D.raum_d / 2, hw = D.gang.w / 2, T = 6.2, o = [], cx = 200, cy = 190;
+    const R = 35, rr = D.raum_d / 2, hw = D.gang.w / 2, T = 6.2, o = [], cx = 200, cy = 190;
     const k = 5;
     o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + R * k / 2 + '" fill="color-mix(in srgb, var(--c-under) 25%, var(--panel))" stroke="var(--c-under)" stroke-width="1.5"/>');
-    for (let i = 0; i < 8; i++) o.push('<rect x="' + cx + '" y="' + (cy - hw * k / 2) + '" width="' + R * k / 2 + '" height="' + hw * k + '" fill="color-mix(in srgb, var(--c-gang) 40%, transparent)" stroke="var(--c-gang)" transform="rotate(' + (i * 45) + ' ' + cx + ' ' + cy + ')"/>');
     o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + rr * k / 2 + '" fill="color-mix(in srgb, var(--c-knopf) 35%, var(--panel))" stroke="var(--c-knopf)" stroke-width="1.5"/>');
     o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + D.knopf.d / 2 * k / 2 + '" fill="var(--c-knopf)" opacity="0.6"/>');
+    for (let i = 0; i < 8; i++) o.push('<rect x="' + cx + '" y="' + (cy - hw * k / 2) + '" width="' + R * k / 2 + '" height="' + hw * k + '" fill="color-mix(in srgb, var(--c-gang) 40%, transparent)" stroke="var(--c-gang)" transform="rotate(' + (i * 45) + ' ' + cx + ' ' + cy + ')"/>');
     o.push('<text x="' + cx + '" y="' + (cy + 4) + '" font-size="11" text-anchor="middle" style="fill:#fff">Knopf Ø ' + fmt(D.knopf.d, 0) + '</text>');
     o.push('<text x="' + cx + '" y="' + (cy - R * k / 2 - 12) + '" font-size="12" text-anchor="middle" style="font-weight:600">Scheibe Ø ' + fmt(2 * R, 0) + ', Gänge 8 breit bis zum Rand</text>');
-    // Schnitt unten
-    const sx = 40, sy = 380, s = 9, W2 = 2 * R * s / 3;
-    const Tz = D.gang_z, kz = D.knopf_z;
-    o.push('<line x1="' + sx + '" x2="' + (sx + W2) + '" y1="' + sy + '" y2="' + sy + '" stroke="var(--c-hut)" stroke-width="5"/>');
-    o.push('<rect x="' + sx + '" y="' + (sy - Tz * s) + '" width="' + W2 + '" height="' + Tz * s + '" fill="var(--c-under)" stroke="var(--fg)" stroke-width="0.6"/>');
-    o.push('<rect x="' + (sx + W2 / 2 - D.raum_d / 2 * s * 0.5) + '" y="' + (sy - D.knopf_h * s) + '" width="' + D.raum_d * s * 0.5 + '" height="' + D.knopf_h * s + '" fill="var(--bg)" stroke="var(--fg)" stroke-width="0.6"/>');
-    o.push('<rect x="' + (sx + W2 / 2 - D.knopf.d / 2 * s * 0.5) + '" y="' + (sy - D.knopf.h * s) + '" width="' + D.knopf.d * s * 0.5 + '" height="' + D.knopf.h * s + '" fill="var(--c-knopf)"/>');
-    o.push('<rect x="' + sx + '" y="' + (sy - D.gang.h * s) + '" width="' + W2 * 0.28 + '" height="' + D.gang.h * s + '" fill="var(--bg)" stroke="var(--c-gang)" stroke-width="0.8"/>');
-    o.push('<rect x="' + (sx + 4) + '" y="' + (sy - D.kordel.h * s) + '" width="' + (W2 * 0.28 - 8) + '" height="' + D.kordel.h * s + '" fill="var(--c-kordel)"/>');
-    o.push('<text x="' + (sx + 2) + '" y="' + (sy + 20) + '" font-size="11" class="mut">Schnitt: Gang 8 × 5 mit Kordel 5 × 3, Knopfraum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + '</text>');
-    $('k4').setAttribute('viewBox', '0 90 400 330'); $('k4').innerHTML = o.join('');
+    // Schnitte unten: links Gang quer (8 × 5 mit Fasen, Kordel 5 × 3, Höcker 10,4 × 6,2), rechts Knopfraum radial (Kegelwand, Höhe 2,2-fach überhöht)
+    const s2 = 14, gx = 95, gy = 395, gw = D.gang.w, gh = D.gang.h, gc = D.gang.fase, hb = gw + 2 * D.dach;
+    o.push('<rect x="' + (gx - hb / 2 * s2) + '" y="' + (gy - D.gang_z * s2) + '" width="' + hb * s2 + '" height="' + D.gang_z * s2 + '" fill="var(--c-under)" stroke="var(--fg)" stroke-width="0.6"/>');
+    const P = (y, z) => (gx + y * s2) + ',' + (gy - z * s2);
+    o.push('<polygon points="' + [P(-gw / 2, 0), P(gw / 2, 0), P(gw / 2, gh - gc), P(gw / 2 - gc, gh), P(-gw / 2 + gc, gh), P(-gw / 2, gh - gc)].join(' ') + '" fill="var(--bg)" stroke="var(--c-gang)" stroke-width="1"/>');
+    o.push('<rect x="' + (gx - D.kordel.b / 2 * s2) + '" y="' + (gy - D.kordel.h * s2) + '" width="' + D.kordel.b * s2 + '" height="' + D.kordel.h * s2 + '" fill="var(--c-kordel)"/>');
+    o.push('<text x="' + gx + '" y="' + (gy + 16) + '" font-size="11" text-anchor="middle" class="mut">Gang quer: 8 × 5, Kordel 5 × 3</text>');
+    const rx = 235, s3 = 6, rz = 395, ov = 2.2;
+    o.push('<rect x="' + rx + '" y="' + (rz - D.knopf_z * s3 * ov) + '" width="' + (rr + D.dach) * s3 + '" height="' + D.knopf_z * s3 * ov + '" fill="var(--c-under)" stroke="var(--fg)" stroke-width="0.6"/>');
+    o.push('<polygon points="' + [rx + ',' + rz, (rx + rr * s3) + ',' + rz, (rx + (rr - D.knopf_h) * s3) + ',' + (rz - D.knopf_h * s3 * ov), rx + ',' + (rz - D.knopf_h * s3 * ov)].join(' ') + '" fill="var(--bg)" stroke="var(--c-knopf)" stroke-width="1"/>');
+    o.push('<rect x="' + rx + '" y="' + (rz - D.knopf.h * s3 * ov) + '" width="' + D.knopf.d / 2 * s3 + '" height="' + D.knopf.h * s3 * ov + '" fill="var(--c-knopf)"/>');
+    o.push('<text x="' + (rx + 70) + '" y="' + (rz + 16) + '" font-size="11" text-anchor="middle" class="mut">Knopfraum radial: 45°-Wand</text>');
+    $('k4').setAttribute('viewBox', '0 95 400 330'); $('k4').innerHTML = o.join('');
     $('k4list').innerHTML = [
-      '<b>Scheibe</b> Ø 60 × ' + mm(D.gang_z) + ': Boden 1,2, Knopfraum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + ' mit Fase 0,5 unten, acht Gänge 8 × 5 radial bis zum Rand, Decke 1,2. Rund, weil jeder Gang gleich lang und gleich geprüft wird.',
-      '<b>Deckplatte</b> 60 × 60 × 3, flach: liegt auf den Gangdächern und steht für den Körper (Steckplatte und Powerbank), den man auf die Kordel legt.',
-      '<b>Fragen</b>: Sitzt der Knopf mit 1 mm Luft je Seite? Lässt sich die Kordel in jeden Gang legen und die Scheibe aufsetzen, ohne sie zu quetschen? Hält die Brücke über dem Knopf (Durchhang unter 0,2)? Wie hält Heißkleber an der Scheibe?',
-      '<b>Aufwand</b>: Scheibe etwa 17 cm³ massiv, mit 15 % Füllung rund 25 bis 30 min; Deckplatte rund 10 min. Schätzung, nicht kalibriert.',
+      '<b>Scheibe</b> Ø 70 × ' + mm(D.gang_z) + ': Boden 1,2, Teller Ø ' + fmt(D.raum_d + 2 * D.dach, 1) + ' bis 2,6, Knopfraum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + ' mit 45°-Wand, acht Höcker 10,4 breit mit Gängen 8 × 5 (obere Kanten 1,5 × 45°) radial bis zum Rand. Rund, weil jeder Gang gleich lang und gleich geprüft wird.',
+      '<b>Deckplatte</b> 70 × 70 × 3, flach: liegt auf den Gangdächern und steht für den Körper (Steckplatte und Powerbank), den man auf die Kordel legt.',
+      '<b>Fragen</b>: Sitzt der Knopf im Raum (Ø 52, Platz zum Aufsetzen)? Lässt sich die Kordel in jeden Gang legen und die Scheibe aufsetzen, ohne sie zu quetschen? Hält die Decke in der Sternmitte (etwa 13 mm frei) ohne Support, Durchhang unter 0,2? Wie hält Heißkleber an der Scheibe?',
+      '<b>Aufwand</b>: Scheibe etwa 11 cm³, rund 20 min; Deckplatte rund 10 min. Schätzung, nicht kalibriert.',
       'Dazu mitbringen: Hut mit Knopf und Kordel, Heißklebepistole.'
     ].map((x) => '<li>' + x + '</li>').join('');
   })();
@@ -342,13 +344,14 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
   /* ---------- Hinweise ---------- */
   const watch = [
     ['Druck', 'mid', [
-      'Decke des Knopfraums: Brücke über ' + mm(D.raum_d, 0) + ', nur ' + mm(D.knopf_h) + ' über dem Bett. Auf dem A1 mit PLA unkritisch; hängt sie etwas durch, berührt sie den Knopf (0,2 Luft). Im Slicer Brückeneinstellungen an.',
+      'Kein Support: die Wand des Knopfraums ist 45° geneigt, die Gänge haben oben 1,5 mm × 45° Fasen (Decke 5 statt 8 mm breit). Übrig bleiben kurze Brücken: Gangdecke 5 mm, Mitte des Sterns etwa 13 mm. Im Rechner je 0,2-mm-Lage geprüft (Prüfzeile Überhang). Hängt die Mitte durch, berührt sie den Knopf (0,2 Luft).',
+      'Fase unten (Bettkante) 0,5 × 45° an allen Mündungen ist drin. Größer (1,0) würde die Wand zwischen Gang und Höcker unten auf 0,2 mm dünnen; dann müssten die Höcker 0,8 breiter werden.',
       'Gänge: Brücken 8 mm (in der Außenwand bei den schrägen Gängen ' + mm(D.aus[1].wand) + '). Unkritisch.',
       'Mündungen von Knopfraum und Gängen unten mit Fase 0,5 gegen den Elefantenfuß (ist im Modell). Ohne Fase wird der Knopfraum unten enger und die 0,2 Luft sind weg.',
       'Fenster der Powerbank bleibt nach oben offen (keine Brücke).']],
     ['Kleben', 'warn', [
       'Heißkleber nicht an die Mündungen der Gänge und nicht in den Knopfraum: Kleber auf die Bodenflächen zwischen den Gängen, Abstand zu den Gangrändern einige mm.',
-      'Kasten so aufsetzen, dass der Knopf im Knopfraum sitzt. Der Raum ist Ø ' + fmt(D.raum_d, 0) + ' bei Knopf Ø ' + fmt(D.knopf.d, 0) + ': 1 mm Luft je Seite. Vorher Mitte am Hut markieren; Kordel schon in den gewählten Gang legen.',
+      'Kasten so aufsetzen, dass der Knopf im Knopfraum sitzt. Der Raum ist Ø ' + fmt(D.raum_d, 0) + ' bei Knopf Ø ' + fmt(D.knopf.d, 0) + ': reichlich Platz zum Aufsetzen. Vorher Mitte am Hut markieren; Kordel schon in den gewählten Gang legen.',
       'Platte auf Kasten kleben nur, wenn sie wackelt: dann einige Punkte auf die Wandoberkante, nicht an die Docks. Die Powerbank kommt dann nur noch durchs Fenster heraus; Laden über USB-C im Fenster geht weiter.',
       'Heißkleber und PLA: der Kasten verträgt kurz die Klebertemperatur, aber nicht großflächig dick auftragen (PLA wird ab ca. 60 °C weich).']],
     ['Hut und Kordel', 'mid', [
@@ -375,10 +378,11 @@ th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform
     ['K1 · Gänge', true, ['<b>Alle acht</b> (Vorgabe): Quaste kann jede Richtung nehmen, Powerbank liegt eben auf dem Stern.', 'Nur einen oder zwei Gänge: weniger Höcker, aber die Richtung ist festgelegt, bevor der Hut da ist.']],
     ['K2 · Gangdach unter der Powerbank', true, ['<b>8 × 5 behalten</b>: Kordel 3 × 5 hat 2 mm Luft in der Höhe und 3 mm seitlich zum Auflegen des Körpers.', 'Niedriger (8 × 4): Powerbank 1 mm tiefer und der Kasten 1 mm niedriger; nur wenn K4 zeigt, dass die Kordel mit 1 mm Luft noch gut liegt.']],
     ['K2b · Steckerraum', true, ['<b>6,0 mm</b> (Nutzer, viele Leitungen): Kasten 25,0, mit Platte 39,6.', 'Zurück auf 3,5: Kasten 22,5. Nicht empfohlen, die Leitungen brauchen den Platz.']],
+    ['K5 · 45°-Fasen statt Support', true, ['<b>Knopfraum</b> mit 45°-Wand (Raumverlust nur 1,4 mm je Seite), <b>Gänge</b> oben 1,5 × 45° (Kordel 3 × 5 passt weiter, Gangdecke nur 5 breit).', 'Ohne Fasen: ebene Decken über 8 mm (Gang) und etwa 13 mm (zwischen den Gängen), noch machbar, aber mit Durchhang.']],
     ['K3 · Zapfen', true, ['<b>Behalten</b> als Ausrichthilfe beim Kleben (Platte und Kasten deckungsgleich).', 'Weglassen: Platte und Kasten nur nach Außenkante ausrichten.']],
-    ['K4 · Probeteil vorher', true, ['<b>Ja, jetzt bauen</b>: Mittelstück Ø 60 aus Scheibe (Knopfraum, acht Gänge) und Deckplatte, Zeichnung unten. Alle Maße dafür stehen fest.', 'Ohne Probe direkt den ganzen Kasten: dann merkt man Knopf- oder Kordelprobleme erst nach 15 Stunden Druck.']],
+    ['K4 · Probeteil vorher', true, ['<b>Ja, jetzt bauen</b>: Mittelstück Ø 70 aus Scheibe (Knopfraum, acht Gänge) und Deckplatte, Zeichnung unten. Alle Maße dafür stehen fest.', 'Ohne Probe direkt den ganzen Kasten: dann merkt man Knopf- oder Kordelprobleme erst nach 15 Stunden Druck.']],
   ];
-  $('cards').innerHTML = '<div class="card"><h3>Verworfen</h3><ul><li><b>Powerbank quer im Norden</b>: passt wegen des Steckers nicht, auch nicht mit 2 mm breiterer Basis (Nutzer).</li><li><b>Powerbank auf Podest</b> (+12 mm): nicht mehr nötig, der Knopf ist nur 1,2 mm hoch.</li><li><b>Knopfraum Ø 40 × 12 und Ø 30</b>: ersetzt durch Ø 24 × 1,4 für den Knopf Ø 22.</li><li><b>Fäden an den Ecken</b>: ersetzt durch Heißkleber.</li></ul></div>' +
+  $('cards').innerHTML = '<div class="card"><h3>Verworfen</h3><ul><li><b>Powerbank quer im Norden</b>: passt wegen des Steckers nicht, auch nicht mit 2 mm breiterer Basis (Nutzer).</li><li><b>Powerbank auf Podest</b> (+12 mm): nicht mehr nötig, der Knopf ist nur 1,2 mm hoch.</li><li><b>Knopfraum Ø 40 × 12, Ø 30 und Ø 24</b>: ersetzt durch Radius 26 (Ø 52) × 1,4 mit 45°-Wand für den Knopf Ø 22.</li><li><b>Fäden an den Ecken</b>: ersetzt durch Heißkleber.</li></ul></div>' +
     cards.map(([t, rec, li]) => '<div class="card' + (rec ? ' rec' : '') + '"><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
 
   /* ---------- 3D ---------- */
