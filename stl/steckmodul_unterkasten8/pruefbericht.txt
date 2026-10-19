@@ -39,7 +39,7 @@ Zusammenbau mit der Steckplatte (stl/steckmodul_campus/steckplatte_1zu1300.stl, 
 
 Auflage-Klötze (eigenes Teil, eingeklebt): 8 × 8 × 14.8 (Boden 1.2 bis Plateau 16.0); an den vorgeschlagenen Stellen der Auflagen passt ein Klotz: 3 von 3
 
-Teil (Druckausrichtung, Bett z = 0 = Hut-Seite):
+Teile (Druckausrichtung, Bett z = 0 = Hut-Seite):
   U8_unterkasten.stl   115.60 × 220.90 × 37.26 mm    87.6 cm³  ≈ 109 g  dicht=True  Teile=1
   Zeit: normal ≈ 12.4 h, schnell ≈ 4.5 h, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 5.8 h
   U8_auflage.stl         8.00 ×   8.00 × 14.78 mm    0.94 cm³  dicht=True  (3 bis 4 Stück)

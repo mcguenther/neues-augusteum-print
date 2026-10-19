@@ -191,7 +191,7 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
     'Steckplatte: <code>stl/steckmodul_campus/steckplatte_1zu1300.stl</code> (ohne Fadentaschen, Mulden-Spiel 0,15); unter eine ältere Platte passt der Kasten auch, wenn sie die Zapfenlöcher bei (20 | 20) und (100 | 180) hat (Umriss weicht weniger als 0,1 mm ab).',
   ].map((s) => '<li>' + s + '</li>').join('');
   $('offen').innerHTML = [
-    '<b>Display-Gebäude, die einzige offene Stelle an der Platte:</b> Mulde und Pin-Löcher sind nach dem ersten Satz gebaut (gedruckt, in Ordnung). Der zweite Satz (schmaler Hals) säße darin mit 1,4 mm Luft je Seite lose. Wenn der zweite Satz der endgültige wird, muss die Display-Mulde vor dem Plattendruck auf ihn umgestellt werden (<code>campus_display.SATZ = 2</code>, eine Mulde am Ostrand, sonst nichts).',
+    '<b>Display-Gebäude:</b> Mulde und Pin-Löcher sind jetzt nach dem zweiten Satz gebaut (Dupont-Buchse direkt im Hals, Fuß 11,3 × 13,0), Spiel 0,15 rundum, Verdrehsicherung geprüft. Der erste Satz mit Kassette K0 passt nicht mehr hinein.',
     'Nicht an der Platte: Fuß-Fase 4,0 für neu gebaute Gebäude, Kassetten-Spiel im Schacht (K4/K5) und die Flussrate je Filament ändern nur Gebäude, Kassetten und Slicer. Die Mulde ist der volle Grundriss plus 0,15, die Fase am Fuß ändert daran nichts.',
     'Die Lage der Powerbank (und damit der Klötze) ist frei, solange sie auf dem Plateau über dem Knopf liegt. Fenster in der Nordwand und Steckerraum gelten für die Lage wie im 3D-Modell.',
     'Ob die dünne Decke (' + fmt(D.dach, 2) + ') des Plateaus die Powerbank dauerhaft trägt, zeigt erst der Druck. Notfalls einen Klecks Heißkleber unter das Plateau.',

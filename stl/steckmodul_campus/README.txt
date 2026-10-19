@@ -10,8 +10,8 @@ Inhalt
                                        für alle sechs Gebäude, Aussparung für den Hof, Wänden zwischen den Mulden (0,8; Paulinum/Neues Augusteum an den Zahnflanken 0,7)
                                        und Pin-Löchern (24 Stück, vier je Gebäude);
                                        unten 2 Zapfenlöcher (20|20) und (100|180), keine Fadentaschen (Heißkleber);
-                                       am Ostrand (y = 34,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des ersten,
-                                       gedruckten Satzes
+                                       am Ostrand (y = 34,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des zweiten
+                                       Satzes (Dupont-Buchse direkt im Hals, Fuß 11,3 x 13,0)
   hof_einsatz_1zu1300.stl              Innenhof (Pflaster, Beete, Bänke, Denkmal, Bäume), 6 mm tief in die Aussparung
   01_paulinum_1zu1300.stl              je ein Hohlgebäude mit Fuß (14,2 mm) zum Stecken, Schacht für die LED-Kassette,
   02_neues_augusteum_1zu1300.stl       Boden unten, Gewölbe innen, ohne Support druckbar
@@ -48,8 +48,8 @@ Slicer (Gebäude, ausführlich in plug/slicer.md)
   Platte: flache Unterseite auf das Bett, Support aus; 220,9 mm Länge, Druckbett mindestens 230 x 230 mm.
   Hof-Einsatz: Support aus; die Bäume haben unten höchstens 45° Überhang, Stämme sind 0,8 mm dick.
 
-Display-Gebäude: Das Gebäude selbst liegt nicht im Paket (`stl/steckmodul_display/`). Seine Mulde in der Platte ist nach dem ersten Satz gebaut;
-der zweite Satz (kleinerer Hals) passt hinein, sitzt aber mit etwa 1,4 mm Luft je Seite lose.
+Display-Gebäude: Das Gebäude selbst liegt nicht im Paket (`stl/steckmodul_display/`). Seine Mulde in der Platte ist nach dem zweiten Satz gebaut
+(Spiel 0,15 je Seite); der erste Satz (mit Kassette K0, Fuß 13,9 x 15,5) passt nicht mehr hinein.
 
 Hinweise
 --------

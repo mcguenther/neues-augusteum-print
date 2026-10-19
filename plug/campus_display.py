@@ -5,7 +5,8 @@ Das Display-Gebäude (OLED mit INA226, `plug/display/`, Entwurf E4) steht nicht 
 schwebt mit 0,3 mm Luft über der Platte, nur der Fuß (Hals mit Verlängerung nach vorn und Kodierecke) taucht in die Platte. Die Mulde dafür und die vier
 Pin-Löcher kommen hierher; `plug.campus.build` ruft `cuts` auf und schneidet sie mit den Gebäude-Mulden.
 
-**Maße: erster Satz** (Commit 59000df, Probedruck 1; Fuß, Mulde mit Kodierecke und Einführfase 0,5 waren dort „in Ordnung“, Vorgabe des Nutzers 2026-10-18).
+**Maße: zweiter Satz** (seit 20.10.2026, `SATZ = 2`: der Nutzer hat den Körper mit der Dupont-Buchse direkt im Hals gedruckt). Bis dahin erster Satz (Commit 59000df,
+Probedruck 1; Fuß, Mulde mit Kodierecke und Einführfase 0,5 waren dort „in Ordnung“, Vorgabe des Nutzers 2026-10-18).
 Der zweite Satz (`plug/display/body4.py` heute: Hals 12,96 × 5,34, Buchsentasche im Hals) ist ungedruckt; sein Fuß ist 2,52 mm schmaler und flacher, die
 Pin-Reihe liegt 1,26 mm näher an der Vorderkante des Fußes. `SATZ = 2` baut die Mulde stattdessen nach dem zweiten Satz (danach die Lage prüfen).
 Die Prüfung `report` meldet, wie der jeweils andere Fuß in die gebaute Mulde passt.
@@ -40,7 +41,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #     stößt an das Dock des Hochhauses); `plug/display/layout4.py` meldet mit den Faden-V des Konzepts 39 bis 58 (die Fadenkerben dort entfallen, die Fadentaschen
 #     liegen weit weg), die Prüfung hier rechnet mit den echten Fadentaschen, Zapfenlöchern, Mulden und der Schrift der Platte.
 DISPLAY_LAGE = dict(xe=111.5, yc=34.4)
-SATZ = 1                # 1: Fuß und Mulde nach dem ersten Satz (Commit 59000df, gedruckt, in Ordnung); 2: nach dem aktuellen Stand von plug/display/body4.py (ungedruckt)
+SATZ = 2                # 2 (seit 20.10.2026, Nutzer: gedruckter Körper hat die Dupont-Buchse direkt im Hals): Mulde nach dem aktuellen Stand von plug/display/body4.py; 1: nach dem ersten Satz (Commit 59000df, mit Kassette K0)
 AIR_MARGIN = 1.5        # E  Luft zwischen Kopf und Gebäuden, Hof, Schrift (wie plug/display/layout4.py)
 WALL_MIN = 0.8          # E  Mindestwand der neuen Mulde zu anderen Aussparungen (Auftrag), Fadentaschen 1,4 (plug/thread/params.py WALL_MIN)
 WALL_FADEN = 1.4
@@ -183,23 +184,26 @@ def vol(a, b):
 
 
 def fit_rows(plate, minx, miny, T):
-    """Passprobe des Körpers (Fuß plus Kopf als Hüllkörper) in der gebauten Mulde: [(Text, Überschneidung mm³, soll_null)]; Kontrollen müssen stoßen."""
-    s1, s2 = satz(1), satz(2)
+    """Passprobe des Körpers (Fuß plus Kopf als Hüllkörper) des gebauten Satzes (`SATZ`) in der Mulde: [(Text, Überschneidung mm³, soll_null)]; Kontrollen müssen
+    stoßen. Dazu der andere Satz: Satz 2 säße in der Mulde von Satz 1 lose, Satz 1 passt nicht in die Mulde von Satz 2 (Fuß 2,5 mm breiter)."""
+    sb, so = satz(SATZ), satz(3 - SATZ)
+    nb, no = ("erster", "zweiter") if SATZ == 1 else ("zweiter", "erster")
     rows = []
-    h1, h2 = body_hull(s1), body_hull(s2)
-    rows.append(("Körper erster Satz (Fuß in der Mulde, Kopf %.1f mm in der Luft), Spiel %.2f je Seite" % (KOPF_LUFT, s1["clr"]), vol(pose(h1, s1, minx, miny, T), plate), True))
+    hb, ho = body_hull(sb), body_hull(so)
+    rows.append(("Körper %s Satz (Fuß in der Mulde, Kopf %.1f mm in der Luft), Spiel %.2f je Seite" % (nb, KOPF_LUFT, sb["clr"]), vol(pose(hb, sb, minx, miny, T), plate), True))
     for dx, dy, txt in ((0.10, 0.0, "0,10 nach Osten verschoben (Spiel 0,15 reicht noch)"), (0.0, 0.10, "0,10 nach Norden verschoben (Spiel 0,15 reicht noch)")):
-        rows.append(("Kontrolle: Körper erster Satz %s" % txt, vol(pose(h1, s1, minx, miny, T, dx=dx, dy=dy), plate), True))
+        rows.append(("Kontrolle: Körper %s Satz %s" % (nb, txt), vol(pose(hb, sb, minx, miny, T, dx=dx, dy=dy), plate), True))
     for dx, dy, txt in ((0.0, 0.20, "0,20 nach Norden verschoben stößt an die Mulde"), (0.20, 0.0, "0,20 nach Osten verschoben stößt an die Mulde"),
                         (0.0, -0.20, "0,20 nach Süden verschoben stößt an die Mulde")):
-        rows.append(("Kontrolle: Körper erster Satz %s" % txt, vol(pose(h1, s1, minx, miny, T, dx=dx, dy=dy), plate), False))
+        rows.append(("Kontrolle: Körper %s Satz %s" % (nb, txt), vol(pose(hb, sb, minx, miny, T, dx=dx, dy=dy), plate), False))
     for ang in (90, 180, 270):
-        rows.append(("Kontrolle: Körper erster Satz um %d° gedreht (Verdrehsicherung) stößt an die Mulde" % ang, vol(pose(h1, s1, minx, miny, T, ang=ang), plate), False))
-    mir = h1.mirror([0.0, 1.0, 0.0])                               # Kodierecke vorn Nord statt vorn Süd
-    rows.append(("Kontrolle: Körper erster Satz gespiegelt (Kodierecke vorn Nord statt Süd) stößt an die Mulde", vol(pose(mir, s1, minx, miny, T), plate), False))
-    rows.append(("Fuß zweiter Satz (aktueller Stand, Hals %.2f × %.2f) mit den Stiften an den Löchern, lose in der Mulde" % (s2["NW"], s2["KD"]),
-                 vol(pose(h2, s2, minx, miny, T), plate), True))
-    rows.append(("Kontrolle: Körper zweiter Satz um 180° gedreht stößt an die Mulde (Verlängerung nach vorn)", vol(pose(h2, s2, minx, miny, T, ang=180), plate), False))
+        rows.append(("Kontrolle: Körper %s Satz um %d° gedreht (Verdrehsicherung) stößt an die Mulde" % (nb, ang), vol(pose(hb, sb, minx, miny, T, ang=ang), plate), False))
+    mir = hb.mirror([0.0, 1.0, 0.0])                               # Kodierecke vorn Nord statt vorn Süd
+    rows.append(("Kontrolle: Körper %s Satz gespiegelt (Kodierecke vorn Nord statt Süd) stößt an die Mulde" % nb, vol(pose(mir, sb, minx, miny, T), plate), False))
+    if SATZ == 1:
+        rows.append(("Fuß zweiter Satz (Hals %.2f × %.2f) mit den Stiften an den Löchern, lose in der Mulde" % (so["NW"], so["KD"]), vol(pose(ho, so, minx, miny, T), plate), True))
+    else:
+        rows.append(("Kontrolle: Körper erster Satz (Fuß %.2f × %.2f, mit Kassette K0) passt nicht in diese Mulde" % (so["x_fe"] - so["x_bw"], so["NW"]), vol(pose(ho, so, minx, miny, T), plate), False))
     return rows
 
 
@@ -281,8 +285,8 @@ def report(plate, outline, info, lay):
         ok &= good
         print("    %-112s %8.3f  %s" % (txt, v_, "ok" if good else "FEHLER"))
     sl = slop(s2)
-    print("  Fuß zweiter Satz (Hals %.2f × %.2f, Fuß %.2f × %.2f) in dieser Mulde: Luft West %.2f, Ost %.2f, Süd %.2f, Nord %.2f mm (gebauter Satz: %.2f je Seite); die Stifte liegen %.2f mm näher an der Vorderkante des Fußes" % (
-        s2["NW"], s2["KD"], s2["x_fe"] - s2["x_bw"], s2["NW"], *sl, s["clr"], s["x_fe"] - (s["x_be"] + s["x_bw"]) / 2 - (s2["x_fe"] - (s2["x_be"] + s2["x_bw"]) / 2)))
+    print("  Fuß zweiter Satz (Hals %.2f × %.2f, Fuß %.2f × %.2f) in dieser Mulde: Luft West %.2f, Ost %.2f, Süd %.2f, Nord %.2f mm (gebauter Satz %d: %.2f je Seite); die Stifte liegen %.2f mm näher an der Vorderkante des Fußes" % (
+        s2["NW"], s2["KD"], s2["x_fe"] - s2["x_bw"], s2["NW"], *sl, SATZ, s["clr"], s["x_fe"] - (s["x_be"] + s["x_bw"]) / 2 - (s2["x_fe"] - (s2["x_be"] + s2["x_bw"]) / 2)))
     return ok
 
 
