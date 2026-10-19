@@ -10,7 +10,7 @@ Inhalt
                                        für alle sechs Gebäude, Aussparung für den Hof, Wänden zwischen den Mulden (0,8; Paulinum/Neues Augusteum an den Zahnflanken 0,7)
                                        und Pin-Löchern (24 Stück, vier je Gebäude);
                                        unten 2 Zapfenlöcher (20|20) und (100|180), keine Fadentaschen (Heißkleber);
-                                       am Ostrand (y = 34,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des zweiten
+                                       am Ostrand (y = 36,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des zweiten
                                        Satzes (Dupont-Buchse direkt im Hals, Fuß 11,3 x 13,0)
   hof_einsatz_1zu1300.stl              Innenhof (Pflaster, Beete, Bänke, Denkmal, Bäume), 6 mm tief in die Aussparung
   01_paulinum_1zu1300.stl              je ein Hohlgebäude mit Fuß (14,2 mm) zum Stecken, Schacht für die LED-Kassette,

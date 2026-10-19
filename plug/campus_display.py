@@ -40,7 +40,9 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #     Das City-Hochhaus (y ab 58,7) liegt rechts (nördlich) davon, hinter dem Kopf steht das Hörsaalgebäude (y 18 bis 123). Obere Grenze 56,0 (Dockzone
 #     stößt an das Dock des Hochhauses); `plug/display/layout4.py` meldet mit den Faden-V des Konzepts 39 bis 58 (die Fadenkerben dort entfallen, die Fadentaschen
 #     liegen weit weg), die Prüfung hier rechnet mit den echten Fadentaschen, Zapfenlöchern, Mulden und der Schrift der Platte.
-DISPLAY_LAGE = dict(xe=111.5, yc=34.4)
+#     Seit 20.10.2026 (Nutzer) NORD_VERSATZ = 2,0 mm nördlich der südlichsten freien Lage 34,4: Luft zum N des Nordpfeils 3,5 statt 1,5.
+NORD_VERSATZ = 2.0
+DISPLAY_LAGE = dict(xe=111.5, yc=34.4 + NORD_VERSATZ)
 SATZ = 2                # 2 (seit 20.10.2026, Nutzer: gedruckter Körper hat die Dupont-Buchse direkt im Hals): Mulde nach dem aktuellen Stand von plug/display/body4.py; 1: nach dem ersten Satz (Commit 59000df, mit Kassette K0)
 AIR_MARGIN = 1.5        # E  Luft zwischen Kopf und Gebäuden, Hof, Schrift (wie plug/display/layout4.py)
 WALL_MIN = 0.8          # E  Mindestwand der neuen Mulde zu anderen Aussparungen (Auftrag), Fadentaschen 1,4 (plug/thread/params.py WALL_MIN)
@@ -407,9 +409,11 @@ def main():
     print("  Lagesuche am Ostrand (Kopf bei x = %.1f, y 20 bis 110 in 0,1-mm-Schritten): freie Lagen y = %s" % (lage["xe"], "; ".join("%.1f bis %.1f" % tuple(i) for i in iv)))
     south = iv[0][0]
     why_south = [w for yc, w in rows if abs(yc - (south - 0.1)) < 1e-6]
-    print("  südlichste freie Lage y = %.1f, eine Stufe weiter südlich gesperrt durch: %s; gewählt: y = %.1f -> %s" % (
-        south, ", ".join(why_south[0]) if why_south else "–", lage["yc"], "ok" if abs(south - lage["yc"]) < 0.051 else "WEICHT AB"))
-    ok &= abs(south - lage["yc"]) < 0.051
+    frei = any(a - 1e-6 <= lage["yc"] <= b + 1e-6 for a, b in iv)
+    print("  südlichste freie Lage y = %.1f, eine Stufe weiter südlich gesperrt durch: %s; gewählt: y = %.1f (%.1f nördlich davon, NORD_VERSATZ) -> %s" % (
+        south, ", ".join(why_south[0]) if why_south else "–", lage["yc"], NORD_VERSATZ,
+        "ok" if abs(south + NORD_VERSATZ - lage["yc"]) < 0.051 and frei else "WEICHT AB"))
+    ok &= abs(south + NORD_VERSATZ - lage["yc"]) < 0.051 and frei
     head_y = (lage["yc"] - s1["W"] / 2, lage["yc"] + s1["W"] / 2)
     n_top = max(g.bounds[3] for g in getattr(raised.intersection(sbox(90, 0, 115, 20)), "geoms", [raised.intersection(sbox(90, 0, 115, 20))]))
     print("  Kopf y %.2f bis %.2f; Oberkante des erhabenen Nordpfeils und der Schrift im Ostteil y = %.2f (Luft %.2f mm, gefordert %.1f)" % (head_y[0], head_y[1], n_top, head_y[0] - n_top, AIR_MARGIN))
