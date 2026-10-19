@@ -954,6 +954,7 @@ def main():
     HOHL = not args.no_hohl
     import parallel
     import preview
+    preview.warmup()
     try:  # OpenCV-Threads aus, bevor Prozesse per fork entstehen (hohl.py, Fotomessung); sonst können die Kinder blockieren
         import cv2
         cv2.setNumThreads(0)
