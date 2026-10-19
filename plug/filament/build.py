@@ -283,7 +283,7 @@ def main():
 
 README = """Passungs-Probedrucke bei wechselnden Filamenten (Plan: plug/filament/plan.html)
 =====================================================================================
-Stand 2026-10-19. Alles ungedruckt. Zwei Varianten, beide mit derselben Kassettenserie K1 bis K3.
+Stand 2026-10-19 (ausgewertet in plug/logbook/rounds/r10_passung_filament; K5 mit Spiel 0,13 ist der Sollwert). Zwei Varianten, beide mit derselben Kassettenserie K1 bis K3.
 
 Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude für Mulde und Kassette; Hörsaal und Seminar zur Gegenprobe)
   A1_mulden_block_institut.stl   GRAU. Platte {ba:.0f} x {ha:.0f} x 14,6 mm mit drei Mulden im Umriss des Institutsfußes, Spiel je Seite

@@ -1,0 +1,23 @@
+Rückmeldung zur Passung bei wechselnden Filamenten (Bambu A1, PLA, beige Kassetten und Probefuß, graue Blöcke, 2026-10-19)
+HINWEIS: Kein Testbogen-Formular; die Aussagen des Nutzers im Chat, vom Logbuchpfleger in dieser Reihenfolge zusammengestellt (nicht aus einem Formular kopiert, Wortlaut sinngemäß wie mitgeteilt).
+
+Variante B, Mulden-Block B3 (Probefuß Fase 4,0), Spiel je Seite 0,10 / 0,15 / 0,20
+Spiel 0,10: zu fest (nur mit Zange wieder raus)
+Spiel 0,15: passt gut (minimal zu viel Spiel)
+Spiel 0,20: wackelt
+
+Kassetten K1 0,12 / K2 0,16 / K3 0,20 (Spiel im Schacht je Seite; im Code heute 0,06; ohne Markierung, Zuordnung nach Gefühl)
+K1: sehr stramm, rutscht mit Schwung zu tief
+K2: minimale Reibung, rutscht aber zu doll
+K3: frei
+Dupont-Buchse hatte in der alten Tasche (10,56 x 2,94) zu viel Spiel
+
+K4 (Spiel im Schacht 0,14, Buchsentasche 0,10 enger = 10,46 x 2,84, Höhe zunächst 14,60)
+Buchse taucht ca. 0,2 mm zu tief ein (kostet Einstecktiefe E; Grenze für stabilen Durchgang 5,08 von 5,28)
+nach Korrektur der Taschenhöhe um 0,2 flacher auf 14,40: die Dupont-Buchse passt fantastisch rein
+Schacht-Spiel 0,14 noch zu locker
+
+K5 (Spiel im Schacht 0,13, Tasche 10,46 x 2,84 x 14,40, ein Punkt Kennung)
+passt super im Probefuß, schwerer bei bestehenden Gebäuden, passt aber so
+
+ZIP: passung_variante_B.zip (B1, B3, K1 bis K3), passung_kassette_14.zip (K4, Stand 93da3a4), passung_kassette_13.zip (K5, Stand 7e1cfa5)
