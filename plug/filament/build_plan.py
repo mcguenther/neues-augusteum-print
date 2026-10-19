@@ -99,10 +99,10 @@ def zeiten_ersetzen(b):
     f = os.path.join(FG.ROOT, "stl", "steckmodul_passung", "pruefbericht.txt")
     t = open(f, encoding="utf-8").read() if os.path.exists(f) else ""
     ma = re.search(r"Variante A .*?: (\d+) min Block \+ (\d+) min Kassetten = (\d+) min", t)
-    mb = re.search(r"Variante B .*?: (\d+) min Füße \+ (\d+) min Block \+ (\d+) min Kassetten = (\d+) min", t)
+    mb = re.search(r"Variante B .*?: (\d+) min Fuß \+ (\d+) min Block \+ (\d+) min Kassetten = (\d+) min", t)
     if not (ma and mb):
         return {k: "?" for k in ("@@ZA@@", "@@ZB@@", "@@ZB1@@", "@@ZBB@@", "@@ZAB@@", "@@ZBF@@", "@@AB@@", "@@AH@@")}
-    return {"@@ZA@@": ma.group(3), "@@ZB@@": mb.group(4), "@@ZB1@@": str(int(mb.group(4)) - int(round(int(mb.group(1)) / 2))), "@@ZBB@@": mb.group(2),
+    return {"@@ZA@@": ma.group(3), "@@ZB@@": mb.group(4), "@@ZB1@@": mb.group(4), "@@ZBB@@": mb.group(2),
             "@@ZAB@@": ma.group(1), "@@ZBF@@": mb.group(1), "@@AB@@": de(b["breite"], 0), "@@AH@@": de(b["hoehe"], 0)}
 
 

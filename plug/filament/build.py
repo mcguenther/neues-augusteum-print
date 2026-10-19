@@ -2,7 +2,7 @@
 """Passungs-Probedrucke bei wechselnden Filamenten: zwei Varianten, STL, Prüfbericht, Druckzeit-Schätzung nach `stl/steckmodul_passung/`.
 
 Variante A (die vorhandenen beigen Gebäude sind die Lehre): Mulden-Block mit dem echten Institutsumriss (A1) und die Kassettenserie (K1 bis K3).
-Variante B (eigener kompakter Probedruck, kein Gebäude nötig): zwei Probefüße (B1 Fuß-Fase 2,0 wie die Gebäude, B2 Fuß-Fase 4,0), ein kleiner
+Variante B (eigener kompakter Probedruck, kein Gebäude nötig): ein Probefuß (B1, Fuß-Fase 4,0), ein kleiner
 Mulden-Block dazu (B3) und dieselbe Kassettenserie. Der Probefuß ist rechteckig mit Kodierecke (verdrehsicher, wie der Fuß des Display-Gebäudes) und hat
 den Schacht der Kassette V1RS mit 45°-Walmdach. Die Kassetten sind nur der Unterbau (dort sitzt die Passung): Tasche unten, ohne Blatt und Streifen.
 
@@ -177,10 +177,8 @@ def main():
     ziel["A1_mulden_block_institut"] = "mulde"
     for i, s in enumerate(KASS_SPIEL):
         teile["K%d_kassette_V1RS_%d" % (i + 1, round(s * 100))] = kassette(s)
-    f2, h2 = probefuss(2.0)
     f4, h4 = probefuss(4.0)
-    teile["B1_probefuss_fase2"] = f2
-    teile["B2_probefuss_fase4"] = f4
+    teile["B1_probefuss_fase4"] = f4
     plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=2.5)
     plate_b2, bb2 = mulden_block(probe_outline(), MULDEN_SPIEL[1:], wand=1.6, rand=2.5)
     teile["B3b_mulden_block_probe_2"] = plate_b2
@@ -214,43 +212,43 @@ def main():
     d = V.dims(VAR)
     for i, s in enumerate(KASS_SPIEL):
         k = kassette(s).translate([0, -d["depth"] / 2, 0])
-        chk("Kassette %d (Spiel %.2f) im Schacht des Probefußes B1" % (i + 1, s), (f2 ^ k).volume())
+        chk("Kassette %d (Spiel %.2f) im Schacht des Probefußes B1" % (i + 1, s), (f4 ^ k).volume())
     k0 = kassette(P.KASS_CLR_T).translate([0, -d["depth"] / 2, 0])
-    chk("Kontrolle: Kassette mit Spiel 0,06 (heute) liegt ohne Verschiebung im Schacht", (f2 ^ k0).volume())
+    chk("Kontrolle: Kassette mit Spiel 0,06 (heute) liegt ohne Verschiebung im Schacht", (f4 ^ k0).volume())
     k_zu = N2.chamfered_block(d["w"] + 0.30, d["depth"] + 0.30, d["z_b"], V.EF, 0.0).translate([0, 0, 0])
-    chk("Kontrolle: um 0,15 je Seite zu breite Kassette stößt im Schacht an", (f2 ^ k_zu.translate([0, 0, 0])).volume(), soll_null=False)
+    chk("Kontrolle: um 0,15 je Seite zu breite Kassette stößt im Schacht an", (f4 ^ k_zu.translate([0, 0, 0])).volume(), soll_null=False)
     # Probefuß in der Mulde des Blocks B3 (Fuß liegt mit Bett = Muldenboden: Mulde reicht ab z = 0,4, Fuß 14,2 über dem Boden)
     p0 = probe_outline().bounds
     for (s, g), (_, fp) in zip(bb["mulden"], bb["fps"]):
         ox, oy = fp.bounds[0] - p0[0], fp.bounds[1] - p0[1]          # Verschiebung des Umrisses (Probefuß liegt um den Ursprung)
-        for nm, f in (("B1", f2), ("B2", f4)):
+        for nm, f in (("B1", f4),):
             ft = f.trim_by_plane([0, 0, -1], -FG.FUSS).translate([ox, oy, FG.BODEN])       # nur der Fuß (z <= 14,2), auf dem Muldenboden
             chk("Probefuß %s in der Mulde des Blocks B3 mit Spiel %.2f" % (nm, s), (plate_b ^ ft).volume())
-        ft = f2.trim_by_plane([0, 0, -1], -FG.FUSS).translate([ox + s + 0.05, oy, FG.BODEN])
+        ft = f4.trim_by_plane([0, 0, -1], -FG.FUSS).translate([ox + s + 0.05, oy, FG.BODEN])
         chk("Kontrolle: Probefuß um Spiel + 0,05 in +x verschoben stößt an (Mulde %.2f)" % s, (plate_b ^ ft).volume(), soll_null=False)
     rep("  -> %s" % ("keine Kollisionen" if not bad else "%d Fehler!" % bad))
 
     # ---- Druckzeiten: Gesamt je Variante
     za = zeiten["A1_mulden_block_institut"][1]
     zk = sum(v[1] for n, v in zeiten.items() if n.startswith("K"))
-    zb = zeiten["B1_probefuss_fase2"][1] + zeiten["B2_probefuss_fase4"][1] + zeiten["B3_mulden_block_probe"][1]
+    zb = zeiten["B1_probefuss_fase4"][1] + zeiten["B3_mulden_block_probe"][1]
     rep("\nDruckzeit je Variante (Summe der Einzelteile, nacheinander; mehrere Teile gleichzeitig auf einem Bett sparen nur den Start):")
     rep("  Variante A (Mulden-Block für die vorhandenen Gebäude + 3 Kassetten): %.0f min Block + %.0f min Kassetten = %.0f min" % (za, zk, za + zk))
-    rep("  Variante B (zwei Probefüße + kleiner Mulden-Block + 3 Kassetten): %.0f min Füße + %.0f min Block + %.0f min Kassetten = %.0f min" % (
-        zeiten["B1_probefuss_fase2"][1] + zeiten["B2_probefuss_fase4"][1], zeiten["B3_mulden_block_probe"][1], zk, zb + zk))
+    rep("  Variante B (Probefuß Fase 4,0 + kleiner Mulden-Block + 3 Kassetten): %.0f min Fuß + %.0f min Block + %.0f min Kassetten = %.0f min" % (
+        zeiten["B1_probefuss_fase4"][1], zeiten["B3_mulden_block_probe"][1], zk, zb + zk))
     rep("  Eichung: dieselbe Schätzung ergab für den r8-Stummel 47 min bei gedruckten 55 min (Faktor 1,17); der Faktor 1,2 ist enthalten.")
     with open(os.path.join(OUT, "pruefbericht.txt"), "w", encoding="utf-8") as f:
         f.write("\n".join(rep.lines) + "\n")
     zt = {n: "%.0f" % v[1] for n, v in zeiten.items()}
     zb_block_ = zeiten["B3_mulden_block_probe"][1]
     za_total, zb_total = za + zk, zb + zk
-    zb_ohne4 = zeiten["B1_probefuss_fase2"][1] + zb_block_ + zk
-    readme = README.format(za_total=za_total, zb_total=zb_total, zb_ohne4=zb_ohne4, za=za, zk=zk, zb_fuss=zeiten["B1_probefuss_fase2"][1] + zeiten["B2_probefuss_fase4"][1], zb_block=zeiten["B3_mulden_block_probe"][1],
+    zb_ohne4 = 0
+    readme = README.format(za_total=za_total, zb_total=zb_total, zb_ohne4=zb_ohne4, za=za, zk=zk, zb_fuss=zeiten["B1_probefuss_fase4"][1], zb_block=zeiten["B3_mulden_block_probe"][1],
                            zk1=zeiten["K1_kassette_V1RS_12"][1], za_block=za, ba=ba["breite"], ha=ba["hoehe"], bb=bb["breite"], hb=bb["hoehe"], **{"t_" + k: v for k, v in zt.items()})
     with open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8") as f:
         f.write(readme)
     sets = {"passung_variante_A.zip": ["A1_mulden_block_institut", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"],
-            "passung_variante_B.zip": ["B1_probefuss_fase2", "B2_probefuss_fase4", "B3_mulden_block_probe", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"]}
+            "passung_variante_B.zip": ["B1_probefuss_fase4", "B3_mulden_block_probe", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"]}
     for zn, names in sets.items():
         with zipfile.ZipFile(os.path.join(OUT, zn), "w", zipfile.ZIP_DEFLATED) as z:
             for n in names:
@@ -269,9 +267,8 @@ Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude f�
                                  0,10 (ein Balken) / 0,15 (zwei) / 0,20 (drei Balken, erhaben links); Mulde 14,2 tief, Boden 0,4, Fase oben 0,5.
                                  Das beige Institutsgebäude in jede Mulde stecken. Druckzeit etwa {t_A1_mulden_block_institut} min (Schätzung).
 Variante B: eigener kompakter Probedruck, kein Gebäude nötig
-  B1_probefuss_fase2.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 2,0 wie die Gebäude,
-                                 Schacht für die Kassette V1RS mit Walmdach, 20 mm hoch. Etwa {t_B1_probefuss_fase2} min.
-  B2_probefuss_fase4.stl         wie B1, aber Fuß-Fase 4,0 (Variante C aus dem Plan). Etwa {t_B2_probefuss_fase4} min.
+  B1_probefuss_fase4.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 4,0 (die Gebäude haben heute 2,0),
+                                 Schacht für die Kassette V1RS mit Walmdach, 20 mm hoch. Etwa {t_B1_probefuss_fase4} min.
   B3_mulden_block_probe.stl      GRAU. Platte {bb:.0f} x {hb:.0f} x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa {t_B3_mulden_block_probe} min.
 Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
@@ -280,7 +277,7 @@ Beide Varianten:
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block {za_block:.0f} min + Kassetten {zk:.0f} min = {za_total:.0f} min
-  Variante B: Füße {zb_fuss:.0f} min + Block {zb_block:.0f} min + Kassetten {zk:.0f} min = {zb_total:.0f} min (nur B1 ohne B2: {zb_ohne4:.0f} min)
+  Variante B: Fuß {zb_fuss:.0f} min + Block {zb_block:.0f} min + Kassetten {zk:.0f} min = {zb_total:.0f} min 
 
 Slicer: PLA, Düse 0,4, Schicht 0,2, Wände 3, Füllung 15 %, Support aus, Ausrichtung wie exportiert (Fuß bzw. Plattenunterseite und Kassettentasche am Bett).
 Filament: Fluss möglichst vorher kalibrieren (Plan, Abschnitt 6, Messplättchen T4).
