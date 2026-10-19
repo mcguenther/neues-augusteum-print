@@ -284,7 +284,7 @@ ul.tight { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
   <div class="two">
     <div class="fig"><h3>T1 · Mulden-Block (grau)</h3>
       <svg viewBox="@@T1VIEW@@" role="img" aria-label="Plattenstück mit drei Mulden des Institutsumrisses"><g id="t1">@@T1@@</g></svg>
-      <p class="cap">Drei Mulden mit dem Institutsumriss, Spiel <b>0,15 / 0,20 / 0,25</b>, Beschriftung erhaben (L42). Platte @@T1B@@ × @@T1H@@ × 14,6, Mulde 14,2 tief mit Boden 0,4, Fase 0,5, ohne Stifte. Volumen @@T1V@@ cm³ = @@T1A@@ % der Steckplatte.</p></div>
+      <p class="cap">Drei Mulden mit dem Institutsumriss, Spiel <b>0,10 / 0,15 / 0,20</b>, Beschriftung erhaben (L42). Platte @@T1B@@ × @@T1H@@ × 14,6, Mulde 14,2 tief mit Boden 0,4, Fase 0,5, ohne Stifte. Volumen @@T1V@@ cm³ = @@T1A@@ % der Steckplatte.</p></div>
     <div class="fig"><h3>T2 · Kassettenserie (beige)</h3>
       <svg viewBox="0 0 320 192" role="img" aria-label="Drei Kassetten mit abnehmender Breite">
         <g id="t2"></g></svg>
@@ -301,10 +301,20 @@ ul.tight { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
     <thead><tr><th>Teil</th><th>Farbe</th><th>Prüft</th><th>Gutes Ergebnis</th><th>Druckzeit (grob)</th></tr></thead>
     <tbody>
       <tr><td><b>T4</b> Messplättchen</td><td>grau, beige, graublau, rot (und Schwarz als Referenz)</td><td>Aufmaß je Filament, Slicer-Kompensation</td><td>Maße innerhalb ±0,05 nach der Kompensation</td><td>je 10 min</td></tr>
-      <tr><td><b>T1</b> Mulden-Block</td><td>grau (Platte)</td><td>Fuß des beigen Instituts, Fuge je Spiel 0,15 / 0,20 / 0,25</td><td>eine Mulde mit Gefühl „gut“: ohne Kraft ein, fest raus, kein Wackeln</td><td>@@T1A@@ % der Platte, gut 2 h</td></tr>
+      <tr><td><b>T1</b> Mulden-Block</td><td>grau (Platte)</td><td>Fuß des beigen Instituts, Fuge je Spiel 0,10 / 0,15 / 0,20</td><td>eine Mulde mit Gefühl „gut“: ohne Kraft ein, fest raus, kein Wackeln</td><td>@@T1A@@ % der Platte, gut 2 h</td></tr>
       <tr><td><b>T2</b> Kassetten</td><td>beige</td><td>Einpressen in Institut (V1RS) und Hörsaal (v4)</td><td>Sitz 3 wie in Schwarz: hält beim Schütteln, Herausdrücken nur mit Druck</td><td>5 Teile je 10 bis 20 min</td></tr>
       <tr><td><b>T3</b> Stumpf</td><td>je neue Farbe</td><td>beides in einem Teil</td><td>Mulde und Kassette wie T1 und T2</td><td>etwa 80 min</td></tr>
     </tbody></table></div>
+
+  <div class="box" id="erzeugt"><h3>Stand 19.10.: beide Varianten sind erzeugt (STL in <code>stl/steckmodul_passung/</code>, ZIP je Variante)</h3>
+    <div class="tw"><table><thead><tr><th>Variante</th><th>Teile</th><th class="n">Druckzeit grob</th><th>Vorteil</th></tr></thead><tbody>
+      <tr><td><b>A</b> vorhandene Gebäude als Lehre</td><td>A1 Mulden-Block Institut (grau, @@AB@@ × @@AH@@, 3 Mulden 0,10 / 0,15 / 0,20) + K1 bis K3 Kassetten (beige)</td><td class="n">@@ZA@@ min</td><td>prüft am echten Umriss und am echten Gebäude, nichts Neues in Beige nötig</td></tr>
+      <tr><td><b>B</b> eigener kompakter Probedruck</td><td>B1 Probefuß Fase 2,0 und B2 Probefuß Fase 4,0 (beige, 31 × 18 × 20, Kodierecke, Schacht V1RS) + B3 Mulden-Block (grau, 44 × 66) + K1 bis K3</td><td class="n">@@ZB@@ min (ohne B2 @@ZB1@@)</td><td>kurzer Block, funktioniert für jede neue Farbe, prüft die Fase 4,0 gleich mit</td></tr>
+    </tbody></table></div>
+    <p class="note">Der Mulden-Block allein ist in B kürzer (@@ZBB@@ statt @@ZAB@@ min), aber die Füße kosten @@ZBF@@ min extra. Die Summe liegt nah beieinander; B ist unabhängig von den vorhandenen Gebäuden. Zeiten nach dem Muster der r8-Schätzung (dort 47 min geschätzt, 55 min gedruckt), mal 1,2.</p>
+    <p class="note"><b>Fase 4,0:</b> Die alten Gebäude passen weiter in dieselbe Mulde, denn die Fase sitzt am Gebäude und nicht an der Mulde. In schmalen Gebäuden entfällt sie aber dort, wo der Schacht näher am Rand liegt als Fase plus Wand (wie schon beim Paulinum). B2 zeigt, ob 4,0 das Einführen überhaupt verbessert.</p>
+    <p class="note"><b>Schachttiefe:</b> Die Schachtdecke liegt 0,30 (Code) bzw. 0,35 (Wunsch) über dem Unterbau der Kassette. Die Kassette wird bis zur Fußunterkante eingepresst, die Decke ist kein Anschlag. Zu wenig Tiefe ließ sie nach r3 etwa 0,2 mm unten herausstehen. Dann sitzt die Buchse 0,2 mm höher und die Einstecktiefe E sinkt von 5,28 gegen die Grenze 5,1. Mehr Tiefe schafft Luft, damit die Kassette auch bei Aufmaß ganz hineinkommt.</p>
+  </div>
   <div class="steps">
     <div class="step now"><span class="t">Schritt 1 · jetzt</span><b>Plan</b><span>Diese Seite. Wird abgenickt oder geändert, Entscheidungen K1 bis K7.</span></div>
     <div class="step"><span class="t">Schritt 2</span><b>Runde 1: T4, T1, T2</b><span>STL, README, ZIP mit Prüfbericht (dicht, Wand, Überhang). Plättchen zuerst, damit die Slicer-Kompensation steht, bevor T1 und T2 gedruckt werden. Testbogen danach.</span></div>
@@ -320,9 +330,9 @@ ul.tight { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
       <div class="opt"><span class="l">B</span><div><b>Zwei Dateisätze, Schwarz und Rest</b><small>doppelte STL für Platte, sechs Gebäude und Display; bei fünf Farben fünffach. Nur wenn A scheitert.</small></div></div>
       <div class="opt"><span class="l">C</span><div><b>Filament-Offset im Generator</b><small>Parameter je Farbe in <code>params.py</code>, ein Satz STL je Farbe, ohne Slicer-Eingriff. Rückfall, falls der Slicer keine Kompensation bietet.</small></div></div></div>
     <div class="card"><h3><span class="k">K2</span> Spielreihe der Mulden (T1)</h3>
-      <div class="opt rec"><span class="l">A</span><div><b>0,15 / 0,20 / 0,25 (Empfehlung)</b><small>0,15 ist die Vorgabe aus r8; 0,25 zeigt, wie weit „locker“ geht.</small></div></div>
+      <div class="opt rec"><span class="l">A</span><div><b>0,10 / 0,15 / 0,20 (Empfehlung, angepasst am 19.10.)</b><small>0,10 ist die Referenz zur gedruckten grauen Platte, 0,15 die Vorgabe aus r8 und nach Nutzereinschätzung wohl der Zielwert, 0,20 die Obergrenze. Nach der Flussraten-Kalibrierung ist 0,25 unwahrscheinlich nötig.</small></div></div>
       <div class="opt"><span class="l">B</span><div><b>0,12 / 0,15 / 0,18</b><small>enger; sinnvoll, wenn T4 kaum Aufmaß zeigt.</small></div></div>
-      <div class="opt"><span class="l">C</span><div><b>vier Stufen bis 0,30</b><small>Platte größer, mehr Material.</small></div></div></div>
+      <div class="opt"><span class="l">C</span><div><b>vier Stufen bis 0,25</b><small>Platte größer, mehr Material.</small></div></div></div>
     <div class="card"><h3><span class="k">K3</span> Nähte zwischen Gebäuden</h3>
       <div class="opt"><span class="l">A</span><div><b>Wand folgt dem Spiel</b><small>bei 0,20 nur 0,60 Wand. Nicht empfohlen.</small></div></div>
       <div class="opt rec"><span class="l">B</span><div><b>Spiel an den Nähten höchstens 0,15, sonst das gewählte (Empfehlung)</b><small>Wand mindestens 0,70. Mulde ist dann nicht überall gleich weit; das Gebäude liegt an der Nahtseite an.</small></div></div>

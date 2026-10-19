@@ -46,21 +46,24 @@ def umrisse():
     return aus
 
 
-def block(poly, spiele, wand=2.4, rand=3.0):
-    """Mulden-Block T1: je Spiel eine Mulde mit dem Umriss `poly` (Spiel je Seite, Gehrung), untereinander, Stege `wand`, Rand `rand`.
-    Gibt Platte (Rechteck), Mulden-Polygone, Maße und Volumen in cm³ zurück."""
-    mulden, y = [], rand
-    x0, y0, x1, y1 = poly.bounds
+def block(poly, spiele, wand=2.4, rand=3.0, rand_l=None):
+    """Mulden-Block: je Spiel eine Mulde mit dem Umriss `poly` (Spiel je Seite, Gehrung), untereinander (erstes Spiel unten), Stege `wand`, Rand `rand`,
+    links `rand_l` (Platz für die Kennung). Gibt Platte (Rechteck), Mulden (Spiel, Polygon mit Spiel), Umrisse (Spiel, Polygon ohne Spiel) und
+    Maße samt Volumen in cm³ zurück."""
+    rand_l = rand if rand_l is None else rand_l
+    mulden, fps, y = [], [], rand
     for s in spiele:
         g = poly.buffer(s, join_style=2, mitre_limit=5)
         gx0, gy0, gx1, gy1 = g.bounds
-        mulden.append((s, affinity.translate(g, rand - gx0, y - gy0)))
+        dx, dy = rand_l - gx0, y - gy0
+        mulden.append((s, affinity.translate(g, dx, dy)))
+        fps.append((s, affinity.translate(poly, dx, dy)))
         y += (gy1 - gy0) + wand
     breite = max(g.bounds[2] for _, g in mulden) + rand
     hoehe = y - wand + rand
     platte = box(0, 0, breite, hoehe)
     vol = platte.area * PLATTE_T - sum(g.area for _, g in mulden) * (PLATTE_T - BODEN)
-    return dict(platte=platte, mulden=mulden, breite=breite, hoehe=hoehe, cm3=vol / 1000.0, anteil=vol / 1000.0 / PLATTE_CM3)
+    return dict(platte=platte, mulden=mulden, fps=fps, breite=breite, hoehe=hoehe, cm3=vol / 1000.0, anteil=vol / 1000.0 / PLATTE_CM3)
 
 
 def pfad(g, nd=2):

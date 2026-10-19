@@ -15,7 +15,7 @@ from shapely.geometry import box
 from plug.filament import geom as FG
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SPIELE = (0.15, 0.20, 0.25)          # T1: Spiel je Seite
+SPIELE = (0.10, 0.15, 0.20)          # T1: Spiel je Seite
 LEIT = "05_institutsgebaeude"
 
 
@@ -93,13 +93,27 @@ def t4_svg():
             '<text x="%.1f" y="%.1f" font-size="9" text-anchor="middle" class="mut">Nase 10</text>' % (x0 - 5 * k, y0 + 15 * k - 4))
 
 
+def zeiten_ersetzen(b):
+    """Zeiten aus dem Prüfbericht von plug.filament.build (Zeilen „Variante A/B“); fehlt der Bericht, bleiben Platzhalter leer."""
+    import re
+    f = os.path.join(FG.ROOT, "stl", "steckmodul_passung", "pruefbericht.txt")
+    t = open(f, encoding="utf-8").read() if os.path.exists(f) else ""
+    ma = re.search(r"Variante A .*?: (\d+) min Block \+ (\d+) min Kassetten = (\d+) min", t)
+    mb = re.search(r"Variante B .*?: (\d+) min Füße \+ (\d+) min Block \+ (\d+) min Kassetten = (\d+) min", t)
+    if not (ma and mb):
+        return {k: "?" for k in ("@@ZA@@", "@@ZB@@", "@@ZB1@@", "@@ZBB@@", "@@ZAB@@", "@@ZBF@@", "@@AB@@", "@@AH@@")}
+    return {"@@ZA@@": ma.group(3), "@@ZB@@": mb.group(4), "@@ZB1@@": str(int(mb.group(4)) - int(round(int(mb.group(1)) / 2))), "@@ZBB@@": mb.group(2),
+            "@@ZAB@@": ma.group(1), "@@ZBF@@": mb.group(1), "@@AB@@": de(b["breite"], 0), "@@AH@@": de(b["hoehe"], 0)}
+
+
 def main():
     u = FG.umrisse()
-    b = FG.block(u[LEIT]["poly"], SPIELE)
+    b = FG.block(u[LEIT]["poly"], SPIELE, rand_l=9.6)
     s = open(os.path.join(HERE, "plan.template.html"), encoding="utf-8").read()
     rep = {"@@UMRISSE@@": umrisse_svg(u), "@@T1@@": t1_svg(b),
            "@@T1VIEW@@": "-3 %.1f %.1f %.1f" % (-b["hoehe"] - 3, b["breite"] + 6, b["hoehe"] + 6),
            "@@T1B@@": de(b["breite"]), "@@T1H@@": de(b["hoehe"]), "@@T1V@@": de(b["cm3"]), "@@T1A@@": de(b["anteil"] * 100, 0)}
+    rep.update(zeiten_ersetzen(b))
     for k, v in rep.items():
         s = s.replace(k, v)
     s = s.replace('<g id="t2"></g>', '<g id="t2">%s</g>' % t2_svg()).replace('<g id="t3"></g>', '<g id="t3">%s</g>' % t3_svg()).replace('<g id="t4"></g>', '<g id="t4">%s</g>' % t4_svg())
