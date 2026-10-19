@@ -2,9 +2,9 @@ K4 KORDELPROBE (Mitte des Unterkastens, Stand 8)
 ================================================
 Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedruckt, alle Werte sind Planwerte.
 
-Teil: K4_stern_F-innen.stl, Stern Ø 70 x 16.0 mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support (siehe pruefbericht.txt)   ca. 5 g
-Gänge 8 x 5 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 5,0; die Kordel 5 x 3 passt, 2 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
-x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 9,5 mm
+Teil: K4_stern_F-innen.stl, Stern Ø 70 x 16.0 mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support (siehe pruefbericht.txt)   ca. 4 g
+Gänge 8 x 4 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 4,0; die Kordel 5 x 3 passt, 1 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
+x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 43 auf Gang-Höhe 4, ab 10,5 mm
 vor dem Knopf steigt die Decke mit 45 Grad an, der Knopfraum Ø 25 x 13,0 (1 mm Luft über dem Knopf) ist überall frei (nichts davon beschnitten), oben eine flache Decke
 Ø 20 bei 15,5, darüber das Plateau Ø 28 bei 16.0. Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten
 seitlich am Knopffuß heraus.

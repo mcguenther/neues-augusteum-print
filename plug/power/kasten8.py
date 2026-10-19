@@ -2,7 +2,7 @@
 
 Der Hut trägt in der Mitte seines Deckbretts einen Knopf (`HUT_KNOPF`, Ø 22 × 12,0; die Höhe ist eine Annahme, vom Nutzer zu bestätigen) mit
 der Kordel der Quaste. Die Grundplatte liegt mittig auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (mindestens
-Ø 25 × 13,0), und die Kordel läuft in acht Gängen (`KORDEL_GANG`, freies Rechteck 8 × 5, darüber 45°-Dachschrägen 1,5, Höcker 11,4 breit)
+Ø 25 × 13,0), und die Kordel läuft in acht Gängen (`KORDEL_GANG`, freies Rechteck 8 × 4, darüber 45°-Dachschrägen 1,5, Höcker 11,4 breit)
 unter dem Kasten zur Außenwand. Am Rand haben die Gänge Gang-Höhe; `KNOPF_RAMPE["vor"]` mm vor dem Knopfkörper beginnt ein 45°-Kegel, der
 auf die Knopfhöhe steigt und mit einer flachen Decke Ø 20 schließt. Darüber sitzt die Erhebung (Plateau `KNOPF_PLATEAU_D`), von oben sichtbar.
 
@@ -42,7 +42,7 @@ MODUS = WAND = GANG_Z = None
 
 
 def modus(m):
-    """Gangfase umschalten: "innen" (Fase in den oberen Ecken des Rechtecks, Höcker 10,4 × 6,2) oder "aussen" (Rechteck 8 × 5 frei,
+    """Gangfase umschalten: "innen" (Fase in den oberen Ecken des Rechtecks, Höcker 10,4 × 6,2) oder "aussen" (Rechteck 8 × 4 frei,
     Dachschrägen darüber, Höcker 11,4 × 7,7). Setzt MODUS, WAND, GANG_Z dieses Moduls."""
     global MODUS, WAND, GANG_Z
     assert m in MODI, m
