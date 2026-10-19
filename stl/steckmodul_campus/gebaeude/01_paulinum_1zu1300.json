@@ -4,6 +4,18 @@
  "wall": 1.2,
  "F": 14.200000000000001,
  "rohrstuetze": false,
+ "netz": {
+  "vorher": {
+   "entartet": 220,
+   "beruehrkanten": 217
+  },
+  "nachher": {
+   "entartet": 0,
+   "beruehrkanten": 2
+  },
+  "schalen_entfernt": 20,
+  "schalen": 1
+ },
  "fase_entfaellt_mm2": 280.1,
  "kollision_mm3": 0.0,
  "platz_fehlt_mm3": 0.0,

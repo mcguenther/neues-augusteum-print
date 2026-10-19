@@ -45,6 +45,19 @@ bestimmt also, wie gleichmäßig das Gebäude leuchtet.
 - Boden 1,2 mm über die ganze Grundfläche, Fuß 14,2 mm mit Fase an der Bettkante.
 - Prüfwerte je Gebäude (Volumen, Brücken, Kragstücke, Kollision mit der Kassette): `stl/steckmodul_campus/gebaeude/<slug>_1zu1300.json`.
 
+## Prüfen, ob der Slicer das Gebäude hohl sieht
+
+In der Schichtvorschau eine Schicht im Fuß (etwa 8 mm über dem Bett) und eine auf Höhe des Anschlagrings (etwa 18,4 mm) ansehen: es
+dürfen nur dünne Wandringe (Außenwand, Schachtrohr, innere Wände) zu sehen sein, Füllung (Gyroid) nur in den Keilen über den Gewölben.
+Eine durchgehende Füllfläche über den ganzen Grundriss heißt: der Slicer hat beim Laden Flächen umgedreht und den Innenraum zu Material
+gemacht (so beim Paulinum bis 2026-10-18, Ursache und Abhilfe in `plug/logbook/scale.md`, Abschnitt „Steckbare Hohlgebäude“, „Im Slicer
+massiv“). Die senkrechte helle Linie an einer Außenwand ist die Naht (Seam, „Aligned“), kein Spalt.
+
+Ohne Drucker prüfbar: `python3 -m plug.export_campus` vergleicht, wenn `prusa-slicer` installiert ist (`apt-get install prusa-slicer`),
+das Volumen nach dessen Reparatur beim Laden mit dem Netzvolumen (Spalte „Slicer-Volumen“ im Prüfbericht). Schichten selbst ansehen:
+`prusa-slicer --export-gcode --load <ini> datei.stl` mit den Werten der Kurzfassung (`use_relative_e_distances = 1`), dann die Linienarten
+(`;TYPE:`) je Schicht auswerten. Die SLA-Ausgabe (`--export-sla`) taugt dafür nicht: sie füllt geschlossene Innenräume immer.
+
 ## Erfahrungen
 
 - **r8 (2026-10-17), Passform-Stummel Hochhaus und Kassette V2R, Bambu A1, schwarzes PLA, Düse 0,4, 0,2 mm, Wände 2 oder mehr, kein Support:** beide Teile ohne Support sauber gedruckt, auch das frei stehende 1,2-mm-Blatt der Kassette; Fuß-Fase 2,0 mm ohne Elefantenfuß-Wulst; Druckzeit beide Teile ca. 55 min (Schätzung der Planseite 47 min). Das ganze Gebäude (Gyroid 10 %, Brim) ist noch nicht gedruckt.
