@@ -54,7 +54,7 @@ from plug.testcase import variants as V  # noqa: E402
 
 OUT = os.path.join(HERE, "stl", "steckmodul_campus", "gebaeude")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_campus", "gebaeude")
-FUSS_FASE_T = 2.0      # Fase am Fuß an der Bettkante (Einführung in die Mulde; die Campus-Platte hat oben keine Muldenfase). r8: 2,0 mm fängt das Gebäude, kein Wulst. Wird nach dem Aushöhlen angebracht
+FUSS_FASE_T = 4.0      # Fase am Fuß an der Bettkante (Einführung in die Mulde; die Campus-Platte hat oben keine Muldenfase). r8: 2,0 mm fängt das Gebäude, kein Wulst; Passungsserie (19.10.2026, Probefuß B1): 4,0 beschlossen, die gedruckten Gebäude (Hörsaal, Seminar, Institut) haben 2,0. Wird nach dem Aushöhlen angebracht
 BODEN_T = 1.2          # Boden des Gebäudes (3 Wände, liegt auf dem Bett)
 FREI_T = 0.3           # Spiel um alles, was über dem Unterbau der Kassette liegt
 ANSCHLAG_T = 1.2       # Mindestbreite des Anschlagrands (wie LIP_X/E_LIP der Steckprobe 1)

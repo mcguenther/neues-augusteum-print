@@ -88,13 +88,16 @@ def min_height(k, floor=None):
     return top - F + P.STOP_T
 
 
-def kassette(var):
+def kassette(var, schlank=0.0, enger=0.0, flacher=0.0):
+    """schlank: Unterbau in Breite und Tiefe je Seite so viel kleiner; enger: Buchsentasche in Breite und Tiefe insgesamt so viel enger; flacher: Taschenhöhe so viel kleiner
+    (Passung bei wechselnden Filamenten, `plug.filament.kassetten`; Standard 0 = Stand der gebauten Gebäude). Oberkante des Unterbaus und Blatt bleiben."""
     d = dims(var)
     w, depth, zb = d["w"], d["depth"], d["z_b"]
-    body = N2.chamfered_block(w, depth, zb, EF, 0.0).translate([0, depth / 2, 0])
-    cuts = [cbox(d["pk_w"], d["pk_d"], -0.01, d["zp"], cy=d["ypin"]),
-            N2.chamfer_hole(d["pk_w"], d["pk_d"], 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
-            box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], d["zp"] - 0.01, zb + 0.01)]
+    body = N2.chamfered_block(w - 2 * schlank, depth - 2 * schlank, zb, EF, 0.0).translate([0, depth / 2, 0])
+    zp = d["zp"] - flacher
+    cuts = [cbox(d["pk_w"] - enger, d["pk_d"] - enger, -0.01, zp, cy=d["ypin"]),
+            N2.chamfer_hole(d["pk_w"] - enger, d["pk_d"] - enger, 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
+            box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], zp - 0.01, zb + 0.01)]
     m = diff(body, *cuts)
     if var not in RVARS:
         blatt = box(-w / 2, w / 2, d["y1"], d["y1"] + BLATT_T, zb - 0.01, d["top"])
