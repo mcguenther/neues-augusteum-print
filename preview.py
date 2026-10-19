@@ -76,6 +76,89 @@ def _raster_loop(px, py, sz, ids, zbuf, fid):
         fb[upd] = i
 
 
+try:  # optional: Numba kompiliert die Rasterschleife (pixelgleich zu rasterize, ~10-50x schneller)
+    import numba
+except ImportError:
+    numba = None
+
+
+def _raster_nb_py(px, py, sz, ids, zbuf, fid):
+    """Alle Dreiecke `ids` in einem Durchgang rastern; dieselben Formeln und dieselbe Rangfolge
+    (Gleichstand gewinnt der kleinere Index) wie _raster_loop und die gestapelte Variante."""
+    H, W = zbuf.shape
+    for k in range(len(ids)):
+        i = ids[k]
+        ax_, bx, cx = px[i, 0], px[i, 1], px[i, 2]
+        ay, by, cy = py[i, 0], py[i, 1], py[i, 2]
+        x_lo = int(max(np.floor(min(ax_, bx, cx)), 0))
+        x_hi = int(min(np.ceil(max(ax_, bx, cx)), W - 1))
+        y_lo = int(max(np.floor(min(ay, by, cy)), 0))
+        y_hi = int(min(np.ceil(max(ay, by, cy)), H - 1))
+        if x_lo > x_hi or y_lo > y_hi:
+            continue
+        den = (by - cy) * (ax_ - cx) + (cx - bx) * (ay - cy)
+        if abs(den) < 1e-12:
+            continue
+        z0, z1, z2 = sz[i, 0], sz[i, 1], sz[i, 2]
+        for y in range(y_lo, y_hi + 1):
+            gy = y + 0.5
+            for x in range(x_lo, x_hi + 1):
+                gx = x + 0.5
+                w0 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / den
+                w1 = ((cy - ay) * (gx - cx) + (ax_ - cx) * (gy - cy)) / den
+                w2 = 1 - w0 - w1
+                if w0 >= -1e-6 and w1 >= -1e-6 and w2 >= -1e-6:
+                    depth = w0 * z0 + w1 * z1 + w2 * z2
+                    zb = zbuf[y, x]
+                    if depth > zb or (depth == zb and i < fid[y, x]):
+                        zbuf[y, x] = depth
+                        fid[y, x] = i
+
+
+_raster_nb = numba.njit(cache=True, nogil=True)(_raster_nb_py) if numba else None
+
+
+def _finish_nb_py(fid, zbuf, shade, cols, norms, bg, thr, zmin, out, edge):
+    """Schattierung und Kantenlinien in einem Durchgang (gleiche Formeln wie der NumPy-Pfad in render):
+    out = Bild (uint8), edge = Kantenmaske."""
+    H, W = fid.shape
+    for y in range(H):
+        for x in range(W):
+            f = fid[y, x]
+            e = False
+            if f >= 0:
+                if x + 1 < W:
+                    g = fid[y, x + 1]
+                    if g < 0:
+                        e = True
+                    else:
+                        d = norms[f, 0] * norms[g, 0] + norms[f, 1] * norms[g, 1] + norms[f, 2] * norms[g, 2]
+                        if d < 0.9 or abs(zbuf[y, x] - zbuf[y, x + 1]) > thr:
+                            e = True
+                if y + 1 < H and not e:
+                    g = fid[y + 1, x]
+                    if g < 0:
+                        e = True
+                    else:
+                        d = norms[f, 0] * norms[g, 0] + norms[f, 1] * norms[g, 1] + norms[f, 2] * norms[g, 2]
+                        if d < 0.9 or abs(zbuf[y, x] - zbuf[y + 1, x]) > thr:
+                            e = True
+            else:
+                if x + 1 < W and fid[y, x + 1] >= 0:
+                    e = True
+                if y + 1 < H and fid[y + 1, x] >= 0:
+                    e = True
+            edge[y, x] = e
+            for c in range(3):
+                v = bg[c] if f < 0 else min(max(cols[f, c] * shade[f], 0.0), 1.0)
+                if e:
+                    v = v * 0.35
+                out[y, x, c] = np.uint8(v * 255)
+
+
+_finish_nb = numba.njit(cache=True, nogil=True)(_finish_nb_py) if numba else None
+
+
 def rasterize(px, py, sz, ids, W, H, max_box=48, budget=1 << 21):
     """Z-Buffer-Rasterisierung der Dreiecke `ids` (Pixelkoordinaten px, py; Tiefe sz je Eckpunkt).
 
@@ -87,6 +170,10 @@ def rasterize(px, py, sz, ids, W, H, max_box=48, budget=1 << 21):
     zbuf = np.full((H, W), -np.inf)
     fid = np.full((H, W), -1, dtype=np.int64)
     ids = np.asarray(ids)
+    if _raster_nb is not None and not os.environ.get("NO_NUMBA"):
+        _raster_nb(np.ascontiguousarray(px), np.ascontiguousarray(py), np.ascontiguousarray(sz),
+                   ids.astype(np.int64), zbuf, fid)
+        return zbuf, fid
     x_lo = np.maximum(np.floor(px[ids].min(1)), 0).astype(np.int64)
     x_hi = np.minimum(np.ceil(px[ids].max(1)), W - 1).astype(np.int64)
     y_lo = np.maximum(np.floor(py[ids].min(1)), 0).astype(np.int64)
@@ -183,6 +270,19 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=None, margin=0.06, ret
 
     zbuf, fid = rasterize(px, py, sz, np.nonzero(norms @ cam > -1e-9)[0], W, H)  # ohne Rückseiten
 
+    if _finish_nb is not None and not os.environ.get("NO_NUMBA"):
+        if flat:  # fast unschattiert: Farben beurteilen
+            shade_f = 0.82 + 0.18 * np.clip(norms @ cam, 0, 1)
+        else:
+            shade_f = 0.42 + 0.48 * np.clip(norms @ light, 0, 1) + 0.10 * np.clip(norms @ cam, 0, 1)
+        hit = fid >= 0
+        zmin = zbuf[hit].min() - 1 if hit.any() else 0
+        zz = np.where(hit, zbuf, zmin)
+        out = np.empty((H, W, 3), np.uint8)
+        edge = np.empty((H, W), np.bool_)
+        _finish_nb(fid, zz, shade_f, np.ascontiguousarray(cols, dtype=np.float64), np.ascontiguousarray(norms),
+                   np.array(OUTLINE if transparent else BG) / 255, 2.4 / k * ss, zmin, out, edge)
+        return _render_tail(out, hit, edge, size, transparent, return_proj, (xmin, xmax, ymin, ymax), k, W, H, ss, right, up)
     img = np.empty((H, W, 3))
     img[:] = np.array(OUTLINE if transparent else BG) / 255
     hit = fid >= 0
@@ -207,7 +307,14 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=None, margin=0.06, ret
         e_ = crease | jump | sil
         edge[: H - dy, : W - dx] |= e_
     img[edge] *= 0.35
-    im = Image.fromarray((img * 255).astype(np.uint8)).resize(size, Image.LANCZOS)
+    return _render_tail((img * 255).astype(np.uint8), hit, edge, size, transparent, return_proj,
+                        (xmin, xmax, ymin, ymax), k, W, H, ss, right, up)
+
+
+def _render_tail(img, hit, edge, size, transparent, return_proj, ext, k, W, H, ss, right, up):
+    """Verkleinern (Kantenglättung), Transparenz und Projektionsfunktion; `img` ist das fertige uint8-Bild."""
+    xmin, xmax, ymin, ymax = ext
+    im = Image.fromarray(img).resize(size, Image.LANCZOS)
     if transparent:
         # Silhouette samt Kantenlinie bleibt deckend, alles andere ist transparent; der
         # Hintergrund trägt die Linienfarbe, damit am Rand kein heller Saum entsteht.
@@ -221,6 +328,13 @@ def render(meshes, size=(900, 700), azim=-35, elev=30, ss=None, margin=0.06, ret
             return ((P @ right - cx) * k + W / 2) / ss, (H / 2 - (P @ up - cy) * k) / ss
         return im, proj
     return im
+
+
+def warmup():
+    """Numba-Kerne vor dem Forken kompilieren bzw. aus dem Cache laden (sonst tut es jeder Kindprozess)."""
+    if _raster_nb is not None:
+        t = trimesh.creation.box()
+        render([(t, "#888888")], size=(16, 16), ss=1)
 
 
 def caption(im, title, subtitle=None):

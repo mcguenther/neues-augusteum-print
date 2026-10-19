@@ -67,3 +67,22 @@ schneller als der Stand ohne Hohlkörper (313 s). Die Kompressionsstufe der 3MF 
 
 Ideen, noch nicht umgesetzt: Hohlkörper zwischen Läufen zwischenspeichern (Schlüssel: Netz des massiven Körpers, Parameter, Quelltext von `hohl.py`);
 die Farbvorschauen (größter Posten) teilen sich die Kerne mit den Builds erst nach deren Ende.
+
+## Numba-Rasterizer (2026-10-19)
+
+Gemessen auf 4 Kernen, voller Lauf bis vor die Fassaden-Prüfansichten (deren Foto-Download scheitert in der Cloud-Sandbox mit HTTP 429):
+
+| Schritt | vorher | nachher |
+|---|---|---|
+| Farbvorschauen (`run_render_jobs`) | 136 s | 35 s |
+| Vorschauen je Quelle | 90 s | 47 s |
+| README-Bilder | 32 s | 16 s |
+| Lauf gesamt (ohne Fassaden) | 450 s | 197 s |
+
+Maßnahme: `preview._raster_nb_py` (Z-Buffer-Schleife) und `preview._finish_nb_py` (Schattierung und Kantenlinien) laufen mit Numba statt in NumPy-Stapeln
+und `float64`-Bildern. Einzelbild Laserscan-Teil (29 000 Dreiecke, 1400 × 1000, ss 2): 6,5 s → 0,3 s; kleines Gebäude 3,6 s → 0,2 s.
+**Pixelgleich** zum NumPy-Pfad (0 abweichende Pixel; geprüft für ss 1 und 2, `flat` mit Farben je Dreieck, transparent, `px_per_mm`, Laserscan und
+Einzelgebäude). Gleiche Formeln und gleiche Rangfolge bei Gleichstand. Ohne Numba oder mit `NO_NUMBA=1` läuft der alte Pfad unverändert.
+`preview.warmup()` (aus `generate.main`) kompiliert vor dem Forken; der Cache liegt in `__pycache__`.
+
+Offen: Die Geometrie-Phase „Modelle bauen“ (~100 s) ist jetzt der größte Posten; Idee: Hohlkörper zwischenspeichern (siehe oben).
