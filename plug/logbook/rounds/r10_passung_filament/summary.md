@@ -40,20 +40,18 @@ Druckeinstellungen: Bambu A1, PLA, Düse 0,4, Schicht 0,2, 3 Wände, 15 %, Suppo
 1. `OUTLINE_CLR_T` und `HOF_CLR_T` 0,15 (Hof ungetestet, Übernahme der Mulden-Passung).
 2. Kassette V1RS: Spiel im Schacht **0,13** je Seite (Außenmaß je Seite 0,07 schlanker als die Kassette mit 0,06), Buchsentasche **10,46 × 2,84 × 14,40**. Taschenhöhe an die echte Einstecktiefe E koppeln (L49).
 3. Gebäude auf der Platte auseinanderrücken statt Trennwände zu verdünnen: Zuschnitt der Gebäude bleibt bei Fuge 1,0 (neu `ZUSCHNITT_CLR_T` 0,10), die Platte schiebt die Gebäude je Naht um 0,1 mm auseinander (L50).
-4. Fuß-Fase 4,0 für neue Gebäude und Schachttiefe 0,35 (Aufgabendatei): **noch nicht umgesetzt**, siehe offen.
+4. Fuß-Fase 4,0 für neue Gebäude und Schachtdecke 0,35 (Aufgabendatei): auf main umgesetzt (Commit `2531ac3`, Gebäude neu gebaut).
 
 ## Folgen für Werte und Geometrie
 
 - **Umgesetzt (Commit `0009967`, Platte, noch nicht gedruckt und nicht getestet):** `plug/testcase/params.py` mit `OUTLINE_CLR_T` 0,15, `HOF_CLR_T` 0,15, neu `ZUSCHNITT_CLR_T` 0,10; Zuschnitt und STL der Gebäude unverändert; `plug/divider/geom.py` (`fuge_platte`, `verschiebungen`, `schiebe`) und `plug/campus.py` rücken die Gebäude je Naht um 0,1 mm auseinander, Verschiebung höchstens 0,14 mm je Gebäude. Platte **115,63 × 220,90** statt 115,58 × 220,84 (nur 0,05 größer, nicht 1 bis 2 mm wie in der Aufgabe vermutet). Wand zwischen den Mulden 0,80, nur an den Zahnflanken Paulinum/Neues Augusteum 0,70 (Zahn im Schlitz; für 0,80 müsste der Zuschnitt dieser Naht auf 1,1: offene Entscheidung). Docks weichen höchstens 0,138 mm (Hochhaus) vom gedruckten Unterkasten ab (`ZAPFEN_LOKAL` unverändert). Geprüft: `plug.check`, `divider.check`, `export_campus`, `campus_underside` ok.
 - Auffälligkeit: Der Zwischenspeicher `plug/scale1176/underside_1300.json` war veraltet (Fach bei x 30 bis 100 statt `FACH_FIX` Mitte 45,4) und wurde neu gerechnet; die Eckaussparung Nordwest trifft jetzt laut Konzept das Fach (210 mm²), **zu prüfen**.
 - Nicht neu erzeugt: `plug.colour` (farbiger Hof-Einsatz), HTML-Seiten, Unterkasten.
-- **Noch nicht übernommen:** Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 stehen nur in `plug/filament/build.py`, **nicht** in den echten Kassetten (`variants.kassette`) und im Gebäude-Generator (Folgeaufgabe). Gilt zunächst für V1RS; v4 und V2R ungetestet. `KASS_CLR_T` in `params.py` bleibt 0,06, `plug/parts.py` unverändert.
+- **Übernommen (2026-10-19, nach der Auswertung, auf main in Commit `2531ac3`):** Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 gelten für die Kassetten aller sechs Gebäude (`plug/filament/kassetten.py`, `variants.kassette(var, schlank, enger, flacher)`: Unterbau je Seite 0,07 schlanker, Tasche 0,10 enger und 0,20 flacher; der Schacht der Gebäude bleibt). Ein eigener Stand dieser Übernahme in diesem Zweig (nur V1RS) wurde beim Merge zugunsten der Fassung von main verworfen. v4 (Paulinum, Augusteum, Hörsaal) und V2R (Hochhaus) sind mit dem neuen Spiel ungetestet.
 
 ## Was die Runde nicht klärte (offen)
 
-- Fase 4,0 (Aufgabendatei, Probefuß) gegen 2,0 (Code `FUSS_FASE_T`, r8 bewährt): welche gilt für neue Gebäude?
 - Ob Gebäude mit Fase 2,0 in den 0,15er Mulden gleich gut sitzen (erst mit der neuen Platte sichtbar; B3 hatte Fase 4,0).
-- Schachttiefe 0,35 (`SHAFT_EXTRA_T` im Code 0,30).
 - Flussraten-Kalibrierung je Filament (läuft beim Nutzer); Messplättchen T4 nicht erzeugt.
 - Kassetten v4 (Hörsaal) und V2R (Hochhaus) mit dem neuen Spiel; Hof-Einsatz mit 0,15.
 - Entscheidung Naht Paulinum/Neues Augusteum (0,70 oder Zuschnitt 1,1); Eckaussparung Nordwest.

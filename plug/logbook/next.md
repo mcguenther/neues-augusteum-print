@@ -12,10 +12,10 @@ Ausgewertet in [`rounds/r10_passung_filament/summary.md`](rounds/r10_passung_fil
 
 | Prio | Aufgabe | Bedingung |
 |---|---|---|
-| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | Folgeaufgabe, gilt zunächst für V1RS |
+| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | **erledigt 2026-10-19** (auf main `2531ac3`: `plug.filament.kassetten`, `variants.kassette` mit `schlank`/`enger`/`flacher`, Gebäude neu gebaut); v4 und V2R mit dem neuen Spiel ungetestet |
 | 1 | Neue Steckplatte (0009967) drucken; Prüfung: sitzen die bestehenden beigen Gebäude (Fase 2,0) in den 0,15er Mulden gleich gut wie der Probefuß (Fase 4,0)? Hof-Einsatz mit 0,15 (ungetestet) | Nutzer druckt |
-| 1 | Entscheidung Fuß-Fase 4,0 (Aufgabendatei) gegen 2,0 (`FUSS_FASE_T`, r8 bewährt) für neue Gebäude | nach dem Plattentest |
-| 2 | Schachttiefe 0,35 (`SHAFT_EXTRA_T` steht auf 0,30) | nur für künftig gebaute Gebäude |
+| 1 | ~~Entscheidung Fuß-Fase 4,0 gegen 2,0~~ | **erledigt**: Gebäude auf main mit 4,0 neu gebaut (`2531ac3`); Sitz in den 0,15er Mulden zeigt der Plattentest |
+| 2 | ~~Schachttiefe 0,35~~ | **erledigt** (`SHAFT_EXTRA_T` 0,35 auf main, `2531ac3`) |
 | 2 | Entscheidung Naht Paulinum/Neues Augusteum: Wand 0,70 (Zahn im Schlitz) oder Zuschnitt dieser Naht auf 1,1 für 0,80 | Nutzer |
 | 2 | Eckaussparung Nordwest trifft laut Konzept das Fach (210 mm²; Zwischenspeicher `plug/scale1176/underside_1300.json` war veraltet, neu gerechnet): prüfen | vor dem Unterkasten-Druck |
 | 2 | Flussraten-Kalibrierung je Filament (Nutzer, läuft), Messplättchen T4 erzeugen, Slicer-Kompensation je Farbe eintragen | Nutzer |
