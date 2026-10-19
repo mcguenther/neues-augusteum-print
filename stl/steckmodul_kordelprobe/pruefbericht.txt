@@ -1,0 +1,23 @@
+Probeteil K4 Kordelprobe: Scheibe Ø 70 × 6.2, Deckplatte 70 × 70 × 3
+Maße: Knopfraum Radius 26 (Ø 52) × 1.4 mit 45°-Wand, Knopf Ø 22 × 1.2, Gänge 8 × 5 mit Fase 1.5, Kordel 5 × 3, Teller bis 2.6, Höcker 6.2 hoch
+
+Teile (Druckausrichtung, Bett z = 0):
+  K4_scheibe.stl      70.0 ×  70.0 ×  6.2 mm    8.7 cm³  ≈ 11 g  dicht=True  Teile=1
+      waagerechte Decken: z=5.0: 1278 mm² (70.0 × 70.0); z=1.4: 642 mm² (48.5 × 48.5); z=0.4: 117 mm² (69.5 × 69.5); z=0.2: 76 mm² (69.1 × 69.1)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  K4_deckplatte.stl   70.0 ×  70.0 ×  3.0 mm   14.7 cm³  ≈ 14 g  dicht=True  Teile=1
+      waagerechte Decken: z=0.4: 56 mm² (70.0 × 70.0); z=0.2: 56 mm² (69.6 × 69.6)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+
+Prüfung (Überschneidungsvolumen, mm³; muss 0 sein):
+  Knopf Ø 22 × 1.2 im Knopfraum (Luft oben 0.2)                      0.00  ok
+  Kordel 5 × 3 in allen 8 Gängen bis zum Rand                        0.00  ok
+  Gangprofil (8 × 5 mit Fase) frei                                   0.00  ok
+  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke 13.0 mm (Sternmitte), Gangdecken 5,0 mm
+  Deckplatte auf den Höckern (liegt nur auf)                         0.00  ok
+  Deckplatte über den Gängen: Luft für die Kordel 2.0 mm hoch (Gang 5.0, Kordel 3.0)
+  -> keine Kollisionen
+K4_scheibe: Material ≈ 11 g, Zeit normal ≈ 81 min
+K4_scheibe: Material ≈ 11 g, Zeit schnell ≈ 30 min
+K4_deckplatte: Material ≈ 14 g, Zeit normal ≈ 100 min
+K4_deckplatte: Material ≈ 14 g, Zeit schnell ≈ 37 min
+K4_scheibe bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 35 min
+K4_deckplatte bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 45 min
