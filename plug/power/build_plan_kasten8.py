@@ -102,7 +102,7 @@ def main():
     pins7 = [[round(Polygon(p["r"]).centroid.x, 1), round(Polygon(p["r"]).centroid.y, 1)] for p in v["posts"] if p["pin"]]
     data = dict(
         W=W, L=L, deck=DECK, plate_t=BC.H0["plate_t"], h7=K8.H7, floor=PP.UK_FLOOR, wall=PP.UK_WALL, gap=PP.STECKERRAUM, pb_t=K8.PB_T,
-        adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, gang_z=K8.GANG_Z,
+        adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, raum_d=2 * K8.R_KNOPF, kordel=PP.KORDEL, steckerraum=PP.STECKERRAUM_8, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, gang_z=K8.GANG_Z,
         knopf_h=K8.KNOPF_H, hut=PP.HUT, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
         c=[round(K["c"][0], 2), round(K["c"][1], 2)], aus=K["aus"], gaenge=[rings(g) for g in K["gaenge"]], hoecker=[rings(g) for g in K["hoecker"]],
         notches7=[n["notch"] for n in v["vs"]], docks=[dict(slug=d["slug"], title=d["title"], zone=d["zone"]) for d in v["docks"] if d["ok"]],

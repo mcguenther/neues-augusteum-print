@@ -1,12 +1,12 @@
-"""Unterkasten Stand 8 (Plan, noch keine STL): Kasten 5 mm höher, Knopfraum und Kordelgänge für den Doktorhut, ohne Eckaussparungen.
+"""Unterkasten Stand 8 (Plan, noch keine STL): Kasten höher, Knopfraum und Kordelgänge für den Doktorhut, ohne Eckaussparungen.
 
-Der Hut trägt in der Mitte seines Deckbretts einen flachen Knopf (Ø 30, 1,2 hoch) mit der Kordel der Quaste. Die Grundplatte liegt mittig
-auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (`HUT_KNOPF`, Ø 30 × 1,4 mit 0,2 Luft), und die Kordel
+Der Hut trägt in der Mitte seines Deckbretts einen flachen Knopf (Ø 22, 1,2 hoch) mit der Kordel der Quaste. Die Grundplatte liegt mittig
+auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (`HUT_KNOPF`, Ø 24 × 1,4 mit Spiel und 0,2 Luft), und die Kordel
 läuft in einem Gang unter dem Kasten zur Außenwand (`KORDEL_GANG`, 8 × 5, acht Richtungen in 45°-Schritten). Innen werden Knopfraum und
 Gänge zu Höckern mit der Decke `KORDEL_DACH`.
 
-Nutzer 19.10.: Die Powerbank bleibt, wo sie im Stand 7 liegt (quer passt sie wegen des Steckers nicht), also über dem Knopf. Sie liegt
-auf den Dächern der Gänge (6,2 über dem Boden); damit verbraucht sie die 5 mm, um die der Kasten höher wird. Befestigung mit Heißkleber
+Nutzer 19.10.: Steckerraum über der Powerbank 6 mm (viele Leitungen), daher Kasten 25,0 statt 17,6. Die Powerbank bleibt, wo sie im Stand 7 liegt (quer passt sie wegen des Steckers nicht), also über dem Knopf. Sie liegt
+auf den Dächern der Gänge (6,2 über dem Boden). Befestigung mit Heißkleber
 (Kasten auf den Hut, im Zweifel Platte auf den Kasten): die Eckaussparungen für die Fäden entfallen.
 
 Geometrie in Plattenkoordinaten (x Osten, y Norden, Ursprung Südwestecke), z = 0 an der Unterkante des Kastens. Werte in `params.py`.
@@ -28,13 +28,13 @@ from plug.power import build_concept as BC  # noqa: E402
 from plug.power import params as PP  # noqa: E402
 
 H7 = round(BC.H0["uk_t"], 2)                         # 17,6
-H8 = round(H7 + PP.UK_PLUS, 2)                        # 22,6
 PB_T = PP.PB_T + PP.PB_T_ZUSCHLAG                    # 12,8
 DACH = PP.KORDEL_DACH
-R_KNOPF = PP.HUT_KNOPF["d"] / 2
+R_KNOPF = (PP.HUT_KNOPF["d"] + 2 * PP.HUT_KNOPF["spiel"]) / 2     # Knopfraum Ø 24
 KNOPF_H = round(PP.HUT_KNOPF["h"] + PP.HUT_KNOPF["luft"], 2)   # Knopfraum 1,4
 KNOPF_Z = round(KNOPF_H + DACH, 2)                   # Oberkante Knopfdach 2,6
 GANG_Z = PP.KORDEL_GANG["h"] + DACH                  # Oberkante Gangdach 6,2
+H8 = round(GANG_Z + PB_T + PP.STECKERRAUM_8, 2)      # Kasten so hoch, dass über der Powerbank 6,0 bleiben: 25,0
 RICHTUNG = ("O", "NO", "N", "NW", "W", "SW", "S", "SO")   # k · 45°, 0° = Osten
 TP_CLR = 0.10                                        # Spiel der Mulden um die Gebäude (Sperrfläche für Zapfen)
 
@@ -133,10 +133,11 @@ def build(v):
     lie = len(unter_pb)
     checks = [
         ("dicht", bool(tm.is_watertight), "Netz geschlossen (Manifold)"),
-        ("Knopfraum frei", iv(frei_m) == 0, "Ø %.0f × %.1f (Knopf %.1f + Luft %.1f) gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H, PP.HUT_KNOPF["h"], PP.HUT_KNOPF["luft"], iv(frei_m))),
+        ("Knopfraum frei", iv(frei_m) == 0, "Ø %.0f × %.1f (Knopf Ø %.0f × %.1f, Spiel %.1f je Seite, Luft %.1f oben) gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H, PP.HUT_KNOPF["d"], PP.HUT_KNOPF["h"], PP.HUT_KNOPF["spiel"], PP.HUT_KNOPF["luft"], iv(frei_m))),
         ("Gänge frei", iv(gang_m) == 0, "%d Gänge %.0f × %.0f bis zur Außenwand gegen Kasten: %.2f mm³" % (PP.KORDEL_GANG["n"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], iv(gang_m))),
         ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f auf %d Gangdächern (%s), Überschneidung %.2f mm³" % (z_pb, lie, ", ".join(unter_pb), iv(pbm))),
-        ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM)),
+        ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM_8 - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM_8)),
+        ("Kordel im Gang", PP.KORDEL["h"] < PP.KORDEL_GANG["h"] and PP.KORDEL["b"] < PP.KORDEL_GANG["w"], "Kordel %.0f × %.0f in Gang %.0f × %.0f (breit × hoch): Spiel %.1f hoch, %.1f seitlich" % (PP.KORDEL["b"], PP.KORDEL["h"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["h"] - PP.KORDEL["h"], PP.KORDEL_GANG["w"] - PP.KORDEL["b"])),
         ("Stecker USB-A frei", iv(plugm) == 0, "Steckerraum %.1f mm lang wie Stand 7, Überschneidung %.2f mm³" % (pc[3] - pc[1], iv(plugm))),
         ("ESP32 frei", iv(espm) == 0, "liegt auf z = %.1f (%s), Überschneidung %.2f mm³" % (esp_z0, "auf Gangdach" if esp_z0 == GANG_Z else "auf dem Boden", iv(espm))),
         ("Adern über dem ESP32", H - esp_top >= PP.ADERN_ZONE - 0.01, "%.1f mm unter der Platte (gefordert %.1f)" % (H - esp_top, PP.ADERN_ZONE)),
