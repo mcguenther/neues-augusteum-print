@@ -11,3 +11,4 @@ pyproj
 laspy[lazrs]
 opencv-python-headless
 numba
+fast_simplification

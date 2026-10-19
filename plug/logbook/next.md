@@ -17,6 +17,15 @@ Folge aus r8 (erledigt 2026-10-17): Alle sechs Gebäude-STL in `stl/steckmodul_c
 
 Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Abschnitt 2f). Loch und Tasche sind im Unterkasten-Generator (`build_concept.switch_cut`, Westwand, y = 40 aus `SW_Y`, geprüft mit `python3 -m plug.power.check_switch`); der Unterkasten selbst ist noch nicht als STL gedruckt. Offen: Hakenspanne an der 13-mm-Seite nachmessen (die Brücke über dem Loch war in T2 sauber); Verdrahtung Powerbank → Schalter → INA226 (`docs/wippenschalter-kcd11.md`).
 
+## Vorgabe 2026-10-20 (Batteriefach Stand 8)
+
+- **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden, **1 mm Luft über dem Knopf** (Raum Ø 25 × 13,0 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
+
+## Vorgabe 2026-10-19 (Batteriefach Stand 8)
+
+- **Befestigung mit Heißkleber** statt Fäden: Kasten auf den Hut, im Zweifel Platte auf den Kasten. Fäden und Ösen entfallen (Eckaussparungen im Kasten, Fadentaschen in der Platte); die Abschnitte zu Fäden weiter unten sind damit überholt.
+- **Knopf des Huts** in der Plattenmitte: **Ø 22 × 12,0 hoch (Annahme, vom Nutzer zu bestätigen**; erste Nachricht „ca. 1,2 cm“, vorher als 1,2 mm gelesen). Die Kordel 3 × 5 kommt unten seitlich am Knopffuß heraus (Nutzer, `KORDEL_ANSATZ_OBEN = False`) und läuft in acht Gängen 8 × 5 nach außen. Über dem Knopf eine **Erhebung**: Raum Ø 25 × 12,2, 45°-Anstieg ab 8,7 mm vor dem Knopf, Decke Ø 20 bei 14,7, Plateau Ø 28 bei 15,9. **Steckerraum 6 mm**, Powerbank am Platz von Stand 7 auf Plateau und drei Auflagen: Kasten 34,7 (mit Platte 49,3, ca. 128 g). Gangfase in zwei Varianten (`GANG_FASE_MODUS` innen/außen, Vorschlag außen). Nächster Druck: **K4 F-außen** (`stl/steckmodul_kordelprobe/`), dabei Knopfhöhe messen. Plan: `plug/power/plan_kasten8.html`.
+
 ## Geklärt (2026-10-16)
 
 - **Platte B** ist die getestete Platte (W, S, D); die Druckmängel gehören zu Platte A. Basis ist B.
