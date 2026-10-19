@@ -17,6 +17,10 @@ Folge aus r8 (erledigt 2026-10-17): Alle sechs Gebäude-STL in `stl/steckmodul_c
 
 Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Abschnitt 2f). Loch und Tasche sind im Unterkasten-Generator (`build_concept.switch_cut`, Westwand, y = 40 aus `SW_Y`, geprüft mit `python3 -m plug.power.check_switch`); der Unterkasten selbst ist noch nicht als STL gedruckt. Offen: Hakenspanne an der 13-mm-Seite nachmessen (die Brücke über dem Loch war in T2 sauber); Verdrahtung Powerbank → Schalter → INA226 (`docs/wippenschalter-kcd11.md`).
 
+## Vorgabe 2026-10-20 (Batteriefach Stand 8)
+
+- **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden (Raum Ø 25 × 12,2 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
+
 ## Vorgabe 2026-10-19 (Batteriefach Stand 8)
 
 - **Befestigung mit Heißkleber** statt Fäden: Kasten auf den Hut, im Zweifel Platte auf den Kasten. Fäden und Ösen entfallen (Eckaussparungen im Kasten, Fadentaschen in der Platte); die Abschnitte zu Fäden weiter unten sind damit überholt.

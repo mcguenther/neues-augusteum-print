@@ -127,7 +127,7 @@ def main():
     data = dict(
         W=W, L=L, deck=DECK, plate_t=BC.H0["plate_t"], h7=K8.H7, floor=PP.UK_FLOOR, wall=PP.UK_WALL, gap=PP.STECKERRAUM, pb_t=K8.PB_T,
         adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, raum_d=2 * K8.R_RAUM, kordel=PP.KORDEL, steckerraum=PP.STECKERRAUM_8, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, gang_z=K8.GANG_Z,
-        knopf_h=K8.H_RAUM, knopf_top=K8.KNOPF_TOP, r_rampe=K8.R_RAMPE, r_decke=K8.R_DECKE, r_plateau=K8.R_PLATEAU, r_kn=K8.R_KN, wand=K8.WAND, ch_bed=PP.CH_BED,
+        knopf_h=K8.H_RAUM, knopf_top=K8.KNOPF_TOP, r_rampe=K8.R_RAMPE, r_decke=K8.R_DECKE, r_plateau=K8.R_PLATEAU, r_kn=K8.R_KN, wand=K8.WAND, ch_bed=PP.CH_MUENDUNG, kordel_dach=PP.KORDEL_DACH, kordel_wand=PP.KORDEL_WAND,
         modus=PP.GANG_FASE_MODUS, modi=modi, varianten=K8.varianten(), auflagen=[ring(a) for a in res["auflagen"]], standfest=res["standfest"], standfest0=res["standfest0"],
         probe=probe_info(), hut=PP.HUT, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
         c=[round(K["c"][0], 2), round(K["c"][1], 2)], aus=K["aus"], gaenge=[rings(g) for g in K["gaenge"]], hoecker=[rings(g) for g in K["hoecker"]],

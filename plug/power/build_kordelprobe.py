@@ -53,8 +53,8 @@ def stern():
     gc = K8.gaenge_cut(c, K8.GANG_W, K8.GANG_H, K8.FASE, PP.KORDEL_GANG["n"], laenge=D / 2 + 2)
     kc = K8.knopf_cut(c)
     strips = unary_union([affinity.rotate(sbox(0, -K8.GANG_W / 2, D, K8.GANG_W / 2), k * 45.0, origin=(0, 0)) for k in range(8)])
-    mouth = BC.mouth_ch(unary_union([Point(c).buffer(K8.R_RAMPE, 128), strips]), 0, CH)
-    return solid - G.union([kc, gc, mouth])
+    mouth = BC.mouth_ch(unary_union([Point(c).buffer(K8.R_RAMPE, 128), strips]), 0, PP.CH_MUENDUNG) if PP.CH_MUENDUNG > 0 else None
+    return solid - G.union([x for x in (kc, gc, mouth) if x is not None])
 
 
 NAME = {"innen": "K4_stern_F-innen", "aussen": "K4_stern_F-aussen"}
@@ -73,7 +73,7 @@ def main():
             for f in os.listdir(d):
                 if f.startswith("K4_stern") and f.endswith(".png"):
                     os.remove(os.path.join(d, f))
-    rep("Probeteil K4 Kordelprobe: zwei Sterne Ø %.0f × %.1f (Gangfase innen und außen), ohne Boden, Randwand und Deckplatte; Bett unten (Hut-Seite)" % (D, H))
+    rep("Probeteil K4 Kordelprobe: Stern Ø %.0f × %.1f (Gangfase %s), ohne Boden, Randwand und Deckplatte, ohne Fase an den Mündungen; Bett unten (Hut-Seite)" % (D, H, PP.GANG_FASE_MODUS))
     rep("Maße: Knopf Ø %.0f × %.1f (Höhe Annahme, vom Nutzer zu bestätigen), Kordel %.0f × %.0f unten seitlich am Knopffuß; Knopfraum Ø %.0f × %.1f, Anstieg 45° ab Radius %.1f (%.1f vor dem Knopfkörper), Decke Ø %.0f bei %.1f, Plateau Ø %.0f bei %.1f" % (
         PP.HUT_KNOPF["d"], PP.HUT_KNOPF["h"], PP.KORDEL["b"], PP.KORDEL["h"], 2 * K8.R_RAUM, K8.H_RAUM, K8.R_RAMPE, K8.R_RAMPE - K8.R_KN, 2 * K8.R_DECKE, K8.KNOPF_TOP, 2 * K8.R_PLATEAU, K8.KNOPF_Z))
     info = {}
@@ -90,17 +90,17 @@ def main():
     def kord(z0, z1, r0, r1):
         return G.union([K8.prism_y_x([(-cb / 2, z0), (cb / 2, z0), (cb / 2, z1), (-cb / 2, z1)], r0, r1).rotate([0, 0, k * 45.0]) for k in range(8)])
 
-    for m in ("innen", "aussen"):
+    for m in (PP.GANG_FASE_MODUS,):
         K8.modus(m)
         name = NAME[m]
         sch = stern()
-        rep("\n%s (Gangfase %s%s)" % (name + ".stl", m, ", zuerst drucken" if m == ERST else ""))
+        rep("\n%s (Gangfase %s)" % (name + ".stl", m))
         if m == "aussen":
-            rep("  Gänge: freies Rechteck %.0f × %.0f, Dachschrägen %.1f × 45° darüber (Decke %.0f breit bei %.1f), Höcker %.1f breit und %.1f hoch, Wand seitlich %.1f (an der Bettkante %.1f)" % (
-                K8.GANG_W, K8.GANG_H, K8.FASE, K8.GANG_W - 2 * K8.FASE, K8.GANG_H + K8.FASE, K8.GANG_W + 2 * K8.WAND, K8.GANG_Z, K8.WAND, K8.WAND - CH))
+            rep("  Gänge: freies Rechteck %.0f × %.0f, Dachschrägen %.1f × 45° darüber (Decke %.0f breit bei %.1f), Höcker %.1f breit und %.1f hoch, Wand seitlich %.1f" % (
+                K8.GANG_W, K8.GANG_H, K8.FASE, K8.GANG_W - 2 * K8.FASE, K8.GANG_H + K8.FASE, K8.GANG_W + 2 * K8.WAND, K8.GANG_Z, K8.WAND))
         else:
-            rep("  Gänge: %.0f × %.0f mit Fase %.1f × 45° in den oberen Ecken (Decke %.0f breit bei %.1f), Höcker %.1f breit und %.1f hoch, Wand seitlich %.1f (an der Bettkante %.1f)" % (
-                K8.GANG_W, K8.GANG_H, K8.FASE, K8.GANG_W - 2 * K8.FASE, K8.GANG_H, K8.GANG_W + 2 * K8.WAND, K8.GANG_Z, K8.WAND, K8.WAND - CH))
+            rep("  Gänge: %.0f × %.0f mit Fase %.1f × 45° in den oberen Ecken (Decke %.0f breit bei %.1f), Höcker %.1f breit und %.1f hoch, Wand seitlich %.1f" % (
+                K8.GANG_W, K8.GANG_H, K8.FASE, K8.GANG_W - 2 * K8.FASE, K8.GANG_H, K8.GANG_W + 2 * K8.WAND, K8.GANG_Z, K8.WAND))
         tm = to_tm(sch)
         tm.export(os.path.join(OUT, name + ".stl"))
         g, nl = BC.grams(sch)[0], int(round(tm.extents[2] / 0.2))
@@ -131,7 +131,7 @@ def main():
             bad += 1
         info[name] = dict(g=g, layers=nl, gz=K8.GANG_Z, wand=K8.WAND, bruecke=ow, br=br)
     K8.modus(PP.GANG_FASE_MODUS)
-    rep("\nWände: über den Gängen %.1f, Schale der Erhebung %.1f (45° senkrecht gemessen); Powerbank oder Buch auf dem Plateau lässt die Kordel frei" % (PP.KORDEL_DACH, PP.KORDEL_DACH))
+    rep("\nWände: seitlich %.1f, Decke über Gängen und Knopfraum %.2f (3 Lagen × 0,16), keine Fase unten an den Mündungen; Powerbank oder Buch auf dem Plateau lässt die Kordel frei" % (PP.KORDEL_WAND, PP.KORDEL_DACH))
     rep("-> %s" % ("keine Kollisionen" if not bad else "%d Fehler!" % bad))
 
     from plug.roadmap import build as rb
@@ -155,45 +155,37 @@ def images():
     """Bilder mit dem Software-Renderer: beide Sterne schräg von oben und von unten."""
     import subprocess
     import sys
-    for name in NAME.values():
+    for name in (NAME[PP.GANG_FASE_MODUS],):
         base = os.path.join(OUT, name + ".stl")
         subprocess.run([sys.executable, "preview.py", base, "--azim", "-60", "--elev", "40", "--out", PREV], cwd=HERE, check=False)
         subprocess.run([sys.executable, "preview.py", base, "--azim", "-60", "--elev", "-55", "--out", PREV + "/unten"], cwd=HERE, check=False)
 
 
 def write_readme(info):
-    i, a = info[NAME["innen"]], info[NAME["aussen"]]
+    i = info[NAME[PP.GANG_FASE_MODUS]]
     txt = """K4 KORDELPROBE (Mitte des Unterkastens, Stand 8)
 ================================================
 Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedruckt, alle Werte sind Planwerte.
 
-Teile (beide Stern Ø 70 x 15,9 mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support, siehe pruefbericht.txt):
-  K4_stern_F-aussen.stl   ZUERST DRUCKEN. Gang: volles Rechteck 8 x 5 frei, 45-Grad-Dachschrägen 1,5 darüber (Decke 5 breit bei 6,5),
-                          Höcker 11,4 breit und %(ga)s hoch, Wand 1,7 (an der Bettkante 1,2)                                   ca. %(a).0f g
-  K4_stern_F-innen.stl    Gang 8 x 5 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 5,0, die Ecken des Rechtecks fehlen),
-                          Höcker 10,4 breit und %(gi)s hoch, Wand 1,2 (an der Bettkante 0,7)                                   ca. %(i).0f g
-
-Unterschied: bei F-aussen bleibt das ganze Rechteck 8 x 5 frei, das Gangdach liegt 1,5 mm höher. Am Kasten kostet das keine Höhe, weil
-die Powerbank auf der Erhebung über dem Knopf liegt (Plateau 15,9), nicht auf den Gangdächern; nur etwa 5 g mehr. Bei F-innen ist der
-Gang oben enger, die Kordel 5 x 3 passt trotzdem (2 mm Luft in der Höhe). Zuerst F-aussen drucken; F-innen nur, wenn man den Vergleich
-fühlen will oder F-aussen an der Gangdecke unsauber druckt.
-
-In der Mitte beider Sterne die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 8,7 mm vor dem Knopf steigt die
-Decke mit 45 Grad an, der Knopfraum Ø 25 x 12,2 ist überall frei, oben eine flache Decke Ø 20 bei 14,7, darüber das Plateau Ø 28 bei 15,9.
-Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten seitlich am Knopffuß heraus.
+Teil: K4_stern_F-innen.stl, Stern Ø 70 x %(h).1f mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support (siehe pruefbericht.txt)   ca. %(g).0f g
+Gänge 8 x 5 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 5,0; die Kordel 5 x 3 passt, 2 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
+x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 8,7 mm
+vor dem Knopf steigt die Decke mit 45 Grad an, der Knopfraum Ø 25 x 12,2 ist überall frei (nichts davon beschnitten), oben eine flache Decke
+Ø 20 bei 14,7, darüber das Plateau Ø 28 bei %(pz).1f. Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten
+seitlich am Knopffuß heraus.
 
 Ablauf:
   1. Stern mit der Mitte über den Knopf setzen, Kordel vom Knopffuß in einen Gang legen.
-  2. Stern mit Heißkleber auf dem Hut ankleben (nur auf die Unterseite der Höcker und des Rings, nicht in die Gänge und nicht in die Mitte).
+  2. Stern mit Heißkleber auf dem Hut ankleben (nur auf die Unterseite der Höcker, nicht in die Gänge und nicht in die Mitte).
   3. Powerbank (oder ein Buch) auf das Plateau legen: drückt es auf den Knopf? Lässt sich die Kordel noch bewegen?
   4. Kordel nacheinander in andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
-Fragen für den Testbogen: Wie hoch ist der Knopf wirklich (12 mm?), passt er in den Raum (1,5 mm Luft je Seite, 0,2 oben)? Hängt die
-Decke über dem Knopf (etwa 20 mm frei) durch? Sind Gangdecken und Fasen sauber (F-aussen und F-innen)? Hält Heißkleber? Ist die Kordel zu
-steif für den Knick am Gangausgang?
+Fragen für den Testbogen: Wie hoch ist der Knopf wirklich (12 mm?), passt er in den Raum (1,5 mm Luft je Seite, 0,2 oben)? Hält die dünne
+Decke (0,48) und hängt die Decke über dem Knopf (etwa 20 mm frei) durch? Sind Gangdecken und Fasen sauber? Halten die Wände mit 0,8?
+Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
 
-Druck: PLA, 0,2 mm Schicht, Support aus, Gyroid 10 %% wie plug/slicer.md, Bett unten wie in der Datei (Erhebung oben).
+Druck: PLA, 0,16 mm Schicht, Support aus, Gyroid 10 %% wie plug/slicer.md, Bett unten wie in der Datei (Erhebung oben).
 """
-    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(a=a["g"], i=i["g"], ga=("%.1f" % a["gz"]).replace(".", ","), gi=("%.1f" % i["gz"]).replace(".", ",")))
+    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(g=i["g"], h=K8.KNOPF_Z, pz=K8.KNOPF_Z))
 
 
 if __name__ == "__main__":

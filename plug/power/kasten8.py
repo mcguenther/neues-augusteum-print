@@ -47,7 +47,7 @@ def modus(m):
     global MODUS, WAND, GANG_Z
     assert m in MODI, m
     MODUS = m
-    WAND = PP.KORDEL_WAND if m == "aussen" else DACH                 # seitlich am Gang 1,7 bzw. 1,2
+    WAND = PP.KORDEL_WAND                                            # seitlich am Gang und an der Erhebung 0,8
     GANG_Z = GANG_H + (FASE if m == "aussen" else 0.0) + DACH        # Oberkante der Höcker 7,7 bzw. 6,2
     return m
 
@@ -146,10 +146,10 @@ def knopf_cut(c, z0=-1.0):
 
 
 def erhebung_solid(c, z0):
-    """Volle Erhebung von z0 bis KNOPF_Z: Hohlraumprofil um DACH (45°-Teile senkrecht gemessen) aufgedickt, unten die Gangwand WAND,
+    """Volle Erhebung von z0 bis KNOPF_Z: Hohlraumprofil um WAND (45°-Teile senkrecht gemessen) aufgedickt, oben nur DACH, unten die Gangwand WAND,
     oben das Plateau Radius R_PLATEAU mit senkrechtem Rand. Außen nirgends überhängend (Radius nimmt nach oben nur ab)."""
     prof = Polygon(knopf_profil(z0)[0])
-    outer = unary_union([prof.buffer(DACH, join_style=2, mitre_limit=3.0), box(0, z0, R_RAMPE + WAND, GANG_H), box(0, z0, R_PLATEAU, KNOPF_Z)])
+    outer = unary_union([prof.buffer(WAND, join_style=2, mitre_limit=3.0), box(0, z0, R_RAMPE + WAND, GANG_H), box(0, z0, R_PLATEAU, KNOPF_Z)])
     outer = outer.intersection(box(0, z0, 200, KNOPF_Z))
     return revolve(list(outer.exterior.coords)[:-1], c)
 
@@ -277,7 +277,7 @@ def build(v):
     unten = unary_union([K["frei"], gang_all])
     gc = gaenge_cut(K["c"], GANG_W, GANG_H, FASE, PP.KORDEL_GANG["n"])
     kc = knopf_cut(K["c"])
-    holes = [kc, gc, BC.mouth_ch(unten, 0, PP.CH_BED)]
+    holes = [kc, gc] + ([BC.mouth_ch(unten, 0, PP.CH_MUENDUNG)] if PP.CH_MUENDUNG > 0 else [])
     holes.append(G.extrude(win, z_pb, H + 2))
     sw = BC.switch_cut(0, 0, 0, dict(uk_t=H))
     holes.append(sw["cut"])
@@ -342,9 +342,8 @@ def build(v):
              PP.KORDEL_GANG["n"], GANG_W, GANG_H, iv(gang_m), FASE, GANG_W - 2 * FASE, GANG_H + FASE)) if MODUS == "aussen" else
          ("%d Gänge %.0f × %.0f mit Fase %.1f in den oberen Ecken, gegen Kasten: %.2f mm³; das volle Rechteck ist nicht frei (Ecken %.2f mm³), die Kordel passt" % (
              PP.KORDEL_GANG["n"], GANG_W, GANG_H, FASE, iv(gangf_m), iv(gang_m)))),
-        ("Wände an den Gängen", DACH >= 1.2 - 1e-6 and (WAND - PP.CH_BED >= 1.2 - 1e-6 or PP.UK_FLOOR >= 1.2), "seitlich %.1f (an der Bettkante %.1f%s), Decke %.1f, Höcker %.1f breit und %.1f hoch (Modus %s)" % (
-            WAND, WAND - PP.CH_BED, "" if WAND - PP.CH_BED >= 1.2 - 1e-6 else "; im Kasten liegt dort der Boden %.1f an, im Probeteil ohne Boden bleiben %.1f" % (PP.UK_FLOOR, WAND - PP.CH_BED),
-            DACH, GANG_W + 2 * WAND, GANG_Z, MODUS)),
+        ("Wände an den Gängen", DACH >= 0.48 - 1e-6 and WAND >= 0.8 - 1e-6, "seitlich %.1f, Decke %.2f (3 Lagen × 0,16), keine Fase an den Mündungen unten; Höcker %.1f breit und %.2f hoch (Modus %s)" % (
+            WAND, DACH, GANG_W + 2 * WAND, GANG_Z, MODUS)),
         ("Kordel vom Knopf", iv(kord_kn) < 0.05, "Kordel %.0f × %.0f %s in alle acht Richtungen: Überschneidung %.2f mm³ (%s)" % (
             kb, kh, ansatz, iv(kord_kn), "Nutzer: Kordel kommt unten seitlich am Knopffuß heraus" if not PP.KORDEL_ANSATZ_OBEN else "KORDEL_ANSATZ_OBEN = True")),
         ("Kordel in allen Gängen", iv(kord_m) < 0.05, "Kordel %.0f × %.0f in jeder der 8 Richtungen vom Knopfrand bis zur Außenwand: Überschneidung %.2f mm³" % (kb, kh, iv(kord_m))),
