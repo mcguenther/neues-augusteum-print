@@ -3,6 +3,10 @@
 Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
+## Übergabe 2026-10-19: Passung bei anderen Filamenten, Probedruck ausgewertet
+
+Ergebnis und Beschlüsse (Mulden-Spiel 0,15, Fase 4,0, Gebäude auseinanderrücken, Platte größer, Kassette 0,14, Buchsentasche 0,10 enger): [`tasks/passung-filament.md`](tasks/passung-filament.md). Die Abschnitte darunter zum Plan sind überholt.
+
 ## Passung bei anderen Filamenten (2026-10-19, Plan Schritt 1, wartet auf Abnicken)
 
 Rückmeldung des Nutzers: Platte grau, Gebäude beige (Hörsaal-, Seminar-, Institutsgebäude) und eine Kassette quer (V1RS, beige) gedruckt. **Gebäude passen nicht mehr in die Mulden** (Hörsaal nur mit viel Kraft), **beige Kassetten passen nicht mehr in die beigen Gebäude**; die Dupont-Buchsen passen weiter gut in die Kassetten. Plan: `plug/filament/plan.html` (Artifact in `STATUS.md`): Filament kalibrieren statt zwei Dateisätze, Mulden-Spiel 0,15 bis 0,25 an einem Mulden-Block (T1, Institutsumriss, die vorhandenen beigen Gebäude sind die Lehre), schlankere Kassetten (T2, Spiel im Modell 0,12 bis 0,20), Messplättchen je Filament (T4), Stumpf (T3) als Eingangsprüfung neuer Farben. Offene Rückfragen und Entscheidungskarten K1 bis K7 stehen auf der Seite. Die Vorgabe 0,15 (r8) bleibt gültig.
