@@ -1,5 +1,7 @@
 # Aufgabe: Passung bei wechselnden Filamenten umsetzen (Übergabe, 2026-10-19)
 
+**Status: umgesetzt, ausgewertet** (2026-10-19). Auswertung: [`../rounds/r10_passung_filament/summary.md`](../rounds/r10_passung_filament/summary.md); Werte in `current.md`, Abschnitt 2g; Lehren L47 bis L51. Platte (Punkte 1, 3, 4) umgesetzt in Commit 0009967 (Platte 115,63 × 220,90, nur 0,05 größer statt 1 bis 2 mm), noch nicht gedruckt; Kassette (Punkt 5): K4 `93da3a4`, K5 `7e1cfa5`, Sollwert Spiel 0,13 und Tasche 10,46 × 2,84 × **14,40** (nicht 14,60), noch nicht in den echten Kassetten. Offen: Punkt 2 (Fase 4,0, der Code steht auf 2,0) und Punkt 6 (Schachttiefe 0,35) nicht umgesetzt; Rest siehe `next.md`.
+
 Zweig `claude/dazzling-davinci-ch966n`. Plan: `plug/filament/plan.html` (Artifact https://claude.ai/artifact/6XbKN3t1Aj9bnv5DRwT1pP, Quelle `plug/filament/build_plan.py` und `plan.template.html`). Probedruck-Generator: `python3 -m plug.filament.build` (Ausgabe `stl/steckmodul_passung/`, Prüfbericht dort). Vorher `plug/logbook/lessons.md` und `current.md` lesen.
 
 ## Was gedruckt und ausgewertet ist (Nutzer, Variante B, grau und beige)
