@@ -324,14 +324,6 @@ sup.fn a { text-decoration: none; }
 .specs-mini span { display: block; margin-top: 8px; font-size: 14px; color: var(--muted); line-height: 1.35; }
 @media (max-width: 900px) { .mech-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; } }
 
-/* ---------- Erprobt ---------- */
-.rounds { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
-.round { background: var(--surface); border-radius: 18px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.round .r { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-.round .r em { font-style: normal; color: var(--accent-ink); font-weight: 500; }
-.round h3 { font-size: 18px; font-weight: 600; letter-spacing: -.015em; }
-.round p { font-size: 14.5px; color: var(--muted); line-height: 1.4; }
-
 /* ---------- Technische Daten ---------- */
 .tech { background: var(--surface); }
 .tech table { width: 100%; border-collapse: collapse; margin-top: 48px; }
@@ -613,7 +605,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
             <div class="no">04 · Sockel</div>
             <h3>Strom, Steuerung, Schalter.</h3>
             <p>Der Sockel ist <b>17,6 mm</b> hoch und trägt die Platte auf zwei Zapfen. Darin: Powerbank am Nordrand, ESP32 in der Mitte, die Wippe in der Westwand.</p>
-            <dl><dt>32,2 mm</dt><dd>Platte und Sockel zusammen</dd><dt>Ø 4,0</dt><dd>Zapfen, 2,5 mm hoch</dd><dt>67 g</dt><dd>Sockel gedruckt</dd></dl>
+            <dl><dt>32,2 mm</dt><dd>Platte und Sockel zusammen</dd><dt>Ø 4,0</dt><dd>Zapfen, 2,5 mm hoch</dd><dt>2,4 mm</dt><dd>Außenwand des Sockels</dd></dl>
           </article>
           <article class="step" data-step="4">
             <div class="no">05 · Alle Teile</div>
@@ -713,35 +705,13 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
           <figcaption class="cap">Schnitt durch ein Dock (Kassette v4), Maße in mm. Wände und Schachtrohr vereinfacht.</figcaption>
         </figure>
         <div class="specs-mini">
-          <div><b>5,28<small>mm</small></b><span>Einstecktiefe der Stifte in der Buchse. Durchgang stabil bis 5,08.</span></div>
-          <div><b>0,10<small>mm</small></b><span>Spiel je Seite zwischen Fuß und Mulde. Für das Hochhaus folgt 0,15.</span></div>
-          <div><b>0,06<small>mm</small></b><span>Pressung der Kassette im Schacht. Hält beim Schütteln.</span></div>
-          <div><b>14,60<small>mm</small></b><span>Tasche für die Buchse. Bei 14,45 stand sie 0,1 mm über.</span></div>
+          <div><b>5,28<small>mm</small></b><span>Einstecktiefe der Stifte in der Buchse.</span></div>
+          <div><b>0,10<small>mm</small></b><span>Spiel je Seite zwischen Fuß und Mulde.</span></div>
+          <div><b>0,06<small>mm</small></b><span>Pressung der Kassette im Schacht.</span></div>
+          <div><b>14,60<small>mm</small></b><span>Tasche für die Buchse in der Kassette.</span></div>
           <div><b>Ø 1,4<small>mm</small></b><span>Pin-Loch mit Fase auf beiden Seiten, im 0,4-mm-Boden.</span></div>
           <div><b>2,0<small>mm</small></b><span>Körper der Winkelleiste, flach unter die Platte geklebt.</span></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======================= Erprobt ======================= -->
-  <section class="section" id="erprobt" style="padding-top:0">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">Erprobt</span>
-        <h2>Neun Runden auf dem Drucker.</h2>
-        <p>Jedes Maß oben kommt aus einem Probedruck, mit Testbogen ausgewertet und im Logbuch festgehalten.</p>
-      </div>
-      <div class="rounds">
-        <div class="round"><div class="r"><span>r0</span><em>bewährt</em></div><h3>Passproben</h3><p>Winkelleiste mit 2,0 mm Körper, Pin-Loch 1,4 mm.</p></div>
-        <div class="round"><div class="r"><span>r1 · 14./15.10.</span><em>verworfen</em></div><h3>Nachtdruck 1</h3><p>Trichterplatte und Schieber gestrichen. Die Stifte finden ihre Buchse ohne Hilfe.</p></div>
-        <div class="round"><div class="r"><span>r2 · 15.10.</span><em>bewährt</em></div><h3>Nachtdruck 2</h3><p>L-förmiger Fuß in der Mulde, eine Lage, kein Wackeln.</p></div>
-        <div class="round"><div class="r"><span>r3 · 16.10.</span><em>bewährt</em></div><h3>Steckprobe 1</h3><p>Kassette eingepresst hält. Alle vier Kontakte durchgepiepst.</p></div>
-        <div class="round"><div class="r"><span>r4 · 16.10.</span><em>bewährt</em></div><h3>Steckprobe 2</h3><p>Tasche 14,60 für die Buchse. Rückmeldung: „alles super“.</p></div>
-        <div class="round"><div class="r"><span>r5 · 16.10.</span><em>vorläufig</em></div><h3>Fachprobe Powerbank</h3><p>Luft über der Powerbank von 0,6 auf 0,8 mm.</p></div>
-        <div class="round"><div class="r"><span>r7 · 17.10.</span><em>gedruckt</em></div><h3>Steckplatte 1:1300</h3><p>Erste ganze Platte. Danach: Schrift erhaben, Fase 1,5 an der Oberkante.</p></div>
-        <div class="round"><div class="r"><span>r8 · 17.10.</span><em>ausgewertet</em></div><h3>Passform Hochhaus</h3><p>Mit 0,10 Spiel nur mit Kraft. Der nächste Druck testet 0,15.</p></div>
-        <div class="round"><div class="r"><span>r9 · 17.10.</span><em>bewährt</em></div><h3>Schalterprobe</h3><p>Loch 13,7 × 9,0: „sehr gut einzusetzen und hält sehr fest“.</p></div>
       </div>
     </div>
   </section>
