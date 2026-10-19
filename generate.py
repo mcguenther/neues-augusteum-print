@@ -385,16 +385,21 @@ ATTRIBUTION = {
 }
 
 
-def engrave_labels(plate, outline, scale, title, top_z, quelle="osm", raised=0.0, inset=0.0):
+def engrave_labels(plate, outline, scale, title, top_z, quelle="osm", raised=0.0, inset=0.0, nur_titel=False):
     """Schrift und Nordpfeil in die Oberseite gravieren; mit raised > 0 stattdessen so viel mm erhaben auf die Oberseite setzen.
-    inset: Block der Beschriftung um so viel mm von linkem, rechtem und unterem Rand nach innen (Breite der Randfase)."""
+    inset: Block der Beschriftung um so viel mm von linkem, rechtem und unterem Rand nach innen (Breite der Randfase).
+    nur_titel: nur die Titelzeile, so groß wie links vom Nordpfeil Platz ist (Steckplatte: die kleine Quellenzeile war im Druck nicht lesbar)."""
     minx, miny, maxx, maxy = outline.bounds
     minx, miny, maxx = minx + inset, miny + inset, maxx - inset
     cuts = []
     avail = maxx - minx - 22  # Platz links vom Nordpfeil
-    t1 = text_cross_section(title, 4.2, minx + 5, miny + LABEL_BAND / 2 - 0.3, max_width=avail)
-    t2 = text_cross_section("1:%d  ·  %s" % (scale, ATTRIBUTION[quelle]), 2.4,
-                            minx + 5, miny + 2.4, max_width=avail)
+    if nur_titel:
+        t1 = text_cross_section(title, 9.0, minx + 5, miny + LABEL_BAND / 2 - 2.6, max_width=avail)
+        t2 = None
+    else:
+        t1 = text_cross_section(title, 4.2, minx + 5, miny + LABEL_BAND / 2 - 0.3, max_width=avail)
+        t2 = text_cross_section("1:%d  ·  %s" % (scale, ATTRIBUTION[quelle]), 2.4,
+                                minx + 5, miny + 2.4, max_width=avail)
     if raised > 0:
         def mark(cs):
             return m3d.Manifold.extrude(cs, raised + 0.01).translate([0, 0, top_z - 0.01])
