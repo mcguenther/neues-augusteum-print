@@ -36,7 +36,7 @@ button { font: inherit; color: inherit; }
 .item[aria-pressed="true"] { background: var(--chip); border-color: var(--line); font-weight: 600; }
 .item .dots { display: flex; gap: 3px; flex: none; }
 .dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0,0,0,.25); }
-.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--chip); border-radius: 8px; padding: 3px; gap: 3px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--chip); border-radius: 8px; padding: 3px; gap: 3px; }
 .seg button { border: 0; background: transparent; border-radius: 6px; padding: 6px 8px; cursor: pointer; font-size: 13px; }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); font-weight: 600; }
 .btn { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 13px; }
@@ -60,7 +60,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 <div class="wrap">
   <header>
     <h1>Steckgebäude in Farbe · 1:1300</h1>
-    <p class="lead">Die sechs steckbaren Hohlgebäude und der Hof-Einsatz im aktuellen Stand, eingefärbt mit deinem PLA. Je Druck höchstens vier Spulen: Graublau, Beige, Weinrot und Space Grey als Hauptfarben, Schwarz und Grasgrün als Reserve, wo sie ein Gebäude deutlich besser treffen. Weiß ist vorerst ausgelassen und wird Beige; kleine Farbinseln auf den Dächern sind der Umgebung angeglichen.</p>
+    <p class="lead">Die sechs steckbaren Hohlgebäude und der Hof-Einsatz im aktuellen Stand, eingefärbt mit deinem PLA. Je Druck höchstens vier Spulen: Graublau, Beige, Weinrot und Space Grey als Hauptfarben, Schwarz und Grasgrün als Reserve, wo sie ein Gebäude deutlich besser treffen. Weiß ist vorerst ausgelassen und wird Beige; kleine Farbinseln auf den Dächern sind der Umgebung angeglichen. „Einfarbig“ zeigt die Variante mit möglichst wenig Filamentwechseln.</p>
   </header>
   <div class="main">
     <div class="stage" id="stage">
@@ -79,6 +79,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <div class="seg" role="group" aria-label="Filamentsatz">
           <button type="button" id="m-satz" aria-pressed="true">Bester Satz je Gebäude</button>
           <button type="button" id="m-haupt" aria-pressed="false">Nur Hauptfarben</button>
+          <button type="button" id="m-einfarbig" aria-pressed="false">Einfarbig</button>
         </div>
       </div>
       <div>
@@ -127,7 +128,7 @@ const objs = DATA.objekte.map(o => {
   const col = new Float32Array(o.n * 9);
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   const m = new THREE.Mesh(g, mat); scene.add(m);
-  return { o, g, m, idx: { satz: bytes(o.satz), haupt: bytes(o.haupt) } };
+  return { o, g, m, idx: { satz: bytes(o.satz), haupt: bytes(o.haupt), einfarbig: bytes(o.einfarbig) } };
 });
 const pg = geom(DATA.platte);
 const plate = new THREE.Mesh(pg, new THREE.MeshStandardMaterial({ color: new THREE.Color(FIL[3].rgb).convertSRGBToLinear(), roughness: 0.85 }));
@@ -178,6 +179,7 @@ function update() {
   [...list.children].forEach(b => b.setAttribute('aria-pressed', b.dataset.key === sel));
   document.getElementById('m-satz').setAttribute('aria-pressed', mode === 'satz');
   document.getElementById('m-haupt').setAttribute('aria-pressed', mode === 'haupt');
+  document.getElementById('m-einfarbig').setAttribute('aria-pressed', mode === 'einfarbig');
   const showAll = sel === 'alle';
   plate.visible = showAll;
   objs.forEach(ob => { ob.m.visible = showAll || ob.o.slug === sel; paint(ob, mode); });
@@ -193,8 +195,9 @@ function update() {
   });
   const tot = area.reduce((s, v) => s + v, 0) || 1;
   const used = FIL.map((f, i) => i).filter(i => area[i] > 0);
-  const satz = mode === 'haupt' ? [0, 1, 2, 3] : (showAll ? [...new Set(objs.flatMap(ob => ob.o.filamente.map(n => NAMES.indexOf(n))))].sort() : objs.find(o => o.o.slug === sel).o.filamente.map(n => NAMES.indexOf(n)));
-  document.getElementById('spool-lbl').textContent = showAll && mode === 'satz' ? 'Spulen über alle Einzeldrucke' : 'Spulen in diesem Druck';
+  const key = mode === 'einfarbig' ? 'einfarbig_namen' : 'filamente';
+  const satz = mode === 'haupt' ? [0, 1, 2, 3] : (showAll ? [...new Set(objs.flatMap(ob => ob.o[key].map(n => NAMES.indexOf(n))))].sort() : objs.find(o => o.o.slug === sel).o[key].map(n => NAMES.indexOf(n)));
+  document.getElementById('spool-lbl').textContent = showAll && mode !== 'haupt' ? 'Spulen über alle Einzeldrucke' : 'Spulen in diesem Druck';
   document.getElementById('bar').innerHTML = used.map(i => `<span style="width:${100 * area[i] / tot}%;background:${FIL[i].rgb}" title="${FIL[i].name}"></span>`).join('');
   document.getElementById('spools').innerHTML = FIL.map((f, i) => {
     const on = satz.includes(i);
@@ -203,17 +206,18 @@ function update() {
   const facts = document.getElementById('facts');
   if (showAll) {
     facts.innerHTML = `<dt>Maßstab</dt><dd>1:${DATA.scale}</dd><dt>Ein Druck</dt><dd>${DATA.alle || '–'}</dd><dt>Einzeln</dt><dd>stl/steckmodul_campus/gebaeude_farbig/</dd>`;
-    document.getElementById('tag').innerHTML = '<b>Steckplatte</b> · ' + (mode === 'haupt' ? 'vier Hauptfarben' : 'jedes Gebäude mit seinem Satz');
+    document.getElementById('tag').innerHTML = '<b>Steckplatte</b> · ' + ({ haupt: 'vier Hauptfarben', satz: 'jedes Gebäude mit seinem Satz', einfarbig: 'jedes Gebäude einfarbig, Hof mit grünen Kronen' })[mode];
   } else {
     const o = objs.find(ob => ob.o.slug === sel).o;
-    facts.innerHTML = `<dt>Datei</dt><dd>${o.datei}</dd><dt>Maße</dt><dd>${de(o.mass[0])} × ${de(o.mass[1])} × ${de(o.mass[2])} mm</dd>` +
+    facts.innerHTML = `<dt>Datei</dt><dd>${mode === "einfarbig" ? o.datei_einfarbig : o.datei}</dd><dt>Maße</dt><dd>${de(o.mass[0])} × ${de(o.mass[1])} × ${de(o.mass[2])} mm</dd>` +
       `<dt>Farbabstand</dt><dd>ΔE ${de(o.dE)} (Hauptfarben ${de(o.dE_haupt)})</dd>`;
-    document.getElementById('tag').innerHTML = `<b>${o.name}</b> · ${(mode === 'haupt' ? NAMES.slice(0, 4) : o.filamente).join(', ')}`;
+    document.getElementById('tag').innerHTML = `<b>${o.name}</b> · ${(mode === 'haupt' ? NAMES.slice(0, 4) : mode === 'einfarbig' ? o.einfarbig_namen : o.filamente).join(', ')}`;
   }
   draw();
 }
 document.getElementById('m-satz').onclick = () => { mode = 'satz'; update(); };
 document.getElementById('m-haupt').onclick = () => { mode = 'haupt'; update(); };
+document.getElementById('m-einfarbig').onclick = () => { mode = 'einfarbig'; update(); };
 document.getElementById('reset').onclick = frame;
 
 // Drehen, Zoomen, Verschieben (Maus und Touch)

@@ -12,6 +12,8 @@ Liest die fertigen Hohlgebäude aus `stl/steckmodul_campus/gebaeude/` (erst `pyt
     `alle_1zu1300_hauptfarben.3mf`
   * Farbe: der massive Körper wird gefärbt und dann mit `plug.buildings.gebaeude` (gleiche Lage, Kassette und Rohrstütze wie die STL)
     ausgehöhlt; die Farbe läuft als face_id durch alle Schritte, die Geometrie ist dieselbe wie in der STL (Volumen wird verglichen).
+  * einfarbig (wenig Filamentwechsel): jedes Gebäude in der Farbe, die mit den Hauptfarben die größte Außenfläche hat, der Hof Beige
+    mit grünen Baumkronen: `<slug>_1zu1300_einfarbig.3mf`
   * Innenflächen (Gewölbe, Schacht) bekommen die Farbe der nächsten Außenfläche, damit die 0,8-mm-Wand durchgefärbt ist; der Fuß
     (unter der Plattenoberseite, steckt in der Mulde) eine einzige Farbe, die der untersten Fassadenzone: dort kein Farbwechsel.
 
@@ -47,6 +49,9 @@ PREV = os.path.join(HERE, "vorschau", "steckmodul_campus", "farbig")
 VIEW = os.path.join(HERE, "plug", "views", "farbig")
 HOF_STL = os.path.join(HERE, "stl", "steckmodul_campus", "hof_einsatz_1zu%d.stl")
 FUSS_Z = 0.05          # Dreiecke mit Mitte unter dieser Höhe gehören zum Fuß (z = 0 ist die Plattenoberseite)
+# Einfarbige Variante (wenig Filamentwechsel): jedes Gebäude in der Farbe, die mit den Hauptfarben die größte Außenfläche hat;
+# der Hof-Einsatz Beige mit grünen Baumkronen (Stämme Beige, Nutzer 19.10.)
+EINFARBIG_HOF = ("Beige", {"krone": "Grasgrün"})
 PFLICHT = {"08_innenhof": ["Grasgrün"]}   # Bäume im Hof grün, auch wenn ihre Fläche klein ist
 SOCKEL_H = 1.5         # mm über der Plattenoberseite: Zone, deren häufigste Farbe der Fuß bekommt
 
@@ -144,6 +149,20 @@ def reduziert(teil, satz, farben):
     return red
 
 
+def einfarbig(slug, mesh, hexes, outer, red_h, farben):
+    """Hex je Dreieck der einfarbigen Variante (siehe EINFARBIG_HOF)."""
+    hex_of = {n: c for c, n in F.FILAMENTE}
+    if slug == G.HOF["slug"]:
+        grund, teile = EINFARBIG_HOF
+        out = np.array([hex_of[grund]] * len(hexes), dtype=object)
+        for key, name in teile.items():
+            out[hexes == farben[slug]["farben"][key]["rgb"]] = hex_of[name]
+        return out
+    vals, inv = np.unique(red_h[outer].astype(str), return_inverse=True)
+    c = vals[np.bincount(inv, weights=mesh.area_faces[outer]).argmax()]
+    return np.array([c] * len(hexes), dtype=object)
+
+
 def anteile(mesh, hexes, outer, satz):
     """Anteil der Außenfläche je Filament des Satzes (%)."""
     a = mesh.area_faces[outer]
@@ -173,12 +192,18 @@ def main():
         _, k_haupt = F.waehle_filamente([(slug, mesh, hexes, outer.astype(float))], farben, pflicht=[n for _, n in F.HAUPT])
         red_h = reduziert(t, F.HAUPT, farben)
         haupt.append((name, mesh, red_h))
-        einzeln[slug] = (name, mesh, red, satz, outer, red_h)
+        red_1 = einfarbig(slug, mesh, hexes, outer, red_h, farben)
+        satz_1 = [f for f in F.FILAMENTE if (red_1 == f[0]).any()]
+        path_1 = os.path.join(OUT, "%s_1zu%d_einfarbig.3mf" % (slug, a.scale))
+        G.export_3mf([(name, mesh, red_1)], path_1, profil=satz_1)
+        einzeln[slug] = (name, mesh, red, satz, outer, red_h, red_1)
         info["gebaeude"][slug] = {"name": name, "datei": os.path.basename(path), "satz": [n for _, n in satz],
                                   "abweichung_dE": round(kosten - F.RESERVE_KOSTEN * sum(1 for x in satz if x in F.RESERVE), 1),
                                   "abweichung_hauptfarben_dE": round(k_haupt, 1),
                                   "anteile_prozent": anteile(mesh, red, outer, satz), "dreiecke": int(len(mesh.faces)),
+                                  "einfarbig": [n for _, n in satz_1], "datei_einfarbig": os.path.basename(path_1),
                                   "dicht": dicht(mesh)}
+        print("  %-60s %s" % (os.path.relpath(path_1, HERE), ", ".join(n for _, n in satz_1)))
         print("  %-60s %s  ΔE %.1f (nur Hauptfarben %.1f)  dicht=%s" % (os.path.relpath(path, HERE), ", ".join(n for _, n in satz),
                                                                     info["gebaeude"][slug]["abweichung_dE"], k_haupt, info["gebaeude"][slug]["dicht"]))
     if not a.slugs:
@@ -200,11 +225,13 @@ def readme(info, scale):
          "Filamente des Nutzers (Hex-Werte geschätzt, in `farben.FILAMENTE` anpassen): " +
          ", ".join("%s `%s`%s" % (f["name"], f["rgb"], "" if f["rolle"] == "Hauptfarbe" else " (%s)" % f["rolle"]) for f in info["filamente"]) + ".",
          "Höchstens %d Filamente je Druck. 3D-Ansicht: `plug/views/farbig/view.html`. Slicer-Einstellungen: `plug/slicer.md`." % F.GLEICHZEITIG, "",
-         "| Datei | Filamente (Slot 1–4) | Anteile der Außenfläche | ΔE (nur Hauptfarben) |", "|---|---|---|---|"]
+         "| Datei | Filamente (Slot 1–4) | Anteile der Außenfläche | ΔE (nur Hauptfarben) | einfarbig (`*_einfarbig.3mf`) |", "|---|---|---|---|---|"]
     for g in info["gebaeude"].values():
-        z.append("| `%s` | %s | %s | %.1f (%.1f) |" % (g["datei"], ", ".join(g["satz"]), ", ".join("%s %.0f %%" % kv for kv in g["anteile_prozent"].items() if kv[1] > 0),
-                                                     g["abweichung_dE"], g["abweichung_hauptfarben_dE"]))
+        z.append("| `%s` | %s | %s | %.1f (%.1f) | %s |" % (g["datei"], ", ".join(g["satz"]), ", ".join("%s %.0f %%" % kv for kv in g["anteile_prozent"].items() if kv[1] > 0),
+                                                          g["abweichung_dE"], g["abweichung_hauptfarben_dE"], ", ".join(g["einfarbig"])))
     z += ["", "`%s`: alle Gebäude und der Hof-Einsatz in einem Druck mit den vier Hauptfarben (Lage wie auf der Steckplatte)." % info.get("alle", ""),
+          "", "Einfarbig (wenig Filamentwechsel): jedes Gebäude in einer Farbe, nur der Hof-Einsatz hat grüne Baumkronen (Wechsel nur in den Lagen der Kronen).",
+          "Gebäude mit derselben Farbe lassen sich zusammen ohne Wechsel drucken.",
           "", "Im Slicer die Filamentfarben einmal den Slots zuordnen (die 3MF nennt die Namen als Material F1 … F4); bemalt sind die Außenflächen,",
           "Innenflächen haben die Farbe der nächsten Außenwand, der Fuß eine einzige Farbe. Ungedruckt.", ""]
     open(os.path.join(OUT, "README.md"), "w").write("\n".join(z))
@@ -213,7 +240,7 @@ def readme(info, scale):
 def bilder(einzeln, scale):
     """Je Gebäude ein Bild von Südosten und Nordwesten mit dem gewählten Satz; dazu die Übersicht aller."""
     import preview
-    for slug, (name, mesh, red, satz, outer, _) in einzeln.items():
+    for slug, (name, mesh, red, satz, outer, _, _) in einzeln.items():
         cols = np.array([preview.rgb(h) for h in red])
         ims = [preview.render([(mesh, cols)], size=(700, 700), azim=az, elev=25, light_from_view=True) for az in (-50, 130)]
         from PIL import Image
@@ -226,12 +253,12 @@ def bilder(einzeln, scale):
         print("  Vorschau:", os.path.relpath(path, HERE))
     plate = load(os.path.join(HERE, "stl", "steckmodul_campus", "steckplatte_1zu%d.stl" % scale))
     T = C.plate_thickness(P.dims_plan())
-    for key, titel in (("satz", "je Gebäude der beste Satz"), ("haupt", "nur die vier Hauptfarben")):
+    for key, titel in (("satz", "je Gebäude der beste Satz"), ("haupt", "nur die vier Hauptfarben"), ("einfarbig", "jedes Gebäude einfarbig")):
         sel = [(plate, np.array([preview.rgb(F.HAUPT[3][0])] * len(plate.faces)))]
-        for slug, (name, mesh, red, satz, outer, red_h) in einzeln.items():
+        for slug, (name, mesh, red, satz, outer, red_h, red_1) in einzeln.items():
             m = mesh.copy()
             m.apply_translation([0, 0, T])
-            sel.append((m, np.array([preview.rgb(h) for h in (red if key == "satz" else red_h)])))
+            sel.append((m, np.array([preview.rgb(h) for h in {"satz": red, "haupt": red_h, "einfarbig": red_1}[key]])))
         im = preview.render(sel, size=(1400, 1000), azim=-35, elev=35, light_from_view=True)
         im = preview.caption(im, "Steckplatte 1:%d farbig" % scale, titel)
         path = os.path.join(PREV, "uebersicht_%s.png" % key)

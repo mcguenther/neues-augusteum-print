@@ -53,6 +53,10 @@
     "Space Grey": 12.2
    },
    "dreiecke": 39974,
+   "einfarbig": [
+    "Graublau"
+   ],
+   "datei_einfarbig": "01_paulinum_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "02_neues_augusteum": {
@@ -71,6 +75,10 @@
     "Space Grey": 14.2
    },
    "dreiecke": 54282,
+   "einfarbig": [
+    "Graublau"
+   ],
+   "datei_einfarbig": "02_neues_augusteum_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "03_hoersaalgebaeude": {
@@ -91,6 +99,10 @@
     "Space Grey": 2.5
    },
    "dreiecke": 81294,
+   "einfarbig": [
+    "Beige"
+   ],
+   "datei_einfarbig": "03_hoersaalgebaeude_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "04_seminargebaeude": {
@@ -111,6 +123,10 @@
     "Space Grey": 27.3
    },
    "dreiecke": 34704,
+   "einfarbig": [
+    "Beige"
+   ],
+   "datei_einfarbig": "04_seminargebaeude_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "05_institutsgebaeude": {
@@ -131,6 +147,10 @@
     "Space Grey": 22.6
    },
    "dreiecke": 44176,
+   "einfarbig": [
+    "Beige"
+   ],
+   "datei_einfarbig": "05_institutsgebaeude_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "06_city_hochhaus": {
@@ -149,6 +169,10 @@
     "Space Grey": 3.1
    },
    "dreiecke": 32374,
+   "einfarbig": [
+    "Graublau"
+   ],
+   "datei_einfarbig": "06_city_hochhaus_1zu1300_einfarbig.3mf",
    "dicht": true
   },
   "08_innenhof": {
@@ -159,14 +183,19 @@
     "Space Grey",
     "Grasgrün"
    ],
-   "abweichung_dE": 22.4,
-   "abweichung_hauptfarben_dE": 21.9,
+   "abweichung_dE": 22.6,
+   "abweichung_hauptfarben_dE": 22.1,
    "anteile_prozent": {
-    "Beige": 71.4,
-    "Space Grey": 23.7,
+    "Beige": 71.9,
+    "Space Grey": 23.2,
     "Grasgrün": 4.9
    },
    "dreiecke": 2236,
+   "einfarbig": [
+    "Beige",
+    "Grasgrün"
+   ],
+   "datei_einfarbig": "08_innenhof_1zu1300_einfarbig.3mf",
    "dicht": true
   }
  },

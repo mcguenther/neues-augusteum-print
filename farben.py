@@ -137,7 +137,7 @@ PROFILE = {
 # läge – sonst verschwinden das Maßwerkfenster und die Rosette.
 PROFIL_FENSTER = ("01 fensterglas", "01 rosette_innen", "06 fassade")
 # Feste Rollen: diese Verwendungen bekommen die genannte Farbe, wenn sie im Satz ist (sonst die nächste).
-PROFIL_ROLLEN = {"Dach rot": "Weinrot", "08 krone": "Grasgrün", "08 beet": "Grasgrün"}
+PROFIL_ROLLEN = {"Dach rot": "Weinrot", "08 krone": "Grasgrün", "08 beet": "Grasgrün", "08 stamm": "Beige"}
 # Nur hier darf ein Dach Graublau sein. Bei den übrigen Gebäuden sind blaugraue Dachflächen im
 # Luftbild vor allem Schatten und werden hell.
 PROFIL_DACH_BLAU = ("01_paulinum", "02_neues_augusteum", "06_city_hochhaus")

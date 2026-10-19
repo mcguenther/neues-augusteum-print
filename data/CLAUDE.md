@@ -38,7 +38,7 @@ Institutsgebäude hell, das Mittel über Platten und Fenster wurde zu grau); Fl�
 Filamente des Nutzers: `farben.FILAMENTE` (Stand 19.10.2026: Hauptfarben Beige, Graublau, Weinrot, Space Grey; Reserve Weiß,
 Schwarz, Grasgrün; Hex-Werte nach den Namen geschätzt, nicht gemessen), höchstens `farben.GLEICHZEITIG` = 4 je Druck. Profile:
 `farben.PROFILE` (4 = die Hauptfarben, 3 = ohne Weinrot) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Graublau),
-`PROFIL_ROLLEN` (rote Dächer Weinrot, Baumkronen und Beete Grasgrün, wenn im Satz) und `PROFIL_DACH_BLAU` (nur Paulinum, Neues Augusteum,
+`PROFIL_ROLLEN` (rote Dächer Weinrot, Baumkronen und Beete Grasgrün, Baumstämme Beige, wenn im Satz) und `PROFIL_DACH_BLAU` (nur Paulinum, Neues Augusteum,
 Uniriese dürfen graublaue Dächer haben, sonst die hellste Farbe); `farben.waehle_filamente` sucht je Druck die besten 4 aus allen 7
 (flächengewichteter ΔE, Reserve mit Aufschlag `RESERVE_KOSTEN`; `GESPERRT` = Weiß ist vorerst ausgeschlossen, Nutzer 19.10.: zu viel Weiß, diese Flächen werden Beige). Danach `farben.dach_glaetten`: Farbinseln auf dem Dach unter `DACH_INSEL_MM2` (6 mm²) nehmen die Farbe der Umgebung an (sonst Flickenteppich aus den Luftbild-Dreiecken); gilt für alle Profile und `plug.colour`, nicht für die vollen 15 Farben. `generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf`
 (ohne `--filamente` nur Laserscan mit Extras, mit `--filamente N` für alle gewählten Quellen/Varianten); die steckbaren Gebäude

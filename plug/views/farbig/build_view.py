@@ -29,7 +29,7 @@ def _netz(tri, idx):
 
 
 def daten(einzeln, info, scale):
-    """einzeln: {slug: (name, Netz, Hex je Dreieck (Satz), Satz [(hex, name)], Außenmaske, Hex je Dreieck (Hauptfarben))}."""
+    """einzeln: {slug: (name, Netz, Hex je Dreieck (Satz), Satz [(hex, name)], Außenmaske, Hex je Dreieck (Hauptfarben), Hex je Dreieck (einfarbig))}."""
     import trimesh
     import farben as F
     from plug import campus as C
@@ -37,7 +37,7 @@ def daten(einzeln, info, scale):
     T = C.plate_thickness(P.dims_plan())
     pal = {c: i for i, (c, _) in enumerate(F.FILAMENTE)}
     objs = []
-    for slug, (name, mesh, red, satz, outer, red_h) in einzeln.items():
+    for slug, (name, mesh, red, satz, outer, red_h, red_1) in einzeln.items():
         fuss = ~outer & (mesh.triangles_center[:, 2] < 0.05) & (np.abs(mesh.face_normals[:, 2]) < 0.9)   # Wände des Fußes, hinten angehängt
         keep = np.r_[np.flatnonzero(outer), np.flatnonzero(fuss)]
         tri = mesh.triangles[keep] + [0, 0, T]
@@ -45,6 +45,7 @@ def daten(einzeln, info, scale):
         o = dict(slug=slug, name=name, **_netz(tri, None),
                  satz=_b64(np.array([pal[h] for h in red[keep]], "u1")),
                  haupt=_b64(np.array([pal[h] for h in red_h[keep]], "u1")),
+                 einfarbig=_b64(np.array([pal[h] for h in red_1[keep]], "u1")), einfarbig_namen=g["einfarbig"], datei_einfarbig=g["datei_einfarbig"],
                  n_aussen=int(outer.sum()), filamente=g["satz"], anteile=g["anteile_prozent"], datei=g["datei"],
                  dE=g["abweichung_dE"], dE_haupt=g["abweichung_hauptfarben_dE"],
                  mass=[round(float(v), 1) for v in mesh.extents])

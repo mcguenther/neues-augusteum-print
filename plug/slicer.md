@@ -32,7 +32,7 @@ Dieselben Gebäude als 3MF mit bemalten Außenflächen (`python3 -m plug.colour`
 Space Grey (Hauptfarben) und Schwarz, Grasgrün (Reserve; Weiß vorerst nicht, wird Beige); welcher Satz zu welchem Gebäude gehört, steht in der README dort.
 Einstellungen wie oben; dazu im Slicer die vier Filamente in der Reihenfolge der 3MF (F1 … F4) den Slots zuordnen. Der Fuß ist einfarbig
 (kein Wechsel in den ersten 14 mm), die Innenflächen tragen die Farbe der nächsten Außenwand, damit die 0,8-mm-Wand durchgefärbt ist.
-Farbiges PLA lässt weniger LED-Licht durch als weißes; ungetestet. Spülmenge (Flush/Purge) je Wechsel ist der größte Materialposten:
+Wenig Wechsel: `*_einfarbig.3mf` (jedes Gebäude eine Farbe, nur der Hof-Einsatz wechselt in den Lagen der Baumkronen auf Grasgrün); Gebäude derselben Farbe zusammen auf ein Bett legen. Farbiges PLA lässt weniger LED-Licht durch als weißes; ungetestet. Spülmenge (Flush/Purge) je Wechsel ist der größte Materialposten:
 im Slicer „Flush into objects' infill“ an, wo vorhanden.
 
 ## Füllmuster im Vergleich (für das Licht der LED)
