@@ -268,6 +268,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Seite | Quelle im Repo | Link |
 |---|---|---|
 | JST-Plan | `plug/archive/jst/view.html` | https://claude.ai/artifact/Fd9vyn5hzE1rdPCqa7BwQX |
+| Steckgebäude in Farbe (drehbar, Filamente des Nutzers) | `plug/views/farbig/view.html` | https://claude.ai/artifact/1yrUP7TY78vCgscuG6bt49 |
 | Dupont-Plan | `plug/views/dupont/view.html` | https://claude.ai/artifact/HUoXswtTaEGpmn4ikCrLah |
 | Institutsgebäude | `plug/build/institute/view.html` | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
 | Passprobe | `plug/fit_test/page.html` | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |

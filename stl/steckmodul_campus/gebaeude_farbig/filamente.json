@@ -1,0 +1,174 @@
+{
+ "filamente": [
+  {
+   "rgb": "#e6d6bc",
+   "name": "Beige",
+   "rolle": "Hauptfarbe"
+  },
+  {
+   "rgb": "#6b7d8c",
+   "name": "Graublau",
+   "rolle": "Hauptfarbe"
+  },
+  {
+   "rgb": "#7b2433",
+   "name": "Weinrot",
+   "rolle": "Hauptfarbe"
+  },
+  {
+   "rgb": "#4a4e54",
+   "name": "Space Grey",
+   "rolle": "Hauptfarbe"
+  },
+  {
+   "rgb": "#f3f3f0",
+   "name": "Weiß",
+   "rolle": "Reserve"
+  },
+  {
+   "rgb": "#1f2022",
+   "name": "Schwarz",
+   "rolle": "Reserve"
+  },
+  {
+   "rgb": "#4f9a3c",
+   "name": "Grasgrün",
+   "rolle": "Reserve"
+  }
+ ],
+ "gebaeude": {
+  "01_paulinum": {
+   "name": "Paulinum (Aula und Universitätskirche St. Pauli)",
+   "datei": "01_paulinum_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Graublau",
+    "Space Grey"
+   ],
+   "abweichung_dE": 9.3,
+   "abweichung_hauptfarben_dE": 9.3,
+   "anteile_prozent": {
+    "Beige": 4.5,
+    "Graublau": 83.6,
+    "Space Grey": 12.0
+   },
+   "dreiecke": 39974,
+   "dicht": true
+  },
+  "02_neues_augusteum": {
+   "name": "Neues Augusteum",
+   "datei": "02_neues_augusteum_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Graublau",
+    "Space Grey"
+   ],
+   "abweichung_dE": 8.4,
+   "abweichung_hauptfarben_dE": 8.4,
+   "anteile_prozent": {
+    "Beige": 15.6,
+    "Graublau": 70.2,
+    "Space Grey": 14.2
+   },
+   "dreiecke": 54282,
+   "dicht": true
+  },
+  "03_hoersaalgebaeude": {
+   "name": "Hörsaalgebäude (mit Mensa am Park)",
+   "datei": "03_hoersaalgebaeude_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Weinrot",
+    "Space Grey",
+    "Weiß"
+   ],
+   "abweichung_dE": 14.1,
+   "abweichung_hauptfarben_dE": 18.3,
+   "anteile_prozent": {
+    "Beige": 16.8,
+    "Weinrot": 18.7,
+    "Space Grey": 28.5,
+    "Weiß": 36.0
+   },
+   "dreiecke": 81294,
+   "dicht": true
+  },
+  "04_seminargebaeude": {
+   "name": "Seminargebäude",
+   "datei": "04_seminargebaeude_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Weinrot",
+    "Space Grey",
+    "Weiß"
+   ],
+   "abweichung_dE": 9.1,
+   "abweichung_hauptfarben_dE": 14.4,
+   "anteile_prozent": {
+    "Beige": 15.0,
+    "Weinrot": 3.5,
+    "Space Grey": 34.8,
+    "Weiß": 46.7
+   },
+   "dreiecke": 34704,
+   "dicht": true
+  },
+  "05_institutsgebaeude": {
+   "name": "Institutsgebäude / Wirtschaftswiss. Fakultät (Grimmaische Str. 12)",
+   "datei": "05_institutsgebaeude_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Graublau",
+    "Weinrot",
+    "Space Grey"
+   ],
+   "abweichung_dE": 16.0,
+   "abweichung_hauptfarben_dE": 16.0,
+   "anteile_prozent": {
+    "Beige": 60.7,
+    "Graublau": 10.1,
+    "Weinrot": 6.8,
+    "Space Grey": 22.4
+   },
+   "dreiecke": 44176,
+   "dicht": true
+  },
+  "06_city_hochhaus": {
+   "name": "City-Hochhaus (\"Uniriese\")",
+   "datei": "06_city_hochhaus_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Space Grey",
+    "Weiß"
+   ],
+   "abweichung_dE": 17.1,
+   "abweichung_hauptfarben_dE": 21.6,
+   "anteile_prozent": {
+    "Beige": 7.4,
+    "Space Grey": 18.8,
+    "Weiß": 73.7
+   },
+   "dreiecke": 32374,
+   "dicht": true
+  },
+  "08_innenhof": {
+   "name": "Innenhof (Leibnizforum)",
+   "datei": "08_innenhof_1zu1300_farbig.3mf",
+   "satz": [
+    "Beige",
+    "Space Grey",
+    "Grasgrün"
+   ],
+   "abweichung_dE": 22.4,
+   "abweichung_hauptfarben_dE": 21.9,
+   "anteile_prozent": {
+    "Beige": 71.4,
+    "Space Grey": 23.7,
+    "Grasgrün": 4.9
+   },
+   "dreiecke": 2236,
+   "dicht": true
+  }
+ },
+ "alle": "alle_1zu1300_hauptfarben.3mf"
+}

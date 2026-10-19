@@ -35,11 +35,14 @@ Institutsgebäude und City-Hochhaus (Seminargebäude: nur einzelne Zonen) kommen
 Institutsgebäude hell, das Mittel über Platten und Fenster wurde zu grau); Flächen darüber gelten nur ab ΔE 25 (`HALTEN_MIN_DE`).
 `farben.py` setzt `data/farben.json` zusammen (macht `generate.py` automatisch bei Änderungen).
 
-Profile für wenige Filamente: `farben.PROFILE` (3 und 4 Filamente: Beige, Blaugrau, Graphit,
-Rotbraun) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Blaugrau) und `PROFIL_DACH_BLAU`
-(nur Paulinum, Neues Augusteum, Uniriese dürfen blaugraue Dächer haben, sonst Beige);
-`generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf` (ohne `--filamente` nur Laserscan mit Extras,
-mit `--filamente N` für alle gewählten Quellen/Varianten). Nach Änderungen am Profil das Vergleichsbild zeigen.
+Filamente des Nutzers: `farben.FILAMENTE` (Stand 19.10.2026: Hauptfarben Beige, Graublau, Weinrot, Space Grey; Reserve Weiß,
+Schwarz, Grasgrün; Hex-Werte nach den Namen geschätzt, nicht gemessen), höchstens `farben.GLEICHZEITIG` = 4 je Druck. Profile:
+`farben.PROFILE` (4 = die Hauptfarben, 3 = ohne Weinrot) mit den Regeln `PROFIL_FENSTER` (Glas/Fenster immer Graublau),
+`PROFIL_ROLLEN` (rote Dächer Weinrot, Baumkronen und Beete Grasgrün, wenn im Satz) und `PROFIL_DACH_BLAU` (nur Paulinum, Neues Augusteum,
+Uniriese dürfen graublaue Dächer haben, sonst die hellste Farbe); `farben.waehle_filamente` sucht je Druck die besten 4 aus allen 7
+(flächengewichteter ΔE, Reserve mit Aufschlag `RESERVE_KOSTEN`). `generate.py` schreibt `komplett_*_objekte_<N>filamente.3mf`
+(ohne `--filamente` nur Laserscan mit Extras, mit `--filamente N` für alle gewählten Quellen/Varianten); die steckbaren Gebäude
+farbig macht `python3 -m plug.colour` (siehe `plug/CLAUDE.md`). Nach Änderungen am Profil das Vergleichsbild zeigen.
 
 Zonen prüfen: `python3 fassaden.py <slug>` → `vorschau/fassaden/<slug>_zonen.png`
 (Fassadenansichten mit Höhen-/entlang-Raster) und `<slug>_fotos.jpg` (Fotos der Messung).

@@ -40,7 +40,7 @@ parallel.py            Mehrprozess-Hilfe (`--jobs`), Laufzeit je Phase
 laserscan.py lod2.py   Geometrie je Datenquelle (Quelle osm steckt in generate.py)
 innenhof.py            Innenhof als eigenes Druckteil (blockiger Umriss ohne Stege, Treppen als Stufen auf dem Einsatz; Vergleich vorher/nachher: `plug/hof/`)
 hohl.py               Gebäude als Hohlkörper (Wand 0,8, unten offen, glattes 45°-Gewölbe bis zum First unter Decken mit mehr als 10 mm Spannweite); `generate.py` schreibt sie nach `einzeln_hohl/` (STL einfarbig, 3MF farbig), `--no-hohl` lässt sie weg; Plan: `plug/hollow/plan.html`
-farben.py              Farben und Filament-Profile (3/4/15) → data/farben.json
+farben.py              Farben, Filamente des Nutzers (farben.FILAMENTE) und Profile (3/4/15) → data/farben.json; farbige Steckgebäude: plug/colour.py
 fassaden.py            Fassaden-Zonen, Prüfansichten (`python3 fassaden.py <slug>`)
 farbmessung.py kamera.py skyline.py registrierung.py szene.py vergleich.py   Fotomessung der Fassadenfarben
 data/                  Rohdaten-Ausschnitte, Zonen je Gebäude (data/fassaden/), Katalog der Messfotos

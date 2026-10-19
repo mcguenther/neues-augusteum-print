@@ -116,30 +116,41 @@ def hexcol(rgb):
 
 
 # --------------------------------------------------------------------------
-# Profile für wenige Filamente (generate.py --filamente 3|4)
+# Filamente des Nutzers und Profile für wenige Filamente (generate.py --filamente 3|4, plug.colour)
 # --------------------------------------------------------------------------
-# Die vollen 15 Filamente werden auf 3 bzw. 4 reduziert. Die Palette stammt aus der
-# Berechnung, welche Farben die Kontraste an Bändern und Fensterrändern am besten
-# erhalten (Beige = Stein/Platten/Platte, Blaugrau = Glas, Graphit = Sockel und dunkle
-# Bänder, Rotbraun = Brüstungsbänder, rote Dächer, Ziegel). Die Hex-Werte sind fest,
-# damit das Profil nicht von neu gemessenen Fassadenfarben abhängt.
+# Vorhandenes PLA (Stand 2026-10-19): vier Hauptfarben und drei Reserven; der Drucker kann 4 Filamente in einem Druck.
+# Die Hex-Werte sind Schätzungen nach den Farbnamen (die Spulen sind nicht gemessen); hier anpassen, wenn Farbmuster
+# vorliegen. Die Rollen beschreiben, wofür die Farbe gedacht ist (Beige = Stein, Platten, Platte; Graublau = Glas, Fenster;
+# Weinrot = Brüstungsbänder, rote Dächer, Ziegel; Space Grey = Sockel, dunkle Bänder, Lamellen).
+FILAMENTE = [("#e6d6bc", "Beige"), ("#6b7d8c", "Graublau"), ("#7b2433", "Weinrot"), ("#4a4e54", "Space Grey"),
+             ("#f3f3f0", "Weiß"), ("#1f2022", "Schwarz"), ("#4f9a3c", "Grasgrün")]
+HAUPT = FILAMENTE[:4]          # die vier Hauptfarben
+RESERVE = FILAMENTE[4:]        # Weiß, Schwarz, Grasgrün: nur, wenn sie ein Gebäude deutlich besser treffen
+GLEICHZEITIG = 4               # Filamente je Druck
+RESERVE_KOSTEN = 4.0           # Aufschlag je Reservefarbe in der Auswahl (ΔE, flächengewichtet): Hauptfarben bevorzugt
 PROFILE = {
-    3: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit")],
-    4: [(PLATTE, "Beige"), ("#778f93", "Blaugrau"), ("#42494f", "Graphit"), ("#7d3937", "Rotbraun")],
+    3: [FILAMENTE[0], FILAMENTE[1], FILAMENTE[3]],
+    4: HAUPT,
 }
-PROFIL_HELL, PROFIL_GLAS = 0, 1   # Indizes in PROFILE: hellste Farbe, Glas-/Fensterfarbe
-# Fenster und Glas (Gebäude-Nr. + Farbname in data/fassaden/*.json) bleiben Blaugrau, auch
-# wenn eine helle Farbe näher läge – sonst verschwinden das Maßwerkfenster und die Rosette.
+# Fenster und Glas (Gebäude-Nr. + Farbname in data/fassaden/*.json) bleiben Graublau, auch wenn eine helle Farbe näher
+# läge – sonst verschwinden das Maßwerkfenster und die Rosette.
 PROFIL_FENSTER = ("01 fensterglas", "01 rosette_innen", "06 fassade")
-# Nur hier darf ein Dach Blaugrau sein. Bei den übrigen Gebäuden sind blaugraue Dachflächen im
-# Luftbild vor allem Schatten und werden hell (Beige).
+# Feste Rollen: diese Verwendungen bekommen die genannte Farbe, wenn sie im Satz ist (sonst die nächste).
+PROFIL_ROLLEN = {"Dach rot": "Weinrot", "08 krone": "Grasgrün", "08 beet": "Grasgrün"}
+# Nur hier darf ein Dach Graublau sein. Bei den übrigen Gebäuden sind blaugraue Dachflächen im
+# Luftbild vor allem Schatten und werden hell.
 PROFIL_DACH_BLAU = ("01_paulinum", "02_neues_augusteum", "06_city_hochhaus")
 PROFIL_ROOF_NZ = 0.35   # wie fassaden.ROOF_NZ
 
 
-def profil_filamente(n):
+def palette(profil):
+    """Profil (3, 4 oder eine Liste [(hex, name)]) als Liste [(hex, name)]."""
+    return PROFILE[profil] if isinstance(profil, int) else list(profil)
+
+
+def profil_filamente(profil):
     """Filament-Liste des Profils im Format von data/farben.json (_filamente)."""
-    return [{"nr": i + 1, "rgb": c, "fuer": [name]} for i, (c, name) in enumerate(PROFILE[n])]
+    return [{"nr": i + 1, "rgb": c, "fuer": [name]} for i, (c, name) in enumerate(palette(profil))]
 
 
 def _lab(c):
@@ -151,34 +162,89 @@ def _lab(c):
     return np.array([116 * f[1] - 16, 500 * (f[0] - f[1]), 200 * (f[1] - f[2])])
 
 
-def reduziere(slug, eintrag, mesh, hexes, n):
-    """Bildet die Farben eines Gebäudes (Hex je Dreieck) auf das Profil mit n Filamenten ab.
+def _namen(eintrag, farben=None):
+    """Hex -> Verwendung („01 glas“, „Dach rot“) für die Regeln."""
+    out = {}
+    for c in (farben or {}).get("_dachpalette", []):
+        out[c["rgb"].lower()] = "Dach %s" % c["name"]
+    if eintrag:
+        out.update({v["rgb"].lower(): k for k, v in eintrag["farben"].items()})
+    return out
+
+
+def _ziel(slug, use, h, roof, pal, labs):
+    """Index der Profilfarbe für eine Farbe h (Regeln wie in reduziere)."""
+    names = [n for _, n in pal]
+    key = "%s %s" % (slug[:2], use) if slug and not use.startswith("Dach") else use
+    if key in PROFIL_FENSTER and "Graublau" in names:
+        t = names.index("Graublau")
+    elif PROFIL_ROLLEN.get(key) in names:
+        t = names.index(PROFIL_ROLLEN[key])
+    else:
+        lab = _lab(h)
+        t = int(np.argmin([np.linalg.norm(lab - l) for l in labs]))
+    if roof and names[t] == "Graublau" and slug not in PROFIL_DACH_BLAU:
+        t = int(np.argmax([l[0] for l in labs]))    # hellste Farbe des Satzes
+    return t
+
+
+def reduziere(slug, eintrag, mesh, hexes, profil, farben=None):
+    """Bildet die Farben eines Gebäudes (Hex je Dreieck) auf ein Profil ab.
 
     slug     Gebäude (None = Platte), eintrag dessen Eintrag in data/farben.json
     mesh     Netz mit den Dreiecken zu hexes (für die Dachflächen)
-    Regeln: nächste Profilfarbe (CIE-Lab), Fenster/Glas immer Blaugrau (PROFIL_FENSTER),
-    Dächer außer bei PROFIL_DACH_BLAU nie Blaugrau (dann Beige).
+    profil   3, 4 oder Liste [(hex, name)] (z. B. aus waehle_filamente)
+    Regeln: nächste Profilfarbe (CIE-Lab), Fenster/Glas immer Graublau (PROFIL_FENSTER), feste Rollen
+    (PROFIL_ROLLEN: rote Dächer Weinrot, Baumkronen Grasgrün), Dächer außer bei PROFIL_DACH_BLAU nie Graublau
+    (dann die hellste Farbe).
     """
-    pal = PROFILE[n]
+    pal = palette(profil)
     labs = [_lab(c) for c, _ in pal]
-    name_of = {v["rgb"].lower(): k for k, v in eintrag["farben"].items()} if eintrag else {}
+    name_of = _namen(eintrag, farben)
     roof = mesh.face_normals[:, 2] > PROFIL_ROOF_NZ
     cache = {}
     out = np.empty(len(hexes), dtype=object)
     for i, (h, r) in enumerate(zip(hexes, roof)):
         t = cache.get((h, r))
         if t is None:
-            use = "%s %s" % (slug[:2], name_of.get(h.lower(), "")) if slug else ""
-            if use in PROFIL_FENSTER:
-                t = PROFIL_GLAS
-            else:
-                lab = _lab(h)
-                t = int(np.argmin([np.linalg.norm(lab - l) for l in labs]))
-            if r and t == PROFIL_GLAS and slug not in PROFIL_DACH_BLAU:
-                t = PROFIL_HELL
-            cache[(h, r)] = t
+            t = cache[(h, r)] = _ziel(slug, name_of.get(h.lower(), ""), h, r, pal, labs)
         out[i] = pal[t][0]
     return out
+
+
+def waehle_filamente(teile, farben, n=GLEICHZEITIG, pflicht=()):
+    """Die n Filamente aus FILAMENTE, die die Fassadenfarben am besten treffen.
+
+    teile    [(slug, mesh, hexes, gewicht je Dreieck oder None)] – alles, was in einem Druck liegt
+    pflicht  Namen, die immer im Satz sind
+    Kosten: flächengewichteter ΔE (CIE-Lab) zwischen Fassadenfarbe und zugeordneter Filamentfarbe (nach den Regeln von
+    reduziere) plus RESERVE_KOSTEN je Reservefarbe. Liefert (Satz [(hex, name)] in der Reihenfolge von FILAMENTE, Kosten).
+    """
+    import itertools
+    # Flächen je (slug, hex, dach) einmal sammeln
+    posten = {}
+    for slug, mesh, hexes, w in teile:
+        area = mesh.area_faces if w is None else mesh.area_faces * w
+        roof = mesh.face_normals[:, 2] > PROFIL_ROOF_NZ
+        name_of = _namen(farben.get(slug) if slug else None, farben)
+        for h, r, a in zip(hexes, roof, area):
+            k = (slug, h, bool(r))
+            if k not in posten:
+                posten[k] = [name_of.get(h.lower(), ""), 0.0]
+            posten[k][1] += a
+    total = sum(a for _, a in posten.values()) or 1.0
+    best = None
+    for satz in itertools.combinations(FILAMENTE, n):
+        names = [nm for _, nm in satz]
+        if any(p not in names for p in pflicht):
+            continue
+        labs = [_lab(c) for c, _ in satz]
+        cost = sum(a * np.linalg.norm(_lab(h) - labs[_ziel(slug, use, h, r, satz, labs)])
+                   for (slug, h, r), (use, a) in posten.items()) / total
+        cost += RESERVE_KOSTEN * sum(1 for s in satz if s in RESERVE)
+        if best is None or cost < best[1]:
+            best = (list(satz), cost)
+    return best
 
 
 def fetch(url, path):

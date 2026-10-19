@@ -6,27 +6,27 @@
  "_dachpalette": [
   {
    "rgb": "#b3b8b8",
-   "anteil": 0.264,
+   "anteil": 0.268,
    "name": "hell"
   },
   {
    "rgb": "#636f77",
-   "anteil": 0.195,
+   "anteil": 0.196,
    "name": "grau"
   },
   {
    "rgb": "#424d55",
-   "anteil": 0.157,
+   "anteil": 0.156,
    "name": "dunkel"
   },
   {
-   "rgb": "#8e979a",
-   "anteil": 0.156,
+   "rgb": "#8d9699",
+   "anteil": 0.152,
    "name": "grau"
   },
   {
-   "rgb": "#d5dadb",
-   "anteil": 0.114,
+   "rgb": "#d4dadb",
+   "anteil": 0.115,
    "name": "hell"
   },
   {
@@ -1572,10 +1572,10 @@
     "02 m5",
     "01 zink",
     "06 m7",
+    "05 m3",
     "08 platz",
     "Dach grau",
-    "01 rosette_innen",
-    "05 m3"
+    "01 rosette_innen"
    ]
   },
   {

@@ -177,9 +177,10 @@ def dach45(X, frei, schutz, z0, dz=0.1):
     return G.union(slabs) if slabs else m3d.Manifold()
 
 
-def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
+def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     """Steckbares Hohlgebäude (Manifold, Weltlage, z = 0 Plattenoberseite) und Prüfwerte. rohrstuetze: Rohr trägt das Gewölbe mit
-    (Standard STUETZE_ROHR)."""
+    (Standard STUETZE_ROHR). farb_id: originalID eines gefärbten solid (face_id = Farbnummer + 1, `plug/colour.py`); dann trägt das
+    Ergebnis face_id = Farbnummer + 1 für Dreiecke aus dem solid und 0 für alle übrigen (Fuß, Hohlraum, Schacht)."""
     rohrstuetze = STUETZE_ROHR if rohrstuetze is None else rohrstuetze
     d = P.dims_plan()
     F = d["F"]
@@ -232,8 +233,10 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None):
         body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
     else:
         body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
+    if farb_id:
+        body = farb_ids(body)
     body = body.simplify(hohl.VEREINFACHEN)
-    body, netz = sauber(body)
+    body, netz = sauber(body, ids=bool(farb_id))
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
     if not nah.is_empty and nah.area >= 0.05:
         info["fase_entfaellt_mm2"] = round(nah.area, 1)
@@ -257,7 +260,19 @@ def _netz_werte(v, f):
     return int((a < 1e-9).sum()), int((cnt > 2).sum())
 
 
-def sauber(body, splitter=SPLITTER_MM3):
+FARB_ID0 = 10_000_000   # face_id der gefärbten Dreiecke (die übrigen Körper tragen ihre Dreiecksnummern, weit darunter)
+
+
+def farb_ids(body):
+    """face_id = Farbnummer + 1 für Dreiecke aus dem gefärbten Körper (face_id ab FARB_ID0), sonst 0 (siehe gebaeude, farb_id)."""
+    m = body.to_mesh()
+    fid = np.asarray(m.face_id).astype(np.int64)
+    key = np.where(fid >= FARB_ID0, fid - FARB_ID0 + 1, 0).astype(np.uint32)
+    return m3d.Manifold(m3d.Mesh(vert_properties=np.array(np.asarray(m.vert_properties)[:, :3], np.float32, order="C"),
+                                 tri_verts=np.array(m.tri_verts, np.uint32, order="C"), face_id=key))
+
+
+def sauber(body, splitter=SPLITTER_MM3, ids=False):
     """Netz so bereinigen, dass ein Slicer es beim Laden nicht umdreht (Befund 2026-10-18, Paulinum im Slicer massiv):
     1. Über float32 neu aufbauen: Manifold rechnet in double, die STL hat float32. Dabei fallen Splitterdreiecke auf Fläche null; PrusaSlicer,
        Bambu Studio und Orca (alle mit admesh) löschen solche Dreiecke beim Laden, verbinden die Nachbarn neu und richten die Normalen danach
@@ -266,12 +281,15 @@ def sauber(body, splitter=SPLITTER_MM3):
     2. Winzige eigene Schalen (Mikrohohlräume aus den Booleschen Schritten, |Volumen| < splitter mm³) weglassen; sie berühren die Wände nur an
        Kanten und sind die meisten Berührkanten. Gezählt wird nach der Netztopologie (Eckpunkt-Indizes), nicht nach Lage, damit Wände aus
        sich berührenden Teilen ganz bleiben.
+    ids: face_id (Farben, siehe farb_ids) durch den Neuaufbau mitnehmen.
     Liefert (Körper, Werte vorher/nachher). Fällt auf den alten Körper zurück, wenn das Ergebnis nicht gültig wäre oder das Volumen abweicht."""
     m = body.to_mesh()
     v0, f0 = np.asarray(m.vert_properties)[:, :3], np.asarray(m.tri_verts)
     werte = dict(vorher=dict(zip(("entartet", "beruehrkanten"), _netz_werte(v0, f0))))
-    neu = m3d.Manifold(m3d.Mesh(vert_properties=np.array(v0, np.float32, order="C"), tri_verts=np.array(f0, np.uint32, order="C")))
+    fid = dict(face_id=np.asarray(m.face_id, np.uint32)) if ids else {}
+    neu = m3d.Manifold(m3d.Mesh(vert_properties=np.array(v0, np.float32, order="C"), tri_verts=np.array(f0, np.uint32, order="C"), **fid))
     m = neu.to_mesh()
+    fid = np.asarray(m.face_id, np.uint32) if ids else None
     v, f = np.array(np.asarray(m.vert_properties)[:, :3], np.float32, order="C"), np.asarray(m.tri_verts).astype(np.int64)
     # Schalen nach Topologie: Zusammenhangskomponenten der Eckpunkte über die Dreieckskanten
     import scipy.sparse as sp
@@ -283,8 +301,10 @@ def sauber(body, splitter=SPLITTER_MM3):
     vol = np.einsum("ij,ij->i", vd[f[:, 0]], np.cross(vd[f[:, 1]], vd[f[:, 2]])) / 6.0
     sv = np.bincount(lab[f[:, 0]], vol, minlength=k)
     weg = np.abs(sv) < splitter
-    f2 = f[~weg[lab[f[:, 0]]]]
-    neu = m3d.Manifold(m3d.Mesh(vert_properties=v, tri_verts=np.array(f2, np.uint32, order="C")))
+    bleibt = ~weg[lab[f[:, 0]]]
+    f2 = f[bleibt]
+    neu = m3d.Manifold(m3d.Mesh(vert_properties=v, tri_verts=np.array(f2, np.uint32, order="C"),
+                                **(dict(face_id=np.ascontiguousarray(fid[bleibt])) if ids else {})))
     if neu.status() != m3d.Error.NoError or abs(neu.volume() - body.volume()) > 0.002 * abs(body.volume()):
         werte["zurueckgefallen"] = True
         return body, werte
