@@ -271,7 +271,8 @@ def build(v):
     solids = [BC.slab_ch(outline, 0, H, PP.CH_BED) - G.extrude(inner, PP.UK_FLOOR, H + 1)]
     solids.append(erhebung_solid(K["c"], PP.UK_FLOOR - 0.01))
     solids.append(G.extrude(hoeck_all, PP.UK_FLOOR - 0.01, GANG_Z))
-    solids += [G.extrude(r, PP.UK_FLOOR - 0.01, z_pb) for r in auf]
+    if PP.PB_AUFLAGE.get("im_kasten", True):            # sonst eigene Klötze (build_unterkasten8), Lagen `auf` nur als Vorschlag
+        solids += [G.extrude(r, PP.UK_FLOOR - 0.01, z_pb) for r in auf]
     solids += [G.extrude(r, PP.UK_FLOOR - 0.01, H) for r in posts]
     solids += [BC.pin_solid_at(posts[i].centroid, H, PP.PIN_PLAN, PP.CH_PIN) for i in pins]
     unten = unary_union([K["frei"], gang_all])
@@ -347,7 +348,8 @@ def build(v):
         ("Kordel vom Knopf", iv(kord_kn) < 0.05, "Kordel %.0f × %.0f %s in alle acht Richtungen: Überschneidung %.2f mm³ (%s)" % (
             kb, kh, ansatz, iv(kord_kn), "Nutzer: Kordel kommt unten seitlich am Knopffuß heraus" if not PP.KORDEL_ANSATZ_OBEN else "KORDEL_ANSATZ_OBEN = True")),
         ("Kordel in allen Gängen", iv(kord_m) < 0.05, "Kordel %.0f × %.0f in jeder der 8 Richtungen vom Knopfrand bis zur Außenwand: Überschneidung %.2f mm³" % (kb, kh, iv(kord_m))),
-        ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f (Plateau Ø %.0f und %d Auflagen), Überschneidung %.2f mm³" % (z_pb, 2 * R_PLATEAU, len(auf), iv(pbm))),
+        ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f (Plateau Ø %.0f und %d Auflagen%s), Überschneidung %.2f mm³" % (
+            z_pb, 2 * R_PLATEAU, len(auf), "" if PP.PB_AUFLAGE.get("im_kasten", True) else " als eigene Klötze, eingeklebt", iv(pbm))),
         ("Powerbank steht", sf["rand"] > 3.0, "Schwerpunkt %.1f mm innerhalb der Stützfläche (Plateau und Auflagen); nur auf dem Plateau: %.1f mm außerhalb, kippt um %.0f°" % (
             sf["rand"], -sf0["rand"], sf0["kipp"])),
         ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM_8 - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM_8)),

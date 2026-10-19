@@ -10,7 +10,7 @@ Prüfung des Kastens (plug/power/kasten8.py):
   Wände an den Gängen              ok    seitlich 0.8, Decke 0.48 (3 Lagen × 0,16), keine Fase an den Mündungen unten; Höcker 9.6 breit und 5.48 hoch (Modus innen)
   Kordel vom Knopf                 ok    Kordel 5 × 3 am Fuß des Knopfs (Hut-Höhe 0 bis 3.0) durch Raum und Anstieg in alle acht Richtungen: Überschneidung 0.00 mm³ (Nutzer: Kordel kommt unten seitlich am Knopffuß heraus)
   Kordel in allen Gängen           ok    Kordel 5 × 3 in jeder der 8 Richtungen vom Knopfrand bis zur Außenwand: Überschneidung 0.00 mm³
-  Powerbank frei                   ok    liegt auf z = 16.0 (Plateau Ø 28 und 3 Auflagen), Überschneidung 0.00 mm³
+  Powerbank frei                   ok    liegt auf z = 16.0 (Plateau Ø 28 und 3 Auflagen als eigene Klötze, eingeklebt), Überschneidung 0.00 mm³
   Powerbank steht                  ok    Schwerpunkt 29.7 mm innerhalb der Stützfläche (Plateau und Auflagen); nur auf dem Plateau: 17.6 mm außerhalb, kippt um 8°
   Steckerraum über der Powerbank   ok    6.0 mm (gefordert 6.0)
   Kordel im Gang                   ok    Kordel 5 × 3 in Gang 8 × 5 (breit × hoch): Spiel 2.0 hoch, 3.0 seitlich
@@ -22,13 +22,13 @@ Prüfung des Kastens (plug/power/kasten8.py):
 
 Zusammenbau mit der Steckplatte (stl/steckmodul_campus/steckplatte_1zu1300.stl, 115.63 × 220.90 × 16.95 mm):
   Umriss Kasten 115.60 × 220.90 gegen Platte 115.63 × 220.90 (Abweichung höchstens 0,05) -0.03/+0.00  ok
-  Platte aufgesetzt, Zapfen in den Zapfenlöchern: Überschneidung (mm³)                        0.000  ok
-  Kontrolle: Platte 0.09 nach Osten verschoben, Zapfen haben noch Spiel (mm³)                 0.000  ok
-  Kontrolle: Platte 0.09 nach Westen verschoben, Zapfen haben noch Spiel (mm³)               -0.000  ok
+  Platte aufgesetzt, Zapfen in den Zapfenlöchern: Überschneidung (mm³)                       -0.000  ok
+  Kontrolle: Platte 0.09 nach Osten verschoben, Zapfen haben noch Spiel (mm³)                -0.000  ok
+  Kontrolle: Platte 0.09 nach Westen verschoben, Zapfen haben noch Spiel (mm³)                0.000  ok
   Kontrolle: Platte 0.09 nach Norden verschoben, Zapfen haben noch Spiel (mm³)                0.000  ok
-  Kontrolle: Platte 0.09 nach Süden verschoben, Zapfen haben noch Spiel (mm³)                 0.000  ok
+  Kontrolle: Platte 0.09 nach Süden verschoben, Zapfen haben noch Spiel (mm³)                -0.000  ok
   Kontrolle: Platte 0,5 nach Osten verschoben stößt an die Zapfen (mm³, muss > 0)              3.96  ok
-  Kontrolle: Platte 0,2 tiefer stößt auf Wand und Stützen (mm³, muss > 0)                       258  ok
+  Kontrolle: Platte 0,2 tiefer stößt auf Wand und Stützen (mm³, muss > 0)                       267  ok
   Dockzone Paulinum 13.9 × 16.8 (Steckerraum 3.5 unter der Platte) frei vom Kasten (mm³)      0.000  ok
   Dockzone Neues Augusteum 16.6 × 13.5 (Steckerraum 3.5 unter der Platte) frei vom Kasten (mm³)      0.000  ok
   Dockzone Hörsaalgebäude 16.6 × 13.5 (Steckerraum 3.5 unter der Platte) frei vom Kasten (mm³)      0.000  ok
@@ -37,7 +37,10 @@ Zusammenbau mit der Steckplatte (stl/steckmodul_campus/steckplatte_1zu1300.stl, 
   Dockzone City-Hochhaus 17.8 × 18.5 (Steckerraum 3.5 unter der Platte) frei vom Kasten (mm³)      0.000  ok
   Dockzone Display-Dock 11.1 × 14.9 (Steckerraum 3.5 unter der Platte) frei vom Kasten (mm³)      0.000  ok
 
+Auflage-Klötze (eigenes Teil, eingeklebt): 8 × 8 × 14.8 (Boden 1.2 bis Plateau 16.0); an den vorgeschlagenen Stellen der Auflagen passt ein Klotz: 3 von 3
+
 Teil (Druckausrichtung, Bett z = 0 = Hut-Seite):
-  U8_unterkasten.stl   115.60 × 220.90 × 37.26 mm    93.2 cm³  ≈ 116 g  dicht=True  Teile=1
-  Zeit: normal ≈ 13.2 h, schnell ≈ 4.8 h, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 6.2 h
+  U8_unterkasten.stl   115.60 × 220.90 × 37.26 mm    87.6 cm³  ≈ 109 g  dicht=True  Teile=1
+  Zeit: normal ≈ 12.4 h, schnell ≈ 4.5 h, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 5.8 h
+  U8_auflage.stl         8.00 ×   8.00 × 14.78 mm    0.94 cm³  dicht=True  (3 bis 4 Stück)
 -> keine Kollisionen

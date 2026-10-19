@@ -2,7 +2,8 @@
 
 Kurzfassung zu `plug/power/plan_kasten8.html` für den Druck: Kasten aus `build_unterkasten8.build()` (dieselbe Geometrie wie
 `stl/steckmodul_unterkasten8/U8_unterkasten.stl`), Steckplatte `stl/steckmodul_campus/steckplatte_1zu1300.stl` aufgesetzt, dazu Gebäude,
-Hof-Einsatz, Powerbank, Doktorhut mit Knopf und Kordel. Netze für die Ansicht ausgedünnt (fast_simplification).
+Hof-Einsatz (an ihrer Lage auf der Platte, `plug.campus.SHIFTS`), Powerbank, Auflage-Klötze an den vorgeschlagenen Stellen, Doktorhut mit Knopf und Kordel.
+Dazu die Passprobe der Gebäude in den Mulden (`plug.check_platte`). Netze für die Ansicht ausgedünnt (fast_simplification).
 
 Aufruf: python3 -m plug.power.build_uebersicht8   (ca. 40 s)  ->  plug/power/uebersicht8.html   (Vorlage uebersicht8.template.html; Artifact)
 """
@@ -11,6 +12,7 @@ import os
 
 import trimesh
 
+from plug import check_platte as CP
 from plug.geom import encode, to_tm
 from plug.power import build_concept as BC
 from plug.power import build_unterkasten8 as U8
@@ -48,6 +50,8 @@ def bounds(m):
 
 def main():
     r, plate, bad, _ = U8.build()
+    ok_geb, rows_geb, _, shifts = CP.pruefung()
+    bad += not ok_geb
     H, pt = r["H"], BC.H0["plate_t"]
     raw = trimesh.load(U8.PLATE)
     sh = (-raw.bounds[0][0], -raw.bounds[0][1])
@@ -56,7 +60,8 @@ def main():
     geb = os.path.join(CAMPUS, "gebaeude")
     for f in sorted(os.listdir(geb)):
         if f.endswith("_1zu1300.stl"):
-            meshes["buildings"][f[:-12]] = enc(trimesh.load(os.path.join(geb, f)), *sh, H + pt, faces=9000)
+            dx, dy = shifts.get(f[:-12], (0.0, 0.0))
+            meshes["buildings"][f[:-12]] = enc(trimesh.load(os.path.join(geb, f)), sh[0] + dx, sh[1] + dy, H + pt, faces=9000)
     pd = r["plate_dims"]
     kb = r["uk"].bounding_box()
     data = dict(
@@ -70,6 +75,9 @@ def main():
         pins=[row["neu"] for row in r["pin_rows"]], bruecken=[dict(n=n, w=w, z=z) for n, w, z in r["bruecken"]],
         pb_box=bounds(r["pb_m"]), plug_box=bounds(r["plug_m"]), esp_box=bounds(r["esp_m"]),
         checks=[dict(n=n, ok=bool(ok), t=t) for n, ok, t in r["checks"]], fit=[dict(t=t, ok=ok, v=v) for t, ok, v in r["fit"]],
+        geb=[dict(n=n, ok=bool(ok), t=t) for n, ok, t in rows_geb], spalt_max=CP.SPALT_MAX,
+        klotz=dict(a=U8.KLOTZ, h=round(r["z_pb"] - PP.UK_FLOOR, 2), floor=PP.UK_FLOOR,
+                   lagen=[[round(a.centroid.x, 2), round(a.centroid.y, 2)] for a in r["auflagen"]]),
         bad=bad, meshes=meshes,
     )
     tpl = open(TEMPLATE, encoding="utf-8").read()

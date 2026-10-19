@@ -222,7 +222,8 @@ def walls(plate_base, outline, info, lay):
     res = {"allen Aussparungen": mu.distance(voids), "Plattenrand": mu.distance(outline.exterior)}
     if lay:
         res["Zapfenlöchern"] = min(mu.distance(U.zapfen_circle(p, U.LOCH_FASE)) for p in lay["pins"])
-        res["Fadentaschen"] = min(mu.distance(g) for g in U.faden_polys(lay))
+        if lay["faden"]:
+            res["Fadentaschen"] = min(mu.distance(g) for g in U.faden_polys(lay))
     return res
 
 

@@ -9,7 +9,7 @@
   --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
   --accent: #a85f00; --ok: #2f7d4f; --warn: #b5471f; --canvas: #e7eae5; --edge: #1b2220;
   --c-plate: #8fa3b8; --c-uk: #b9a98a; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #d97a1f; --c-esp: #2f7d4f;
-  --c-hut: #2b2b30; --c-knopf: #6b5a3a; --c-kordel: #d4a017;
+  --c-hut: #2b2b30; --c-knopf: #6b5a3a; --c-kordel: #d4a017; --c-klotz: #c8423b;
   --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
@@ -18,7 +18,7 @@
     --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
     --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
     --c-plate: #5d7087; --c-uk: #8f8166; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #f0a050; --c-esp: #4c9a69;
-    --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040;
+    --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040; --c-klotz: #ff7a6e;
     color-scheme: dark;
   }
 }
@@ -26,7 +26,7 @@
   --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
   --accent: #f2b441; --ok: #5cc287; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
   --c-plate: #5d7087; --c-uk: #8f8166; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #f0a050; --c-esp: #4c9a69;
-  --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040;
+  --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040; --c-klotz: #ff7a6e;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -112,6 +112,13 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
   </section>
 
   <section>
+    <h2>Gebäude in den Mulden der neuen Platte</h2>
+    <p>Die fertigen Gebäude-STL stehen an ihrer Lage auf der Platte in den Mulden, dazu der Hof-Einsatz. Gemessen ist der Spalt zwischen Fuß und Muldenwand in vier Höhen, die Unterkante auf dem Muldenboden, die Pin-Löcher des Docks im Schacht und als Gegenprobe, dass ein um 0,2 mm verschobenes Gebäude anstößt.</p>
+    <div class="tbl"><table id="t-geb"></table></div>
+    <p class="small" id="geb-note"></p>
+  </section>
+
+  <section>
     <h2>Prüfung im Rechner</h2>
     <div class="cols">
       <div><p class="small" style="margin-bottom:8px">Zusammenbau Kasten mit Platte</p><div class="tbl"><table id="t-fit"></table></div></div>
@@ -125,7 +132,7 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
   </section>
 
   <section>
-    <h2>Noch offen</h2>
+    <h2>Was sich später noch ändern kann</h2>
     <ul class="plain" id="offen"></ul>
   </section>
 </div>
@@ -139,13 +146,13 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
   const fmt = (x, n = 1) => Number(x).toLocaleString('de-DE', { minimumFractionDigits: n, maximumFractionDigits: n });
   const css = (t) => getComputedStyle(document.documentElement).getPropertyValue(t).trim();
   const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-  const nFail = D.checks.filter((c) => !c.ok).length + D.fit.filter((c) => !c.ok).length;
+  const nFail = [D.checks, D.fit, D.geb].reduce((n, l) => n + l.filter((c) => !c.ok).length, 0), nAll = D.checks.length + D.fit.length + D.geb.length;
 
-  $('verdict-t').textContent = nFail ? nFail + ' Prüfung(en) fehlgeschlagen' : 'Passt: alle ' + (D.checks.length + D.fit.length) + ' Prüfungen bestanden, druckfertig';
+  $('verdict-t').textContent = nFail ? nFail + ' Prüfung(en) fehlgeschlagen' : 'Passt: alle ' + nAll + ' Prüfungen bestanden, druckfertig';
   if (nFail) $('verdict').classList.add('bad');
   $('lead').textContent = 'Der neue Kasten trägt die Steckplatte mit den auseinandergerückten Gebäuden. Unten in der Mitte sitzt die Erhebung über dem Knopf des Doktorhuts (gemessen 11 bis 12 mm, gerechnet mit '
     + fmt(D.knopf.h) + ' plus 1 mm Luft), acht Gänge führen die Kordel nach außen. Die Powerbank liegt auf dem Plateau darüber, der Steckerraum über ihr ist '
-    + fmt(D.steckerraum) + ' mm hoch.';
+    + fmt(D.steckerraum) + ' mm hoch. Die Auflagen der Powerbank sind eigene Klötze, die du einklebst, sobald ihre Lage feststeht. Die Steckplatte hat keine Fadentaschen mehr.';
   const facts = [
     ['Kasten (Druckteil)', fmt(D.W, 2) + ' × ' + fmt(D.L, 2) + ' × ' + fmt(D.H) + ' mm'],
     ['Steckplatte', fmt(D.pw, 2) + ' × ' + fmt(D.pl, 2) + ' × ' + fmt(D.plate_t) + ' mm'],
@@ -163,6 +170,8 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
     ['Kasten Höhe', fmt(D.h7) + ' (gedruckt)', fmt(D.H), 'Erhebung über dem Knopf, Steckerraum ' + fmt(D.steckerraum)],
     ['Zapfen (Plattenkoordinaten)', '(20 | 20), (100 | 180)', D.pins.map((p) => '(' + fmt(p[0], 0) + ' | ' + fmt(p[1], 0) + ')').join(', '), 'unverändert, Spiel 0,15'],
     ['Docks unter der Platte', 'Stand 7', 'höchstens 0,14 verschoben', 'alle Dockzonen frei vom Kasten'],
+    ['Fadentaschen in der Platte', '4 Ecken', 'keine', 'Befestigung mit Heißkleber'],
+    ['Auflagen der Powerbank', '3 angeformt, bis 12 × 12', D.klotz.lagen.length + ' Klötze ' + fmt(D.klotz.a, 0) + ' × ' + fmt(D.klotz.a, 0) + ' × ' + fmt(D.klotz.h), 'eigenes Teil, später eingeklebt'],
   ];
   $('t-mass').innerHTML = '<thead><tr><th>Maß (mm)</th><th>vorher</th><th>jetzt</th><th>Hinweis</th></tr></thead><tbody>'
     + rows.map((r) => '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num' + (r[1] !== r[2] ? ' new' : '') + '">' + r[2] + '</td><td>' + r[3] + '</td></tr>').join('') + '</tbody>';
@@ -170,22 +179,26 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
   $('t-fit').innerHTML = '<tbody>' + D.fit.map((c) => '<tr><td>' + esc(c.t) + '</td><td class="num">' + esc(c.v) + '</td><td>' + pill(c.ok) + '</td></tr>').join('') + '</tbody>';
   $('t-chk').innerHTML = '<tbody>' + D.checks.map((c) => '<tr><td><b>' + esc(c.n) + '</b><br><span class="small">' + esc(c.t) + '</span></td><td>' + pill(c.ok) + '</td></tr>').join('') + '</tbody>';
 
+  $('t-geb').innerHTML = '<tbody>' + D.geb.map((c) => '<tr><td>' + esc(c.t) + '</td><td>' + pill(c.ok) + '</td></tr>').join('') + '</tbody>';
+  $('geb-note').textContent = 'Spalt: kleinster Wert an den Wänden ' + fmt(0.15, 2) + ' (an einzelnen Punkten der Laserscan-Wand bis 0,017 mm weniger, weit unter der Druckgenauigkeit), an den Ecken mehr, weil die Mulde mit Gehrung versetzt ist (90°: 0,21). Nähte zwischen den Gebäuden: Wand 0,80 mm, an den Zahnflanken Paulinum/Augusteum 0,70 (plug.divider.check).';
   const br = D.bruecken.map((b) => b.n + ' ' + fmt(b.w) + ' mm bei z ' + fmt(b.z)).join(', ');
   $('druck').innerHTML = [
     'Datei: <code>stl/steckmodul_unterkasten8/U8_unterkasten.stl</code> (oder <code>unterkasten8.zip</code>), so ins Bett legen wie in der Datei: Hut-Seite unten, Knopfraum und Gänge zum Bett offen.',
+    'Dazu 3 bis 4 Auflage-Klötze <code>U8_auflage.stl</code> (' + fmt(D.klotz.a, 0) + ' × ' + fmt(D.klotz.a, 0) + ' × ' + fmt(D.klotz.h) + ' mm, je etwa 1 g). Einkleben erst, wenn die Lage der Powerbank feststeht: unter ihre Ecken auf den Boden, nicht auf die Gänge, Heißkleber nur seitlich an den Fuß, sonst steht die Powerbank höher als das Plateau. Die roten Klötze im 3D-Modell zeigen eine Lage, mit der sie sicher steht.',
     'PLA, Schicht <b>0,16 mm</b> (die Decken über Knopfraum und Gängen sind ' + fmt(D.dach, 2) + ' = 3 Lagen), Support aus, Gyroid 10 % wie <code>plug/slicer.md</code>.',
     'Zeit: bei deinem Drucker ≈ ' + fmt(D.zeit.nacht1) + ' h (Faustwert aus Nacht 1), Modell normal ' + fmt(D.zeit.normal) + ' h, schnell ' + fmt(D.zeit.schnell) + ' h. Material ≈ ' + Math.round(D.grams) + ' g.',
     'Kritische Brücken: ' + br + '. Dieselben Stellen prüft der Stern K4; wenn er sauber gedruckt ist, ist der Kasten unkritisch.',
-    'Die Steckplatte (<code>stl/steckmodul_campus/steckplatte_1zu1300.stl</code>) kommt später dran; unter eine ältere Platte passt der Kasten auch, wenn sie die Zapfenlöcher bei (20 | 20) und (100 | 180) hat (Umriss weicht weniger als 0,1 mm ab).',
+    'Steckplatte: <code>stl/steckmodul_campus/steckplatte_1zu1300.stl</code> (ohne Fadentaschen, Mulden-Spiel 0,15); unter eine ältere Platte passt der Kasten auch, wenn sie die Zapfenlöcher bei (20 | 20) und (100 | 180) hat (Umriss weicht weniger als 0,1 mm ab).',
   ].map((s) => '<li>' + s + '</li>').join('');
   $('offen').innerHTML = [
-    'Die Fadentaschen an den vier Ecken der Steckplatte sind noch drin (Heißkleber macht sie überflüssig). Sie sind nach unten offen und stören den Kasten nicht; beim nächsten Plattendruck können sie weg.',
+    '<b>Display-Gebäude, die einzige offene Stelle an der Platte:</b> Mulde und Pin-Löcher sind nach dem ersten Satz gebaut (gedruckt, in Ordnung). Der zweite Satz (schmaler Hals) säße darin mit 1,4 mm Luft je Seite lose. Wenn der zweite Satz der endgültige wird, muss die Display-Mulde vor dem Plattendruck auf ihn umgestellt werden (<code>campus_display.SATZ = 2</code>, eine Mulde am Ostrand, sonst nichts).',
+    'Nicht an der Platte: Fuß-Fase 4,0 für neu gebaute Gebäude, Kassetten-Spiel im Schacht (K4/K5) und die Flussrate je Filament ändern nur Gebäude, Kassetten und Slicer. Die Mulde ist der volle Grundriss plus 0,15, die Fase am Fuß ändert daran nichts.',
+    'Die Lage der Powerbank (und damit der Klötze) ist frei, solange sie auf dem Plateau über dem Knopf liegt. Fenster in der Nordwand und Steckerraum gelten für die Lage wie im 3D-Modell.',
     'Ob die dünne Decke (' + fmt(D.dach, 2) + ') des Plateaus die Powerbank dauerhaft trägt, zeigt erst der Druck. Notfalls einen Klecks Heißkleber unter das Plateau.',
-    'Die Gebäude-STL sind für die Ansicht an ihrer bisherigen Lage gezeichnet; auf der Platte liegen sie je Naht 0,1 mm weiter auseinander.',
   ].map((s) => '<li>' + s + '</li>').join('');
 
   // ---------------- 3D (z = 0 an der Kastenunterkante = Hutoberseite)
-  const LAYERS = [['plate', 'Steckplatte', '--c-plate', 1], ['bld', 'Gebäude und Hof', '--c-bld', 0], ['uk', 'Batteriefach', '--c-uk', 1],
+  const LAYERS = [['plate', 'Steckplatte', '--c-plate', 1], ['bld', 'Gebäude und Hof', '--c-bld', 0], ['uk', 'Batteriefach und Klötze', '--c-uk', 1],
     ['pb', 'Powerbank und ESP32', '--c-pb', 1], ['hut', 'Doktorhut, Knopf, Kordel', '--c-knopf', 1]];
   const state = {};
   $('layers').insertAdjacentHTML('beforeend', LAYERS.map((l) => '<label><input type="checkbox" id="ly-' + l[0] + '"' + (l[3] ? ' checked' : '') + '><span class="sw" style="background:var(' + l[2] + ')"></span>' + l[1] + '</label>').join(''));
@@ -216,6 +229,8 @@ code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
   G.bld.add(mk(M.hof, mat('--c-hof'), false));
   G.uk.add(mk(M.uk, mat('--c-uk')));
   G.pb.add(boxAt(D.pb_box, mat('--c-pb'))); G.pb.add(boxAt(D.plug_box, mat('--c-port'))); G.pb.add(boxAt(D.esp_box, mat('--c-esp')));
+  const ka = D.klotz.a / 2;
+  for (const c of D.klotz.lagen) G.uk.add(boxAt([c[0] - ka, c[1] - ka, D.klotz.floor, c[0] + ka, c[1] + ka, D.klotz.floor + D.klotz.h], mat('--c-klotz')));
   const board = new THREE.Mesh(new THREE.BoxGeometry(D.hut, D.hut, 3), mat('--c-hut')); board.position.set(C[0], C[1], -1.5); G.hut.add(board);
   const knopf = new THREE.Mesh(new THREE.CylinderGeometry(D.knopf.d / 2, D.knopf.d / 2, D.knopf.h, 48), mat('--c-knopf')); knopf.rotation.x = Math.PI / 2; knopf.position.set(C[0], C[1], D.knopf.h / 2); G.hut.add(knopf);
   {   // Kordel vom Knopffuß durch den Ostgang über den Hutrand

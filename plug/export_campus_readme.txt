@@ -9,7 +9,7 @@ Inhalt
   steckplatte_1zu1300.stl              Platte 115,6 x 220,9 x 14,6 (mit Gang und Treppen im Süden und Nordosten bis 16,9 hoch) mit Mulden
                                        für alle sechs Gebäude, Aussparung für den Hof, Wänden zwischen den Mulden (0,8; Paulinum/Neues Augusteum an den Zahnflanken 0,7)
                                        und Pin-Löchern (24 Stück, vier je Gebäude);
-                                       unten 2 Zapfenlöcher (20|20) und (100|180) und 4 Fadentaschen (halbe Pille) an den Ecken;
+                                       unten 2 Zapfenlöcher (20|20) und (100|180), keine Fadentaschen (Heißkleber);
                                        am Ostrand (y = 34,4) Mulde und Dock (4 Pin-Löcher) für das Display-Gebäude, Maße des ersten,
                                        gedruckten Satzes
   hof_einsatz_1zu1300.stl              Innenhof (Pflaster, Beete, Bänke, Denkmal, Bäume), 6 mm tief in die Aussparung
