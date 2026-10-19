@@ -40,7 +40,7 @@ KASS_SPIEL = (0.12, 0.16, 0.20)          # Spiel im Modell je Seite (Einpressspi
 SCHACHT_EXTRA = 0.35
 PROBE_W, PROBE_D, PROBE_KEY = 31.0, 18.0, 3.0
 DACH = 1.2
-FUSS_HOEHE = 16.0                       # Probefuß oben offen (kein Dach): Schacht geht durch, Kassette 15,1 hoch liegt ganz darin, Muldentiefe 14,2
+FUSS_HOEHE = 20.0                       # Probefuß oben offen (kein Dach): Schacht geht durch; Muldentiefe 14,2, also ragt der Fuß 5,8 mm aus der Mulde (Griff zum Herausziehen)
 FENSTER_W, FENSTER_D = 12.0, 3.0      # Fenster im Dach des Probefußes (Stift zum Herausdrücken der Kassette)
 LAGE = 0.2
 BAR_W, BAR_GAP, BAR_L, BAR_H = 1.2, 1.0, 8.0, 0.6
@@ -261,7 +261,7 @@ Variante A: die vorhandenen beigen Gebäude sind die Lehre (Institutsgebäude f�
                                  Das beige Institutsgebäude in jede Mulde stecken. Druckzeit etwa {t_A1_mulden_block_institut} min (Schätzung).
 Variante B: eigener kompakter Probedruck, kein Gebäude nötig
   B1_probefuss_fase4.stl         BEIGE (oder die Farbe, die geprüft wird). Fuß 31 x 18 mm mit Kodierecke (verdrehsicher), Fuß-Fase 4,0 (die Gebäude haben heute 2,0),
-                                 oben offen (kein Dach): der Schacht der Kassette V1RS geht durch, die Kassette lässt sich von oben herausdrücken; 16 mm hoch. Kein Anschlag: Kassette bündig einsetzen, indem man sie mit der Unterseite auf den Tisch stellt und den Fuß darüberdrückt. Etwa {t_B1_probefuss_fase4} min.
+                                 oben offen (kein Dach): der Schacht der Kassette V1RS geht durch, die Kassette lässt sich von oben herausdrücken; 20 mm hoch, 5,8 mm ragen als Griff aus der Mulde. Kein Anschlag: Kassette bündig einsetzen, indem man sie mit der Unterseite auf den Tisch stellt und den Fuß darüberdrückt. Etwa {t_B1_probefuss_fase4} min.
   B3_mulden_block_probe.stl      GRAU. Platte {bb:.0f} x {hb:.0f} x 14,6 mm mit drei Mulden im Umriss des Probefußes, Spiele wie A1. Etwa {t_B3_mulden_block_probe} min.
 Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.

@@ -9,7 +9,7 @@ Teile (Druckausrichtung, Bett z = 0), Druckzeit geschätzt nach dem Muster der r
       Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
   K3_kassette_V1RS_20.stl      18.9 ×    6.1 ×  15.1 mm   1.27 cm³  dicht=True (Manifold: NoError)  Zeit  14 min (mit Faktor  16)
       Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 2.09 mm² (bis 0.56 mm), Stellen über 1 mm: keine
-  B1_probefuss_fase4.stl       31.0 ×   18.0 ×  16.0 mm   6.07 cm³  dicht=True (Manifold: NoError)  Zeit  19 min (mit Faktor  23)
+  B1_probefuss_fase4.stl       31.0 ×   18.0 ×  20.0 mm   7.76 cm³  dicht=True (Manifold: NoError)  Zeit  23 min (mit Faktor  27)
       Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
   B3b_mulden_block_probe_2.stl   40.4 ×   43.3 ×  15.2 mm   9.24 cm³  dicht=True (Manifold: NoError)  Zeit  31 min (mit Faktor  38)
       Lagenprüfung (Überhang je 0,2 mm über 0.25): Brücken 0.00 mm² (bis 0.00 mm), Kragstücke 0.00 mm² (bis 0.00 mm), Stellen über 1 mm: keine
@@ -32,5 +32,5 @@ Prüfung der Passungen (Überschneidungsvolumen in mm³; muss 0 sein, die Kontro
 
 Druckzeit je Variante (Summe der Einzelteile, nacheinander; mehrere Teile gleichzeitig auf einem Bett sparen nur den Start):
   Variante A (Mulden-Block für die vorhandenen Gebäude + 3 Kassetten): 125 min Block + 49 min Kassetten = 174 min
-  Variante B (Probefuß Fase 4,0 + kleiner Mulden-Block + 3 Kassetten): 23 min Fuß + 48 min Block + 49 min Kassetten = 120 min
+  Variante B (Probefuß Fase 4,0 + kleiner Mulden-Block + 3 Kassetten): 27 min Fuß + 48 min Block + 49 min Kassetten = 124 min
   Eichung: dieselbe Schätzung ergab für den r8-Stummel 47 min bei gedruckten 55 min (Faktor 1,17); der Faktor 1,2 ist enthalten.
