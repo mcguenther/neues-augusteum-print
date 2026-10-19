@@ -3,21 +3,21 @@ Prüfbericht Druckpaket Steckplatte 1:1300
 Dateien (dicht = Manifold-Prüfung der geladenen STL; Berührkanten = Kanten, an denen sich Flächen nur berühren, Slicer
 melden das als nicht-mannigfaltige Kanten und reparieren es beim Laden; entartet = Dreiecke mit zwei Ecken an derselben Stelle, der Slicer löscht
 sie; Slicer-Volumen = Volumen nach der Reparatur in PrusaSlicer, muss gleich sein, sonst füllt der Slicer Hohlräume):
-steckplatte_1zu1300.stl             115.6 ×  220.8 ×   16.9 mm    206.15 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Volumen 206.15 cm³ (gleich)   Steckplatte (Sockelplatte oben, flache Unterseite)
-hof_einsatz_1zu1300.stl              35.5 ×   70.7 ×   16.4 mm     12.22 cm³  dicht=True  Berührkanten  168  entartet 188  Slicer-Volumen 12.22 cm³ (gleich)   Innenhof-Einsatz (kommt in die Aussparung der Platte)
-01_paulinum_1zu1300.stl              45.6 ×   28.3 ×   59.4 mm      7.49 cm³  dicht=True  Berührkanten    2  entartet 0  Slicer-Volumen 7.49 cm³ (gleich)   Gebäude: Paulinum
-02_neues_augusteum_1zu1300.stl       48.0 ×   58.9 ×   40.1 mm     24.05 cm³  dicht=True  Berührkanten    5  entartet 0  Slicer-Volumen 24.05 cm³ (gleich)   Gebäude: Neues Augusteum
-03_hoersaalgebaeude_1zu1300.stl      63.2 ×  104.7 ×   32.9 mm     43.80 cm³  dicht=True  Berührkanten   15  entartet 0  Slicer-Volumen 43.80 cm³ (gleich)   Gebäude: Hörsaalgebäude
-04_seminargebaeude_1zu1300.stl       30.3 ×   76.4 ×   35.9 mm     11.56 cm³  dicht=True  Berührkanten    4  entartet 0  Slicer-Volumen 11.56 cm³ (gleich)   Gebäude: Seminargebäude
-05_institutsgebaeude_1zu1300.stl     81.1 ×   34.1 ×   38.6 mm     18.53 cm³  dicht=True  Berührkanten    1  entartet 0  Slicer-Volumen 18.53 cm³ (gleich)   Gebäude: Institutsgebäude
-06_city_hochhaus_1zu1300.stl         36.1 ×   35.0 ×  125.5 mm     13.55 cm³  dicht=True  Berührkanten    2  entartet 0  Slicer-Volumen 13.55 cm³ (gleich)   Gebäude: City-Hochhaus
+steckplatte_1zu1300.stl             115.6 ×  220.9 ×   16.9 mm    205.73 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Steckplatte (Sockelplatte oben, flache Unterseite)
+hof_einsatz_1zu1300.stl              35.2 ×   70.6 ×   16.4 mm     12.09 cm³  dicht=True  Berührkanten  168  entartet 188  Slicer-Prüfung entfällt   Innenhof-Einsatz (kommt in die Aussparung der Platte)
+01_paulinum_1zu1300.stl              45.6 ×   28.3 ×   59.4 mm      7.49 cm³  dicht=True  Berührkanten    2  entartet 0  Slicer-Prüfung entfällt   Gebäude: Paulinum
+02_neues_augusteum_1zu1300.stl       48.0 ×   58.9 ×   40.1 mm     24.05 cm³  dicht=True  Berührkanten    5  entartet 0  Slicer-Prüfung entfällt   Gebäude: Neues Augusteum
+03_hoersaalgebaeude_1zu1300.stl      63.2 ×  104.7 ×   32.9 mm     43.80 cm³  dicht=True  Berührkanten   15  entartet 0  Slicer-Prüfung entfällt   Gebäude: Hörsaalgebäude
+04_seminargebaeude_1zu1300.stl       30.3 ×   76.4 ×   35.9 mm     11.56 cm³  dicht=True  Berührkanten    4  entartet 0  Slicer-Prüfung entfällt   Gebäude: Seminargebäude
+05_institutsgebaeude_1zu1300.stl     81.1 ×   34.1 ×   38.6 mm     18.53 cm³  dicht=True  Berührkanten    1  entartet 0  Slicer-Prüfung entfällt   Gebäude: Institutsgebäude
+06_city_hochhaus_1zu1300.stl         36.1 ×   35.0 ×  125.5 mm     13.55 cm³  dicht=True  Berührkanten    2  entartet 0  Slicer-Prüfung entfällt   Gebäude: City-Hochhaus
 
 Gebäude untereinander (python3 -m plug.divider.check):
-Gebäude untereinander (Fuge 1.00 mm):
-  paulinum             neues_augusteum      Abstand 0.999 mm, gemeinsames Volumen 0.0000 mm³
-  neues_augusteum      hoersaalgebaeude     Abstand 1.000 mm, gemeinsames Volumen 0.0000 mm³
-  hoersaalgebaeude     city_hochhaus        Abstand 1.000 mm, gemeinsames Volumen 0.0000 mm³
-  seminargebaeude      institutsgebaeude    Abstand 1.000 mm, gemeinsames Volumen 0.0000 mm³
+Gebäude untereinander in der Lage auf der Platte (Fuge 1.10 mm, Wand zwischen den Mulden 0.80 mm bei Spiel 0.15; Zuschnitt der STL: Fuge 1.00 mm; Verschiebung 01 (0.020 | 0.098), 02 (0.000 | 0.000), 03 (-0.119 | -0.078), 04 (-0.010 | -0.049), 05 (0.010 | 0.049), 06 (0.062 | -0.111)):
+  paulinum             neues_augusteum      Abstand 1.000 mm, Wand zwischen den Mulden 0.700 mm, gemeinsames Volumen 0.0000 mm³  (Zahnflanken: Wand dort höchstens 0,7)
+  neues_augusteum      hoersaalgebaeude     Abstand 1.100 mm, Wand zwischen den Mulden 0.799 mm, gemeinsames Volumen 0.0000 mm³
+  hoersaalgebaeude     city_hochhaus        Abstand 1.148 mm, Wand zwischen den Mulden 0.800 mm, gemeinsames Volumen 0.0000 mm³
+  seminargebaeude      institutsgebaeude    Abstand 1.100 mm, Wand zwischen den Mulden 0.800 mm, gemeinsames Volumen 0.0000 mm³
 keine Kollisionen
 
 01_paulinum            Kassette v4    Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 13.2 mm²  Kragstücke 31.4 mm² (bis 1.0 mm)

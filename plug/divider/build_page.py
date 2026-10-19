@@ -100,7 +100,7 @@ def zoom(fps_a, fps_b, a, b, nahtgeom, ueber, wand_neu, weg):
         fps = fps_b if neu else fps_a
         plan = Plan(x0, x1, y0, y1, k)
         plan.poly(plan.box, "platte")
-        mulden = unary_union([f.buffer(P.OUTLINE_CLR_T, join_style=2) for f in (fps[a], fps[b])])
+        mulden = unary_union([f.buffer(P.ZUSCHNITT_CLR_T, join_style=2) for f in (fps[a], fps[b])])
         plan.poly(mulden, "mulde")
         if neu:
             plan.poly(weg, "weg")
@@ -151,8 +151,8 @@ def main():
     tm0, tm1 = to_tm(pl0), to_tm(pl1)
     T = C.plate_thickness(P.dims_plan())
     sl1, sl0 = schnitt_poly(pl1, T - 4.0), schnitt_poly(pl0, T - 4.0)
-    mp = {k: neu[k].buffer(P.OUTLINE_CLR_T, join_style=2) for k in neu}
-    mp0 = {k: fps_l[k].buffer(P.OUTLINE_CLR_T, join_style=2) for k in fps_l}
+    mp = {k: neu[k].buffer(P.ZUSCHNITT_CLR_T, join_style=2) for k in neu}
+    mp0 = {k: fps_l[k].buffer(P.ZUSCHNITT_CLR_T, join_style=2) for k in fps_l}
     wande, deckung, wandlaenge = {}, {}, {}
     for a, b in PAARE:
         w = (mp[a].buffer(D.WAND_T + 0.05, join_style=2).intersection(mp[b].buffer(D.WAND_T + 0.05, join_style=2))).difference(mp[a]).difference(mp[b])
@@ -217,14 +217,14 @@ def main():
     ctx = {
         "FIG_UEBER": fig_ueber, "ZOOMS": zoom_html, "NAHTZEILEN": nahtzeilen, "GEBERZEILEN": geberzeilen, "QUELLZEILEN": quellzeilen,
         "NAHT_SUMME": de(sum(nahtgeo[p].length for p in PAARE), 0), "NAHT_SUMME_M": de(sum(nahtgeo[p].length for p in PAARE) / S, 0),
-        "FUGE": de(g1, 1), "FUGE_M": de(g1 / S, 1), "WAND": de(D.WAND_T, 1), "SPIEL": de(P.OUTLINE_CLR_T, 2),
+        "FUGE": de(g1, 1), "FUGE_M": de(g1 / S, 1), "WAND": de(D.WAND_T, 1), "SPIEL": de(P.ZUSCHNITT_CLR_T, 2),
         "DIM_X": de(dim1[0], 1), "DIM_Y": de(dim1[1], 1), "DIM_Z": de(T, 1), "DIM0_X": de(dim0[0], 3), "DIM1_X": de(dim1[0], 3),
         "DIM0_Y": de(dim0[1], 3), "DIM1_Y": de(dim1[1], 3),
         "KEIL_A": de(infos[PAARE[0]]["ueberlapp"], 0), "KEIL_A_M": de(infos[PAARE[0]]["ueberlapp"] / S ** 2, 0), "KEIL_B": de(keil_breit, 1), "KEIL_B_M": de(keil_breit / S, 1),
         "STL_UEBER": de(ueber_stl, 1),
         "DICHT0": "ja" if tm0.is_watertight else "nein", "DICHT1": "ja" if tm1.is_watertight else "nein",
         "KOLL": de(koll, 2), "HOF_DIFF": de(hof_diff, 4),
-        "WAND_MIN": de(min(w for w in (a.distance(b) - 2 * P.OUTLINE_CLR_T for a, b in [(neu[p[0]], neu[p[1]]) for p in PAARE])), 2),
+        "WAND_MIN": de(min(w for w in (a.distance(b) - 2 * P.ZUSCHNITT_CLR_T for a, b in [(neu[p[0]], neu[p[1]]) for p in PAARE])), 2),
         "DECKUNG": de(100 * min(deckung.values()), 0), "WANDLAENGE": de(sum(wandlaenge.values()), 0), 
         "VOL0": de(tm0.volume / 1000, 2), "VOL1": de(tm1.volume / 1000, 2),
         "ROHR_MIN": de(min(R[k].distance(neu[k].boundary) for k in neu if k != "01_paulinum"), 1),

@@ -40,10 +40,12 @@ CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeud
             "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
 HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
 HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
-HOF_CLR_T = 0.1         # Fuge Einsatz zu Aussparung je Seite
+HOF_CLR_T = 0.15        # Fuge Einsatz zu Aussparung je Seite (19.10.2026: 0,10 -> 0,15 wie die Gebäude-Mulden, Beschluss Passung bei wechselnden Filamenten)
 HOF_WALL_T = 0.8        # Trennwand zwischen Hof-Aussparung und Gebäude-Mulde (Nutzer 17.10.: bleibt bei 0,8 mm, Fassung A; B ohne Wand verworfen); oben schneidet die Einführfase der Mulde (MULDE_CH_T) 0,5 ab
 MULDE_CH_T = 0.5        # Einführfase oben an der Fußmulde (45°), keine Stufen, kein Band, keine Entlastung
-OUTLINE_CLR_T = 0.1     # Umriss-Aussparung der Gebäude: Spiel je Seite. r8: bei großem Umriss zu eng (nur mit Kraft); NÄCHSTER PROBEDRUCK MIT 0,15 (Vorgabe des Nutzers, next.md)
+OUTLINE_CLR_T = 0.15    # Umriss-Aussparung der Gebäude: Spiel je Seite. r8: 0,10 bei großem Umriss zu eng (nur mit Kraft); Passungsserie (Variante B, 19.10.2026): 0,15 passt gut, 0,20 wackelt
+ZUSCHNITT_CLR_T = 0.10  # Spiel, mit dem die Gebäude an den Nähten zugeschnitten sind (Fuge 2 × 0,10 + Wand 0,8 = 1,0; plug/divider/geom.py `fuge`): der Zuschnitt der gebauten Gebäude
+                        # bleibt dabei; das größere Mulden-Spiel (OUTLINE_CLR_T) rückt die Gebäude auf der Platte um 2 × (OUTLINE_CLR_T − ZUSCHNITT_CLR_T) je Naht auseinander (`geom.verschiebungen`)
 
 # ---- Fasen
 ENTRY_CH_T = 0.5        # Einführfase an jeder Öffnung (Schachteingang liegt im Gebäude am Druckbett und gleicht den Elefantenfuß aus); Steckprobe 2: 0,5 (vorher 0,4, ließ einen Wulst)
@@ -68,7 +70,7 @@ LID_T_T = 2.0
 
 
 # ---- Steckprobe 2 (Plan plug/testcase/plan2.html, Empfehlungen A abgenickt am 2026-10-16; Zwei-Lagen-Aufbau und Faden-V 40° neu aus plug/power/)
-SHAFT_EXTRA_T = 0.30    # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
+SHAFT_EXTRA_T = 0.35    # (19.10.2026: 0,30 -> 0,35, Beschluss Passung bei wechselnden Filamenten, L36; gilt für künftig gebaute Gebäude)  # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
 SLOT_END_T = -8.0       # Lötende-Schlitz 1 mm länger (Ende bei −8,0 statt −7,0), L20
 STAMP_AIR_T = 1.2       # Luft zwischen Anschlag-Steg und Körper der Winkelleiste (Karte D)
 S2_MARGIN = 8.0         # Rand der Mini-Oberplatte um den Fuß: Wand zwischen Mulde und Faden-V mindestens 1,4 (bei 7,0 nur 1,2)

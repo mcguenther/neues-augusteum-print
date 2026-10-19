@@ -18,13 +18,14 @@ HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 PREV = os.path.join(HERE, "vorschau", "steckmodul_testcase")
 
 
-def kassette4(tol=None, centered=False, notches=0):
-    """tol = Luft über der Buchse (Taschenhöhe − 14,0); notches = Kerben in der +x-Seite als Kennzeichnung."""
+def kassette4(tol=None, centered=False, notches=0, schlank=0.0, enger=0.0):
+    """tol = Luft über der Buchse (Taschenhöhe − 14,0); notches = Kerben in der +x-Seite als Kennzeichnung.
+    schlank = Außenmaß in Breite und Tiefe je Seite so viel kleiner (Passung bei wechselnden Filamenten, `plug.filament.kassetten`), enger = Buchsentasche in Breite und Tiefe insgesamt so viel enger."""
     k = P.kass_dims(tol)
     L, cw, top = k["L"], k["cw"], k["top"]
-    body = N2.chamfered_block(cw, L, top, P.EF_CH_T, P.ENTRY_CH_T).translate([0, L / 2, 0])
-    cuts = [cbox(k["pk_w"], k["pk_d"], -0.01, k["zp"], cy=k["ypin"]),                                  # Tasche, unten offen
-            N2.chamfer_hole(k["pk_w"], k["pk_d"], 0.0, P.ENTRY_CH_T, True, cy=k["ypin"]),            # Einführfase
+    body = N2.chamfered_block(cw - 2 * schlank, L - 2 * schlank, top, P.EF_CH_T, P.ENTRY_CH_T).translate([0, L / 2, 0])
+    cuts = [cbox(k["pk_w"] - enger, k["pk_d"] - enger, -0.01, k["zp"], cy=k["ypin"]),                                  # Tasche, unten offen
+            N2.chamfer_hole(k["pk_w"] - enger, k["pk_d"] - enger, 0.0, P.ENTRY_CH_T, True, cy=k["ypin"]),            # Einführfase
             box(-N2.WIRE_W / 2, N2.WIRE_W / 2, k["y_p0"], k["y1"], k["zp"] - 0.01, top + 0.01)]       # Aderschlitz
     r, y1 = P.FILLET_T, k["y1"]
     arc = [(y1 + r + r * math.cos(a), top - r + r * math.sin(a)) for a in [math.pi / 2 + j * math.pi / 2 / 20 for j in range(21)]]

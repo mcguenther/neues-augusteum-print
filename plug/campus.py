@@ -16,6 +16,11 @@ sind nach unten offen (Bett), kein Support. `UNTEN = False` baut die Platte ohne
 
 Display-Gebäude (plug/campus_display.py, Korrektur 7 in scale.md): Mulde und vier Pin-Löcher am Ostrand (Maße des ersten Satzes, Lage DISPLAY_LAGE); `--ohne-display` gibt den Stand davor.
 
+Lage der Gebäude auf der Platte (19.10.2026, Passung bei wechselnden Filamenten): Mulden-Spiel `OUTLINE_CLR_T` 0,15, aber die Gebäude sind mit `ZUSCHNITT_CLR_T` 0,10 zugeschnitten
+(Fuge 1,0). Damit die Wand zwischen den Mulden 0,8 bleibt, rückt `models_platte` die Gebäude je Naht um 2 × (0,15 − 0,10) auseinander (`plug/divider/geom.py` `verschiebungen`,
+höchstens etwa 0,14 mm je Gebäude); Grundriss, Körper, Schächte und Docks (Lagen aus `placements_<N>.json`, die Datei bleibt unverändert, Weltlage der Gebäude-STL) wandern
+gemeinsam, der Umriss der Platte folgt den verschobenen Grundrissen. `VERSCHIEBEN = False` gibt den Stand davor (Gebäude in Weltlage).
+
 Aufruf (aus dem Wurzelverzeichnis):
     python3 -m plug.campus [--scale 1300] [--replace] [--unten-neu]   # STL nach stl/steckmodul_campus/, Bilder nach vorschau/steckmodul_campus/
                                                                        # (--unten-neu: Lagen der Zapfenaufnahmen aus dem Konzept neu lesen)
@@ -259,6 +264,10 @@ UNTEN_INFO = {}          # Lage, Platte ohne Unterseite und Sperrfläche des let
 DISPLAY = True           # False: Platte ohne Mulde und Pin-Löcher des Display-Gebäudes (Stand davor, `--ohne-display`); gebaut nur bei der Standard-Trennwand und dem Standard-Hof
 DISPLAY_INFO = {}        # Lage, Platte ohne Display-Dock, Dockzonen und Hüllkurven der Gebäude-Docks des letzten build() (für die Prüfung in main und plug.campus_display)
 TRENNWAND = True         # False: Grundrisse ohne Fuge (Stand vor 17.10., nur für Vorher/Nachher-Seiten und Vergleiche)
+VERSCHIEBEN = True       # False: Gebäude auf der Platte in Weltlage, ohne das Auseinanderrücken um das größere Mulden-Spiel (Stand vor 19.10.2026; Wand zwischen den Mulden dann 0,7)
+SHIFTS = {}              # Verschiebung je Gebäude (dx, dy) in mm, Weltlage -> Lage auf der Platte, vom letzten `models_platte` (die Gebäude-STL liegen in Weltlage)
+ECKE = (0.0, 0.0)        # Versatz der Südwest-Ecke der Platte gegenüber dem Stand ohne Verschiebung (Mitte der Verschiebungen, siehe `umriss_platte`)
+WELT_ECKE = None         # Südwest-Ecke des Plattenumrisses ohne Verschiebung (Weltlage); beide vom letzten `platte_lage`
 SCHNITT_OBEN = 3.0       # mm über der Plattenoberfläche: so hoch schneiden die Mulden (die Aufbauten der Platte, Gang und Treppe, sind bis 2,35 mm hoch)
 # Gebäude, bei denen die LED unter dem hohen Dach sitzen soll statt exakt mittig (Nutzer: Neues Augusteum)
 PREFER_ROOF = {"02_neues_augusteum"}
@@ -283,18 +292,60 @@ def models_plan(s, scale=P.SCALE_PLAN):
     return DV.getrennt(models, scale)
 
 
+def platte_lage(models):
+    """(Modelle in der Lage auf der Platte, Verschiebung je Gebäude): die zugeschnittenen Gebäude (`models_plan`, Weltlage) je Naht um das größere Mulden-Spiel auseinandergerückt,
+    sodass die Wand zwischen den Mulden `HOF_WALL_T` bleibt (`plug/divider/geom.py` `verschiebungen`). Ohne Trennwand oder mit `VERSCHIEBEN = False` unverändert."""
+    from plug.divider import geom as DV
+    fps = {k: v[1] for k, v in models.items() if k in P.CASSETTE}
+    shifts = DV.verschiebungen(fps) if (TRENNWAND and VERSCHIEBEN) else {k: (0.0, 0.0) for k in fps}
+    global ECKE, WELT_ECKE
+    SHIFTS.clear()
+    SHIFTS.update(shifts)
+    xs, ys = [v[0] for v in shifts.values()] or [0.0], [v[1] for v in shifts.values()] or [0.0]
+    ECKE = ((min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2)
+    WELT_ECKE = G.plate_outline(unary_union([v[1] for k, v in models.items() if k in P.CASSETTE])).bounds[:2]
+    return DV.schiebe(models, shifts), shifts
+
+
+def umriss_platte(fp):
+    """Umriss der Platte für die Grundrisse `fp` (Vereinigung, Lage auf der Platte): wie `G.plate_outline` (Rand 6 mm, unten das Beschriftungsband, Ecken R 3), aber die Südwest-Ecke
+    liegt nicht beim Gebäude, das sich am weitesten nach Südwesten schiebt (Hörsaalgebäude), sondern um `ECKE` (Mitte der Verschiebungen) neben der Ecke ohne Verschiebung. Der Grund:
+    Zapfenlöcher (`ZAPFEN_LOKAL`) und das Display-Dock liegen relativ zu dieser Ecke, ebenso die Zapfen des gedruckten Unterkastens; die Docks der Gebäude weichen dann nur um ihre Verschiebung
+    gegenüber der Mitte ab (höchstens etwa 0,12 mm statt 0,23). Nordost folgt den Gebäuden (Rand 6 mm)."""
+    o = G.plate_outline(fp)
+    if WELT_ECKE is None or not any(abs(v[0]) + abs(v[1]) > 0 for v in SHIFTS.values()):
+        return o
+    b = o.bounds
+    return sbox(WELT_ECKE[0] + ECKE[0], WELT_ECKE[1] + ECKE[1], b[2], b[3]).buffer(-3, join_style=2).buffer(3)
+
+
+def models_platte(s, scale=P.SCALE_PLAN):
+    """Laserscan-Modelle in der Lage auf der Platte (`models_plan` plus `platte_lage`); die Lagen der Schächte dazu: `places_platte`."""
+    return platte_lage(models_plan(s, scale))[0]
+
+
+def places_platte(places, shifts=None):
+    """Lagen der Schächte und Docks (`placements_<N>.json`, Weltlage) in der Lage auf der Platte (um `SHIFTS` verschoben); die Datei selbst bleibt unverändert."""
+    from plug.divider import geom as DV
+    return DV.schiebe_places(places, SHIFTS if shifts is None else shifts)
+
+
 def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     """hof_wand: Trennwand zwischen Hof-Aussparung und Gebäude-Mulden in mm (Standard P.HOF_WALL_T)."""
     global OUTLINE
     s = 1000.0 / scale
     G.FAST = True
     abstand = hof_abstand(P.HOF_WALL_T if hof_wand is None else hof_wand)
-    models = models_plan(s, scale)
+    models_welt = models_plan(s, scale)
+    models, shifts = platte_lage(models_welt)
     models[G.HOF["slug"]] = innenhof.model(s, [v[1] for v in models.values()], P.HOF_DEPTH_T, P.HOF_CLR_T, abstand)
     fps = {k: v[1] for k, v in models.items()}
-    outline = G.plate_outline(unary_union(list(fps.values())))
+    outline = umriss_platte(unary_union(list(fps.values())))
+    # Lagen der Schächte: Zwischenspeicher (placements_<N>.json) und eine neue Suche gelten für die Weltlage der Gebäude (wie die Gebäude-STL); die Platte bekommt sie verschoben
+    OUTLINE = G.plate_outline(unary_union([v[1] for k, v in models_welt.items() if k in P.CASSETTE]))
+    places = place_all({k: v for k, v in models_welt.items() if k in P.CASSETTE}, scale, replace)
+    places = places_platte(places, shifts)
     OUTLINE = outline
-    places = place_all({k: v for k, v in models.items() if k in P.CASSETTE}, scale, replace)
     d = P.dims_plan()
     T = plate_thickness(d)
     hof_solid = models[G.HOF["slug"]][0]

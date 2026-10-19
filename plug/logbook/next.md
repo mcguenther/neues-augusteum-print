@@ -3,7 +3,31 @@
 Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
-## VORGABE DES NUTZERS für den nächsten Probedruck (2026-10-17, r8)
+## Übergabe 2026-10-19: Passung bei anderen Filamenten, Probedruck ausgewertet (r10)
+
+Ausgewertet in [`rounds/r10_passung_filament/summary.md`](rounds/r10_passung_filament/summary.md); Beschlüsse und Aufgabe: [`tasks/passung-filament.md`](tasks/passung-filament.md). **Stand:**
+
+- **Bewährt (r10):** Mulden-Spiel 0,15 (0,10 zu fest, 0,20 wackelt); Kassette V1RS Spiel im Schacht **0,13** und Buchsentasche **10,46 × 2,84 × 14,40** (K5). Werte in `current.md`, Abschnitt 2g.
+- **Umgesetzt, ungedruckt (Commit 0009967):** Platte mit `OUTLINE_CLR_T` 0,15, `HOF_CLR_T` 0,15, `ZUSCHNITT_CLR_T` 0,10, Gebäude je Naht 0,1 mm auseinander, Platte 115,63 × 220,90; Gebäude-STL unverändert. `plug.colour`, HTML-Seiten und Unterkasten nicht neu erzeugt.
+
+| Prio | Aufgabe | Bedingung |
+|---|---|---|
+| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | Folgeaufgabe, gilt zunächst für V1RS |
+| 1 | Neue Steckplatte (0009967) drucken; Prüfung: sitzen die bestehenden beigen Gebäude (Fase 2,0) in den 0,15er Mulden gleich gut wie der Probefuß (Fase 4,0)? Hof-Einsatz mit 0,15 (ungetestet) | Nutzer druckt |
+| 1 | Entscheidung Fuß-Fase 4,0 (Aufgabendatei) gegen 2,0 (`FUSS_FASE_T`, r8 bewährt) für neue Gebäude | nach dem Plattentest |
+| 2 | Schachttiefe 0,35 (`SHAFT_EXTRA_T` steht auf 0,30) | nur für künftig gebaute Gebäude |
+| 2 | Entscheidung Naht Paulinum/Neues Augusteum: Wand 0,70 (Zahn im Schlitz) oder Zuschnitt dieser Naht auf 1,1 für 0,80 | Nutzer |
+| 2 | Eckaussparung Nordwest trifft laut Konzept das Fach (210 mm²; Zwischenspeicher `plug/scale1176/underside_1300.json` war veraltet, neu gerechnet): prüfen | vor dem Unterkasten-Druck |
+| 2 | Flussraten-Kalibrierung je Filament (Nutzer, läuft), Messplättchen T4 erzeugen, Slicer-Kompensation je Farbe eintragen | Nutzer |
+| 3 | Kassetten v4 (Hörsaal) und V2R (Hochhaus) mit dem neuen Spiel testen | nach Übernahme |
+
+Die Abschnitte „Passung bei anderen Filamenten (Plan Schritt 1)“ und „VORGABE DES NUTZERS … r8“ darunter sind **überholt** (Spiel 0,15 ist bewährt und im Code).
+
+## Passung bei anderen Filamenten (2026-10-19, Plan Schritt 1, wartet auf Abnicken) — überholt durch r10
+
+Rückmeldung des Nutzers: Platte grau, Gebäude beige (Hörsaal-, Seminar-, Institutsgebäude) und eine Kassette quer (V1RS, beige) gedruckt. **Gebäude passen nicht mehr in die Mulden** (Hörsaal nur mit viel Kraft), **beige Kassetten passen nicht mehr in die beigen Gebäude**; die Dupont-Buchsen passen weiter gut in die Kassetten. Plan: `plug/filament/plan.html` (Artifact in `STATUS.md`): Filament kalibrieren statt zwei Dateisätze, Mulden-Spiel 0,15 bis 0,25 an einem Mulden-Block (T1, Institutsumriss, die vorhandenen beigen Gebäude sind die Lehre), schlankere Kassetten (T2, Spiel im Modell 0,12 bis 0,20), Messplättchen je Filament (T4), Stumpf (T3) als Eingangsprüfung neuer Farben. Offene Rückfragen und Entscheidungskarten K1 bis K7 stehen auf der Seite. Die Vorgabe 0,15 (r8) bleibt gültig.
+
+## VORGABE DES NUTZERS für den nächsten Probedruck (2026-10-17, r8) — erledigt in r10 (0,15 bewährt, `OUTLINE_CLR_T` 0,15)
 
 **Beim nächsten Probedruck mit Gebäuden in der Steckplatte das Spiel 0,15 mm je Seite testen** (nicht 0,10). Grund: r8, Hochhaus-Stummel mit 0,10 geht nur mit Kraft hinein und sitzt sehr fest (Fase 2,0 und Kassette V2R waren gut). Die gedruckte Platte hat Spiel 0,10; ein Stummel mit 0,15 bekommt den Umriss 0,05 mm je Seite kleiner (oder die Platte wird mit `OUTLINE_CLR_T = 0.15` neu gebaut). `OUTLINE_CLR_T` bleibt 0,10, bis der Test bestätigt; danach in `params.py` und `scale.md` umstellen, Gebäude und Platte neu bauen. Einzelheiten: `rounds/r8_passform_hochhaus/summary.md`, Lehre L43.
 
