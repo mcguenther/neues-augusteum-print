@@ -1,0 +1,570 @@
+<title>Batteriefach Stand 8</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Antwort oben, Variantenwahl, dann 3D mit Schichtschaltern neben der Draufsicht, Höhenkette, Bedeutung der Änderungen,
+   Prüfzeilen, Hinweise, Entscheidungen. Farbsystem wie plug/power/batteriefach.template.html, dazu Hut (Filz) und Kordel. */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1b2220; --muted: #5a6560; --line: #d6dbd6;
+  --accent: #a85f00; --accent-fill: #f0a21a; --on-accent: #1b1300;
+  --ok: #2f7d4f; --mid: #9a6a00; --warn: #b5471f;
+  --canvas: #e7eae5; --edge: #1b2220;
+  --c-plate: #8fa3b8; --c-under: #5f7086; --c-old: #b9c2cc; --c-bld: #ece5d2; --c-hof: #9cb48a; --c-pb: #fbfbf8; --c-port: #2d3236;
+  --c-elec: #2f7d4f; --c-thread: #c8423b; --c-niche: #d97a1f; --c-sw: #7a4fb0; --c-disp: #3d6f9e;
+  --c-hut: #2b2b30; --c-knopf: #6b5a3a; --c-kordel: #d4a017; --c-gang: #e0533d;
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+    --accent: #f2b441; --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+    --c-plate: #5d7087; --c-under: #43526a; --c-old: #6c7784; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+    --c-elec: #4c9a69; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-sw: #b48ae6; --c-disp: #6fa0d0;
+    --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040; --c-gang: #ff7a62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1311; --panel: #171c1a; --fg: #e5eae7; --muted: #99a5a0; --line: #2c3431;
+  --accent: #f2b441; --ok: #5cc287; --mid: #e3b54a; --warn: #ff8d62; --canvas: #0b0e0d; --edge: #000000;
+  --c-plate: #5d7087; --c-under: #43526a; --c-old: #6c7784; --c-bld: #cfc7b0; --c-hof: #6f8a5e; --c-pb: #e8e8e2; --c-port: #8a9299;
+  --c-elec: #4c9a69; --c-thread: #ff7a6e; --c-niche: #f0a050; --c-sw: #b48ae6; --c-disp: #6fa0d0;
+  --c-hut: #45454d; --c-knopf: #a08a5e; --c-kordel: #f0c040; --c-gang: #ff7a62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 64px; }
+.wrap { max-width: 1160px; margin-inline: auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 4vw + 1rem, 3rem); font-weight: 700; }
+h2 { font-size: 1.5rem; font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+.lead { font-size: 1.12rem; color: var(--muted); max-width: 70ch; }
+.kicker { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; background: color-mix(in srgb, var(--line) 55%, transparent); padding: 0.05em 0.35em; border-radius: 3px; }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+header { display: flex; flex-direction: column; gap: 14px; }
+.small { font-size: 0.88rem; } .muted { color: var(--muted); }
+ul { margin: 0; padding-left: 1.25em; display: flex; flex-direction: column; gap: 6px; max-width: 76ch; }
+
+.answer { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.answer > div { background: var(--panel); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.answer .big { font-family: var(--mono); font-size: 1.45rem; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.answer .lbl { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.answer .rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.answer .bad { box-shadow: inset 0 3px 0 var(--warn); }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { font-size: 0.95rem; }
+.views { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 880px) { .views { grid-template-columns: 1fr; } }
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; max-width: 100%; background: var(--canvas); border-radius: 6px; overflow: hidden; touch-action: none; }
+.stage canvas { width: 100%; height: 100%; display: block; cursor: grab; }
+.stage .tag { position: absolute; left: 10px; top: 10px; font-family: var(--mono); font-size: 0.8rem; background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 3px 8px; border-radius: 4px; pointer-events: none; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.ctrl input[type=range] { width: 150px; accent-color: var(--accent); }
+.ctrl select, .ctrl button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.ctrl button:focus-visible, .ctrl input:focus-visible, .ctrl select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; font-size: 0.92rem; border: 0; border-right: 1px solid var(--line); background: var(--panel); color: var(--fg); padding: 8px 14px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 2px; }
+.seg button:last-child { border-right: 0; }
+.seg button span { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--accent-fill); color: var(--on-accent); }
+.seg button[aria-pressed="true"] span { color: var(--on-accent); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.varbar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 6px 14px; }
+.layer { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; min-width: 0; }
+.layer .sw { width: 12px; height: 12px; border-radius: 2px; flex: none; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+.layer .nm { flex: 1; min-width: 0; }
+.tri { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex: none; }
+.tri button { font: inherit; font-size: 0.75rem; border: 0; background: var(--panel); color: var(--muted); padding: 2px 8px; cursor: pointer; border-right: 1px solid var(--line); }
+.tri button:last-child { border-right: 0; }
+.tri button[aria-pressed="true"] { background: var(--accent-fill); color: var(--on-accent); }
+.tri button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend > span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); border: 1px solid color-mix(in srgb, var(--edge) 40%, transparent); }
+#plan { width: 100%; height: auto; max-height: 86vh; display: block; }
+svg text { font-family: var(--font); fill: var(--fg); }
+svg .mut { fill: var(--muted); }
+.scroll { overflow-x: auto; }
+#hk { width: 100%; min-width: 720px; height: auto; display: block; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.pill { white-space: nowrap; display: inline-block; font-family: var(--mono); font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.ok { color: var(--ok); } .pill.mid { color: var(--mid); } .pill.warn { color: var(--warn); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.cards .card.rec { box-shadow: inset 0 3px 0 var(--accent-fill); }
+.cards ul { font-size: 0.93rem; }
+.meta { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+.watch { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.watch .card ul { font-size: 0.93rem; }
+.sev { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">Steckmechanismus · Grundplatte 1:1300 · Unterkasten, Stand 8 (Plan, Fassung 3)</div>
+  <h1>Batteriefach Stand 8</h1>
+  <p class="lead">Der Kasten unter der Steckplatte wird neu gedruckt. Der Knopf des Doktorhuts ist viel höher als die Gänge: angenommen Ø 22 × 12 mm (vom Nutzer zu bestätigen). Über ihm steht deshalb eine Erhebung, die man von oben sieht: innen der Knopfraum Ø 25 × 13,0 (1 mm Luft über dem Knopf), ein 45°-Anstieg ab 9,5 mm vor dem Knopf und eine flache Decke Ø 20, oben ein Plateau Ø 28 auf 16,0 mm. Die Kordel (3 × 5 mm) kommt unten seitlich am Knopf heraus und läuft in acht Gängen (8 × 4 mm) nach außen. Die Powerbank bleibt, wo sie ist, und liegt auf dem Plateau und drei Auflagen gleicher Höhe. Darüber 6 mm Steckerraum. Alles ohne Support. Die Gänge haben Fase innen (Nutzer 20.10.), Wände 0,8 mm, Decken über den Aushöhlungen 0,48 mm (3 Lagen × 0,16), keine Fase unten an den Mündungen. Befestigt wird mit Heißkleber. Es gibt noch keine STL des Kastens, nur das Probeteil K4.</p>
+</header>
+</header>
+
+<section aria-labelledby="h-ans">
+  <h2 id="h-ans">Kurz</h2>
+  <div class="answer" id="answer"></div>
+</section>
+
+<section aria-labelledby="h-view">
+  <h2 id="h-view">Zusammenbau</h2>
+  <div class="views">
+    <div class="card">
+      <h3>3D: alle Teile, Schichten einzeln schalten</h3>
+      <div class="stage" id="stage"><canvas id="cv" aria-label="3D-Ansicht, ziehen zum Drehen, Mausrad zum Zoomen"></canvas><span class="tag" id="tag3d"></span></div>
+      <div class="ctrl">
+        <label for="explode">Auseinanderziehen</label><input type="range" id="explode" min="0" max="1" step="0.01" value="0">
+        <label for="cut">Schnitt</label><input type="range" id="cut" min="0" max="1" step="0.005" value="1">
+        <label for="dir">Kordel nach</label><select id="dir"></select>
+      </div>
+      <div class="ctrl"><span style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" data-view="iso">Schräg</button><button type="button" data-view="top">Oben</button><button type="button" data-view="under">Unten</button><button type="button" data-view="mitte">Mitte im Schnitt</button><button type="button" data-view="hut">Mit Hut</button></span></div>
+      <div class="layers" id="layers"></div>
+      <p class="small muted">Schnitt: Regler nach links schneidet alles nördlich einer Ebene quer zur Platte weg (bei der Hälfte genau durch die Mitte). Gebäude ausgedünnt für die Ansicht, sonst echte STL der Drucke.</p>
+    </div>
+    <div class="card">
+      <h3>Draufsicht Unterkasten <span class="muted small num" id="planDims"></span></h3>
+      <svg id="plan" role="img" aria-label="Draufsicht des Unterkastens mit Knopfraum, Kordelgängen, Powerbank, Elektronik, Stützen und Zapfen"></svg>
+      <div class="legend">
+        <span style="--sw:var(--c-knopf)">Knopfraum Ø 25, Plateau Ø 28, Fuß der Erhebung (gestrichelt), Auflagen</span><span style="--sw:var(--c-gang)">Kordelgang 8 breit</span>
+        <span style="--sw:var(--c-pb)">Powerbank</span><span style="--sw:var(--accent-fill)">Stecker, Fenster</span>
+        <span style="--sw:var(--c-elec)">ESP32-Fläche</span><span style="--sw:var(--c-under)">Stütze (Ring = Zapfen)</span>
+        <span style="--sw:var(--c-niche)">Dockzone</span><span style="--sw:var(--c-sw)">Hauptschalter</span><span style="--sw:var(--c-disp)">Display-Dock</span>
+      </div>
+      <p class="small muted">Gestrichelt: Außenmaß, wenn die Platte nach dem Mulden-Plan 2 mm größer wird, und die Eckaussparungen von Stand 7, die jetzt entfallen.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-hk">
+  <h2 id="h-hk">Höhenkette</h2>
+  <p class="muted">Von der Hutoberfläche bis zur Plattenoberseite, an den Stellen, die eng werden. Maße in mm, z = 0 auf dem Hut.</p>
+  <div class="card scroll"><svg id="hk" role="img" aria-label="Höhenkette Stand 7 und Stand 8"></svg></div>
+</section>
+
+<section aria-labelledby="h-fase">
+  <h2 id="h-fase">Gangfase: innen oder außen</h2>
+  <p class="muted">Schnitt quer durch einen Gang, Bett unten (Hut-Seite). Gestrichelt das freie Rechteck 8 × 4, gelb die Kordel 5 × 3. Beide Varianten sind gerechnet (<code>GANG_FASE_MODUS</code> in <code>params.py</code>), K4 gibt es in beiden.</p>
+  <div class="two">
+    <div class="card"><h3>F-innen · Fase in den Ecken des Rechtecks</h3><svg id="fi" role="img" aria-label="Schnitt durch einen Gang mit Fase innen"></svg></div>
+    <div class="card"><h3>F-außen · Dachschrägen über dem Rechteck</h3><svg id="fa" role="img" aria-label="Schnitt durch einen Gang mit Fase außen"></svg></div>
+  </div>
+  <div class="card scroll"><table id="fasetab"></table></div>
+  <div class="card rec" id="faserec"></div>
+</section>
+
+<section aria-labelledby="h-var">
+  <h2 id="h-var">Höhe je Möglichkeit</h2>
+  <p class="muted">Die Kastenhöhe folgt aus der Auflage der Powerbank plus 12,8 Powerbank plus 6,0 Steckerraum. Die Platte 14,6 kommt dazu.</p>
+  <div class="card scroll"><table id="vartab"></table></div>
+</section>
+
+<section aria-labelledby="h-mean">
+  <h2 id="h-mean">Was die Änderungen bedeuten</h2>
+  <div class="card scroll"><table id="mean"></table></div>
+</section>
+
+<section aria-labelledby="h-chk">
+  <h2 id="h-chk">Prüfung im Rechner</h2>
+  <p class="muted">Aus <code>python3 -m plug.power.kasten8</code>: Volumenkörper gegeneinander, Überschneidung muss 0 sein.</p>
+  <div class="card scroll"><table id="chk"></table></div>
+</section>
+
+<section aria-labelledby="h-k4">
+  <h2 id="h-k4">K4 · Probeteil Mitte</h2>
+  <p class="muted">Prüft am echten Hut, was der Rechner nicht prüfen kann: wie hoch der Knopf ist und ob er im Raum sitzt, ob sich die Kordel vom Knopffuß in jeden der acht Gänge legen lässt, ob die Decke Ø 20 ohne Support trägt, und welche Gangfase sauberer druckt. Zwei STL: F-außen (zuerst) und F-innen.</p>
+  <div class="two">
+    <div class="card"><h3>Draufsicht und Schnitte</h3><svg id="k4" role="img" aria-label="Probeteil: Stern mit Erhebung und acht Gängen, Schnitt radial durch die Erhebung"></svg></div>
+    <div class="card"><h3>Teile und Fragen</h3><ul id="k4list"></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-watch">
+  <h2 id="h-watch">Was wir beachten müssen</h2>
+  <div class="watch" id="watch"></div>
+</section>
+
+<section aria-labelledby="h-next">
+  <h2 id="h-next">Entscheidungen vor dem Bau</h2>
+  <div class="cards" id="cards"></div>
+  <p class="meta">Quelle: plug/power/kasten8.py (Geometrie), plug/power/build_plan_kasten8.py (Seite), Werte in plug/power/params.py (HUT_KNOPF, KNOPF_RAMPE, KNOPF_PLATEAU_D, PB_AUFLAGE, KORDEL_GANG, GANG_FASE_MODUS, KORDEL_WAND, KORDEL_DACH, BEFESTIGUNG). Teile: stl/steckmodul_campus/ (Platte, Hof, Gebäude), plug/display/body4.py (Display, zweiter Satz), stl/steckmodul_unterkasten/U_unterkasten.stl (Stand 7).</p>
+</section>
+</div>
+
+<script type="application/json" id="data">/*DATA*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const D = JSON.parse($('data').textContent);
+  const W = D.W, L = D.L, C = D.c, V = D.v;
+  const fmt = (x, n = 1) => (+x).toFixed(n).replace('.', ',').replace('-', '−');
+  const mm = (x, n = 1) => fmt(x, n) + ' mm';
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const bbox = (r) => { const xs = r.map((p) => p[0]), ys = r.map((p) => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+  const pbLuft = V.H - V.pb_top;
+
+  /* ---------- Kurz ---------- */
+  const MI = D.modi.innen, MA = D.modi.aussen;
+  $('answer').innerHTML = [
+    ['bad', 'Kasten', mm(V.H) + ' (+' + fmt(V.plus) + ')', 'Mit Platte ' + mm(V.total) + ' statt ' + mm(D.h7 + D.plate_t) + ' (Stand 7) und 39,6 mm (Stand 8 vorher, Knopf als 1,2 mm gelesen). Etwa ' + V.grams[0] + ' g (Stand 7: ' + D.old.grams[0] + ' g), Druck rund ' + fmt(V.zeit.nacht1) + ' h bei deinem Drucker. Außenmaß unverändert ' + fmt(W) + ' × ' + fmt(L) + '.'],
+    ['rec', 'Erhebung über dem Knopf', 'Plateau Ø ' + fmt(2 * D.r_plateau, 0) + ' auf ' + fmt(D.knopf_z), 'Knopf Ø ' + fmt(D.knopf.d, 0) + ' × ' + fmt(D.knopf.h) + ' (Annahme) im Raum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + '. Anstieg 45° ab Radius ' + fmt(D.r_rampe) + ' (' + mm(D.r_rampe - D.r_kn) + ' vor dem Knopf), Decke Ø ' + fmt(2 * D.r_decke, 0) + ' bei ' + mm(D.knopf_top) + ', Wand ' + mm(D.dach) + '. Brücke 19,4 mm, kein Support.'],
+    ['', 'Powerbank', 'auf dem Plateau', 'Plateau plus drei Auflagen auf ' + mm(V.z0) + ' in den Ecken ihrer Fläche. Schwerpunkt ' + mm(D.standfest.rand) + ' innerhalb der Stützfläche. Nur auf dem Plateau läge er ' + mm(-D.standfest0.rand) + ' daneben, sie kippte um etwa ' + fmt(D.standfest0.kipp, 0) + '°. Darüber ' + mm(pbLuft) + ' Steckerraum.'],
+    ['', 'Gangfase', 'innen', 'Entschieden (Nutzer 20.10.): Fase 1,5 × 45° in den oberen Ecken des Rechtecks 8 × 4, die Kordel passt. Wände 0,8, Decken über den Aushöhlungen 0,48 (3 Lagen × 0,16), keine Fase unten an den Mündungen. Außen bleibt im Code umschaltbar, Gegenüberstellung unten.'],
+  ].map(([c, l, b, t]) => '<div class="' + c + '"><span class="lbl">' + l + '</span><span class="big">' + b + '</span><span class="small muted">' + t + '</span></div>').join('');
+
+  /* ---------- Draufsicht ---------- */
+  const PAD = 26, EXT = 2;
+  const pts = (r) => r.map((p) => (p[0] + PAD).toFixed(2) + ',' + (L + PAD - p[1]).toFixed(2)).join(' ');
+  const poly = (r, f, s, extra = '') => '<polygon points="' + pts(r) + '" fill="' + f + '" stroke="' + s + '" ' + extra + '/>';
+  const rect = (b, f, s, extra = '') => poly([[b[0], b[1]], [b[2], b[1]], [b[2], b[3]], [b[0], b[3]]], f, s, extra);
+  const SX = (x) => x + PAD, SY = (y) => L + PAD - y;
+  (function plan() {
+    const o = [];
+    $('plan').setAttribute('viewBox', '0 0 ' + (W + 2 * PAD) + ' ' + (L + 2 * PAD));
+    o.push(rect([-EXT / 2, -EXT / 2, W + EXT / 2, L + EXT / 2], 'none', 'var(--muted)', 'stroke-dasharray="2 2" stroke-width="0.5"'));
+    o.push(rect([0, 0, W, L], 'color-mix(in srgb, var(--c-under) 16%, var(--panel))', 'var(--c-under)', 'stroke-width="1"'));
+    o.push(rect([D.wall, D.wall, W - D.wall, L - D.wall], 'var(--panel)', 'var(--c-under)', 'stroke-width="0.4"'));
+    for (const b of D.buildings) for (const r of b.poly) o.push(poly(r, 'none', 'var(--muted)', 'stroke-width="0.3" opacity="0.6"'));
+    for (const r of D.hof) o.push(poly(r, 'none', 'var(--c-hof)', 'stroke-width="0.4" opacity="0.7"'));
+    for (const d of D.docks) o.push(poly(d.zone, 'color-mix(in srgb, var(--c-niche) 22%, transparent)', 'var(--c-niche)', 'stroke-width="0.4"'));
+    if (D.disp) o.push(poly(D.disp.zone, 'color-mix(in srgb, var(--c-disp) 22%, transparent)', 'var(--c-disp)', 'stroke-width="0.5"'));
+    for (const n of D.notches7) o.push(poly(n, 'none', 'var(--c-thread)', 'stroke-width="0.4" stroke-dasharray="1.5 1.5"'));
+    for (const hs of D.hoecker) for (const r of hs) o.push(poly(r, 'color-mix(in srgb, var(--c-gang) 12%, transparent)', 'none'));
+    for (const gs of D.gaenge) for (const r of gs) o.push(poly(r, 'color-mix(in srgb, var(--c-gang) 40%, transparent)', 'var(--c-gang)', 'stroke-width="0.3"'));
+    o.push(poly(D.elec, 'color-mix(in srgb, var(--c-elec) 18%, transparent)', 'var(--c-elec)', 'stroke-width="0.6"'));
+    const eb = V.esp_box; o.push(rect([eb[0], eb[1], eb[3], eb[4]], 'color-mix(in srgb, var(--c-elec) 45%, transparent)', 'var(--c-elec)', 'stroke-width="0.4"'));
+    o.push(poly(V.body, 'color-mix(in srgb, var(--c-pb) 72%, transparent)', 'var(--fg)', 'stroke-width="0.7"'));
+    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.r_rampe + D.wand) + '" fill="color-mix(in srgb, var(--c-knopf) 14%, transparent)" stroke="var(--c-knopf)" stroke-width="0.5" stroke-dasharray="1.5 1"/>');
+    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + D.r_plateau + '" fill="color-mix(in srgb, var(--c-knopf) 28%, transparent)" stroke="var(--c-knopf)" stroke-width="0.6"/>');
+    o.push('<circle cx="' + SX(C[0]) + '" cy="' + SY(C[1]) + '" r="' + (D.raum_d / 2) + '" fill="color-mix(in srgb, var(--c-knopf) 45%, transparent)" stroke="var(--c-knopf)" stroke-width="0.8"/>');
+    for (const r of D.auflagen) o.push(poly(r, 'color-mix(in srgb, var(--c-knopf) 40%, transparent)', 'var(--c-knopf)', 'stroke-width="0.6"'));
+    o.push(poly(V.plug, 'color-mix(in srgb, var(--accent-fill) 55%, transparent)', 'var(--accent)', 'stroke-width="0.4"'));
+    o.push(poly(V.win, 'var(--accent-fill)', 'var(--accent)', 'stroke-width="0.4"'));
+    const sw = D.sw; o.push(rect([-1.5, sw.y - sw.hole[0] / 2, D.wall + 9, sw.y + sw.hole[0] / 2], 'color-mix(in srgb, var(--c-sw) 50%, transparent)', 'var(--c-sw)', 'stroke-width="0.4"'));
+    for (const p of V.posts) {
+      o.push(poly(p.r, 'var(--c-under)', 'var(--edge)', 'stroke-width="0.3"'));
+      if (p.pin) { const b = bbox(p.r); o.push('<circle cx="' + SX((b[0] + b[2]) / 2) + '" cy="' + SY((b[1] + b[3]) / 2) + '" r="4.2" fill="none" stroke="var(--accent)" stroke-width="0.9"/>'); }
+    }
+    const bc = bbox(V.body);
+    o.push('<text x="' + SX((bc[0] + bc[2]) / 2) + '" y="' + SY(bc[3] - 12) + '" font-size="5" text-anchor="middle">Powerbank</text>');
+    o.push('<text x="' + SX((eb[0] + eb[3]) / 2) + '" y="' + (SY((eb[1] + eb[4]) / 2) + 2) + '" font-size="4.2" text-anchor="middle">ESP32</text>');
+    for (const a of D.aus) {
+      const r = a.ang * Math.PI / 180, lx = a.x + Math.cos(r) * 9, ly = a.y + Math.sin(r) * 9;
+      o.push('<text x="' + SX(lx) + '" y="' + (SY(ly) + 1.6) + '" font-size="4.6" text-anchor="middle" style="fill:var(--c-gang);font-weight:600">' + a.r + '</text>');
+    }
+    o.push('<text x="' + SX(C[0]) + '" y="' + (SY(C[1]) + 1.5) + '" font-size="4" text-anchor="middle">Knopf</text>');
+    o.push('<text x="' + SX(W / 2) + '" y="' + (L + 2 * PAD - 4) + '" font-size="5" text-anchor="middle" class="mut">Süden · Westwand links mit Schalter</text>');
+    $('plan').innerHTML = o.join('');
+    $('planDims').textContent = fmt(W) + ' × ' + fmt(L) + ' × ' + fmt(V.H) + ' mm';
+  })();
+
+  /* ---------- Höhenkette ---------- */
+  (function hk() {
+    const st8 = V.H - D.knopf_z - D.pb_t, gz = D.gang_z;
+    const cols = [
+      ['Stand 7 (gedruckt)', 'unter der Powerbank', [['Boden', D.floor, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', D.h7 - D.floor - D.pb_t, '--c-niche']], D.h7],
+      ['Stand 8', 'über dem Knopf', [['Knopf (Annahme)', D.knopf.h, '--c-knopf'], ['Luft', D.knopf_h - D.knopf.h, '--canvas'], ['Kegel bis Decke', D.knopf_top - D.knopf_h, '--canvas'], ['Dach', D.dach, '--c-under'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', st8, '--c-niche']], V.H],
+      ['Stand 8', 'Gang, Fase außen', [['Gang', D.gang.h, '--c-gang'], ['Dachschräge', D.modi.aussen.gang_z - D.gang.h - D.dach, '--canvas'], ['Dach', D.dach, '--c-under'], ['frei bis Auflage', D.knopf_z - D.modi.aussen.gang_z, '--canvas'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', st8, '--c-niche']], V.H],
+      ['Stand 8', 'Gang, Fase innen', [['Gang', D.gang.h, '--c-gang'], ['Dach', D.dach, '--c-under'], ['frei bis Auflage', D.knopf_z - D.modi.innen.gang_z, '--canvas'], ['Powerbank', D.pb_t, '--c-pb'], ['Steckerraum', st8, '--c-niche']], V.H],
+      ['Stand 8', 'ESP32 auf Gangdach', [['Gang mit Dach', gz, '--c-gang'], ['ESP32 mit Band', V.esp_top - gz, '--c-elec'], ['frei', V.H - V.esp_top, '--canvas']], V.H],
+    ];
+    const k = 7.2, base = 30 + (V.H + D.plate_t + 4) * k, cw = 120, gap = 44, x0 = 64;
+    const Wd = x0 + cols.length * (cw + gap) + 10, Hd = base + 64;
+    const o = [];
+    for (let z = 0; z <= V.H + D.plate_t + 1; z += 5) { const y = base - z * k; o.push('<line x1="' + (x0 - 8) + '" x2="' + (Wd - 8) + '" y1="' + y + '" y2="' + y + '" stroke="var(--line)" stroke-width="1"/><text x="' + (x0 - 12) + '" y="' + (y + 4) + '" font-size="11" text-anchor="end" class="mut">' + z + '</text>'); }
+    cols.forEach(([t, s, segs, H], i) => {
+      const x = x0 + i * (cw + gap); let z = 0, ly = 1e9;
+      for (const [n, h, tok] of segs) {
+        const y = base - (z + h) * k, hh = h * k;
+        o.push('<rect x="' + x + '" y="' + y + '" width="' + cw + '" height="' + hh + '" fill="var(' + tok + ')" stroke="var(--fg)" stroke-width="0.6" ' + (tok === '--canvas' ? 'stroke-dasharray="3 2"' : '') + '/>');
+        if (hh > 13) o.push('<text x="' + (x + 6) + '" y="' + (y + hh / 2 + 4) + '" font-size="11" style="fill:' + (tok === '--c-under' || tok === '--c-elec' || tok === '--c-knopf' ? '#fff' : 'var(--fg)') + '">' + n + ' ' + fmt(h) + '</text>');
+        else { ly = Math.min(y + hh / 2 + 4, ly - 11); o.push('<text x="' + (x + cw + 3) + '" y="' + ly + '" font-size="10" class="mut">' + n + ' ' + fmt(h) + '</text>'); }
+        z += h;
+      }
+      const yp = base - (H + D.plate_t) * k;
+      o.push('<rect x="' + x + '" y="' + yp + '" width="' + cw + '" height="' + D.plate_t * k + '" fill="var(--c-plate)" stroke="var(--fg)" stroke-width="0.6"/><text x="' + (x + 6) + '" y="' + (yp + D.plate_t * k / 2 + 4) + '" font-size="11">Steckplatte ' + fmt(D.plate_t) + '</text>');
+      o.push('<text x="' + (x + cw / 2) + '" y="' + (yp - 8) + '" font-size="12" text-anchor="middle" style="font-weight:600">' + fmt(H + D.plate_t) + '</text>');
+      o.push('<text x="' + x + '" y="' + (base + 18) + '" font-size="12" style="font-weight:600">' + t + '</text><text x="' + x + '" y="' + (base + 34) + '" font-size="11" class="mut">' + s + '</text><text x="' + x + '" y="' + (base + 50) + '" font-size="11" class="mut">Kasten ' + fmt(H) + '</text>');
+    });
+    o.push('<rect x="' + (x0 - 8) + '" y="' + base + '" width="' + (Wd - x0) + '" height="5" fill="var(--c-hut)"/>');
+    const hkEl = $('hk'); hkEl.setAttribute('viewBox', '0 0 ' + Wd + ' ' + Hd); hkEl.innerHTML = o.join('');
+  })();
+
+  /* ---------- Bedeutung ---------- */
+  const pinTxt = V.pin_rows.map((p) => '(' + fmt(p.neu[0], 0) + ' | ' + fmt(p.neu[1], 0) + ')').join(' und ');
+  const rows = [
+    ['Kasten ' + fmt(V.plus) + ' mm höher, Steckerraum 6', 'Kasten ' + mm(D.h7) + ' → ' + mm(V.H) + '; mit Platte ' + mm(D.h7 + D.plate_t) + ' → ' + mm(V.total) + '.', 'Plateau ' + mm(D.knopf_z) + ' + Powerbank ' + mm(D.pb_t) + ' + Steckerraum ' + mm(pbLuft) + ' ergeben die Höhe. Gegenüber Stand 8 vorher (25,0) sind das ' + mm(V.H - 25.0) + ' mehr, nur wegen des 12 mm hohen Knopfs. Der Hauptschalter sitzt auf halber Wandhöhe: Mitte ' + mm(D.sw.z7) + ' → ' + mm(V.sw_z) + ' über dem Boden.'],
+    ['Erhebung über dem Knopf', 'Raum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + ', Decke Ø ' + fmt(2 * D.r_decke, 0) + ' bei ' + mm(D.knopf_top) + ', Plateau Ø ' + fmt(2 * D.r_plateau, 0) + ' bei ' + mm(D.knopf_z) + '.', 'Am Hut ist der Hohlraum Ø ' + fmt(2 * D.r_rampe) + ' auf Gang-Höhe ' + fmt(D.gang.h, 0) + '. Ab ' + mm(D.r_rampe - D.r_kn) + ' vor dem Knopfkörper steigt die Decke mit 45° und trifft genau die Oberkante des Raums Ø 25 × 13,0; darüber noch 2,5 mm 45° bis zur flachen Decke Ø 20 (Brücke 19,4 mm, Regel 20). Außen: Wand 0,8 auf dem Kegel, oben ein Zylinder Ø 28 mit senkrechtem Rand.'],
+    ['Acht Kordelgänge 8 × 4', 'Gänge O, W ' + mm(D.aus[0].len) + ', N, S ' + mm(D.aus[2].len) + ', schräg ' + mm(D.aus[1].len) + ' lang (ab Knopfrand).', 'Höcker ' + fmt(D.modi.aussen.hb) + ' × ' + fmt(D.modi.aussen.gang_z) + ' (Fase außen) bzw. ' + fmt(D.modi.innen.hb) + ' × ' + fmt(D.modi.innen.gang_z) + ' (innen). Am Rand haben alle Gang-Höhe ' + fmt(D.gang.h, 0) + ', innen gehen sie in den Anstieg über. Die Kordel kommt unten seitlich am Knopf heraus (Nutzer) und liegt im Gang auf dem Hut. Die schrägen Gänge treten seitlich aus (bei y ' + fmt(D.aus[1].y) + ' und ' + fmt(D.aus[5].y) + '), das Loch in der Wand ist dort ' + mm(D.aus[1].wand) + ' lang.'],
+    ['Powerbank bleibt, liegt höher', 'Lage, Steckerraum ' + mm(D.plug7, 0) + ' und Fenster in der Nordwand wie Stand 7.', 'Liegt auf dem Plateau und drei Auflagen (SW, NW, NO) auf ' + mm(V.z0) + '. Das Fenster ist ab ' + mm(V.z0) + ' offen, der USB-Stecker sitzt ' + mm(V.z0 - 1.2) + ' höher als in Stand 7. Unter der Powerbank bleibt zwischen Gängen und Auflagen Platz für Kabel.'],
+    ['Heißkleber statt Fäden', 'Kasten auf Hut, ggf. Platte auf Kasten.', 'Die vier Eckaussparungen des Kastens entfallen (Ecken jetzt geschlossen, gestrichelt in der Draufsicht). In der neu gedruckten Steckplatte können die Fadentaschen weg. Die Zapfen ' + pinTxt + ' bleiben als Ausrichthilfe.'],
+    ['Stützen', V.posts.length + ' statt ' + D.old.posts.length + '.', 'Es entfallen (20 | 60), (60 | 20) und (100 | 140): sie stünden auf oder dicht an einem Gang (SW, S, NO). Die Platte liegt auf den Wänden und den übrigen Stützen.'],
+  ];
+  $('mean').innerHTML = '<thead><tr><th>Änderung</th><th>Maß</th><th>Folge</th></tr></thead><tbody>' + rows.map((r) => '<tr><td><b>' + r[0] + '</b></td><td class="small">' + r[1] + '</td><td class="small">' + r[2] + '</td></tr>').join('') + '</tbody>';
+
+  /* ---------- Prüfung ---------- */
+  (function chk() {
+    const pill = (ok) => '<span class="pill ' + (ok ? 'ok' : 'warn') + '">' + (ok ? 'ok' : 'fehlt') + '</span>';
+    const de = (t) => t.replace(/(\d)\.(\d)/g, '$1,$2');
+    let h = '<thead><tr><th>Prüfung</th><th>Ergebnis</th></tr></thead><tbody>';
+    for (const c of V.checks) h += '<tr><td>' + c.n + '</td><td class="small">' + pill(c.ok) + ' ' + de(c.t) + '</td></tr>';
+    h += '<tr><td>Material Kasten</td><td class="small num">' + V.grams[0] + ' g · ' + fmt(V.grams[1]) + ' cm³ (Stand 7: ' + D.old.grams[0] + ' g · ' + fmt(D.old.grams[1]) + ' cm³)</td></tr></tbody>';
+    $('chk').innerHTML = h;
+  })();
+
+  /* ---------- Gangfase ---------- */
+  function gangSvg(m) {
+    const M = D.modi[m], s2 = 18, gx = 190, gy = 190, gw = D.gang.w, gh = D.gang.h, f = D.gang.fase, hb = M.hb, o = [];
+    const P = (y, z) => (gx + y * s2).toFixed(1) + ',' + (gy - z * s2).toFixed(1);
+    o.push('<rect x="' + (gx - 170) + '" y="' + gy + '" width="340" height="10" fill="var(--c-hut)"/>');
+    o.push('<polygon points="' + [P(-hb / 2, 0), P(hb / 2, 0), P(hb / 2, M.gang_z), P(-hb / 2, M.gang_z)].join(' ') + '" fill="var(--c-under)" stroke="var(--fg)" stroke-width="0.6"/>');
+    const c = D.ch_bed, ins = m === 'innen'
+      ? [P(-gw / 2 - c, 0), P(gw / 2 + c, 0), P(gw / 2, c), P(gw / 2, gh - f), P(gw / 2 - f, gh), P(-gw / 2 + f, gh), P(-gw / 2, gh - f), P(-gw / 2, c)]
+      : [P(-gw / 2 - c, 0), P(gw / 2 + c, 0), P(gw / 2, c), P(gw / 2, gh), P(gw / 2 - f, gh + f), P(-gw / 2 + f, gh + f), P(-gw / 2, gh), P(-gw / 2, c)];
+    o.push('<polygon points="' + ins.join(' ') + '" fill="var(--bg)" stroke="var(--c-gang)" stroke-width="1.2"/>');
+    o.push('<polygon points="' + [P(-gw / 2, 0), P(gw / 2, 0), P(gw / 2, gh), P(-gw / 2, gh)].join(' ') + '" fill="none" stroke="var(--fg)" stroke-width="1" stroke-dasharray="4 3"/>');
+    o.push('<rect x="' + (gx - D.kordel.b / 2 * s2) + '" y="' + (gy - D.kordel.h * s2) + '" width="' + D.kordel.b * s2 + '" height="' + D.kordel.h * s2 + '" fill="var(--c-kordel)" opacity="0.9"/>');
+    const lab = (y, z, t, a = 'start') => o.push('<text x="' + (gx + y * s2) + '" y="' + (gy - z * s2) + '" font-size="11" text-anchor="' + a + '">' + t + '</text>');
+    lab(hb / 2 + 0.4, M.gang_z - 0.2, 'Höcker ' + fmt(M.gang_z));
+    lab(hb / 2 + 0.4, M.gang_z - 0.9, fmt(hb) + ' breit');
+    lab(0, (m === 'innen' ? gh : gh + f) + 0.25, 'Decke ' + fmt(gw - 2 * f, 0) + ' bei ' + fmt(m === 'innen' ? gh : gh + f), 'middle');
+    lab(0, 1.2, 'Kordel 5 × 3', 'middle');
+    lab(-hb / 2 - 0.3, 2.5, 'Wand ' + fmt(M.wand), 'end');
+    lab(-hb / 2 - 0.3, 1.8, 'unten ' + fmt(M.wand - c), 'end');
+    o.push('<text x="' + gx + '" y="' + (gy + 30) + '" font-size="11" text-anchor="middle" class="mut">' + (m === 'innen' ? 'Ecken des Rechtecks 8 × 4 fehlen (1,5 × 45°)' : 'Rechteck 8 × 4 ganz frei, Schrägen darüber') + '</text>');
+    return o.join('');
+  }
+  for (const [id, m] of [['fi', 'innen'], ['fa', 'aussen']]) { $(id).setAttribute('viewBox', '0 0 380 230'); $(id).innerHTML = gangSvg(m); }
+  (function fasetab() {
+    const MI = D.modi.innen, MA = D.modi.aussen, gb = (M) => (M.bruecken.find((b) => b.n === 'Gangdecken') || { w: 0 }).w;
+    const mx = (M) => Math.max(...M.bruecken.map((b) => b.w));
+    const pr = D.probe, pi = pr['K4_stern_F-innen'] || {}, pa = pr['K4_stern_F-aussen'] || {};
+    const r = [
+      ['Freies Profil', 'Rechteck 8 × 4 ohne die zwei oberen Ecken (2 × 1,1 mm²)', 'Rechteck 8 × 4 ganz frei'],
+      ['Gangdach (Oberkante Höcker)', mm(MI.gang_z), mm(MA.gang_z) + ' (+' + fmt(MA.gang_z - MI.gang_z) + ')'],
+      ['Wand neben dem Gang (ohne Fase unten)', mm(MI.wand), mm(MA.wand)],
+      ['Powerbank liegt auf', mm(D.knopf_z) + ' (Plateau)', mm(D.knopf_z) + ' (Plateau), gleich'],
+      ['Kasten', mm(MI.H), mm(MA.H) + ', gleich'],
+      ['Gesamt mit Platte', mm(MI.total), mm(MA.total)],
+      ['Gewicht Kasten', MI.grams[0] + ' g', MA.grams[0] + ' g (+' + (MA.grams[0] - MI.grams[0]) + ')'],
+      ['Druckzeit Kasten (dein Drucker)', fmt(MI.zeit.nacht1) + ' h', fmt(MA.zeit.nacht1) + ' h'],
+      ['Brücke Gangdecke / größte Brücke', fmt(gb(MI)) + ' / ' + mm(mx(MI)), fmt(gb(MA)) + ' / ' + mm(mx(MA))],
+      ['ESP32 liegt auf', mm(MI.esp_z0), mm(MA.esp_z0)],
+      ['K4-Stern', (pi.g || '?') + ' g, etwa ' + (pi.nacht1 || '?') + ' min', (pa.g || '?') + ' g, etwa ' + (pa.nacht1 || '?') + ' min'],
+      ['Prüfzeilen', MI.ok ? 'alle ok' : 'nicht alle ok', MA.ok ? 'alle ok' : 'nicht alle ok'],
+    ];
+    $('fasetab').innerHTML = '<thead><tr><th></th><th>F-innen</th><th>F-außen</th></tr></thead><tbody>' + r.map((x) => '<tr><td>' + x[0] + '</td><td class="small">' + x[1] + '</td><td class="small">' + x[2] + '</td></tr>').join('') + '</tbody>';
+    $('faserec').innerHTML = '<h3>Entscheidung: F-innen (Nutzer 20.10.)</h3><p class="small">Die Fase 1,5 × 45° liegt in den oberen Ecken des Rechtecks 8 × 4, die Kordel 5 × 3 passt (' + mm(D.gang.h - D.kordel.h, 0) + ' Luft in der Höhe). Das Gangdach liegt bei ' + mm(MI.gang_z) + ', am Kasten keine Mehrhöhe und ' + (MA.grams[0] - MI.grams[0]) + ' g weniger als F-außen. F-außen bleibt im Code umschaltbar (<code>GANG_FASE_MODUS</code>).</p>';
+  })();
+  (function vartab() {
+    $('vartab').innerHTML = '<thead><tr><th>Möglichkeit</th><th>Auflage</th><th>Kasten</th><th>mit Platte</th><th></th></tr></thead><tbody>' + D.varianten.map((x) => '<tr><td class="small">' + (x.k === 'gewaehlt' || x.k === 'gewählt' ? '<b>' + x.t + '</b>' : x.t) + '</td><td class="num">' + fmt(x.z) + '</td><td class="num">' + fmt(x.H) + '</td><td class="num">' + fmt(x.H + D.plate_t) + '</td><td>' + (x.k === 'gewählt' ? '<span class="pill ok">gewählt</span>' : (x.ok ? '' : '<span class="pill warn">gegen Regel</span>')) + '</td></tr>').join('') + '</tbody>';
+  })();
+
+  /* ---------- K4 ---------- */
+  (function k4() {
+    const R = 35, rr = D.raum_d / 2, hw = D.gang.w / 2, o = [], cx = 200, cy = 165, k = 3.6;
+    const hb = D.modi.aussen.hb;
+    for (let i = 0; i < 8; i++) o.push('<rect x="' + cx + '" y="' + (cy - hb / 2 * k) + '" width="' + R * k + '" height="' + hb * k + '" fill="color-mix(in srgb, var(--c-under) 45%, var(--panel))" stroke="var(--c-under)" stroke-width="0.8" transform="rotate(' + (i * 45) + ' ' + cx + ' ' + cy + ')"/>');
+    o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + (D.r_rampe + D.modi.aussen.wand) * k + '" fill="color-mix(in srgb, var(--c-under) 45%, var(--panel))" stroke="var(--c-under)" stroke-width="0.8"/>');
+    for (let i = 0; i < 8; i++) o.push('<rect x="' + cx + '" y="' + (cy - hw * k) + '" width="' + R * k + '" height="' + 2 * hw * k + '" fill="color-mix(in srgb, var(--c-gang) 40%, transparent)" stroke="var(--c-gang)" stroke-width="0.8" transform="rotate(' + (i * 45) + ' ' + cx + ' ' + cy + ')"/>');
+    o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + D.r_plateau * k + '" fill="color-mix(in srgb, var(--c-under) 70%, var(--panel))" stroke="var(--fg)" stroke-width="0.8"/>');
+    o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + rr * k + '" fill="none" stroke="var(--c-knopf)" stroke-width="1" stroke-dasharray="4 3"/>');
+    o.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + D.knopf.d / 2 * k + '" fill="var(--c-knopf)" opacity="0.6"/>');
+    o.push('<text x="' + cx + '" y="' + (cy + 4) + '" font-size="11" text-anchor="middle" style="fill:#fff">Plateau Ø ' + fmt(2 * D.r_plateau, 0) + '</text>');
+    o.push('<text x="' + cx + '" y="18" font-size="12" text-anchor="middle" style="font-weight:600">Stern Ø ' + fmt(2 * R, 0) + ' × ' + fmt(D.knopf_z) + ' · ohne Boden, ohne Rand</text>');
+    // Schnitt radial durch die Erhebung (Bett unten): Hohlraum, Knopf, Kordel, Außenkontur
+    const s3 = 8.2, rx = 30, gy = 450, Q = (r, z) => (rx + r * s3).toFixed(1) + ',' + (gy - z * s3).toFixed(1);
+    const zt = D.knopf_top, zp = D.knopf_z, rs = D.r_rampe, rd = D.r_decke, ga = D.modi.aussen.gang_z;
+    const outer = [Q(0, 0), Q(R, 0), Q(R, ga), Q(rs + 1.7 - (ga - 5), ga), Q(D.r_plateau, rs + 1.7 + 5 - D.r_plateau), Q(D.r_plateau, zp), Q(0, zp)];
+    o.push('<polygon points="' + outer.join(' ') + '" fill="var(--c-under)" stroke="var(--fg)" stroke-width="0.6"/>');
+    const gt = D.gang.h + D.gang.fase;
+    o.push('<polygon points="' + [Q(0, 0), Q(R, 0), Q(R, gt), Q(rs - D.gang.fase, gt), Q(rd, zt), Q(0, zt)].join(' ') + '" fill="var(--bg)" stroke="var(--c-knopf)" stroke-width="1"/>');
+    o.push('<rect x="' + rx + '" y="' + (gy - D.knopf.h * s3) + '" width="' + D.knopf.d / 2 * s3 + '" height="' + D.knopf.h * s3 + '" fill="var(--c-knopf)"/>');
+    o.push('<rect x="' + rx + '" y="' + (gy - D.knopf_h * s3) + '" width="' + rr * s3 + '" height="' + D.knopf_h * s3 + '" fill="none" stroke="var(--fg)" stroke-dasharray="4 3"/>');
+    o.push('<rect x="' + (rx + D.r_kn * s3) + '" y="' + (gy - D.kordel.h * s3) + '" width="' + (R - D.r_kn) * s3 + '" height="' + D.kordel.h * s3 + '" fill="var(--c-kordel)" opacity="0.9"/>');
+    o.push('<rect x="' + (rx - 10) + '" y="' + gy + '" width="' + (R * s3 + 20) + '" height="8" fill="var(--c-hut)"/>');
+    const t = (r, z, s, a = 'start') => o.push('<text x="' + (rx + r * s3) + '" y="' + (gy - z * s3) + '" font-size="11" text-anchor="' + a + '">' + s + '</text>');
+    t(D.r_plateau + 0.6, zp - 0.6, 'Plateau Ø ' + fmt(2 * D.r_plateau, 0) + ' bei ' + fmt(zp)); t(0.2, zp + 0.6, 'Decke Ø ' + fmt(2 * rd, 0) + ' bei ' + fmt(zt) + ', Raum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + ' gestrichelt'); t(rs + 0.6, D.gang.h + 4.2, '45° ab ' + fmt(rs) + ' (' + fmt(rs - D.r_kn) + ' vor dem Knopf)');
+    o.push('<text x="' + (rx + 4) + '" y="' + (gy - D.knopf.h * s3 / 2) + '" font-size="11" style="fill:#fff">Knopf 12</text><text x="' + (rx + 4) + '" y="' + (gy - D.knopf.h * s3 / 2 + 14) + '" font-size="11" style="fill:#fff">(Annahme)</text>'); t(R - 0.5, 1.0, 'Kordel am Fuß', 'end');
+    o.push('<text x="' + (rx + R * s3 / 2) + '" y="' + (gy + 26) + '" font-size="11" text-anchor="middle" class="mut">Schnitt radial von der Mitte (links) nach außen, Gang O, Fase außen</text>');
+    $('k4').setAttribute('viewBox', '0 0 400 485'); $('k4').innerHTML = o.join('');
+    const pr = D.probe, pi = pr['K4_stern_F-innen'] || {}, pa = pr['K4_stern_F-aussen'] || {};
+    $('k4list').innerHTML = [
+      '<b>K4_stern_F-innen.stl</b>: Stern Ø 70 × ' + mm(D.knopf_z) + ', etwa ' + (pi.g || '?') + ' g, rund ' + (pi.nacht1 || '?') + ' min. Gänge 8 × 4 mit Fase 1,5 in den oberen Ecken, Höcker ' + fmt(D.modi.innen.hb) + ' × ' + fmt(D.modi.innen.gang_z) + ', Wand ' + fmt(D.kordel_wand) + ', Decke ' + fmt(D.kordel_dach, 2) + ' (3 Lagen × 0,16).',
+      'In der Mitte die Erhebung: Raum Ø ' + fmt(D.raum_d, 0) + ' × ' + fmt(D.knopf_h) + ', Anstieg 45°, Decke Ø ' + fmt(2 * D.r_decke, 0) + ', Plateau Ø ' + fmt(2 * D.r_plateau, 0) + '. Ohne Boden, Randwand und Deckplatte; Bett unten = Hut-Seite.',
+      '<b>Fragen</b>: Wie hoch ist der Knopf wirklich (Annahme 12 mm)? Passt er in den Raum (1,5 mm Luft je Seite, 1 mm oben)? Lässt sich die Kordel vom Knopffuß in jeden Gang legen? Hängt die Decke Ø 20 durch? Sind die Gangdecken in beiden Varianten sauber? Hält Heißkleber?',
+      'Dazu mitbringen: Hut mit Knopf und Kordel, Powerbank, Heißklebepistole.'
+    ].map((x) => '<li>' + x + '</li>').join('');
+  })();
+
+  /* ---------- Hinweise ---------- */
+  const watch = [
+    ['Druck', 'mid', [
+      'Kein Support: Anstieg und Kegel mit 45°, Gänge oben mit 45°-Fasen. Übrig bleiben Brücken: Decke über dem Knopf Ø 20 (im Rechner 19,4 mm frei, Regel höchstens 20), Gangdecken 5 mm. Im Rechner je 0,2-mm-Lage geprüft. Hängt die Decke durch, bleiben 2,5 mm bis zum Knopf (Kegel über dem Raum Ø 25 × 13,0).',
+      'Keine Fase unten an den Mündungen von Gängen und Knopfraum (Nutzer 20.10.). Wände 0,8 und Decken 0,48 sind dünn: Wand neben dem Gang 0,8 (2 Linien), Decke 3 Lagen. Das Plateau trägt die Powerbank (etwa 100 g) über Ø 20 nur mit 0,48 Decke: bei K4 mit einem Buch prüfen, ob es durchhängt.',
+      'Die Erhebung ist innen massiv gefüllt (Gyroid): zwischen Kegel und Zylinder Ø 28 liegt ein Ring aus Füllung. Kein Hohlraum ohne Ausgang.',
+      'Gänge: Brücken in der Außenwand bei den schrägen Gängen ' + mm(D.aus[1].wand) + '. Unkritisch.',
+      'Fenster der Powerbank bleibt nach oben offen (keine Brücke).']],
+    ['Kleben', 'warn', [
+      'Heißkleber nicht an die Mündungen der Gänge und nicht in den Hohlraum unter der Erhebung (Ø ' + fmt(2 * D.r_rampe) + ' am Hut): Kleber auf die Bodenflächen zwischen den Gängen, einige mm vom Rand.',
+      'Kasten so aufsetzen, dass der Knopf im Raum sitzt (Ø ' + fmt(D.raum_d, 0) + ' bei Knopf Ø ' + fmt(D.knopf.d, 0) + '). Vorher Mitte am Hut markieren; Kordel schon in den gewählten Gang legen.',
+      'Platte auf Kasten kleben nur, wenn sie wackelt: dann einige Punkte auf die Wandoberkante, nicht an die Docks.',
+      'Heißkleber und PLA: nicht großflächig dick auftragen (PLA wird ab ca. 60 °C weich).']],
+    ['Hut und Kordel', 'warn', [
+      'Knopfhöhe 12 mm ist eine Annahme (erste Nachricht „ca. 1,2 cm“). Jeder Millimeter mehr macht Erhebung und Kasten 1 mm höher. Bitte nachmessen, am besten mit K4.',
+      'Die Kordel kommt unten seitlich am Knopf heraus (Nutzer) und läuft auf dem Hut durch Raum, Anstieg und Gang nach außen; sie geht nie über den Knopf. Gang 8 × 4 gibt ' + mm(D.gang.h - D.kordel.h, 0) + ' in der Höhe und ' + mm(D.gang.w - D.kordel.b, 0) + ' seitlich Spiel.',
+      'Welche Richtung die Quaste nimmt, entscheidet sich beim Aufkleben. Alle acht Gänge bleiben offen.']],
+    ['Innenraum', 'mid', [
+      'Powerbank liegt auf dem Plateau Ø 28 und drei Auflagen (SW, NW, NO, je bis 12 × 12) auf ' + mm(V.z0) + '. Ohne Auflagen kippt sie: der Schwerpunkt liegt ' + mm(-D.standfest0.rand) + ' neben dem Plateau, sie neigt sich etwa ' + fmt(D.standfest0.kipp, 0) + '° bis zum Höcker N.',
+      'Steckerraum über der Powerbank ' + mm(pbLuft) + ' (gefordert 6,0). Die Powerbank darf nicht dicker sein als 12,8.',
+      'Unter der Powerbank ist zwischen Gängen und Auflagen jetzt viel Platz (bis ' + mm(V.z0) + ' hoch): dort können USB-Kabel und Adern liegen.',
+      'ESP32-Fläche liegt auf den Gängen S und SO (' + mm(V.esp_z0) + '), ' + mm(V.esp_top - V.esp_z0) + ' hoch mit Isoband, darüber noch ' + mm(V.H - V.esp_top) + ' bis zur Platte.']],
+    ['Steckplatte (wird neu gedruckt)', 'mid', [
+      'Fadentaschen an den vier Ecken der Platte können entfallen (Heißkleber).',
+      'Zapfenaufnahmen bleiben an ' + pinTxt + '.',
+      'Docks und Display-Dock liegen oben im Steckerraum und stoßen nicht an Gänge oder Erhebung. Die Dockzonen bleiben frei von Stützen.',
+      'Gesamthöhe mit Platte ' + mm(V.total) + ': der Kasten sieht unter der Platte deutlich höher aus als bisher (Stand 7: ' + mm(D.h7 + D.plate_t) + ').']],
+    ['Größere Mulden (Branch dazzling-davinci)', 'mid', [
+      'Dort geplant: Spiel 0,15 bis 0,20 statt 0,10 und Platte 1 bis 2 mm größer. Außenmaß dieses Kastens wächst dann mit (gestrichelt), die Mitte wandert um bis zu 1 mm; Erhebung und Gänge sind zur Mitte gerechnet und wandern mit.',
+      'Erst nach dem Mulden-Entscheid bauen.']],
+  ];
+  $('watch').innerHTML = watch.map(([t, s, li]) => '<div class="card"><span class="sev pill ' + s + '">' + (s === 'warn' ? 'wichtig' : 'beachten') + '</span><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
+
+  /* ---------- Entscheidungen ---------- */
+  const cards = [
+    ['K1 · Gänge', true, ['<b>Alle acht</b> (Vorgabe): Quaste kann jede Richtung nehmen.', 'Nur einen oder zwei Gänge: weniger Höcker, aber die Richtung ist festgelegt, bevor der Hut da ist.']],
+    ['K2 · Gangfase', true, ['<b>Innen</b> (Nutzer): Gangdach ' + mm(D.modi.innen.gang_z) + ', Ecken des Rechtecks fehlen, Kordel passt. Entschieden.', 'Außen: Rechteck 8 × 4 ganz frei, Gangdach ' + mm(D.modi.aussen.gang_z) + ', am Kasten keine Mehrhöhe, ' + (D.modi.aussen.grams[0] - D.modi.innen.grams[0]) + ' g mehr. Im Code umschaltbar.']],
+    ['K5 · Knopfhöhe und Erhebung', true, ['<b>Knopf 12 mm (Annahme)</b>, Raum Ø 25 × 13,0 (1 mm Luft über dem Knopf), Decke Ø 20, Plateau ' + mm(D.knopf_z) + ': Kasten ' + mm(V.H) + '.', 'Anstieg genau 10 mm vor dem Knopf: +1,3 mm. Flache Decke Ø 25 direkt auf 13,0: Kasten 32,2, aber Brücke 25 mm (über der Regel 20).']],
+    ['K6 · Lage der Powerbank', true, ['<b>Auf Plateau und drei Auflagen</b> (Wortlaut: Erhebung im Zentrum, Powerbank darauf): steht sicher, Kasten ' + mm(V.H) + '.', 'Nur auf dem Plateau: kippt. Powerbank weg von der Mitte, auf die Gangdächer: Kasten 26,5, braucht aber eine neue Lage (quer passt sie nicht, Nutzer).']],
+    ['K2b · Steckerraum', true, ['<b>6,0 mm</b> (Nutzer, viele Leitungen).', 'Zurück auf 3,5: Kasten 2,5 mm niedriger. Nicht empfohlen.']],
+    ['K4 · Probeteil vorher', true, ['<b>Stern F-innen</b> (STL liegt vor). Klärt Knopfhöhe, Sitz, Kordel und ob die dünnen Wände und Decken halten.', 'Ohne Probe direkt den ganzen Kasten: Knopf- oder Kordelprobleme merkt man erst nach rund ' + fmt(V.zeit.nacht1, 0) + ' h Druck.']],
+  ];
+  $('cards').innerHTML = '<div class="card"><h3>Verworfen</h3><ul><li><b>Powerbank quer im Norden</b>: passt wegen des Steckers nicht (Nutzer).</li><li><b>Knopfraum Ø 25 × 5</b> (Fassung 2): beruhte auf Knopfhöhe 1,2 mm; der Knopf ist viel höher.</li><li><b>Kordel über den Knopf</b>: kommt laut Nutzer unten seitlich heraus (Raum wäre sonst Ø 29 × 16,0, Kasten rund 40,4).</li><li><b>Deckplatte und Boden im Probeteil</b>: entfallen, die Powerbank dient zum Auflegen.</li><li><b>Fäden an den Ecken</b>: ersetzt durch Heißkleber.</li></ul></div>' +
+    cards.map(([t, rec, li]) => '<div class="card' + (rec ? ' rec' : '') + '"><h3>' + t + '</h3><ul>' + li.map((x) => '<li>' + x + '</li>').join('') + '</ul></div>').join('');
+
+  /* ---------- 3D ---------- */
+  const LAYERS = [
+    ['bld', 'Gebäude (6, steckbar)', '--c-bld', 0], ['disp', 'Display-Gebäude', '--c-disp', 0], ['hof', 'Hof-Einsatz', '--c-hof', 0],
+    ['plate', 'Steckplatte', '--c-plate', 1], ['uk', 'Unterkasten Stand 8', '--c-under', 0], ['uk7', 'Unterkasten Stand 7 (gedruckt)', '--c-old', 2],
+    ['pb', 'Powerbank und Stecker', '--c-pb', 0], ['esp', 'ESP32 mit Isoband', '--c-elec', 0], ['sw', 'Hauptschalter', '--c-sw', 0],
+    ['hut', 'Doktorhut mit Knopf', '--c-hut', 0], ['kordel', 'Kordel und Quaste', '--c-kordel', 0],
+  ];
+  const state = {}; for (const l of LAYERS) state[l[0]] = l[3];
+  $('layers').innerHTML = LAYERS.map((l) => '<div class="layer"><span class="sw" style="--sw:var(' + l[2] + ')"></span><span class="nm">' + l[1] + '</span><span class="tri" data-l="' + l[0] + '"><button type="button" data-s="0">voll</button><button type="button" data-s="1">blass</button><button type="button" data-s="2">aus</button></span></div>').join('');
+  function paintTri() { document.querySelectorAll('.tri').forEach((t) => t.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.s === state[t.dataset.l])))); }
+  $('dir').innerHTML = D.aus.map((a, i) => '<option value="' + i + '"' + (a.r === 'O' ? ' selected' : '') + '>' + a.r + '</option>').join('');
+  let T3 = null;
+  (function init3d() {
+    const stage = $('stage'), canvas = $('cv');
+    if (!window.THREE) { stage.innerHTML = '<p style="padding:24px">Die 3D-Bibliothek konnte nicht geladen werden. Draufsicht und Höhenkette gelten trotzdem.</p>'; return; }
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); } catch (e) { stage.innerHTML = '<p style="padding:24px">WebGL ist in diesem Browser nicht verfügbar.</p>'; return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.localClippingEnabled = true;
+    const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), L + 200);
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 4 / 3, 1, 20000);
+    camera.up.set(0, 0, 1);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x778088, 0.75));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.8); sun.position.set(60, -50, 90); scene.add(sun);
+    const fill = new THREE.DirectionalLight(0xffffff, 0.35); fill.position.set(-60, 80, -40); scene.add(fill);
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25, clippingPlanes: [clip] });
+    const mats = {}, byLayer = {};
+    const mat = (layer, tok) => { const k = layer + tok; if (!mats[k]) { mats[k] = new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.03, flatShading: true, side: THREE.DoubleSide, clippingPlanes: [clip] }); mats[k].tok = tok; (byLayer[layer] = byLayer[layer] || []).push(mats[k]); } return mats[k]; };
+    const b64 = (s) => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+    const mk = (e, m, edges = true) => { const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(b64(e.v)), 3)); geo.setIndex(new THREE.BufferAttribute(new Uint32Array(b64(e.i)), 1)); geo.computeVertexNormals(); const o = new THREE.Mesh(geo, m); if (edges) o.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 30), edgeMat)); return o; };
+    const boxAt = (b, m) => { const geo = new THREE.BoxGeometry(b[3] - b[0], b[4] - b[1], b[5] - b[2]); const o = new THREE.Mesh(geo, m); o.position.set((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2); o.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat)); return o; };
+    const G = {}; for (const l of LAYERS) { G[l[0]] = new THREE.Group(); scene.add(G[l[0]]); }
+    const M = D.meshes;
+    for (const s in M.buildings) G.bld.add(mk(M.buildings[s], mat('bld', '--c-bld'), false));
+    for (const s in M.display) G.disp.add(mk(M.display[s], mat('disp', '--c-disp')));
+    G.hof.add(mk(M.hof, mat('hof', '--c-hof'))); G.plate.add(mk(M.plate, mat('plate', '--c-plate'), false));
+    G.uk7.add(mk(M.uk7, mat('uk7', '--c-old')));
+    const bot = D.deck - V.H, sh = (b) => [b[0], b[1], b[2] + bot, b[3], b[4], b[5] + bot];
+    G.uk.add(mk(V.mesh, mat('uk', '--c-under')));
+    G.pb.add(boxAt(sh(V.pb_box), mat('pb', '--c-pb'))); G.pb.add(boxAt(sh(V.plug_box), mat('pb', '--accent-fill')));
+    G.esp.add(boxAt(sh(V.esp_box), mat('esp', '--c-elec')));
+    const swz = bot + V.sw_z;
+    G.sw.add(boxAt([D.wall, D.sw.y - 6.3, swz - 4, D.wall + 9, D.sw.y + 6.3, swz + 4], mat('sw', '--c-sw')));
+    G.sw.add(boxAt([-1.5, D.sw.y - 7.5, swz - 5, 0, D.sw.y + 7.5, swz + 5], mat('sw', '--c-sw')));
+    // Hut, Knopf (Ø 22 × 12, Annahme), Kordel vom Knopffuß; z = 0 der Gruppen an der Kastenunterkante
+    const hutG = new THREE.Group(); G.hut.add(hutG); hutG.position.z = bot;
+    const board = new THREE.Mesh(new THREE.BoxGeometry(D.hut, D.hut, 3), mat('hut', '--c-hut')); board.position.set(C[0], C[1], -1.5); hutG.add(board);
+    const knopf = new THREE.Mesh(new THREE.CylinderGeometry(D.knopf.d / 2, D.knopf.d / 2, D.knopf.h, 48), mat('hut', '--c-knopf')); knopf.rotation.x = Math.PI / 2; knopf.position.set(C[0], C[1], D.knopf.h / 2); hutG.add(knopf);
+    const kordG = new THREE.Group(); G.kordel.add(kordG); kordG.position.z = bot;
+    const st = { view: null, target: [W / 2, L / 2, -20], dirty: true };
+    function kordel() {
+      while (kordG.children.length) { const c = kordG.children.pop(); c.geometry.dispose(); }
+      const a = D.aus[+$('dir').value], r = a.ang * Math.PI / 180, dx = Math.cos(r), dy = Math.sin(r);
+      const tEdge = Math.min(Math.abs(dx) > 1e-6 ? (D.hut / 2) / Math.abs(dx) : 1e9, Math.abs(dy) > 1e-6 ? (D.hut / 2) / Math.abs(dy) : 1e9);
+      const z = 2.0, p = (t, zz) => new THREE.Vector3(C[0] + dx * t, C[1] + dy * t, zz);
+      const R = D.knopf.d / 2, pts = [p(R - 1.5, 1.6), p(R + 0.5, 1.6), p(R + 3, 1.6), p(R + 10, z), p((a.len + R) * 0.6, z), p(a.len + R, z), p(tEdge - 4, z + 0.4), p(tEdge + 1.5, -2), p(tEdge + 2.5, -30), p(tEdge + 2, -60)];
+      kordG.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 140, 1.5, 8, false), mat('kordel', '--c-kordel')));
+      const q = new THREE.Mesh(new THREE.CylinderGeometry(3, 7, 40, 16), mat('kordel', '--c-kordel')); q.rotation.x = Math.PI / 2; q.position.copy(p(tEdge + 2, -80)); kordG.add(q);
+      st.dirty = true;
+    }
+    function apply() {
+      for (const l of LAYERS) {
+        const s = state[l[0]]; G[l[0]].visible = s !== 2;
+        for (const m of byLayer[l[0]] || []) { const ghost = s === 1; m.transparent = ghost; m.opacity = ghost ? 0.16 : 1; m.depthWrite = !ghost; m.needsUpdate = true; }
+      }
+      st.dirty = true;
+    }
+    function explode() {
+      const e = +$('explode').value;
+      G.bld.position.z = e * 70; G.disp.position.z = e * 70; G.hof.position.z = e * 50; G.plate.position.z = e * 30;
+      G.pb.position.z = e * 12; G.esp.position.z = e * 12; G.hut.position.z = -e * 30; G.kordel.position.z = -e * 30; st.dirty = true;
+    }
+    function cut() { const t = +$('cut').value; clip.constant = t >= 0.999 ? L + 500 : t * L; st.dirty = true; }
+    function theme() { for (const k in mats) mats[k].color.set(css(mats[k].tok)); renderer.setClearColor(css('--canvas')); edgeMat.color.set(css('--edge')); st.dirty = true; }
+    const VIEWS = { iso: { az: -60, el: 28, d: 2.2 }, top: { az: -90, el: 88, d: 2.2 }, under: { az: -120, el: -35, d: 2.2 }, mitte: { az: 70, el: 14, d: 0.85 }, hut: { az: -55, el: 18, d: 3.0 } };
+    function setView(n) {
+      const vw = VIEWS[n]; st.view = { az: vw.az, el: vw.el, dist: Math.max(W, L) * vw.d }; st.target = [W / 2, L / 2, -20];
+      if (n === 'mitte') { st.target = [C[0], C[1], bot + 8]; $('cut').value = 0.5; cut(); }
+      st.dirty = true;
+    }
+    function cam() { const a = st.view.az * Math.PI / 180, e = st.view.el * Math.PI / 180, t = st.target, r = st.view.dist; camera.position.set(t[0] + r * Math.cos(e) * Math.cos(a), t[1] + r * Math.cos(e) * Math.sin(a), t[2] + r * Math.sin(e)); camera.lookAt(t[0], t[1], t[2]); }
+    function resize() { const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); st.dirty = true; }
+    new ResizeObserver(resize).observe(stage);
+    const ptrs = new Map(); let pinch = 0;
+    canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); pinch = 0; });
+    canvas.addEventListener('pointerup', (e) => ptrs.delete(e.pointerId)); canvas.addEventListener('pointercancel', (e) => ptrs.delete(e.pointerId));
+    canvas.addEventListener('pointermove', (e) => {
+      const p = ptrs.get(e.pointerId); if (!p || !st.view) return;
+      if (ptrs.size === 1) { st.view.az -= (e.clientX - p[0]) * 0.4; st.view.el = Math.max(-89, Math.min(89, st.view.el + (e.clientY - p[1]) * 0.3)); }
+      p[0] = e.clientX; p[1] = e.clientY;
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) st.view.dist *= pinch / d; pinch = d; }
+      st.dirty = true;
+    });
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); st.view.dist *= 1 + e.deltaY * 0.001; st.dirty = true; }, { passive: false });
+    $('explode').addEventListener('input', explode); $('cut').addEventListener('input', cut); $('dir').addEventListener('change', kordel);
+    document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
+    new MutationObserver(theme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    $('tag3d').textContent = '1:1300 · Kasten ' + fmt(V.H) + ' mm · mit Platte ' + fmt(V.total) + ' mm';
+    T3 = { apply };
+    setView('iso'); kordel(); explode(); cut(); theme(); apply(); resize();
+    (function loop() { if (st.dirty && st.view) { cam(); renderer.render(scene, camera); st.dirty = false; } requestAnimationFrame(loop); })();
+  })();
+  document.querySelectorAll('.tri button').forEach((b) => b.addEventListener('click', () => { state[b.parentNode.dataset.l] = +b.dataset.s; paintTri(); if (T3) T3.apply(); }));
+  paintTri();
+})();
+</script>

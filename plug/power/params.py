@@ -95,3 +95,18 @@ STECKERRAUM = 3.5       # E  Luft zwischen flacher Plattenunterseite und Oberkan
 PIN_PLAN = dict(PIN, h=2.5)   # E  Zentrierzapfen 2,5 (Test-Dock: 1 mm länger als in Steckprobe 2), Zapfenloch 2,8 tief nur außerhalb der Mulden
 PLA = 1.24                # g/cm³
 SHELL, INFILL = 1.0, 0.15  # Materialschätzung: 1 mm Hülle (3 Wände, 4 Decken/Böden), 15 % Füllung
+
+# ---- Stand 8 (Plan, noch keine STL; Nutzer 19.10.2026): Kasten höher, Knopf und Kordel des Doktorhuts unter der Plattenmitte (plug/power/kasten8.py)
+STECKERRAUM_8 = 6.0       # E  Luft über der Powerbank bis zur Platte (Nutzer 19.10.: am Ende liegen viele Leitungen dort; Stand 7: 3,5); der Kasten wird so hoch wie nötig
+HUT_KNOPF = dict(d=22.0, h=12.0, luft=1.0, r=12.5)   # A  Knopf in der Hutmitte Ø 22 × 12,0 hoch. ANNAHME, vom Nutzer zu bestätigen: erste Nachricht „ca. 1,2 cm Höhe“, später „viel höher als die Gänge“ (vorher als 1,2 mm gelesen). Knopfraum mindestens Ø 25 (Radius r = 12,5, 1,5 Luft je Seite) × 13,0 (Luft 1,0 oben, Nutzer 20.10.: 1 mm Luft über dem Knopf)
+KORDEL_ANSATZ_OBEN = False  # M  Nutzer 19.10.: die Kordel kommt unten seitlich am Knopffuß heraus (Hut-Höhe 0 bis 3) und läuft nie über die Oberseite. False = am Fuß, sie verlässt den Knopf auf Hut-Höhe (0 bis 3); True = oben auf dem Knopf, dann braucht der Raum 12 + 3 + 0,2 = 15,2 Höhe und Radius 14,4 (Kordelecke bei 11 + 3 und 2,5 seitlich, plus 0,2)
+KNOPF_RAMPE = dict(vor=10.5, decke_d=20.0)   # E  Anstieg von Gang-Höhe (4) auf Knopfhöhe als 45°-Kegel: beginnt vor = 10,5 mm vor dem Knopfkörper (Radius 11 + 10,5 = 21,5; so trifft der Kegel genau die Oberkante des Raums Ø 25 × 13,0), endet mit einer flachen Decke Ø 20 (Brücke höchstens 20). vor = 10 (Nutzer: „etwa 1 cm“) macht die Erhebung 1,3 mm höher
+KNOPF_PLATEAU_D = 28.0      # E  Oberseite der Erhebung über dem Knopf Ø 28 (Auflage der Powerbank); senkrechter Rand, darunter folgt die Außenseite dem Kegel mit Wand 1,2
+PB_AUFLAGE = dict(on=True, a=12.0, abstand=0.5)   # E  Auflagen der Powerbank auf Plateauhöhe in den Ecken ihrer Fläche (je bis a × a, abstand zu den Höckern), damit sie nicht über die Erhebung kippt (Schwerpunkt 31 mm neben der Knopfmitte)
+KORDEL = dict(h=3.0, b=5.0)                 # M  Kordel des Huts etwa 3 hoch × 5 breit (Nutzer 19.10.)
+KORDEL_GANG = dict(w=8.0, h=4.0, n=8, fase=1.5)   # S  Gang für die Kordel in 45°-Schritten von der Mitte zur Außenwand: 8 × 4, Fase 1,5 × 45° an den oberen Kanten (Decke 5 breit); Lage der Fase nach GANG_FASE_MODUS. Die Kordel 3 × 5 hat 2,0 in der Höhe und 3,0 seitlich Spiel
+GANG_FASE_MODUS = "innen"   # E  Nutzer 20.10.: für die Gänge ist "innen" ok (Fase 1,5 × 45° in den oberen Ecken des Rechtecks 8 × 4, Decke bei 5; die Kordel 5 × 3 passt weiter). "aussen" (Rechteck 8 × 4 ganz frei, Dachschrägen darüber, Höcker 1,5 höher) bleibt im Code umschaltbar
+KORDEL_DACH = 0.48        # E  Nutzer 20.10.: Decke über den Aushöhlungen (Knopfraum, Gänge) 3 Lagen × 0,16 = 0,48 (vorher 1,2)
+KORDEL_WAND = 0.8         # E  Nutzer 20.10.: Wandstärke an Gängen und Knopfraum 0,8 (vorher 1,2); gilt in beiden Fasen-Modi (Höcker 8 + 2 · 0,8 = 9,6 breit). Außenwand UK_WALL und Boden UK_FLOOR des Kastens sind gedruckt und bleiben
+CH_MUENDUNG = 0.0         # E  Nutzer 20.10.: keine Fase unten an den Mündungen von Gängen und Knopfraum (an der Wand unten bei der Kordel), die Bettkante CH_BED gilt nur noch für die Außenkante des Kastens
+BEFESTIGUNG = "Heißkleber"   # E  Nutzer 19.10.: Kasten auf den Hut kleben, im Zweifel die Steckplatte auf den Kasten; Fäden und Ösen (Eckaussparungen, Fadentaschen) entfallen
