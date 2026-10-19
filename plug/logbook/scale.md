@@ -17,7 +17,7 @@ Auf Wunsch des Nutzers (Konzept des Test-Docks, `plug/power/build_dock.py`): Die
 | Standard-Kassette | **v4** (LED strahlt nach oben), überall wo sie passt (bei 1:1300: Neues Augusteum, Hörsaalgebäude, Paulinum; Paulinum nur 0,9 mm Wand, knapp, Wechsel auf V1RS möglich) | Nutzer |
 | City-Hochhaus | **V2R** (zwei LEDs, hochkant, Konzept aus `cassettes.md`), weil v4 dort nicht passt | Nutzer |
 | Innenhof | eigenes Einsteckteil, Bäume angedruckt (bestätigt: „Bäume andrucken ist super“) | Nutzer, Seite Abschnitt Innenhof |
-| **Maßstab (aktuell)** | **1:1300**, Platte 115,6 × 220,8 mm einteilig; dafür V1RS in Institutsgebäude und Seminargebäude | Nutzer, nach Rechnung V1RS bei 1:1300 |
+| **Maßstab (aktuell)** | **1:1300**, Platte 115,6 × 220,9 mm einteilig (seit 19.10.2026 115,63 × 220,90, Korrektur 8); dafür V1RS in Institutsgebäude und Seminargebäude | Nutzer, nach Rechnung V1RS bei 1:1300 |
 | Maßstab (überholt) | 1:1250 war zwischenzeitlich bestätigt (Platte 119,7 × 228,7 mm); (1:1200 ergäbe eine Platte von etwa 237 × 124 mm, über der 230-mm-Grenze); 1,3 mm Reserve auf 230 mm sind in Ordnung; Drehen der Platte (auch diagonal) bringt nichts | Nutzer |
 | LED-Streifen | nur der 10-mm-Streifen, wie immer geplant; Kassettenwahl je Gebäude bleibt (v4 überall, V2R Hochhaus) | Nutzer |
 | Hof-Einsatz | **ohne die 4 mm Zusatztiefe** (1 mm unter, 1,9 mm über der Oberfläche wie bisher), aber **einsetzen wie die Gebäude: mit Einführfase** (0,4 bis 0,5 mm wie `ENTRY_CH_T`/`EF_CH_T`); Stämme erst mit 0,8 mm im Probedruck testen, 1 mm als Rückfall | Nutzer |
@@ -379,7 +379,7 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | Bereich | Wert | Stand | Was der Test zeigen muss |
 |---|---|---|---|
 | Mulde und Platte | Mulde 14,2 mm als eine Ebene mit vollem Gebäudeumriss (getestet war der L-Fuß mit 10,2 mm) | ungetestet | Einführen, Kippen, Klemmen, Ziehkraft, Verzug |
-| | Spiel Umriss zur Mulde 0,1 mm je Seite (`OUTLINE_CLR_T`) | **r8: Hochhaus-Stummel geht nur mit Kraft hinein, sehr fest; 0,15 testen (Vorgabe des Nutzers)** | Ob 0,15 leicht, aber ohne Wackeln passt |
+| | Spiel Umriss zur Mulde 0,15 mm je Seite (`OUTLINE_CLR_T`, seit 19.10.2026; 0,10 war bei großen Umrissen zu fest) | Passungsserie (Variante B): 0,15 passt gut, 0,20 wackelt; mit den Gebäuden der Platte noch ungetestet | Sitz aller sechs Gebäude, Fase 2,0 gegen 4,0 |
 | | Muldenboden 0,4 mm unter sehr großen Mulden | im Kleinen bewährt, groß ungetestet | Druck ohne Support, Halt beim Einstecken |
 | | Flache Unterseite 14,6 mm mit aufgeklebter Leiste (statt Dock in 20,2 mm) | ungetestet (Test-Dock steht aus) | Pin-Treffer, Halt des Klebers, Luft unter der Platte |
 | | Platte 14,6 mm dick und 220,8 mm lang | ungetestet | Druckbett, Verzug, Druckzeit |
@@ -395,12 +395,19 @@ Alle Werte dieser Festlegung sind **Planwerte, nicht getestet**. Sie stehen in `
 | | Neues Augusteum: LED 6,7 mm neben der Mitte, 9,1 mm Luft | Nutzerentscheidung, ungetestet | Lichtverteilung im Trakt |
 | | Licht durch die Wand | nie mit LED gesehen | Gebäude mit Hohlraum und LED |
 | Innenhof | Hof-Einsatz 6 mm tief (`HOF_DEPTH_T`, Nutzerwunsch) | ungetestet | Sitz, Druck des dickeren Einsatzes |
-| | Fuge 0,1 mm (`HOF_CLR_T`), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
+| | Fuge 0,15 mm (`HOF_CLR_T`, seit 19.10.2026), Einführfase 0,4 mm (`HOF_CH_T`) | ungetestet | Einsetzen und Herausnehmen |
 | | Blockiger Hof-Umriss bis an die Fassaden (Mindestbreite 4 mm), Treppen als Rechtecke mit Stufen 0,18 / 0,37 mm auf dem Einsatz, Gang im Süden als Teil der Platte | ungetestet | Sitz ohne Steg, Druck der Stufen |
 | | Treppe der Platte in der Gasse am Paulinum: 9 Stufen à 0,2 mm bis zum Ostende (Korrektur 4) | ungetestet | Stufen von einer Schicht im Druck, Paulinum-Mulde mit gerader Nordwand |
 | | Trennwand Hof zu Gebäude-Mulde 0,8 mm (`HOF_WALL_T`) | ungetestet | Wand steht im Druck (0,4 mm kam in r7 nicht), Führung der Gebäude |
-| | Trennwand zwischen aneinanderstoßenden Gebäuden 0,8 mm, Fuge 1,0 mm (`plug/divider/geom.py`) | ungetestet | Wand steht im Druck, alle sechs Gebäude lassen sich gleichzeitig einsetzen |
+| | Trennwand zwischen aneinanderstoßenden Gebäuden 0,8 mm; Zuschnitt der Gebäude mit Fuge 1,0 mm (`ZUSCHNITT_CLR_T` 0,10), auf der Platte um bis 0,14 mm auseinandergerückt (Fuge 1,1; Korrektur 8; Paulinum/Augusteum an den Zahnflanken nur 0,7) (`plug/divider/geom.py`) | ungetestet | Wand steht im Druck, alle sechs Gebäude lassen sich gleichzeitig einsetzen |
 | | Gang im Süden und Treppen in der Platte (Terrassenhöhe 2,35 mm über der Oberfläche, Stufen 0,39 und 0,30 mm) | ungetestet | Druckzeit, Verzug, Stufen |
 | | Stämme 0,8 mm bei 1:1300 (1 mm Rückfall) | Probedruck geplant | sauberer Druck, kein Abbrechen |
 | | Halt des Einsatzes (Reibrippen oder Kleber) | nicht festgelegt | bleibt er ohne Halt liegen |
 | Maßstab | 1:1300 | ungetestet | feine Details bei Mindestbreite 0,8 mm |
+
+### Korrektur 8 (2026-10-19): Mulden-Spiel 0,15, Gebäude auf der Platte auseinandergerückt
+
+- **Beschluss (Passungsserie Variante B, `plug/logbook/tasks/passung-filament.md`):** `OUTLINE_CLR_T` 0,10 → **0,15**, `HOF_CLR_T` 0,10 → **0,15**. `FUSS_FASE_T` 2,0 und `SHAFT_EXTRA_T` 0,30 bleiben.
+- **Entkoppelt:** Die gebauten Gebäude sind mit Fuge 1,0 zugeschnitten; dafür gilt `ZUSCHNITT_CLR_T` 0,10 (`plug/divider/geom.py` `fuge()`), `models_plan`, `plug.buildings` und die Gebäude-STL bleiben unverändert (Körper und Grundrisse bitgleich geprüft). Das Mulden-Spiel 0,15 holt die Platte durch Verschieben der Gebäude: `plug.campus.models_platte` (Grundriss, Körper, Schächte und Docks gemeinsam), `placements_1300.json` bleibt Weltlage.
+- **Verschiebung:** Minimum-Norm je Naht aus den Kontakten der Mulden (`geom.verschiebungen`); Neues Augusteum bleibt. Paulinum (0,020 | 0,098), Hörsaal (−0,119 | −0,078), Seminar (−0,010 | −0,049), Institut (0,010 | 0,049), Hochhaus (0,062 | −0,111) mm, höchstens 0,142 je Gebäude. Wand zwischen den Mulden 0,80 an drei Nähten; **Paulinum/Neues Augusteum nur 0,70 an den Zahnflanken** (Zahn im Schlitz: beide Flanken lassen sich durch Verschieben nicht vergrößern), sonst 0,80.
+- **Platte:** 115,63 × 220,90 (vorher 115,58 × 220,84); die Südwest-Ecke liegt in der Mitte der Verschiebungen (`umriss_platte`), damit `ZAPFEN_LOKAL` und das Display-Dock zum gedruckten Unterkasten passen; Abweichung der Docks der Gebäude relativ zu den Zapfen höchstens 0,14 mm. Rand zum Hörsaalgebäude im Westen 5,91 statt 6,0 mm.

@@ -414,7 +414,7 @@ def main():
         hoch.bounds[1], hoch.bounds[3], hoch.bounds[0], hoch.bounds[2], hoch.bounds[1] - head_y[1], fps["03_hoersaalgebaeude"].bounds[1], fps["03_hoersaalgebaeude"].bounds[3], fps["03_hoersaalgebaeude"].bounds[2]))
 
     # ---- 2. Kopf gegen die Gebäude (Weltlage, z = 0 Plattenoberfläche)
-    print("  Kopf in der Luft gegen die Gebäude (STL aus stl/steckmodul_campus/gebaeude/, Weltlage; Überschneidung mm³ / kleinster Abstand mm, gefordert 0 und mindestens %.1f):" % AIR_MARGIN)
+    print("  Kopf in der Luft gegen die Gebäude (STL aus stl/steckmodul_campus/gebaeude/, um die Verschiebung auf der Platte versetzt; Überschneidung mm³ / kleinster Abstand mm, gefordert 0 und mindestens %.1f):" % AIR_MARGIN)
     from plug.display import body4 as B
     parts, _ = B.parts()
     real = parts["body"] + parts["lid"] + parts["blende"]
@@ -424,6 +424,8 @@ def main():
     geb = {}
     for slug in SLUGS:
         m = load_stl(os.path.join(GEB, "%s_1zu%d.stl" % (slug, P.SCALE_PLAN)))
+        dx_, dy_ = C.SHIFTS.get(slug, (0.0, 0.0))                  # die STL liegen in Weltlage, die Platte rückt die Gebäude je Naht auseinander (C.SHIFTS, aus C.build)
+        m = m.translate([dx_, dy_, 0.0])
         geb[slug] = m
         v1, v2, v3 = vol(h1, m), vol(h2, m), vol(h2r, m)
         g1, g2, g3 = float(h1.min_gap(m, 50.0)), float(h2.min_gap(m, 50.0)), float(h2r.min_gap(m, 50.0))

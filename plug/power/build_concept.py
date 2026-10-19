@@ -418,7 +418,7 @@ def fixed_docks(fps, inner, dk, scale):
     """Docks an den vom Nutzer festgelegten Lagen (plug/scale1176/placements_<Maßstab>.json, von plug/campus.py gebaut).
     Die Lage (cx, cy, Winkel) bezieht sich auf die Mitte des Kassettenfußes; hier gilt der Ursprung der Pin-Reihe."""
     from plug import campus as CA
-    places = json.load(open(CA.CACHE % scale))
+    places = CA.places_platte(json.load(open(CA.CACHE % scale)))      # Lagen in der Lage auf der Platte (Gebäude je Naht auseinandergerückt, `CA.SHIFTS` aus `models_platte`)
     zone = dock_zone(dk)
     body = box(-dk["hw"], dk["y_slot"], dk["hw"], dk["yb"] + dk["hd"])
     out = []
@@ -554,13 +554,13 @@ def variant(scale, h=H0, dk=DK):
     s = 1000.0 / scale
     G.FAST = True                              # Laser-Raster 0,6 m wie plug/campus.py (gleiche Grundrisse wie scale.md)
     from plug import campus as C                # lazy: campus importiert dieses Modul
-    m = C.models_plan(s, scale)                # Grundrisse mit Fuge an den Nähten wie plug/campus.py
+    m = C.models_platte(s, scale)              # Grundrisse mit Fuge an den Nähten und in der Lage auf der Platte wie plug/campus.py (Setzt C.SHIFTS)
     fps = {k: v[1] for k, v in m.items() if k in TP.CASSETTE}
     hof_solid, hof_fp, _ = innenhof.model(s, list(fps.values()), TP.HOF_DEPTH_T, TP.HOF_CLR_T)
     hof_cut = innenhof.flaeche_mm(list(fps.values()), s)      # Aussparung der Platte (ohne Fase oben), wie plug/campus.py
     sel = list(G.BUILDINGS)
     foot_fp = unary_union([fps[b["slug"]] for b in sel])
-    outline = G.plate_outline(unary_union([foot_fp, hof_fp]))
+    outline = C.umriss_platte(unary_union([foot_fp, hof_fp]))      # wie plug/campus.py (Südwest-Ecke: Mitte der Verschiebungen)
     minx, miny, maxx, maxy = outline.bounds
     sh = (-minx, -miny)
     W, Ln = maxx - minx, maxy - miny
