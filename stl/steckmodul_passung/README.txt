@@ -14,6 +14,8 @@ Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
   K2_kassette_V1RS_16.stl        Spiel im Schacht je Seite 0,12 / 0,16 / 0,20 (heute 0,06): Außenmaß 0,06 / 0,10 / 0,14 je Seite kleiner.
   K3_kassette_V1RS_20.stl        Kerben/Kennung: Dateiname; mit Stift auf der Unterseite markieren. Je etwa 16 min.
+  K4_kassette_V1RS_14.stl        Zwischenstufe (eigene ZIP passung_kassette_14.zip): Spiel im Schacht 0,14, zwei erhabene Punkte als Kennung, Buchsentasche
+                                 0,10 enger (10,46 x 2,84) und 0,2 flacher (Höhe 14,40 statt 14,60), weil die Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte.
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block 125 min + Kassetten 65 min = 190 min

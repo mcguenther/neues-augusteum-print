@@ -10,6 +10,9 @@ Spielwerte (je Seite): Mulden 0,10 / 0,15 / 0,20 (Kennung 1 bis 3 erhabene Balke
 0,06 / 0,10 / 0,14 je Seite kleiner als heute, Schacht unverändert 0,06). Schachtdecke 0,35 über dem Unterbau (SHAFT_EXTRA_T im Code 0,30; hier die
 Empfehlung aus L36).
 
+K4 (Zwischenstufe, passung_kassette_14.zip): Spiel im Schacht 0,14, Buchsentasche 0,10 enger (10,46 x 2,84), zwei Punkte als Kennung; Tasche 0,2 flacher
+(14,40 statt 14,60), weil die Dupont-Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte (Einstecktiefe E, Grenze für stabilen Durchgang 5,08 von 5,28).
+
 Aufruf (aus dem Wurzelverzeichnis, ca. 1 min):
     python3 -m plug.filament.build
 """
@@ -43,6 +46,7 @@ DACH = 1.2
 FUSS_HOEHE = 22.0                       # Probefuß oben offen (kein Dach): Schacht geht durch; Muldentiefe 14,2, also ragt der Fuß 7,8 mm aus der Mulde (Griff zum Herausziehen)
 FENSTER_W, FENSTER_D = 12.0, 3.0      # Fenster im Dach des Probefußes (Stift zum Herausdrücken der Kassette)
 LAGE = 0.2
+TASCHE_FLACHER = 0.20                   # K4: Buchsentasche 0,2 flacher (14,40 statt 14,60), die Buchse tauchte beim ersten K4 ca. 0,2 zu tief ein (Einstecktiefe E, Grenze 5,08 von 5,28)
 BAR_W, BAR_GAP, BAR_L, BAR_H = 1.2, 1.0, 8.0, 0.6
 
 
@@ -51,16 +55,18 @@ def ext(poly, z0, z1):
 
 
 # ---- Kassette (Unterbau)
-def kassette(spiel, tasche_enger=0.0, punkte=0):
-    """Unterbau der Kassette V1RS, je Seite um (spiel - 0,06) schlanker, Tasche unten am Bett (z = 0), Buchsentasche unverändert."""
+def kassette(spiel, tasche_enger=0.0, punkte=0, tasche_flacher=0.0):
+    """Unterbau der Kassette V1RS, je Seite um (spiel - 0,06) schlanker, Tasche unten am Bett (z = 0), Buchsentasche unverändert
+    (K4: tasche_enger = Breite und Tiefe insgesamt enger, tasche_flacher = Taschenhöhe kleiner, Decke über der Tasche entsprechend dicker)."""
     d = V.dims(VAR)
     dd = spiel - P.KASS_CLR_T
     w, depth, zb = d["w"], d["depth"], d["z_b"]
     body = N2.chamfered_block(w - 2 * dd, depth - 2 * dd, zb, V.EF, 0.0).translate([0, depth / 2, 0])
     pw, pd = d["pk_w"] - tasche_enger, d["pk_d"] - tasche_enger      # Buchsentasche insgesamt tasche_enger enger in Breite und Tiefe (Höhe unverändert)
-    cuts = [cbox(pw, pd, -0.01, d["zp"], cy=d["ypin"]),
+    zp = d["zp"] - tasche_flacher                                      # Höhe der Buchsentasche (Decke darüber bis z_b bleibt geschlossen, nur der Aderschlitz geht durch)
+    cuts = [cbox(pw, pd, -0.01, zp, cy=d["ypin"]),
             N2.chamfer_hole(pw, pd, 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
-            box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], d["zp"] - 0.01, zb + 0.01)]
+            box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], zp - 0.01, zb + 0.01)]
     m = diff(body, *cuts)
     # Kennung: erhabene Punkte (0,2 hoch, Ø 1,2) auf der Oberseite rechts vom Schlitz, Anzahl = (Spiel - 0,10) / 0,02, zwei Spalten, 3 Reihen
     dots = []
@@ -178,7 +184,7 @@ def main():
     ziel["A1_mulden_block_institut"] = "mulde"
     for i, s in enumerate(KASS_SPIEL):
         teile["K%d_kassette_V1RS_%d" % (i + 1, round(s * 100))] = kassette(s)
-    teile["K4_kassette_V1RS_14"] = kassette(0.14, tasche_enger=0.10, punkte=2)
+    teile["K4_kassette_V1RS_14"] = kassette(0.14, tasche_enger=0.10, punkte=2, tasche_flacher=TASCHE_FLACHER)
     f4, h4 = probefuss(4.0)
     teile["B1_probefuss_fase4"] = f4
     plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=1.6, top_ch=0.5)
@@ -215,12 +221,13 @@ def main():
     for i, s in enumerate(KASS_SPIEL):
         k = kassette(s).translate([0, -d["depth"] / 2, 0])
         chk("Kassette %d (Spiel %.2f) im Schacht des Probefußes B1" % (i + 1, s), (f4 ^ k).volume())
-    k4 = kassette(0.14, tasche_enger=0.10, punkte=2).translate([0, -d["depth"] / 2, 0])
-    chk("Kassette 4 (Spiel 0,14, Tasche 0,10 enger, 2 Punkte) im Schacht des Probefußes B1", (f4 ^ k4).volume())
+    k4 = kassette(0.14, tasche_enger=0.10, punkte=2, tasche_flacher=TASCHE_FLACHER).translate([0, -d["depth"] / 2, 0])
+    chk("Kassette 4 (Spiel 0,14, Tasche 0,10 enger und 0,20 flacher, 2 Punkte) im Schacht des Probefußes B1", (f4 ^ k4).volume())
     hs = V.housing(VAR)
-    chk("Buchse (Nennmaß 10,16 x 2,54) in der engeren Tasche von K4 (Kassette im Ursprung)", (kassette(0.14, tasche_enger=0.10) ^ hs).volume())
+    k4o = kassette(0.14, tasche_enger=0.10, tasche_flacher=TASCHE_FLACHER)
+    chk("Buchse (Nennmaß 10,16 x 2,54) in der Tasche von K4 (10,46 x 2,84 x %.2f, Kassette im Ursprung)" % (d["zp"] - TASCHE_FLACHER), (k4o ^ hs).volume())
     hb = V.housing(VAR).translate([0.16, 0, 0])
-    chk("Kontrolle: Buchse 0,16 seitlich verschoben stößt an die Tasche von K4 an", (kassette(0.14, tasche_enger=0.10) ^ hb).volume(), soll_null=False)
+    chk("Kontrolle: Buchse 0,16 seitlich verschoben stößt an die Tasche von K4 an", (k4o ^ hb).volume(), soll_null=False)
     k0 = kassette(P.KASS_CLR_T).translate([0, -d["depth"] / 2, 0])
     chk("Kontrolle: Kassette mit Spiel 0,06 (heute) liegt ohne Verschiebung im Schacht", (f4 ^ k0).volume())
     k_zu = N2.chamfered_block(d["w"] + 0.30, d["depth"] + 0.30, d["z_b"], V.EF, 0.0).translate([0, 0, 0])
@@ -283,6 +290,8 @@ Beide Varianten:
   K1_kassette_V1RS_12.stl        BEIGE. Unterbau der Kassette V1RS (nur dort sitzt die Passung; ohne Blatt und Streifen), Tasche unten am Bett.
   K2_kassette_V1RS_16.stl        Spiel im Schacht je Seite 0,12 / 0,16 / 0,20 (heute 0,06): Außenmaß 0,06 / 0,10 / 0,14 je Seite kleiner.
   K3_kassette_V1RS_20.stl        Kerben/Kennung: Dateiname; mit Stift auf der Unterseite markieren. Je etwa {zk1:.0f} min.
+  K4_kassette_V1RS_14.stl        Zwischenstufe (eigene ZIP passung_kassette_14.zip): Spiel im Schacht 0,14, zwei erhabene Punkte als Kennung, Buchsentasche
+                                 0,10 enger (10,46 x 2,84) und 0,2 flacher (Höhe 14,40 statt 14,60), weil die Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte.
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block {za_block:.0f} min + Kassetten {zk:.0f} min = {za_total:.0f} min
