@@ -12,7 +12,7 @@ Ausgewertet in [`rounds/r10_passung_filament/summary.md`](rounds/r10_passung_fil
 
 | Prio | Aufgabe | Bedingung |
 |---|---|---|
-| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | Folgeaufgabe, gilt zunächst für V1RS |
+| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | **erledigt 2026-10-19** (`variants.KASS_SCHLANK_T`, `TASCHE_ENGER_T`, `TASCHE_FLACHER_T` für V1RS; die Maße des Schachts bleiben, daher Gebäude-STL byte-gleich); v4 und V2R unverändert und ungetestet |
 | 1 | Neue Steckplatte (0009967) drucken; Prüfung: sitzen die bestehenden beigen Gebäude (Fase 2,0) in den 0,15er Mulden gleich gut wie der Probefuß (Fase 4,0)? Hof-Einsatz mit 0,15 (ungetestet) | Nutzer druckt |
 | 1 | Entscheidung Fuß-Fase 4,0 (Aufgabendatei) gegen 2,0 (`FUSS_FASE_T`, r8 bewährt) für neue Gebäude | nach dem Plattentest |
 | 2 | Schachttiefe 0,35 (`SHAFT_EXTRA_T` steht auf 0,30) | nur für künftig gebaute Gebäude |
