@@ -654,7 +654,7 @@ def profile_for(quelle, variant):
 
 
 def colour_table(profil=None):
-    """(data/farben.json, Plattenfarbe); mit profil=3|4 mit der Filament-Palette des Profils."""
+    """(data/farben.json, Plattenfarbe); mit profil (3, 4 oder Liste [(hex, name)]) mit der Filament-Palette des Profils."""
     import farben
     f = farben.load_farben() or {}
     if profil:
@@ -669,7 +669,7 @@ def reduce_colours(coloured, objs, profil):
     """
     import farben as F
     farben, _ = colour_table()
-    return [(name, mesh, F.reduziere(slug, farben.get(slug) if slug else None, mesh, hexes, profil))
+    return [(name, mesh, F.reduziere(slug, farben.get(slug) if slug else None, mesh, hexes, profil, farben))
             for (name, mesh, hexes), (_, _, slug) in zip(coloured, objs)]
 
 

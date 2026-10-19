@@ -26,6 +26,15 @@ Für Claude-Agenten: Diese Datei ist die eine Quelle für Slicer-Einstellungen d
 | Rand (Brim) | City-Hochhaus: ja, 5 mm; sonst nein | Hochhaus ist 125 mm hoch auf 36 × 35 mm Grundfläche |
 | Filament | PLA weiß oder natur | leitet am meisten Licht |
 
+## Farbig drucken (`stl/steckmodul_campus/gebaeude_farbig/`)
+
+Dieselben Gebäude als 3MF mit bemalten Außenflächen (`python3 -m plug.colour`), je Gebäude höchstens 4 Filamente aus Beige, Graublau, Weinrot,
+Space Grey (Hauptfarben) und Schwarz, Grasgrün (Reserve; Weiß vorerst nicht, wird Beige); welcher Satz zu welchem Gebäude gehört, steht in der README dort.
+Einstellungen wie oben; dazu im Slicer die vier Filamente in der Reihenfolge der 3MF (F1 … F4) den Slots zuordnen. Der Fuß ist einfarbig
+(kein Wechsel in den ersten 14 mm), die Innenflächen tragen die Farbe der nächsten Außenwand, damit die 0,8-mm-Wand durchgefärbt ist.
+Wenig Wechsel: `*_einfarbig.3mf` (jedes Gebäude eine Farbe, nur der Hof-Einsatz wechselt in den Lagen der Baumkronen auf Grasgrün); Gebäude derselben Farbe zusammen auf ein Bett legen. Farbiges PLA lässt weniger LED-Licht durch als weißes; ungetestet. Spülmenge (Flush/Purge) je Wechsel ist der größte Materialposten:
+im Slicer „Flush into objects' infill“ an, wo vorhanden.
+
 ## Füllmuster im Vergleich (für das Licht der LED)
 
 Die LED sitzt über dem Schachtrohr; ihr Licht geht durch die Füllung der Gewölbe-Keile und dann durch die Wand (0,8 mm). Die Füllungsart
