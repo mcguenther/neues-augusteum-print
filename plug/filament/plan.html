@@ -1,0 +1,496 @@
+<title>Passungsplan Filamente</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte. Zuerst die Antworten, dann Befund mit Reglern (Mulde, Kassette, Stift), Fase und Reibung, Testteile, Entscheidungskarten.
+   Farben wie die anderen Planseiten des Repos (kühles Grau, Kupfer als Akzent); die Filamentfarben der Zeichnungen sind die echten (Platte grau, Gebäude beige, Kassette schwarz). */
+:root {
+  --bg: #f3f4f5; --panel: #ffffff; --fg: #1d2329; --muted: #5d6873; --line: #d4d9de;
+  --accent: #b4541a; --accent-soft: #f4e3d8; --stage: #e6e9ec;
+  --ok: #2c7a4b; --ok-soft: #d9eee1; --warn: #9a6a0a; --warn-soft: #f6e8c4; --bad: #b3392b; --bad-soft: #f6d9d4;
+  --grau: #8a949e; --grau-line: #5f6a75; --beige: #dcc597; --beige-line: #a68b57; --schwarz: #3a3f45; --blau: #2a6db0;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+    --accent: #e8935c; --accent-soft: #3a2a20; --stage: #12161a;
+    --ok: #6cc08a; --ok-soft: #1d3a29; --warn: #e0b44e; --warn-soft: #3b3014; --bad: #ee8a7c; --bad-soft: #43221d;
+    --grau: #6f7a85; --grau-line: #98a3ae; --beige: #b79f72; --beige-line: #d9c394; --schwarz: #0d0f11; --blau: #6aa6e8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15191d; --panel: #1d2228; --fg: #e6e9ec; --muted: #9aa5af; --line: #323a42;
+  --accent: #e8935c; --accent-soft: #3a2a20; --stage: #12161a;
+  --ok: #6cc08a; --ok-soft: #1d3a29; --warn: #e0b44e; --warn-soft: #3b3014; --bad: #ee8a7c; --bad-soft: #43221d;
+  --grau: #6f7a85; --grau-line: #98a3ae; --beige: #b79f72; --beige-line: #d9c394; --schwarz: #0d0f11; --blau: #6aa6e8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding-block: 24px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+h1 { font-size: 1.9rem; line-height: 1.15; margin: 0; letter-spacing: -0.015em; text-wrap: balance; font-weight: 600; }
+h2 { font-size: 1.25rem; line-height: 1.25; margin: 0; text-wrap: balance; font-weight: 600; }
+h3 { font-size: 0.95rem; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 70ch; margin-top: 10px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.chip { font-family: var(--mono); font-size: 0.74rem; padding: 2px 9px; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); background: var(--panel); }
+.sec { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.sec > p, .note { max-width: 78ch; }
+.note { color: var(--muted); font-size: 0.86rem; }
+code { font-family: var(--mono); font-size: 0.84em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+.kicker { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+/* Antworten */
+.qa { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.qa > div { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.qa .q { font-size: 0.8rem; color: var(--muted); }
+.qa .a { font-size: 0.93rem; }
+.qa b { font-weight: 600; }
+
+/* Tabellen */
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+th, td { text-align: left; padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 0.74rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); font-weight: 500; white-space: nowrap; }
+td.n, th.n { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font-size: 0.72rem; font-family: var(--mono); padding: 1px 8px; border-radius: 99px; white-space: nowrap; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); } .pill.off { background: var(--stage); color: var(--muted); }
+
+/* Zeichenflächen */
+.fig { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.fig svg { width: 100%; height: auto; display: block; background: var(--stage); border-radius: 6px; }
+.fig .cap { font-size: 0.82rem; color: var(--muted); max-width: 80ch; }
+svg text { font-family: var(--font); fill: var(--fg); }
+svg .mono { font-family: var(--mono); }
+svg .mut { fill: var(--muted); }
+.s-grau { fill: var(--grau); stroke: var(--grau-line); } .s-beige { fill: var(--beige); stroke: var(--beige-line); }
+.s-schwarz { fill: var(--schwarz); stroke: var(--schwarz); }
+.s-bad { fill: var(--bad); } .s-ok { fill: var(--ok); } .s-warn { fill: var(--warn); }
+.dim { stroke: var(--muted); fill: none; stroke-width: 1; }
+.lbl { font-size: 11px; } .lbl-s { font-size: 10px; }
+
+/* Regler */
+.ctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 22px; }
+.ctl label { display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--muted); }
+.ctl label span.v { font-family: var(--mono); color: var(--fg); font-variant-numeric: tabular-nums; }
+.ctl label .row { display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.presets button { font: inherit; font-size: 0.78rem; padding: 4px 11px; border-radius: 99px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+.presets button:hover { border-color: var(--accent); }
+.presets button:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.read { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; font-size: 0.9rem; }
+.read .big { font-family: var(--mono); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+
+/* Entscheidungskarten */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card h3 { display: flex; gap: 8px; align-items: baseline; }
+.card h3 .k { font-family: var(--mono); color: var(--accent); }
+.opt { display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 0.86rem; }
+.opt .l { font-family: var(--mono); font-weight: 500; color: var(--muted); }
+.opt.rec { border-color: var(--accent); background: var(--accent-soft); }
+.opt.rec .l { color: var(--accent); }
+.opt b { font-weight: 600; }
+.opt small { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+/* Ablauf */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; font-size: 0.87rem; min-width: 0; }
+.step .t { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.step.now { border-color: var(--accent); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+ul.tight { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; font-size: 0.88rem; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+@media (prefers-reduced-motion: no-preference) { .read .big { transition: color .15s; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker">Steckmechanismus · Schritt 1 von 3 · Plan, noch keine STL</div>
+  <h1>Passungsplan Filamente</h1>
+  <p class="lead">Mit beigem Filament passen weder die Gebäude in die Mulden noch die Kassetten in die Schächte. Die Seite sammelt, was bewährt ist, rechnet nach, warum es klemmt, und schlägt Testteile vor, mit denen sich die Passung für jede Filamentfarbe festlegen lässt.</p>
+  <div class="meta">
+    <span class="chip">Stand 19.10.2026</span>
+    <span class="chip">Bezug: r3 E, r7, r8, Lehren L10, L11, L18, L43, L44</span>
+    <span class="chip">Platte grau · Gebäude beige, graublau, rot</span>
+    <span class="chip">Alle Zahlen zu Beige sind Platzhalter bis zur Messung (T4)</span>
+  </div>
+</header>
+
+<section class="sec" id="antworten">
+  <h2>Die Antworten in Kürze</h2>
+  <div class="qa">
+    <div><div class="q">Immer zwei Versionen, Schwarz und andere Farben?</div>
+      <div class="a"><b>Nein, eine Geometrie.</b> Jede Farbe wird einmal vermessen (T4, ein Plättchen, 10 min) und im Slicer so abgeglichen, dass sie maßhaltig druckt. Mehr Spiel allein verschiebt das Problem: Es macht Schwarz locker und gefährdet, dass die Stifte die Buchse treffen (Abschnitt 5). Zwei Dateisätze bleiben nur der Rückfall.</div></div>
+    <div><div class="q">Was ist bewährt?</div>
+      <div class="a">Alles in Schwarz: Mulde <b>0,10</b> je Seite an der kleinen Lehre (0,15 gut, 0,20 wackelt), Kassette im Schacht <b>0,06</b> eingepresst, Buchsentasche <b>0,20</b>. Bei großem Umriss war schon in Schwarz 0,10 zu eng (r8). Tabelle in Abschnitt 1.</div></div>
+    <div><div class="q">Mehr Spiel in der Platte, Gebäude unverändert?</div>
+      <div class="a"><b>Ja, das ist der Ansatz.</b> Die Mulden werden größer, die Gebäude bleiben, wie sie sind. Grenze: An vier Nähten zwischen Gebäuden liegt nur eine 0,8-mm-Wand zwischen den Mulden; 0,10 mehr Spiel kosten dort 0,2 mm Wand (Abschnitt 2).</div></div>
+    <div><div class="q">Kassette passt nicht mehr in die beigen Gebäude. Was tun?</div>
+      <div class="a"><b>Kassette um 0,06 bis 0,14 je Seite schlanker drucken</b> (drei Stufen als Serie). Die Buchsentasche bleibt, die Wand der Kassette ist mit mindestens 1,2 mm dick genug. Die vorhandenen Gebäude bleiben nutzbar.</div></div>
+    <div><div class="q">Höhere Fase für weniger Reibung?</div>
+      <div class="a"><b>Hilft nicht.</b> Eine Fase erleichtert nur die ersten 2 mm. Gerieben wird an den geraden 12 mm danach. Eine höhere Fase verkürzt zudem die gerade Führung, wenn die Stifte die Buchse treffen (6,9 mm bei 2,0, nur 4,9 mm bei 4,0).</div></div>
+    <div><div class="q">Gebäudestumpf als Passlehre?</div>
+      <div class="a"><b>Ja, aber gestaffelt.</b> Runde 1 braucht keinen Stumpf: Das beige Institutsgebäude ist schon die Lehre. Der Stumpf kommt als Eingangsprüfung für neue Farben, nach dem Messplättchen T4.</div></div>
+  </div>
+</section>
+
+<section class="sec" id="bewaehrt">
+  <h2>1 · Was bewährt ist</h2>
+  <p>Aus Logbuch <code>current.md</code> und <code>lessons.md</code>. Alle Beläge sind in <b>schwarzem PLA</b> gedruckt (Bambu A1, Düse 0,4, Schicht 0,2). Für andere Farben ist bisher nichts belegt.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Passung</th><th class="n">Wert je Seite</th><th>Status</th><th>Beleg und Anmerkung</th></tr></thead>
+    <tbody>
+      <tr><td>Fuß in Mulde, kleine Lehre (24 × 38)</td><td class="n">0,10</td><td><span class="pill ok">bewährt</span></td><td>r2 FM, r3 M, r4 M. 0,10 und 0,15 gut, 0,20 wackelt</td></tr>
+      <tr><td>Fuß in Mulde, großer Umriss (Hochhaus 36 × 35)</td><td class="n">0,10</td><td><span class="pill bad">zu eng</span></td><td>r8: nur mit Kraft hinein, Herausziehen sehr fest. Nutzervorgabe: nächster Test 0,15 (L43)</td></tr>
+      <tr><td>Kassette im Schacht, eingepresst, 17 mm lang</td><td class="n">0,06</td><td><span class="pill ok">bewährt</span></td><td>r3 E (Sitz 3, hält beim Schütteln). Mit nur 7 mm Berührung ist 0,15 „ideal zum Gleiten“ (r1); die Länge zählt (L11)</td></tr>
+      <tr><td>Buchse in Kassettentasche</td><td class="n">0,20</td><td><span class="pill ok">bewährt</span></td><td>r1 bis r4, auch in Beige (Nutzer). Buchse schwimmt leicht, das hilft den Stiften</td></tr>
+      <tr><td>Fuß-Fase unten (45°)</td><td class="n">2,0 mm</td><td><span class="pill ok">bewährt</span></td><td>r8: fängt das Gebäude, kein Wulst. Muldenfase oben 0,5 (r7 L41)</td></tr>
+      <tr><td>Schachttiefe über Kassette</td><td class="n">+ 0,35</td><td><span class="pill ok">bewährt</span></td><td>r4 E, L36</td></tr>
+      <tr><td>Loch für die Stifte im Muldenboden</td><td class="n">Ø 1,4</td><td><span class="pill ok">bewährt</span></td><td>Stift 0,64 vierkant, Loch lässt ±0,38</td></tr>
+    </tbody></table></div>
+  <p class="note">Im Code: <code>OUTLINE_CLR_T</code> 0,10 (große Umrisse), <code>MULDE_CLR_T</code> 0,10 (kleine Lehre), <code>KASS_CLR_T</code> 0,06, <code>SNUG2</code> 0,20 in <code>plug/testcase/params.py</code>. Die Gebäude der Steckplatte nutzen <code>OUTLINE_CLR_T</code>.</p>
+</section>
+
+<section class="sec" id="mulde">
+  <h2>2 · Warum es klemmt: die Fuge ist das, was nach dem Druck übrig bleibt</h2>
+  <p>Das Spiel im Modell ist nur der Sollwert. Gedruckt bleibt <b>Spiel minus Aufmaß</b>: Das Gebäude wird außen um den Betrag a<sub>G</sub> größer (Fluss, Linienbreite, Schrumpf), die Mulde im Plattenmaterial wird um a<sub>P</sub> enger. Beide Werte hängen vom Filament ab. Die Zeichnung zeigt eine Muldenwand im Schnitt, stark vergrößert (1 mm = 400 px).</p>
+  <div class="fig">
+    <div class="presets" id="pre1" aria-label="Beispiele"></div>
+    <div class="ctl">
+      <label><div class="row"><span>Spiel im Modell S</span><span class="v" id="v1s"></span></div><input type="range" id="r1s" min="0.05" max="0.40" step="0.01" value="0.10"></label>
+      <label><div class="row"><span>Aufmaß Gebäude a<sub>G</sub> (außen größer)</span><span class="v" id="v1g"></span></div><input type="range" id="r1g" min="-0.05" max="0.25" step="0.01" value="0.10"></label>
+      <label><div class="row"><span>Aufmaß Platte a<sub>P</sub> (Mulde enger)</span><span class="v" id="v1p"></span></div><input type="range" id="r1p" min="-0.05" max="0.20" step="0.01" value="0.05"></label>
+    </div>
+    <svg viewBox="0 0 640 230" role="img" aria-label="Muldenwand und Gebäudefuß im Schnitt, die freie Fuge ändert sich mit den Reglern">
+      <text class="lbl mut" x="12" y="20">Platte (grau)</text><text class="lbl mut" x="628" y="20" text-anchor="end">Gebäudefuß (beige)</text>
+      <rect id="w1p" class="s-grau" x="0" y="30" width="270" height="150" stroke-width="1.5"/>
+      <rect id="w1g" class="s-beige" x="320" y="30" width="320" height="150" stroke-width="1.5"/>
+      <rect id="w1x" class="s-bad" x="300" y="30" width="0" height="150" opacity="0.85"/>
+      <line id="n1p" class="dim" x1="270" x2="270" y1="24" y2="190" stroke-dasharray="3 3"/>
+      <line id="n1g" class="dim" x1="310" x2="310" y1="24" y2="190" stroke-dasharray="3 3"/>
+      <text id="t1p" class="lbl-s mut" x="266" y="204" text-anchor="end">Soll Mulde</text>
+      <text id="t1g" class="lbl-s mut" x="314" y="204">Soll Gebäude</text>
+      <text id="t1f" class="mono" x="320" y="224" text-anchor="middle" font-size="13" font-weight="500"></text>
+    </svg>
+    <div class="read"><span>Freie Fuge je Seite</span><span class="big" id="o1f"></span><span class="pill" id="o1c"></span><span class="note" id="o1t"></span></div>
+    <p class="cap">Schwellen aus den Drucken: unter 0,02 geht es nicht, bis 0,08 nur mit Kraft (r8), 0,08 bis 0,16 gut (0,10 und 0,15 an der kleinen Lehre), darüber wird es locker (0,20 wackelte). Die Beispielwerte sind <b>Platzhalter</b>, nur die Schwellen stammen aus Drucken.</p>
+  </div>
+  <div class="two">
+    <div class="box"><h3>Warum nicht einfach 0,25 für alle</h3>
+      <p>Wenn a<sub>G</sub> + a<sub>P</sub> bei Beige 0,15 beträgt, braucht Beige S = 0,25 für eine gute Fuge. Dasselbe S ergibt bei einem maßhaltigen Filament 0,25 Fuge, also deutlich zu locker. Schwarz liegt dazwischen. Ein einziges großes Spiel deckt die Streuung der Filamente nur ab, wenn man die Lockerheit akzeptiert. Die Lockerheit kostet Stift-Treffer (Abschnitt 5).</p></div>
+    <div class="box"><h3>Grenze an den Nähten: die Wand zwischen den Mulden</h3>
+      <p>Die Gebäude stehen an vier Nähten mit 1,0 mm Fuge zueinander (<code>plug/divider/geom.py</code>: Fuge = 2 · Spiel + Wand 0,8). Bleiben die Gebäude, wie sie sind, verteilt sich die Fuge neu:</p>
+      <div class="tw"><table><thead><tr><th class="n">Spiel S</th><th class="n">Wand zwischen Mulden</th><th>Bewertung</th></tr></thead><tbody>
+        <tr><td class="n">0,10</td><td class="n">0,80</td><td><span class="pill ok">heute</span></td></tr>
+        <tr><td class="n">0,15</td><td class="n">0,70</td><td><span class="pill ok">druckbar</span></td></tr>
+        <tr><td class="n">0,20</td><td class="n">0,60</td><td><span class="pill warn">eine Linie, biegt sich</span></td></tr>
+        <tr><td class="n">0,25</td><td class="n">0,50</td><td><span class="pill bad">zu dünn</span></td></tr></tbody></table></div>
+      <p class="note">Betroffen sind Paulinum / Neues Augusteum, Augusteum / Hörsaal, Hörsaal / Hochhaus und Seminar / Institut. Zum Hof gleicht <code>hof_abstand</code> von selbst aus. Karte K3.</p></div>
+  </div>
+</section>
+
+<section class="sec" id="kassette">
+  <h2>3 · Kassette im Schacht</h2>
+  <p>Gleiche Rechnung, anderes Ziel: Die Kassette soll <b>eingepresst</b> sitzen (0,06 effektiv, Sitz 3), nicht gleiten. Der Schacht im Gebäude schrumpft um a<sub>S</sub>, die Kassette wächst um a<sub>K</sub>. Da die Gebäude schon gedruckt sind, ändert sich nur die Kassette: kleinere Außenmaße, Buchsentasche und Innenleben unverändert.</p>
+  <div class="fig">
+    <div class="ctl">
+      <label><div class="row"><span>Spiel im Modell (Schacht minus Kassette)</span><span class="v" id="v2s"></span></div><input type="range" id="r2s" min="0.02" max="0.30" step="0.01" value="0.06"></label>
+      <label><div class="row"><span>Aufmaß Kassette a<sub>K</sub></span><span class="v" id="v2g"></span></div><input type="range" id="r2g" min="-0.05" max="0.20" step="0.01" value="0.05"></label>
+      <label><div class="row"><span>Aufmaß Schacht a<sub>S</sub> (enger)</span><span class="v" id="v2p"></span></div><input type="range" id="r2p" min="-0.05" max="0.20" step="0.01" value="0.05"></label>
+    </div>
+    <svg viewBox="0 0 640 200" role="img" aria-label="Schachtwand und Kassette im Schnitt">
+      <text class="lbl mut" x="12" y="20">Gebäude, Schacht (beige)</text><text class="lbl mut" x="628" y="20" text-anchor="end">Kassette (beige)</text>
+      <rect id="w2p" class="s-beige" x="0" y="30" width="270" height="120" stroke-width="1.5"/>
+      <rect id="w2g" class="s-beige" x="320" y="30" width="320" height="120" stroke-width="1.5" opacity="0.7"/>
+      <rect id="w2x" class="s-bad" x="300" y="30" width="0" height="120" opacity="0.85"/>
+      <line id="n2p" class="dim" x1="270" x2="270" y1="24" y2="160" stroke-dasharray="3 3"/>
+      <line id="n2g" class="dim" x1="310" x2="310" y1="24" y2="160" stroke-dasharray="3 3"/>
+      <text id="t2f" class="mono" x="320" y="190" text-anchor="middle" font-size="13" font-weight="500"></text>
+    </svg>
+    <div class="read"><span>Freie Fuge je Seite</span><span class="big" id="o2f"></span><span class="pill" id="o2c"></span><span class="note" id="o2t"></span></div>
+    <p class="cap">Schwellen: unter 0,02 passt nicht, 0,02 bis 0,09 eingepresst (bewährt 0,06), 0,09 bis 0,13 fest, darüber locker bis gleitend (0,15 bei 7 mm Berührung, r1). Beispiel „beige heute“ mit Platzhaltern 0,05 + 0,05.</p>
+  </div>
+  <div class="two">
+    <div class="box"><h3>Kassetten-Querschnitte (aus dem Code)</h3>
+      <div class="tw"><table><thead><tr><th>Kassette</th><th>für</th><th class="n">Außen B × T</th><th class="n">Wand neben Tasche</th></tr></thead><tbody>
+        <tr><td>v4</td><td>Paulinum, Augusteum, Hörsaal</td><td class="n">13,50 × 29,44</td><td class="n">1,47</td></tr>
+        <tr><td>V1RS</td><td>Seminar, Institut</td><td class="n">19,20 × 6,40</td><td class="n">4,32 (Streifenrand 1,25)</td></tr>
+        <tr><td>V2R</td><td>Hochhaus</td><td class="n">12,96 × 6,40</td><td class="n">1,20</td></tr></tbody></table></div>
+      <p class="note">Ein Beschnitt der v4 um 0,14 je Seite lässt 1,33 Wand. Die V2R (Hochhaus) liegt mit 1,20 schon am Mindestmaß und wird nicht schlanker; sie bleibt ein Sonderfall für später. Bei V1RS prüft der Generator den Streifenrand (1,25) vor jeder STL, Wand mindestens 1,2.</p></div>
+    <div class="box"><h3>Warum die Kassette und nicht der Schacht</h3>
+      <ul class="tight"><li>Eine Kassette kostet etwa 10 bis 20 Minuten, ein Gebäude Stunden.</li><li>Die drei beigen Gebäude bleiben als Prüfkörper nutzbar.</li><li>Was gebraucht wird, steht nach einer Serie fest. Erst danach wird <code>KASS_CLR_T</code> für künftige Gebäude angepasst.</li></ul>
+      <p class="note">Kehrseite: Wird die Kassette schlanker, sitzt sie in Schwarz locker. Das ist akzeptiert, solange Schwarz nicht mehr für Gebäude genutzt wird, sonst greift die Kalibrierung (Abschnitt 6).</p></div>
+  </div>
+</section>
+
+<section class="sec" id="fase">
+  <h2>4 · Fase und Reibung</h2>
+  <p>Die Stifte treffen die Buchse, wenn der Fuß 8,9 mm tief in der Mulde steckt (Muldentiefe 14,2 minus Einstecktiefe E 5,28). Bis dahin muss das Gebäude gerade geführt sein, und dann folgen noch 5,3 mm Rest-Weg. Die Zeichnung vergleicht, wo gerieben und wo geführt wird.</p>
+  <div class="fig">
+    <svg viewBox="0 0 820 366" role="img" aria-label="Drei Muldenwände: gerade, Führungsband, höhere Fase">
+      <g id="fasebilder"></g>
+    </svg>
+    <p class="cap">Spiel überhöht gezeichnet. Gezeichnet ist der Zustand beim ersten Stiftkontakt, der Fuß steckt 8,9 mm tief. Rote Linie = Strecke, auf der Fuß und Mulde sich gerade berühren. Der Fuß ragt oben noch 5,3 mm heraus.</p>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Variante</th><th class="n">Reibweg beim Einführen</th><th class="n">gerade Führung beim Stiftkontakt</th><th>Wackeln danach</th><th>Aufwand</th></tr></thead>
+    <tbody>
+      <tr><td><b>A</b> gerade Wand, nur mehr Spiel</td><td class="n">12,2 mm</td><td class="n">6,9 mm</td><td>je nach Spiel</td><td>nur Platte</td></tr>
+      <tr><td><b>B</b> Führungsband 5 mm oben, darunter + 0,15 Entlastung</td><td class="n">5,0 mm</td><td class="n">5,0 mm, Fußende 3,9 mm frei</td><td>etwas mehr</td><td>nur Platte, Überhang 0,15 je Lage</td></tr>
+      <tr><td><b>C</b> Fuß-Fase 4,0 statt 2,0</td><td class="n">10,2 mm</td><td class="n">4,9 mm</td><td>unverändert</td><td>alle Gebäude neu</td></tr>
+    </tbody></table></div>
+  <p class="note">Wir hatten Band und Entlastung schon einmal (Steckprobe 1, <code>BAND</code>, <code>RELIEF</code>) und in Korrektur 2 vom 16.10. bewusst weggelassen. Empfehlung: <b>A</b> mit gemessenem Spiel. <b>B</b> bleibt in der Hinterhand, falls nach der Kalibrierung die Reibung bei richtiger Fuge noch zu groß ist. <b>C</b> verschlechtert das Treffen der Stifte, ohne Reibung zu sparen.</p>
+</section>
+
+<section class="sec" id="stifte">
+  <h2>5 · Treffen die Stifte noch?</h2>
+  <p>Beim ersten Kontakt ist der Versatz zwischen Stift und Buchsenöffnung etwa <b>S + Kassette im Schacht</b>. Die Buchse schwimmt in ihrer Tasche (0,20), die Stifte ziehen sie zurecht. Der Einlass der Buchse ist geschätzt 1,0 mm weit, der Stift 0,64: ±0,18 Fangbereich (Gehäusefase unbekannt, <code>HSG_HOLE</code> „S“).</p>
+  <div class="fig">
+    <div class="ctl">
+      <label><div class="row"><span>Spiel Mulde S</span><span class="v" id="v3s"></span></div><input type="range" id="r3s" min="0.05" max="0.35" step="0.01" value="0.15"></label>
+      <label><div class="row"><span>Kassette im Schacht (effektiv)</span><span class="v" id="v3k"></span></div><input type="range" id="r3k" min="0.02" max="0.20" step="0.01" value="0.06"></label>
+    </div>
+    <svg viewBox="0 0 640 150" role="img" aria-label="Versatz beim Stiftkontakt gegen den Fangbereich der Buchse">
+      <line class="dim" x1="320" x2="320" y1="20" y2="120"/>
+      <g id="skala3"></g>
+      <rect id="fang3" x="0" y="42" width="0" height="26" fill="var(--ok-soft)" stroke="var(--ok)" stroke-width="1.2"/>
+      <rect id="vers3" x="0" y="82" width="0" height="26" fill="var(--accent)" opacity="0.85"/>
+      <text class="lbl mut" x="12" y="38">Fangbereich der Buchse ±0,18</text>
+      <text class="lbl mut" x="12" y="78">Versatz beim Kontakt ±(S + Kassette)</text>
+    </svg>
+    <div class="read"><span>Versatz</span><span class="big" id="o3v"></span><span class="pill" id="o3c"></span><span class="note" id="o3t"></span></div>
+    <p class="cap">Heute (0,10 + 0,06 = 0,16) treffen die Stifte ohne Kraft (r3, r4, r8). Bei 0,15 + 0,06 = 0,21 liegt der Versatz knapp über dem Fangbereich; die Buchse muss dann selbst nachführen. Das ist ungetestet und der Grund, das Spiel nicht über 0,20 zu treiben. Die Prüfung steht in Karte K7.</p>
+  </div>
+</section>
+
+<section class="sec" id="tests">
+  <h2>6 · Die Testteile</h2>
+  <p>Idee des Nutzers übernommen: <b>die vorhandenen beigen Gebäude sind die Lehre</b>, gedruckt werden nur die Gegenstücke. Leitumriss ist das Institutsgebäude (V1RS, beige vorhanden, Kassette beige vorhanden), weil dort beide Passungen gleichzeitig getestet werden.</p>
+  <div class="fig">
+    <h3>Die sechs Fußumrisse (Schnitt 7 mm über dem Bett, gleicher Maßstab)</h3>
+    <svg viewBox="0 0 360 170" role="img" aria-label="Fußumrisse der sechs Gebäude"><g id="umrisse"><path d="M105.46 -16.84 L104.87 -16.84 L104.46 -16.84 L104.46 -15.91 L104.45 -11.34 L104.45 -9.98 L104.44 -3.40 L102.98 -3.40 L100.88 -3.41 L99.87 -3.42 L98.41 -3.43 L98.42 -2.22 L98.42 -2.22 L98.42 -1.39 L92.57 -1.39 L85.13 -1.39 L80.23 -1.40 L80.11 -1.61 L80.11 -1.61 L79.95 -1.92 L79.15 -1.69 L78.59 -1.54 L75.81 -0.93 L73.88 -0.51 L71.06 -0.21 L69.10 -0.00 L66.26 -0.00 L64.30 -0.01 L62.34 -0.22 L59.52 -0.53 L56.73 -1.14 L54.79 -1.56 L54.02 -1.78 L54.02 -1.78 L53.48 -1.93 L53.33 -1.63 L53.23 -1.41 L48.30 -1.41 L44.88 -1.41 L34.24 -1.41 L26.87 -1.41 L22.45 -5.39 L16.56 -10.71 L11.00 -15.73 L0.00 -25.66 L7.42 -29.79 L33.42 -44.28 L38.57 -47.15 L56.59 -57.19 L71.31 -57.19 L81.52 -57.19 L81.52 -55.01 L81.53 -53.49 L81.52 -53.49 L81.51 -53.48 L81.52 -50.82 L81.54 -48.98 L81.55 -46.15 L81.55 -46.14 L81.55 -46.14 L81.57 -42.04 L79.45 -42.03 L77.99 -42.03 L78.00 -37.22 L78.00 -37.22 L78.01 -33.89 L78.02 -33.14 L78.02 -32.63 L82.20 -32.63 L82.20 -32.63 L88.23 -32.64 L92.79 -32.64 L95.95 -32.65 L95.95 -32.65 L98.08 -32.65 L101.15 -32.65 L103.69 -32.66 L105.45 -32.66 L105.45 -23.31 L105.45 -23.31Z" transform="translate(6.3 63.6)" class="s-beige" fill-rule="evenodd" stroke-width="1" vector-effect="non-scaling-stroke" /><text x="59.0" y="70.0" text-anchor="middle" font-size="6.2" font-weight="600">Hörsaalgebäude</text><text x="59.0" y="77.0" text-anchor="middle" font-size="5" class="mut">105 × 57 mm · Umfang 292 mm · Kassette v4</text><path d="M78.73 -19.36 L78.74 -17.31 L78.72 -7.10 L78.71 -0.02 L73.60 -0.02 L67.39 -0.01 L60.00 -0.01 L57.02 -0.00 L51.05 -0.00 L20.90 -0.60 L0.00 -1.02 L0.01 -7.32 L0.01 -8.64 L0.02 -10.53 L0.02 -14.91 L0.03 -15.82 L0.03 -15.82 L0.03 -17.13 L1.67 -17.13 L4.04 -17.13 L9.24 -17.14 L9.24 -17.14 L12.84 -17.14 L35.22 -17.15 L50.69 -17.16 L50.70 -21.99 L50.70 -22.01 L50.72 -29.01 L56.85 -29.01 L56.86 -29.01 L65.72 -29.01 L65.72 -28.85 L65.72 -28.74 L66.45 -28.74 L68.85 -28.74 L71.61 -28.74 L71.69 -27.16 L71.81 -24.90 L71.69 -24.90 L71.61 -24.90 L71.63 -22.43 L71.63 -22.42 L71.65 -20.71 L75.35 -20.74 L78.24 -20.77 L78.48 -20.77 L78.73 -20.77Z" transform="translate(137.6 49.5)" class="s-beige" fill-rule="evenodd" stroke-width="2" vector-effect="non-scaling-stroke" style="stroke:var(--accent)"/><text x="177.0" y="70.0" text-anchor="middle" font-size="6.2" font-weight="600">Institutsgebäude (Leitumriss)</text><text x="177.0" y="77.0" text-anchor="middle" font-size="5" class="mut">79 × 29 mm · Umfang 215 mm · Kassette V1RS</text><path d="M16.83 -0.14 L16.59 -0.14 L16.59 -0.14 L9.66 -0.16 L9.65 -0.16 L0.00 -0.19 L0.00 -9.60 L0.00 -9.61 L0.00 -16.14 L10.03 -16.12 L16.99 -16.10 L16.99 -16.02 L16.99 -15.91 L23.15 -15.90 L27.42 -15.89 L27.42 -15.97 L27.42 -16.08 L34.42 -16.06 L44.53 -16.04 L44.53 -15.93 L44.53 -15.85 L48.78 -15.84 L48.79 -15.84 L54.94 -15.83 L54.94 -15.91 L54.94 -16.02 L64.43 -16.00 L71.02 -15.98 L71.02 -17.48 L71.01 -19.64 L71.01 -19.71 L71.01 -19.87 L71.01 -19.94 L71.01 -19.94 L71.01 -20.14 L71.01 -20.14 L71.01 -20.25 L71.01 -20.62 L71.01 -20.77 L71.01 -20.84 L71.01 -21.00 L71.01 -21.07 L71.01 -21.25 L71.01 -21.30 L72.58 -21.31 L73.67 -21.32 L73.67 -19.43 L73.66 -16.71 L73.66 -16.57 L73.66 -16.48 L73.50 -16.48 L73.50 -16.48 L73.39 -16.48 L73.38 -9.95 L73.36 -0.49 L73.36 -0.48 L73.25 -0.48 L72.70 -0.48 L72.02 -0.49 L72.02 -0.29 L72.02 -0.00 L61.92 -0.03 L54.92 -0.04 L54.92 -0.38 L54.92 -0.62 L48.78 -0.64 L44.52 -0.65 L44.52 -0.41 L44.52 -0.07 L44.34 -0.07 L42.48 -0.08 L42.48 -0.08 L42.48 -0.08 L37.34 -0.09 L27.40 -0.12 L27.40 -0.46 L27.40 -0.69 L21.25 -0.71 L16.99 -0.72 L16.99 -0.38 L16.99 -0.38 L16.99 -0.14 L16.83 -0.14Z" transform="translate(258.2 45.7)" class="s-beige" fill-rule="evenodd" stroke-width="1" vector-effect="non-scaling-stroke" /><text x="295.0" y="70.0" text-anchor="middle" font-size="6.2" font-weight="600">Seminargebäude</text><text x="295.0" y="77.0" text-anchor="middle" font-size="5" class="mut">74 × 21 mm · Umfang 193 mm · Kassette V1RS</text><path d="M19.14 -0.21 L16.89 -0.31 L16.87 -0.22 L16.87 -0.22 L16.85 -0.15 L16.84 -0.15 L16.82 -0.15 L16.82 -0.25 L16.83 -0.32 L16.76 -0.32 L16.76 -0.32 L16.72 -0.32 L16.72 -0.32 L16.72 -0.54 L16.72 -0.56 L16.72 -0.56 L16.73 -0.86 L15.39 -0.90 L14.46 -0.93 L14.46 -1.14 L14.46 -1.45 L14.47 -1.73 L14.47 -1.93 L10.63 -2.07 L7.96 -2.17 L7.98 -2.63 L7.99 -2.94 L7.54 -2.96 L6.89 -3.00 L6.92 -3.71 L6.94 -4.20 L6.10 -4.23 L5.51 -4.26 L5.49 -7.04 L5.48 -8.97 L2.24 -8.97 L0.00 -8.98 L0.00 -12.62 L0.00 -17.88 L0.00 -17.91 L0.00 -17.93 L0.00 -21.91 L0.00 -27.64 L0.01 -27.64 L0.01 -27.64 L0.01 -28.64 L0.01 -29.76 L0.00 -30.37 L1.04 -30.36 L2.46 -30.35 L3.97 -30.33 L4.23 -30.33 L6.02 -30.32 L6.02 -30.36 L6.03 -31.34 L6.05 -36.29 L6.05 -36.29 L6.05 -36.31 L6.09 -42.48 L6.09 -42.55 L6.09 -42.60 L6.09 -43.29 L6.09 -43.29 L6.09 -43.77 L6.65 -43.76 L7.45 -43.76 L9.37 -43.75 L10.71 -43.75 L10.71 -43.98 L10.71 -44.13 L11.52 -44.13 L12.70 -44.13 L12.70 -44.44 L12.70 -44.89 L15.11 -44.88 L16.78 -44.87 L16.78 -44.42 L16.77 -44.11 L17.96 -44.11 L18.78 -44.11 L18.78 -43.87 L18.78 -43.71 L20.34 -43.70 L21.42 -43.70 L21.53 -44.00 L21.61 -44.20 L21.86 -44.53 L22.03 -44.75 L22.42 -44.98 L22.69 -45.14 L23.06 -45.22 L23.06 -45.22 L23.31 -45.27 L24.07 -45.31 L25.16 -45.37 L25.16 -45.37 L25.16 -45.37 L27.32 -45.45 L28.81 -45.51 L32.96 -45.54 L35.83 -45.57 L39.60 -45.46 L42.21 -45.39 L44.49 -45.24 L46.07 -45.14 L46.57 -44.93 L46.91 -44.79 L47.22 -44.43 L47.44 -44.18 L47.59 -43.85 L47.69 -43.62 L48.99 -43.62 L48.99 -43.62 L51.19 -43.61 L53.07 -43.60 L53.07 -42.88 L53.06 -35.18 L53.05 -24.79 L53.05 -21.76 L53.05 -21.75 L53.05 -19.65 L52.81 -19.65 L51.99 -19.65 L51.65 -19.65 L50.47 -19.66 L49.16 -19.66 L48.25 -19.66 L48.25 -17.79 L48.25 -17.79 L48.24 -14.04 L48.24 -12.27 L48.24 -10.50 L51.07 -10.49 L53.04 -10.48 L53.03 -8.26 L53.03 -5.06 L50.91 -5.06 L49.45 -5.07 L49.44 -4.23 L49.43 -3.66 L38.26 -3.69 L38.26 -3.68 L38.25 -3.68 L37.82 -3.69 L30.52 -3.71 L30.50 -3.04 L30.47 -2.06 L29.77 -2.07 L29.29 -2.07 L29.28 -1.64 L29.27 -1.33 L25.42 -1.48 L25.28 -1.49 L22.75 -1.58 L22.75 -1.33 L22.75 -1.02 L22.75 -0.63 L22.68 -0.63 L22.68 -0.63 L22.68 -0.63 L21.91 -0.66 L20.87 -0.70 L20.87 -0.65 L20.87 -0.42 L20.87 -0.42 L20.87 -0.13 L20.81 -0.14 L20.76 -0.14 L20.76 -0.06 L20.76 -0.00 L20.73 -0.00 L20.72 -0.00 L20.70 -0.08 L20.70 -0.14Z" transform="translate(32.5 139.8)" class="s-beige" fill-rule="evenodd" stroke-width="1" vector-effect="non-scaling-stroke" /><text x="59.0" y="152.0" text-anchor="middle" font-size="6.2" font-weight="600">Neues Augusteum</text><text x="59.0" y="159.0" text-anchor="middle" font-size="5" class="mut">53 × 46 mm · Umfang 207 mm · Kassette v4</text><path d="M43.22 -19.04 L43.24 -19.04 L43.49 -19.04 L43.64 -19.04 L43.64 -13.22 L43.64 -9.03 L43.63 -4.84 L43.63 -4.84 L43.48 -4.84 L43.48 -4.84 L43.35 -4.84 L43.01 -4.83 L42.93 -4.83 L42.93 -4.83 L42.93 -4.78 L42.94 -4.32 L42.94 -4.24 L42.94 -4.24 L42.94 -3.19 L42.96 -1.23 L42.85 -1.23 L42.80 -1.23 L42.58 -1.23 L42.27 -1.24 L42.27 -1.24 L42.02 -1.24 L41.94 -1.24 L41.94 -2.70 L41.94 -2.71 L41.94 -2.71 L41.94 -3.95 L41.94 -4.83 L37.55 -4.82 L34.51 -4.81 L34.51 -2.85 L34.51 -2.68 L34.51 -2.67 L34.51 -2.45 L34.51 -1.56 L34.51 -1.56 L34.51 -0.02 L31.58 -0.01 L31.58 -0.01 L28.63 -0.00 L28.63 -0.00 L27.34 -0.00 L27.34 -0.72 L27.34 -0.72 L27.34 -0.72 L27.34 -2.68 L27.34 -3.86 L27.34 -3.86 L27.34 -4.80 L17.57 -4.77 L16.69 -4.77 L14.64 -4.77 L13.95 -4.76 L13.94 -4.76 L13.51 -4.76 L2.39 -4.74 L1.88 -4.74 L1.88 -4.74 L0.47 -4.73 L0.01 -4.73 L0.01 -5.31 L0.01 -7.24 L0.01 -7.24 L0.01 -11.58 L0.00 -13.71 L0.00 -13.71 L0.00 -16.37 L0.00 -21.13 L11.44 -21.15 L11.45 -21.15 L19.40 -21.17 L19.41 -21.17 L19.41 -21.17 L19.44 -21.18 L19.54 -21.20 L21.12 -21.20 L27.23 -21.20 L29.87 -21.20 L29.87 -21.20 L29.87 -21.20 L29.88 -21.19 L29.88 -21.18 L35.55 -21.19 L39.28 -21.20 L40.47 -21.20 L40.51 -21.20 L40.93 -21.20 L42.92 -21.20 L42.92 -20.42 L42.92 -20.31 L42.92 -19.04Z" transform="translate(155.2 127.6)" class="s-beige" fill-rule="evenodd" stroke-width="1" vector-effect="non-scaling-stroke" /><text x="177.0" y="152.0" text-anchor="middle" font-size="6.2" font-weight="600">Paulinum</text><text x="177.0" y="159.0" text-anchor="middle" font-size="5" class="mut">44 × 21 mm · Umfang 137 mm · Kassette v4</text><path d="M8.78 -10.27 L9.85 -10.62 L9.84 -10.62 L9.16 -12.13 L8.18 -14.31 L8.18 -14.31 L7.58 -15.44 L6.71 -17.08 L6.71 -17.08 L6.10 -18.07 L5.22 -19.50 L5.22 -19.50 L4.34 -20.72 L3.08 -22.48 L3.08 -22.48 L2.10 -23.63 L0.70 -25.28 L0.29 -25.72 L0.00 -26.03 L0.15 -26.26 L0.38 -26.60 L0.52 -26.50 L0.52 -26.50 L0.62 -26.43 L0.62 -26.43 L1.03 -26.91 L1.07 -26.96 L1.07 -26.96 L1.07 -26.96 L1.63 -27.62 L1.97 -28.15 L2.46 -28.93 L2.83 -29.78 L3.09 -30.36 L2.94 -30.45 L2.94 -30.45 L2.83 -30.51 L2.98 -30.76 L3.19 -31.11 L3.77 -30.95 L5.57 -30.46 L5.98 -30.35 L7.22 -30.01 L8.91 -29.71 L11.34 -29.28 L13.33 -29.15 L16.20 -28.98 L18.19 -29.04 L21.06 -29.13 L23.04 -29.38 L25.89 -29.74 L27.78 -30.13 L29.08 -30.40 L29.58 -30.54 L30.29 -30.74 L30.70 -30.89 L30.71 -30.89 L31.30 -31.11 L31.44 -30.86 L31.44 -30.86 L31.65 -30.50 L31.55 -30.45 L31.41 -30.36 L31.68 -29.60 L32.07 -28.50 L32.53 -27.55 L33.20 -26.18 L34.02 -24.89 L34.02 -24.89 L34.59 -24.00 L35.55 -22.81 L36.22 -21.99 L36.31 -22.05 L36.31 -22.05 L36.45 -22.14 L36.68 -21.78 L36.84 -21.53 L36.67 -21.38 L36.43 -21.16 L35.02 -19.73 L32.98 -17.65 L31.73 -16.07 L29.93 -13.80 L28.39 -11.34 L27.32 -9.64 L26.44 -7.83 L25.17 -5.22 L24.18 -2.49 L24.18 -2.49 L23.50 -0.60 L23.50 -0.60 L23.50 -0.60 L23.50 -0.60 L23.48 -0.55 L23.40 -0.24 L23.32 -0.00 L23.04 -0.02 L23.04 -0.02 L22.63 -0.06 L22.64 -0.23 L22.64 -0.23 L22.65 -0.35 L20.77 -0.75 L19.48 -1.03 L18.15 -1.13 L18.15 -1.13 L16.24 -1.26 L14.92 -1.17 L13.01 -1.04 L13.00 -1.04 L12.99 -0.86 L12.98 -0.74 L12.58 -0.77 L12.58 -0.77 L12.30 -0.80 L12.27 -0.94 L12.15 -1.66 L12.00 -2.55 L12.00 -2.55 L11.51 -4.93 L11.17 -6.58 L9.64 -6.08 L8.58 -5.74 L8.03 -7.39 L7.25 -9.77 L8.78 -10.27Z" transform="translate(276.6 132.6)" class="s-beige" fill-rule="evenodd" stroke-width="1" vector-effect="non-scaling-stroke" /><text x="295.0" y="152.0" text-anchor="middle" font-size="6.2" font-weight="600">City-Hochhaus</text><text x="295.0" y="159.0" text-anchor="middle" font-size="5" class="mut">37 × 31 mm · Umfang 118 mm · Kassette V2R</text></g></svg>
+    <p class="cap">Hörsaal ist der größte Umriss (292 mm Umfang), Institut und Seminar sind schmal und lang. Der Hochhaus-Stumpf ist die einzige Form mit schwarzer Referenz (r8).</p>
+  </div>
+
+  <div class="two">
+    <div class="fig"><h3>T1 · Mulden-Block (grau)</h3>
+      <svg viewBox="-3 -102.0 91.2 105.0" role="img" aria-label="Plattenstück mit drei Mulden des Institutsumrisses"><g id="t1"><path d="M85.24 -99.04 L85.24 -0.00 L0.00 -0.00 L0.00 -99.04Z M3.01 -11.79 L3.01 -10.47 L3.00 -4.02 L24.05 -3.60 L54.20 -3.00 L60.17 -3.00 L63.15 -3.01 L70.54 -3.01 L76.75 -3.02 L82.01 -3.02 L82.02 -10.25 L82.04 -20.46 L82.03 -22.51 L82.03 -24.07 L81.62 -24.07 L81.39 -24.07 L78.49 -24.04 L74.95 -24.01 L74.93 -25.58 L74.93 -25.58 L74.91 -27.90 L75.12 -27.90 L74.99 -30.32 L74.90 -32.04 L72.00 -32.04 L69.60 -32.04 L69.02 -32.04 L69.02 -32.31 L60.01 -32.31 L60.00 -32.31 L53.72 -32.31 L53.70 -25.16 L53.70 -25.15 L53.69 -20.46 L38.37 -20.45 L15.99 -20.44 L12.39 -20.44 L12.39 -20.44 L7.19 -20.43 L4.82 -20.43 L3.03 -20.43 L3.03 -18.95 L3.03 -18.95 L3.02 -18.06 L3.02 -13.68Z M3.02 -45.45 L3.01 -43.55 L3.01 -42.23 L3.00 -35.73 L24.10 -35.31 L54.25 -34.71 L60.22 -34.72 L63.20 -34.72 L70.59 -34.73 L76.80 -34.73 L82.11 -34.74 L82.12 -42.01 L82.14 -52.23 L82.13 -54.27 L82.13 -55.89 L81.67 -55.88 L81.44 -55.88 L78.54 -55.86 L75.05 -55.82 L75.03 -57.34 L75.03 -57.34 L75.01 -59.61 L75.22 -59.61 L75.09 -62.09 L75.00 -63.85 L72.05 -63.85 L69.65 -63.85 L69.12 -63.85 L69.12 -64.13 L60.06 -64.13 L60.05 -64.13 L53.72 -64.13 L53.70 -56.92 L53.70 -56.91 L53.69 -52.28 L38.42 -52.27 L16.04 -52.25 L12.44 -52.25 L12.44 -52.25 L7.24 -52.25 L4.87 -52.25 L3.03 -52.24 L3.03 -50.71 L3.03 -50.71 L3.03 -49.82Z M3.03 -81.68 L3.02 -77.31 L3.01 -75.42 L3.01 -74.10 L3.00 -67.55 L24.14 -67.13 L54.30 -66.53 L60.27 -66.53 L63.25 -66.53 L70.64 -66.54 L76.85 -66.54 L82.21 -66.55 L82.22 -73.88 L82.24 -84.09 L82.23 -86.13 L82.23 -87.80 L81.72 -87.80 L81.49 -87.79 L78.59 -87.77 L75.15 -87.74 L75.13 -89.20 L75.13 -89.21 L75.11 -91.42 L75.32 -91.42 L75.19 -93.95 L75.10 -95.76 L72.10 -95.76 L69.70 -95.77 L69.22 -95.77 L69.22 -96.04 L60.11 -96.04 L60.10 -96.04 L53.72 -96.04 L53.70 -88.79 L53.70 -88.77 L53.69 -84.19 L38.47 -84.18 L16.09 -84.17 L12.49 -84.16 L12.49 -84.16 L7.29 -84.16 L4.92 -84.16 L3.03 -84.16 L3.03 -82.56 L3.03 -82.56Z" class="s-grau" fill-rule="evenodd" stroke-width="1.2" vector-effect="non-scaling-stroke"/><text x="46.8" y="-12.3" text-anchor="middle" font-size="6" font-weight="600" class="mono">0,15</text><text x="46.8" y="-44.0" text-anchor="middle" font-size="6" font-weight="600" class="mono">0,20</text><text x="46.9" y="-75.9" text-anchor="middle" font-size="6" font-weight="600" class="mono">0,25</text></g></svg>
+      <p class="cap">Drei Mulden mit dem Institutsumriss, Spiel <b>0,15 / 0,20 / 0,25</b>, Beschriftung erhaben (L42). Platte 85,2 × 99,0 × 14,6, Mulde 14,2 tief mit Boden 0,4, Fase 0,5, ohne Stifte. Volumen 53,4 cm³ = 26 % der Steckplatte.</p></div>
+    <div class="fig"><h3>T2 · Kassettenserie (beige)</h3>
+      <svg viewBox="0 0 320 192" role="img" aria-label="Drei Kassetten mit abnehmender Breite">
+        <g id="t2"><rect x="12.4" y="10.0" width="133.6" height="44.8" class="s-beige" stroke-width="1.2"/><rect x="42.2" y="18.4" width="73.9" height="20.6" fill="var(--stage)" stroke="var(--beige-line)" stroke-width="0.8"/><text x="160" y="24.0" font-size="11" font-weight="600">V1RS 1</text><text x="160" y="39.0" font-size="10" class="mut">Spiel 0,12, Außenmaß –0,06</text><rect x="12.7" y="62.0" width="133.0" height="44.8" class="s-beige" stroke-width="1.2"/><rect x="42.2" y="70.4" width="73.9" height="20.6" fill="var(--stage)" stroke="var(--beige-line)" stroke-width="0.8"/><text x="160" y="76.0" font-size="11" font-weight="600">V1RS 2</text><text x="160" y="91.0" font-size="10" class="mut">Spiel 0,16, Außenmaß –0,10</text><rect x="13.0" y="114.0" width="132.4" height="44.8" class="s-beige" stroke-width="1.2"/><rect x="42.2" y="122.4" width="73.9" height="20.6" fill="var(--stage)" stroke="var(--beige-line)" stroke-width="0.8"/><text x="160" y="128.0" font-size="11" font-weight="600">V1RS 3</text><text x="160" y="143.0" font-size="10" class="mut">Spiel 0,20, Außenmaß –0,14</text><text x="12" y="184" font-size="10" class="mut">dazu v4 × 2 (Spiel 0,12 und 0,16)</text></g></svg>
+      <p class="cap">V1RS dreimal (Spiel im Modell 0,12 / 0,16 / 0,20, also Außenmaß –0,06 / –0,10 / –0,14 gegenüber heute), dazu v4 zweimal (0,12 / 0,16) für Hörsaal. Gleiche Buchsentasche, Wand mindestens 1,2. Kennung als Kerben.</p></div>
+    <div class="fig"><h3>T3 · Gebäudestumpf (nur bei Bedarf)</h3>
+      <svg viewBox="0 0 320 170" role="img" aria-label="Stumpf des Institutsgebäudes mit Schacht"><g id="t3"><path d="M20 30 H250 V122 H56 L20 86 Z" class="s-beige" stroke-width="1.2"/><path d="M70 30 V118 H206 V30" fill="var(--stage)" stroke="var(--beige-line)" stroke-width="1"/><rect x="95" y="64" width="86" height="54" fill="var(--schwarz)" opacity="0.85"/><text x="138" y="95" text-anchor="middle" font-size="10" style="fill:#fff">Kassette</text><text x="138" y="52" text-anchor="middle" font-size="10" class="mut">Schacht</text><line x1="262" x2="262" y1="30" y2="122" class="dim"/><text x="268" y="80" font-size="10" class="mut">≈ 20</text><text x="20" y="144" font-size="10" class="mut">Fuß 14,2, Fase 2,0, Boden unten (Bett), Institutsumriss</text></g></svg>
+      <p class="cap">Hohlgebäude des Instituts, bei etwa 20 mm abgeschnitten, mit Fuß 14,2, Fuß-Fase 2,0 und Schacht. Dient als Eingangsprüfung für jede neue Farbe, wenn das Plättchen gut aussah. Zeit grob 80 min, Schätzung mal 1,2 (L45).</p></div>
+    <div class="fig"><h3>T4 · Messplättchen (je Filament)</h3>
+      <svg viewBox="0 0 320 188" role="img" aria-label="Messplättchen mit Außenmaßen und einem quadratischen Loch"><g id="t4"><path d="M52 14 h216.0 v144.0 h-216.0 z M160.0 50.0 h72.0 v72.0 h-72.0 z" class="s-grau" fill-rule="evenodd" stroke-width="1.2"/><rect x="16.0" y="68.0" width="36.0" height="36.0" class="s-grau" stroke-width="1.2"/><text x="160.0" y="172.0" font-size="10" text-anchor="middle" class="mut">60</text><text x="196.0" y="89.0" font-size="10" text-anchor="middle" class="mut">Loch 20 × 20</text><text x="274.0" y="86.0" font-size="10" class="mut">40</text><text x="34.0" y="64.0" font-size="9" text-anchor="middle" class="mut">Nase 10</text></g></svg>
+      <p class="cap">60 × 40 × 3 mit Loch 20 × 20 und Nase 10 × 10. Schieblehre: Außenmaße, Loch und Nase ablesen (Auflösung 0,01, nur Ergebnis auf 0,05 genau). Daraus a<sub>G</sub> und a<sub>P</sub> je Farbe. 8 bis 10 min.</p></div>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Teil</th><th>Farbe</th><th>Prüft</th><th>Gutes Ergebnis</th><th>Druckzeit (grob)</th></tr></thead>
+    <tbody>
+      <tr><td><b>T4</b> Messplättchen</td><td>grau, beige, graublau, rot (und Schwarz als Referenz)</td><td>Aufmaß je Filament, Slicer-Kompensation</td><td>Maße innerhalb ±0,05 nach der Kompensation</td><td>je 10 min</td></tr>
+      <tr><td><b>T1</b> Mulden-Block</td><td>grau (Platte)</td><td>Fuß des beigen Instituts, Fuge je Spiel 0,15 / 0,20 / 0,25</td><td>eine Mulde mit Gefühl „gut“: ohne Kraft ein, fest raus, kein Wackeln</td><td>26 % der Platte, gut 2 h</td></tr>
+      <tr><td><b>T2</b> Kassetten</td><td>beige</td><td>Einpressen in Institut (V1RS) und Hörsaal (v4)</td><td>Sitz 3 wie in Schwarz: hält beim Schütteln, Herausdrücken nur mit Druck</td><td>5 Teile je 10 bis 20 min</td></tr>
+      <tr><td><b>T3</b> Stumpf</td><td>je neue Farbe</td><td>beides in einem Teil</td><td>Mulde und Kassette wie T1 und T2</td><td>etwa 80 min</td></tr>
+    </tbody></table></div>
+  <div class="steps">
+    <div class="step now"><span class="t">Schritt 1 · jetzt</span><b>Plan</b><span>Diese Seite. Wird abgenickt oder geändert, Entscheidungen K1 bis K7.</span></div>
+    <div class="step"><span class="t">Schritt 2</span><b>Runde 1: T4, T1, T2</b><span>STL, README, ZIP mit Prüfbericht (dicht, Wand, Überhang). Plättchen zuerst, damit die Slicer-Kompensation steht, bevor T1 und T2 gedruckt werden. Testbogen danach.</span></div>
+    <div class="step"><span class="t">Schritt 3</span><b>Festlegen und Runde 2</b><span>Spiel und Kassettenmaß in <code>params.py</code>, Steckplatte neu, Stumpf T3 und Pin-Probe an der Mini-Platte, dann die graue Platte und die weiteren Gebäude.</span></div>
+  </div>
+</section>
+
+<section class="sec" id="karten">
+  <h2>7 · Entscheidungen</h2>
+  <div class="cards">
+    <div class="card"><h3><span class="k">K1</span> Strategie bei mehreren Filamenten</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>Eine Geometrie, Filament im Slicer kalibrieren (Empfehlung)</b><small>T4 liefert a je Farbe, dann XY-Kompensation bzw. Flussverhältnis im Filamentprofil. Spiel bleibt klein (0,15).</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>Zwei Dateisätze, Schwarz und Rest</b><small>doppelte STL für Platte, sechs Gebäude und Display; bei fünf Farben fünffach. Nur wenn A scheitert.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>Filament-Offset im Generator</b><small>Parameter je Farbe in <code>params.py</code>, ein Satz STL je Farbe, ohne Slicer-Eingriff. Rückfall, falls der Slicer keine Kompensation bietet.</small></div></div></div>
+    <div class="card"><h3><span class="k">K2</span> Spielreihe der Mulden (T1)</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>0,15 / 0,20 / 0,25 (Empfehlung)</b><small>0,15 ist die Vorgabe aus r8; 0,25 zeigt, wie weit „locker“ geht.</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>0,12 / 0,15 / 0,18</b><small>enger; sinnvoll, wenn T4 kaum Aufmaß zeigt.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>vier Stufen bis 0,30</b><small>Platte größer, mehr Material.</small></div></div></div>
+    <div class="card"><h3><span class="k">K3</span> Nähte zwischen Gebäuden</h3>
+      <div class="opt"><span class="l">A</span><div><b>Wand folgt dem Spiel</b><small>bei 0,20 nur 0,60 Wand. Nicht empfohlen.</small></div></div>
+      <div class="opt rec"><span class="l">B</span><div><b>Spiel an den Nähten höchstens 0,15, sonst das gewählte (Empfehlung)</b><small>Wand mindestens 0,70. Mulde ist dann nicht überall gleich weit; das Gebäude liegt an der Nahtseite an.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>Gebäude an den Nähten neu</b><small>Fuge 1,2, gedruckte Gebäude wären hinfällig. Später, falls 0,15 nicht reicht.</small></div></div></div>
+    <div class="card"><h3><span class="k">K4</span> Kassette</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>Kassette schlanker, Serie 0,12 / 0,16 / 0,20 (Empfehlung)</b><small>nur kleine Teile; Buchsentasche unverändert.</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>Schacht im Gebäude weiter</b><small>alle Gebäude neu drucken. Erst für künftige Gebäude, wenn A bestätigt ist.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>nichts ändern, nur Slicer-Kompensation</b><small>trägt, wenn T4 ein klares Aufmaß zeigt; die Serie bleibt trotzdem als Beleg.</small></div></div></div>
+    <div class="card"><h3><span class="k">K5</span> Fase und Reibung</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>Fasen unverändert, nur Spiel (Empfehlung)</b><small>Fuß-Fase 2,0 und Muldenfase 0,5 sind bewährt.</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>Führungsband 5 mm + Entlastung 0,15</b><small>nur falls trotz richtiger Fuge die Reibung stört. Würde eine Zusatzmulde in T1.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>höhere Fuß-Fase 4,0</b><small>nicht empfohlen (Abschnitt 4).</small></div></div></div>
+    <div class="card"><h3><span class="k">K6</span> Stumpf T3</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>Institut-Stumpf, nur für gewählte Farben (Empfehlung)</b><small>nach dem Plättchen; ein Teil für Mulde und Kassette.</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>kleiner Normstumpf 30 × 30</b><small>20 min, aber ohne die Ecken des echten Umrisses.</small></div></div>
+      <div class="opt"><span class="l">C</span><div><b>kein Stumpf</b><small>Plättchen und die echten Gebäude genügen.</small></div></div></div>
+    <div class="card"><h3><span class="k">K7</span> Stifte-Probe</h3>
+      <div class="opt rec"><span class="l">A</span><div><b>Nach Runde 1, mit dem gewählten Spiel an der Mini-Platte (Empfehlung)</b><small>Test-Dock mit Winkelleiste; prüft Treffen und Halt.</small></div></div>
+      <div class="opt"><span class="l">B</span><div><b>schon in T1 mit Stiften</b><small>drei Winkelleisten einkleben; mehr Aufwand, vor der Spielwahl wenig Aussage.</small></div></div></div>
+  </div>
+</section>
+
+<section class="sec" id="rest">
+  <h2>8 · Rückfragen, Risiken und berücksichtigte Lehren</h2>
+  <div class="two">
+    <div class="box"><h3>Rückfragen an den Nutzer</h3>
+      <ul class="tight">
+        <li>Welche Platte hat die Gebäude nicht aufgenommen: die schwarze (r7) oder eine neue graue? Das trennt a<sub>G</sub> von a<sub>P</sub>.</li>
+        <li>Welche Filamente (Hersteller, Typ wie Basic, Matt, Silk)? Gleiche Temperatur und Düse wie bei Schwarz?</li>
+        <li>Welcher Slicer (Bambu Studio, Orca)? Gibt es dort „X-Y-Konturkompensation“ und „X-Y-Lochkompensation“?</li>
+        <li>Wurde je Filament schon der Fluss kalibriert?</li>
+        <li>Ist die graue Platte schon gedruckt, oder zuerst nur T1?</li>
+        <li>Wie fest gehen die beigen Seminar- und Institutsgebäude in die Mulden der schwarzen Platte?</li>
+      </ul></div>
+    <div class="box"><h3>Risiken</h3>
+      <ul class="tight">
+        <li><b>Ursache nicht belegt.</b> Aufmaß durch Fluss, Schrumpf oder Düsentemperatur ist eine Annahme. T4 trennt „außen größer“ von „Loch kleiner“.</li>
+        <li>Hörsaal (größter Umriss) wird in T1 nicht abgebildet. Fällt die Wahl auf 0,20 und Hörsaal ist trotzdem eng, kommt eine einzelne Hörsaal-Mulde (45 % der Platte).</li>
+        <li>Mulde und Wände an den Nähten werden dünn (Abschnitt 2).</li>
+        <li>Stifte treffen bei Spiel über 0,15 knapp (Abschnitt 5).</li>
+        <li>Druckzeit der Planseite ist Schätzung (mal 1,2, L45).</li>
+      </ul></div>
+    <div class="box"><h3>Berücksichtigte Lehren</h3>
+      <ul class="tight">
+        <li>L09 Spalt unter 0,5 nicht messbar: Fuge wird gefühlt bewertet, gemessen werden nur Außenmaße.</li>
+        <li>L10, L11 Passungen in echter Länge testen: T1 mit voller Muldentiefe, T2 in den echten Schächten.</li>
+        <li>L18 Fuß in der Mulde hält das Gebäude: kein Entlastungsband als Standard.</li>
+        <li>L43, L44 Spiel 0,15 testen, Fuß-Fase 2,0 bleibt.</li>
+        <li>L24 nur fühlbare Felder im Testbogen; L35 ZIP-Stand im Ergebnistext.</li>
+        <li>L01, L42 Kennung erhaben; Variantenzahl als Kerben.</li>
+      </ul></div>
+    <div class="box"><h3>Vorab-Checkliste vor der STL</h3>
+      <ul class="tight">
+        <li>Plan abgenickt (diese Seite), Maßkette mit Worst-Case: Abschnitte 2, 3 und 5.</li>
+        <li>Druckrichtung: T1 Mulde nach oben, T2 Tasche unten, T3 Boden unten, T4 flach.</li>
+        <li>Überhang: Fasen 0,5 in Stufen, kein Überhang über 45°.</li>
+        <li>Kollisionsprüfung: Kassette gegen Schacht, Wand mindestens 1,2.</li>
+        <li>Prüfbericht mit <code>dicht=True</code>; Testbogen mit Variante und Filamentname je Teil.</li>
+      </ul></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var fmt = function (v) { return (v < 0 ? "−" : "") + Math.abs(v).toFixed(2).replace(".", ","); };
+  var $ = function (id) { return document.getElementById(id); };
+  var K = 400; /* px je mm */
+
+  /* Fugen-Regler (Mulde, Kassette) */
+  function fugenWidget(p, bands, presets, texte) {
+    var rs = $("r" + p + "s"), rg = $("r" + p + "g"), rp = $("r" + p + "p");
+    function upd() {
+      var S = +rs.value, g = +rg.value, pl = +rp.value, f = S - g - pl;
+      $("v" + p + "s").textContent = fmt(S); $("v" + p + "g").textContent = fmt(g); $("v" + p + "p").textContent = fmt(pl);
+      var x0 = 270, xsg = x0 + S * K, xgReal = xsg - g * K, xmReal = x0 + pl * K;
+      /* Zeichnung: Platte bis xmReal, Gebäude ab xgReal */
+      $("w" + p + "p").setAttribute("width", Math.max(0, xmReal));
+      var gx = Math.min(Math.max(xgReal, 0), 640);
+      $("w" + p + "g").setAttribute("x", gx); $("w" + p + "g").setAttribute("width", Math.max(0, 640 - gx));
+      var ov = Math.max(0, xmReal - xgReal);
+      $("w" + p + "x").setAttribute("x", xgReal); $("w" + p + "x").setAttribute("width", ov);
+      $("n" + p + "p").setAttribute("x1", x0); $("n" + p + "p").setAttribute("x2", x0);
+      $("n" + p + "g").setAttribute("x1", xsg); $("n" + p + "g").setAttribute("x2", xsg);
+      var tf = $("t" + p + "f"); tf.textContent = "freie Fuge " + fmt(f) + " mm"; tf.setAttribute("x", Math.min(Math.max((xmReal + xgReal) / 2, 80), 560));
+      if (p === "1") { $("t1p").setAttribute("x", x0 - 4); $("t1g").setAttribute("x", xsg + 4); }
+      var b = null; for (var i = 0; i < bands.length; i++) { if (f < bands[i][0]) { b = bands[i]; break; } }
+      if (!b) b = bands[bands.length - 1];
+      $("o" + p + "f").textContent = fmt(f) + " mm";
+      var c = $("o" + p + "c"); c.textContent = b[1]; c.className = "pill " + b[2];
+      $("o" + p + "t").textContent = b[3];
+    }
+    [rs, rg, rp].forEach(function (r) { r.addEventListener("input", upd); });
+    var box = $("pre" + p);
+    if (box) presets.forEach(function (pr) {
+      var bt = document.createElement("button"); bt.type = "button"; bt.textContent = pr[0];
+      bt.addEventListener("click", function () { rs.value = pr[1]; rg.value = pr[2]; rp.value = pr[3]; upd(); });
+      box.appendChild(bt);
+    });
+    upd();
+  }
+  fugenWidget("1", [
+    [0.02, "klemmt", "bad", "Gebäude geht nicht hinein."],
+    [0.08, "stramm", "warn", "nur mit Kraft, Herausziehen sehr fest (wie r8)."],
+    [0.16, "gut", "ok", "ohne Kraft ein, fest raus, kein Wackeln."],
+    [9, "locker", "warn", "wackelt, Stifte treffen schlechter."]
+  ], [
+    ["Schwarz, kleine Lehre (bewährt)", 0.10, 0.00, 0.00],
+    ["Schwarz, Hochhaus r8 (Annahme)", 0.10, 0.03, 0.02],
+    ["Beige heute (Platzhalter)", 0.10, 0.10, 0.05],
+    ["Beige, nur Spiel 0,25", 0.25, 0.10, 0.05],
+    ["Maßhaltig, Spiel 0,25", 0.25, 0.00, 0.00],
+    ["Kalibriert, Spiel 0,15", 0.15, 0.02, 0.02]
+  ]);
+  fugenWidget("2", [
+    [0.02, "passt nicht", "bad", "Kassette lässt sich nicht einpressen."],
+    [0.09, "eingepresst", "ok", "Sitz wie r3 E: hält beim Schütteln."],
+    [0.13, "fest", "warn", "hält, aber ohne Druck nicht fest genug."],
+    [9, "locker", "warn", "gleitet oder wackelt."]
+  ], [], null);
+  /* Beispielwerte Kassette */
+  $("r2s").value = 0.06; $("r2g").value = 0.05; $("r2p").value = 0.05; $("r2s").dispatchEvent(new Event("input"));
+
+  /* Stift-Treffer */
+  var sc3 = $("skala3");
+  for (var t = -0.3; t <= 0.3001; t += 0.1) {
+    var x = 320 + t * 480;
+    var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", x); l.setAttribute("x2", x); l.setAttribute("y1", 118); l.setAttribute("y2", 124); l.setAttribute("class", "dim"); sc3.appendChild(l);
+    var tx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    tx.setAttribute("x", x); tx.setAttribute("y", 140); tx.setAttribute("text-anchor", "middle"); tx.setAttribute("class", "lbl-s mut mono");
+    tx.textContent = (t > 0.001 ? "+" : "") + t.toFixed(1).replace(".", ","); sc3.appendChild(tx);
+  }
+  function upd3() {
+    var S = +$("r3s").value, k = +$("r3k").value, v = S + k, cap = 0.18;
+    $("v3s").textContent = fmt(S); $("v3k").textContent = fmt(k);
+    var f = $("fang3"); f.setAttribute("x", 320 - cap * 480); f.setAttribute("width", cap * 960);
+    var r = $("vers3"); r.setAttribute("x", 320 - v * 480); r.setAttribute("width", v * 960);
+    $("o3v").textContent = "±" + fmt(v).replace("−", "") + " mm";
+    var c = $("o3c"), tt = $("o3t");
+    if (v <= cap + 1e-9) { c.textContent = "trifft"; c.className = "pill ok"; tt.textContent = "wie in r3, r4 und r8."; }
+    else if (v <= 0.24) { c.textContent = "knapp"; c.className = "pill warn"; tt.textContent = "die Buchse muss nachführen, Test nötig."; }
+    else { c.textContent = "Risiko"; c.className = "pill bad"; tt.textContent = "Stifte laufen auf das Gehäuse auf, solange die Buchse nicht mitgeht."; }
+  }
+  $("r3s").addEventListener("input", upd3); $("r3k").addEventListener("input", upd3); upd3();
+
+  /* Fase-Bilder: Zustand beim ersten Stiftkontakt (Fuß steckt 8,9 mm tief) */
+  var NS = "http://www.w3.org/2000/svg", fb = $("fasebilder"), T0 = 122, MM = 14, PIN = 8.9, GAP = 2;
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); fb.appendChild(e); return e; }
+  function panel(ox, name, sub, kind) {
+    var wx = ox + 20, mw = 70, fx = wx + mw + GAP, H = 14.2 * MM, fase = kind === "C" ? 4 : 2, fb0 = T0 + PIN * MM, ftop = fb0 - 14.2 * MM, fw = 76;
+    el("text", { x: ox + 20, y: 18, class: "lbl", "font-weight": 600 }).textContent = name;
+    el("text", { x: ox + 20, y: 32, class: "lbl-s mut" }).textContent = sub;
+    el("rect", { x: wx, y: T0, width: mw, height: H, class: "s-grau", "stroke-width": 1.2 });
+    if (kind === "B") el("rect", { x: wx + mw - 9, y: T0 + 5 * MM, width: 9, height: H - 5 * MM, fill: "var(--stage)", stroke: "none" });
+    el("path", { d: "M" + fx + " " + ftop + " H" + (fx + fw) + " V" + fb0 + " H" + (fx + fase * MM) + " L" + fx + " " + (fb0 - fase * MM) + " Z", class: "s-beige", "stroke-width": 1.2 });
+    var c1 = kind === "B" ? T0 + 5 * MM : fb0 - fase * MM;
+    el("line", { x1: fx, x2: fx, y1: T0, y2: c1, stroke: "var(--bad)", "stroke-width": 4 });
+    el("line", { x1: wx - 10, x2: fx + fw + 6, y1: T0, y2: T0, stroke: "var(--muted)", "stroke-width": 1 });
+    el("text", { x: wx - 10, y: T0 - 5, class: "lbl-s mut" }).textContent = "Plattenoberseite";
+    el("text", { x: fx + fw + 6, y: fb0 + 4, class: "lbl-s mut" }).textContent = "← Fußunterkante,"; el("text", { x: fx + fw + 6, y: fb0 + 16, class: "lbl-s mut" }).textContent = "Stifte treffen";
+    var y = T0 + H + 20;
+    el("text", { x: ox + 20, y: y, class: "lbl-s mut" }).textContent = "Reibweg gesamt: " + (kind === "B" ? "5,0 mm" : kind === "C" ? "10,2 mm" : "12,2 mm");
+    el("text", { x: ox + 20, y: y + 14, class: "lbl-s mut" }).textContent = "gerade geführt jetzt: " + (kind === "B" ? "5,0 mm" : kind === "C" ? "4,9 mm" : "6,9 mm");
+  }
+  panel(0, "A · gerade Wand (heute)", "Spiel S durchgehend", "A");
+  panel(280, "B · Führungsband 5 mm", "darunter + 0,15 Entlastung", "B");
+  panel(560, "C · Fuß-Fase 4,0", "statt 2,0, nur mit neuen Gebäuden", "C");
+})();
+</script>

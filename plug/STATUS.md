@@ -298,6 +298,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Plan 4 Display (Kappe statt Decke, Zapfen mit langer Verjüngung, Zapfenlehre; Entwurf) | `plug/display/plan4.html` | https://claude.ai/artifact/FVP5u9Geb2pKg2fXMjFXeW |
 | Passform-Stummel Hochhaus (Plan, Höhenregler, Druckzeit, Kopier-Text) | `plug/footfit/plan.html` | https://claude.ai/artifact/4y69fZRDpEMGBtrZSbDt1c |
 | Testbogen Passform Hochhaus (kurze Auswahlfragen, Ergebnistext) | `plug/footfit/feedback.html` | https://claude.ai/artifact/8u4RqPrrBj2tM8PKUa32q2 |
+| Passungsplan Filamente (Spiel je Farbe, Mulden-Block, Kassettenserie, Messplättchen; Plan, noch keine STL) | `plug/filament/plan.html` | https://claude.ai/artifact/6XbKN3t1Aj9bnv5DRwT1pP |
 | Plan Hauptschalter Westwand | `plug/power/plan_switch.html` | https://claude.ai/artifact/1B2dQEZPG32R1xqXzWnG16 |
 | Innenhof-Einsatz: Original gegen neu (Grundrisse, Höhenplan, Gang und Treppen, Schnitte, 3D Mulde und Stecker) | `plug/hof/page.html` | https://claude.ai/artifact/L266twNC6WtqvzszUg3Zyv |
 | Durchgang Paulinum – Institutsgebäude (Vorschlag: Block und Brücke entfallen, Gasse frei, Treppe bis zum Ostende; Schnitte, 3D Ist/Neu, Prüfung der freien Gasse) | `plug/passage/page.html` | https://claude.ai/artifact/H24rikAAmURQ2dYwieHJ1B |

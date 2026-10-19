@@ -3,6 +3,10 @@
 Stand: nach Steckprobe 2 (r4) und Fachprobe Powerbank (r5), beide 2026-10-16 ausgewertet. Als Nächstes ein Plan für Steckprobe 3 (siehe unten). Priorität 1 = nächster Druck, 2 = danach, 3 = bei Gelegenheit.
 Ablauf je Runde: siehe `README.md` (Plan, Abnicken, STL, Druck, Testbogen, Auswertung).
 
+## Passung bei anderen Filamenten (2026-10-19, Plan Schritt 1, wartet auf Abnicken)
+
+Rückmeldung des Nutzers: Platte grau, Gebäude beige (Hörsaal-, Seminar-, Institutsgebäude) und eine Kassette quer (V1RS, beige) gedruckt. **Gebäude passen nicht mehr in die Mulden** (Hörsaal nur mit viel Kraft), **beige Kassetten passen nicht mehr in die beigen Gebäude**; die Dupont-Buchsen passen weiter gut in die Kassetten. Plan: `plug/filament/plan.html` (Artifact in `STATUS.md`): Filament kalibrieren statt zwei Dateisätze, Mulden-Spiel 0,15 bis 0,25 an einem Mulden-Block (T1, Institutsumriss, die vorhandenen beigen Gebäude sind die Lehre), schlankere Kassetten (T2, Spiel im Modell 0,12 bis 0,20), Messplättchen je Filament (T4), Stumpf (T3) als Eingangsprüfung neuer Farben. Offene Rückfragen und Entscheidungskarten K1 bis K7 stehen auf der Seite. Die Vorgabe 0,15 (r8) bleibt gültig.
+
 ## VORGABE DES NUTZERS für den nächsten Probedruck (2026-10-17, r8)
 
 **Beim nächsten Probedruck mit Gebäuden in der Steckplatte das Spiel 0,15 mm je Seite testen** (nicht 0,10). Grund: r8, Hochhaus-Stummel mit 0,10 geht nur mit Kraft hinein und sitzt sehr fest (Fase 2,0 und Kassette V2R waren gut). Die gedruckte Platte hat Spiel 0,10; ein Stummel mit 0,15 bekommt den Umriss 0,05 mm je Seite kleiner (oder die Platte wird mit `OUTLINE_CLR_T = 0.15` neu gebaut). `OUTLINE_CLR_T` bleibt 0,10, bis der Test bestätigt; danach in `params.py` und `scale.md` umstellen, Gebäude und Platte neu bauen. Einzelheiten: `rounds/r8_passform_hochhaus/summary.md`, Lehre L43.
