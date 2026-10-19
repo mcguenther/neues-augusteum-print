@@ -26,7 +26,7 @@ from plug import campus as C
 from plug import series2 as N2
 from plug.filament import geom as FG
 from plug.footfit.build_stub import layer_poly, ueberhang
-from plug.geom import box, cbox, diff, to_tm, union
+from plug.geom import box, cbox, cyl, diff, to_tm, union
 from plug.power import build_concept as BC
 from plug.testcase import params as P
 from plug.testcase import variants as V
@@ -51,16 +51,24 @@ def ext(poly, z0, z1):
 
 
 # ---- Kassette (Unterbau)
-def kassette(spiel):
+def kassette(spiel, tasche_enger=0.0, punkte=0):
     """Unterbau der Kassette V1RS, je Seite um (spiel - 0,06) schlanker, Tasche unten am Bett (z = 0), Buchsentasche unverändert."""
     d = V.dims(VAR)
     dd = spiel - P.KASS_CLR_T
     w, depth, zb = d["w"], d["depth"], d["z_b"]
     body = N2.chamfered_block(w - 2 * dd, depth - 2 * dd, zb, V.EF, 0.0).translate([0, depth / 2, 0])
-    cuts = [cbox(d["pk_w"], d["pk_d"], -0.01, d["zp"], cy=d["ypin"]),
-            N2.chamfer_hole(d["pk_w"], d["pk_d"], 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
+    pw, pd = d["pk_w"] - tasche_enger, d["pk_d"] - tasche_enger      # Buchsentasche insgesamt tasche_enger enger in Breite und Tiefe (Höhe unverändert)
+    cuts = [cbox(pw, pd, -0.01, d["zp"], cy=d["ypin"]),
+            N2.chamfer_hole(pw, pd, 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
             box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], d["zp"] - 0.01, zb + 0.01)]
-    return diff(body, *cuts)
+    m = diff(body, *cuts)
+    # Kennung: erhabene Punkte (0,2 hoch, Ø 1,2) auf der Oberseite rechts vom Schlitz, Anzahl = (Spiel - 0,10) / 0,02, zwei Spalten, 3 Reihen
+    dots = []
+    for i in range(punkte):
+        x = 6.2 + 1.6 * (i // 3)
+        y = 1.9 + 1.5 * (i % 3)
+        dots.append(cyl(0.6, zb - 0.01, zb + 0.2, cx=x, cy=y))
+    return union([m] + dots) if dots else m
 
 
 # ---- Probefuß
@@ -170,6 +178,7 @@ def main():
     ziel["A1_mulden_block_institut"] = "mulde"
     for i, s in enumerate(KASS_SPIEL):
         teile["K%d_kassette_V1RS_%d" % (i + 1, round(s * 100))] = kassette(s)
+    teile["K4_kassette_V1RS_14"] = kassette(0.14, tasche_enger=0.10, punkte=2)
     f4, h4 = probefuss(4.0)
     teile["B1_probefuss_fase4"] = f4
     plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=1.6, top_ch=0.5)
@@ -206,6 +215,12 @@ def main():
     for i, s in enumerate(KASS_SPIEL):
         k = kassette(s).translate([0, -d["depth"] / 2, 0])
         chk("Kassette %d (Spiel %.2f) im Schacht des Probefußes B1" % (i + 1, s), (f4 ^ k).volume())
+    k4 = kassette(0.14, tasche_enger=0.10, punkte=2).translate([0, -d["depth"] / 2, 0])
+    chk("Kassette 4 (Spiel 0,14, Tasche 0,10 enger, 2 Punkte) im Schacht des Probefußes B1", (f4 ^ k4).volume())
+    hs = V.housing(VAR)
+    chk("Buchse (Nennmaß 10,16 x 2,54) in der engeren Tasche von K4 (Kassette im Ursprung)", (kassette(0.14, tasche_enger=0.10) ^ hs).volume())
+    hb = V.housing(VAR).translate([0.16, 0, 0])
+    chk("Kontrolle: Buchse 0,16 seitlich verschoben stößt an die Tasche von K4 an", (kassette(0.14, tasche_enger=0.10) ^ hb).volume(), soll_null=False)
     k0 = kassette(P.KASS_CLR_T).translate([0, -d["depth"] / 2, 0])
     chk("Kontrolle: Kassette mit Spiel 0,06 (heute) liegt ohne Verschiebung im Schacht", (f4 ^ k0).volume())
     k_zu = N2.chamfered_block(d["w"] + 0.30, d["depth"] + 0.30, d["z_b"], V.EF, 0.0).translate([0, 0, 0])
@@ -241,6 +256,7 @@ def main():
     with open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8") as f:
         f.write(readme)
     sets = {"passung_variante_A.zip": ["A1_mulden_block_institut", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"],
+            "passung_kassette_14.zip": ["K4_kassette_V1RS_14"],
             "passung_variante_B.zip": ["B1_probefuss_fase4", "B3_mulden_block_probe", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"]}
     for zn, names in sets.items():
         with zipfile.ZipFile(os.path.join(OUT, zn), "w", zipfile.ZIP_DEFLATED) as z:

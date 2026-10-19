@@ -16,8 +16,8 @@ Beide Varianten:
   K3_kassette_V1RS_20.stl        Kerben/Kennung: Dateiname; mit Stift auf der Unterseite markieren. Je etwa 16 min.
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
-  Variante A: Block 125 min + Kassetten 49 min = 174 min
-  Variante B: Fuß 29 min + Block 41 min + Kassetten 49 min = 119 min 
+  Variante A: Block 125 min + Kassetten 65 min = 190 min
+  Variante B: Fuß 29 min + Block 41 min + Kassetten 65 min = 136 min 
 
 Slicer: PLA, Düse 0,4, Schicht 0,2, Wände 3, Füllung 15 %, Support aus, Ausrichtung wie exportiert (Fuß bzw. Plattenunterseite und Kassettentasche am Bett).
 Filament: Fluss möglichst vorher kalibrieren (Plan, Abschnitt 6, Messplättchen T4).
