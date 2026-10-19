@@ -19,7 +19,7 @@ Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Ab
 
 ## Vorgabe 2026-10-20 (Batteriefach Stand 8)
 
-- **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden (Raum Ø 25 × 12,2 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
+- **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden, **1 mm Luft über dem Knopf** (Raum Ø 25 × 13,0 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
 
 ## Vorgabe 2026-10-19 (Batteriefach Stand 8)
 

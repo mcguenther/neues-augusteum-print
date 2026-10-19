@@ -2,7 +2,7 @@
 
 Der Hut trägt in der Mitte seines Deckbretts einen Knopf (`HUT_KNOPF`, Ø 22 × 12,0; die Höhe ist eine Annahme, vom Nutzer zu bestätigen) mit
 der Kordel der Quaste. Die Grundplatte liegt mittig auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (mindestens
-Ø 25 × 12,2), und die Kordel läuft in acht Gängen (`KORDEL_GANG`, freies Rechteck 8 × 5, darüber 45°-Dachschrägen 1,5, Höcker 11,4 breit)
+Ø 25 × 13,0), und die Kordel läuft in acht Gängen (`KORDEL_GANG`, freies Rechteck 8 × 5, darüber 45°-Dachschrägen 1,5, Höcker 11,4 breit)
 unter dem Kasten zur Außenwand. Am Rand haben die Gänge Gang-Höhe; `KNOPF_RAMPE["vor"]` mm vor dem Knopfkörper beginnt ein 45°-Kegel, der
 auf die Knopfhöhe steigt und mit einer flachen Decke Ø 20 schließt. Darüber sitzt die Erhebung (Plateau `KNOPF_PLATEAU_D`), von oben sichtbar.
 
@@ -57,7 +57,7 @@ if PP.KORDEL_ANSATZ_OBEN:                            # Kordel oben auf dem Knopf
     R_RAUM = max(KN["r"], round(math.hypot(R_KN + PP.KORDEL["h"], PP.KORDEL["b"] / 2) + KN["luft"], 1))   # 14,4
     H_RAUM = KN["h"] + PP.KORDEL["h"] + KN["luft"]
 else:                                                # Kordel verlässt den Knopf am Fuß (Hut-Höhe 0 bis 3)
-    R_RAUM, H_RAUM = KN["r"], KN["h"] + KN["luft"]   # 12,5 und 12,2
+    R_RAUM, H_RAUM = KN["r"], KN["h"] + KN["luft"]   # 12,5 und 13,0
 R_KNOPF = R_RAUM                                     # Name wie bisher: Radius des Knopfraums
 R_RAMPE = R_KN + PP.KNOPF_RAMPE["vor"]               # Beginn des Anstiegs (Gang-Höhe) 19,7
 R_DECKE = PP.KNOPF_RAMPE["decke_d"] / 2              # flache Decke über dem Knopf Radius 10
@@ -77,9 +77,9 @@ def knopf_profil(z0=-1.0):
     return pts + [(R_DECKE, top), (0.0, top)], top
 
 
-KNOPF_TOP = knopf_profil()[1]                        # Decke über dem Knopf 14,7
+KNOPF_TOP = knopf_profil()[1]                        # Decke über dem Knopf 15,5
 KNOPF_Z = KNOPF_TOP + DACH                           # Plateau der Erhebung 15,9
-KNOPF_H = H_RAUM                                     # Höhe des Raums Ø 25 (12,2)
+KNOPF_H = H_RAUM                                     # Höhe des Raums Ø 25 (13,0)
 KNOPF_H0 = H_RAUM                                    # (alter Name) senkrechter Teil des Raums
 H8 = round(KNOPF_Z + PB_T + PP.STECKERRAUM_8, 2)     # Powerbank auf dem Plateau, darüber 6,0: 34,7
 RICHTUNG = ("O", "NO", "N", "NW", "W", "SW", "S", "SO")   # k · 45°, 0° = Osten
@@ -414,7 +414,7 @@ def varianten():
         ("gewählt", ("Anstieg %.1f mm vor dem Knopf, Decke Ø %.0f, Powerbank auf Plateau und Auflagen" % (PP.KNOPF_RAMPE["vor"], 2 * R_DECKE)).replace(".", ","), plateau_z(), True),
         ("rampe10", "Anstieg genau 10 mm vor dem Knopf (Decke Ø 20)", plateau_z(vor=10.0), True),
         ("decke18", "Decke Ø 18 statt 20 (mehr Reserve zur Brückenregel)", plateau_z(decke_d=18.0), True),
-        ("flach25", "flache Decke Ø 25 direkt auf 12,2 (Brücke 25, über der Regel 20)", KN["h"] + KN["luft"] + DACH, False),
+        ("flach25", "flache Decke Ø 25 direkt auf 13,0 (Brücke 25, über der Regel 20)", KN["h"] + KN["luft"] + DACH, False),
         ("weg", "Powerbank nicht über dem Knopf, auf den Gangdächern (neue Lage nötig)", GANG_Z, True),
         ("alt", "Stand 8 vorher (Knopf als 1,2 mm gelesen, Gangdach 6,2)", 6.2, True),
     ]

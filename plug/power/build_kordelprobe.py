@@ -4,7 +4,7 @@
 Teil (Druckausrichtung: Bett unten = Hut-Seite, Erhebung nach oben):
   K4_stern_F-aussen.stl, K4_stern_F-innen.stl   Stern Ø 70 aus acht Höckern mit den Gängen (F-aussen: freies Rechteck 8 × 5, darüber 45°-Dachschrägen 1,5,
                   Höcker 11,4 × 7,7; F-innen: Fase 1,5 in den oberen Ecken, Höcker 10,4 × 6,2), in der Mitte die Erhebung über dem Knopf: Hohlraum am Bett Ø 39,4 auf Gang-Höhe, ab 8,7 mm vor dem
-                  Knopfkörper 45°-Anstieg, Knopfraum Ø 25 × 12,2 frei, flache Decke Ø 20 bei 14,7, Plateau Ø 28 bei 15,9 (Wand 1,2).
+                  Knopfkörper 45°-Anstieg, Knopfraum Ø 25 × 13,0 frei (1 mm Luft über dem Knopf), flache Decke Ø 20 bei 15,5, Plateau Ø 28 bei 16,0.
                   Ohne Boden, Randwand und Deckplatte: nur das, was die Kordel und der Knopf brauchen; Geometrie wie im Kasten.
 Prüft am echten Hut (Knopf Ø 22 × 12,0, Höhe noch Annahme; Kordel 3 × 5): Knopf im Raum, Kordel vom Knopffuß in jeden der acht Gänge,
 Decken ohne Support, Kleben. Plan: plug/power/plan_kasten8.html (Abschnitt K4); Werte in plug/power/params.py, Geometrie in plug/power/kasten8.py.
@@ -169,9 +169,9 @@ Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedr
 
 Teil: K4_stern_F-innen.stl, Stern Ø 70 x %(h).1f mm, ohne Boden und ohne Randwand, Bett unten = Hut-Seite, kein Support (siehe pruefbericht.txt)   ca. %(g).0f g
 Gänge 8 x 5 mit Fase 1,5 in den oberen Ecken (Decke 5 breit bei 5,0; die Kordel 5 x 3 passt, 2 mm Luft in der Höhe), Wand 0,8, Decke 3 Lagen
-x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 8,7 mm
-vor dem Knopf steigt die Decke mit 45 Grad an, der Knopfraum Ø 25 x 12,2 ist überall frei (nichts davon beschnitten), oben eine flache Decke
-Ø 20 bei 14,7, darüber das Plateau Ø 28 bei %(pz).1f. Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten
+x 0,16 = 0,48, keine Fase unten an den Mündungen. In der Mitte die Erhebung für den Knopf: am Hut ein Hohlraum Ø 39,4 auf Gang-Höhe 5, ab 9,5 mm
+vor dem Knopf steigt die Decke mit 45 Grad an, der Knopfraum Ø 25 x 13,0 (1 mm Luft über dem Knopf) ist überall frei (nichts davon beschnitten), oben eine flache Decke
+Ø 20 bei 15,5, darüber das Plateau Ø 28 bei %(pz).1f. Annahme: Knopf Ø 22 x 12 mm hoch (bitte nachmessen); die Kordel 3 x 5 kommt unten
 seitlich am Knopffuß heraus.
 
 Ablauf:
@@ -179,7 +179,7 @@ Ablauf:
   2. Stern mit Heißkleber auf dem Hut ankleben (nur auf die Unterseite der Höcker, nicht in die Gänge und nicht in die Mitte).
   3. Powerbank (oder ein Buch) auf das Plateau legen: drückt es auf den Knopf? Lässt sich die Kordel noch bewegen?
   4. Kordel nacheinander in andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
-Fragen für den Testbogen: Wie hoch ist der Knopf wirklich (12 mm?), passt er in den Raum (1,5 mm Luft je Seite, 0,2 oben)? Hält die dünne
+Fragen für den Testbogen: Wie hoch ist der Knopf wirklich (12 mm?), passt er in den Raum (1,5 mm Luft je Seite, 1 mm oben)? Hält die dünne
 Decke (0,48) und hängt die Decke über dem Knopf (etwa 20 mm frei) durch? Sind Gangdecken und Fasen sauber? Halten die Wände mit 0,8?
 Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
 
