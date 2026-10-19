@@ -23,7 +23,7 @@
   {
    "rgb": "#f3f3f0",
    "name": "Weiß",
-   "rolle": "Reserve"
+   "rolle": "vorerst nicht verwendet"
   },
   {
    "rgb": "#1f2022",
@@ -49,8 +49,8 @@
    "abweichung_hauptfarben_dE": 9.3,
    "anteile_prozent": {
     "Beige": 4.5,
-    "Graublau": 83.6,
-    "Space Grey": 12.0
+    "Graublau": 83.3,
+    "Space Grey": 12.2
    },
    "dreiecke": 39974,
    "dicht": true
@@ -66,8 +66,8 @@
    "abweichung_dE": 8.4,
    "abweichung_hauptfarben_dE": 8.4,
    "anteile_prozent": {
-    "Beige": 15.6,
-    "Graublau": 70.2,
+    "Beige": 15.8,
+    "Graublau": 70.0,
     "Space Grey": 14.2
    },
    "dreiecke": 54282,
@@ -78,17 +78,17 @@
    "datei": "03_hoersaalgebaeude_1zu1300_farbig.3mf",
    "satz": [
     "Beige",
+    "Graublau",
     "Weinrot",
-    "Space Grey",
-    "Weiß"
+    "Space Grey"
    ],
-   "abweichung_dE": 14.1,
+   "abweichung_dE": 18.3,
    "abweichung_hauptfarben_dE": 18.3,
    "anteile_prozent": {
-    "Beige": 16.8,
-    "Weinrot": 18.7,
-    "Space Grey": 28.5,
-    "Weiß": 36.0
+    "Beige": 61.5,
+    "Graublau": 16.9,
+    "Weinrot": 19.1,
+    "Space Grey": 2.5
    },
    "dreiecke": 81294,
    "dicht": true
@@ -98,17 +98,17 @@
    "datei": "04_seminargebaeude_1zu1300_farbig.3mf",
    "satz": [
     "Beige",
+    "Graublau",
     "Weinrot",
-    "Space Grey",
-    "Weiß"
+    "Space Grey"
    ],
-   "abweichung_dE": 9.1,
+   "abweichung_dE": 14.4,
    "abweichung_hauptfarben_dE": 14.4,
    "anteile_prozent": {
-    "Beige": 15.0,
+    "Beige": 66.1,
+    "Graublau": 3.0,
     "Weinrot": 3.5,
-    "Space Grey": 34.8,
-    "Weiß": 46.7
+    "Space Grey": 27.3
    },
    "dreiecke": 34704,
    "dicht": true
@@ -125,10 +125,10 @@
    "abweichung_dE": 16.0,
    "abweichung_hauptfarben_dE": 16.0,
    "anteile_prozent": {
-    "Beige": 60.7,
+    "Beige": 60.6,
     "Graublau": 10.1,
     "Weinrot": 6.8,
-    "Space Grey": 22.4
+    "Space Grey": 22.6
    },
    "dreiecke": 44176,
    "dicht": true
@@ -138,15 +138,15 @@
    "datei": "06_city_hochhaus_1zu1300_farbig.3mf",
    "satz": [
     "Beige",
-    "Space Grey",
-    "Weiß"
+    "Graublau",
+    "Space Grey"
    ],
-   "abweichung_dE": 17.1,
+   "abweichung_dE": 21.6,
    "abweichung_hauptfarben_dE": 21.6,
    "anteile_prozent": {
-    "Beige": 7.4,
-    "Space Grey": 18.8,
-    "Weiß": 73.7
+    "Beige": 26.9,
+    "Graublau": 70.0,
+    "Space Grey": 3.1
    },
    "dreiecke": 32374,
    "dicht": true

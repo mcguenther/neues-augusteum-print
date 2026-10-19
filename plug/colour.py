@@ -160,7 +160,7 @@ def main():
     for d in (OUT, PREV, VIEW):
         os.makedirs(d, exist_ok=True)
     teile, farben = build(a.scale, a.slugs)
-    info = {"filamente": [{"rgb": c, "name": n, "rolle": "Hauptfarbe" if (c, n) in F.HAUPT else "Reserve"} for c, n in F.FILAMENTE],
+    info = {"filamente": [{"rgb": c, "name": n, "rolle": "Hauptfarbe" if (c, n) in F.HAUPT else ("vorerst nicht verwendet" if n in F.GESPERRT else "Reserve")} for c, n in F.FILAMENTE],
             "gebaeude": {}}
     einzeln, haupt = {}, []
     for t in teile:
@@ -198,7 +198,7 @@ def readme(info, scale):
     z = ["# Steckbare Gebäude farbig (1:%d)" % scale, "",
          "Erzeugt mit `python3 -m plug.colour` aus den Gebäuden in `../gebaeude/` (gleiche Geometrie, gleiche Lage) und dem Hof-Einsatz.",
          "Filamente des Nutzers (Hex-Werte geschätzt, in `farben.FILAMENTE` anpassen): " +
-         ", ".join("%s `%s`%s" % (f["name"], f["rgb"], "" if f["rolle"] == "Hauptfarbe" else " (Reserve)") for f in info["filamente"]) + ".",
+         ", ".join("%s `%s`%s" % (f["name"], f["rgb"], "" if f["rolle"] == "Hauptfarbe" else " (%s)" % f["rolle"]) for f in info["filamente"]) + ".",
          "Höchstens %d Filamente je Druck. 3D-Ansicht: `plug/views/farbig/view.html`. Slicer-Einstellungen: `plug/slicer.md`." % F.GLEICHZEITIG, "",
          "| Datei | Filamente (Slot 1–4) | Anteile der Außenfläche | ΔE (nur Hauptfarben) |", "|---|---|---|---|"]
     for g in info["gebaeude"].values():

@@ -127,6 +127,7 @@ FILAMENTE = [("#e6d6bc", "Beige"), ("#6b7d8c", "Graublau"), ("#7b2433", "Weinrot
 HAUPT = FILAMENTE[:4]          # die vier Hauptfarben
 RESERVE = FILAMENTE[4:]        # Weiß, Schwarz, Grasgrün: nur, wenn sie ein Gebäude deutlich besser treffen
 GLEICHZEITIG = 4               # Filamente je Druck
+GESPERRT = ("Weiß",)          # vorerst nicht verwenden (Nutzer 19.10.: zu viel Weiß); diese Flächen werden Beige
 RESERVE_KOSTEN = 4.0           # Aufschlag je Reservefarbe in der Auswahl (ΔE, flächengewichtet): Hauptfarben bevorzugt
 PROFILE = {
     3: [FILAMENTE[0], FILAMENTE[1], FILAMENTE[3]],
@@ -141,6 +142,7 @@ PROFIL_ROLLEN = {"Dach rot": "Weinrot", "08 krone": "Grasgrün", "08 beet": "Gra
 # Luftbild vor allem Schatten und werden hell.
 PROFIL_DACH_BLAU = ("01_paulinum", "02_neues_augusteum", "06_city_hochhaus")
 PROFIL_ROOF_NZ = 0.35   # wie fassaden.ROOF_NZ
+DACH_INSEL_MM2 = 6.0    # zusammenhängende Dachflächen einer Farbe, die kleiner sind, nehmen die Farbe ihrer Umgebung an (mm² im Druck)
 
 
 def palette(profil):
@@ -209,7 +211,58 @@ def reduziere(slug, eintrag, mesh, hexes, profil, farben=None):
         if t is None:
             t = cache[(h, r)] = _ziel(slug, name_of.get(h.lower(), ""), h, r, pal, labs)
         out[i] = pal[t][0]
-    return out
+    return dach_glaetten(mesh, out)
+
+
+def dach_glaetten(mesh, cols, amin=DACH_INSEL_MM2, runden=10):
+    """Kleine Farbinseln auf dem Dach entfernen: zusammenhängende Dachdreiecke (Normale steiler als PROFIL_ROOF_NZ) gleicher Farbe
+    mit weniger als amin mm² Fläche bekommen die Farbe des Nachbarn, mit dem sie die längste Kante teilen (bevorzugt einer großen
+    Fläche). Wiederholt, bis nichts mehr kleiner ist; Wände bleiben unverändert. Das Luftbild färbt jedes Dachdreieck einzeln,
+    daher sonst ein Flickenteppich aus kleinen Dreiecken."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    cols = np.asarray(cols, dtype=object).copy()
+    roof = mesh.face_normals[:, 2] > PROFIL_ROOF_NZ
+    adj = mesh.face_adjacency
+    if not roof.any() or len(adj) == 0:
+        return cols
+    e = mesh.vertices[mesh.face_adjacency_edges]
+    ln = np.linalg.norm(e[:, 0] - e[:, 1], axis=1)
+    beide = roof[adj[:, 0]] & roof[adj[:, 1]]
+    adj, ln = adj[beide], ln[beide]
+    area = mesh.area_faces
+    n = len(cols)
+    for _ in range(runden):
+        keys, code = np.unique(cols.astype(str), return_inverse=True)
+        code = code.ravel()
+        gleich = code[adj[:, 0]] == code[adj[:, 1]]
+        a, b = adj[gleich].T
+        k, lab = connected_components(coo_matrix((np.ones(len(a)), (a, b)), shape=(n, n)), directed=False)
+        fl = np.bincount(lab, weights=area * roof, minlength=k)
+        klein = (fl < amin) & (np.bincount(lab, weights=roof, minlength=k) > 0)
+        if not klein.any():
+            break
+        # Kanten zwischen verschiedenen Farben, von der kleinen Insel aus gesehen
+        d = adj[~gleich]
+        dl = ln[~gleich]
+        src = np.r_[lab[d[:, 0]], lab[d[:, 1]]]
+        nb = np.r_[code[d[:, 1]], code[d[:, 0]]]
+        nb_gross = np.r_[~klein[lab[d[:, 1]]], ~klein[lab[d[:, 0]]]]
+        w = np.r_[dl, dl] * (1.0 + 1000.0 * nb_gross)      # große Nachbarflächen zuerst
+        m = klein[src]
+        if not m.any():
+            break
+        src, nb, w = src[m], nb[m], w[m]
+        best = {}
+        for s_, c_, w_ in zip(src.tolist(), nb.tolist(), w.tolist()):
+            t = best.setdefault(s_, {})
+            t[c_] = t.get(c_, 0.0) + w_
+        neu = {s_: max(t, key=t.get) for s_, t in best.items()}
+        sel = np.flatnonzero(roof & np.isin(lab, list(neu)))
+        if not len(sel):
+            break
+        cols[sel] = [keys[neu[l]] for l in lab[sel]]
+    return cols
 
 
 def waehle_filamente(teile, farben, n=GLEICHZEITIG, pflicht=()):
@@ -236,7 +289,7 @@ def waehle_filamente(teile, farben, n=GLEICHZEITIG, pflicht=()):
     best = None
     for satz in itertools.combinations(FILAMENTE, n):
         names = [nm for _, nm in satz]
-        if any(p not in names for p in pflicht):
+        if any(p not in names for p in pflicht) or any(g in names for g in GESPERRT):
             continue
         labs = [_lab(c) for c, _ in satz]
         cost = sum(a * np.linalg.norm(_lab(h) - labs[_ziel(slug, use, h, r, satz, labs)])
