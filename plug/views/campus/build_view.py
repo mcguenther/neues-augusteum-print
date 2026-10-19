@@ -84,7 +84,7 @@ def main():
         dict(name="Übersicht", t=[cx, cy, 7.0], d=370, az=-62, el=50, which="neu",
              text="Die ganze Platte, Gebäude-Mulden und Hof-Aussparung. Ziehen dreht, Rad zoomt."),
         dict(name="Schrift", t=[label[0], label[1], T + 0.3], d=62, az=-90, el=42, which="neu",
-             text="Titel, Quellenzeile, Nordpfeil und „N“ stehen jetzt %s mm hoch auf der Oberseite, um die Breite der Randfase nach innen gerückt (Abstand zur ebenen Fläche min. %s mm). Mit „Gedruckt“ siehst du dieselbe Stelle graviert." % (de(P.LABEL_RAISE_T), de(clear))),
+             text="Titel „Campus Augustusplatz“ (nur diese Zeile, groß), Nordpfeil und „N“ stehen jetzt %s mm hoch auf der Oberseite, um die Breite der Randfase nach innen gerückt (Abstand zur ebenen Fläche min. %s mm). Mit „Gedruckt“ siehst du dieselbe Stelle graviert." % (de(P.LABEL_RAISE_T), de(clear))),
         dict(name="Oberkante", t=[b[1][0] - 7.0, b[0][1], T - 1.5], d=17, az=-90, el=4, which="neu",
              text="Blick auf die Stirnseite im Südosten: die obere Außenkante läuft mit einer Fase von %s mm unter 45° aus (in Schichtstufen). Im Druck wölbten sich dort die letzten 5 bis 7 Schichten nach außen." % de(P.PLATE_TOP_CH_T)),
         dict(name="Mulden-Rand", t=[mx, my, T - 0.5], d=8, az=mulde_az, el=18, which="neu",
@@ -96,7 +96,7 @@ def main():
     ]
     changes = [
         dict(name="Schrift erhaben", val="+%s mm" % de(P.LABEL_RAISE_T), view=1,
-             text="Titel, Quellenzeile, Nordpfeil und „N“ lagen vertieft und waren nicht lesbar. Jetzt sitzen sie oben auf der Platte (L01: erhaben 0,5 bis 0,6 mm)."),
+             text="Titel „Campus Augustusplatz“ (nur diese Zeile, groß), Nordpfeil und „N“ lagen vertieft und waren nicht lesbar. Jetzt sitzen sie oben auf der Platte (L01: erhaben 0,5 bis 0,6 mm)."),
         dict(name="Fase an der Oberkante", val="%s mm × 45°" % de(P.PLATE_TOP_CH_T), view=2,
              text="Der Druck zeigte oben einen Wulst über die letzten 5 bis 7 Schichten. Die Fase ist deutlich tiefer als die 2 bis 3 Schichten der Bettfase. Nutzer: 1,5 bis 2 mm."),
         dict(name="Einführfase der Mulden", val="%s mm" % de(P.MULDE_CH_T), view=3,

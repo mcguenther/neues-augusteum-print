@@ -300,8 +300,8 @@ def build(scale=P.SCALE_PLAN, replace=False, hof_wand=None):
     hof_solid = models[G.HOF["slug"]][0]
     plate = BC.slab_ch(outline, 0.0, T, P.EF_CH_T)           # Bettkante mit Fase gegen den Elefantenfuß
     plate = plate ^ top_edge(outline, T, P.PLATE_TOP_CH_T)    # obere Außenkante gefast (Wulst im Druck)
-    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz · Universität Leipzig", T, "laserscan", raised=P.LABEL_RAISE_T,
-                           inset=P.PLATE_TOP_CH_T)
+    plate = G.engrave_labels(plate, outline, scale, "Campus Augustusplatz", T, "laserscan", raised=P.LABEL_RAISE_T,
+                           inset=P.PLATE_TOP_CH_T, nur_titel=True)
     # Aufbauten der Platte neben dem Einsatz: Gang im Süden auf Terrassenhöhe mit Treppe am Westende, Treppe im Nordosten (innenhof.platte_aufbau_mm);
     # die Mulden und die Hof-Aussparung schneiden sie danach zu
     hof = innenhof.flaeche_mm([v[1] for k, v in models.items() if k in P.CASSETTE], s, abstand)
