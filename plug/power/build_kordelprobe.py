@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Probeteil K4 Kordelprobe (Mitte des Unterkastens Stand 8): STL, README, ZIP, Prüfbericht und Bilder nach stl/steckmodul_kordelprobe/.
 
-Teile (Druckausrichtung, Boden auf dem Bett):
-  K4_scheibe.stl       Scheibe Ø 70 × 6,2: Boden 1,2, Teller Ø 54,4 bis 2,6, Knopfraum Radius 26 × 1,4 mit 45°-Wand, acht Höcker 10,4 breit
-                       mit Gängen 8 × 5 (obere Kanten 1,5 × 45°) bis zum Rand, Ring 2,4 breit mit dem Dach über den Gängen; Geometrie wie im Kasten
-  K4_deckplatte.stl    Platte 70 × 70 × 3, flach: liegt auf den Höckern und steht für Steckplatte und Powerbank, die auf die Kordel gelegt werden
-Prüft am echten Hut (Knopf Ø 22 × 1,2, Kordel 3 × 5): Knopf im Raum, Kordel in jedem der acht Gänge, Brücken ohne Support, Auflegen und Kleben.
+Teil (Druckausrichtung, Dach nach oben, Bett unten):
+  K4_stern.stl    Stern aus acht Höckern 10,4 breit und 6,2 hoch mit den Gängen 8 × 5 (obere Kanten 1,5 × 45°), in der Mitte der Knopfraum
+                  (Ø 25, Wand senkrecht bis 1,4, darüber 45° bis 5, Dach Ø 18). Ohne Boden und ohne Randwand: nur das, was die Kordel
+                  und der Knopf brauchen; Geometrie wie im Kasten. Eine Deckplatte entfällt: zum Auflegen taugt die Powerbank selbst.
+Prüft am echten Hut (Knopf Ø 22 × 1,2, Kordel 3 × 5): Knopf im Raum, Kordel auf dem Knopf und in jedem der acht Gänge, Brücken ohne Support, Kleben.
 Plan: plug/power/plan_kasten8.html (Abschnitt K4); Werte in plug/power/params.py, Geometrie in plug/power/kasten8.py.
 Aufruf (aus dem Repo-Wurzelverzeichnis):
     python3 -m plug.power.build_kordelprobe
@@ -29,10 +29,8 @@ from plug.power import params as PP
 HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(HERE, "stl", "steckmodul_kordelprobe")
 PREV = os.path.join(HERE, "vorschau", "steckmodul_kordelprobe")
-D = 70.0                      # Scheibe Ø 70
-WALL = PP.UK_WALL             # Ring wie die Außenwand des Kastens
+D = 70.0                      # Stern Ø 70 (Gänge 35 mm vom Mittelpunkt)
 H = K8.GANG_Z                 # Höhe 6,2 = Oberkante der Höcker
-PLATE = (70.0, 70.0, 3.0)     # Deckplatte
 CH = PP.CH_BED
 
 
@@ -45,25 +43,18 @@ class Report:
         self.lines.append(s)
 
 
-def scheibe():
-    """Scheibe wie ein Ausschnitt des Kastens: Boden und Ring wie die Wand, Teller, Höcker, Knopfraum und Gänge ausgeschnitten."""
+def stern():
+    """Stern wie ein Ausschnitt des Kastens, aber ohne Boden und Ring: Dach über dem Knopfraum, acht Höcker, Knopfraum und Gänge ausgeschnitten."""
     c = (0.0, 0.0)
-    outline = Point(c).buffer(D / 2, 128)
-    inner = outline.buffer(-WALL)
-    kuppel = Point(c).buffer(K8.R_KNOPF + PP.KORDEL_DACH, 128).intersection(inner)
     hw = PP.KORDEL_GANG["w"] / 2 + PP.KORDEL_DACH
-    hoecker = G.union([G.extrude(sbox(0, -hw, D, hw).intersection(inner), PP.UK_FLOOR - 0.01, H).rotate([0, 0, k * 45.0]) for k in range(8)])
-    shell = BC.slab_ch(outline, 0, H, CH) - G.extrude(inner, PP.UK_FLOOR, H + 1)
-    solid = G.union([shell, G.extrude(kuppel, PP.UK_FLOOR - 0.01, K8.KNOPF_Z), hoecker])
+    kuppel = Point(c).buffer(K8.R_KNOPF + PP.KORDEL_DACH, 128)
+    hoecker = G.union([G.extrude(sbox(0, -hw, D / 2, hw), 0.0, H).rotate([0, 0, k * 45.0]) for k in range(8)])
+    solid = G.union([G.extrude(kuppel, 0.0, H), hoecker])
     gc = K8.gaenge_cut(c, PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"], PP.KORDEL_GANG["n"], laenge=D / 2 + 2)
     kc = K8.knopf_cut(c, K8.R_KNOPF, K8.KNOPF_H)
     strips = unary_union([affinity.rotate(sbox(0, -PP.KORDEL_GANG["w"] / 2, D, PP.KORDEL_GANG["w"] / 2), k * 45.0, origin=(0, 0)) for k in range(8)])
     mouth = BC.mouth_ch(unary_union([Point(c).buffer(K8.R_KNOPF), strips]), 0, CH)
-    return solid - G.union([kc, gc, mouth]), gc, kc, mouth
-
-
-def deckplatte():
-    return BC.slab_ch(sbox(-PLATE[0] / 2, -PLATE[1] / 2, PLATE[0] / 2, PLATE[1] / 2), 0, PLATE[2], CH)
+    return solid - G.union([kc, gc, mouth])
 
 
 def main():
@@ -73,14 +64,13 @@ def main():
     for f in os.listdir(OUT):
         if f.endswith((".stl", ".zip", ".txt")):
             os.remove(os.path.join(OUT, f))
-    sch, gc, kc, _ = scheibe()
-    plate = deckplatte()
-    parts = {"K4_scheibe": sch, "K4_deckplatte": plate}
-    rep("Probeteil K4 Kordelprobe: Scheibe Ø %.0f × %.1f, Deckplatte %.0f × %.0f × %.0f" % (D, H, *PLATE))
-    rep("Maße: Knopfraum Radius %.0f (Ø %.0f) × %.1f mit 45°-Wand, Knopf Ø %.0f × %.1f, Gänge %.0f × %.0f mit Fase %.1f, Kordel %.0f × %.0f, Teller bis %.1f, Höcker %.1f hoch" % (
-        K8.R_KNOPF, 2 * K8.R_KNOPF, K8.KNOPF_H, PP.HUT_KNOPF["d"], PP.HUT_KNOPF["h"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"],
-        PP.KORDEL["b"], PP.KORDEL["h"], K8.KNOPF_Z, H))
-    rep("\nTeile (Druckausrichtung, Bett z = 0):")
+    sch = stern()
+    parts = {"K4_stern": sch}
+    rep("Probeteil K4 Kordelprobe: Stern Ø %.0f × %.1f, ohne Boden und ohne Randwand" % (D, H))
+    rep("Maße: Knopfraum Radius %.1f (Ø %.0f), Wand senkrecht bis %.1f, 45° bis %.1f (Dach Ø %.0f), Knopf Ø %.0f × %.1f, Gänge %.0f × %.0f mit Fase %.1f, Kordel %.0f × %.0f, Höcker %.1f breit und %.1f hoch" % (
+        K8.R_KNOPF, 2 * K8.R_KNOPF, K8.KNOPF_H0, K8.KNOPF_H, 2 * (K8.R_KNOPF - (K8.KNOPF_H - K8.KNOPF_H0)), PP.HUT_KNOPF["d"], PP.HUT_KNOPF["h"],
+        PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"], PP.KORDEL["b"], PP.KORDEL["h"], PP.KORDEL_GANG["w"] + 2 * PP.KORDEL_DACH, H))
+    rep("\nTeil (Druckausrichtung, Bett z = 0):")
     info = {}
     bad = 0
     for name, man in parts.items():
@@ -106,19 +96,18 @@ def main():
 
     kn = PP.HUT_KNOPF
     knopf = m3d.Manifold.cylinder(kn["h"], kn["d"] / 2, kn["d"] / 2, 64)
-    chk("Knopf Ø %.0f × %.1f im Knopfraum (Luft oben %.1f)" % (kn["d"], kn["h"], kn["luft"]), vol_int(knopf, sch))
+    chk("Knopf Ø %.0f × %.1f im Knopfraum (seitlich %.1f, oben %.1f Luft)" % (kn["d"], kn["h"], K8.R_KNOPF - kn["d"] / 2, K8.KNOPF_H0 - kn["h"]), vol_int(knopf, sch))
     cb, ch_ = PP.KORDEL["b"], PP.KORDEL["h"]
     kord = G.union([K8.prism_y_x([(-cb / 2, 0.05), (cb / 2, 0.05), (cb / 2, ch_), (-cb / 2, ch_)], 0.0, D / 2 - 0.1).rotate([0, 0, k * 45.0]) for k in range(8)])
     chk("Kordel %.0f × %.0f in allen 8 Gängen bis zum Rand" % (cb, ch_), vol_int(kord, sch))
+    kord_kn = G.union([K8.prism_y_x([(-cb / 2, kn["h"]), (cb / 2, kn["h"]), (cb / 2, kn["h"] + ch_), (-cb / 2, kn["h"] + ch_)], 0.0, D / 2 - 0.1).rotate([0, 0, k * 45.0]) for k in range(8)])
+    chk("Kordel auf dem Knopf (bis %.1f hoch) und weiter in allen 8 Gängen" % (kn["h"] + ch_), vol_int(kord_kn, sch))
     chk("Gangprofil (8 × 5 mit Fase) frei", vol_int(K8.gaenge_cut((0.0, 0.0), PP.KORDEL_GANG["w"] - 0.04, PP.KORDEL_GANG["h"] - 0.04, PP.KORDEL_GANG["fase"], 8, z0=0.01, laenge=D / 2 - 0.1), sch))
     ow, oa, oz = K8.ueberhang(sch, zmax=H)
-    rep("  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke %.1f mm (Sternmitte), Gangdecken 5,0 mm" % ow)
-    if ow > 15.0:
+    rep("  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke %.1f mm (Dach über dem Knopfraum), Gangdecken 5,0 mm" % ow)
+    if ow > 20.0:
         bad += 1
-    # Deckplatte liegt auf den Höckern: Kontakt, keine Überschneidung
-    lieg = plate.translate([0, 0, H])
-    chk("Deckplatte auf den Höckern (liegt nur auf)", vol_int(lieg, sch))
-    rep("  Deckplatte über den Gängen: Luft für die Kordel %.1f mm hoch (Gang %.1f, Kordel %.1f)" % (PP.KORDEL_GANG["h"] - PP.KORDEL["h"], PP.KORDEL_GANG["h"], PP.KORDEL["h"]))
+    rep("  Platte oder Powerbank auf den Höckern: Luft für die Kordel %.1f mm hoch (Gang %.1f, Kordel %.1f)" % (PP.KORDEL_GANG["h"] - PP.KORDEL["h"], PP.KORDEL_GANG["h"], PP.KORDEL["h"]))
     rep("  -> %s" % ("keine Kollisionen" if not bad else "%d Fehler!" % bad))
 
     from plug.roadmap import build as rb
@@ -142,14 +131,12 @@ def main():
 
 
 def images():
-    """Bilder mit dem Software-Renderer: Scheibe schräg und von unten, Scheibe mit Deckplatte."""
+    """Bilder mit dem Software-Renderer: Stern schräg von oben und von unten."""
     import subprocess
     import sys
-    py = sys.executable
-    base = os.path.join(OUT, "K4_scheibe.stl")
-    out = PREV
-    subprocess.run([py, "preview.py", base, "--azim", "-60", "--elev", "40", "--out", out], cwd=HERE, check=False)
-    subprocess.run([py, "preview.py", base, "--azim", "-60", "--elev", "-55", "--out", out + "/unten"], cwd=HERE, check=False)
+    base = os.path.join(OUT, "K4_stern.stl")
+    subprocess.run([sys.executable, "preview.py", base, "--azim", "-60", "--elev", "40", "--out", PREV], cwd=HERE, check=False)
+    subprocess.run([sys.executable, "preview.py", base, "--azim", "-60", "--elev", "-55", "--out", PREV + "/unten"], cwd=HERE, check=False)
 
 
 def write_readme(info):
@@ -157,25 +144,24 @@ def write_readme(info):
 ================================================
 Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedruckt, alle Werte sind Planwerte.
 
-Teile:
-  K4_scheibe.stl      Scheibe Ø 70 x 6,2 mm, Boden auf das Bett, kein Support (siehe pruefbericht.txt)     ca. %(s).0f g
-  K4_deckplatte.stl   Platte 70 x 70 x 3 mm, flach, Unterseite auf das Bett                                  ca. %(d).0f g
+Teil:
+  K4_stern.stl    Stern Ø 70 x 6,2 mm, ohne Boden und ohne Randwand, Dach nach oben, kein Support (siehe pruefbericht.txt)     ca. %(s).0f g
 
-Was die Scheibe zeigt: Knopfraum Radius 26 (Ø 52) x 1,4 mit 45-Grad-Wand, acht Gänge 8 x 5 mm mit 1,5 x 45-Grad-Fasen an den oberen Kanten
-(Decke 5 mm breit), Höcker 10,4 mm breit, Ring wie die Außenwand. Der Knopf des Huts (Ø 22 x 1,2) soll im Raum sitzen, die Kordel (3 x 5 mm)
-in jeden der acht Gänge passen.
+Was der Stern zeigt: acht Höcker 10,4 mm breit mit Gängen 8 x 5 mm (obere Kanten 1,5 x 45 Grad gefast, Decke 5 mm breit) und in der Mitte
+der Knopfraum Ø 25 (Wand senkrecht bis 1,4, darüber 45 Grad bis 5, Dach Ø 18). Er ist so hoch wie die Gänge, damit die Kordel auf dem
+Knopf (1,2 + 3 = 4,2) in jede Richtung wegführen kann. Der Knopf des Huts (Ø 22 x 1,2) soll im Raum sitzen.
 
 Ablauf:
-  1. Scheibe über den Knopf auf den Hut legen (Mitte auf Mitte), Kordel in einen Gang legen, Scheibe ankleben (Heißkleber auf dem Boden
-     zwischen den Gängen, nicht in die Gänge und nicht in den Knopfraum).
-  2. Deckplatte auf die Höcker legen: so wie später Steckplatte und Powerbank auf die Kordel. Lässt sich die Kordel noch bewegen?
-  3. Kordel nacheinander in mehrere andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
-Fragen für den Testbogen: Sitzt der Knopf im Raum? Berührt die Decke in der Sternmitte (etwa 13 mm frei) den Knopf, hängt sie durch?
-Ist die Gangdecke sauber, die Fase oben und unten gut? Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
+  1. Stern mit der Mitte auf den Knopf legen, Kordel vom Knopf in einen Gang legen.
+  2. Stern mit Heißkleber auf dem Hut ankleben (nur auf die Unterseite der Höcker, nicht in die Gänge und nicht in den Knopfraum).
+  3. Powerbank (oder ein Buch) auf die Höcker legen, wie später Steckplatte und Powerbank: lässt sich die Kordel noch bewegen?
+  4. Kordel nacheinander in andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
+Fragen für den Testbogen: Sitzt der Knopf im Raum (1,5 mm Luft je Seite)? Hängt das Dach über dem Knopfraum (etwa 18 mm frei) durch und
+berührt die Kordel? Ist die Gangdecke sauber, sind die Fasen gut? Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
 
-Druck: PLA, 0,2 mm Schicht, Support aus, Gyroid 10 %% wie plug/slicer.md. Zeiten im Prüfbericht (Schätzung): Scheibe etwa 35 min, Deckplatte etwa 45 min (fast massiv) bei deinem Drucker.
+Druck: PLA, 0,2 mm Schicht, Support aus, Gyroid 10 %% wie plug/slicer.md. Der Stern ist klein, ein paar Gramm und wenige Minuten.
 """
-    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(s=info["K4_scheibe"]["g"], d=info["K4_deckplatte"]["g"]))
+    open(os.path.join(OUT, "README.txt"), "w", encoding="utf-8").write(txt % dict(s=info["K4_stern"]["g"]))
 
 
 if __name__ == "__main__":

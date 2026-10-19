@@ -20,7 +20,7 @@ Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Ab
 ## Vorgabe 2026-10-19 (Batteriefach Stand 8)
 
 - **Befestigung mit Heißkleber** statt Fäden: Kasten auf den Hut, im Zweifel Platte auf den Kasten. Fäden und Ösen entfallen (Eckaussparungen im Kasten, Fadentaschen in der Platte); die Abschnitte zu Fäden weiter unten sind damit überholt.
-- **Knopf des Huts** in der Plattenmitte: Ø 22 × 1,2 (Knopfraum Radius 26 × 1,4, 45°-Wand; Gänge oben mit 1,5 × 45° gefast, kein Support); Kordel 3 × 5 in acht Gängen 8 × 5; **Steckerraum über der Powerbank 6 mm** (viele Leitungen), Kasten 25,0. Die Powerbank bleibt am Platz von Stand 7 (quer passt sie wegen des Steckers nicht) und liegt auf den Gangdächern. Plan: `plug/power/plan_kasten8.html`.
+- **Knopf des Huts** in der Plattenmitte: Ø 22 × 1,2 (Knopfraum Ø 25 × 5, so hoch wie die Gänge; Gänge oben mit 1,5 × 45° gefast, kein Support); Kordel 3 × 5 in acht Gängen 8 × 5; **Steckerraum über der Powerbank 6 mm** (viele Leitungen), Kasten 25,0. Die Powerbank bleibt am Platz von Stand 7 (quer passt sie wegen des Steckers nicht) und liegt auf den Gangdächern. Plan: `plug/power/plan_kasten8.html`.
 
 ## Geklärt (2026-10-16)
 

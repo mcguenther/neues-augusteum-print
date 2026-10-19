@@ -2,20 +2,19 @@ K4 KORDELPROBE (Mitte des Unterkastens, Stand 8)
 ================================================
 Probeteil zum Plan plug/power/plan_kasten8.html (Abschnitt K4). Noch nichts gedruckt, alle Werte sind Planwerte.
 
-Teile:
-  K4_scheibe.stl      Scheibe Ø 70 x 6,2 mm, Boden auf das Bett, kein Support (siehe pruefbericht.txt)     ca. 11 g
-  K4_deckplatte.stl   Platte 70 x 70 x 3 mm, flach, Unterseite auf das Bett                                  ca. 14 g
+Teil:
+  K4_stern.stl    Stern Ø 70 x 6,2 mm, ohne Boden und ohne Randwand, Dach nach oben, kein Support (siehe pruefbericht.txt)     ca. 7 g
 
-Was die Scheibe zeigt: Knopfraum Radius 26 (Ø 52) x 1,4 mit 45-Grad-Wand, acht Gänge 8 x 5 mm mit 1,5 x 45-Grad-Fasen an den oberen Kanten
-(Decke 5 mm breit), Höcker 10,4 mm breit, Ring wie die Außenwand. Der Knopf des Huts (Ø 22 x 1,2) soll im Raum sitzen, die Kordel (3 x 5 mm)
-in jeden der acht Gänge passen.
+Was der Stern zeigt: acht Höcker 10,4 mm breit mit Gängen 8 x 5 mm (obere Kanten 1,5 x 45 Grad gefast, Decke 5 mm breit) und in der Mitte
+der Knopfraum Ø 25 (Wand senkrecht bis 1,4, darüber 45 Grad bis 5, Dach Ø 18). Er ist so hoch wie die Gänge, damit die Kordel auf dem
+Knopf (1,2 + 3 = 4,2) in jede Richtung wegführen kann. Der Knopf des Huts (Ø 22 x 1,2) soll im Raum sitzen.
 
 Ablauf:
-  1. Scheibe über den Knopf auf den Hut legen (Mitte auf Mitte), Kordel in einen Gang legen, Scheibe ankleben (Heißkleber auf dem Boden
-     zwischen den Gängen, nicht in die Gänge und nicht in den Knopfraum).
-  2. Deckplatte auf die Höcker legen: so wie später Steckplatte und Powerbank auf die Kordel. Lässt sich die Kordel noch bewegen?
-  3. Kordel nacheinander in mehrere andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
-Fragen für den Testbogen: Sitzt der Knopf im Raum? Berührt die Decke in der Sternmitte (etwa 13 mm frei) den Knopf, hängt sie durch?
-Ist die Gangdecke sauber, die Fase oben und unten gut? Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
+  1. Stern mit der Mitte auf den Knopf legen, Kordel vom Knopf in einen Gang legen.
+  2. Stern mit Heißkleber auf dem Hut ankleben (nur auf die Unterseite der Höcker, nicht in die Gänge und nicht in den Knopfraum).
+  3. Powerbank (oder ein Buch) auf die Höcker legen, wie später Steckplatte und Powerbank: lässt sich die Kordel noch bewegen?
+  4. Kordel nacheinander in andere Gänge legen (O, NO, N ...), jedes Mal ohne zu klemmen?
+Fragen für den Testbogen: Sitzt der Knopf im Raum (1,5 mm Luft je Seite)? Hängt das Dach über dem Knopfraum (etwa 18 mm frei) durch und
+berührt die Kordel? Ist die Gangdecke sauber, sind die Fasen gut? Hält Heißkleber? Ist die Kordel zu steif für den Knick am Gangausgang?
 
-Druck: PLA, 0,2 mm Schicht, Support aus, Gyroid 10 % wie plug/slicer.md. Zeiten im Prüfbericht (Schätzung): Scheibe etwa 35 min, Deckplatte etwa 45 min (fast massiv) bei deinem Drucker.
+Druck: PLA, 0,2 mm Schicht, Support aus, Gyroid 10 % wie plug/slicer.md. Der Stern ist klein, ein paar Gramm und wenige Minuten.

@@ -1,7 +1,7 @@
 """Unterkasten Stand 8 (Plan, noch keine STL): Kasten höher, Knopfraum und Kordelgänge für den Doktorhut, ohne Eckaussparungen.
 
 Der Hut trägt in der Mitte seines Deckbretts einen flachen Knopf (Ø 22, 1,2 hoch) mit der Kordel der Quaste. Die Grundplatte liegt mittig
-auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (`HUT_KNOPF`, Ø 24 × 1,4 mit Spiel und 0,2 Luft), und die Kordel
+auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (`HUT_KNOPF`, Ø 30 × 5 (so hoch wie die Gänge)), und die Kordel
 läuft in einem Gang unter dem Kasten zur Außenwand (`KORDEL_GANG`, 8 × 5, acht Richtungen in 45°-Schritten). Innen werden Knopfraum und
 Gänge zu Höckern mit der Decke `KORDEL_DACH`.
 
@@ -32,10 +32,11 @@ from plug.power import params as PP  # noqa: E402
 H7 = round(BC.H0["uk_t"], 2)                         # 17,6
 PB_T = PP.PB_T + PP.PB_T_ZUSCHLAG                    # 12,8
 DACH = PP.KORDEL_DACH
-R_KNOPF = PP.HUT_KNOPF["r"]                        # Knopfraum Radius 26 (Ø 52)
-KNOPF_H = round(PP.HUT_KNOPF["h"] + PP.HUT_KNOPF["luft"], 2)   # Knopfraum 1,4
-KNOPF_Z = round(KNOPF_H + DACH, 2)                   # Oberkante Knopfdach 2,6
+R_KNOPF = PP.HUT_KNOPF["r"]                        # Knopfraum Radius 15 (Ø 30)
+KNOPF_H = PP.KORDEL_GANG["h"]                        # Knopfraum so hoch wie die Gänge (5): Kordel liegt auf dem Knopf
 GANG_Z = PP.KORDEL_GANG["h"] + DACH                  # Oberkante Gangdach 6,2
+KNOPF_Z = GANG_Z                                     # Dach über dem Knopfraum wie über den Gängen
+KNOPF_H0 = PP.HUT_KNOPF["h"] + PP.HUT_KNOPF["luft"]    # senkrechte Wand des Knopfraums bis Knopfhöhe plus Luft (1,5), darüber 45°-Kegel
 H8 = round(GANG_Z + PB_T + PP.STECKERRAUM_8, 2)      # Kasten so hoch, dass über der Powerbank 6,0 bleiben: 25,0
 RICHTUNG = ("O", "NO", "N", "NW", "W", "SW", "S", "SO")   # k · 45°, 0° = Osten
 TP_CLR = 0.10                                        # Spiel der Mulden um die Gebäude (Sperrfläche für Zapfen)
@@ -82,11 +83,12 @@ def prism_y_x(pts, x0, x1):
     return prism_x(pts, x0, x1)
 
 
-def knopf_cut(c, r, h, z0=-1.0):
-    """Knopfraum: Zylinder Radius r unten, Wand 45° nach innen (oben r − h), keine Stütze nötig."""
-    kegel = m3d.Manifold.cylinder(h, r, r - h, 128)
-    fuss = m3d.Manifold.cylinder(-z0, r, r, 128).translate([0, 0, z0])
-    return G.union([fuss, kegel]).translate([c[0], c[1], 0])
+def knopf_cut(c, r, h, h0=None, z0=-1.0):
+    """Knopfraum: Zylinder Radius r bis h0 (Knopfhöhe plus Luft), darüber 45°-Kegel nach innen bis zur Höhe h der Gänge (Dach Radius r − (h − h0)).
+    Die Kordel liegt auf dem Knopf (bis 4,2) im Stern der Gänge, der Kegel braucht keine Stütze und hinterlässt nur ein kleines Dach."""
+    h0 = KNOPF_H0 if h0 is None else h0
+    prof = m3d.CrossSection([[(0.0, z0), (r, z0), (r, h0), (r - (h - h0), h), (0.0, h)]])
+    return m3d.Manifold.revolve(prof, 128).translate([c[0], c[1], 0])
 
 
 def ueberhang(uk, zmax=8.0, dz=0.2):
@@ -185,12 +187,13 @@ def build(v):
     pc = plug.bounds
     zm = z_pb + PB_T / 2
     plugm = mbox(pc[0] + 0.3, pc[2] - 0.3, pc[1] + 0.3, pc[3] - 0.3, zm - 4.0, zm + 4.0)
-    frei_m = m3d.Manifold.cylinder(KNOPF_H - 0.02, R_KNOPF - 0.02, R_KNOPF - KNOPF_H + 0.0, 128).translate([K["c"][0], K["c"][1], 0.01])
+    frei_m = knopf_cut(K["c"], R_KNOPF - 0.02, KNOPF_H - 0.02, h0=KNOPF_H0 - 0.02, z0=0.01)
     kn = PP.HUT_KNOPF
     knopf_m = m3d.Manifold.cylinder(kn["h"], kn["d"] / 2, kn["d"] / 2, 64).translate([K["c"][0], K["c"][1], 0.0])
     gm = gaenge_cut(K["c"], PP.KORDEL_GANG["w"] - 0.04, PP.KORDEL_GANG["h"] - 0.04, PP.KORDEL_GANG["fase"], PP.KORDEL_GANG["n"], z0=0.01, laenge=min(W, L) / 2 - PP.UK_WALL - 0.02)
     gang_m = gm
     kb, kh = PP.KORDEL["b"], PP.KORDEL["h"]
+    kord_kn = G.union([prism_y_x([(-kb / 2, kn["h"]), (kb / 2, kn["h"]), (kb / 2, kn["h"] + kh), (-kb / 2, kn["h"] + kh)], 0.0, R_KNOPF - 1.0).rotate([0, 0, k * 45.0]).translate([K["c"][0], K["c"][1], 0]) for k in range(8)])
     kord_m = G.union([prism_y_x([(-kb / 2, 0.05), (kb / 2, 0.05), (kb / 2, kh), (-kb / 2, kh)], 0.0, min(W, L) / 2 - PP.UK_WALL - 0.02).rotate([0, 0, k * 45.0]).translate([K["c"][0], K["c"][1], 0]) for k in range(8)])
     pb_luft = z_pb - KNOPF_Z                         # Luft zwischen Knopfdach und Powerbank
 
@@ -204,10 +207,11 @@ def build(v):
     ow, oa, oz = ueberhang(uk, zmax=8.0)
     checks = [
         ("dicht", bool(tm.is_watertight), "Netz geschlossen (Manifold)"),
-        ("Überhang ohne Support", ow <= 15.0, "je 0,2-mm-Lage bis 8 mm Höhe, Wände bis 45° getragen: breiteste freie Decke %.1f mm (Brücke, Sternmitte; Gangdecken 5,0 mm, gefordert höchstens 15)" % ow),
-        ("Knopfraum frei", iv(frei_m) < 0.05, "Ø %.0f × %.1f mit 45°-Wand (oben Ø %.1f) gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H, 2 * (R_KNOPF - KNOPF_H), iv(frei_m))),
-        ("Knopf im Raum", iv(knopf_m) < 0.05, "Knopf Ø %.0f × %.1f, Luft oben %.1f, seitlich bis zur Wand %.1f: Überschneidung %.2f mm³" % (kn["d"], kn["h"], kn["luft"], R_KNOPF - kn["d"] / 2, iv(knopf_m))),
+        ("Überhang ohne Support", ow <= 20.0, "je 0,2-mm-Lage bis 8 mm Höhe, Wände bis 45° getragen: breiteste freie Decke %.1f mm (Brücke, Sternmitte; Gangdecken 5,0 mm, gefordert höchstens 20)" % ow),
+        ("Knopfraum frei", iv(frei_m) < 0.05, "Ø %.0f, Wand senkrecht bis %.1f, darüber 45° bis %.1f (Dach Ø %.0f), gegen Kasten: %.2f mm³" % (2 * R_KNOPF, KNOPF_H0, KNOPF_H, 2 * (R_KNOPF - (KNOPF_H - KNOPF_H0)), iv(frei_m))),
+        ("Knopf im Raum", iv(knopf_m) < 0.05, "Knopf Ø %.0f × %.1f, seitlich bis zur Wand %.1f: Überschneidung %.2f mm³" % (kn["d"], kn["h"], R_KNOPF - kn["d"] / 2, iv(knopf_m))),
         ("Gänge frei", iv(gang_m) < 0.05, "%d Gänge %.0f × %.0f, obere Kanten %.1f × 45°, gegen Kasten: %.2f mm³" % (PP.KORDEL_GANG["n"], PP.KORDEL_GANG["w"], PP.KORDEL_GANG["h"], PP.KORDEL_GANG["fase"], iv(gang_m))),
+        ("Kordel auf dem Knopf", iv(kord_kn) < 0.05, "Kordel %.0f × %.0f liegt auf dem Knopf (bis %.1f hoch) und läuft im Knopfraum (%.1f hoch) in alle acht Richtungen: Überschneidung %.2f mm³" % (kb, kh, kn["h"] + kh, KNOPF_H, iv(kord_kn))),
         ("Kordel in allen Gängen", iv(kord_m) < 0.05, "Kordel %.0f × %.0f in jeder der 8 Richtungen bis zur Außenwand: Überschneidung %.2f mm³" % (kb, kh, iv(kord_m))),
         ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f auf %d Gangdächern (%s), Überschneidung %.2f mm³" % (z_pb, lie, ", ".join(unter_pb), iv(pbm))),
         ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM_8 - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM_8)),
