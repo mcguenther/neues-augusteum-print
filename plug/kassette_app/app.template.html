@@ -1,0 +1,342 @@
+<title>Kassetten-Lage Augusteum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: links die Platte als Zeichenfläche (Ziehen = Verschieben, Griff = Drehen), rechts Prüfung in drei Gruppen, Steuerung, Meldungen; schmal untereinander */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --fg: #1d2630; --muted: #5a6877; --line: #d5dce3;
+  --accent: #1f5f8b; --accent-soft: #e2eef6;
+  --ok: #1f7a4d; --ok-soft: #e0f1e8; --warn: #9a6200; --warn-soft: #fbf0d6; --no: #b3261e; --no-soft: #fbe3e1;
+  --canvas: #eef1f4; --plate: #e3e8ed; --fp: #c9d2db; --hof: #cfe6d3; --dock: #d99a1f; --led: #f2c200;
+  --pb: #5b7fa6; --elec: #8a6bb0; --knopf: #7a8a99; --post: #3e4b59;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --canvas: #181e25; --plate: #232b34; --fp: #3a4653; --hof: #25402d; --dock: #e5b04a; --led: #ffd93a;
+  --pb: #7ea6d1; --elec: #b497d9; --knopf: #8d9cab; --post: #9fb0c1; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #12171d; --surface: #1a2129; --fg: #e4e9ee; --muted: #9aa7b4; --line: #2f3944;
+  --accent: #6db3e0; --accent-soft: #1b2e3c;
+  --ok: #5cc994; --ok-soft: #173326; --warn: #e5b04a; --warn-soft: #382c10; --no: #f2877f; --no-soft: #3b1b19;
+  --canvas: #181e25; --plate: #232b34; --fp: #3a4653; --hof: #25402d; --dock: #e5b04a; --led: #ffd93a;
+  --pb: #7ea6d1; --elec: #b497d9; --knopf: #8d9cab; --post: #9fb0c1; color-scheme: dark; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; text-wrap: balance; } h2 { font-size: 0.95rem; margin: 0 0 8px; }
+p { margin: 0; } .muted { color: var(--muted); } .mono { font-family: var(--mono); font-size: 0.9em; }
+.kicker { font: 500 0.75rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.app { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px; align-items: start; }
+@media (max-width: 920px) { .app { grid-template-columns: minmax(0, 1fr); } }
+.stage { background: var(--canvas); border: 1px solid var(--line); border-radius: 6px; position: relative; min-width: 0; }
+canvas { display: block; width: 100%; height: min(76vh, 880px); touch-action: none; cursor: grab; border-radius: 6px; }
+@media (max-width: 920px) { canvas { height: 64vh; } }
+canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.tools { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.readout { position: absolute; left: 8px; bottom: 8px; font: 0.78rem var(--mono); color: var(--muted); background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--line); border-radius: 4px; padding: 2px 8px; pointer-events: none; }
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px; min-width: 0; }
+button, select, input { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px; }
+button { cursor: pointer; } button:hover { background: var(--accent-soft); } button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); } button.primary:hover { filter: brightness(1.1); }
+input[type=number] { width: 6.4em; font-family: var(--mono); font-size: 0.9rem; }
+input[type=checkbox] { width: auto; accent-color: var(--accent); }
+.row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; } .row label { display: flex; gap: 6px; align-items: center; font-size: 0.85rem; color: var(--muted); }
+.groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.grp { border: 1px solid var(--line); border-radius: 6px; padding: 8px 9px; display: flex; flex-direction: column; gap: 4px; min-width: 0; background: var(--surface); }
+.grp b { font-size: 0.82rem; font-weight: 600; } .grp small { color: var(--muted); font-size: 0.75rem; line-height: 1.3; }
+.grp.ok { border-color: var(--ok); } .grp.warn { border-color: var(--warn); } .grp.bad { border-color: var(--no); }
+.pill { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; align-self: flex-start; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); } .pill.warn { background: var(--warn-soft); color: var(--warn); } .pill.bad { background: var(--no-soft); color: var(--no); }
+.msgs { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.msgs li { padding: 6px 9px; border-radius: 4px; font-size: 0.86rem; border-left: 4px solid var(--line); }
+.msgs li .tag { font: 500 0.68rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); display: block; }
+.msgs li.ok { background: var(--ok-soft); border-color: var(--ok); } .msgs li.warn { background: var(--warn-soft); border-color: var(--warn); } .msgs li.bad { background: var(--no-soft); border-color: var(--no); } .msgs li.info { background: var(--accent-soft); border-color: var(--accent); }
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 10px; font-size: 0.78rem; color: var(--muted); } .nums b { font: 500 0.92rem var(--mono); display: block; color: var(--fg); }
+.layers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; }
+.layers label { display: flex; gap: 6px; align-items: center; font-size: 0.84rem; } .layers i { width: 11px; height: 11px; border-radius: 2px; display: inline-block; border: 1px solid var(--line); flex: none; }
+textarea { width: 100%; min-height: 7.5em; font: 0.78rem var(--mono); color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 6px; resize: vertical; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<main>
+<header>
+  <div class="kicker">Steckplatte 1:1300 · Neues Augusteum</div>
+  <h1>Kassetten-Lage Augusteum</h1>
+  <p class="muted" style="margin-top:6px;max-width:82ch">Den Schacht der Kassette auf der Platte ziehen, am Griff drehen oder die Werte eintippen. Die Prüfung läuft bei jeder Bewegung: Wand um den Schacht, Dachhöhe und Luft über der LED, das Dock unter der Platte und was davon im Batteriefach ankommt (Powerbank, Elektronik, Schalter, Stützen und Zapfen des Unterkastens). Das Fach selbst ist festgeschrieben und bewegt sich nie.</p>
+</header>
+<div class="app">
+  <div class="stage">
+    <canvas id="cv" tabindex="0" aria-label="Plan der Platte: Schacht der Kassette im Neuen Augusteum, Dock und Batteriefach"></canvas>
+    <div class="tools"><button id="zin" title="Zoom +">+</button><button id="zout" title="Zoom −">−</button><button id="zall">Gesamt</button><button id="zsel">Auf Kassette</button></div>
+    <div class="readout" id="readout">x | y: –</div>
+  </div>
+  <div class="panel">
+    <div class="box"><h2>Prüfung</h2><div class="groups" id="groups"></div></div>
+    <div class="box" id="ctl"></div>
+    <div class="box"><h2>Meldungen</h2><ul class="msgs" id="msgs"></ul></div>
+    <div class="box"><h2>Ebenen</h2><div class="layers" id="layers"></div></div>
+    <div class="box"><h2>Lage übernehmen</h2>
+      <div class="row" style="margin-bottom:8px"><button class="primary" id="copy">Kopieren</button><button id="reset">Ausgangslage</button></div>
+      <textarea id="out" readonly aria-label="Lage als JSON für placements_1300.json"></textarea>
+      <p class="muted" style="margin-top:6px;font-size:0.8rem" id="copystate">Eintrag für <span class="mono">plug/scale1176/placements_1300.json</span> (Weltlage ohne Naht-Verschiebung). Danach neu bauen: <span class="mono">plug.campus</span>, <span class="mono">plug.buildings 02_neues_augusteum</span>, <span class="mono">plug.divider.check</span>, <span class="mono">plug.power.build_unterkasten</span>.</p>
+    </div>
+  </div>
+</div>
+<div class="legend">
+  <span>Schacht: grün, gelb, rot nach Prüfung</span><span>Ziehen im Schacht oder Dock: verschieben</span><span>Kreis am Schacht: drehen</span><span>Fläche ziehen: Ansicht, Rad: Zoom</span><span>Pfeile 0,1 mm (Umschalt 1 mm), Q und E 1° (Umschalt 5°)</span>
+</div>
+</main>
+<script>
+var D = @DATA@;
+var K = D.k, A = D.aug, VAR = D.variants, ORDER = ["v4", "V1", "V1R", "V1RS", "V2", "V2R"];
+var VLABEL = { v4: "v4 flach (LED nach oben)", V1: "V1 quer", V1R: "V1R quer, 2 LEDs", V1RS: "V1RS quer breit, 2 LEDs", V2: "V2 hochkant", V2R: "V2R hochkant, 2 LEDs" };
+var LUFT_BAD = 5, LUFT_WARN = 8, LED_WARN = 4, LED_BAD = 10, POST_GAP = 3.0, SW_PAD = 2.0;
+function de(x, n) { return Number(x).toFixed(n === undefined ? 1 : n).replace(".", ","); }
+function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function b64(s) { var bin = atob(s), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+function close(r) { var a = r[0], b = r[r.length - 1]; if (a[0] !== b[0] || a[1] !== b[1]) { r = r.slice(); r.push(a); } return r; }
+function closeAll(rs) { return rs.map(close); }
+
+// ---------- Daten aufbereiten
+A.grid.h8 = b64(A.grid.h);
+D.outline = closeAll(D.outline); D.hof = closeAll(D.hof); A.fp = closeAll(A.fp);
+Object.keys(D.buildings).forEach(function (k) { D.buildings[k].poly = closeAll(D.buildings[k].poly); });
+D.dock.zone = close(D.dock.zone); D.dock.body = close(D.dock.body); D.dock.env = closeAll(D.dock.env);
+D.others.forEach(function (o) { o.zone = close(o.zone); o.body = close(o.body); o.env = closeAll(o.env); });
+["fach", "body", "channel", "plug", "window"].forEach(function (n) { D.fach[n] = close(D.fach[n]); }); D.elec = close(D.elec);
+D.knopf.hoecker = D.knopf.hoecker.map(close);
+var SWR = D.switch.room, SWROOM = [[SWR[0], SWR[1]], [SWR[2], SWR[1]], [SWR[2], SWR[3]], [SWR[0], SWR[3]], [SWR[0], SWR[1]]];
+var PS = D.posts.size / 2;
+D.posts.cands.forEach(function (c) { c.ring = [[c.x - PS, c.y - PS], [c.x + PS, c.y - PS], [c.x + PS, c.y + PS], [c.x - PS, c.y + PS], [c.x - PS, c.y - PS]]; });
+
+var state = { it: { var: A.start.var, cx: A.start.cx, cy: A.start.cy, angle: A.start.angle }, view: null, layers: {}, drag: null };
+var LAYERS = [["dach", "Dachhöhe Augusteum", "--fp"], ["raster", "Raster 10 mm", "--line"], ["fach", "Powerbank und Fach", "--pb"], ["elec", "Elektronik (ESP32)", "--elec"], ["knopf", "Knopf und Kordelgänge", "--knopf"],
+  ["posts", "Stützen und Zapfen", "--post"], ["schalter", "Hauptschalter", "--muted"], ["docks", "Docks der Nachbarn", "--dock"], ["namen", "Gebäudenamen", "--muted"]];
+LAYERS.forEach(function (l) { state.layers[l[0]] = l[0] !== "raster"; });
+try { var sv = JSON.parse(localStorage.getItem("kassetteAug1300") || "null"); if (sv && sv.it && VAR[sv.it.var]) state.it = sv.it; if (sv && sv.layers) Object.keys(sv.layers).forEach(function (k) { if (k in state.layers) state.layers[k] = !!sv.layers[k]; }); } catch (e) {}
+function save() { try { localStorage.setItem("kassetteAug1300", JSON.stringify({ it: state.it, layers: state.layers })); } catch (e) {} }
+
+// ---------- Geometrie
+function rot(a, x, y) { var r = a * Math.PI / 180, c = Math.cos(r), s = Math.sin(r); return [c * x - s * y, s * x + c * y]; }
+function toPlate(it, ux, uy) { var p = rot(it.angle, ux, uy); return [p[0] + it.cx, p[1] + it.cy]; }
+function pip(pt, ring) { var x = pt[0], y = pt[1], ins = false; for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) { var xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1]; if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) ins = !ins; } return ins; }
+function inAny(pt, rings) { for (var i = 0; i < rings.length; i++) if (pip(pt, rings[i])) return true; return false; }
+function distSeg(p, a, b) { var dx = b[0] - a[0], dy = b[1] - a[1], t = ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy || 1); t = Math.max(0, Math.min(1, t)); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }
+function distRing(p, ring) { var m = 1e9; for (var i = 0; i < ring.length - 1; i++) m = Math.min(m, distSeg(p, ring[i], ring[i + 1])); return m; }
+function ccw(a, b, c) { return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); }
+function segX(a, b, c, d) { return ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d); }
+function polyX(P, Q) { for (var i = 0; i < P.length - 1; i++) for (var j = 0; j < Q.length - 1; j++) if (segX(P[i], P[i + 1], Q[j], Q[j + 1])) return true; return pip(P[0], Q) || pip(Q[0], P); }
+function polyDist(P, Q) { if (polyX(P, Q)) return 0; var m = 1e9, i, j; for (i = 0; i < P.length - 1; i++) for (j = 0; j < Q.length - 1; j++) m = Math.min(m, distSeg(P[i], Q[j], Q[j + 1]), distSeg(Q[j], P[i], P[i + 1])); return m; }
+function bbox(P) { var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; P.forEach(function (p) { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); x1 = Math.max(x1, p[0]); y1 = Math.max(y1, p[1]); }); return [x0, y0, x1, y1]; }
+function overlap(P, Qs, step) { step = step || 0.5; var b = bbox(P), n = 0; for (var x = b[0] + step / 2; x < b[2]; x += step) for (var y = b[1] + step / 2; y < b[3]; y += step) if (pip([x, y], P) && (Array.isArray(Qs[0][0]) ? inAny([x, y], Qs) : pip([x, y], Qs))) n++; return n * step * step; }
+function sampleRing(ring, step) { var out = []; for (var i = 0; i < ring.length - 1; i++) { var a = ring[i], b = ring[i + 1], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / step)); for (var j = 0; j < n; j++) out.push([a[0] + (b[0] - a[0]) * j / n, a[1] + (b[1] - a[1]) * j / n]); } return out; }
+function height(x, y) { var g = A.grid, ix = Math.floor((x - g.minx) / g.res), iy = Math.floor((g.maxy - y) / g.res); if (ix < 0 || iy < 0 || ix >= g.nx || iy >= g.ny) return 0; return g.h8[iy * g.nx + ix] / 2; }
+function needOf(v) { return VAR[v].top - K.F0 - K.delta + K.stop; }
+function ledOver(v) { return VAR[v].ledz - K.F0 - K.delta; }
+function dockPoly(it, local) { var yc = VAR[it.var].yc; return local.map(function (p) { return toPlate(it, p[0], p[1] - yc); }); }
+function shaftPoly(it) { var V = VAR[it.var], w = V.w / 2, d = V.d / 2; return [[-w, -d], [w, -d], [w, d], [-w, d], [-w, -d]].map(function (p) { return toPlate(it, p[0], p[1]); }); }
+
+// exakte Abstandstransformation (Felzenszwalb): Abstand in Zellen zum nächsten nicht nutzbaren Feld
+function edt1(f, n, d, v, z) { var k = 0, q, s, p; v[0] = 0; z[0] = -1e20; z[1] = 1e20;
+  for (q = 1; q < n; q++) { p = v[k]; s = ((f[q] + q * q) - (f[p] + p * p)) / (2 * q - 2 * p); while (s <= z[k]) { k--; p = v[k]; s = ((f[q] + q * q) - (f[p] + p * p)) / (2 * q - 2 * p); } k++; v[k] = q; z[k] = s; z[k + 1] = 1e20; }
+  k = 0; for (q = 0; q < n; q++) { while (z[k + 1] < q) k++; d[q] = (q - v[k]) * (q - v[k]) + f[v[k]]; } }
+function edt(mask, nx, ny) { var INF = 1e12, M = Math.max(nx, ny), f = new Float64Array(M), d = new Float64Array(M), v = new Int32Array(M), z = new Float64Array(M + 1), g = new Float64Array(nx * ny);
+  for (var i = 0; i < nx * ny; i++) g[i] = mask[i] ? INF : 0;
+  for (var x = 0; x < nx; x++) { for (var y = 0; y < ny; y++) f[y] = g[y * nx + x]; edt1(f, ny, d, v, z); for (var y2 = 0; y2 < ny; y2++) g[y2 * nx + x] = d[y2]; }
+  for (var y3 = 0; y3 < ny; y3++) { for (var x3 = 0; x3 < nx; x3++) f[x3] = g[y3 * nx + x3]; edt1(f, nx, d, v, z); for (var x4 = 0; x4 < nx; x4++) g[y3 * nx + x4] = Math.sqrt(d[x4]); }
+  return g; }
+var dcache = {};
+function distField(need) { var key = need.toFixed(2); if (dcache[key]) return dcache[key]; var g = A.grid, m = new Uint8Array(g.nx * g.ny), thr = (need - 0.2) * 2; for (var i = 0; i < m.length; i++) m[i] = g.h8[i] >= thr && g.h8[i] > 0 ? 1 : 0; dcache[key] = edt(m, g.nx, g.ny); return dcache[key]; }
+function distAt(field, x, y) { var g = A.grid, ix = Math.floor((x - g.minx) / g.res), iy = Math.floor((g.maxy - y) / g.res); if (ix < 0 || iy < 0 || ix >= g.nx || iy >= g.ny) return 0; return field[iy * g.nx + ix]; }
+
+// ---------- Stützen und Zapfen des Unterkastens (Regel wie in plug/power/kasten8.py: Raster 40 mm, 3 mm Abstand zu den Dockzonen; Zapfen auf die nächste freie Stütze)
+function postSet(zone) { return D.posts.cands.map(function (c) { return polyDist(c.ring, zone) >= POST_GAP; }); }
+function assignPins(present) { var used = {}, res = []; D.posts.old_pins.forEach(function (t) { var best = -1, bd = 1e9; D.posts.cands.forEach(function (c, i) { if (!present[i] || used[i] || !c.pin_ok) return; var d = Math.hypot(c.x - t[0], c.y - t[1]); if (d < bd) { bd = d; best = i; } }); if (best >= 0) used[best] = 1; res.push(best); }); return res; }
+var BASE = (function () { var z = dockPoly(state.it === null ? A.start : A.start, D.dock.zone), p = postSet(z); return { present: p, pins: assignPins(p) }; })();
+
+// ---------- Prüfung
+var G3 = { geb: "Gebäude", platte: "Platte", fach: "Batteriefach" };
+function evaluate() {
+  var it = state.it, V = VAR[it.var], need = needOf(it.var), field = distField(need), msgs = [], lv = { geb: "ok", platte: "ok", fach: "ok" };
+  function add(g, l, t) { msgs.push({ g: g, l: l, t: t }); if (l === "bad" || (l === "warn" && lv[g] !== "bad")) lv[g] = l; }
+  // --- Gebäude
+  var w = V.w, d = V.d, outside = 0, low = 0, total = 0, minH = 1e9, wall = 1e9, thr = need - 0.2;
+  function probe(ux, uy, edge) { var p = toPlate(it, ux, uy), h = height(p[0], p[1]); total++; if (h <= 0) outside++; else { if (h < thr) low++; minH = Math.min(minH, h); } if (edge) wall = Math.min(wall, Math.max(0, (distAt(field, p[0], p[1]) - 0.5) * A.grid.res)); }
+  for (var s = 0; s <= 1.0001; s += 0.25 / Math.max(w, d)) { probe(-w / 2 + s * w, -d / 2, true); probe(-w / 2 + s * w, d / 2, true); probe(-w / 2, -d / 2 + s * d, true); probe(w / 2, -d / 2 + s * d, true); }
+  for (var ux = -w / 2; ux <= w / 2; ux += 0.5) for (var uy = -d / 2; uy <= d / 2; uy += 0.5) probe(ux, uy, false);
+  var broken = outside > 0 || low > 0; if (broken) wall = 0;
+  var led = toPlate(it, V.led[0], V.led[1]), hLed = height(led[0], led[1]), luft = hLed - ledOver(it.var), ledDist = Math.hypot(led[0] - A.target[0], led[1] - A.target[1]);
+  if (outside > 0) add("geb", "bad", "Der Schacht ragt über den Grundriss hinaus (" + Math.round(100 * outside / total) + " % der Fläche liegen außerhalb des Gebäudes).");
+  if (low > 0) add("geb", "bad", "Das Dach über dem Schacht ist an der niedrigsten Stelle nur " + de(minH) + " mm hoch, nötig sind " + de(need) + " mm (Kassettenoberkante plus Dach).");
+  if (!broken) { if (wall < K.wall_min) add("geb", "bad", "Wand um den Schacht nur " + de(wall, 2) + " mm, Mindestmaß " + de(K.wall_min) + " mm."); else if (wall < K.wall_pref) add("geb", "warn", "Wand um den Schacht " + de(wall, 2) + " mm, bevorzugt " + de(K.wall_pref) + " mm."); }
+  if (hLed <= 0) add("geb", "bad", "Die LED liegt außerhalb des Gebäudes.");
+  else if (luft < LUFT_BAD) add("geb", "bad", "Luft über der LED nur " + de(luft) + " mm (Dach " + de(hLed) + " mm über der Platte, LED " + de(ledOver(it.var)) + " mm). Das Licht sitzt fast unter dem Dach.");
+  else if (luft < LUFT_WARN) add("geb", "warn", "Luft über der LED " + de(luft) + " mm, Richtwert " + LUFT_WARN + " mm (Annahme, ungetestet).");
+  if (ledDist > LED_BAD) add("geb", "warn", "LED " + de(ledDist) + " mm von der Mitte der Grundfläche entfernt.");
+  else if (ledDist > LED_WARN) add("geb", "info", "LED " + de(ledDist) + " mm von der Mitte der Grundfläche entfernt. Beim Augusteum gewollt: die LED soll unter dem hohen Dach sitzen.");
+  // --- Platte: Dock unter der Platte
+  var zone = dockPoly(it, D.dock.zone), body = dockPoly(it, D.dock.body), env = D.dock.env.map(function (r) { return dockPoly(it, r); });
+  var out = D.outline[0], zIn = true, zNear = 1e9, eNear = 1e9;
+  sampleRing(zone, 0.5).forEach(function (p) { if (!pip(p, out)) zIn = false; zNear = Math.min(zNear, distRing(p, out)); });
+  env.forEach(function (r) { sampleRing(r, 0.5).forEach(function (p) { if (!pip(p, out)) eNear = -1; else if (eNear >= 0) eNear = Math.min(eNear, distRing(p, out)); }); });
+  var zMin = K.uk_wall + 0.5;
+  if (!zIn) add("platte", "bad", "Die Dockzone (Leiste, Lötenden, Draht) ragt über den Rand der Platte hinaus.");
+  else if (zNear < zMin) add("platte", "bad", "Die Dockzone liegt nur " + de(zNear) + " mm vor der Außenwand des Unterkastens, nötig " + de(zMin) + " mm (Wand " + de(K.uk_wall) + " plus 0,5).");
+  if (eNear < 0) add("platte", "bad", "Das Dock (Hüllkurve unter der Platte) ragt über den Rand der Platte hinaus.");
+  else if (eNear < K.dock_edge) add("platte", "bad", "Das Dock hat nur " + de(eNear) + " mm Abstand zum Plattenrand, nötig " + de(K.dock_edge) + " mm.");
+  D.others.forEach(function (o) {
+    var dz = polyDist(zone, o.zone), ex = env.some(function (r) { return o.env.some(function (q) { return polyX(r, q); }); });
+    if (dz === 0 || ex) add("platte", "bad", "Das Dock überlappt das Dock von " + o.title + " (Dockzonen" + (dz === 0 ? "" : ", Hüllkurven") + ").");
+    else if (dz < 2) add("platte", "warn", "Nur " + de(dz) + " mm bis zur Dockzone von " + o.title + ".");
+  });
+  var under = [];
+  Object.keys(D.buildings).forEach(function (k) { if (k === A.slug) return; var a = 0; env.forEach(function (r) { a += overlap(r, D.buildings[k].poly, 1.0); }); if (a > 0.5) under.push([D.buildings[k].title, a]); });
+  under.forEach(function (u) { add("platte", "info", "Das Dock liegt teilweise (etwa " + de(u[1], 0) + " mm²) unter der Mulde von " + u[0] + "; dort bleibt nur der 0,4-mm-Muldenboden darüber."); });
+  var hofA = 0; env.forEach(function (r) { hofA += overlap(r, D.hof, 1.0); }); if (hofA > 0.5) add("platte", "info", "Das Dock liegt teilweise (etwa " + de(hofA, 0) + " mm²) unter dem Innenhof-Einsatz.");
+  // --- Batteriefach
+  var aPb = overlap(zone, D.fach.body, 0.5), aCh = overlap(zone, D.fach.channel, 0.5) + overlap(zone, D.fach.plug, 0.5), aEl = overlap(zone, D.elec, 0.5);
+  if (aPb + aCh > 0.5) add("fach", "info", "Die Dockzone liegt etwa " + de(aPb, 0) + " mm² über der Powerbank und " + de(aCh, 0) + " mm² über Kabelkanal und Stecker. Darüber bleibt der Steckerraum von " + de(K.steckerraum) + " mm (Leiste 2,0 plus Draht); Fach und Powerbank ändern sich nicht.");
+  if (aEl > 0.5) add("fach", "info", "Die Dockzone liegt etwa " + de(aEl, 0) + " mm² über der Elektronikfläche des ESP32; Leitungen laufen dort durch den freien Raum unter der Platte.");
+  var swd = polyDist(zone, SWROOM);
+  if (swd === 0) add("fach", "bad", "Die Dockzone liegt im Schalterraum des Hauptschalters (Westwand).");
+  else if (swd < SW_PAD) add("fach", "warn", "Nur " + de(swd) + " mm von der Dockzone bis zum Schalterraum, Richtwert " + de(SW_PAD) + " mm.");
+  var present = postSet(zone), gone = [], came = [];
+  D.posts.cands.forEach(function (c, i) { if (BASE.present[i] && !present[i]) gone.push(c); if (!BASE.present[i] && present[i]) came.push(c); });
+  var pins = assignPins(present), moved = [];
+  pins.forEach(function (i, n) { var b = BASE.pins[n]; if (i !== b) moved.push({ n: n, from: b >= 0 ? D.posts.cands[b] : null, to: i >= 0 ? D.posts.cands[i] : null }); });
+  function pl(cs) { return cs.map(function (c) { return "(" + de(c.x, 0) + " | " + de(c.y, 0) + ")"; }).join(", "); }
+  if (gone.length || came.length) add("fach", "warn", "Der Unterkasten ändert sich: " + (gone.length ? gone.length + " Stütze" + (gone.length > 1 ? "n" : "") + " entfällt bei " + pl(gone) : "") + (gone.length && came.length ? ", " : "") + (came.length ? came.length + " Stütze" + (came.length > 1 ? "n" : "") + " neu bei " + pl(came) : "") + ". Das Fach selbst bleibt.");
+  moved.forEach(function (m) { if (!m.to) add("fach", "bad", "Für Zapfen " + (m.n + 1) + " bleibt keine Stütze: Zapfenaufnahme der Oberplatte ohne Gegenstück."); else add("fach", "bad", "Zapfen " + (m.n + 1) + " wandert von " + (m.from ? pl([m.from]) : "–") + " nach " + pl([m.to]) + " (" + de(m.from ? Math.hypot(m.to.x - m.from.x, m.to.y - m.from.y) : 0, 0) + " mm): die Zapfenlöcher der Oberplatte und der gedruckte Unterkasten passen dann nicht mehr."); });
+  if (!gone.length && !came.length) add("fach", "ok", "Stützen und Zapfen des Unterkastens bleiben, wie sie sind.");
+  var worst = "ok"; ["geb", "platte", "fach"].forEach(function (g) { if (lv[g] === "bad") worst = "bad"; else if (lv[g] === "warn" && worst !== "bad") worst = "warn"; });
+  if (!msgs.some(function (m) { return m.l === "bad" || m.l === "warn"; })) msgs.unshift({ g: "geb", l: "ok", t: "Keine Einwände gegen diese Lage." });
+  return { wall: wall, hLed: hLed, luft: luft, ledDist: ledDist, led: led, need: need, lv: lv, worst: worst, msgs: msgs, zone: zone, body: body, env: env, present: present, pins: pins, gone: gone, came: came, broken: broken, wallOk: !broken && wall >= K.wall_min };
+}
+
+// ---------- Zeichnen
+var cv = document.getElementById("cv"), ctx = cv.getContext("2d"), EV = null, dpr = 1, offs = {};
+var BB = bbox(D.outline[0]);
+function fit(bb, pad) { var W = cv.width / dpr, H = cv.height / dpr, k = Math.min((W - 2 * pad) / (bb[2] - bb[0]), (H - 2 * pad) / (bb[3] - bb[1])); return { cx: (bb[0] + bb[2]) / 2, cy: (bb[1] + bb[3]) / 2, k: k }; }
+function resize() { var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1; cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); if (!state.view) state.view = fit(BB, 14); draw(); }
+function sx(x) { return (x - state.view.cx) * state.view.k + cv.width / dpr / 2; }
+function sy(y) { return -(y - state.view.cy) * state.view.k + cv.height / dpr / 2; }
+function wx(px) { return (px - cv.width / dpr / 2) / state.view.k + state.view.cx; }
+function wy(py) { return -(py - cv.height / dpr / 2) / state.view.k + state.view.cy; }
+function path(rings) { ctx.beginPath(); rings.forEach(function (r) { r.forEach(function (p, i) { if (i) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); }); ctx.closePath(); }); }
+function fillStroke(rings, fill, alpha, stroke, lw, dash) { path(rings); if (fill) { ctx.globalAlpha = alpha === undefined ? 1 : alpha; ctx.fillStyle = fill; ctx.fill(); ctx.globalAlpha = 1; } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); } }
+function statusColor(l) { return l === "bad" ? css("--no") : (l === "warn" ? css("--warn") : css("--ok")); }
+function centroid(r) { var x = 0, y = 0, n = r.length - 1; for (var i = 0; i < n; i++) { x += r[i][0]; y += r[i][1]; } return [x / n, y / n]; }
+function roofImg(need) {
+  var key = need.toFixed(2) + "|" + css("--fp") + css("--accent"), g = A.grid; if (offs[key]) return offs[key];
+  var c = document.createElement("canvas"); c.width = g.nx; c.height = g.ny; var x = c.getContext("2d"), im = x.createImageData(g.nx, g.ny);
+  function rgb(h) { h = h.replace("#", ""); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
+  var lo = rgb(css("--fp")), hi = rgb(css("--accent")), thr = (need - 0.2) * 2;
+  for (var i = 0; i < g.h8.length; i++) { var h = g.h8[i]; if (!h) continue; var t = Math.min(1, h / 2 / A.hmax), low = h < thr, c0 = low ? lo : [lo[0] + (hi[0] - lo[0]) * (0.25 + 0.6 * t), lo[1] + (hi[1] - lo[1]) * (0.25 + 0.6 * t), lo[2] + (hi[2] - lo[2]) * (0.25 + 0.6 * t)];
+    im.data[i * 4] = c0[0]; im.data[i * 4 + 1] = c0[1]; im.data[i * 4 + 2] = c0[2]; im.data[i * 4 + 3] = low ? 90 : 235; }
+  x.putImageData(im, 0, 0); offs[key] = c; return c; }
+function draw() {
+  if (!state.view) return; var W = cv.width / dpr, H = cv.height / dpr, L = state.layers, it = state.it; EV = evaluate();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); ctx.fillStyle = css("--canvas"); ctx.fillRect(0, 0, W, H);
+  fillStroke(D.outline, css("--plate"), 1, css("--muted"), 1.5);
+  if (L.raster) { ctx.strokeStyle = css("--line"); ctx.lineWidth = 0.5; ctx.fillStyle = css("--muted"); ctx.font = "10px " + css("--mono"); for (var gx = 0; gx <= D.plate[0]; gx += 10) { ctx.beginPath(); ctx.moveTo(sx(gx), sy(0)); ctx.lineTo(sx(gx), sy(D.plate[1])); ctx.stroke(); if (gx % 20 === 0) ctx.fillText(gx, sx(gx) + 2, sy(0) - 3); } for (var gy = 0; gy <= D.plate[1]; gy += 10) { ctx.beginPath(); ctx.moveTo(sx(0), sy(gy)); ctx.lineTo(sx(D.plate[0]), sy(gy)); ctx.stroke(); if (gy % 20 === 0) ctx.fillText(gy, sx(0) + 3, sy(gy) - 2); } }
+  fillStroke(D.hof, css("--hof"), 0.9, css("--muted"), 0.8);
+  Object.keys(D.buildings).forEach(function (k) { if (k !== A.slug) fillStroke(D.buildings[k].poly, css("--fp"), 0.55, css("--muted"), 1); });
+  if (L.dach) { var img = roofImg(EV.need), g = A.grid; ctx.imageSmoothingEnabled = false; ctx.drawImage(img, sx(g.minx), sy(g.maxy), g.nx * g.res * state.view.k, g.ny * g.res * state.view.k); }
+  fillStroke(A.fp, null, 1, css("--accent"), 2);
+  // Batteriefach
+  if (L.fach) { fillStroke([D.fach.fach], null, 1, css("--pb"), 1.2, [6, 4]); fillStroke([D.fach.body], css("--pb"), 0.22, css("--pb"), 1.2); fillStroke([D.fach.channel], css("--pb"), 0.1, css("--pb"), 0.8, [3, 3]); fillStroke([D.fach.plug], css("--pb"), 0.3, css("--pb"), 0.8); fillStroke([D.fach.window], null, 1, css("--pb"), 1);
+    ctx.strokeStyle = css("--pb"); ctx.lineWidth = 1.2; ctx.setLineDash([2, 2]); ctx.beginPath(); D.fach.cable.forEach(function (p, i) { if (i) ctx.lineTo(sx(p[0]), sy(p[1])); else ctx.moveTo(sx(p[0]), sy(p[1])); }); ctx.stroke(); ctx.setLineDash([]); }
+  if (L.elec) fillStroke([D.elec], css("--elec"), 0.2, css("--elec"), 1.2);
+  if (L.knopf) { var kc = D.knopf.c; D.knopf.hoecker.forEach(function (h) { fillStroke([h], css("--knopf"), 0.14, null); }); ctx.beginPath(); ctx.arc(sx(kc[0]), sy(kc[1]), D.knopf.plateau_r * state.view.k, 0, 7); ctx.strokeStyle = css("--knopf"); ctx.lineWidth = 1.2; ctx.stroke(); ctx.beginPath(); ctx.arc(sx(kc[0]), sy(kc[1]), D.knopf.knopf_r * state.view.k, 0, 7); ctx.fillStyle = css("--knopf"); ctx.globalAlpha = 0.35; ctx.fill(); ctx.globalAlpha = 1; }
+  if (L.schalter) fillStroke([SWROOM], css("--muted"), 0.15, css("--muted"), 1, [3, 3]);
+  if (L.posts) { D.posts.cands.forEach(function (c, i) { var base = BASE.present[i], now = EV.present[i]; if (!base && !now) return; var col = base && !now ? css("--no") : (!base && now ? css("--warn") : css("--post"));
+      fillStroke([c.ring], col, now ? 0.55 : 0.1, col, base && !now ? 1.5 : 0.8, now ? [] : [3, 2]); });
+    EV.pins.forEach(function (i, n) { if (i < 0) return; var c = D.posts.cands[i], moved = i !== BASE.pins[n]; ctx.beginPath(); ctx.arc(sx(c.x), sy(c.y), D.posts.pin_d / 2 * state.view.k, 0, 7); ctx.fillStyle = moved ? css("--no") : css("--surface"); ctx.fill(); ctx.strokeStyle = moved ? css("--no") : css("--post"); ctx.lineWidth = 1.5; ctx.stroke(); }); }
+  if (L.docks) D.others.forEach(function (o) { fillStroke(o.env, css("--dock"), 0.12, css("--dock"), 0.8); fillStroke([o.zone], null, 1, css("--dock"), 1, [4, 3]); fillStroke([o.body], css("--dock"), 0.3, null); });
+  if (L.namen) { ctx.fillStyle = css("--muted"); ctx.font = "11px " + css("--sans"); ctx.textAlign = "center"; Object.keys(D.buildings).forEach(function (k) { var c = centroid(D.buildings[k].poly[0]); ctx.fillText(D.buildings[k].title, sx(c[0]), sy(c[1])); }); ctx.fillText("Innenhof", sx(centroid(D.hof[0])[0]), sy(centroid(D.hof[0])[1])); ctx.textAlign = "left"; }
+  // eigenes Dock und Schacht
+  var col = statusColor(EV.lv.geb === "bad" || EV.lv.platte === "bad" ? "bad" : (EV.lv.geb === "warn" || EV.lv.platte === "warn" ? "warn" : "ok")), dcol = css("--dock");
+  fillStroke(EV.env, dcol, 0.22, dcol, 1); fillStroke([EV.zone], null, 1, dcol, 1.5, [5, 3]); fillStroke([EV.body], dcol, 0.4, dcol, 1);
+  var sp = shaftPoly(it); fillStroke([sp], col, 0.5, col, 2.5);
+  var wallR = [[-VAR[it.var].w / 2 - K.wall_pref, -VAR[it.var].d / 2 - K.wall_pref], [VAR[it.var].w / 2 + K.wall_pref, -VAR[it.var].d / 2 - K.wall_pref], [VAR[it.var].w / 2 + K.wall_pref, VAR[it.var].d / 2 + K.wall_pref], [-VAR[it.var].w / 2 - K.wall_pref, VAR[it.var].d / 2 + K.wall_pref], [-VAR[it.var].w / 2 - K.wall_pref, -VAR[it.var].d / 2 - K.wall_pref]].map(function (p) { return toPlate(it, p[0], p[1]); });
+  fillStroke([wallR], null, 1, col, 1, [3, 3]);
+  ctx.beginPath(); ctx.arc(sx(EV.led[0]), sy(EV.led[1]), Math.max(3, 0.9 * state.view.k), 0, 7); ctx.fillStyle = css("--led"); ctx.fill(); ctx.strokeStyle = css("--fg"); ctx.lineWidth = 1; ctx.stroke();
+  var tg = A.target; ctx.strokeStyle = css("--fg"); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(sx(tg[0]) - 5, sy(tg[1])); ctx.lineTo(sx(tg[0]) + 5, sy(tg[1])); ctx.moveTo(sx(tg[0]), sy(tg[1]) - 5); ctx.lineTo(sx(tg[0]), sy(tg[1]) + 5); ctx.stroke();
+  var hp = handle(); var a0 = toPlate(it, 0, VAR[it.var].d / 2); ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(sx(a0[0]), sy(a0[1])); ctx.lineTo(sx(hp[0]), sy(hp[1])); ctx.stroke();
+  ctx.beginPath(); ctx.arc(sx(hp[0]), sy(hp[1]), 7, 0, 7); ctx.fillStyle = css("--surface"); ctx.fill(); ctx.stroke();
+  // Nordpfeil
+  ctx.fillStyle = css("--muted"); ctx.font = "600 12px " + css("--sans"); ctx.fillText("N ↑", 12, 22);
+  panel();
+}
+function handle() { var it = state.it; return toPlate(it, 0, VAR[it.var].d / 2 + 5); }
+
+// ---------- Panel
+function pill(l, t) { return '<span class="pill ' + l + '">' + t + '</span>'; }
+var LTXT = { ok: "passt", warn: "prüfen", bad: "Problem" };
+function norm(a) { return ((a % 360) + 360) % 360; }
+function fmtPose() { var it = state.it; return { var: it.var, wall: Math.round(Math.min(EV.wall, 9.9) * 10) / 10, cx: Math.round((it.cx - D.to_welt[0]) * 1000) / 1000, cy: Math.round((it.cy - D.to_welt[1]) * 1000) / 1000, angle: Math.round(norm(it.angle) * 10) / 10 }; }
+var ctlBuilt = false;
+function panel() {
+  var it = state.it, V = VAR[it.var], e = EV, g = e.lv, H = "";
+  var info = { geb: "Wand " + (e.broken ? "–" : de(Math.min(e.wall, 9.9), 2) + " mm") + " · Luft " + de(e.luft) + " mm", platte: "Dock im Rahmen der Platte", fach: e.gone.length || e.came.length ? "Unterkasten ändert sich" : "Unterkasten unverändert" };
+  ["geb", "platte", "fach"].forEach(function (k) { H += '<div class="grp ' + g[k] + '"><b>' + G3[k] + '</b>' + pill(g[k], LTXT[g[k]]) + '<small>' + info[k] + '</small></div>'; });
+  document.getElementById("groups").innerHTML = H;
+  if (!ctlBuilt) {
+    var opts = ORDER.map(function (v) { return '<option value="' + v + '">' + VLABEL[v] + '</option>'; }).join("");
+    document.getElementById("ctl").innerHTML = '<h2>Lage der Kassette</h2><div class="row" style="margin-bottom:8px"><label>x <input type="number" id="nx" step="0.1"></label><label>y <input type="number" id="ny" step="0.1"></label><label>Winkel <input type="number" id="na" step="0.1"></label></div>'
+      + '<div class="row" style="margin-bottom:10px"><label>Kassette <select id="nv">' + opts + '</select></label></div><div class="nums" id="nums"></div>';
+    ctlBuilt = true; }
+  var act = document.activeElement.id;
+  if (act !== "nx") document.getElementById("nx").value = it.cx.toFixed(2); if (act !== "ny") document.getElementById("ny").value = it.cy.toFixed(2); if (act !== "na") document.getElementById("na").value = norm(it.angle).toFixed(1); document.getElementById("nv").value = it.var;
+  var dx = it.cx - A.start.cx, dy = it.cy - A.start.cy, da = norm(it.angle - A.start.angle + 180) - 180;
+  document.getElementById("nums").innerHTML = '<div>Wand<b>' + (e.broken ? "–" : de(Math.min(e.wall, 9.9), 2)) + '</b></div><div>Dach an der LED<b>' + de(e.hLed) + '</b></div><div>Luft über LED<b>' + de(e.luft) + '</b></div><div>Versatz x<b>' + (dx >= 0 ? "+" : "") + de(dx, 2) + '</b></div><div>Versatz y<b>' + (dy >= 0 ? "+" : "") + de(dy, 2) + '</b></div><div>Drehung<b>' + (da >= 0 ? "+" : "") + de(da, 1) + '°</b></div>';
+  var order = { bad: 0, warn: 1, info: 2, ok: 3 }, ms = e.msgs.slice().sort(function (a, b) { return order[a.l] - order[b.l]; });
+  document.getElementById("msgs").innerHTML = ms.map(function (m) { return '<li class="' + m.l + '"><span class="tag">' + G3[m.g] + '</span>' + m.t + '</li>'; }).join("");
+  document.getElementById("out").value = JSON.stringify({ "02_neues_augusteum": fmtPose() }, null, 1);
+}
+(function () { var h = ""; LAYERS.forEach(function (l) { h += '<label><input type="checkbox" data-l="' + l[0] + '"' + (state.layers[l[0]] ? " checked" : "") + '><i style="background:var(' + l[2] + ')"></i>' + l[1] + '</label>'; }); document.getElementById("layers").innerHTML = h; })();
+
+// ---------- Eingaben
+function upd() { save(); draw(); }
+function setPose(p) { var it = state.it; if (p.cx !== undefined) it.cx = p.cx; if (p.cy !== undefined) it.cy = p.cy; if (p.angle !== undefined) it.angle = norm(p.angle); upd(); }
+document.addEventListener("change", function (ev) { var t = ev.target;
+  if (t.id === "nx" && t.value !== "") setPose({ cx: parseFloat(t.value) }); else if (t.id === "ny" && t.value !== "") setPose({ cy: parseFloat(t.value) }); else if (t.id === "na" && t.value !== "") setPose({ angle: parseFloat(t.value) });
+  else if (t.id === "nv") { state.it.var = t.value; upd(); }
+  else if (t.dataset && t.dataset.l) { state.layers[t.dataset.l] = t.checked; upd(); } });
+document.addEventListener("input", function (ev) { var t = ev.target; if (t.id === "nx" || t.id === "ny" || t.id === "na") { var v = parseFloat(t.value); if (!isNaN(v)) { if (t.id === "nx") state.it.cx = v; else if (t.id === "ny") state.it.cy = v; else state.it.angle = norm(v); save(); draw(); } } });
+document.addEventListener("click", function (ev) { var t = ev.target.closest ? ev.target.closest("button") : ev.target; if (!t) return;
+  if (t.id === "reset") { state.it = { var: A.start.var, cx: A.start.cx, cy: A.start.cy, angle: A.start.angle }; upd(); }
+  else if (t.id === "copy") { var text = document.getElementById("out").value, st = document.getElementById("copystate"); function fb() { var ta = document.getElementById("out"); ta.focus(); ta.select(); st.textContent = "Kopieren nicht möglich, der Text ist markiert (Strg+C)."; } try { navigator.clipboard.writeText(text).then(function () { st.textContent = "Lage kopiert."; }, fb); } catch (e) { fb(); } }
+  else if (t.id === "zin") zoom(1.25); else if (t.id === "zout") zoom(1 / 1.25); else if (t.id === "zall") { state.view = fit(BB, 14); draw(); }
+  else if (t.id === "zsel") { var b = bbox(shaftPoly(state.it).concat(EV.zone)); state.view = fit([b[0] - 14, b[1] - 14, b[2] + 14, b[3] + 14], 10); draw(); } });
+function zoom(f, px, py) { var v = state.view; if (px === undefined) { px = cv.width / dpr / 2; py = cv.height / dpr / 2; } var x = wx(px), y = wy(py); v.k *= f; v.cx = x - (px - cv.width / dpr / 2) / v.k; v.cy = y + (py - cv.height / dpr / 2) / v.k; draw(); }
+cv.addEventListener("wheel", function (e) { e.preventDefault(); var r = cv.getBoundingClientRect(); zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+function localOf(x, y) { var it = state.it, r = rot(-it.angle, x - it.cx, y - it.cy); return r; }
+cv.addEventListener("pointerdown", function (e) {
+  var r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, x = wx(px), y = wy(py), it = state.it, V = VAR[it.var], hp = handle();
+  cv.setPointerCapture(e.pointerId); cv.focus();
+  if (Math.hypot(sx(hp[0]) - px, sy(hp[1]) - py) < 14) state.drag = { kind: "rot" };
+  else { var l = localOf(x, y), inShaft = Math.abs(l[0]) <= V.w / 2 + 1.5 && Math.abs(l[1]) <= V.d / 2 + 1.5, inDock = pip([x, y], EV.zone);
+    if (inShaft || inDock) { state.drag = { kind: "move", ox: it.cx - x, oy: it.cy - y }; cv.style.cursor = "grabbing"; } else state.drag = { kind: "pan", px: px, py: py, cx: state.view.cx, cy: state.view.cy }; } });
+cv.addEventListener("pointermove", function (e) {
+  var r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, x = wx(px), y = wy(py), it = state.it;
+  document.getElementById("readout").textContent = "x | y: " + de(x) + " | " + de(y) + (height(x, y) > 0 ? " · Dach " + de(height(x, y)) + " mm" : "");
+  var d = state.drag; if (!d) return;
+  if (d.kind === "move") { it.cx = x + d.ox; it.cy = y + d.oy; upd(); }
+  else if (d.kind === "rot") { var a = Math.atan2(y - it.cy, x - it.cx) * 180 / Math.PI - 90; if (e.shiftKey) a = Math.round(a / 5) * 5; it.angle = norm(Math.round(a * 10) / 10); upd(); }
+  else if (d.kind === "pan") { state.view.cx = d.cx - (px - d.px) / state.view.k; state.view.cy = d.cy + (py - d.py) / state.view.k; draw(); } });
+function endDrag() { state.drag = null; cv.style.cursor = "grab"; }
+cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+cv.addEventListener("keydown", function (e) { var it = state.it, st = e.shiftKey ? 1 : (e.altKey ? 0.01 : 0.1), ast = e.shiftKey ? 5 : (e.altKey ? 0.1 : 1), used = true;
+  if (e.key === "ArrowLeft") it.cx -= st; else if (e.key === "ArrowRight") it.cx += st; else if (e.key === "ArrowUp") it.cy += st; else if (e.key === "ArrowDown") it.cy -= st;
+  else if (e.key === "q" || e.key === "Q") it.angle = norm(it.angle + ast); else if (e.key === "e" || e.key === "E") it.angle = norm(it.angle - ast); else used = false;
+  if (used) { e.preventDefault(); upd(); } });
+window.addEventListener("resize", resize);
+try { var mq = window.matchMedia("(prefers-color-scheme: dark)"); (mq.addEventListener || mq.addListener).call(mq, "change", function () { offs = {}; draw(); }); new MutationObserver(function () { offs = {}; draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); } catch (e) {}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { draw(); });
+resize();
+</script>
