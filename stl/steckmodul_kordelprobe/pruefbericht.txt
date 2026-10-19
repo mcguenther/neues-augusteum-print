@@ -1,18 +1,28 @@
-Probeteil K4 Kordelprobe: Stern Ø 70 × 6.2, ohne Boden und ohne Randwand
-Maße: Knopfraum Radius 12.5 (Ø 25), Wand senkrecht bis 1.4, 45° bis 5.0 (Dach Ø 18), Knopf Ø 22 × 1.2, Gänge 8 × 5 mit Fase 1.5, Kordel 5 × 3, Höcker 10.4 breit und 6.2 hoch
+Probeteil K4 Kordelprobe: zwei Sterne Ø 70 × 15.9 (Gangfase innen und außen), ohne Boden, Randwand und Deckplatte; Bett unten (Hut-Seite)
+Maße: Knopf Ø 22 × 12.0 (Höhe Annahme, vom Nutzer zu bestätigen), Kordel 5 × 3 unten seitlich am Knopffuß; Knopfraum Ø 25 × 12.2, Anstieg 45° ab Radius 19.7 (8.7 vor dem Knopfkörper), Decke Ø 20 bei 14.7, Plateau Ø 28 bei 15.9
 
-Teil (Druckausrichtung, Bett z = 0):
-  K4_stern.stl        70.0 ×  70.0 ×  6.2 mm    5.6 cm³  ≈  7 g  dicht=True  Teile=1
-      waagerechte Decken: z=5.0: 1298 mm² (70.0 × 70.0); z=0.4: 76 mm² (70.0 × 70.0); z=0.2: 76 mm² (70.0 × 70.0)   Überhang flacher als 45° zur Senkrechten: 0 mm²
+K4_stern_F-innen.stl (Gangfase innen)
+  Gänge: 8 × 5 mit Fase 1.5 × 45° in den oberen Ecken (Decke 5 breit bei 5.0), Höcker 10.4 breit und 6.2 hoch, Wand seitlich 1.2 (an der Bettkante 0.7)
+   70.0 ×  70.0 × 15.9 mm    6.0 cm³  ≈  7 g  dicht=True  Teile=1
+  waagerechte Decken: z=5.0: 614 mm²; z=14.7: 314 mm²; z=0.4: 62 mm²; z=0.2: 61 mm²   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  Knopf Ø 22 × 12.0 im Raum (seitlich 1.5, oben 0.2 Luft)                0.00  ok
+  Knopfraum Ø 25 × 12.2 frei                                             0.00  ok
+  Kordel 5 × 3 vom Knopffuß in allen 8 Gängen bis zum Rand               0.00  ok
+  Gangprofil 8 × 5 mit Fase 1.5 frei                                     0.00  ok
+  (volles Rechteck 8 × 5 nicht frei: die gefasten Ecken nehmen 265 mm³ weg, die Kordel passt trotzdem)
+  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke 19.4 mm (höchstens 20); Decke über dem Knopf 19.4 mm bei z 14.9; Gangdecken 4.6 mm bei z 5.1
 
-Prüfung (Überschneidungsvolumen, mm³; muss 0 sein):
-  Knopf Ø 22 × 1.2 im Knopfraum (seitlich 1.5, oben 0.2 Luft)        0.00  ok
-  Kordel 5 × 3 in allen 8 Gängen bis zum Rand                        0.00  ok
-  Kordel auf dem Knopf (bis 4.2 hoch) und weiter in allen 8 Gängen     0.00  ok
-  Gangprofil (8 × 5 mit Fase) frei                                   0.00  ok
-  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke 17.4 mm (Dach über dem Knopfraum), Gangdecken 5,0 mm
-  Platte oder Powerbank auf den Höckern: Luft für die Kordel 2.0 mm hoch (Gang 5.0, Kordel 3.0)
-  -> keine Kollisionen
-K4_stern: Material ≈ 7 g, Zeit normal ≈ 54 min
-K4_stern: Material ≈ 7 g, Zeit schnell ≈ 21 min
-K4_stern bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 22 min
+K4_stern_F-aussen.stl (Gangfase aussen, zuerst drucken)
+  Gänge: freies Rechteck 8 × 5, Dachschrägen 1.5 × 45° darüber (Decke 5 breit bei 6.5), Höcker 11.4 breit und 7.7 hoch, Wand seitlich 1.7 (an der Bettkante 1.2)
+   70.0 ×  70.0 × 15.9 mm    7.5 cm³  ≈  9 g  dicht=True  Teile=1
+  waagerechte Decken: z=6.5: 674 mm²; z=14.7: 314 mm²; z=0.4: 62 mm²; z=0.2: 61 mm²   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  Knopf Ø 22 × 12.0 im Raum (seitlich 1.5, oben 0.2 Luft)                0.00  ok
+  Knopfraum Ø 25 × 12.2 frei                                             0.00  ok
+  Kordel 5 × 3 vom Knopffuß in allen 8 Gängen bis zum Rand               0.00  ok
+  volles Rechteck 8 × 5 frei in allen 8 Gängen                           0.00  ok
+  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke 19.4 mm (höchstens 20); Decke über dem Knopf 19.4 mm bei z 14.9; Gangdecken 4.8 mm bei z 6.5
+
+Wände: über den Gängen 1.2, Schale der Erhebung 1.2 (45° senkrecht gemessen); Powerbank oder Buch auf dem Plateau lässt die Kordel frei
+-> keine Kollisionen
+K4_stern_F-innen: Material ≈ 7 g, Zeit normal ≈ 58 min, schnell ≈ 22 min, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 22 min
+K4_stern_F-aussen: Material ≈ 9 g, Zeit normal ≈ 72 min, schnell ≈ 27 min, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 29 min

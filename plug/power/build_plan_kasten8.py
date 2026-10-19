@@ -1,8 +1,9 @@
-"""Planseite Unterkasten Stand 8: Kasten 5 mm höher, Knopfraum Ø 30 × 1,4 und acht Kordelgänge 8 × 5 für den Doktorhut, Heißkleber statt Fäden.
+"""Planseite Unterkasten Stand 8: Erhebung über dem Knopf (Ø 22 × 12, Annahme), acht Kordelgänge 8 × 5, Gangfase innen oder außen, Heißkleber.
 
-Zeigt den Kasten aus `plug/power/kasten8.py` (Powerbank am Platz von Stand 7, auf den Gangdächern über dem Knopf) im 3D-Zusammenbau mit
+Zeigt den Kasten aus `plug/power/kasten8.py` (Powerbank am Platz von Stand 7, auf dem Plateau der Erhebung und drei Auflagen) im 3D-Zusammenbau mit
 allen Teilen, die es gibt: Steckplatte, sechs Gebäude, Hof-Einsatz, Display-Gebäude (zweiter Satz), Unterkasten Stand 7 (gedruckt) zum Vergleich,
-Powerbank, ESP32, Hauptschalter, Doktorhut mit Knopf und Kordel. Dazu Draufsicht, Höhenkette, Prüfzeilen, Hinweise und Entscheidungen.
+Powerbank, ESP32, Hauptschalter, Doktorhut mit Knopf und Kordel. Dazu Draufsicht, Höhenkette, Prüfzeilen, Gegenüberstellung der Gangfase (GANG_FASE_MODUS innen/außen), Höhen je Möglichkeit, Hinweise
+und Entscheidungen.
 Die Gebäude-STL werden für die Ansicht ausgedünnt (fast_simplification, sonst volle Netze).
 
 Aufruf: python3 -m plug.power.build_plan_kasten8   (ca. 1 min)  ->  plug/power/plan_kasten8.html   (Vorlage plan_kasten8.template.html; Artifact)
@@ -52,6 +53,17 @@ def enc(tm, dx=0.0, dy=0.0, dz=0.0, faces=None):
     return encode(thin(tm, faces) if faces else tm)
 
 
+def probe_info():
+    """Gewicht und Höhe der beiden K4-Sterne aus dem Prüfbericht (python3 -m plug.power.build_kordelprobe)."""
+    import re
+    f = os.path.join(STL, "steckmodul_kordelprobe", "pruefbericht.txt")
+    out = {}
+    if os.path.exists(f):
+        for m in re.finditer(r"(K4_stern_F-\w+): Material ≈ (\d+) g, Zeit normal ≈ (\d+) min, schnell ≈ (\d+) min, bei deinem Drucker \(Nacht 1: 47 g in 2,5 h\) ≈ (\d+) min", open(f, encoding="utf-8").read()):
+            out[m.group(1)] = dict(g=int(m.group(2)), normal=int(m.group(3)), schnell=int(m.group(4)), nacht1=int(m.group(5)))
+    return out
+
+
 def ring(p):
     return [[round(float(x), 2), round(float(y), 2)] for x, y in list(p.exterior.coords)[:-1]]
 
@@ -62,7 +74,7 @@ def rings(g):
 
 def var_data(r):
     return dict(
-        H=r["H"], plus=r["plus"], total=r["total"], grams=r["grams"], pb_top=r["pb_top"], esp_top=r["esp_top"], esp_z0=r["esp_z0"],
+        H=r["H"], plus=r["plus"], total=r["total"], grams=r["grams"], zeit=r["zeit"], pb_top=r["pb_top"], esp_top=r["esp_top"], esp_z0=r["esp_z0"],
         checks=[dict(n=n, ok=bool(ok), t=t) for n, ok, t in r["checks"]],
         body=ring(r["body"]), plug=ring(r["plug"]), win=ring(r["win"]), z0=r["z_pb"], unter_pb=r["unter_pb"], pb_luft=r["pb_luft"],
         posts=[dict(r=ring(p), pin=i in r["pins"]) for i, p in enumerate(r["posts"])], pin_rows=r["pin_rows"],
@@ -73,9 +85,21 @@ def var_data(r):
     )
 
 
+def modus_data(r):
+    return dict(gang_z=r["gang_z"], wand=r["wand"], hb=PP.KORDEL_GANG["w"] + 2 * r["wand"], H=r["H"], total=r["total"], grams=r["grams"],
+                zeit=r["zeit"], bruecken=[dict(n=n, w=w, z=z) for n, w, z in r["bruecken"]], ok=all(c[1] for c in r["checks"]),
+                checks=[dict(n=n, ok=bool(ok), t=t) for n, ok, t in r["checks"] if n.startswith(("Gänge", "Wände", "Überhang", "ESP32", "Adern"))],
+                esp_z0=r["esp_z0"])
+
+
 def main():
     v = K8.stand7()
     W, L = v["plate"]
+    modi = {}
+    for m in K8.MODI:
+        K8.modus(m)
+        modi[m] = modus_data(K8.build(v))
+    K8.modus(PP.GANG_FASE_MODUS)
     res = K8.build(v)
     K = res["K"]
 
@@ -102,8 +126,10 @@ def main():
     pins7 = [[round(Polygon(p["r"]).centroid.x, 1), round(Polygon(p["r"]).centroid.y, 1)] for p in v["posts"] if p["pin"]]
     data = dict(
         W=W, L=L, deck=DECK, plate_t=BC.H0["plate_t"], h7=K8.H7, floor=PP.UK_FLOOR, wall=PP.UK_WALL, gap=PP.STECKERRAUM, pb_t=K8.PB_T,
-        adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, raum_d=2 * K8.R_KNOPF, kordel=PP.KORDEL, steckerraum=PP.STECKERRAUM_8, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, knopf_h0=K8.KNOPF_H0, gang_z=K8.GANG_Z,
-        knopf_h=K8.KNOPF_H, hut=PP.HUT, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
+        adern=PP.ADERN_ZONE, esp_h=PP.ESP_H, knopf=PP.HUT_KNOPF, raum_d=2 * K8.R_RAUM, kordel=PP.KORDEL, steckerraum=PP.STECKERRAUM_8, gang=PP.KORDEL_GANG, dach=PP.KORDEL_DACH, knopf_z=K8.KNOPF_Z, gang_z=K8.GANG_Z,
+        knopf_h=K8.H_RAUM, knopf_top=K8.KNOPF_TOP, r_rampe=K8.R_RAMPE, r_decke=K8.R_DECKE, r_plateau=K8.R_PLATEAU, r_kn=K8.R_KN, wand=K8.WAND, ch_bed=PP.CH_BED,
+        modus=PP.GANG_FASE_MODUS, modi=modi, varianten=K8.varianten(), auflagen=[ring(a) for a in res["auflagen"]], standfest=res["standfest"], standfest0=res["standfest0"],
+        probe=probe_info(), hut=PP.HUT, plug7=PP.PB_PLUG, pin=PP.PIN_PLAN, post=PP.POST,
         c=[round(K["c"][0], 2), round(K["c"][1], 2)], aus=K["aus"], gaenge=[rings(g) for g in K["gaenge"]], hoecker=[rings(g) for g in K["hoecker"]],
         notches7=[n["notch"] for n in v["vs"]], docks=[dict(slug=d["slug"], title=d["title"], zone=d["zone"]) for d in v["docks"] if d["ok"]],
         buildings=[dict(slug=b["slug"], title=b["title"], poly=b["poly"]) for b in v["buildings"]], hof=v["hof"], disp=disp,
