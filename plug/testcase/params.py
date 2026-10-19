@@ -70,7 +70,7 @@ LID_T_T = 2.0
 
 
 # ---- Steckprobe 2 (Plan plug/testcase/plan2.html, Empfehlungen A abgenickt am 2026-10-16; Zwei-Lagen-Aufbau und Faden-V 40° neu aus plug/power/)
-SHAFT_EXTRA_T = 0.30    # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
+SHAFT_EXTRA_T = 0.35    # (19.10.2026: 0,30 -> 0,35, Beschluss Passung bei wechselnden Filamenten, L36; gilt für künftig gebaute Gebäude)  # Schacht so viel tiefer als die Kassette hoch ist (Kassette ragte 0,2 heraus, L12)
 SLOT_END_T = -8.0       # Lötende-Schlitz 1 mm länger (Ende bei −8,0 statt −7,0), L20
 STAMP_AIR_T = 1.2       # Luft zwischen Anschlag-Steg und Körper der Winkelleiste (Karte D)
 S2_MARGIN = 8.0         # Rand der Mini-Oberplatte um den Fuß: Wand zwischen Mulde und Faden-V mindestens 1,4 (bei 7,0 nur 1,2)

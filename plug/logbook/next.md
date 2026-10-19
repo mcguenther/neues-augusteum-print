@@ -12,10 +12,10 @@ Ausgewertet in [`rounds/r10_passung_filament/summary.md`](rounds/r10_passung_fil
 
 | Prio | Aufgabe | Bedingung |
 |---|---|---|
-| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | **erledigt 2026-10-19** (`variants.KASS_SCHLANK_T`, `TASCHE_ENGER_T`, `TASCHE_FLACHER_T` für V1RS; die Maße des Schachts bleiben, daher Gebäude-STL byte-gleich); v4 und V2R unverändert und ungetestet |
+| 1 | Spiel 0,13 und Tasche 10,46 × 2,84 × 14,40 in die echten Kassetten (`variants.kassette`, V1RS) und den Gebäude-Generator (`plug/buildings.py`) übernehmen, Gebäude neu bauen (`plug.buildings`, `plug.colour`) | **erledigt 2026-10-19** (auf main `2531ac3`: `plug.filament.kassetten`, `variants.kassette` mit `schlank`/`enger`/`flacher`, Gebäude neu gebaut); v4 und V2R mit dem neuen Spiel ungetestet |
 | 1 | Neue Steckplatte (0009967) drucken; Prüfung: sitzen die bestehenden beigen Gebäude (Fase 2,0) in den 0,15er Mulden gleich gut wie der Probefuß (Fase 4,0)? Hof-Einsatz mit 0,15 (ungetestet) | Nutzer druckt |
-| 1 | Entscheidung Fuß-Fase 4,0 (Aufgabendatei) gegen 2,0 (`FUSS_FASE_T`, r8 bewährt) für neue Gebäude | nach dem Plattentest |
-| 2 | Schachttiefe 0,35 (`SHAFT_EXTRA_T` steht auf 0,30) | nur für künftig gebaute Gebäude |
+| 1 | ~~Entscheidung Fuß-Fase 4,0 gegen 2,0~~ | **erledigt**: Gebäude auf main mit 4,0 neu gebaut (`2531ac3`); Sitz in den 0,15er Mulden zeigt der Plattentest |
+| 2 | ~~Schachttiefe 0,35~~ | **erledigt** (`SHAFT_EXTRA_T` 0,35 auf main, `2531ac3`) |
 | 2 | Entscheidung Naht Paulinum/Neues Augusteum: Wand 0,70 (Zahn im Schlitz) oder Zuschnitt dieser Naht auf 1,1 für 0,80 | Nutzer |
 | 2 | Eckaussparung Nordwest trifft laut Konzept das Fach (210 mm²; Zwischenspeicher `plug/scale1176/underside_1300.json` war veraltet, neu gerechnet): prüfen | vor dem Unterkasten-Druck |
 | 2 | Flussraten-Kalibrierung je Filament (Nutzer, läuft), Messplättchen T4 erzeugen, Slicer-Kompensation je Farbe eintragen | Nutzer |
@@ -40,6 +40,15 @@ Folge aus r8 (erledigt 2026-10-17): Alle sechs Gebäude-STL in `stl/steckmodul_c
 ## Offene Folge aus r9 (Hauptschalter, 2026-10-17)
 
 Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Abschnitt 2f). Loch und Tasche sind im Unterkasten-Generator (`build_concept.switch_cut`, Westwand, y = 40 aus `SW_Y`, geprüft mit `python3 -m plug.power.check_switch`); der Unterkasten selbst ist noch nicht als STL gedruckt. Offen: Hakenspanne an der 13-mm-Seite nachmessen (die Brücke über dem Loch war in T2 sauber); Verdrahtung Powerbank → Schalter → INA226 (`docs/wippenschalter-kcd11.md`).
+
+## Vorgabe 2026-10-20 (Batteriefach Stand 8)
+
+- **Gänge 1 mm flacher: 8 × 4** (nach dem Druck von K4 mit 8 × 5), **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden, **1 mm Luft über dem Knopf** (Raum Ø 25 × 13,0 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
+
+## Vorgabe 2026-10-19 (Batteriefach Stand 8)
+
+- **Befestigung mit Heißkleber** statt Fäden: Kasten auf den Hut, im Zweifel Platte auf den Kasten. Fäden und Ösen entfallen (Eckaussparungen im Kasten, Fadentaschen in der Platte); die Abschnitte zu Fäden weiter unten sind damit überholt.
+- **Knopf des Huts** in der Plattenmitte: **Ø 22 × 12,0 hoch (Annahme, vom Nutzer zu bestätigen**; erste Nachricht „ca. 1,2 cm“, vorher als 1,2 mm gelesen). Die Kordel 3 × 5 kommt unten seitlich am Knopffuß heraus (Nutzer, `KORDEL_ANSATZ_OBEN = False`) und läuft in acht Gängen 8 × 5 nach außen. Über dem Knopf eine **Erhebung**: Raum Ø 25 × 12,2, 45°-Anstieg ab 8,7 mm vor dem Knopf, Decke Ø 20 bei 14,7, Plateau Ø 28 bei 15,9. **Steckerraum 6 mm**, Powerbank am Platz von Stand 7 auf Plateau und drei Auflagen: Kasten 34,7 (mit Platte 49,3, ca. 128 g). Gangfase in zwei Varianten (`GANG_FASE_MODUS` innen/außen, Vorschlag außen). Nächster Druck: **K4 F-außen** (`stl/steckmodul_kordelprobe/`), dabei Knopfhöhe messen. Plan: `plug/power/plan_kasten8.html`.
 
 ## Geklärt (2026-10-16)
 

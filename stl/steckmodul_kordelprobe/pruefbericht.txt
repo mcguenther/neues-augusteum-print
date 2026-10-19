@@ -1,0 +1,17 @@
+Probeteil K4 Kordelprobe: Stern Ø 70 × 16.0 (Gangfase innen), ohne Boden, Randwand und Deckplatte, ohne Fase an den Mündungen; Bett unten (Hut-Seite)
+Maße: Knopf Ø 22 × 12.0 (Höhe Annahme, vom Nutzer zu bestätigen), Kordel 5 × 3 unten seitlich am Knopffuß; Knopfraum Ø 25 × 13.0, Anstieg 45° ab Radius 21.5 (10.5 vor dem Knopfkörper), Decke Ø 20 bei 15.5, Plateau Ø 28 bei 16.0
+
+K4_stern_F-innen.stl (Gangfase innen)
+  Gänge: 8 × 4 mit Fase 1.5 × 45° in den oberen Ecken (Decke 5 breit bei 4.0), Höcker 9.6 breit und 4.5 hoch, Wand seitlich 0.8
+   70.0 ×  70.0 × 16.0 mm    3.6 cm³  ≈  4 g  dicht=True  Teile=1
+  waagerechte Decken: z=4.0: 542 mm²; z=15.5: 314 mm²   Überhang flacher als 45° zur Senkrechten: 0 mm²
+  Knopf Ø 22 × 12.0 im Raum (seitlich 1.5, oben 1.0 Luft)                0.00  ok
+  Knopfraum Ø 25 × 13.0 frei                                             0.00  ok
+  Kordel 5 × 3 vom Knopffuß in allen 8 Gängen bis zum Rand               0.00  ok
+  Gangprofil 8 × 4 mit Fase 1.5 frei                                     0.00  ok
+  (volles Rechteck 8 × 4 nicht frei: die gefasten Ecken nehmen 234 mm³ weg, die Kordel passt trotzdem)
+  Überhang je 0,2-mm-Lage (45° getragen): breiteste freie Decke 19.4 mm (höchstens 20); Decke über dem Knopf 19.4 mm bei z 15.7; Gangdecken 4.6 mm bei z 4.1
+
+Wände: seitlich 0.8, Decke über Gängen und Knopfraum 0.48 (3 Lagen × 0,16), keine Fase unten an den Mündungen; Powerbank oder Buch auf dem Plateau lässt die Kordel frei
+-> keine Kollisionen
+K4_stern_F-innen: Material ≈ 4 g, Zeit normal ≈ 38 min, schnell ≈ 15 min, bei deinem Drucker (Nacht 1: 47 g in 2,5 h) ≈ 13 min

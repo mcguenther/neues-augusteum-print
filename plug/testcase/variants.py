@@ -88,22 +88,15 @@ def min_height(k, floor=None):
     return top - F + P.STOP_T
 
 
-# ---- Passung nach r10 (beige Filament, Probedrucke K4 und K5, plug/filament/build.py): nur V1RS getestet, v4 und V2R unverändert (ungetestet)
-# Die Maße des Schachts (dims: w, depth) bleiben, nur der Unterbau der Kassette wird schlanker: Spiel im Schacht 0,13 statt 0,06, also 0,07 je Seite.
-KASS_SCHLANK_T = {"V1RS": 0.07}         # Unterbau je Seite so viel schlanker (r10 K5: passt im Probefuß super, in bestehenden Gebäuden etwas schwerer, passt so)
-TASCHE_ENGER_T = {"V1RS": 0.10}         # Buchsentasche in Breite und Tiefe insgesamt enger (10,46 × 2,84 statt 10,56 × 2,94; die Buchse passt „fantastisch“)
-TASCHE_FLACHER_T = {"V1RS": 0.20}       # Taschenhöhe 14,40 statt 14,60 (die Buchse tauchte 0,2 mm zu tief ein, kostete Einstecktiefe E); Decke darüber bleibt geschlossen
-
-
-def kassette(var):
+def kassette(var, schlank=0.0, enger=0.0, flacher=0.0):
+    """schlank: Unterbau in Breite und Tiefe je Seite so viel kleiner; enger: Buchsentasche in Breite und Tiefe insgesamt so viel enger; flacher: Taschenhöhe so viel kleiner
+    (Passung bei wechselnden Filamenten, `plug.filament.kassetten`; Standard 0 = Stand der gebauten Gebäude). Oberkante des Unterbaus und Blatt bleiben."""
     d = dims(var)
     w, depth, zb = d["w"], d["depth"], d["z_b"]
-    dd = KASS_SCHLANK_T.get(var, 0.0)
-    pw, pd = d["pk_w"] - TASCHE_ENGER_T.get(var, 0.0), d["pk_d"] - TASCHE_ENGER_T.get(var, 0.0)
-    zp = d["zp"] - TASCHE_FLACHER_T.get(var, 0.0)
-    body = N2.chamfered_block(w - 2 * dd, depth - 2 * dd, zb, EF, 0.0).translate([0, depth / 2, 0])
-    cuts = [cbox(pw, pd, -0.01, zp, cy=d["ypin"]),
-            N2.chamfer_hole(pw, pd, 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
+    body = N2.chamfered_block(w - 2 * schlank, depth - 2 * schlank, zb, EF, 0.0).translate([0, depth / 2, 0])
+    zp = d["zp"] - flacher
+    cuts = [cbox(d["pk_w"] - enger, d["pk_d"] - enger, -0.01, zp, cy=d["ypin"]),
+            N2.chamfer_hole(d["pk_w"] - enger, d["pk_d"] - enger, 0.0, P.ENTRY_CH_T, True, cy=d["ypin"]),
             box(-d["slot"] / 2, d["slot"] / 2, d["y_p0"], d["y1"], zp - 0.01, zb + 0.01)]
     m = diff(body, *cuts)
     if var not in RVARS:
