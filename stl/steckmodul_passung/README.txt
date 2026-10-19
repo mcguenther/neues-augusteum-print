@@ -16,10 +16,12 @@ Beide Varianten:
   K3_kassette_V1RS_20.stl        Kerben/Kennung: Dateiname; mit Stift auf der Unterseite markieren. Je etwa 16 min.
   K4_kassette_V1RS_14.stl        Zwischenstufe (eigene ZIP passung_kassette_14.zip): Spiel im Schacht 0,14, zwei erhabene Punkte als Kennung, Buchsentasche
                                  0,10 enger (10,46 x 2,84) und 0,2 flacher (Höhe 14,40 statt 14,60), weil die Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte.
+                                 Ergebnis (Nutzer): Buchse passt fantastisch, Kassette im Schacht noch zu locker.
+  K5_kassette_V1RS_13.stl        Nächster Druck (eigene ZIP passung_kassette_13.zip): wie K4, aber Spiel im Schacht 0,13, ein erhabener Punkt als Kennung.
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
-  Variante A: Block 125 min + Kassetten 65 min = 190 min
-  Variante B: Fuß 29 min + Block 41 min + Kassetten 65 min = 136 min 
+  Variante A: Block 125 min + Kassetten 49 min = 174 min
+  Variante B: Fuß 29 min + Block 41 min + Kassetten 49 min = 119 min 
 
 Slicer: PLA, Düse 0,4, Schicht 0,2, Wände 3, Füllung 15 %, Support aus, Ausrichtung wie exportiert (Fuß bzw. Plattenunterseite und Kassettentasche am Bett).
 Filament: Fluss möglichst vorher kalibrieren (Plan, Abschnitt 6, Messplättchen T4).

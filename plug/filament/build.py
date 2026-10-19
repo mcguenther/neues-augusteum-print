@@ -13,6 +13,9 @@ Empfehlung aus L36).
 K4 (Zwischenstufe, passung_kassette_14.zip): Spiel im Schacht 0,14, Buchsentasche 0,10 enger (10,46 x 2,84), zwei Punkte als Kennung; Tasche 0,2 flacher
 (14,40 statt 14,60), weil die Dupont-Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte (Einstecktiefe E, Grenze für stabilen Durchgang 5,08 von 5,28).
 
+K5 (passung_kassette_13.zip): wie K4 (Tasche 10,46 x 2,84 x 14,40; die Buchse passt dort laut Nutzer „fantastisch“), aber Spiel im Schacht 0,13, weil K4 mit 0,14 im
+Schacht noch zu locker saß; ein Punkt als Kennung.
+
 Aufruf (aus dem Wurzelverzeichnis, ca. 1 min):
     python3 -m plug.filament.build
 """
@@ -185,6 +188,7 @@ def main():
     for i, s in enumerate(KASS_SPIEL):
         teile["K%d_kassette_V1RS_%d" % (i + 1, round(s * 100))] = kassette(s)
     teile["K4_kassette_V1RS_14"] = kassette(0.14, tasche_enger=0.10, punkte=2, tasche_flacher=TASCHE_FLACHER)
+    teile["K5_kassette_V1RS_13"] = kassette(0.13, tasche_enger=0.10, punkte=1, tasche_flacher=TASCHE_FLACHER)
     f4, h4 = probefuss(4.0)
     teile["B1_probefuss_fase4"] = f4
     plate_b, bb = mulden_block(probe_outline(), MULDEN_SPIEL, wand=1.6, rand=1.6, top_ch=0.5)
@@ -223,6 +227,8 @@ def main():
         chk("Kassette %d (Spiel %.2f) im Schacht des Probefußes B1" % (i + 1, s), (f4 ^ k).volume())
     k4 = kassette(0.14, tasche_enger=0.10, punkte=2, tasche_flacher=TASCHE_FLACHER).translate([0, -d["depth"] / 2, 0])
     chk("Kassette 4 (Spiel 0,14, Tasche 0,10 enger und 0,20 flacher, 2 Punkte) im Schacht des Probefußes B1", (f4 ^ k4).volume())
+    k5 = kassette(0.13, tasche_enger=0.10, punkte=1, tasche_flacher=TASCHE_FLACHER).translate([0, -d["depth"] / 2, 0])
+    chk("Kassette 5 (Spiel 0,13, Tasche 0,10 enger und 0,20 flacher, 1 Punkt) im Schacht des Probefußes B1", (f4 ^ k5).volume())
     hs = V.housing(VAR)
     k4o = kassette(0.14, tasche_enger=0.10, tasche_flacher=TASCHE_FLACHER)
     chk("Buchse (Nennmaß 10,16 x 2,54) in der Tasche von K4 (10,46 x 2,84 x %.2f, Kassette im Ursprung)" % (d["zp"] - TASCHE_FLACHER), (k4o ^ hs).volume())
@@ -245,7 +251,7 @@ def main():
 
     # ---- Druckzeiten: Gesamt je Variante
     za = zeiten["A1_mulden_block_institut"][1]
-    zk = sum(v[1] for n, v in zeiten.items() if n.startswith("K"))
+    zk = sum(v[1] for n, v in zeiten.items() if n.startswith(("K1", "K2", "K3")))
     zb = zeiten["B1_probefuss_fase4"][1] + zeiten["B3_mulden_block_probe"][1]
     rep("\nDruckzeit je Variante (Summe der Einzelteile, nacheinander; mehrere Teile gleichzeitig auf einem Bett sparen nur den Start):")
     rep("  Variante A (Mulden-Block für die vorhandenen Gebäude + 3 Kassetten): %.0f min Block + %.0f min Kassetten = %.0f min" % (za, zk, za + zk))
@@ -264,6 +270,7 @@ def main():
         f.write(readme)
     sets = {"passung_variante_A.zip": ["A1_mulden_block_institut", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"],
             "passung_kassette_14.zip": ["K4_kassette_V1RS_14"],
+            "passung_kassette_13.zip": ["K5_kassette_V1RS_13"],
             "passung_variante_B.zip": ["B1_probefuss_fase4", "B3_mulden_block_probe", "K1_kassette_V1RS_12", "K2_kassette_V1RS_16", "K3_kassette_V1RS_20"]}
     for zn, names in sets.items():
         with zipfile.ZipFile(os.path.join(OUT, zn), "w", zipfile.ZIP_DEFLATED) as z:
@@ -292,6 +299,8 @@ Beide Varianten:
   K3_kassette_V1RS_20.stl        Kerben/Kennung: Dateiname; mit Stift auf der Unterseite markieren. Je etwa {zk1:.0f} min.
   K4_kassette_V1RS_14.stl        Zwischenstufe (eigene ZIP passung_kassette_14.zip): Spiel im Schacht 0,14, zwei erhabene Punkte als Kennung, Buchsentasche
                                  0,10 enger (10,46 x 2,84) und 0,2 flacher (Höhe 14,40 statt 14,60), weil die Buchse beim ersten K4 ca. 0,2 mm zu tief eintauchte.
+                                 Ergebnis (Nutzer): Buchse passt fantastisch, Kassette im Schacht noch zu locker.
+  K5_kassette_V1RS_13.stl        Nächster Druck (eigene ZIP passung_kassette_13.zip): wie K4, aber Spiel im Schacht 0,13, ein erhabener Punkt als Kennung.
 
 Druckzeit (Schätzung nach dem Muster der r8-Schätzung, mal 1,2 nach L45; nicht kalibriert; bitte die echte Zeit aus dem Slicer melden):
   Variante A: Block {za_block:.0f} min + Kassetten {zk:.0f} min = {za_total:.0f} min
