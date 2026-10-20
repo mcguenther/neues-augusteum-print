@@ -66,7 +66,7 @@ FUELLEN_T = 2.0        # Spalten im Hohlraum, die schmaler sind, werden gefüllt
 LAYER = 0.2            # Schichthöhe für die Überhangprüfung
 UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut 45°)
 SPLITTER_MM3 = 1.0     # eigene Schalen mit kleinerem Betrag des Volumens sind Mikrohohlräume aus den Booleschen Schritten und entfallen (sauber)
-RELIEF = None          # Name einer Reliefvariante für den Ostgiebel des Paulinums (plug/relief.py `VARIANTEN`, z. B. "A04"); None = aus (Standard)
+RELIEF = "A04"         # Reliefvariante für den Ostgiebel des Paulinums (plug/relief.py `VARIANTEN`); A04 = Blende und Rosettenring 0,4 mm vor (Nutzer 20.10.); None = aus (`--ohne-relief`)
 
 
 def ext(poly, z0, z1):
@@ -427,16 +427,15 @@ def main():
     ap.add_argument("--ohne-rohrstuetze", action="store_true", help="Gewölbe nur von den Außenwänden (Stand vor 2026-10-17)")
     ap.add_argument("--fuellen", type=float, default=FUELLEN_T, help="Spalten schmaler als dies füllen (mm, 0 = aus)")
     ap.add_argument("--umkreis", type=float, default=UMKREIS_T, help="Kegel einer Stütze nur bis so viel weiter als die nächste Stütze (mm)")
-    ap.add_argument("--relief", help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, z. B. A04; Standard aus)")
+    ap.add_argument("--relief", default=RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s)" % RELIEF)
+    ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
     ap.add_argument("--out", help="Ausgabeordner für STL und Bilder (Standard: die eingecheckten Ordner)")
     a = ap.parse_args()
     BRUECKE_T = a.bruecke
     STUETZE_ROHR = not a.ohne_rohrstuetze
     FUELLEN_T = a.fuellen
     UMKREIS_T = a.umkreis
-    RELIEF = a.relief
-    if a.relief and not a.out:
-        ap.error("--relief schreibt nur mit --out (nicht in die eingecheckten Ordner)")
+    RELIEF = None if a.ohne_relief else a.relief
     if a.out:
         OUT = PREV = a.out
     os.makedirs(OUT, exist_ok=True)

@@ -182,14 +182,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("slugs", nargs="*")
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
-    ap.add_argument("--relief", help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, z. B. A04); braucht --out")
-    ap.add_argument("--out", help="Ausgabeordner für 3MF und Bilder statt der eingecheckten (nötig mit --relief)")
+    ap.add_argument("--relief", default=B.RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s, wie plug.buildings)" % B.RELIEF)
+    ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
+    ap.add_argument("--out", help="Ausgabeordner für 3MF und Bilder statt der eingecheckten")
     a = ap.parse_args()
     global OUT, PREV
-    if a.relief:
-        if not a.out:
-            ap.error("--relief schreibt nur mit --out (nicht in die eingecheckten Ordner)")
-        B.RELIEF = a.relief
+    B.RELIEF = None if a.ohne_relief else a.relief
     if a.out:
         OUT = PREV = a.out
     for d in (OUT, PREV, VIEW if not a.out else OUT):
