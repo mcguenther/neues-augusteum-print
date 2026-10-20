@@ -12,7 +12,7 @@ Höchstens 4 Filamente je Druck. 3D-Ansicht: `plug/views/farbig/view.html`. Slic
 | `04_seminargebaeude_1zu1300_farbig.3mf` | Beige, Graublau, Weinrot, Space Grey | Beige 66 %, Graublau 3 %, Weinrot 4 %, Space Grey 27 % | 14.4 (14.4) | Beige |
 | `05_institutsgebaeude_1zu1300_farbig.3mf` | Beige, Graublau, Weinrot, Space Grey | Beige 61 %, Graublau 10 %, Weinrot 7 %, Space Grey 23 % | 16.0 (16.0) | Beige |
 | `06_city_hochhaus_1zu1300_farbig.3mf` | Beige, Graublau, Space Grey | Beige 27 %, Graublau 70 %, Space Grey 3 % | 21.6 (21.6) | Graublau |
-| `08_innenhof_1zu1300_farbig.3mf` | Beige, Space Grey, Grasgrün | Beige 72 %, Space Grey 23 %, Grasgrün 5 % | 22.6 (22.1) | Beige, Grasgrün |
+| `08_innenhof_1zu1300_farbig.3mf` | Beige, Space Grey, Grasgrün | Beige 65 %, Space Grey 29 %, Grasgrün 6 % | 23.4 (22.8) | Beige, Grasgrün |
 
 `alle_1zu1300_hauptfarben.3mf`: alle Gebäude und der Hof-Einsatz in einem Druck mit den vier Hauptfarben (Lage wie auf der Steckplatte).
 

@@ -222,24 +222,23 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     zc = -F + BC.n_layers(FUSS_FASE_T) * BC.L + 0.02
     ch_out = BC.slab_ch(fp, -F, zc, FUSS_FASE_T)
     ch_in = BC.slab_ch(fp.buffer(-hohl.WAND), -F, zc, FUSS_FASE_T)
-    # Liegt das Schachtrohr näher am Rand als Fase plus Wand (Paulinum, Wand 1,2: die Kassette sitzt dicht an der Nordwand), würde die Fase die
-    # Rohrwand abschneiden und der Innenring der Fase in den Schacht ragen (Kollision). Dort entfällt die Fase auf dem Stück vor dem Rohr:
-    # voller Umriss, kein Innenring. Das Stück ist so lang wie das Rohr, der Rest des Umrisses behält die Fase.
-    rand = fp.difference(fp.buffer(-(FUSS_FASE_T + hohl.WAND + 0.2)))        # Randstreifen, in dem Fase und Innenring liegen
-    schacht_fp = rohr_fp.buffer(-min(ROHR_T, p["wall"]), join_style=2)       # Schacht (Kassette mit Einpressspiel) ohne die Rohrwand
-    nah = G.clean(rand.intersection(schacht_fp.buffer(FUSS_FASE_T + hohl.WAND + 0.5)).buffer(0.3, join_style=2)).intersection(fp) \
-        if rand.intersection(schacht_fp).area > 0.05 else Polygon()
-    if nah.is_empty or nah.area < 0.05:
-        body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
-    else:
-        body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
+    # Liegt das Schachtrohr näher am Rand als die Fase (Paulinum, Wand 1,2: die Kassette sitzt dicht an der Nordwand; Hochhaus: Rohr 3,5 mm vom
+    # Rand, Fase 3,9 in der untersten Lage), würde die Fase die Rohrwand abschneiden. Nur das Rohr (Umriss `rohr_fp` im Grundriss) bleibt dann in
+    # voller Ausdehnung stehen; der Rest des Umrisses behält die Fase, so steht kein breites Randstück als Wulst über der Fase. Der Innenring der
+    # Fase endet am Schacht (er darf nicht in Schacht und Einführfase ragen).
+    rohr_aussen = G.clean(rohr_fp.intersection(fp))
+    nah = rohr_aussen.difference(fp.buffer(-FUSS_FASE_T, join_style=2)) if not rohr_aussen.is_empty else Polygon()
+    ausnahme = ext(rohr_aussen, -F - 0.01, zc) if not nah.is_empty and nah.area >= 0.05 else None
+    huelle = ch_out + ausnahme if ausnahme is not None else ch_out
+    ring = (ch_out - ch_in) - cut.trim_by_plane([0, 0, -1], -zc - 1.0)
+    body = (body ^ (huelle + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ring
     if farb_id:
         body = farb_ids(body)
     body = body.simplify(hohl.VEREINFACHEN)
     body, netz = sauber(body, ids=bool(farb_id))
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
-    if not nah.is_empty and nah.area >= 0.05:
-        info["fase_entfaellt_mm2"] = round(nah.area, 1)
+    if ausnahme is not None:
+        info["fase_rohr_voll_mm2"] = round(nah.area, 1)
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
@@ -270,6 +269,9 @@ def farb_ids(body):
     key = np.where(fid >= FARB_ID0, fid - FARB_ID0 + 1, 0).astype(np.uint32)
     return m3d.Manifold(m3d.Mesh(vert_properties=np.array(np.asarray(m.vert_properties)[:, :3], np.float32, order="C"),
                                  tri_verts=np.array(m.tri_verts, np.uint32, order="C"), face_id=key))
+
+
+BERUEHR_MAX = 12       # mehr Berührkanten werden nicht getrennt (die Suche probiert 2^n Kombinationen; bei der Farbfassung des Seminargebäudes lief sie nie zu Ende)
 
 
 def beruehrkanten_trennen(v, f, eps_max=0.02):
@@ -373,6 +375,8 @@ def beruehrkanten_trennen(v, f, eps_max=0.02):
             return None
         return np.concatenate([uv, np.array(neu_pos, np.float32).reshape(-1, 3)]), g2
 
+    if len(bad) > BERUEHR_MAX:                                                  # 2^n Kombinationen: bei vielen Kanten (Farbfassungen) kein Versuch
+        return uv, g, 0
     for wahl in itertools.product(("a", "b"), repeat=len(bad)):
         r = versuch(wahl)
         if r is not None:
