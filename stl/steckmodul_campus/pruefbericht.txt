@@ -10,7 +10,7 @@ hof_einsatz_1zu1300.stl              35.2 ×   70.6 ×   16.4 mm     12.09 cm³ 
 03_hoersaalgebaeude_1zu1300.stl      63.2 ×  104.7 ×   32.9 mm     43.13 cm³  dicht=True  Berührkanten   15  entartet 0  Slicer-Prüfung entfällt   Gebäude: Hörsaalgebäude
 04_seminargebaeude_1zu1300.stl       30.3 ×   76.4 ×   35.9 mm     11.35 cm³  dicht=True  Berührkanten    4  entartet 0  Slicer-Prüfung entfällt   Gebäude: Seminargebäude
 05_institutsgebaeude_1zu1300.stl     81.1 ×   34.1 ×   38.6 mm     18.19 cm³  dicht=True  Berührkanten    1  entartet 0  Slicer-Prüfung entfällt   Gebäude: Institutsgebäude
-06_city_hochhaus_1zu1300.stl         36.1 ×   35.0 ×  125.5 mm     13.39 cm³  dicht=True  Berührkanten    3  entartet 0  Slicer-Prüfung entfällt   Gebäude: City-Hochhaus
+06_city_hochhaus_1zu1300.stl         36.1 ×   35.0 ×  125.5 mm     13.29 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Gebäude: City-Hochhaus
 
 Gebäude untereinander (python3 -m plug.divider.check):
 Gebäude untereinander in der Lage auf der Platte (Fuge 1.10 mm, Wand zwischen den Mulden 0.80 mm bei Spiel 0.15; Zuschnitt der STL: Fuge 1.00 mm; Verschiebung 01 (0.020 | 0.098), 02 (0.000 | 0.000), 03 (-0.119 | -0.078), 04 (-0.010 | -0.049), 05 (0.010 | 0.049), 06 (0.062 | -0.111)):
@@ -25,6 +25,6 @@ keine Kollisionen
 03_hoersaalgebaeude    Kassette v4    Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 0.0 mm²  Kragstücke 187.8 mm² (bis 1.2 mm)
 04_seminargebaeude     Kassette V1RS  Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 0.0 mm²  Kragstücke 118.3 mm² (bis 1.0 mm)
 05_institutsgebaeude   Kassette V1RS  Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 4.0 mm²  Kragstücke 132.5 mm² (bis 4.4 mm)
-06_city_hochhaus       Kassette V2R   Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 3.0 mm²  Kragstücke 56.4 mm² (bis 1.3 mm)
+06_city_hochhaus       Kassette V2R   Kollision 0.000 mm³  Platz fehlt 0.00 mm³  Brücken 14.7 mm²  Kragstücke 28.7 mm² (bis 0.9 mm)
 
 Ergebnis: alle dicht, keine Kollisionen

@@ -304,7 +304,8 @@ def cavity(lay, step=STEP):
 def spalten(cav, breite=FUELLEN, step=STEP):
     """Teile des Hohlraums, die schmaler als `breite` sind (je Lage: Hohlraum ohne seine Öffnung mit breite/2), als Körper. Abgezogen
     vom Hohlraum werden sie Material: ein voller Streifen druckt mit Füllung statt mit zwei Wänden und einem Spalt dazwischen. Neue Decken
-    sind dabei höchstens `breite` weit (Brücke über den gefüllten Spalt). None, wenn nichts zu füllen ist."""
+    sind dabei höchstens `breite` weit (Brücke über den gefüllten Spalt). None, wenn nichts zu füllen ist. Die schmale Zone wird am Boden jeder
+    Platte gemessen, nicht in ihrer Mitte: so hängt jedes gefüllte Stück am Material derselben Lage (Slicer: keine „schwebenden Regionen“)."""
     if breite <= 0:
         return None
     r = breite / 2
@@ -312,8 +313,8 @@ def spalten(cav, breite=FUELLEN, step=STEP):
     parts, z0 = [], 0.0
     while z0 < zmax - 1e-6:
         z1 = min(z0 + step, zmax)
-        k = _cs_poly(cav.slice((z0 + z1) / 2))
-        if not k.is_empty:
+        k = _cs_poly(cav.slice(z0 + 0.001))                      # am Plattenboden: dort grenzt die schmale Zone ans Material (auf Plattenmitte
+        if not k.is_empty:                                       # läge sie am Boden der Platte bis 0,2 mm daneben und hinge als Insel in der Luft)
             o = k.buffer(-r, join_style=2).buffer(r, join_style=2)
             thin = k.difference(o).buffer(-0.02, join_style=2).buffer(0.03, join_style=2)
             thin = MultiPolygon([q for q in _parts(thin) if q.area > 0.05]) if not thin.is_empty else thin
