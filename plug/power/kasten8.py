@@ -1,6 +1,6 @@
-"""Unterkasten Stand 8 (Plan, noch keine STL): Kasten höher, Knopfraum mit Erhebung und Kordelgänge für den Doktorhut, ohne Eckaussparungen.
+"""Unterkasten Stand 8 (STL mit `python3 -m plug.power.build_unterkasten8`): Kasten höher, Knopfraum mit Erhebung und Kordelgänge für den Doktorhut, ohne Eckaussparungen.
 
-Der Hut trägt in der Mitte seines Deckbretts einen Knopf (`HUT_KNOPF`, Ø 22 × 12,0; die Höhe ist eine Annahme, vom Nutzer zu bestätigen) mit
+Der Hut trägt in der Mitte seines Deckbretts einen Knopf (`HUT_KNOPF`, Ø 22 × 12,0; Höhe vom Nutzer gemessen 11 bis 12) mit
 der Kordel der Quaste. Die Grundplatte liegt mittig auf dem Hut, also hat der Unterkasten in der Plattenmitte unten einen Knopfraum (mindestens
 Ø 25 × 13,0), und die Kordel läuft in acht Gängen (`KORDEL_GANG`, freies Rechteck 8 × 4, darüber 45°-Dachschrägen 1,5, Höcker 11,4 breit)
 unter dem Kasten zur Außenwand. Am Rand haben die Gänge Gang-Höhe; `KNOPF_RAMPE["vor"]` mm vor dem Knopfkörper beginnt ein 45°-Kegel, der
@@ -271,7 +271,8 @@ def build(v):
     solids = [BC.slab_ch(outline, 0, H, PP.CH_BED) - G.extrude(inner, PP.UK_FLOOR, H + 1)]
     solids.append(erhebung_solid(K["c"], PP.UK_FLOOR - 0.01))
     solids.append(G.extrude(hoeck_all, PP.UK_FLOOR - 0.01, GANG_Z))
-    solids += [G.extrude(r, PP.UK_FLOOR - 0.01, z_pb) for r in auf]
+    if PP.PB_AUFLAGE.get("im_kasten", True):            # sonst eigene Klötze (build_unterkasten8), Lagen `auf` nur als Vorschlag
+        solids += [G.extrude(r, PP.UK_FLOOR - 0.01, z_pb) for r in auf]
     solids += [G.extrude(r, PP.UK_FLOOR - 0.01, H) for r in posts]
     solids += [BC.pin_solid_at(posts[i].centroid, H, PP.PIN_PLAN, PP.CH_PIN) for i in pins]
     unten = unary_union([K["frei"], gang_all])
@@ -333,7 +334,7 @@ def build(v):
             KNOPF_Z + 0.5, ow, "; ".join("%s %.1f mm bei z %.1f" % (n, w, z) for n, w, z in br))),
         ("Knopfraum frei", iv(raum_m) < 0.05, "Ø %.0f × %.1f (Knopf Ø %.0f × %.1f plus %.1f seitlich, %.1f oben), gegen Kasten: %.2f mm³" % (
             2 * R_RAUM, H_RAUM, KN["d"], KN["h"], R_RAUM - R_KN, H_RAUM - KN["h"], iv(raum_m))),
-        ("Knopf im Raum", iv(knopf_m) < 0.05, "Knopf Ø %.0f × %.1f (Höhe Annahme): Überschneidung %.2f mm³" % (KN["d"], KN["h"], iv(knopf_m))),
+        ("Knopf im Raum", iv(knopf_m) < 0.05, "Knopf Ø %.0f × %.1f (gemessen 11 bis 12): Überschneidung %.2f mm³" % (KN["d"], KN["h"], iv(knopf_m))),
         ("Anstieg und Decke", KNOPF_TOP >= H_RAUM, "45°-Kegel ab Radius %.1f (%.1f mm vor dem Knopfkörper) auf Gang-Höhe %.1f, flache Decke Ø %.0f bei z %.1f, Plateau Ø %.0f bei z %.1f, Wand %.1f" % (
             R_RAMPE, R_RAMPE - R_KN, GANG_H, 2 * R_DECKE, KNOPF_TOP, 2 * R_PLATEAU, KNOPF_Z, DACH)),
         (("Gänge frei (Rechteck)" if MODUS == "aussen" else "Gänge frei (Profil mit Fase)"),
@@ -347,7 +348,8 @@ def build(v):
         ("Kordel vom Knopf", iv(kord_kn) < 0.05, "Kordel %.0f × %.0f %s in alle acht Richtungen: Überschneidung %.2f mm³ (%s)" % (
             kb, kh, ansatz, iv(kord_kn), "Nutzer: Kordel kommt unten seitlich am Knopffuß heraus" if not PP.KORDEL_ANSATZ_OBEN else "KORDEL_ANSATZ_OBEN = True")),
         ("Kordel in allen Gängen", iv(kord_m) < 0.05, "Kordel %.0f × %.0f in jeder der 8 Richtungen vom Knopfrand bis zur Außenwand: Überschneidung %.2f mm³" % (kb, kh, iv(kord_m))),
-        ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f (Plateau Ø %.0f und %d Auflagen), Überschneidung %.2f mm³" % (z_pb, 2 * R_PLATEAU, len(auf), iv(pbm))),
+        ("Powerbank frei", iv(pbm) == 0, "liegt auf z = %.1f (Plateau Ø %.0f und %d Auflagen%s), Überschneidung %.2f mm³" % (
+            z_pb, 2 * R_PLATEAU, len(auf), "" if PP.PB_AUFLAGE.get("im_kasten", True) else " als eigene Klötze, eingeklebt", iv(pbm))),
         ("Powerbank steht", sf["rand"] > 3.0, "Schwerpunkt %.1f mm innerhalb der Stützfläche (Plateau und Auflagen); nur auf dem Plateau: %.1f mm außerhalb, kippt um %.0f°" % (
             sf["rand"], -sf0["rand"], sf0["kipp"])),
         ("Steckerraum über der Powerbank", H - pb_top >= PP.STECKERRAUM_8 - 0.01, "%.1f mm (gefordert %.1f)" % (H - pb_top, PP.STECKERRAUM_8)),

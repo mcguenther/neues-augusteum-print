@@ -412,7 +412,7 @@ def main():
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("--replace", action="store_true", help="Lage der Mulden neu suchen")
     ap.add_argument("--unten-neu", action="store_true", help="Lagen der Zapfenaufnahmen aus dem Konzept (plug/power/build_concept.py) neu lesen")
-    ap.add_argument("--faden", choices=("pille", "v"), help="Form der Fadenösen: pille (Standard, plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
+    ap.add_argument("--faden", choices=("keine", "pille", "v"), help="Fadenösen: keine (Standard seit 20.10.2026, Heißkleber), pille (plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
     ap.add_argument("--ohne-unten", action="store_true", help="ohne Zapfenaufnahmen und Fadenösen bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     ap.add_argument("--ohne-display", action="store_true", help="ohne Mulde und Pin-Löcher des Display-Gebäudes bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     a = ap.parse_args()
@@ -432,6 +432,8 @@ def main():
     b = outline.bounds
     print("Platte %.1f × %.1f × %.1f mm, dicht=%s, Mulde %.1f, Plattendicke %.1f" % (
         b[2] - b[0], b[3] - b[1], plate_thickness(P.dims_plan()), tm.is_watertight, P.dims_plan()["F"], plate_thickness(P.dims_plan())))
+    from plug import buildings as BU
+    hof_solid, hof_netz = BU.sauber(hof_solid)                 # wie die Gebäude: float32-Neuaufbau, Mikroschalen weg, Berührkanten getrennt
     hof_tm = to_tm(hof_solid)
     hof_path = os.path.join(OUT, "hof_einsatz_1zu%d.stl" % a.scale)
     hof_tm.export(hof_path)
