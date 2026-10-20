@@ -66,6 +66,7 @@ FUELLEN_T = 2.0        # Spalten im Hohlraum, die schmaler sind, werden gefüllt
 LAYER = 0.2            # Schichthöhe für die Überhangprüfung
 UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut 45°)
 SPLITTER_MM3 = 1.0     # eigene Schalen mit kleinerem Betrag des Volumens sind Mikrohohlräume aus den Booleschen Schritten und entfallen (sauber)
+RELIEF = None          # Name einer Reliefvariante für den Ostgiebel des Paulinums (plug/relief.py `VARIANTEN`, z. B. "A04"); None = aus (Standard)
 
 
 def ext(poly, z0, z1):
@@ -365,6 +366,13 @@ def build(scale=P.SCALE_PLAN, slugs=None):
         # mit der Rohrstütze viel höher an; in hohen, schmalen Gebäuden trägt das Rohr kaum und die Säule über ihm kostet nur.
         varianten = [gebaeude(slug, solid, fp, p, s, r) for r in ((True, False) if STUETZE_ROHR else (False,))]
         body, kas, info = min(varianten, key=lambda v: v[2]["volumen_cm3"])
+        if RELIEF:                                                  # Fassadenrelief (plug/relief.py): wirkt auf das fertige Hohlgebäude
+            from plug import relief as RL
+            body, rinfo = RL.aus_schalter(slug, body, solid, s, RELIEF)
+            if rinfo:
+                info["relief"] = rinfo
+                info["kollision_mm3"] = round((body ^ kas).volume(), 3)
+                info["volumen_cm3"] = round(body.volume() / 1000, 2)
         info["volumen_varianten_cm3"] = {("mit" if v[2]["rohrstuetze"] else "ohne") + "_rohrstuetze": v[2]["volumen_cm3"] for v in varianten}
         info["ueberhang"] = ueberhang(body)
         out.append((slug, body, kas, info))
@@ -383,7 +391,7 @@ def build(scale=P.SCALE_PLAN, slugs=None):
 
 
 def main():
-    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, OUT, PREV
+    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, OUT, PREV, RELIEF
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("slugs", nargs="*")
@@ -391,12 +399,16 @@ def main():
     ap.add_argument("--ohne-rohrstuetze", action="store_true", help="Gewölbe nur von den Außenwänden (Stand vor 2026-10-17)")
     ap.add_argument("--fuellen", type=float, default=FUELLEN_T, help="Spalten schmaler als dies füllen (mm, 0 = aus)")
     ap.add_argument("--umkreis", type=float, default=UMKREIS_T, help="Kegel einer Stütze nur bis so viel weiter als die nächste Stütze (mm)")
+    ap.add_argument("--relief", help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, z. B. A04; Standard aus)")
     ap.add_argument("--out", help="Ausgabeordner für STL und Bilder (Standard: die eingecheckten Ordner)")
     a = ap.parse_args()
     BRUECKE_T = a.bruecke
     STUETZE_ROHR = not a.ohne_rohrstuetze
     FUELLEN_T = a.fuellen
     UMKREIS_T = a.umkreis
+    RELIEF = a.relief
+    if a.relief and not a.out:
+        ap.error("--relief schreibt nur mit --out (nicht in die eingecheckten Ordner)")
     if a.out:
         OUT = PREV = a.out
     os.makedirs(OUT, exist_ok=True)
