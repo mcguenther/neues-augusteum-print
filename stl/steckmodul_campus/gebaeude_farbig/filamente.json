@@ -71,10 +71,10 @@
    "abweichung_hauptfarben_dE": 8.4,
    "anteile_prozent": {
     "Beige": 15.8,
-    "Graublau": 70.0,
-    "Space Grey": 14.2
+    "Graublau": 69.8,
+    "Space Grey": 14.4
    },
-   "dreiecke": 45588,
+   "dreiecke": 39874,
    "einfarbig": [
     "Graublau"
    ],
@@ -98,7 +98,7 @@
     "Weinrot": 19.1,
     "Space Grey": 2.5
    },
-   "dreiecke": 56814,
+   "dreiecke": 56904,
    "einfarbig": [
     "Beige"
    ],
@@ -183,14 +183,14 @@
     "Space Grey",
     "Grasgrün"
    ],
-   "abweichung_dE": 22.9,
-   "abweichung_hauptfarben_dE": 22.4,
+   "abweichung_dE": 23.4,
+   "abweichung_hauptfarben_dE": 22.8,
    "anteile_prozent": {
-    "Beige": 69.1,
-    "Space Grey": 25.5,
-    "Grasgrün": 5.4
+    "Beige": 65.2,
+    "Space Grey": 28.7,
+    "Grasgrün": 6.0
    },
-   "dreiecke": 2104,
+   "dreiecke": 1976,
    "einfarbig": [
     "Beige",
     "Grasgrün"

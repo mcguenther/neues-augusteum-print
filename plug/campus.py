@@ -432,6 +432,8 @@ def main():
     b = outline.bounds
     print("Platte %.1f × %.1f × %.1f mm, dicht=%s, Mulde %.1f, Plattendicke %.1f" % (
         b[2] - b[0], b[3] - b[1], plate_thickness(P.dims_plan()), tm.is_watertight, P.dims_plan()["F"], plate_thickness(P.dims_plan())))
+    from plug import buildings as BU
+    hof_solid, hof_netz = BU.sauber(hof_solid)                 # wie die Gebäude: float32-Neuaufbau, Mikroschalen weg, Berührkanten getrennt
     hof_tm = to_tm(hof_solid)
     hof_path = os.path.join(OUT, "hof_einsatz_1zu%d.stl" % a.scale)
     hof_tm.export(hof_path)
