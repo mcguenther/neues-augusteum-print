@@ -119,11 +119,18 @@ def build(scale=P.SCALE_PLAN, slugs=None):
         solid, fp, _ = models[slug]
         vorher = json.load(open(os.path.join(GEB, "%s_1zu%d.json" % (slug, scale))))
         # massiven Körper färben (wie generate.colourise), Farbe als face_id durch alle Schritte von plug.buildings mitnehmen
-        cm, hx = fassaden.colour_mesh(G.to_trimesh(solid), slug, ((0.0, 0.0, 0.0), s), farben[slug], roof)
+        relief = B.RELIEF and slug == "01_paulinum"      # Fassadenrelief (plug/relief.py, Schalter plug.buildings.RELIEF, Standard aus)
+        if relief:
+            from plug import relief as RL
+        cm, hx = fassaden.colour_mesh(G.to_trimesh(solid), slug, ((0.0, 0.0, 0.0), s), RL.farben_fein(farben[slug]) if relief else farben[slug], roof)
         keys, inv = np.unique(hx.astype(str), return_inverse=True)
         man = m3d.Manifold(m3d.Mesh(vert_properties=np.array(cm.vertices, np.float32, order="C"),
                                     tri_verts=np.array(cm.faces, np.uint32, order="C"), face_id=np.array(inv.ravel() + B.FARB_ID0, np.uint32)))
         body, _, info = B.gebaeude(slug, man, fp, places[slug], s, vorher["rohrstuetze"], farb_id=True)
+        if relief:      # Vorsprünge und Einzüge tragen die Farbe ihrer Zone
+            body, _, _ = RL.anwenden(body, solid, slug, s, B.RELIEF, farb=RL.farb_ids(slug, farben[slug], keys))
+            body, _ = B.sauber(body, ids=True)
+            info["volumen_cm3"] = round(body.volume() / 1000, 2)
         m = body.to_mesh()
         mesh = trimesh.Trimesh(np.asarray(m.vert_properties)[:, :3], np.asarray(m.tri_verts), process=False)
         fid = np.asarray(m.face_id).astype(np.int64)
@@ -175,8 +182,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("slugs", nargs="*")
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
+    ap.add_argument("--relief", default=B.RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s, wie plug.buildings)" % B.RELIEF)
+    ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
+    ap.add_argument("--out", help="Ausgabeordner für 3MF und Bilder statt der eingecheckten")
     a = ap.parse_args()
-    for d in (OUT, PREV, VIEW):
+    global OUT, PREV
+    B.RELIEF = None if a.ohne_relief else a.relief
+    if a.out:
+        OUT = PREV = a.out
+    for d in (OUT, PREV, VIEW if not a.out else OUT):
         os.makedirs(d, exist_ok=True)
     teile, farben = build(a.scale, a.slugs)
     info = {"filamente": [{"rgb": c, "name": n, "rolle": "Hauptfarbe" if (c, n) in F.HAUPT else ("vorerst nicht verwendet" if n in F.GESPERRT else "Reserve")} for c, n in F.FILAMENTE],
@@ -214,8 +228,9 @@ def main():
         json.dump(info, open(os.path.join(OUT, "filamente.json"), "w"), indent=1, ensure_ascii=False)
         readme(info, a.scale)
     bilder(einzeln, a.scale)
-    from plug.views.farbig import build_view
-    build_view.daten(einzeln, info, a.scale)
+    if not a.out:
+        from plug.views.farbig import build_view
+        build_view.daten(einzeln, info, a.scale)
     print("alle dicht" if all(g["dicht"] for g in info["gebaeude"].values()) else "ACHTUNG: nicht alle dicht")
 
 

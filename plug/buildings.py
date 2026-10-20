@@ -95,6 +95,7 @@ UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut
 SPALT_MIN_T = 0.0      # schmale Spalten und Splitter im fertigen Hohlraum schließen (plug/spalt.py): Teile des Hohlraums schmaler als dies werden Material; 0 = aus (Nutzer entscheidet), --spalt-min 0.4 = Düsenbreite
 MAX_KANTEN_PRO_LAUF = 14   # beruehrkanten_trennen probiert je Gruppe zusammenhängender Berührkanten 2^n Kombinationen; über dieser Zahl bleibt das Netz, wie es ist
 SPLITTER_MM3 = 1.0     # eigene Schalen mit kleinerem Betrag des Volumens sind Mikrohohlräume aus den Booleschen Schritten und entfallen (sauber)
+RELIEF = "A04"         # Reliefvariante für den Ostgiebel des Paulinums (plug/relief.py `VARIANTEN`); A04 = Blende und Rosettenring 0,4 mm vor (Nutzer 20.10.); None = aus (`--ohne-relief`)
 
 
 def ext(poly, z0, z1):
@@ -247,6 +248,32 @@ def aufsatz_raum(cav, lay0, platz, kas, rohr_fp, zt, z_rohr, F):
     return up + (G.union(extra) ^ ziel)
 
 
+def fasen_huellen(fp, zone, tiefe, L, max_extra=60):
+    """Umriss des Fußes je Lage L von unten: Zielform ist der Grundriss fp, um die Fasentiefe verkleinert und nach oben je Lage um L größer
+    (45°); `zone` (Schachtrohr) gehört immer dazu. Jede Lage darf höchstens um L über die Lage darunter hinausragen: Schmale Teile, die die
+    Zielform erst höher erreicht (Zähne unter 2 × Fasentiefe Breite), wachsen von der Wand aus (kein Überhang über Luft). Reichen die
+    Fasenlagen nicht, folgen weitere Lagen, bis die Hülle den Grundriss ganz füllt. Liste von Polygonen."""
+    n = BC.n_layers(tiefe)
+    huellen, prev = [], None
+    for k in range(n + max_extra):
+        d = max(tiefe - L * (k + 0.5), 0.0)
+        if prev is None:
+            while True:
+                ziel = (fp.buffer(-d) if d > 0 else fp).union(zone)
+                if not ziel.is_empty and ziel.area > 1.0:
+                    break
+                d *= 0.8
+        else:
+            ziel = (fp.buffer(-d) if d > 0 else fp).union(zone)
+            ziel = ziel.intersection(prev.buffer(L + 0.02, join_style=2, mitre_limit=2.0))
+        ziel = G.clean(ziel) if not ziel.is_empty else ziel
+        huellen.append(ziel)
+        prev = ziel
+        if k + 1 >= n and fp.difference(ziel).area < 0.05:
+            break
+    return huellen
+
+
 def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     """Steckbares Hohlgebäude (Manifold, Weltlage, z = 0 Plattenoberseite) und Prüfwerte. rohrstuetze: Rohr trägt das Gewölbe mit
     (Standard STUETZE_ROHR). farb_id: originalID eines gefärbten solid (face_id = Farbnummer + 1, `plug/colour.py`); dann trägt das
@@ -295,20 +322,24 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     body = body - dach45(oben, cav - rohr, bedarf, zs - 0.02)
     # Fuß-Fase FUSS_FASE_T: außen abschrägen, innen die Wand nachführen (0,8 horizontal), damit keine Schneide entsteht. Nach dem Aushöhlen,
     # weil hohl.py einen nach oben nur abnehmenden Querschnitt erwartet (eine Fase im Volumenkörper macht die Wände darüber zu Gewölbe).
-    zc = -F + BC.n_layers(FUSS_FASE_T) * BC.L + 0.02
-    ch_out = BC.slab_ch(fp, -F, zc, FUSS_FASE_T)
-    ch_in = BC.slab_ch(fp.buffer(-hohl.WAND), -F, zc, FUSS_FASE_T)
-    # Liegt das Schachtrohr näher am Rand als die Fase (Paulinum, Wand 1,2: die Kassette sitzt dicht an der Nordwand; Hochhaus: Rohr 3,5 mm vom
-    # Rand, Fase 3,9 in der untersten Lage), würde die Fase die Rohrwand abschneiden. Nur das Rohr (Umriss `rohr_fp` im Grundriss) bleibt dann in
-    # voller Ausdehnung stehen; der Rest des Umrisses behält die Fase, so steht kein breites Randstück als Wulst über der Fase. Der Innenring der
-    # Fase endet am Schacht (er darf nicht in Schacht und Einführfase ragen).
-    rohr_aussen = G.clean(rohr_fp.intersection(fp))
-    nah = rohr_aussen.difference(fp.buffer(-FUSS_FASE_T, join_style=2)) if not rohr_aussen.is_empty else Polygon()
-    ausnahme = ext(rohr_aussen, -F - 0.01, zc) if not nah.is_empty and nah.area >= 0.05 else None
-    huelle = ch_out + ausnahme if ausnahme is not None else ch_out
-    ring = (ch_out - ch_in) - cut.trim_by_plane([0, 0, -1], -zc - 1.0)
-    behalte = huelle + ext(fp.buffer(5.0), zc - 0.01, 300.0)
-    body = (body ^ behalte) + ring
+    # Die Fase läuft um den ganzen Umriss (seit 20.10.; vorher entfiel sie dort, wo das Schachtrohr näher als Fase plus Wand am Rand lag,
+    # beim Paulinum fast überall, und an den Enden dieser Stücke klaffte über dem Bett ein Spalt). Nur das Schachtrohr bleibt, wo es ist, es
+    # steht ohne Fase bis zum Bett; Wand und Rohr gehen ineinander über. Schmale Teile (Zähne, Ausbuchtungen) fehlen in den ersten Lagen und
+    # wachsen aus der Wand heraus, je Lage höchstens um die Lagenhöhe (45°, kein Schweben): siehe fasen_huellen.
+    schacht_fp = rohr_fp.buffer(-min(ROHR_T, p["wall"]), join_style=2)       # Schacht (Kassette mit Einpressspiel) ohne die Rohrwand
+    huellen = fasen_huellen(fp, rohr_fp.intersection(fp), FUSS_FASE_T, BC.L)
+    parts, ring = [], []
+    for k, e in enumerate(huellen):
+        za, zb = -F + BC.L * k, -F + BC.L * (k + 1) + 0.01
+        parts.append(ext(e, za, zb))
+        r = e.difference(e.buffer(-hohl.WAND, join_style=2, mitre_limit=3.0))
+        if not r.is_empty and r.area > 0.01:
+            ring.append(ext(r, za, zb))
+    zc = -F + BC.L * len(huellen) + 0.02
+    ch_env = G.union(parts)
+    ring_m = G.union(ring) - cut                                    # Fasen-Wand, nicht in den Schacht (mit Einführfase) hinein
+    behalte = ch_env + ext(fp.buffer(5.0), zc - 0.01, 300.0)
+    body = (body ^ behalte) + ring_m
     fuell, spalt = None, None
     if SPALT_MIN_T > 0:
         # Nachträglicher Schritt (plug/spalt.py): schmale Spalten und Splitter im Hohlraum; Hülle = massiver Körper mit Fuß und Fase.
@@ -333,7 +364,10 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     if spalt is not None and verworfen:
         spalt["verworfen_wegen_beruehrkanten"] = verworfen
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
-    if ausnahme is not None:
+    info["fase_lagen"] = len(huellen)
+    rohr_aussen = G.clean(rohr_fp.intersection(fp))                 # Teil des Rohrs, der in die Fase ragt (steht bis zum Bett)
+    nah = rohr_aussen.difference(fp.buffer(-FUSS_FASE_T, join_style=2)) if not rohr_aussen.is_empty else Polygon()
+    if not nah.is_empty and nah.area >= 0.05:
         info["fase_rohr_voll_mm2"] = round(nah.area, 1)
     if saeulen:
         info["saeulen"] = len(saeulen)
@@ -639,6 +673,13 @@ def build(scale=P.SCALE_PLAN, slugs=None):
         # mit der Rohrstütze viel höher an; in hohen, schmalen Gebäuden trägt das Rohr kaum und die Säule über ihm kostet nur.
         varianten = [gebaeude(slug, solid, fp, p, s, r) for r in ((True,) if NUR_ROHR else (True, False) if STUETZE_ROHR else (False,))]
         body, kas, info = min(varianten, key=lambda v: v[2]["volumen_cm3"])
+        if RELIEF:                                                  # Fassadenrelief (plug/relief.py): wirkt auf das fertige Hohlgebäude
+            from plug import relief as RL
+            body, rinfo = RL.aus_schalter(slug, body, solid, s, RELIEF)
+            if rinfo:
+                info["relief"] = rinfo
+                info["kollision_mm3"] = round((body ^ kas).volume(), 3)
+                info["volumen_cm3"] = round(body.volume() / 1000, 2)
         info["volumen_varianten_cm3"] = {("mit" if v[2]["rohrstuetze"] else "ohne") + "_rohrstuetze": v[2]["volumen_cm3"] for v in varianten}
         info["ueberhang"] = ueberhang(body)
         out.append((slug, body, kas, info))
@@ -657,7 +698,7 @@ def build(scale=P.SCALE_PLAN, slugs=None):
 
 
 def main():
-    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, AUFSATZ_T, AUFSATZ_BRUECKE_T, AUFSATZ_ABZUG_T, AUFSATZ_FUELLEN_T, WINKEL_T, SAEULEN_T, SAEULEN_HMAX_T, NUR_ROHR, SPALT_MIN_T, OUT, PREV
+    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, AUFSATZ_T, AUFSATZ_BRUECKE_T, AUFSATZ_ABZUG_T, AUFSATZ_FUELLEN_T, WINKEL_T, SAEULEN_T, SAEULEN_HMAX_T, NUR_ROHR, SPALT_MIN_T, OUT, PREV, RELIEF
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("slugs", nargs="*")
@@ -679,6 +720,8 @@ def main():
     ap.add_argument("--offen", action="store_true", help="Voreinstellung für möglichst viel offenen Raum (weniger Material): --aufsatz alles, --saeulen 6, "
                                                          "--fuellen 1.2 (Schalter, die man selbst setzt, behalten ihren Wert)")
     ap.add_argument("--spalt-min", type=float, default=SPALT_MIN_T, help="Teile des Hohlraums schmaler als dies (mm) werden gefüllt (plug/spalt.py; 0 = aus, 0.4 = Düsenbreite)")
+    ap.add_argument("--relief", default=RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s)" % RELIEF)
+    ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
     ap.add_argument("--out", help="Ausgabeordner für STL und Bilder (Standard: die eingecheckten Ordner)")
     a = ap.parse_args()
     BRUECKE_T = a.bruecke
@@ -701,6 +744,7 @@ def main():
     SAEULEN_HMAX_T = a.saeulen_hmax
     NUR_ROHR = a.nur_rohr
     SPALT_MIN_T = a.spalt_min
+    RELIEF = None if a.ohne_relief else a.relief
     if a.out:
         OUT = PREV = a.out
     os.makedirs(OUT, exist_ok=True)
