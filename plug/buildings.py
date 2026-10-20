@@ -240,7 +240,7 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
         kante = unary_union([g.exterior for g in getattr(nah, "geoms", [nah])]).difference(fp.boundary.buffer(0.35))
         quer = kante.buffer(hohl.WAND, cap_style=2, join_style=2).intersection(nah.buffer(0.05)).intersection(fp).difference(schacht_fp.buffer(0.1))
         if not quer.is_empty and quer.area > 0.05:
-            body = body + ext(quer, -F - 0.01, zc)
+            body = body + ext(quer, -F, zc)
             info_quer = round(quer.area, 1)
     if farb_id:
         body = farb_ids(body)

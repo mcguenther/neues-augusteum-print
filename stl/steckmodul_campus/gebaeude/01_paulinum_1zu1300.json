@@ -17,12 +17,13 @@
   "schalen": 1
  },
  "fase_entfaellt_mm2": 476.8,
+ "fase_querwand_mm2": 18.4,
  "kollision_mm3": 0.0,
  "platz_fehlt_mm3": 0.0,
- "volumen_cm3": 7.47,
+ "volumen_cm3": 7.51,
  "volumen_varianten_cm3": {
-  "mit_rohrstuetze": 9.73,
-  "ohne_rohrstuetze": 7.47
+  "mit_rohrstuetze": 9.78,
+  "ohne_rohrstuetze": 7.51
  },
  "ueberhang": {
   "bruecke_mm2": 13.16,
