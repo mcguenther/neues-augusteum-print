@@ -435,6 +435,7 @@ def main():
     from plug import buildings as BU
     hof_solid, hof_netz = BU.sauber(hof_solid)                 # wie die Gebäude: float32-Neuaufbau, Mikroschalen weg, Berührkanten getrennt
     hof_tm = to_tm(hof_solid)
+    print("  Hof-Einsatz Netz: %s" % hof_netz)
     hof_path = os.path.join(OUT, "hof_einsatz_1zu%d.stl" % a.scale)
     hof_tm.export(hof_path)
     print("Hof-Einsatz %.1f × %.1f × %.1f mm, dicht=%s, %.1f mm unter der Oberfläche" % (*hof_tm.extents, hof_tm.is_watertight, P.HOF_DEPTH_T))

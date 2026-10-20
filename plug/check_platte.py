@@ -32,7 +32,7 @@ DIR = os.path.join(HERE, "stl", "steckmodul_campus")
 SLUGS = ["01_paulinum", "02_neues_augusteum", "03_hoersaalgebaeude", "04_seminargebaeude", "05_institutsgebaeude", "06_city_hochhaus"]
 T = P.dims_plan()["F"] + P.CEIL_T                       # Plattendicke 14,6; Gebäude-STL: z = 0 an der Plattenoberfläche
 Z_GEB = (9.0, 10.5, 12.0, 13.5)                         # Schnitthöhen in Plattenkoordinaten: über dem Ende der Fuß-Fase (Muldenboden 0,4, Fase 4,0; schmale Teile wachsen 45° aus der Wand und sind beim Seminargebäude erst bei 8,6 voll, `fase_lagen` im JSON), unter der Einführfase 0,5 oben
-Z_HOF = (T - 4.0, T - 2.0, T - 1.0)                     # Hof-Aussparung 6,0 tief, Einführfase am Einsatz unten
+Z_HOF = (T - 1.5, T - 1.0, T - 0.7)                     # Hof-Aussparung 6,0 tief, Einführfase unten 4,0: Spalt nur oberhalb der Fase messen
 SPALT_MAX = 0.35                                        # größter Spalt an Gehrungsecken (Hörsaalgebäude 0,26 an einer spitzen Ecke)
 
 

@@ -333,11 +333,15 @@ def einfuehrfase(fp, T, H, zmax):
     """Hüllkörper mit 45°-Fase an der Unterkante des Einsatzes (Bettkante, plan.params HOF_CH_T), damit er wie ein Gebäudefuß eingesetzt
     wird: Schichtweise Treppe aus 0,2-mm-Scheiben, darüber unbeschnitten."""
     from plug.testcase import params as P
+    from plug import buildings as BU
     ch, layer = P.HOF_CH_T, 0.2
     parts = []
-    for k in range(int(round(ch / layer))):
-        parts.append(G.extrude(fp.buffer(-(ch - layer * (k + 0.5)), join_style=2), -T + layer * k - (0.01 if k == 0 else 0), -T + layer * (k + 1) + 0.01))
-    parts.append(G.extrude(fp.buffer(1.0), -T + ch, zmax + H + 5))
+    # wie der Gebäudefuß (plug/buildings.py fasen_huellen): Lagen wachsen höchstens 0,2 je Lage aus der Wand, schmale Zungen ohne Überhang
+    huellen = BU.fasen_huellen(fp, Polygon(), ch, layer)
+    for k, h in enumerate(huellen):
+        if not h.is_empty:
+            parts.append(G.extrude(h, -T + layer * k - (0.01 if k == 0 else 0), -T + layer * (k + 1) + 0.01))
+    parts.append(G.extrude(fp.buffer(1.0), -T + layer * len(huellen), zmax + H + 5))
     return G.union(parts)
 
 
