@@ -1,0 +1,142 @@
+{
+ "variante": "D04",
+ "pegel": {
+  "blende": 0.2,
+  "fenster": -0.2,
+  "ring": 0.2,
+  "rosette": -0.2
+ },
+ "dicht": true,
+ "manifold": "Error.NoError",
+ "volumen_cm3": 7.502,
+ "volumen_zuwachs_mm3": 33.42,
+ "kollision_kassette_mm3": 0.0,
+ "wand_min_mm": 0.8,
+ "wand_min_stelle_w_u_z": [
+  -0.2,
+  1.28,
+  25.6
+ ],
+ "wand_min_ohne_relief_mm": 0.8,
+ "ueberhang": {
+  "bruecke_mm2": 13.16,
+  "krag_mm2": 31.41,
+  "bruecke_mm": 1.03,
+  "krag_mm": 1.03,
+  "neue_stellen_ueber_1mm": [],
+  "basis": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41
+  }
+ },
+ "statistik": {
+  "lagen": 127,
+  "lagen_gesamt": 139,
+  "vor": {
+   "laeufe": 197,
+   "schmaler_04": 5,
+   "von_04_bis_08": 6,
+   "ab_08": 186,
+   "min_breite": 0.28
+  },
+  "ein": {
+   "laeufe": 68,
+   "schmaler_04": 1,
+   "von_04_bis_08": 1,
+   "ab_08": 66,
+   "min_breite": 0.29
+  },
+  "sprung_entlang_mm": {
+   "0.2": 370,
+   "0.4": 80,
+   "0.6": 0,
+   "0.8": 0
+  },
+  "sprung_lage_zu_lage_mm": {
+   "0.2": 4292,
+   "0.4": 786,
+   "0.6": 0,
+   "0.8": 0
+  }
+ },
+ "druck_verlust": {
+  "relief_mm2_summe_ueber_lagen": 279.4,
+  "geht_verloren_oeffnen_mm2": 5.02,
+  "geht_verloren_schliessen_mm2": 4.96,
+  "prozent": 3.6
+ },
+ "bauteil": {
+  "variante": "D04",
+  "pegel": {
+   "blende": 0.2,
+   "fenster": -0.2,
+   "ring": 0.2,
+   "rosette": -0.2
+  },
+  "giebel_az": 101.83,
+  "vorsprung_mm3": 52.829,
+  "einzug_mm3": 14.062,
+  "rueckwand_mm3": 38.282,
+  "volumen_zuwachs_mm3": 33.42
+ },
+ "abweichung_profil_mm": 0.0,
+ "stufen_mittelspalte": {
+  "0.0": [
+   [
+    0.0,
+    0.2,
+    -0.0
+   ],
+   [
+    0.2,
+    5.4,
+    0.2
+   ],
+   [
+    5.4,
+    16.4,
+    -0.2
+   ],
+   [
+    16.4,
+    16.6,
+    -0.0
+   ],
+   [
+    16.6,
+    21.4,
+    0.2
+   ],
+   [
+    21.4,
+    23.4,
+    -0.0
+   ],
+   [
+    23.4,
+    24.2,
+    0.2
+   ],
+   [
+    24.2,
+    26.8,
+    -0.2
+   ],
+   [
+    26.8,
+    27.0,
+    -0.0
+   ],
+   [
+    27.0,
+    27.6,
+    0.2
+   ],
+   [
+    27.6,
+    27.8,
+    -0.0
+   ]
+  ]
+ }
+}

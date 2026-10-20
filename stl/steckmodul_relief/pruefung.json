@@ -1,0 +1,1108 @@
+{
+ "A02": {
+  "variante": "A02",
+  "pegel": {
+   "blende": 0.2,
+   "fenster": 0.0,
+   "ring": 0.2,
+   "rosette": 0.0
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.495,
+  "volumen_zuwachs_mm3": 26.77,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.0,
+   -0.47,
+   26.56
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 127,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 195,
+    "schmaler_04": 1,
+    "von_04_bis_08": 8,
+    "ab_08": 186,
+    "min_breite": 0.31
+   },
+   "ein": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "sprung_entlang_mm": {
+    "0.2": 390,
+    "0.4": 0,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 4292,
+    "0.4": 0,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 133.8,
+   "geht_verloren_oeffnen_mm2": 3.39,
+   "geht_verloren_schliessen_mm2": 3.39,
+   "prozent": 5.1
+  },
+  "bauteil": {
+   "variante": "A02",
+   "pegel": {
+    "blende": 0.2,
+    "fenster": 0.0,
+    "ring": 0.2,
+    "rosette": 0.0
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 53.458,
+   "einzug_mm3": 0.0,
+   "rueckwand_mm3": 0.0,
+   "volumen_zuwachs_mm3": 26.77
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     0.2,
+     -0.0
+    ],
+    [
+     0.2,
+     5.4,
+     0.2
+    ],
+    [
+     5.4,
+     16.4,
+     -0.0
+    ],
+    [
+     16.4,
+     21.4,
+     0.2
+    ],
+    [
+     21.4,
+     23.4,
+     -0.0
+    ],
+    [
+     23.4,
+     24.2,
+     0.2
+    ],
+    [
+     24.2,
+     26.8,
+     -0.0
+    ],
+    [
+     26.8,
+     27.6,
+     0.2
+    ],
+    [
+     27.6,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "A04": {
+  "variante": "A04",
+  "pegel": {
+   "blende": 0.4,
+   "fenster": 0.0,
+   "ring": 0.4,
+   "rosette": 0.0
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.521,
+  "volumen_zuwachs_mm3": 52.64,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.0,
+   -0.66,
+   26.57
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 127,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 195,
+    "schmaler_04": 1,
+    "von_04_bis_08": 8,
+    "ab_08": 186,
+    "min_breite": 0.31
+   },
+   "ein": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "sprung_entlang_mm": {
+    "0.2": 154,
+    "0.4": 313,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 4292,
+    "0.4": 2138,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 263.2,
+   "geht_verloren_oeffnen_mm2": 4.02,
+   "geht_verloren_schliessen_mm2": 3.82,
+   "prozent": 3.0
+  },
+  "bauteil": {
+   "variante": "A04",
+   "pegel": {
+    "blende": 0.4,
+    "fenster": 0.0,
+    "ring": 0.4,
+    "rosette": 0.0
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 79.328,
+   "einzug_mm3": 0.0,
+   "rueckwand_mm3": 0.0,
+   "volumen_zuwachs_mm3": 52.64
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     0.2,
+     -0.0
+    ],
+    [
+     0.2,
+     0.4,
+     0.2
+    ],
+    [
+     0.4,
+     5.4,
+     0.4
+    ],
+    [
+     5.4,
+     16.4,
+     -0.0
+    ],
+    [
+     16.4,
+     16.6,
+     0.2
+    ],
+    [
+     16.6,
+     21.4,
+     0.4
+    ],
+    [
+     21.4,
+     23.4,
+     -0.0
+    ],
+    [
+     23.4,
+     23.6,
+     0.2
+    ],
+    [
+     23.6,
+     24.2,
+     0.4
+    ],
+    [
+     24.2,
+     26.8,
+     -0.0
+    ],
+    [
+     26.8,
+     27.0,
+     0.2
+    ],
+    [
+     27.0,
+     27.6,
+     0.4
+    ],
+    [
+     27.6,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "A06": {
+  "variante": "A06",
+  "pegel": {
+   "blende": 0.6,
+   "fenster": 0.0,
+   "ring": 0.6,
+   "rosette": 0.0
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.546,
+  "volumen_zuwachs_mm3": 77.66,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.0,
+   -1.28,
+   25.8
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 127,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 195,
+    "schmaler_04": 1,
+    "von_04_bis_08": 8,
+    "ab_08": 186,
+    "min_breite": 0.31
+   },
+   "ein": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "sprung_entlang_mm": {
+    "0.2": 225,
+    "0.4": 6,
+    "0.6": 311,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 6426,
+    "0.4": 4,
+    "0.6": 2134,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 388.3,
+   "geht_verloren_oeffnen_mm2": 4.75,
+   "geht_verloren_schliessen_mm2": 4.25,
+   "prozent": 2.3
+  },
+  "bauteil": {
+   "variante": "A06",
+   "pegel": {
+    "blende": 0.6,
+    "fenster": 0.0,
+    "ring": 0.6,
+    "rosette": 0.0
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 104.343,
+   "einzug_mm3": 0.0,
+   "rueckwand_mm3": 0.0,
+   "volumen_zuwachs_mm3": 77.655
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     0.2,
+     -0.0
+    ],
+    [
+     0.2,
+     0.4,
+     0.2
+    ],
+    [
+     0.4,
+     0.6,
+     0.4
+    ],
+    [
+     0.6,
+     5.4,
+     0.6
+    ],
+    [
+     5.4,
+     16.4,
+     -0.0
+    ],
+    [
+     16.4,
+     16.6,
+     0.2
+    ],
+    [
+     16.6,
+     16.8,
+     0.4
+    ],
+    [
+     16.8,
+     21.4,
+     0.6
+    ],
+    [
+     21.4,
+     23.4,
+     -0.0
+    ],
+    [
+     23.4,
+     23.6,
+     0.2
+    ],
+    [
+     23.6,
+     23.8,
+     0.4
+    ],
+    [
+     23.8,
+     24.2,
+     0.6
+    ],
+    [
+     24.2,
+     26.8,
+     -0.0
+    ],
+    [
+     26.8,
+     27.0,
+     0.2
+    ],
+    [
+     27.0,
+     27.2,
+     0.4
+    ],
+    [
+     27.2,
+     27.6,
+     0.6
+    ],
+    [
+     27.6,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "B02": {
+  "variante": "B02",
+  "pegel": {
+   "blende": 0.0,
+   "fenster": -0.2,
+   "ring": 0.0,
+   "rosette": -0.2
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.476,
+  "volumen_zuwachs_mm3": 6.97,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.0,
+   0.31,
+   27.67
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 68,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "ein": {
+    "laeufe": 68,
+    "schmaler_04": 1,
+    "von_04_bis_08": 1,
+    "ab_08": 66,
+    "min_breite": 0.29
+   },
+   "sprung_entlang_mm": {
+    "0.2": 136,
+    "0.4": 0,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 1572,
+    "0.4": 0,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 147.1,
+   "geht_verloren_oeffnen_mm2": 2.38,
+   "geht_verloren_schliessen_mm2": 2.44,
+   "prozent": 3.3
+  },
+  "bauteil": {
+   "variante": "B02",
+   "pegel": {
+    "blende": 0.0,
+    "fenster": -0.2,
+    "ring": 0.0,
+    "rosette": -0.2
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 0.0,
+   "einzug_mm3": 14.062,
+   "rueckwand_mm3": 38.282,
+   "volumen_zuwachs_mm3": 6.965
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     5.4,
+     -0.0
+    ],
+    [
+     5.4,
+     16.4,
+     -0.2
+    ],
+    [
+     16.4,
+     24.2,
+     -0.0
+    ],
+    [
+     24.2,
+     26.8,
+     -0.2
+    ],
+    [
+     26.8,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "B04": {
+  "variante": "B04",
+  "pegel": {
+   "blende": 0.0,
+   "fenster": -0.4,
+   "ring": 0.0,
+   "rosette": -0.4
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.484,
+  "volumen_zuwachs_mm3": 15.09,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.4,
+   -2.31,
+   13.6
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 70,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "ein": {
+    "laeufe": 70,
+    "schmaler_04": 1,
+    "von_04_bis_08": 1,
+    "ab_08": 68,
+    "min_breite": 0.29
+   },
+   "sprung_entlang_mm": {
+    "0.2": 116,
+    "0.4": 80,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 1572,
+    "0.4": 786,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 303.4,
+   "geht_verloren_oeffnen_mm2": 3.12,
+   "geht_verloren_schliessen_mm2": 3.29,
+   "prozent": 2.1
+  },
+  "bauteil": {
+   "variante": "B04",
+   "pegel": {
+    "blende": 0.0,
+    "fenster": -0.4,
+    "ring": 0.0,
+    "rosette": -0.4
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 0.0,
+   "einzug_mm3": 25.705,
+   "rueckwand_mm3": 59.192,
+   "volumen_zuwachs_mm3": 15.091
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     5.4,
+     -0.0
+    ],
+    [
+     5.4,
+     16.4,
+     -0.4
+    ],
+    [
+     16.4,
+     16.6,
+     -0.2
+    ],
+    [
+     16.6,
+     24.2,
+     -0.0
+    ],
+    [
+     24.2,
+     26.8,
+     -0.4
+    ],
+    [
+     26.8,
+     27.0,
+     -0.2
+    ],
+    [
+     27.0,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "B06": {
+  "variante": "B06",
+  "pegel": {
+   "blende": 0.0,
+   "fenster": -0.6,
+   "ring": 0.0,
+   "rosette": -0.6
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.493,
+  "volumen_zuwachs_mm3": 23.84,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.6,
+   0.75,
+   26.4
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 72,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "ein": {
+    "laeufe": 72,
+    "schmaler_04": 1,
+    "von_04_bis_08": 1,
+    "ab_08": 70,
+    "min_breite": 0.29
+   },
+   "sprung_entlang_mm": {
+    "0.2": 172,
+    "0.4": 4,
+    "0.6": 80,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 2358,
+    "0.4": 0,
+    "0.6": 786,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 466.0,
+   "geht_verloren_oeffnen_mm2": 3.89,
+   "geht_verloren_schliessen_mm2": 4.21,
+   "prozent": 1.7
+  },
+  "bauteil": {
+   "variante": "B06",
+   "pegel": {
+    "blende": 0.0,
+    "fenster": -0.6,
+    "ring": 0.0,
+    "rosette": -0.6
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 0.0,
+   "einzug_mm3": 37.662,
+   "rueckwand_mm3": 80.814,
+   "volumen_zuwachs_mm3": 23.867
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     5.4,
+     -0.0
+    ],
+    [
+     5.4,
+     16.4,
+     -0.6
+    ],
+    [
+     16.4,
+     16.6,
+     -0.4
+    ],
+    [
+     16.6,
+     16.8,
+     -0.2
+    ],
+    [
+     16.8,
+     24.2,
+     -0.0
+    ],
+    [
+     24.2,
+     26.8,
+     -0.6
+    ],
+    [
+     26.8,
+     27.0,
+     -0.4
+    ],
+    [
+     27.0,
+     27.2,
+     -0.2
+    ],
+    [
+     27.2,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "C04": {
+  "variante": "C04",
+  "pegel": {
+   "blende": 0.4,
+   "fenster": 0.2,
+   "ring": 0.4,
+   "rosette": 0.2
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.533,
+  "volumen_zuwachs_mm3": 64.22,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.0,
+   0.32,
+   27.61
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 127,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 127,
+    "schmaler_04": 1,
+    "von_04_bis_08": 0,
+    "ab_08": 126,
+    "min_breite": 0.31
+   },
+   "ein": {
+    "laeufe": 0,
+    "schmaler_04": 0,
+    "von_04_bis_08": 0,
+    "ab_08": 0,
+    "min_breite": null
+   },
+   "sprung_entlang_mm": {
+    "0.2": 174,
+    "0.4": 233,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 4292,
+    "0.4": 1352,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 321.1,
+   "geht_verloren_oeffnen_mm2": 3.55,
+   "geht_verloren_schliessen_mm2": 3.48,
+   "prozent": 2.2
+  },
+  "bauteil": {
+   "variante": "C04",
+   "pegel": {
+    "blende": 0.4,
+    "fenster": 0.2,
+    "ring": 0.4,
+    "rosette": 0.2
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 102.142,
+   "einzug_mm3": 0.0,
+   "rueckwand_mm3": 0.0,
+   "volumen_zuwachs_mm3": 64.221
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     0.2,
+     -0.0
+    ],
+    [
+     0.2,
+     0.4,
+     0.2
+    ],
+    [
+     0.4,
+     5.4,
+     0.4
+    ],
+    [
+     5.4,
+     16.4,
+     0.2
+    ],
+    [
+     16.4,
+     21.4,
+     0.4
+    ],
+    [
+     21.4,
+     23.4,
+     -0.0
+    ],
+    [
+     23.4,
+     23.6,
+     0.2
+    ],
+    [
+     23.6,
+     24.2,
+     0.4
+    ],
+    [
+     24.2,
+     26.8,
+     0.2
+    ],
+    [
+     26.8,
+     27.6,
+     0.4
+    ],
+    [
+     27.6,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ },
+ "D04": {
+  "variante": "D04",
+  "pegel": {
+   "blende": 0.2,
+   "fenster": -0.2,
+   "ring": 0.2,
+   "rosette": -0.2
+  },
+  "dicht": true,
+  "manifold": "Error.NoError",
+  "volumen_cm3": 7.502,
+  "volumen_zuwachs_mm3": 33.42,
+  "kollision_kassette_mm3": 0.0,
+  "wand_min_mm": 0.8,
+  "wand_min_stelle_w_u_z": [
+   -0.2,
+   1.28,
+   25.6
+  ],
+  "wand_min_ohne_relief_mm": 0.8,
+  "ueberhang": {
+   "bruecke_mm2": 13.16,
+   "krag_mm2": 31.41,
+   "bruecke_mm": 1.03,
+   "krag_mm": 1.03,
+   "neue_stellen_ueber_1mm": [],
+   "basis": {
+    "bruecke_mm2": 13.16,
+    "krag_mm2": 31.41
+   }
+  },
+  "statistik": {
+   "lagen": 127,
+   "lagen_gesamt": 139,
+   "vor": {
+    "laeufe": 197,
+    "schmaler_04": 5,
+    "von_04_bis_08": 6,
+    "ab_08": 186,
+    "min_breite": 0.28
+   },
+   "ein": {
+    "laeufe": 68,
+    "schmaler_04": 1,
+    "von_04_bis_08": 1,
+    "ab_08": 66,
+    "min_breite": 0.29
+   },
+   "sprung_entlang_mm": {
+    "0.2": 370,
+    "0.4": 80,
+    "0.6": 0,
+    "0.8": 0
+   },
+   "sprung_lage_zu_lage_mm": {
+    "0.2": 4292,
+    "0.4": 786,
+    "0.6": 0,
+    "0.8": 0
+   }
+  },
+  "druck_verlust": {
+   "relief_mm2_summe_ueber_lagen": 279.4,
+   "geht_verloren_oeffnen_mm2": 5.02,
+   "geht_verloren_schliessen_mm2": 4.96,
+   "prozent": 3.6
+  },
+  "bauteil": {
+   "variante": "D04",
+   "pegel": {
+    "blende": 0.2,
+    "fenster": -0.2,
+    "ring": 0.2,
+    "rosette": -0.2
+   },
+   "giebel_az": 101.83,
+   "vorsprung_mm3": 52.829,
+   "einzug_mm3": 14.062,
+   "rueckwand_mm3": 38.282,
+   "volumen_zuwachs_mm3": 33.42
+  },
+  "abweichung_profil_mm": 0.0,
+  "stufen_mittelspalte": {
+   "0.0": [
+    [
+     0.0,
+     0.2,
+     -0.0
+    ],
+    [
+     0.2,
+     5.4,
+     0.2
+    ],
+    [
+     5.4,
+     16.4,
+     -0.2
+    ],
+    [
+     16.4,
+     16.6,
+     -0.0
+    ],
+    [
+     16.6,
+     21.4,
+     0.2
+    ],
+    [
+     21.4,
+     23.4,
+     -0.0
+    ],
+    [
+     23.4,
+     24.2,
+     0.2
+    ],
+    [
+     24.2,
+     26.8,
+     -0.2
+    ],
+    [
+     26.8,
+     27.0,
+     -0.0
+    ],
+    [
+     27.0,
+     27.6,
+     0.2
+    ],
+    [
+     27.6,
+     27.8,
+     -0.0
+    ]
+   ]
+  }
+ }
+}
