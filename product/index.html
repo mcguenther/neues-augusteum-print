@@ -267,6 +267,9 @@ sup.fn a { text-decoration: none; }
 .pills { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--night-2); flex-wrap: wrap; justify-content: center; }
 .pills button { font: 500 14px var(--font-body); color: var(--night-muted); background: transparent; border: 0; padding: 7px 16px; border-radius: 999px; cursor: pointer; }
 .pills button[aria-pressed="true"] { background: var(--night-ink); color: var(--night); }
+.pills button { padding: 7px 13px; }
+.replay { font: 500 14px var(--font-body); color: var(--night-ink); background: transparent; border: 1px solid var(--night-line); padding: 8px 18px; border-radius: 999px; cursor: pointer; }
+.replay:hover { background: var(--night-2); }
 .light-facts { margin-top: 64px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; border-top: 1px solid var(--night-line); padding-top: 28px; }
 .light-facts b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
 .light-facts p { margin-top: 6px; color: var(--night-muted); font-size: 15px; }
@@ -430,7 +433,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       <div class="section-head">
         <span class="eyebrow">Funktionen</span>
         <h2>Ein Modell. Sieben Docks.</h2>
-        <p>Jedes Gebäude ist ein eigenes Druckteil mit eigener LED. Die Platte erkennt, was steckt, und gibt nur dort Strom und Daten frei.</p>
+        <p>Jedes Gebäude ist ein eigenes Druckteil mit eigener LED. Die Platte erkennt, was steckt, und lässt nur dort das Licht laufen.</p>
       </div>
 
       <div class="grid">
@@ -449,7 +452,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <article class="tile dark">
           <span class="k">Erkennen</span>
           <h3>Weiß, was steckt.</h3>
-          <p>Im Gebäude liegt Pin 4 auf Masse. Liest der ESP32 an seinem Eingang <b>LOW</b>, steckt ein Gebäude, und nach 100 ms geht die Datenleitung frei.<sup class="fn"><a href="#fn2">2</a></sup></p>
+          <p>Im Gebäude liegt Pin 4 auf Masse. Liest der ESP32 an seinem Eingang <b>LOW</b>, steckt ein Gebäude. Nach 100 ms Entprellung startet die Animation der LED; beim Abziehen geht sie aus.<sup class="fn"><a href="#fn2">2</a></sup></p>
           <div class="fig docks" id="docks" aria-label="Docks antippen, um ein Gebäude zu ziehen oder zu stecken">
             <button aria-pressed="true"><span>Paulinum</span><em>GPIO 32</em></button>
             <button aria-pressed="true"><span>Neues Augusteum</span><em>GPIO 33</em></button>
@@ -463,17 +466,17 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <article class="tile w3 dark">
           <span class="k">Display</span>
           <h3>Ein siebtes Gebäude zeigt den Strom.</h3>
-          <p>Am Ostrand steckt ein kleiner Bau mit <b>1,3″-OLED</b>, 128 × 64 Pixel. Ein INA226 misst in der 5-V-Leitung, das Display zeichnet Leistung und Verbrauch mit.<sup class="fn"><a href="#fn2">2</a></sup></p>
+          <p>Am Ostrand steckt ein kleiner Bau mit <b>1,3″-OLED</b>, 128 × 64 Pixel. Ein INA226 misst in der 5-V-Leitung, das Display zeigt die Leistung in W und die Energie seit dem Start in Wh.<sup class="fn"><a href="#fn2">2</a></sup></p>
           <div class="fig">
-            <div class="oled-frame"><canvas id="oled" width="128" height="64" aria-label="Darstellung des Displays: laufende Leistungskurve"></canvas></div>
-            <div class="oled-cap">Darstellung mit Beispielwerten</div>
+            <div class="oled-frame"><canvas id="oled" width="128" height="64" aria-label="Darstellung des Displays: Leistung in Watt und Energie in Wattstunden"></canvas></div>
+            <div class="oled-cap">Beispielwerte, Energie im Zeitraffer. Die untere Hälfte bleibt schwarz.</div>
           </div>
         </article>
 
         <article class="tile w3">
           <span class="k">Strom</span>
           <h3>Die Powerbank wohnt im Sockel.</h3>
-          <p>Unter der Platte liegt eine <b>Intenso XS5000</b> mit 5000 mAh und 18,5 Wh in ihrem eigenen Fach, geladen über USB-C. Sie liegt auf einer Erhebung über dem Hutknopf; der ESP32 daneben auf einem Gangdach, lose in Isoband, mit 5 mm Rand für die Leitungen.</p>
+          <p>Unter der Platte liegt eine <b>Intenso XS5000</b> mit 5000 mAh und 18,5 Wh in ihrem eigenen Fach, geladen über USB-C. Sie liegt auf einer Erhebung über dem Hutknopf; der ESP32 daneben auf einem Gangdach, lose in Isoband, mit 5 mm Rand für die Leitungen. Ein kurzer Lastpuls alle 5 Sekunden hält die Powerbank wach.</p>
           <div class="fig battery">
             <svg viewBox="0 0 450 257" role="img" aria-label="Draufsicht des Sockels: Erhebung über dem Hutknopf mit acht Gängen, Powerbank darauf, ESP32 auf einem Gangdach, Schalter in der Westwand">
               <rect x="4.0" y="4.0" width="441.8" height="231.2" rx="6" fill="none" stroke="var(--line)" stroke-width="2"/>
@@ -561,35 +564,29 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     </div>
     <div class="wrap">
       <div class="light-stage" id="lightStage">
-        <canvas id="lightCanvas" aria-label="3D-Modell bei Nacht, Gebäude leuchten in der gewählten Farbe"></canvas>
+        <canvas id="lightCanvas" aria-label="3D-Modell bei Nacht, die Gebäude spielen beim Einstecken ihre Animation und leuchten dann warmweiß"></canvas>
         <div class="fallback" id="lightFallback">3D-Modell wird geladen …</div>
       </div>
       <div class="controls">
         <div class="ctl">
-          <span>Farbe</span>
-          <div class="swatches" id="swatches">
-            <button style="--c:#ffc46b" data-c="#ffc46b" aria-pressed="true" aria-label="Warmweiß"></button>
-            <button style="--c:#fff4e2" data-c="#fff4e2" aria-pressed="false" aria-label="Neutralweiß"></button>
-            <button style="--c:#ff8a3d" data-c="#ff8a3d" aria-pressed="false" aria-label="Bernstein"></button>
-            <button style="--c:#ff4f5e" data-c="#ff4f5e" aria-pressed="false" aria-label="Rot"></button>
-            <button style="--c:#4f8dff" data-c="#4f8dff" aria-pressed="false" aria-label="Blau"></button>
-            <button style="--c:#4fe09a" data-c="#4fe09a" aria-pressed="false" aria-label="Grün"></button>
-            <button class="rainbow" data-c="rainbow" aria-pressed="false" aria-label="Jedes Gebäude eine Farbe"></button>
-          </div>
-        </div>
-        <div class="ctl">
-          <span>Effekt</span>
+          <span>Beim Einstecken</span>
           <div class="pills" id="effects">
-            <button data-e="still" aria-pressed="true">Ruhig</button>
-            <button data-e="breathe" aria-pressed="false">Atmen</button>
-            <button data-e="wave" aria-pressed="false">Welle</button>
-            <button data-e="tour" aria-pressed="false">Rundgang</button>
+            <button data-e="random" aria-pressed="true">Zufall</button>
+            <button data-e="0" aria-pressed="false">Rakete</button>
+            <button data-e="1" aria-pressed="false">Herzschlag</button>
+            <button data-e="2" aria-pressed="false">Sonnenaufgang</button>
+            <button data-e="3" aria-pressed="false">Atemzug</button>
+            <button data-e="4" aria-pressed="false">Glühwürmchen</button>
+            <button data-e="5" aria-pressed="false">Reaktor</button>
+            <button data-e="6" aria-pressed="false">Alter Motor</button>
+            <button data-e="7" aria-pressed="false">Zauberfunke</button>
           </div>
+          <button class="replay" id="replay" type="button">Neu stecken</button>
         </div>
       </div>
       <div class="light-facts">
         <div><b>1 oder 2 LEDs je Gebäude</b><p>WS2812B auf einem 10-mm-Streifen. Breite Bauten haben eine, schmale zwei verkettete, seitlich strahlend.</p></div>
-        <div><b>Jedes Gebäude eigene Leitung</b><p>Sechs Datenleitungen am ESP32, eine je Dock. Farben und Effekte steuert ESPHome.<sup class="fn"><a href="#fn2">2</a></sup></p></div>
+        <div><b>Eine Animation je Einstecken</b><p>Jedes Dock hat seine eigene Datenleitung. Beim Einstecken läuft eine von acht Animationen, danach bleibt das Gebäude in warmem Weiß bei 65 %. Abziehen schaltet die LED aus. ESPHome meldet jedes Dock auch als Leuchte an Home Assistant.<sup class="fn"><a href="#fn2">2</a></sup></p></div>
         <div><b>Höchstens 0,54 A</b><p>9 LEDs × 60 mA bei vollem Weiß, gerechnet. Die Powerbank liefert 2,1 A.</p></div>
       </div>
     </div>
@@ -747,9 +744,9 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <tr><th>Maßstab</th><td><b>1:1300</b>, 1 mm am Modell ≙ 1,3 m am Bau. Grundrisse und Höhen aus dem Laserscan.</td></tr>
         <tr><th>Maße</th><td><b>Steckplatte</b> <span class="mono">115,6 × 220,9 × 14,6 mm</span> (mit Gang und Treppen 16,9)<br><b>Sockel</b> <span class="mono">115,6 × 220,9 × 34,8 mm</span>, zusammen 49,4 mm<br><b>Höchster Punkt</b> City-Hochhaus, 111,3 mm über der Platte, rund 160,7 mm über der Hutfläche</td></tr>
         <tr><th>Gebäude</th><td><b>Paulinum</b> <span class="mono">45,6 × 28,3 × 59,4</span> · <b>Neues Augusteum</b> <span class="mono">47,9 × 58,9 × 40,1</span> · <b>Hörsaalgebäude</b> <span class="mono">63,2 × 104,7 × 32,9</span> · <b>Seminargebäude</b> <span class="mono">30,3 × 76,4 × 35,9</span> · <b>Institutsgebäude</b> <span class="mono">81,1 × 34,1 × 38,6</span> · <b>City-Hochhaus</b> <span class="mono">36,1 × 35,0 × 125,5</span> (mm, mit Fuß)<br>Dazu der <b>Innenhof</b> mit Leibnizdenkmal, Beeten und Bäumen als Einsatz ohne Licht. Am Ostgiebel des Paulinums trägt die Wand ein Relief aus Spitzbogen-Blende, Maßwerkfenster und Rosette, 0,2 bis 0,6 mm tief. Das Neue Augusteum gibt es auch als offene Variante mit zweitem Gewölbe: 16,4 statt 27,9 cm³.</td></tr>
-        <tr><th>Licht</th><td><b>9 × WS2812B</b> auf 10-mm-Streifen, 1 LED in Paulinum, Neuem Augusteum und Hörsaalgebäude, 2 in Seminar-, Institutsgebäude und Hochhaus. Höchstens 60 mA je LED.</td></tr>
-        <tr><th>Steuerung</th><td><b>ESP32-DevKit WROOM-32</b>, 30 Pin, USB-C. Daten an GPIO 23, 19, 18, 17, 16, 4; Erkennung an GPIO 32, 33, 25, 26, 27, 13. 330 Ω in jeder Datenleitung. Firmware mit ESPHome.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
-        <tr><th>Display</th><td><b>1,3″-OLED</b> 128 × 64, I²C (0x3C), Leistungsmessung mit <b>INA226</b> (0x40) in der 5-V-Leitung.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
+        <tr><th>Licht</th><td><b>9 × WS2812B</b> auf 10-mm-Streifen, 1 LED in Paulinum, Neuem Augusteum und Hörsaalgebäude, 2 in Seminar-, Institutsgebäude und Hochhaus. Höchstens 60 mA je LED. Dauerlicht warmweiß (#FFF4E8) bei 65 %; beim Einstecken eine von acht Animationen, bis 9,5 s.</td></tr>
+        <tr><th>Steuerung</th><td><b>ESP32-DevKit WROOM-32</b>, 30 Pin, USB-C. Daten an GPIO 23, 19, 18, 17, 16, 4; Erkennung an GPIO 32, 33, 25, 26, 27, 13. 330 Ω in jeder Datenleitung. Firmware mit ESPHome (WLAN, API, OTA, Home Assistant); Erkennung mit Pull-up und 100 ms Entprellung. Lastpuls für die Powerbank: GPIO 14, 300 ms alle 5 s, in Home Assistant abschaltbar.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
+        <tr><th>Display</th><td><b>1,3″-OLED</b> (SH1106) 128 × 64, I²C (0x3C), um 180° gedreht, nutzt die obere Hälfte: Leistung in W und Energie seit dem Start in Wh. Messung mit <b>INA226</b> (0x40, Shunt 0,1 Ω, Takt 1 s) in der 5-V-Leitung; SDA GPIO 21, SCL GPIO 22.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
         <tr><th>Stromversorgung</th><td><b>Intenso XS5000</b>, 5000 mAh, 18,5 Wh, 5 V / 2,1 A, 103 g. Laden über USB-C. Wippschalter KCD11 10 × 15 mm im Plus.</td></tr>
         <tr><th>Steckverbindung</th><td>4 Kontakte je Dock (Masse, Daten, 5 V, Erkennung), 7 Docks. Dupont-Buchse 1 × 4 in einer gedruckten Kassette, Winkelleiste unter der Platte. Kassetten v4, V1RS und V2R.</td></tr>
         <tr><th>Druck</th><td><b>PLA weiß oder natur</b>, Schicht 0,2 mm, Düse 0,4 mm, Gyroid 10 %, ohne Stützen. Druckbett ab 230 × 230 mm. Brim 5 mm nur am Hochhaus.<br>Volumen: Platte 212,5 cm³, sechs Gebäude 120,5 cm³, Innenhof 12,1 cm³, Sockel 86,9 cm³ (rund 108 g).</td></tr>
@@ -764,7 +761,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   <div class="wrap">
     <ol>
       <li id="fn1">Wie gleichmäßig das Licht durch Füllung und Wand kommt, zeigt erst der Druck eines ganzen Gebäudes. Die Slicer-Werte sind Empfehlungen.</li>
-      <li id="fn2">ESP32-Schaltung, Display, Effekte und Erkennung sind geplant und als Pinbelegung und Schaltplan ausgearbeitet, aber noch nicht zusammengebaut. Die Effekte oben sind eine Darstellung.</li>
+      <li id="fn2">Die Firmware (ESPHome, Stand V11) läuft mit ESP32 und OLED; die Animationen oben sind ihre Schlüsselbilder. Anzeige und Leistungswerte sind eine Darstellung mit Beispielwerten.</li>
       <li id="fn3">Der Sockel mit Knopfraum und Kordelgängen, die Zapfen und das Display-Dock der aktuellen Platte sind gerechnet und geprüft, aber noch nicht gedruckt. Hutknopf Ø 22 × 12 mm (gemessen 11 bis 12), Hut 24 cm angenommen; dann bleiben knapp 10 mm Rand je Seite.</li>
     </ol>
     <div class="src">
@@ -823,30 +820,26 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   });
 
   /* ---------------- OLED ---------------- */
+  // wie die Firmware: nur die obere Hälfte, Zahl bei y = 2, Einheit bei y = 22, Spalten bei x = 30 (W) und x = 97 (Wh)
   var oled = document.getElementById("oled"), og = oled.getContext("2d");
-  var oledAlways = true, oledOn = true, hist = [], tOled = 0;
+  var oledAlways = true, oledOn = true, tOled = 0, wh = 0;
   function oledFrame() {
     tOled += 1;
     var p = 1.55 + 0.55 * Math.sin(tOled / 9) + 0.25 * Math.sin(tOled / 2.7) + (Math.random() - .5) * .12;
-    hist.push(p); if (hist.length > 124) hist.shift();
+    wh += p / 3600 * 60;
     og.fillStyle = "#000"; og.fillRect(0, 0, 128, 64);
     if (!oledOn) return;
-    og.fillStyle = "#cfe8ff"; og.font = "9px monospace"; og.textBaseline = "top";
-    og.fillText("LEISTUNG", 2, 1);
-    og.fillText(p.toFixed(2).replace(".", ",") + " W", 78, 1);
-    og.fillRect(0, 12, 128, 1);
-    for (var x = 0; x < 128; x += 4) og.fillRect(x, 40, 1, 1);
-    for (var i = 1; i < hist.length; i++) {
-      var y0 = 62 - (hist[i - 1] - 0.4) / 2.2 * 46, y1 = 62 - (hist[i] - 0.4) / 2.2 * 46;
-      var a = Math.min(y0, y1), h = Math.max(1, Math.abs(y1 - y0));
-      og.fillRect(2 + i, Math.round(a), 1, Math.round(h));
-    }
-    og.fillText(((tOled * 0.0006) + 1.42).toFixed(2).replace(".", ",") + " Wh", 2, 54);
+    og.fillStyle = "#cfe8ff"; og.textBaseline = "top"; og.textAlign = "center";
+    og.font = "20px Roboto, Helvetica, Arial, sans-serif";
+    og.fillText(p.toFixed(2), 30, 1);
+    og.fillText(wh.toFixed(3), 97, 1);
+    og.font = "8px Roboto, Helvetica, Arial, sans-serif";
+    og.fillText("W", 30, 22); og.fillText("Wh", 97, 22);
   }
-  for (var w = 0; w < 124; w++) oledFrame();
+  oledFrame();
   var oledVisible = false;
   new IntersectionObserver(function (e) { oledVisible = e[0].isIntersecting; }).observe(oled);
-  setInterval(function () { if (oledVisible && !reduce) oledFrame(); }, 120);
+  setInterval(function () { if (oledVisible && !reduce) oledFrame(); }, 1000);
 
   /* ---------------- 3D ---------------- */
   if (!window.THREE) { document.getElementById("lightFallback").textContent = "3D-Ansicht nicht verfügbar."; return; }
@@ -1029,44 +1022,58 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     requestAnimationFrame(tick);
   };
 
+  /* Animationen aus der Firmware (ESPHome, Stand V11): Schlüsselbilder [ms, R, G, B], linear dazwischen; danach Dauerlicht 255/244/232 bei 65 % */
+  var ANIM = [
+    ["Rakete", [0,0,0,0, 400,25,1,0, 700,95,10,0, 780,45,6,0, 865,165,50,4, 950,55,10,0, 1035,175,60,4, 1120,65,14,0, 1205,185,70,4, 1290,75,18,0, 1375,195,80,4, 1460,85,22,0, 1545,205,90,4, 1630,95,26,0, 1715,215,100,4, 1800,105,30,0, 1885,225,110,4, 1970,115,34,0, 2055,235,120,4, 2350,255,160,45, 2850,255,245,225, 3100,255,255,255, 3800,255,224,185, 4800,255,244,232]],
+    ["Herzschlag", [0,0,0,0, 200,5,0,0, 300,95,3,9, 430,10,0,1, 550,62,2,5, 720,5,0,0, 1250,5,0,0, 1350,160,3,9, 1480,10,0,1, 1600,104,2,5, 1770,5,0,0, 2300,5,0,0, 2400,225,3,9, 2530,10,0,1, 2650,146,2,5, 2820,5,0,0, 3350,150,20,15, 4200,255,224,185, 5200,255,244,232]],
+    ["Sonnenaufgang", [0,0,0,0, 900,9,0,1, 1900,45,4,1, 3200,130,35,3, 4700,225,125,35, 6000,255,224,185, 7000,255,244,232]],
+    ["Atemzug", [0,0,0,0, 350,8,12,18, 1000,95,130,160, 1600,150,185,220, 2200,65,85,105, 2850,15,22,30, 3400,70,70,65, 4400,255,224,185, 5400,255,244,232]],
+    ["Glühwürmchen", [0,0,0,0, 500,20,35,0, 850,80,110,4, 1300,0,0,0, 1850,0,0,0, 2150,145,180,12, 2600,8,12,0, 3050,70,95,5, 3900,255,224,185, 4900,255,244,232]],
+    ["Reaktor", [0,0,0,0, 200,0,2,10, 255,5,45,80, 330,0,3,12, 620,0,2,10, 675,17,67,105, 750,0,3,12, 1000,0,2,10, 1055,29,89,130, 1130,0,3,12, 1340,0,2,10, 1395,41,111,155, 1470,0,3,12, 1640,0,2,10, 1695,53,133,180, 1770,0,3,12, 1900,0,2,10, 1955,65,155,205, 2030,0,3,12, 2120,0,2,10, 2175,77,177,230, 2250,0,3,12, 2420,160,235,255, 2530,255,255,255, 2750,105,160,200, 3400,255,224,185, 4400,255,244,232]],
+    ["Alter Motor", [0,0,0,0, 100,0,0,0, 131,205,156,92, 162,185,141,83, 209,48,36,22, 259,85,65,38, 334,48,36,22, 389,195,148,88, 418,176,134,79, 461,40,30,18, 506,75,57,34, 576,40,30,18, 632,215,163,97, 665,194,147,87, 713,55,42,25, 765,94,71,42, 843,55,42,25, 900,190,144,86, 930,171,130,77, 975,35,27,16, 1023,69,52,31, 1095,35,27,16, 1154,185,141,83, 1188,167,127,75, 1240,40,30,18, 1294,73,55,33, 1377,40,30,18, 1441,175,133,79, 1477,158,120,71, 1531,27,21,12, 1588,59,45,27, 1675,27,21,12, 1745,155,118,70, 1784,140,106,63, 1844,22,17,10, 1906,50,38,23, 2002,22,17,10, 2081,125,95,56, 2126,113,86,51, 2195,12,9,5, 2267,35,27,16, 2377,12,9,5, 2450,55,42,25, 2555,0,0,0, 3340,0,0,0, 3350,0,0,0, 3370,210,160,95, 3391,189,144,85, 3421,45,34,20, 3454,83,63,37, 3503,45,34,20, 3544,150,114,68, 3568,135,103,61, 3604,14,11,6, 3642,41,31,18, 3700,14,11,6, 3750,65,49,29, 3810,0,0,0, 4990,0,0,0, 5000,0,0,0, 5041,180,137,81, 5082,162,123,73, 5143,35,27,16, 5207,67,51,30, 5306,35,27,16, 5378,190,144,86, 5417,171,130,77, 5474,42,32,19, 5535,76,58,34, 5628,42,32,19, 5696,205,156,92, 5732,185,141,83, 5786,38,29,17, 5843,75,57,34, 5930,38,29,17, 5992,200,152,90, 6025,180,137,81, 6073,58,44,26, 6125,94,71,42, 6203,58,44,26, 6260,220,167,99, 6290,198,150,89, 6335,65,49,29, 6383,105,80,47, 6455,65,49,29, 6508,235,179,106, 6535,212,161,95, 6577,85,65,38, 6620,127,97,57, 6687,85,65,38, 6735,245,186,110, 6760,221,168,99, 6798,100,76,45, 6838,144,109,65, 6899,100,76,45, 6942,255,194,115, 6964,230,175,104, 6998,125,95,56, 7033,171,130,77, 7087,125,95,56, 7140,255,220,160, 7230,70,38,10, 7325,245,205,145, 7405,130,88,40, 7535,255,245,225, 7725,255,245,225, 7855,195,158,105, 7985,250,221,178, 8145,220,187,145, 8500,255,224,185, 9500,255,244,232]],
+    ["Zauberfunke", [0,0,0,0, 280,0,0,0, 312,165,50,255, 392,10,0,20, 600,10,0,20, 632,255,160,255, 750,28,2,45, 1350,70,15,85, 2100,150,70,100, 3100,255,224,185, 4100,255,244,232]]
+  ];
+  var FINAL = [255, 244, 232], DIM = 0.65;
+  function animColor(k, ms) {
+    var a = ANIM[k][1], n = a.length / 4;
+    if (ms >= a[(n - 1) * 4]) return FINAL;
+    var j = 1;
+    while (j < n && a[j * 4] <= ms) j++;
+    var p = (j - 1) * 4, q = j * 4, u = (ms - a[p]) / (a[q] - a[p]);
+    return [a[p + 1] + (a[q + 1] - a[p + 1]) * u, a[p + 2] + (a[q + 2] - a[p + 2]) * u, a[p + 3] + (a[q + 3] - a[p + 3]) * u];
+  }
+
   /* ---------- Licht-Bühne ---------- */
   function setupLight(st) {
-    var color = "#ffc46b", effect = "still", RAIN = ["#ff5d5d", "#ffc34d", "#7ee07e", "#57c7ff", "#8f7bff", "#ff6fd8"];
+    var choice = "random", t0 = 0, pick = [];
     var stage = document.getElementById("lightStage");
-    var pos = SLUGS.map(function (sl) { var b = st.info[sl].box; return [(b[0] + b[3]) / 2, (b[1] + b[4]) / 2]; });
+    stage.style.setProperty("--glow", "#fff4e8");
+    function restart(now) {
+      t0 = now;
+      pick = SLUGS.map(function () { return choice === "random" ? Math.floor(Math.random() * ANIM.length) : +choice; });
+    }
     function apply(now) {
-      var t = reduce ? 0 : now / 1000;
+      var ms = reduce ? 1e9 : now - t0;
       SLUGS.forEach(function (sl, i) {
-        var I;
-        if (effect === "breathe") I = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * 1.6));
-        else if (effect === "wave") I = 0.12 + 0.88 * Math.pow(0.5 + 0.5 * Math.sin(t * 2.2 - pos[i][1] / 45), 2);
-        else if (effect === "tour") { var k = Math.floor(t / 1.4) % SLUGS.length; I = k === i ? 1 : 0.06; }
-        else I = 1;
-        var c = new T.Color(color === "rainbow" ? RAIN[i] : color);
+        var rgb = animColor(pick[i], ms), c = new T.Color().setRGB(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
         var m = st.meshes[sl].material;
-        m.emissive.copy(c).convertSRGBToLinear().multiplyScalar(0.5 * I);
+        m.emissive.copy(c).convertSRGBToLinear().multiplyScalar(0.5 * DIM * 1.5);
         m.color.setRGB(0.16, 0.16, 0.17);
         st.ledLights[sl].color.copy(c);
-        st.ledLights[sl].intensity = 2.4 * I;
+        st.ledLights[sl].intensity = 2.4 * DIM * 1.5;
       });
       st.dirty = true;
     }
-    st.update = function (now) { if (effect !== "still" || st.first !== true) { apply(now); st.first = true; } };
-    document.querySelectorAll("#swatches button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        color = b.dataset.c;
-        document.querySelectorAll("#swatches button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-        stage.style.setProperty("--glow", color === "rainbow" ? "#c58bff" : color);
-        apply(performance.now());
-      });
-    });
+    restart(performance.now());
+    st.update = function (now) { if (!reduce && now - t0 < 9600) apply(now); else if (st.first !== true) { apply(now); st.first = true; } };
     document.querySelectorAll("#effects button").forEach(function (b) {
       b.addEventListener("click", function () {
-        effect = b.dataset.e;
+        choice = b.dataset.e;
         document.querySelectorAll("#effects button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-        apply(performance.now());
+        restart(performance.now()); st.first = false; apply(performance.now());
       });
     });
+    document.getElementById("replay").addEventListener("click", function () { restart(performance.now()); st.first = false; apply(performance.now()); });
   }
 
   /* ---------- Konstruktions-Bühne ---------- */
