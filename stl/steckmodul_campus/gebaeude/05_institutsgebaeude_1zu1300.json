@@ -9,9 +9,10 @@
    "entartet": 6542,
    "beruehrkanten": 5329
   },
+  "kanten_getrennt": 1,
   "nachher": {
    "entartet": 5,
-   "beruehrkanten": 1
+   "beruehrkanten": 0
   },
   "schalen_entfernt": 616,
   "schalen": 1
