@@ -20,7 +20,19 @@ Aufbau je Gebäude (z = 0 ist die Plattenoberseite, das Gebäude reicht bis zur 
     Hörsaalgebäude 43,2 statt 56,3 cm³).
   * Spalten im Hohlraum unter FUELLEN_T (2 mm) werden Material (`hohl.spalten`): ein voller Streifen druckt mit Füllung statt mit zwei
     Wänden und Spalt.
+  * `--spalt-min 0.4` (Standard aus): nachträglicher Schritt `plug/spalt.py`, Teile des fertigen Hohlraums schmaler als das Mindestmaß werden Material
+    (Haarspalte an der Wand, Splitter am Gewölbe); Schacht und Platz für die Kassette bleiben frei.
   * `--umkreis 2`: Kegel nur im eigenen Bereich (weniger Material, aber senkrechte Stufen in der Decke); Standard ist die glatte Decke.
+  * Optionen für möglichst viel offenen Raum (alle aus, der Standardbau bleibt Byte für Byte derselbe; `--offen` fasst sie zusammen):
+    - `--aufsatz boden|oeffnung|rohr|alles` (`hohl.aufsatz`): zweites Gewölbe über der Rohrsäule. Das Rohr trägt Kegel nur von seiner
+      niedrigen Oberkante, darüber blieb bis zum Dach Material stehen (Neues Augusteum: 12 bis 24 mm über der Kassette massiv). Der Aufsatz
+      überwölbt diesen Raum von den Wänden und vom Dach des niedrigeren Nachbarn aus (Ansatz am Absatz, 45° bis zum First); `oeffnung`
+      lässt den Walm über der Kassette weg, `rohr` auch die Säule über dem Rohr, `alles` auch die Keile daneben (bis unten offen).
+    - `--saeulen D` (`hohl.ceiling saeulen`): dünne Pfeiler Ø 1,6 als zusätzliche Stützpunkte im Raum mit niedrigem Dach, bis kein Punkt
+      weiter als D mm von Wand oder Stütze entfernt ist; die Kegel von dort verkürzen die Spannweiten, das Dach wird dünner.
+    - `--fuellen 1.2` statt 2: der First wird nicht auf 2 mm Breite flach gekappt (Kragstücke am First, Material).
+    - `--winkel W`: Neigung der Gewölbe (Standard 45, nur zur Untersuchung; Walm und `dach45` bleiben 45).
+    - `--nur-rohr`: nur die Fassung mit Rohrstütze bauen (halbe Rechenzeit, für Probeläufe).
 
 Prüfungen (je Gebäude): dicht; Kollision der Kassette (mit Streifen) mit dem Gebäude; Überhang: das fertige Gebäude in Lagen von 0,2 mm
 geschnitten, Material jeder Lage, das weiter als UEBERHANG_T vom Material der Lage darunter liegt (über Luft, flacher als 45°), getrennt nach
@@ -45,6 +57,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 import generate as G  # noqa: E402
 import hohl  # noqa: E402
+from plug import spalt as SP  # noqa: E402
 from plug import campus as C  # noqa: E402
 from plug.geom import to_tm  # noqa: E402
 from plug.power import build_concept as BC  # noqa: E402
@@ -63,8 +76,24 @@ BRUECKE_T = 2.0        # größte freie Spannweite einer Decke ohne Gewölbe (ho
 STUETZE_ROHR = True    # Schachtrohr trägt das Gewölbe mit
 UMKREIS_T = None       # Kegel nur im eigenen Bereich (hohl.ceiling umkreis); None = überall
 FUELLEN_T = 2.0        # Spalten im Hohlraum, die schmaler sind, werden gefüllt (hohl.spalten)
+FUELLEN_T_STANDARD = FUELLEN_T
+NUR_ROHR = False       # nur mit Rohrstütze bauen (Probeläufe)
+# --- Optionen für möglichst viel offenen Raum (alle Standard aus, der bisherige Bau bleibt unverändert) ---
+SAEULEN_T = None       # Abstand (mm): dünne Pfeiler Ø 1,6 als zusätzliche Stützpunkte im Raum mit niedrigem Dach (hohl.ceiling saeulen); None = aus
+SAEULEN_HMAX_T = 12.0  # nur dort, wo das Dach (Ziel-Hohlraum) höchstens so hoch über der Plattenoberseite liegt (mm)
+OFFEN_AUFSATZ, OFFEN_SAEULEN, OFFEN_FUELLEN = "alles", 6.0, 1.2    # Werte von `--offen` (Neues Augusteum 28,16 -> 16,5 cm³)
+AUFSATZ_T = None       # zweites Gewölbe über dem Schachtrohr (`hohl.aufsatz`), None = aus (Standard, der bisherige Bau). "boden": Boden über der Säule;
+                       # "oeffnung": dazu geht die Kassettenöffnung ohne Walm in den Aufsatz über; "rohr": dazu entfällt die Säule über dem Rohr;
+                       # "alles": dazu entfallen auch die Keile neben dem Rohr
+AUFSATZ_BRUECKE_T = 0.9  # `bruecke` des Aufsatzes (hohl.ceiling): unter dem schrägen Dach (Stufen des Ziel-Hohlraums je 0,4 mm) sollen die Stufen schmal bleiben
+AUFSATZ_ABZUG_T = 0.2  # Kegel des Aufsatzes setzen so viel tiefer an (hohl.ceiling abzug): der First bleibt unter dem schrägen Dach, keine flachen Stücke am First
+AUFSATZ_FUELLEN_T = 0.6  # Spalten im Aufsatz, die schmaler sind, werden gefüllt (FUELLEN_T = 2 kappt jeden First flach auf 2 mm Breite: Kragstück am First)
+AUFSATZ_BODEN_T = 0.4  # Boden des Aufsatzes liegt so viel (mindestens, aufs Lagenraster aufgerundet) über der Säule bzw. Walmspitze
+WINKEL_T = hohl.WINKEL  # Neigung der Gewölbe gegen die Senkrechte (45 = Standard; Walm und `dach45` bleiben 45)
 LAYER = 0.2            # Schichthöhe für die Überhangprüfung
 UEBERHANG_T = 0.25     # Überhang je 0,2-mm-Schicht, der als getragen gilt (gut 45°)
+SPALT_MIN_T = 0.0      # schmale Spalten und Splitter im fertigen Hohlraum schließen (plug/spalt.py): Teile des Hohlraums schmaler als dies werden Material; 0 = aus (Nutzer entscheidet), --spalt-min 0.4 = Düsenbreite
+MAX_KANTEN_PRO_LAUF = 14   # beruehrkanten_trennen probiert je Gruppe zusammenhängender Berührkanten 2^n Kombinationen; über dieser Zahl bleibt das Netz, wie es ist
 SPLITTER_MM3 = 1.0     # eigene Schalen mit kleinerem Betrag des Volumens sind Mikrohohlräume aus den Booleschen Schritten und entfallen (sauber)
 RELIEF = "A04"         # Reliefvariante für den Ostgiebel des Paulinums (plug/relief.py `VARIANTEN`); A04 = Blende und Rosettenring 0,4 mm vor (Nutzer 20.10.); None = aus (`--ohne-relief`)
 
@@ -178,6 +207,47 @@ def dach45(X, frei, schutz, z0, dz=0.1):
     return G.union(slabs) if slabs else m3d.Manifold()
 
 
+def aufsatz_raum(cav, lay0, platz, kas, rohr_fp, zt, z_rohr, F):
+    """Hohlraum des Aufsatzes (Weltlage): zweites Gewölbe (`hohl.aufsatz`) über dem Schachtrohr, Boden bei zt + AUFSATZ_BODEN_T auf dem
+    Lagenraster. Wo die Decke des Raums darunter weniger als DACH unter dem Boden liegt, wird die Lücke zum Hohlraum (sonst bliebe dort
+    eine messerscharfe Haut zwischen zwei Räumen). AUFSATZ_T:
+      "boden"   : nur der Aufsatz;
+      "oeffnung": über der Öffnung der Kassette entfällt der Walm, die Öffnung geht senkrecht in den Aufsatz über (der Walm war nur nötig,
+                  weil dort sonst eine flache Decke läge);
+      "rohr"    : auch die Säule über dem Schachtrohr entfällt: der Hohlraum beginnt auf der Rohroberkante z_rohr und reicht über den
+                  ganzen Grundriss des Rohrs (das Rohr bleibt als Pfeiler im Raum, nur sein Kopf liegt frei);
+      "alles"   : dazu auch neben dem Rohr (Keile zwischen der Decke des unteren Raums und dem Boden des Aufsatzes) bis unten offen."""
+    z0 = np.ceil((zt + F + AUFSATZ_BODEN_T) / hohl.STEP - 1e-6) * hohl.STEP          # Boden im Rahmen von hohl.py (z = Welt + F)
+    up = hohl.aufsatz(lay0, z0, winkel=WINKEL_T, bruecke=AUFSATZ_BRUECKE_T, fuellen=AUFSATZ_FUELLEN_T, abzug=AUFSATZ_ABZUG_T)
+    if up is None or up.is_empty():
+        return m3d.Manifold()
+    up = up.translate([0, 0, -F])
+    zb = z0 - F
+    b = hohl._cs_poly(up.slice(zb + 0.1))                                              # Grundriss des Aufsatzes über dem Boden
+    extra = []                                                                          # senkrechte Prismen, die den Aufsatz nach unten verlängern
+    luecke = hohl._cs_poly(cav.slice(zb - hohl.DACH)).intersection(b)                  # Raum darunter reicht fast bis zum Boden
+    if not luecke.is_empty and luecke.area > 0.05:
+        extra.append(ext(luecke.buffer(0.02, join_style=2), zb - hohl.DACH - 0.01, zb + 0.01))
+    if AUFSATZ_T == "oeffnung":
+        zk = float(kas.bounding_box()[5]) + FREI_T                                      # Oberkante des senkrechten Teils der Öffnung
+        fp = hohl._cs_poly(platz.project()).intersection(b)
+        if not fp.is_empty and fp.area > 0.05:
+            extra.append(ext(fp.buffer(0.02, join_style=2), zk - 0.01, zb + 0.01))
+    elif AUFSATZ_T == "rohr":
+        fp = rohr_fp.intersection(b)
+        if not fp.is_empty and fp.area > 0.05:
+            extra.append(ext(fp.buffer(0.02, join_style=2), z_rohr - 0.05, zb + 0.01))
+    elif AUFSATZ_T == "alles":
+        # Im ganzen Grundriss des Aufsatzes ist der Raum bis unten offen (Rohr, Boden und Fuß kommen danach wieder dazu): kein Material
+        # zwischen der Decke des Raums darunter und dem Boden des Aufsatzes, keine Keile neben dem Rohr
+        extra.append(ext(b.buffer(0.02, join_style=2), -F, zb + 0.01))
+    if not extra:
+        return up
+    # Die Prismen überlappen den Aufsatz um 0,02 mm (sauberes Vereinigen), dürfen aber nicht über den Ziel-Hohlraum (Wand 0,8) hinaus
+    ziel = hohl.cavity(lay0).translate([0, 0, -F])
+    return up + (G.union(extra) ^ ziel)
+
+
 def fasen_huellen(fp, zone, tiefe, L, max_extra=60):
     """Umriss des Fußes je Lage L von unten: Zielform ist der Grundriss fp, um die Fasentiefe verkleinert und nach oben je Lage um L größer
     (45°); `zone` (Schachtrohr) gehört immer dazu. Jede Lage darf höchstens um L über die Lage darunter hinausragen: Schmale Teile, die die
@@ -223,9 +293,13 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     # und trägt das Gewölbe mit (Stütze bis zur Rohroberkante): die Räume werden von Wand und Rohr aus überwölbt.
     rohr_fp = hohl._cs_poly(rohr.slice(-F + 0.5))
     stuetzen = [(rohr_fp, z_rohr)] if rohrstuetze else None
+    saeulen = []
     cav, lay0 = hohl.hohlraum(voll.translate([0, 0, F]), bruecke=BRUECKE_T, stuetzen=stuetzen, fuellen=FUELLEN_T,
-                              umkreis=UMKREIS_T)
+                              umkreis=UMKREIS_T, winkel=WINKEL_T, saeulen=SAEULEN_T, saeulen_hmax=SAEULEN_HMAX_T + F, saeulen_out=saeulen)
     cav = cav.translate([0, 0, -F])
+    if saeulen:
+        # Pfeiler: über die ganze Höhe aus dem Hohlraum aussparen (über dem Kegelansatz ist ohnehin Material)
+        cav = cav - ext(unary_union([shapely.Point(x, y).buffer(hohl.SAEULE_D / 2, quad_segs=8) for x, y in saeulen]), -F - 1.0, 400.0)
     if rohrstuetze:
         # Über dem Rohr kein Gewölbe-Hohlraum: das Rohr setzt sich nach oben als Säule fort, frei bleibt dort nur der Raum über der
         # Kassette (Platz mit 45°-Walm, unten). Sonst griffe das Gewölbe eines Nachbarraums über den Rohrkopf, wo das Rohr nicht trägt,
@@ -233,6 +307,8 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
         # Die Säule reicht bis 0,4 mm über die Walmspitze; darüber darf das Gewölbe wieder über das Rohr greifen (hohe Gebäude).
         zt = float(platz.bounding_box()[5]) + 0.4
         cav = cav - ext(rohr_fp, -F - 1.0, zt)
+        if AUFSATZ_T:
+            cav = cav + aufsatz_raum(cav, lay0, platz, kas, rohr_fp, zt, z_rohr - F, F)
         # Wo über der Säule bis zum Gewölbe weniger als FUELLEN_T Luft bliebe, wird auch das Material (keine flachen Taschen)
         flach = rohr_fp.intersection(hohl._cs_poly(cav.slice(zt + 0.1))).difference(hohl._cs_poly(cav.slice(zt + max(FUELLEN_T, 0.4))))
         if flach.area > 0.05:
@@ -262,17 +338,43 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     zc = -F + BC.L * len(huellen) + 0.02
     ch_env = G.union(parts)
     ring_m = G.union(ring) - cut                                    # Fasen-Wand, nicht in den Schacht (mit Einführfase) hinein
-    body = (body ^ (ch_env + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ring_m
+    behalte = ch_env + ext(fp.buffer(5.0), zc - 0.01, 300.0)
+    body = (body ^ behalte) + ring_m
+    fuell, spalt = None, None
+    if SPALT_MIN_T > 0:
+        # Nachträglicher Schritt (plug/spalt.py): schmale Spalten und Splitter im Hohlraum; Hülle = massiver Körper mit Fuß und Fase.
+        # Die Füllung wird erst nach dem Vereinfachen zum Körper gefügt (siehe unten).
+        mund = hohl._cs_poly(cut.slice(-F + 0.05))                               # Grundriss des unten offenen Schachts
+        fuell, spalt = SP.fuellung(body, voll ^ behalte, schutz=cut + bedarf, nach_unten=mund, z_unten=-F, mind=SPALT_MIN_T)
     if farb_id:
         body = farb_ids(body)
-    body = body.simplify(hohl.VEREINFACHEN)
-    body, netz = sauber(body, ids=bool(farb_id))
+    body0 = body.simplify(hohl.VEREINFACHEN)
+    verworfen = 0
+    while True:
+        body, netz = sauber(SP.einsetzen(body0, fuell, bool(farb_id)), ids=bool(farb_id))
+        # Füllstücke, an denen im fertigen Netz Berührkanten (Haarkanten, Slicer meldet sie) entstehen, weglassen und neu zusammensetzen
+        if not fuell or netz.get("nachher", {}).get("beruehrkanten", 0) == 0:
+            break
+        mt = body.to_mesh()
+        rest = SP.ohne_stuecke_bei(fuell, _beruehr_orte(np.asarray(mt.vert_properties)[:, :3], np.asarray(mt.tri_verts)))
+        if len(rest) == len(fuell):
+            break
+        verworfen += len(fuell) - len(rest)
+        fuell = rest
+    if spalt is not None and verworfen:
+        spalt["verworfen_wegen_beruehrkanten"] = verworfen
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
     info["fase_lagen"] = len(huellen)
     rohr_aussen = G.clean(rohr_fp.intersection(fp))                 # Teil des Rohrs, der in die Fase ragt (steht bis zum Bett)
     nah = rohr_aussen.difference(fp.buffer(-FUSS_FASE_T, join_style=2)) if not rohr_aussen.is_empty else Polygon()
     if not nah.is_empty and nah.area >= 0.05:
         info["fase_rohr_voll_mm2"] = round(nah.area, 1)
+    if saeulen:
+        info["saeulen"] = len(saeulen)
+    if AUFSATZ_T:
+        info["aufsatz"] = AUFSATZ_T
+    if spalt:
+        info["spalt"] = spalt
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
@@ -291,6 +393,17 @@ def _netz_werte(v, f):
     e = np.sort(np.concatenate([g[:, [0, 1]], g[:, [1, 2]], g[:, [2, 0]]]), axis=1)
     _, cnt = np.unique(e, axis=0, return_counts=True)
     return int((a < 1e-9).sum()), int((cnt > 2).sum())
+
+
+def _beruehr_orte(v, f):
+    """Mittelpunkte der Berührkanten (Kanten mit mehr als zwei Flächen, Eckpunkte nach Lage zusammengefasst)."""
+    v = np.asarray(v, np.float32)
+    uv, inv = np.unique(v, axis=0, return_inverse=True)
+    g = inv.ravel()[np.asarray(f, np.int64)]
+    e = np.sort(np.concatenate([g[:, [0, 1]], g[:, [1, 2]], g[:, [2, 0]]]), axis=1)
+    ue, cnt = np.unique(e, axis=0, return_counts=True)
+    bad = ue[cnt > 2]
+    return (uv[bad[:, 0]].astype(np.float64) + uv[bad[:, 1]]) / 2
 
 
 FARB_ID0 = 10_000_000   # face_id der gefärbten Dreiecke (die übrigen Körper tragen ihre Dreiecksnummern, weit darunter)
@@ -360,8 +473,8 @@ def beruehrkanten_trennen(v, f, eps_max=0.02):
             if int(x) in elem:
                 elem[int(x)].append(int(q))
 
-    def versuch(wahl):
-        neu_pos, ersatz = [], {}
+    def versuch(wahl, lokal=None, nk=0):
+        neu_pos, neu_w, ersatz = [], [], {}
         for w in ecken:
             fl = elem[w]
             par = {q: q for q in fl}
@@ -398,6 +511,7 @@ def beruehrkanten_trennen(v, f, eps_max=0.02):
                     return None
                 kurz = min(np.linalg.norm(vd[int(x)] - vd[w]) for q in qs for x in g[q] if int(x) != w)
                 neu_pos.append(vd[w] + d / nl * min(eps_max, 0.25 * kurz))
+                neu_w.append(w)
                 ersatz.update({(q, w): n + len(neu_pos) - 1 for q in qs})
         if not ersatz:
             return None
@@ -405,16 +519,52 @@ def beruehrkanten_trennen(v, f, eps_max=0.02):
         for (q, w), nn in ersatz.items():
             g2[q][g2[q] == w] = nn
         e2 = np.sort(np.concatenate([g2[fi][:, [0, 1]], g2[fi][:, [1, 2]], g2[fi][:, [2, 0]]]), axis=1) @ np.array([n + len(neu_pos), 1], np.int64)
-        if int((np.unique(e2, return_counts=True)[1] != 2).sum()) != int((cnt != 2).sum()) - len(bad):      # alle Berührkanten weg, nichts Neues offen
-            return None
+        if lokal is None:
+            if int((np.unique(e2, return_counts=True)[1] != 2).sum()) != int((cnt != 2).sum()) - len(bad):      # alle Berührkanten weg, nichts Neues offen
+                return None
+        else:                                                                      # nur an den Eckpunkten dieser Gruppe prüfen: nk Kanten weg, nichts Neues offen
+            nn = n + len(neu_pos)
+            nah_ = np.zeros(nn, bool)
+            nah_[list(lokal)] = True
+            nah_[[n + i for i, w in enumerate(neu_w) if w in lokal]] = True
+            ue2, c2 = np.unique(e2, return_counts=True)
+            vor = nah_[:n][uk // n] | nah_[:n][uk % n]
+            if int((c2[nah_[ue2 // nn] | nah_[ue2 % nn]] != 2).sum()) != int((cnt[vor] != 2).sum()) - nk:
+                return None
         return np.concatenate([uv, np.array(neu_pos, np.float32).reshape(-1, 3)]), g2
 
-    if len(bad) > BERUEHR_MAX:                                                  # 2^n Kombinationen: bei vielen Kanten (Farbfassungen) kein Versuch
-        return uv, g, 0
-    for wahl in itertools.product(("a", "b"), repeat=len(bad)):
-        r = versuch(wahl)
-        if r is not None:
-            return r[0], r[1], len(bad)
+    # Berührkanten, die einen Eckpunkt teilen, hängen zusammen; weit auseinanderliegende nicht. Je Gruppe die Kombinationen (2^n) einzeln
+    # probieren (alle anderen Gruppen vorläufig "a"), die Wahlen danach zusammen prüfen: sonst sind 17 Kanten 131 072 Versuche.
+    grp = {b: b for b in bad}
+
+    def wurzel(x):
+        while grp[x] != x:
+            grp[x] = grp[grp[x]]
+            x = grp[x]
+        return x
+    for i, b1 in enumerate(bad):
+        for b2 in bad[i + 1:]:
+            if {int(uk[b1] // n), int(uk[b1] % n)} & {int(uk[b2] // n), int(uk[b2] % n)}:
+                grp[wurzel(b1)] = wurzel(b2)
+    gruppen = {}
+    for b in bad:
+        gruppen.setdefault(wurzel(b), []).append(b)
+    wahl_alle = {b: "a" for b in bad}
+    for kanten in gruppen.values():
+        if len(kanten) > MAX_KANTEN_PRO_LAUF:                                       # 2^n Kombinationen: zu viele zusammenhängende Berührkanten
+            return uv, g, 0
+        verts = {int(x) for b in kanten for x in (uk[b] // n, uk[b] % n)}
+        for wahl in itertools.product(("a", "b"), repeat=len(kanten)):
+            w_ = dict(wahl_alle)
+            w_.update(zip(kanten, wahl))
+            if versuch([w_[b] for b in bad], lokal=verts, nk=len(kanten)) is not None:
+                wahl_alle = w_
+                break
+        else:
+            return uv, g, 0
+    r = versuch([wahl_alle[b] for b in bad])
+    if r is not None:
+        return r[0], r[1], len(bad)
     return uv, g, 0
 
 
@@ -521,7 +671,7 @@ def build(scale=P.SCALE_PLAN, slugs=None):
         solid, fp, _ = models[slug]
         # Mit und ohne Rohrstütze bauen, das leichtere nehmen: Unter niedrigen Dächern (Neues Augusteum, Hörsaalgebäude) setzt das Gewölbe
         # mit der Rohrstütze viel höher an; in hohen, schmalen Gebäuden trägt das Rohr kaum und die Säule über ihm kostet nur.
-        varianten = [gebaeude(slug, solid, fp, p, s, r) for r in ((True, False) if STUETZE_ROHR else (False,))]
+        varianten = [gebaeude(slug, solid, fp, p, s, r) for r in ((True,) if NUR_ROHR else (True, False) if STUETZE_ROHR else (False,))]
         body, kas, info = min(varianten, key=lambda v: v[2]["volumen_cm3"])
         if RELIEF:                                                  # Fassadenrelief (plug/relief.py): wirkt auf das fertige Hohlgebäude
             from plug import relief as RL
@@ -548,7 +698,7 @@ def build(scale=P.SCALE_PLAN, slugs=None):
 
 
 def main():
-    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, OUT, PREV, RELIEF
+    global BRUECKE_T, STUETZE_ROHR, FUELLEN_T, UMKREIS_T, AUFSATZ_T, AUFSATZ_BRUECKE_T, AUFSATZ_ABZUG_T, AUFSATZ_FUELLEN_T, WINKEL_T, SAEULEN_T, SAEULEN_HMAX_T, NUR_ROHR, SPALT_MIN_T, OUT, PREV, RELIEF
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("slugs", nargs="*")
@@ -556,6 +706,20 @@ def main():
     ap.add_argument("--ohne-rohrstuetze", action="store_true", help="Gewölbe nur von den Außenwänden (Stand vor 2026-10-17)")
     ap.add_argument("--fuellen", type=float, default=FUELLEN_T, help="Spalten schmaler als dies füllen (mm, 0 = aus)")
     ap.add_argument("--umkreis", type=float, default=UMKREIS_T, help="Kegel einer Stütze nur bis so viel weiter als die nächste Stütze (mm)")
+    ap.add_argument("--aufsatz", nargs="?", const="boden", choices=("boden", "oeffnung", "rohr", "alles"),
+                    help="zweites Gewölbe über dem Schachtrohr (Raum über dem Rohr bis zum Dach, hohl.aufsatz); oeffnung: ohne Walm über der Kassette, "
+                         "rohr: auch ohne Säule über dem Rohr, alles: im ganzen Grundriss des Aufsatzes bis unten offen (Standard ohne diesen Schalter: aus)")
+    ap.add_argument("--aufsatz-bruecke", type=float, default=AUFSATZ_BRUECKE_T, help="bruecke des Aufsatzes (mm); kleiner = schmalere Stufen unter dem schrägen Dach")
+    ap.add_argument("--aufsatz-abzug", type=float, default=AUFSATZ_ABZUG_T, help="Kegel des Aufsatzes um so viel mm tiefer ansetzen (First unter dem schrägen Dach)")
+    ap.add_argument("--aufsatz-fuellen", type=float, default=AUFSATZ_FUELLEN_T, help="Spalten im Aufsatz schmaler als dies füllen (mm)")
+    ap.add_argument("--saeulen", type=float, default=SAEULEN_T, help="dünne Pfeiler als zusätzliche Stützpunkte: Abstand (mm) bis zur nächsten Wand oder Stütze, "
+                                                                     "den ein Raum mit niedrigem Dach höchstens haben darf (None = aus)")
+    ap.add_argument("--saeulen-hmax", type=float, default=SAEULEN_HMAX_T, help="Pfeiler nur, wo das Dach höchstens so hoch liegt (mm über der Platte)")
+    ap.add_argument("--winkel", type=float, default=WINKEL_T, help="Neigung der Gewölbe gegen die Senkrechte in Grad (Standard 45)")
+    ap.add_argument("--nur-rohr", action="store_true", help="nur die Fassung mit Rohrstütze bauen (Probeläufe, halbe Rechenzeit)")
+    ap.add_argument("--offen", action="store_true", help="Voreinstellung für möglichst viel offenen Raum (weniger Material): --aufsatz alles, --saeulen 6, "
+                                                         "--fuellen 1.2 (Schalter, die man selbst setzt, behalten ihren Wert)")
+    ap.add_argument("--spalt-min", type=float, default=SPALT_MIN_T, help="Teile des Hohlraums schmaler als dies (mm) werden gefüllt (plug/spalt.py; 0 = aus, 0.4 = Düsenbreite)")
     ap.add_argument("--relief", default=RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s)" % RELIEF)
     ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
     ap.add_argument("--out", help="Ausgabeordner für STL und Bilder (Standard: die eingecheckten Ordner)")
@@ -564,6 +728,22 @@ def main():
     STUETZE_ROHR = not a.ohne_rohrstuetze
     FUELLEN_T = a.fuellen
     UMKREIS_T = a.umkreis
+    AUFSATZ_T = a.aufsatz
+    if a.offen:
+        AUFSATZ_T = a.aufsatz or OFFEN_AUFSATZ
+        if a.saeulen is None:
+            a.saeulen = OFFEN_SAEULEN
+        if a.fuellen == FUELLEN_T_STANDARD:
+            a.fuellen = OFFEN_FUELLEN
+            FUELLEN_T = a.fuellen
+    AUFSATZ_BRUECKE_T = a.aufsatz_bruecke
+    AUFSATZ_ABZUG_T = a.aufsatz_abzug
+    AUFSATZ_FUELLEN_T = a.aufsatz_fuellen
+    WINKEL_T = a.winkel
+    SAEULEN_T = a.saeulen
+    SAEULEN_HMAX_T = a.saeulen_hmax
+    NUR_ROHR = a.nur_rohr
+    SPALT_MIN_T = a.spalt_min
     RELIEF = None if a.ohne_relief else a.relief
     if a.out:
         OUT = PREV = a.out

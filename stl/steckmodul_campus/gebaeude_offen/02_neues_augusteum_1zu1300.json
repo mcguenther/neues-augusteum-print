@@ -1,0 +1,48 @@
+{
+ "slug": "02_neues_augusteum",
+ "var": "v4",
+ "wall": 1.9,
+ "F": 14.200000000000001,
+ "rohrstuetze": true,
+ "netz": {
+  "vorher": {
+   "entartet": 3197,
+   "beruehrkanten": 2762
+  },
+  "nachher": {
+   "entartet": 64,
+   "beruehrkanten": 0
+  },
+  "schalen_entfernt": 323,
+  "schalen": 1
+ },
+ "fase_lagen": 35,
+ "fase_rohr_voll_mm2": 80.3,
+ "saeulen": 11,
+ "aufsatz": "alles",
+ "spalt": {
+  "mind": 0.4,
+  "gefuellt_mm3": 25.95,
+  "teile": 252
+ },
+ "kollision_mm3": 0.0,
+ "platz_fehlt_mm3": 0.0,
+ "volumen_cm3": 16.34,
+ "volumen_varianten_cm3": {
+  "mit_rohrstuetze": 16.34,
+  "ohne_rohrstuetze": 18.4
+ },
+ "ueberhang": {
+  "bruecke_mm2": 13.43,
+  "bruecke_mm": 0.56,
+  "krag_mm2": 10.61,
+  "krag_mm": 0.72,
+  "stellen": []
+ },
+ "dicht": true,
+ "mass_mm": [
+  47.9,
+  58.9,
+  40.1
+ ]
+}

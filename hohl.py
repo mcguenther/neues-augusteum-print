@@ -42,6 +42,7 @@ RAND = 0.4        # mm, Gewölbe einer Decke greift in bis zu so viel höhere De
 BRUECKE = 10.0    # mm, so weit darf eine Decke ohne Gewölbe frei spannen (Abstand zur nächsten Stütze höchstens die Hälfte)
 FUELLEN = 0.0     # mm, Teile des Hohlraums, die schmaler sind, werden Material (Spalten zwischen Gewölben; 0 = aus, plug/buildings.py nutzt 2)
 VEREINFACHEN = 0.03  # mm, Netz nach dem Abziehen so weit vereinfachen (Manifold.simplify; hält die STL klein, bleibt dicht)
+SAEULE_D = 1.6    # mm, Durchmesser der zusätzlichen Pfeiler (`ceiling(saeulen=…)`)
 SAME_AREA = 0.05  # mm², Lagen, die sich weniger unterscheiden, werden zu einer Platte zusammengefasst (hält die STL klein)
 
 
@@ -105,14 +106,22 @@ def _edt(zero):
     return cv2.distanceTransform(np.where(zero, 0, 1).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
 
 
-def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, stuetzen=None, umkreis=None):
+def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, stuetzen=None, umkreis=None, abzug=0.0,
+            saeulen=None, saeulen_hmax=1e9, saeulen_out=None):
     """Kegelfläche des Gewölbes als Höhenfeld (mm) auf dem Raster, +inf wo kein Gewölbe wirkt. Liefert (Raster, hc, Ziel-Höhenfeld H).
     stuetzen: weitere tragende Teile im Hohlraum [(Grundriss, Oberkante)], die vom Boden an gedruckt werden (z. B. das Schachtrohr der
     Kassette); von ihrer Oberkante aus steigen ebenfalls 45°-Kegel auf, so wird jeder Raum von mehreren Seiten überwölbt.
     umkreis: None = jeder Kegel wirkt überall (glatte Decke, nur Grate). Sonst wirkt der Kegel einer Stütze nur dort, wo sie höchstens
     `umkreis` mm weiter weg ist als die nächste Stütze: Eine niedrige Stütze (Rohrkopf) überwölbt dann nur ihren eigenen Bereich, die
     Wand daneben setzt höher an. Druckbar bleibt es (jeder Punkt fällt in 45° zu seiner Stütze ab); an den Grenzen entstehen senkrechte
-    Stufen in der Decke statt Grate."""
+    Stufen in der Decke statt Grate.
+    abzug: alle Kegel setzen um so viel mm tiefer an (Standard 0). Die First liegen dann unter der Dachfläche des Ziel-Hohlraums, und
+    die Decke läuft an keiner Stelle als flaches Stück (Stufen des schrägen Dachs) am First entlang.
+    saeulen: Abstand in mm (None = aus). Zusätzliche dünne Pfeiler (Durchmesser SAEULE_D) als tragende Punkte: Wo ein Raum mit niedrigem
+    Dach (Ziel-Hohlraum höchstens `saeulen_hmax`) weiter als `saeulen` von allen Wänden und Stützen entfernt ist, kommt am weitesten Punkt ein
+    Pfeiler hin (Farthest-Point-Verfahren), bis keine Stelle mehr so weit weg ist. Von jedem Pfeiler steigen ebenfalls 45°-Kegel auf, die
+    Decke setzt höher an, das Dach wird dünner (kürzere Spannweiten). Die Pfeilermitten (x, y in Weltkoordinaten) werden an die Liste
+    `saeulen_out` angehängt; der Aufrufer muss den Hohlraum an diesen Stellen als Säule aussparen."""
     R = Raster(secs[0][1].bounds, px)
     H = np.zeros((R.h, R.w), np.float32)                         # Oberkante des Ziel-Hohlraums je Pixel
     T = np.zeros((R.h, R.w), np.float32)                         # Oberkante des Materials je Pixel
@@ -129,6 +138,25 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
         sup |= m
         T[m] = np.floor(zt / step + 1e-6) * step                 # trägt bis zur Oberkante, abgerundet aufs Lagenraster (die Kegel starten
                                                                  # auf dem Raster; aufgerundet bliebe ein Spalt über der Stütze)
+    if saeulen and omega.any() and anchor.any():
+        rp = max(1, int(round(SAEULE_D / 2 / px)))
+        yy, xx = np.mgrid[-rp:rp + 1, -rp:rp + 1]
+        disk = (yy ** 2 + xx ** 2) <= rp * rp
+        cand = omega & ~anchor & (H <= saeulen_hmax)
+        for _ in range(500):
+            dm = np.where(cand, _edt(anchor), 0.0)
+            k = int(np.argmax(dm))
+            if dm.flat[k] * px <= saeulen:
+                break
+            cy, cx = divmod(k, R.w)
+            m = np.zeros(H.shape, bool)
+            ys, xs = np.nonzero(disk)
+            m[np.clip(cy + ys - rp, 0, R.h - 1), np.clip(cx + xs - rp, 0, R.w - 1)] = True
+            m &= omega
+            anchor |= m
+            T[m] = 1e4                                                 # trägt, soweit der Kegel es braucht (Oberkante nie die Grenze)
+            if saeulen_out is not None:
+                saeulen_out.append((R.x0 + cx * px, R.y0 + cy * px))
     if not omega.any() or not anchor.any():
         return R, np.full(H.shape, np.inf, np.float32), H
     slope = 1.0 / np.tan(np.radians(winkel))                     # Höhe je mm waagerecht
@@ -152,7 +180,7 @@ def ceiling(secs, E, step=STEP, px=PX, winkel=WINKEL, first=FIRST, bruecke=BRUEC
         n = int(lab.max()) + 1
         phi = np.full(n, np.inf, np.float64)
         tau = np.full(n, -np.inf, np.float64)
-        np.minimum.at(phi, lab[frei], (H - slope * np.maximum(d - first / 2, 0.0))[frei])
+        np.minimum.at(phi, lab[frei], (H - slope * np.maximum(d - first / 2, 0.0))[frei] - abzug)
         np.maximum.at(tau, lab[frei], H[frei])
         tw = np.zeros(n, np.float64)
         tw[lab[anchor]] = T[anchor]
@@ -315,8 +343,14 @@ def spalten(cav, breite=FUELLEN, step=STEP):
         z1 = min(z0 + step, zmax)
         k = _cs_poly(cav.slice(z0 + 0.001))                      # am Plattenboden: dort grenzt die schmale Zone ans Material (auf Plattenmitte
         if not k.is_empty:                                       # läge sie am Boden der Platte bis 0,2 mm daneben und hinge als Insel in der Luft)
-            o = k.buffer(-r, join_style=2).buffer(r, join_style=2)
-            thin = k.difference(o).buffer(-0.02, join_style=2).buffer(0.03, join_style=2)
+            try:
+                o = k.buffer(-r, join_style=2).buffer(r, join_style=2)
+                thin = k.difference(o).buffer(-0.02, join_style=2).buffer(0.03, join_style=2)
+            except Exception:                                    # GEOS „non-noded intersection“ bei Splitterkanten: auf 1 µm runden und neu versuchen
+                import shapely
+                k = shapely.set_precision(k.buffer(0), 1e-3)
+                o = k.buffer(-r, join_style=2).buffer(r, join_style=2)
+                thin = k.difference(o).buffer(-0.02, join_style=2).buffer(0.03, join_style=2)
             thin = MultiPolygon([q for q in _parts(thin) if q.area > 0.05]) if not thin.is_empty else thin
             if not thin.is_empty:
                 parts.append(prism(thin, z0 - 0.001, z1 + 0.001))
@@ -325,13 +359,13 @@ def spalten(cav, breite=FUELLEN, step=STEP):
 
 
 def hohlraum(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, stuetzen=None,
-             fuellen=FUELLEN, umkreis=None):
-    """(Hohlraum als Manifold oder None, Ziel-Lagen ohne Gewölbe). stuetzen, umkreis: siehe ceiling; fuellen: siehe spalten."""
+             fuellen=FUELLEN, umkreis=None, saeulen=None, saeulen_hmax=1e9, saeulen_out=None):
+    """(Hohlraum als Manifold oder None, Ziel-Lagen ohne Gewölbe). stuetzen, umkreis, saeulen: siehe ceiling; fuellen: siehe spalten."""
     lay0 = target(solid, wand, dach, step)
     cav = cavity(lay0, step)
     if cav is not None and gewoelbe:
         R, hc, _ = ceiling([(z1, c) for z1, c, _ in lay0], [e for _, _, e in lay0], step, winkel=winkel, first=first, bruecke=bruecke,
-                           stuetzen=stuetzen, umkreis=umkreis)
+                           stuetzen=stuetzen, umkreis=umkreis, saeulen=saeulen, saeulen_hmax=saeulen_hmax, saeulen_out=saeulen_out)
         if np.isfinite(hc).any():
             cav = cav ^ vault_solid(R, hc, lay0[-1][0])
     if cav is not None and fuellen > 0:
@@ -339,6 +373,29 @@ def hohlraum(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKE
         if sp is not None:
             cav = cav - sp
     return cav, lay0
+
+
+def aufsatz(lay0, z0, step=STEP, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, fuellen=FUELLEN, abzug=0.0):
+    """Zweites Gewölbe über der Ebene z0 (Option, Standard aus): Hohlraum (Manifold oder None) nur der Teile des Ziel-Hohlraums über z0,
+    mit einem eigenen Gewölbe, das von allem Material außerhalb dieses oberen Raums aufsteigt (Außenwände, aber auch das Dach eines
+    niedrigeren Nachbarn, an dem ein hoher Gebäudeteil steht). z0 liegt auf dem Lagenraster. Unter z0 gibt es keinen Hohlraum: der Boden
+    des Aufsatzes ist flach (liegt auf Material oder ist die Decke des Raums darunter, falls dieser höher reicht).
+    Das erste Gewölbe (`hohlraum`) nimmt für Stützen mit niedriger Oberkante (Schachtrohr) nur die Rohrkante als Ansatz und lässt über dem
+    Rohr bis zum Dach Material stehen; der Aufsatz überwölbt diesen Raum von den Wänden aus. Beide Räume zusammen sind weiter druckbar:
+    jede Decke steigt für sich mit 45° von ihrem Ansatz auf, und die Vereinigung zweier solcher Räume ist wieder ein solcher Raum.
+    abzug: siehe ceiling. lay0: Ziel-Lagen [(z_oben, Querschnitt, Ziel-Hohlraum)] aus `target`."""
+    e_up = [e if z1 > z0 + 1e-6 else Polygon() for z1, _, e in lay0]
+    cav = cavity([(z1, c, e) for (z1, c, _), e in zip(lay0, e_up)], step)
+    if cav is None:
+        return None
+    R, hc, _ = ceiling([(z1, c) for z1, c, _ in lay0], e_up, step, winkel=winkel, first=first, bruecke=bruecke, abzug=abzug)
+    if np.isfinite(hc).any():
+        cav = cav ^ vault_solid(R, hc, lay0[-1][0])
+    if fuellen > 0:
+        sp = spalten(cav, fuellen, step)
+        if sp is not None:
+            cav = cav - sp
+    return cav
 
 
 def hohl(solid, wand=WAND, dach=DACH, step=STEP, gewoelbe=True, winkel=WINKEL, first=FIRST, bruecke=BRUECKE, mit_hohlraum=False,
