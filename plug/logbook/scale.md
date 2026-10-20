@@ -220,7 +220,7 @@ Die Steckplatte hat jetzt auch die Mulde und das Dock für das **Display-Gebäud
 
 | Größe | Wert (Plattenkoordinaten, SW-Ecke = 0) | Herkunft |
 |---|---|---|
-| Lage Kopf | Ostfläche des Kopfes x = 111,5 (4,1 mm von der Plattenkante, `layout.EAST_XE`), Mitte **y = 34,4** | Vorgabe des Nutzers (Ostrand, Display links = Süden), südlichste Lage der Prüfung (unten) |
+| Lage Kopf | Ostfläche des Kopfes x = 111,5 (4,1 mm von der Plattenkante, `layout.EAST_XE`), Mitte **y = 36,4** (seit 20.10.2026 `NORD_VERSATZ` 2,0 nördlich der südlichsten freien Lage 34,4, Luft zum Nordpfeil 3,5) | Vorgabe des Nutzers (Ostrand, Display links = Süden), südlichste Lage der Prüfung (unten) |
 | Mulde | Fuß 13,86 (x) × 15,48 (y) plus Spiel `CLR_MULDE` 0,15 je Seite = 14,16 × 15,78, x 87,19 bis 101,35, y 26,51 bis 42,29; Kodierecke 3,0 vorn Süd (Südostecke); Tiefe 14,2 bis auf den Muldenboden 0,4; Einführfase 0,5 | 59000df: Hals 15,48 × 7,86 (Schacht 13,08 × 5,46 = V2-Unterbau 12,96 × 5,34 plus 0,06 je Seite, Wand 1,2), Verlängerung nach vorn `FOOT_EXT` 6,0, `KEY` 3,0 |
 | Pin-Löcher | vier, Ø 1,4 mit Fase 0,15 beidseitig, Reihe in y bei x = 91,27 (20,23 hinter der Ostfläche des Kopfes), y = 30,59 / 33,13 / 35,67 / 38,21, Teilung 2,54 | `C.pin_holes` (dieselbe Geometrie wie bei den Gebäuden), gedreht wie D4/D5 in `plug/display/build.py` |
 | Dockzone (Steckerraum unter der Platte) | x 80,95 bis 92,05, y 26,97 bis 41,83 (11,1 × 14,9), Lötenden nach Westen | `BC.dock_zone()` (wie die Gebäude-Docks) |

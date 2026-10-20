@@ -7,7 +7,7 @@ die zwei Dinge, die die Platte mit dem Unterkasten des Konzepts (`plug/power/bui
 1. **Zapfenaufnahmen**: Sacklöcher Ø 4,3 × 2,8 für die Zentrierzapfen Ø 4,0 × 2,5 auf den Stützen des Unterkastens. Lage, Größe und Spiel sind die des
    Konzepts (`PP.PIN_PLAN`, `PP.POST`, Auswahl der Zapfenstützen in `variant()`); die Lagen werden einmal aus dem Konzept gelesen und in
    `plug/scale1176/underside_<Maßstab>.json` zwischengespeichert (wie `placements_<Maßstab>.json`; veraltet der Stand, wird er neu gerechnet).
-2. **Fadenösen** für den Faden zum Doktorhut (keine Schrauben), zwei Formen, umschaltbar mit `FADEN` (Standard `"pille"`):
+2. **Fadenösen** für den Faden zum Doktorhut (keine Schrauben), seit 20.10.2026 abgeschaltet (`FADEN = "keine"`, Befestigung mit Heißkleber); zwei Formen bleiben umschaltbar:
    - `"pille"`: die „halbe Pille mit Steg“ aus `plug/thread/` (Plan Stand 2, abgenickt 16.10.; Luft über dem Steg 4,0, Fase 2,0 am Rand und 1,0 am Steg-Fuß).
      Eckmuster P3 und P45 (Luft 3,0 und 4,5) wurden gedruckt, die Decke war glatt, der Faden ging durch (r6, `plug/thread/round/r6_eckmuster/`). Das ist der
      Stand für die große Platte (`plug/thread/round/r6_eckmuster/summary.md`, „Folgen“). Die Tasche liegt so nah an der Ecke wie möglich, mit 1,4 mm Wand zu Rand,
@@ -43,7 +43,7 @@ from plug.thread import params as TP
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(HERE, "plug", "scale1176", "underside_%d.json")
 
-FADEN = "pille"                                        # "pille" (plug/thread, Standard) oder "v" (V-Kanal des Konzepts, in r4 verworfen)
+FADEN = "keine"                                        # "keine" (Standard seit 20.10.2026: Befestigung mit Heißkleber, Nutzer), "pille" (plug/thread) oder "v" (V-Kanal des Konzepts, in r4 verworfen)
 PILLE_ACHSEN = None                                    # Ausrichtung der Taschen: None = automatisch (so nah an der Ecke wie möglich; an den zwei Ecken der Kante, an der das Powerbank-Fach des
 #   Konzepts liegt, nur mit der schmalen Seite zur Kante, damit die Eckaussparungen dem Fach Platz lassen: bei 30 mm Breite an beiden Ecken hat `build_concept.fach_candidates`
 #   keinen Kandidaten mehr, bei 18 mm bleiben 6); oder ein Tupel ("x", "y") bzw. ("y",) für alle Ecken
@@ -257,7 +257,7 @@ def layout(scale, outline, blocked, refresh=False):
     axes = PILLE_ACHSEN
     if axes is None:                                    # an der Fach-Kante nur die schmale Ausrichtung (Kante N/S: lange Seite in y, Kante W/O: in x)
         axes = {c: ("y",) if data["side"] in "NS" else ("x",) for c in FACH_ECKEN[data["side"]]}
-    faden = place_pillen(outline, blocked, extra_block=zap, axes=axes) if FADEN == "pille" else v_items(data, outline)
+    faden = [] if FADEN == "keine" else (place_pillen(outline, blocked, extra_block=zap, axes=axes) if FADEN == "pille" else v_items(data, outline))
     return dict(pins=[tuple(p) for p in data["pins"]], posts=[tuple(p) for p in data["posts"]], faden=faden, kind=FADEN, uk_t=data["uk_t"], data=data)
 
 
@@ -328,11 +328,16 @@ def walls(base, outline, lay, plate_t):
     fd = faden_polys(lay)
     edge = outline.exterior
     res = {}
-    res["Mulden und Pin-Löchern"] = (min(g.distance(voids) for g in zap), min(g.distance(voids) for g in fd))
-    res["Hof (Aussparung)"] = (min(g.distance(hof) for g in zap) if not hof.is_empty else None,
-                               min(g.distance(hof) for g in fd) if not hof.is_empty else None)
-    res["Plattenrand"] = (min(g.distance(edge) for g in zap), min(g.distance(edge) for g in fd))
-    res["Zapfenloch gegen Fadenöse"] = (min(a.distance(b) for a in zap for b in fd), None)
+
+    def mn(vals):                                                   # ohne Fadenösen (FADEN = "keine") gibt es keinen Wert
+        vals = list(vals)
+        return min(vals) if vals else None
+    res["Mulden und Pin-Löchern"] = (mn(g.distance(voids) for g in zap), mn(g.distance(voids) for g in fd))
+    res["Hof (Aussparung)"] = (mn(g.distance(hof) for g in zap) if not hof.is_empty else None,
+                               mn(g.distance(hof) for g in fd) if not hof.is_empty else None)
+    res["Plattenrand"] = (mn(g.distance(edge) for g in zap), mn(g.distance(edge) for g in fd))
+    if fd:
+        res["Zapfenloch gegen Fadenöse"] = (mn(a.distance(b) for a in zap for b in fd), None)
     return res
 
 
@@ -376,7 +381,9 @@ def report(plate, lay, outline, plate_t, base):
     """Prüfzeilen für `plug.campus.main` (Platte `plate` und Platte `base` ohne Unterseite als Manifold); Rückgabe True, wenn alle harten Prüfungen bestehen."""
     ok = True
     pille_ = lay["kind"] == "pille"
-    print("Unterseite (plug/campus_underside.py; Zapfen aus dem Konzept, Fadenösen: %s):" % ("Tasche mit Steg (plug/thread)" if pille_ else "V-Kanal (Konzept)"))
+    keine = lay["kind"] == "keine"
+    print("Unterseite (plug/campus_underside.py; Zapfen aus dem Konzept, Fadenösen: %s):" % (
+        "keine (Heißkleber)" if keine else ("Tasche mit Steg (plug/thread)" if pille_ else "V-Kanal (Konzept)")))
     print("  %d Zapfenaufnahmen Ø %.1f × %.1f mit Fase %.1f bei %s" % (len(lay["pins"]), LOCH_D, LOCH_T, LOCH_FASE, ", ".join("(%.1f, %.1f)" % p for p in lay["pins"])))
     for c in lay["faden"]:
         if pille_:
@@ -388,7 +395,7 @@ def report(plate, lay, outline, plate_t, base):
     for k, (a, b) in w.items():
         print("  Mindestwand zu %-26s Zapfenlöcher %s · Fadenösen %s" % (k, "%.2f mm" % a if a is not None else "–", "%.2f mm" % b if b is not None else "–"))
         if k == "Plattenrand":
-            ok &= a >= WAND_MIN and b >= f_lim - 0.5          # Randfase unten 0,5 zieht den Rand am Bett um 0,5 zurück
+            ok &= a >= WAND_MIN and (b is None or b >= f_lim - 0.5)     # Randfase unten 0,5 zieht den Rand am Bett um 0,5 zurück
         elif k.startswith("Zapfenloch"):
             ok &= a >= WAND_MIN
         else:
@@ -398,7 +405,8 @@ def report(plate, lay, outline, plate_t, base):
     z_f = (pille().d["ceil"] + 0.6) if pille_ else (PP.V["apex"] + V_D / 2 + 0.6)
     o_f = layer_overhang(plate, faden_polys(lay), z_f)
     print("  Überhang je 0,2-mm-Lage: Zapfenloch größter Sprung %.2f mm bei z = %.1f (Decke Ø %.1f = Brücke %.1f mm, unter 10)" % (o_z[0], o_z[1], LOCH_D, LOCH_D))
-    print("  Überhang je 0,2-mm-Lage: %s größter Sprung %.2f mm bei z = %.1f; über 0,25 mm in %d Lagen%s" % (
+    if not keine:
+        print("  Überhang je 0,2-mm-Lage: %s größter Sprung %.2f mm bei z = %.1f; über 0,25 mm in %d Lagen%s" % (
         "Tasche" if pille_ else "V-Kanal", o_f[0], o_f[1], len(o_f[2]),
         " (Kuppel der Tasche; gedruckt in P3/P45 ohne Support, Decke glatt)" if pille_ and o_f[2] else ""))
     ok &= o_z[0] <= LOCH_D / 2 + 0.3
@@ -496,7 +504,7 @@ def passprobe(scale):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
-    ap.add_argument("--faden", choices=("pille", "v"), default=FADEN)
+    ap.add_argument("--faden", choices=("keine", "pille", "v"), default=FADEN)
     a = ap.parse_args()
     from plug import campus_underside as M        # unter `python -m` ist dieses Modul `__main__`; plug.campus benutzt die Paketfassung
     M.FADEN = a.faden
