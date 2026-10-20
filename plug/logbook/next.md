@@ -43,7 +43,11 @@ Probeteil T2 (Loch 13,7 × 9,0, Wand am Loch 1,2) ist bewährt (`current.md`, Ab
 
 ## Vorgabe 2026-10-20 (Batteriefach Stand 8)
 
-- **Gänge 1 mm flacher: 8 × 4** (nach dem Druck von K4 mit 8 × 5), **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden, **1 mm Luft über dem Knopf** (Raum Ø 25 × 13,0 frei). Knopf Ø 22 × 12 ist eine Annahme, nachmessen.
+- **Fadentaschen raus** aus der Steckplatte (umgesetzt). **Powerbank-Stützen separat drucken** und einkleben, sobald die Lage der Powerbank feststeht (umgesetzt: `U8_auflage.stl`). Display-Mulde auf den zweiten Satz umgestellt (Nutzer: gedruckter Körper hat die Dupont-Buchse direkt im Hals).
+
+- **Knopf nachgemessen: 11 bis 12 mm** (Nutzer), mit 1 mm Luft über 12,0 passt es. Schalterloch Mitte 17,4 über dem Boden ist ok. Kasten als STL erzeugt (`python3 -m plug.power.build_unterkasten8`, `stl/steckmodul_unterkasten8/`), wird über Nacht gedruckt; danach Testbogen (Knopf, Kordel, Decken, Powerbank, Platte aufsetzen).
+
+- **Gänge 1 mm flacher: 8 × 4** (nach dem Druck von K4 mit 8 × 5), **Gangfase innen**, Wände 0,8, Decken über Aushöhlungen 0,48 (3 Lagen × 0,16), **keine Fase unten** an den Mündungen, Knopfraum nicht beschneiden, **1 mm Luft über dem Knopf** (Raum Ø 25 × 13,0 frei).
 
 ## Vorgabe 2026-10-19 (Batteriefach Stand 8)
 

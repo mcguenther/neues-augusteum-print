@@ -412,7 +412,7 @@ def main():
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("--replace", action="store_true", help="Lage der Mulden neu suchen")
     ap.add_argument("--unten-neu", action="store_true", help="Lagen der Zapfenaufnahmen aus dem Konzept (plug/power/build_concept.py) neu lesen")
-    ap.add_argument("--faden", choices=("pille", "v"), help="Form der Fadenösen: pille (Standard, plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
+    ap.add_argument("--faden", choices=("keine", "pille", "v"), help="Fadenösen: keine (Standard seit 20.10.2026, Heißkleber), pille (plug/thread) oder v (V-Kanal des Konzepts, in r4 verworfen)")
     ap.add_argument("--ohne-unten", action="store_true", help="ohne Zapfenaufnahmen und Fadenösen bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     ap.add_argument("--ohne-display", action="store_true", help="ohne Mulde und Pin-Löcher des Display-Gebäudes bauen (Stand davor, nur zum Vergleich; schreibt trotzdem die STL)")
     a = ap.parse_args()
