@@ -8,9 +8,9 @@
  },
  "02_neues_augusteum": {
   "var": "v4",
-  "wall": 4.8,
-  "cx": -47.454,
-  "cy": 12.077,
+  "wall": 1.9,
+  "cx": -37.256,
+  "cy": 11.385,
   "angle": 350
  },
  "03_hoersaalgebaeude": {

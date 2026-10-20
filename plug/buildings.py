@@ -269,6 +269,10 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     body, netz = sauber(body, ids=bool(farb_id))
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
     info["fase_lagen"] = len(huellen)
+    rohr_aussen = G.clean(rohr_fp.intersection(fp))                 # Teil des Rohrs, der in die Fase ragt (steht bis zum Bett)
+    nah = rohr_aussen.difference(fp.buffer(-FUSS_FASE_T, join_style=2)) if not rohr_aussen.is_empty else Polygon()
+    if not nah.is_empty and nah.area >= 0.05:
+        info["fase_rohr_voll_mm2"] = round(nah.area, 1)
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
@@ -299,6 +303,119 @@ def farb_ids(body):
     key = np.where(fid >= FARB_ID0, fid - FARB_ID0 + 1, 0).astype(np.uint32)
     return m3d.Manifold(m3d.Mesh(vert_properties=np.array(np.asarray(m.vert_properties)[:, :3], np.float32, order="C"),
                                  tri_verts=np.array(m.tri_verts, np.uint32, order="C"), face_id=key))
+
+
+BERUEHR_MAX = 12       # mehr Berührkanten werden nicht getrennt (die Suche probiert 2^n Kombinationen; bei der Farbfassung des Seminargebäudes lief sie nie zu Ende)
+
+
+def beruehrkanten_trennen(v, f, eps_max=0.02):
+    """Berührkanten (Kanten mit vier Flächen; Slicer melden sie als nicht-mannigfaltige Kanten) auflösen. An einer solchen Kante berühren sich
+    zwei Keile (Material oder Hohlraum) nur an der Kante. Je Kante gibt es zwei Möglichkeiten, die vier Flächen (nach Winkel um die Kante
+    sortiert) zu zwei Keil-Paaren zu ordnen. Probiert werden alle Kombinationen; gilt eine, bei der danach keine Berührkante mehr bleibt und
+    nichts Neues offen ist, bekommt an den Eckpunkten jeder Kante jedes weitere zusammenhängende Flächenstück (Zusammenhang über reguläre
+    Kanten und über die Paare) einen eigenen Eckpunkt, vom größten Flächenstück weggerückt um höchstens `eps_max` (und ein Viertel der
+    kürzesten anliegenden Kante). Dreiecke bleiben in Anzahl und Reihenfolge (face_id passt weiter).
+    Liefert (Eckpunkte float32, Dreiecke, Zahl der getrennten Kanten); unverändert (0), wenn keine Kombination aufgeht."""
+    import itertools
+    v = np.asarray(v, np.float32)
+    f = np.asarray(f, np.int64)
+    uv, inv = np.unique(v, axis=0, return_inverse=True)           # Eckpunkte nach Lage zusammenfassen wie ein Slicer
+    g = inv.ravel()[f]
+    vd = uv.astype(np.float64)
+    n = len(uv)
+    fi = np.nonzero((g[:, 0] != g[:, 1]) & (g[:, 1] != g[:, 2]) & (g[:, 2] != g[:, 0]))[0]
+    E = np.concatenate([g[fi][:, [0, 1]], g[fi][:, [1, 2]], g[fi][:, [2, 0]]])
+    key = np.sort(E, axis=1) @ np.array([n, 1], np.int64)
+    fo = np.tile(fi, 3)
+    uk, ie, cnt = np.unique(key, return_inverse=True, return_counts=True)
+    bad = [int(b) for b in np.nonzero(cnt > 2)[0]]
+    if not bad:
+        return uv, g, 0
+    cross = np.cross(vd[g[:, 1]] - vd[g[:, 0]], vd[g[:, 2]] - vd[g[:, 0]])      # 2 × Fläche × Normale (nach außen)
+    kantenflaechen = {}
+    for q, kk in zip(fo, ie):
+        kantenflaechen.setdefault(int(kk), []).append(int(q))
+    mog = {}                                                                    # Kante -> {"mat": Paare, "hohl": Paare}
+    for b in bad:
+        fs = kantenflaechen[b]
+        if len(fs) != 4 or len(set(fs)) != 4:
+            return uv, g, 0
+        a, c = int(uk[b] // n), int(uk[b] % n)
+        t = vd[c] - vd[a]
+        t /= np.linalg.norm(t)
+        ds = []
+        for q in fs:
+            w = [x for x in g[q] if x not in (a, c)][0]
+            d = vd[w] - vd[a]
+            d -= d @ t * t
+            ds.append(d / np.linalg.norm(d))
+        t2 = np.cross(t, ds[0])
+        order = [int(i) for i in np.argsort([np.arctan2(d @ t2, d @ ds[0]) for d in ds])]
+        paar = [(fs[order[k]], fs[order[(k + 1) % 4]]) for k in range(4)]       # Nachbarn in der Winkelfolge: Keile (Material oder Hohlraum)
+        mog[b] = {"a": [paar[0], paar[2]], "b": [paar[1], paar[3]]}
+    ecken = sorted({int(x) for b in bad for x in (uk[b] // n, uk[b] % n)})
+    elem = {w: [] for w in ecken}
+    for q in fi:
+        for x in g[q]:
+            if int(x) in elem:
+                elem[int(x)].append(int(q))
+
+    def versuch(wahl):
+        neu_pos, ersatz = [], {}
+        for w in ecken:
+            fl = elem[w]
+            par = {q: q for q in fl}
+
+            def find(x):
+                while par[x] != x:
+                    par[x] = par[par[x]]
+                    x = par[x]
+                return x
+            for q in fl:
+                for k in range(3):
+                    x, y = int(g[q][k]), int(g[q][(k + 1) % 3])
+                    if w not in (x, y):
+                        continue
+                    kk = int(np.searchsorted(uk, min(x, y) * n + max(x, y)))
+                    if cnt[kk] == 2:
+                        o = [r for r in kantenflaechen[kk] if r != q]
+                        if o and o[0] in par:
+                            par[find(q)] = find(o[0])
+            for b, art in zip(bad, wahl):
+                a, c = int(uk[b] // n), int(uk[b] % n)
+                if w in (a, c):
+                    for p0, p1 in mog[b][art]:
+                        par[find(int(p0))] = find(int(p1))
+            grp = {}
+            for q in fl:
+                grp.setdefault(find(q), []).append(q)
+            gruppen = sorted(grp.values(), key=lambda qs: -np.linalg.norm(cross[qs], axis=1).sum())
+            for qs in gruppen[1:]:
+                mitte = np.array([vd[g[q]].mean(axis=0) for q in gruppen[0]]).mean(axis=0)
+                d = vd[w] - mitte                                          # weg vom größten Flächenstück
+                nl = np.linalg.norm(d)
+                if nl < 1e-12:
+                    return None
+                kurz = min(np.linalg.norm(vd[int(x)] - vd[w]) for q in qs for x in g[q] if int(x) != w)
+                neu_pos.append(vd[w] + d / nl * min(eps_max, 0.25 * kurz))
+                ersatz.update({(q, w): n + len(neu_pos) - 1 for q in qs})
+        if not ersatz:
+            return None
+        g2 = g.copy()
+        for (q, w), nn in ersatz.items():
+            g2[q][g2[q] == w] = nn
+        e2 = np.sort(np.concatenate([g2[fi][:, [0, 1]], g2[fi][:, [1, 2]], g2[fi][:, [2, 0]]]), axis=1) @ np.array([n + len(neu_pos), 1], np.int64)
+        if int((np.unique(e2, return_counts=True)[1] != 2).sum()) != int((cnt != 2).sum()) - len(bad):      # alle Berührkanten weg, nichts Neues offen
+            return None
+        return np.concatenate([uv, np.array(neu_pos, np.float32).reshape(-1, 3)]), g2
+
+    if len(bad) > BERUEHR_MAX:                                                  # 2^n Kombinationen: bei vielen Kanten (Farbfassungen) kein Versuch
+        return uv, g, 0
+    for wahl in itertools.product(("a", "b"), repeat=len(bad)):
+        r = versuch(wahl)
+        if r is not None:
+            return r[0], r[1], len(bad)
+    return uv, g, 0
 
 
 def sauber(body, splitter=SPLITTER_MM3, ids=False):
@@ -332,11 +449,23 @@ def sauber(body, splitter=SPLITTER_MM3, ids=False):
     weg = np.abs(sv) < splitter
     bleibt = ~weg[lab[f[:, 0]]]
     f2 = f[bleibt]
-    neu = m3d.Manifold(m3d.Mesh(vert_properties=v, tri_verts=np.array(f2, np.uint32, order="C"),
-                                **(dict(face_id=np.ascontiguousarray(fid[bleibt])) if ids else {})))
+    fid2 = dict(face_id=np.ascontiguousarray(fid[bleibt])) if ids else {}
+    neu = m3d.Manifold(m3d.Mesh(vert_properties=v, tri_verts=np.array(f2, np.uint32, order="C"), **fid2))
     if neu.status() != m3d.Error.NoError or abs(neu.volume() - body.volume()) > 0.002 * abs(body.volume()):
         werte["zurueckgefallen"] = True
         return body, werte
+    # 3. Berührkanten trennen (Keile, die sich nur an einer Kante berühren, bekommen eigene Eckpunkte)
+    mt = neu.to_mesh()
+    vt, ft, ntr = beruehrkanten_trennen(np.asarray(mt.vert_properties)[:, :3], np.asarray(mt.tri_verts))
+    if ntr:
+        fid3 = dict(face_id=np.asarray(mt.face_id, np.uint32)) if ids else {}
+        cand = m3d.Manifold(m3d.Mesh(vert_properties=np.array(vt, np.float32, order="C"), tri_verts=np.array(ft, np.uint32, order="C"), **fid3))
+        if cand.status() == m3d.Error.NoError and abs(cand.volume() - body.volume()) <= 0.002 * abs(body.volume()) \
+                and _netz_werte(vt, ft)[1] < _netz_werte(np.asarray(mt.vert_properties)[:, :3], np.asarray(mt.tri_verts))[1]:
+            neu = cand
+            werte["kanten_getrennt"] = ntr
+        else:
+            werte["kanten_trennen_verworfen"] = True
     m = neu.to_mesh()
     werte["nachher"] = dict(zip(("entartet", "beruehrkanten"), _netz_werte(np.asarray(m.vert_properties)[:, :3], np.asarray(m.tri_verts))))
     werte["schalen_entfernt"] = int(weg.sum())
