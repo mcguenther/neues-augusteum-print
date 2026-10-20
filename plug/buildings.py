@@ -227,12 +227,21 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     # voller Umriss, kein Innenring. Das Stück ist so lang wie das Rohr, der Rest des Umrisses behält die Fase.
     rand = fp.difference(fp.buffer(-(FUSS_FASE_T + hohl.WAND + 0.2)))        # Randstreifen, in dem Fase und Innenring liegen
     schacht_fp = rohr_fp.buffer(-min(ROHR_T, p["wall"]), join_style=2)       # Schacht (Kassette mit Einpressspiel) ohne die Rohrwand
+    info_quer = 0.0
     nah = G.clean(rand.intersection(schacht_fp.buffer(FUSS_FASE_T + hohl.WAND + 0.5)).buffer(0.3, join_style=2)).intersection(fp) \
         if rand.intersection(schacht_fp).area > 0.05 else Polygon()
     if nah.is_empty or nah.area < 0.05:
         body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
     else:
         body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
+        # Am Rand von nah geht die Fasen-Wand (um die Fasentiefe nach innen versetzt) in die volle Wand am Umriss über, ohne dass sie sich
+        # berühren: bis zur Fasenhöhe bliebe dort ein Spalt (Befund 20.10.: Paulinum, Öffnung im Fuß 1,3 bis 2,9 mm über dem Bett, Hohlraum zur
+        # Seite offen; ebenso Neues Augusteum, Seminar- und Institutsgebäude). Querwand in nah entlang dieser Kante, Wandstärke, bis zur Fasenhöhe.
+        kante = unary_union([g.exterior for g in getattr(nah, "geoms", [nah])]).difference(fp.boundary.buffer(0.35))
+        quer = kante.buffer(hohl.WAND, cap_style=2, join_style=2).intersection(nah.buffer(0.05)).intersection(fp).difference(schacht_fp.buffer(0.1))
+        if not quer.is_empty and quer.area > 0.05:
+            body = body + ext(quer, -F - 0.01, zc)
+            info_quer = round(quer.area, 1)
     if farb_id:
         body = farb_ids(body)
     body = body.simplify(hohl.VEREINFACHEN)
@@ -240,6 +249,8 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
     if not nah.is_empty and nah.area >= 0.05:
         info["fase_entfaellt_mm2"] = round(nah.area, 1)
+        if info_quer:
+            info["fase_querwand_mm2"] = info_quer
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt
