@@ -10,7 +10,7 @@ gepflegte Sicht darauf: Was hat geklappt, was nicht, was kommt als Nächstes.
 | [`lessons.md`](lessons.md) | Fehlerkatalog „nicht noch einmal“ und die Vorab-Checkliste vor jeder STL | vor jedem Plan und vor jeder STL |
 | [`next.md`](next.md) | Nächste Drucke mit Priorität, offene Fragen, Ideen | am Anfang einer Runde |
 | [`tasks/`](tasks/) | Aufgaben für andere Chats oder Agenten (Kontext, Vorgaben, Code-Stellen, Abgrenzung), z. B. `faden-v-ueberarbeiten.md`, `fachprobe-auswerten.md` | wenn eine Aufgabe ausgelagert wird |
-| [`scale.md`](scale.md) | Festlegung Maßstab 1:1250, Mulde 4 mm tiefer, v4 als Standard, V2R fürs Hochhaus (Planung, ungetestet) | vor jeder Arbeit an Maßstab, Mulde, Kassettenwahl |
+| [`scale.md`](scale.md) | Festlegung Maßstab (erst 1:1250, am Ende 1:1300), Mulde 4 mm tiefer, v4 als Standard, V2R fürs Hochhaus (Planung, ungetestet) | vor jeder Arbeit an Maßstab, Mulde, Kassettenwahl |
 | [`cassettes.md`](cassettes.md) | Register der Kassetten-Varianten V1, V2, V2R, V1R, V1RS (Maße, Status, offene Punkte, Befehle) | vor jeder Arbeit an der Kassette |
 | [`rounds/`](rounds/) | je Runde ein Ordner: `summary.md` (Ziel, Teile, Ergebnis, Entscheidungen, Folgen, Commits) und `result.txt` (der Ergebnistext des Testbogens, wörtlich), bei Bedarf die eingefrorenen ZIP | zum Nachschlagen |
 

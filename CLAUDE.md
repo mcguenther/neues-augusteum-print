@@ -113,9 +113,9 @@ Regeln dazu:
 - Nicht lesen (groß, erzeugt oder binär): `stl/**`, `data/*.laz`, `data/*.gml`, `data/*.osm`, `plug/**/*.html` (Seiten, 80 KB bis 430 KB),
   `plug/views/**/data.json`, `vorschau/farbvergleich_runde2/index.html` (3,3 MB), `data/messung.json` (70 KB). Gesucht wird mit `Grep`,
   gelesen wird gezielt mit `offset`/`limit`. Quellen der HTML-Seiten sind die `build*.py` und `*.template.html`.
-- Große Skripte nicht ganz lesen: `generate.py` (900 Zeilen; Optionen und `main()` ab Zeile ~840, Gebäudetabelle ab ~39),
+- Große Skripte nicht ganz lesen: `generate.py` (1000 Zeilen; Optionen und `main()` ab Zeile ~936, Gebäudetabelle ab ~43),
   `farbmessung.py` (930), `plug/dupont.py` (950), `plug/series2.py` (600). Erst `grep -n "^def \|^class "`, dann den Abschnitt lesen.
-- Lange Dokumente nur abschnittsweise: `README.md` (26 KB; Blöcke `AUTO` sind erzeugt), `plug/STATUS.md` (30 KB), `plug/PLAN.md` (40 KB).
+- Lange Dokumente nur abschnittsweise: `README.md` (28 KB; Blöcke `AUTO` sind erzeugt), `plug/STATUS.md` (50 KB), `plug/PLAN.md` (48 KB).
   Für den Steckmechanismus zuerst `plug/logbook/README.md`, `current.md`, `lessons.md`.
 - Bilder nur ansehen, wenn sie gezeigt oder beurteilt werden müssen (siehe unten); ein Bild kostet viele Tokens. Eine Ansicht reicht
   meist, `vorschau/vergleich_*.png` statt aller Einzelbilder.
