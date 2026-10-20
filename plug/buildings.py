@@ -177,6 +177,32 @@ def dach45(X, frei, schutz, z0, dz=0.1):
     return G.union(slabs) if slabs else m3d.Manifold()
 
 
+def fasen_huellen(fp, zone, tiefe, L, max_extra=60):
+    """Umriss des Fußes je Lage L von unten: Zielform ist der Grundriss fp, um die Fasentiefe verkleinert und nach oben je Lage um L größer
+    (45°); `zone` (Schachtrohr) gehört immer dazu. Jede Lage darf höchstens um L über die Lage darunter hinausragen: Schmale Teile, die die
+    Zielform erst höher erreicht (Zähne unter 2 × Fasentiefe Breite), wachsen von der Wand aus (kein Überhang über Luft). Reichen die
+    Fasenlagen nicht, folgen weitere Lagen, bis die Hülle den Grundriss ganz füllt. Liste von Polygonen."""
+    n = BC.n_layers(tiefe)
+    huellen, prev = [], None
+    for k in range(n + max_extra):
+        d = max(tiefe - L * (k + 0.5), 0.0)
+        if prev is None:
+            while True:
+                ziel = (fp.buffer(-d) if d > 0 else fp).union(zone)
+                if not ziel.is_empty and ziel.area > 1.0:
+                    break
+                d *= 0.8
+        else:
+            ziel = (fp.buffer(-d) if d > 0 else fp).union(zone)
+            ziel = ziel.intersection(prev.buffer(L + 0.02, join_style=2, mitre_limit=2.0))
+        ziel = G.clean(ziel) if not ziel.is_empty else ziel
+        huellen.append(ziel)
+        prev = ziel
+        if k + 1 >= n and fp.difference(ziel).area < 0.05:
+            break
+    return huellen
+
+
 def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     """Steckbares Hohlgebäude (Manifold, Weltlage, z = 0 Plattenoberseite) und Prüfwerte. rohrstuetze: Rohr trägt das Gewölbe mit
     (Standard STUETZE_ROHR). farb_id: originalID eines gefärbten solid (face_id = Farbnummer + 1, `plug/colour.py`); dann trägt das
@@ -219,38 +245,29 @@ def gebaeude(slug, solid, fp, p, s, rohrstuetze=None, farb_id=None):
     body = body - dach45(oben, cav - rohr, bedarf, zs - 0.02)
     # Fuß-Fase FUSS_FASE_T: außen abschrägen, innen die Wand nachführen (0,8 horizontal), damit keine Schneide entsteht. Nach dem Aushöhlen,
     # weil hohl.py einen nach oben nur abnehmenden Querschnitt erwartet (eine Fase im Volumenkörper macht die Wände darüber zu Gewölbe).
-    zc = -F + BC.n_layers(FUSS_FASE_T) * BC.L + 0.02
-    ch_out = BC.slab_ch(fp, -F, zc, FUSS_FASE_T)
-    ch_in = BC.slab_ch(fp.buffer(-hohl.WAND), -F, zc, FUSS_FASE_T)
-    # Liegt das Schachtrohr näher am Rand als Fase plus Wand (Paulinum, Wand 1,2: die Kassette sitzt dicht an der Nordwand), würde die Fase die
-    # Rohrwand abschneiden und der Innenring der Fase in den Schacht ragen (Kollision). Dort entfällt die Fase auf dem Stück vor dem Rohr:
-    # voller Umriss, kein Innenring. Das Stück ist so lang wie das Rohr, der Rest des Umrisses behält die Fase.
-    rand = fp.difference(fp.buffer(-(FUSS_FASE_T + hohl.WAND + 0.2)))        # Randstreifen, in dem Fase und Innenring liegen
+    # Die Fase läuft um den ganzen Umriss (seit 20.10.; vorher entfiel sie dort, wo das Schachtrohr näher als Fase plus Wand am Rand lag,
+    # beim Paulinum fast überall, und an den Enden dieser Stücke klaffte über dem Bett ein Spalt). Nur das Schachtrohr bleibt, wo es ist, es
+    # steht ohne Fase bis zum Bett; Wand und Rohr gehen ineinander über. Schmale Teile (Zähne, Ausbuchtungen) fehlen in den ersten Lagen und
+    # wachsen aus der Wand heraus, je Lage höchstens um die Lagenhöhe (45°, kein Schweben): siehe fasen_huellen.
     schacht_fp = rohr_fp.buffer(-min(ROHR_T, p["wall"]), join_style=2)       # Schacht (Kassette mit Einpressspiel) ohne die Rohrwand
-    info_quer = 0.0
-    nah = G.clean(rand.intersection(schacht_fp.buffer(FUSS_FASE_T + hohl.WAND + 0.5)).buffer(0.3, join_style=2)).intersection(fp) \
-        if rand.intersection(schacht_fp).area > 0.05 else Polygon()
-    if nah.is_empty or nah.area < 0.05:
-        body = (body ^ (ch_out + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + (ch_out - ch_in)
-    else:
-        body = (body ^ (ch_out + ext(nah, -F - 0.01, zc) + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ((ch_out - ch_in) - ext(nah, -F - 1.0, zc + 1.0))
-        # Am Rand von nah geht die Fasen-Wand (um die Fasentiefe nach innen versetzt) in die volle Wand am Umriss über, ohne dass sie sich
-        # berühren: bis zur Fasenhöhe bliebe dort ein Spalt (Befund 20.10.: Paulinum, Öffnung im Fuß 1,3 bis 2,9 mm über dem Bett, Hohlraum zur
-        # Seite offen; ebenso Neues Augusteum, Seminar- und Institutsgebäude). Querwand in nah entlang dieser Kante, Wandstärke, bis zur Fasenhöhe.
-        kante = unary_union([g.exterior for g in getattr(nah, "geoms", [nah])]).difference(fp.boundary.buffer(0.35))
-        quer = kante.buffer(hohl.WAND, cap_style=2, join_style=2).intersection(nah.buffer(0.05)).intersection(fp).difference(schacht_fp.buffer(0.1))
-        if not quer.is_empty and quer.area > 0.05:
-            body = body + ext(quer, -F, zc)
-            info_quer = round(quer.area, 1)
+    huellen = fasen_huellen(fp, rohr_fp.intersection(fp), FUSS_FASE_T, BC.L)
+    parts, ring = [], []
+    for k, e in enumerate(huellen):
+        za, zb = -F + BC.L * k, -F + BC.L * (k + 1) + 0.01
+        parts.append(ext(e, za, zb))
+        r = e.difference(e.buffer(-hohl.WAND, join_style=2, mitre_limit=3.0))
+        if not r.is_empty and r.area > 0.01:
+            ring.append(ext(r, za, zb))
+    zc = -F + BC.L * len(huellen) + 0.02
+    ch_env = G.union(parts)
+    ring_m = G.union(ring) - cut                                    # Fasen-Wand, nicht in den Schacht (mit Einführfase) hinein
+    body = (body ^ (ch_env + ext(fp.buffer(5.0), zc - 0.01, 300.0))) + ring_m
     if farb_id:
         body = farb_ids(body)
     body = body.simplify(hohl.VEREINFACHEN)
     body, netz = sauber(body, ids=bool(farb_id))
     info = dict(slug=slug, var=var, wall=p["wall"], F=F, rohrstuetze=rohrstuetze, netz=netz)
-    if not nah.is_empty and nah.area >= 0.05:
-        info["fase_entfaellt_mm2"] = round(nah.area, 1)
-        if info_quer:
-            info["fase_querwand_mm2"] = info_quer
+    info["fase_lagen"] = len(huellen)
     kol = (body ^ kas).volume()
     info["kollision_mm3"] = round(kol, 3)
     info["platz_fehlt_mm3"] = round((bedarf - ziel).volume(), 2)    # Platz für die Kassette, den der Ziel-Hohlraum nicht hergibt

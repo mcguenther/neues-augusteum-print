@@ -7,7 +7,7 @@
  "netz": {
   "vorher": {
    "entartet": 6546,
-   "beruehrkanten": 5331
+   "beruehrkanten": 5333
   },
   "nachher": {
    "entartet": 6,
@@ -16,14 +16,13 @@
   "schalen_entfernt": 616,
   "schalen": 1
  },
- "fase_entfaellt_mm2": 268.2,
- "fase_querwand_mm2": 66.8,
+ "fase_lagen": 21,
  "kollision_mm3": 0.0,
  "platz_fehlt_mm3": 0.0,
- "volumen_cm3": 18.37,
+ "volumen_cm3": 18.06,
  "volumen_varianten_cm3": {
-  "mit_rohrstuetze": 19.33,
-  "ohne_rohrstuetze": 18.37
+  "mit_rohrstuetze": 19.02,
+  "ohne_rohrstuetze": 18.06
  },
  "ueberhang": {
   "bruecke_mm2": 4.01,
