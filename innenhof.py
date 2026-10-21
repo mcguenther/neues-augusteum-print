@@ -215,8 +215,8 @@ def denkmal(o, s, data):
     return G.union([G.extrude(sockel, 0, z1), G.extrude(post, z1 - 0.01, z2), fig])
 
 
-def baum(o, s):
-    """Baum: Stamm + Krone als Drehkörper; unten Kegel mit 45° (stützenfrei druckbar)."""
+def baum_teile(o, s):
+    """Baum an seiner Stelle: (Krone, Stamm) als Drehkörper; unten Kegel mit 45° (stützenfrei druckbar)."""
     R = max(o["krone_radius"] * s - KRONE_ABZUG, G.MIN_FEATURE)   # Kronen etwas kleiner, damit sie beim Einsetzen nicht an Gebäuden anstoßen
     top = o["hoehe"] * s
     zb = o["krone_unten"] * s
@@ -228,7 +228,13 @@ def baum(o, s):
     crown = m3d.Manifold.revolve(m3d.CrossSection([np.asarray(prof)]), 32)
     stem = m3d.Manifold.cylinder(zb + 0.02, r0, r0, 16)
     cx, cy = o["mitte"][0] * s, o["mitte"][1] * s
-    return (crown + stem).translate([cx, cy, 0])
+    return crown.translate([cx, cy, 0]), stem.translate([cx, cy, 0])
+
+
+def baum(o, s):
+    """Baum: Stamm + Krone als Drehkörper; unten Kegel mit 45° (stützenfrei druckbar)."""
+    crown, stem = baum_teile(o, s)
+    return crown + stem
 
 
 def probe_polygon(p):
