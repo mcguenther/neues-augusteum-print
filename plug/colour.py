@@ -50,7 +50,7 @@ VIEW = os.path.join(HERE, "plug", "views", "farbig")
 HOF_STL = os.path.join(HERE, "stl", "steckmodul_campus", "hof_einsatz_1zu%d.stl")
 FUSS_Z = 0.05          # Dreiecke mit Mitte unter dieser Höhe gehören zum Fuß (z = 0 ist die Plattenoberseite)
 # Einfarbige Variante (wenig Filamentwechsel): jedes Gebäude in der Farbe, die mit den Hauptfarben die größte Außenfläche hat;
-# der Hof-Einsatz Beige mit grünen Baumkronen (Stämme Beige, Nutzer 19.10.)
+# der Hof-Einsatz Beige mit grünen Bäumen (Krone und Stamm, Nutzer 21.10.; vorher Stämme Beige)
 EINFARBIG_HOF = ("Beige", {"krone": "Grasgrün"})
 PFLICHT = {"08_innenhof": ["Grasgrün"]}   # Bäume im Hof grün, auch wenn ihre Fläche klein ist
 SOCKEL_H = 1.5         # mm über der Plattenoberseite: Zone, deren häufigste Farbe der Fuß bekommt

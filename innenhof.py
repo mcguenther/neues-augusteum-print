@@ -370,7 +370,8 @@ def colour_mesh(tm, to_local, eintrag):
             keys[sel] = "krone"
             r = np.hypot(cen[:, 0] - o["mitte"][0] * s, cen[:, 1] - o["mitte"][1] * s)
             r0 = max(o.get("stamm_radius", 0.2) * s, STAMM_R_MIN) + 0.05
-            keys[sel & (r <= r0) & (np.abs(nz) < 0.5)] = "stamm"
+            # Stamm und Krone in einer Farbe (Nutzer 21.10.: Bäume komplett grün, ein Filament)
+            keys[sel & (r <= r0) & (np.abs(nz) < 0.5)] = "krone"
         else:
             keys[sel] = typ
     return np.array([farbe.get(k, basis) for k in keys], dtype=object)
