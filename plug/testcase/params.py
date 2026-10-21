@@ -38,7 +38,7 @@ SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchsten
 # Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
 CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
             "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
-HOF_CH_T = 3.85         # Einführfase an der Unterkante des Hof-Einsatzes, wie die Fuß-Fase der Gebäude (FUSS_FASE_T 4,0; vorher 0,4); bei HOF_DEPTH_T 6,0 bleiben 2,15 mm senkrechte Wand. 3,85 statt 4,0, weil bei 4,0 und 3,95 an einer Engstelle des Umrisses 14 bis 17 Berührkanten bleiben (3,7 und 3,85: 0)
+HOF_CH_T = 4.0          # Einführfase an der Unterkante des Hof-Einsatzes, wie die Fuß-Fase der Gebäude (FUSS_FASE_T 4,0; vorher 0,4); bei HOF_DEPTH_T 6,0 bleiben 2,0 mm senkrechte Wand. Berührkanten 0 seit die Pflasterfelder überlappen (innenhof.UEBERLAPP)
 HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
 HOF_CLR_T = 0.15        # Fuge Einsatz zu Aussparung je Seite (19.10.2026: 0,10 -> 0,15 wie die Gebäude-Mulden, Beschluss Passung bei wechselnden Filamenten)
 HOF_WALL_T = 0.8        # Trennwand zwischen Hof-Aussparung und Gebäude-Mulde (Nutzer 17.10.: bleibt bei 0,8 mm, Fassung A; B ohne Wand verworfen); oben schneidet die Einführfase der Mulde (MULDE_CH_T) 0,5 ab

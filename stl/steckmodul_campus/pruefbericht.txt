@@ -4,7 +4,7 @@ Dateien (dicht = Manifold-Prüfung der geladenen STL; Berührkanten = Kanten, an
 melden das als nicht-mannigfaltige Kanten und reparieren es beim Laden; entartet = Dreiecke mit zwei Ecken an derselben Stelle, der Slicer löscht
 sie; Slicer-Volumen = Volumen nach der Reparatur in PrusaSlicer, muss gleich sein, sonst füllt der Slicer Hohlräume):
 steckplatte_1zu1300.stl             115.6 ×  220.9 ×   16.9 mm    212.52 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Steckplatte (Sockelplatte oben, flache Unterseite)
-hof_einsatz_1zu1300.stl              35.2 ×   70.6 ×   16.4 mm     10.81 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Innenhof-Einsatz (kommt in die Aussparung der Platte)
+hof_einsatz_1zu1300.stl              35.2 ×   70.6 ×   16.4 mm     10.62 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Innenhof-Einsatz (kommt in die Aussparung der Platte)
 01_paulinum_1zu1300.stl              45.6 ×   28.3 ×   59.4 mm      7.31 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Gebäude: Paulinum
 02_neues_augusteum_1zu1300.stl       47.9 ×   58.9 ×   40.1 mm     27.93 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Gebäude: Neues Augusteum
 03_hoersaalgebaeude_1zu1300.stl      63.2 ×  104.7 ×   32.9 mm     42.83 cm³  dicht=True  Berührkanten    0  entartet 0  Slicer-Prüfung entfällt   Gebäude: Hörsaalgebäude

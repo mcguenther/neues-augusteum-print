@@ -48,6 +48,7 @@ ROOF_NZ = G.ROOF_NZ
 HOF_UEBERMASS = 2.0     # m: OSM-Fläche wird um so viel vergrößert, damit sie bis an die Laser-Grundrisse der Gebäude reicht
 STAMM_ALS_KRONE = True  # Stamm in der Farbe der Krone (grün); False = Stamm in der Stammfarbe der Zonen (plug.colour --staemme-beige)
 STAMM_R_MIN = 1.2       # mm: Mindestradius der Baumstämme (Ø 2,4; Nutzer 21.10.: Stämme mit Ø 0,8 brachen beim Drucken ab)
+UEBERLAPP = 0.003       # mm: Pflasterfelder überlappen so weit (siehe model)
 KRONE_ABZUG = 1.0       # mm: Kronenradius der Bäume wird um so viel verkleinert (Nutzer 17.10.: Kronen stoßen sonst beim Einsetzen an)
 HOF_MIN_BREITE = 4.0    # mm: Zungen und Zähne im Umriss, die schmaler sind, entfallen (Einsatz bricht dort, Aussparung wird zum Steg)
 
@@ -311,8 +312,8 @@ def model(s, building_fps_mm, tiefe=None, spiel=0.0, abstand=None):
         part = G.clean(rest.intersection(f))
         rest = G.clean(rest.difference(f))
         if not part.is_empty:
-            slabs.append(G.extrude(part, -T, H))
-    slabs.append(G.extrude(rest, -T, H))
+            slabs.append(G.extrude(G.clean(part.buffer(UEBERLAPP, join_style=2).intersection(fp)), -T, H))   # leicht überlappend: sonst bleibt an der Feldgrenze ein haarfeiner Spalt (Berührkanten)
+    slabs.append(G.extrude(G.clean(rest.buffer(UEBERLAPP, join_style=2).intersection(fp)), -T, H))
     solids = [prism(terrasse_mm(fp, s, data), data["terrasse_hoehe"] * s)]
     for _, stufen in treppen_mm(fp, s, data):      # Stufen von der Terrasse zum Hof: Aufbau auf dem Hofboden
         solids += [G.extrude(poly, 0, top) for poly, top in stufen if top > 1e-6]
@@ -337,6 +338,33 @@ def model(s, building_fps_mm, tiefe=None, spiel=0.0, abstand=None):
                            flaeche_m2=round(fp.area / s / s))
 
 
+def fasenlagen(fp, tiefe, L, max_extra=60):
+    """Umriss je Lage von unten für die Fuß-Fase des Einsatzes: wie `plug.buildings.fasen_huellen` (Grundriss um die Fasentiefe verkleinert, nach
+    oben je Lage um L größer, höchstens L Überstand über die Lage darunter). Teile des Umrisses, die schmaler als 2 × Fasentiefe sind (spitze
+    Ecken, der Gang im Süden), bekommen keine Fase und stehen von der ersten Lage an in voller Breite: Sie würden sonst erst von der Wand aus mit
+    nur L je Lage wachsen und erreichen die Oberfläche nicht (Spalt bis 2,7 mm zur Aussparung), und eine Zunge von fast genau 2 × Fasentiefe
+    Breite lässt haarfeine Streifen entstehen, die im Netz Kanten mit vier Flächen erzeugen (Berührkanten, nicht-mannigfaltig)."""
+    n = int(round(tiefe / L))
+    schmal = fp.difference(fp.buffer(-tiefe, join_style=2).buffer(tiefe, join_style=2))
+    schmal = G.clean(schmal.buffer(-0.05, join_style=2).buffer(0.05, join_style=2)) if not schmal.is_empty else schmal
+    huellen, prev = [], None
+    for k in range(n + max_extra):
+        d = max(tiefe - L * (k + 0.5), 0.0)
+        ziel = (fp.buffer(-d, join_style=2) if d > 0 else fp)
+        if d > 0:
+            ziel = G.clean(ziel.union(schmal).intersection(fp))
+        if prev is not None:
+            ziel = ziel.intersection(prev.buffer(L + 0.02, join_style=2, mitre_limit=2.0))
+        elif ziel.is_empty:
+            continue
+        ziel = G.clean(ziel) if not ziel.is_empty else ziel
+        huellen.append(ziel)
+        prev = ziel
+        if k + 1 >= n and fp.difference(ziel).area < 0.05:
+            break
+    return huellen
+
+
 def einfuehrfase(fp, T, H, zmax):
     """Hüllkörper mit 45°-Fase an der Unterkante des Einsatzes (Bettkante, plan.params HOF_CH_T), damit er wie ein Gebäudefuß eingesetzt
     wird: Schichtweise Treppe aus 0,2-mm-Scheiben, darüber unbeschnitten."""
@@ -345,7 +373,7 @@ def einfuehrfase(fp, T, H, zmax):
     ch, layer = P.HOF_CH_T, 0.2
     parts = []
     # wie der Gebäudefuß (plug/buildings.py fasen_huellen): Lagen wachsen höchstens 0,2 je Lage aus der Wand, schmale Zungen ohne Überhang
-    huellen = BU.fasen_huellen(fp, Polygon(), ch, layer)
+    huellen = fasenlagen(fp, ch, layer)
     for k, h in enumerate(huellen):
         if not h.is_empty:
             parts.append(G.extrude(h, -T + layer * k - (0.01 if k == 0 else 0), -T + layer * (k + 1) + 0.01))
