@@ -46,6 +46,7 @@ ROOF_NZ = G.ROOF_NZ
 
 # Blockiger Umriss (Aussparung und Einsatz sind ein Klotz, keine Stege): Form und Treppen in data/innenhof.json, "form"
 HOF_UEBERMASS = 2.0     # m: OSM-Fläche wird um so viel vergrößert, damit sie bis an die Laser-Grundrisse der Gebäude reicht
+STAMM_R_MIN = 1.2       # mm: Mindestradius der Baumstämme (Ø 2,4; Nutzer 21.10.: Stämme mit Ø 0,8 brachen beim Drucken ab)
 KRONE_ABZUG = 1.0       # mm: Kronenradius der Bäume wird um so viel verkleinert (Nutzer 17.10.: Kronen stoßen sonst beim Einsetzen an)
 HOF_MIN_BREITE = 4.0    # mm: Zungen und Zähne im Umriss, die schmaler sind, entfallen (Einsatz bricht dort, Aussparung wird zum Steg)
 
@@ -218,7 +219,7 @@ def baum(o, s):
     R = max(o["krone_radius"] * s - KRONE_ABZUG, G.MIN_FEATURE)   # Kronen etwas kleiner, damit sie beim Einsetzen nicht an Gebäuden anstoßen
     top = o["hoehe"] * s
     zb = o["krone_unten"] * s
-    r0 = max(o.get("stamm_radius", 0.2) * s, G.MIN_FEATURE / 2)
+    r0 = max(o.get("stamm_radius", 0.2) * s, STAMM_R_MIN)
     zm = min(zb + R - r0, top - 0.3 * R)  # breiteste Stelle
     zb = zm - (R - r0)
     prof = [(0, zb - 0.01), (r0, zb - 0.01), (R, zm), (R * 0.92, zm + 0.35 * (top - zm)),
@@ -368,7 +369,7 @@ def colour_mesh(tm, to_local, eintrag):
         elif typ == "baum":
             keys[sel] = "krone"
             r = np.hypot(cen[:, 0] - o["mitte"][0] * s, cen[:, 1] - o["mitte"][1] * s)
-            r0 = max(o.get("stamm_radius", 0.2) * s, G.MIN_FEATURE / 2) + 0.05
+            r0 = max(o.get("stamm_radius", 0.2) * s, STAMM_R_MIN) + 0.05
             keys[sel & (r <= r0) & (np.abs(nz) < 0.5)] = "stamm"
         else:
             keys[sel] = typ
