@@ -311,7 +311,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Trennwände zwischen Gebäuden (vier Nähte ohne Abstand, Überlappung Paulinum/Augusteum, Fuge 1,0 mm mit Wand 0,8; umgesetzt 17.10.) | `plug/divider/page.html` | https://claude.ai/artifact/Y42LWUu238fVaq5QXeQk1d |
 | Kassetten-Lage Augusteum (App: Schacht der Kassette im Neuen Augusteum ziehen und drehen; Prüfung live nach Gebäude, Platte und Batteriefach: Wand, Dachhöhe, Luft über der LED, Dock, Powerbank, Elektronik, Schalter, Stützen und Zapfen des Unterkastens) | `plug/kassette_app/app.html` | https://claude.ai/artifact/2WKvSwf6juHasNW3mT9eyJ |
 | Schaltplan und Lötplan (Übersicht, Stromweg, Dock, I²C, Last, Einbauhöhe ESP32, Verbindungsliste, Lötanleitung ohne Platine, INA226-Parallelwiderstand) | `plug/power/wiring.html` | https://claude.ai/artifact/E3N36JZyLHKj5354RRspRz |
-| Produktseite Campus Augustusplatz (Hero mit 3D-Modell, Datenquellen, Funktionen, Licht mit Farb- und Effektwahl, Explosionsansicht beim Scrollen, Schnitt durch ein Dock, technische Daten) | `product/index.html` (Daten: `python3 -m product.build_assets`) | https://claude.ai/artifact/PCPedp9zxvSZd33hRWvYpJ |
+| Produktseite Campus Augustusplatz (Hero mit 3D-Modell, Datenquellen, Funktionen, Licht mit den acht Einsteck-Animationen der Firmware V11, Display mit W und Wh wie auf dem OLED, Explosionsansicht beim Scrollen, Schnitt durch ein Dock, technische Daten; Stand 20.10.: Sockel Stand 8, Heißkleber, Spiel 0,15, Kassette K5, Fuß-Fase 4,0) | `product/index.html` (Daten: `python3 -m product.build_assets`) | https://claude.ai/artifact/PCPedp9zxvSZd33hRWvYpJ |
 
 Nach jeder Konstantenänderung neu erzeugen und veröffentlichen.
 
