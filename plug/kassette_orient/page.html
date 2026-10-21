@@ -1,0 +1,248 @@
+<title>Kassetten-Ausrichtung</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Aufbau: links die Steckplatte von oben mit allen sechs Kassetten, rechts das gewählte Gebäude (Lage, Kassette mit Rändern, Kompass) */
+:root {
+  --bg: #eceff2; --surface: #fafbfc; --fg: #1a2027; --muted: #566270; --line: #d1d7dd;
+  --bld: #dfe4e8; --bld-line: #8b97a3; --nachbar: #c3cbd2; --cass: #c9d0d6; --cass-line: #4d5864; --tasche: #fafbfc;
+  --narrow: #d9480f; --thick: #2f7fc1; --focus: #1a2027;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14181c; --surface: #1c2227; --fg: #e8ecef; --muted: #9aa6b1; --line: #313a42;
+    --bld: #2a3239; --bld-line: #6b7782; --nachbar: #3a444c; --cass: #46515b; --cass-line: #aab5bf; --tasche: #1c2227;
+    --narrow: #ff8a4c; --thick: #6aaae6; --focus: #e8ecef; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14181c; --surface: #1c2227; --fg: #e8ecef; --muted: #9aa6b1; --line: #313a42;
+  --bld: #2a3239; --bld-line: #6b7782; --nachbar: #3a444c; --cass: #46515b; --cass-line: #aab5bf; --tasche: #1c2227;
+  --narrow: #ff8a4c; --thick: #6aaae6; --focus: #e8ecef; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.5; padding-block: 24px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+header h1 { font-size: 26px; font-weight: 600; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 68ch; }
+.layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+h2 { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--sans); fill: var(--fg); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.tabs button { font: inherit; font-size: 13px; color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.tabs button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.tabs button:focus-visible, .geb:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.tabs .typ { font-family: var(--mono); font-size: 11px; opacity: .75; }
+.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 14px; }
+.head .big { font-size: 34px; font-weight: 600; line-height: 1.1; color: var(--narrow); }
+.head .sub { color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.cap { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line); }
+th { font-weight: 500; color: var(--muted); }
+td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; padding-right: 0; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: baseline; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin-top: 10px; }
+.geb { cursor: pointer; }
+.geb:hover .cassbody { stroke-width: 1.1; }
+.note { font-size: 13px; color: var(--muted); max-width: 80ch; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } .two { grid-template-columns: minmax(0, 1fr); } .head .big { font-size: 28px; } }
+</style>
+
+<main>
+  <header>
+    <h1>Kassetten-Ausrichtung</h1>
+    <p>Die Kassetten V1RS und V2R haben unten einen schmalen Rand vorn (1,18 mm) und einen breiten hinten (2,24 mm). Vorn blickt die LED hin. Hier steht, in welche Himmelsrichtung die schmale Seite in jedem Gebäude zeigt.</p>
+  </header>
+
+  <div class="layout">
+    <section class="panel" aria-label="Steckplatte von oben">
+      <h2>Steckplatte 1:1300, Norden oben</h2>
+      <svg id="uebersicht" role="img" aria-label="Grundriss der Steckplatte mit den sechs Kassetten und Pfeilen zur schmalen Seite"></svg>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--narrow)"></span>schmaler Rand 1,18 mm</span>
+        <span><span class="dot" style="background:var(--thick)"></span>breiter Rand 2,24 mm</span>
+        <span>Pfeil: Richtung der schmalen Seite</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Gewähltes Gebäude">
+      <div class="tabs" id="tabs" role="group" aria-label="Gebäude wählen"></div>
+      <div class="head">
+        <span class="big" id="richtung"></span>
+        <span class="sub" id="untertitel"></span>
+      </div>
+      <div class="two">
+        <div>
+          <h2>Im Gebäude</h2>
+          <svg id="lage" role="img" aria-label="Fuß des Gebäudes mit der Kassette von oben"></svg>
+          <p class="cap">Schnitt durch den Fuß von oben. Grau: Nachbargebäude.</p>
+        </div>
+        <div>
+          <h2>Kassette mit Rändern</h2>
+          <svg id="kassette" role="img" aria-label="Kassette von oben auf den Boden gesehen mit Rändern in Millimetern"></svg>
+          <p class="cap">Schnitt knapp über dem Boden, so wie sie im Schacht liegt.</p>
+        </div>
+      </div>
+      <table style="margin-top:16px" aria-label="Ränder">
+        <thead><tr><th>Rand</th><th>Seite</th><th class="n">mm</th></tr></thead>
+        <tbody id="raender"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <p class="note">Gedreht wird die Kassette mit dem Winkel aus <span class="mono">placements_1300.json</span>, wie beim Schneiden des Schachts in <span class="mono">plug.buildings</span>. Die Himmelsrichtung ist die Richtung von „vorn“ (−y der Kassette) in der Weltlage, Norden oben, Osten rechts. Nicht am gedruckten Teil geprüft. Die LED-Streifen sind nicht eingezeichnet.</p>
+</main>
+
+<script>
+const DATA = [{"slug":"01_paulinum","name":"Paulinum","var":"v4","angle":258.0,"cx":-38.648,"cy":47.82,"yoff":-14.72,"bearing":282,"kompass":"West","kassette":{"hx":6.68,"y0":0.07,"y1":29.37,"hoehe":17.1},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-64.8,44.76],[-61.46,60.82],[-19.44,52.11],[-19.87,49.99],[-19.17,49.85],[-19.7,47.3],[-19.31,47.22],[-19.73,45.22],[-20.12,45.3],[-21.2,40.14],[-20.81,40.06],[-21.23,38.06],[-21.62,38.15],[-22.08,35.95],[-22.77,36.09],[-23.48,32.55],[-24.48,32.77],[-23.74,36.29],[-31.02,37.79],[-31.99,33.1],[-39.01,34.54],[-38.04,39.24],[-64.8,44.76]]]},{"slug":"02_neues_augusteum","name":"Neues Augusteum","var":"v4","angle":350.0,"cx":-37.256,"cy":11.385,"yoff":-14.72,"bearing":190,"kompass":"Süd","kassette":{"hx":6.68,"y0":0.07,"y1":29.37,"hoehe":17.1},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-62.0,42.13],[-62.67,39.11],[-62.44,39.06],[-62.59,38.38],[-62.36,38.33],[-62.35,38.14],[-60.77,37.81],[-60.75,37.67],[-60.24,37.57],[-60.04,37.66],[-59.4,37.53],[-59.12,37.59],[-58.42,37.56],[-56.94,37.26],[-56.36,37.26],[-53.66,36.63],[-53.39,36.78],[-52.94,36.65],[-52.3,36.34],[-51.55,36.25],[-50.61,35.89],[-50.04,35.89],[-49.47,35.59],[-48.25,35.21],[-48.26,35.08],[-46.93,34.59],[-45.96,34.02],[-44.98,38.51],[-45.2,38.56],[-45.06,39.32],[-45.19,39.35],[-45.14,39.58],[-45.81,39.72],[-45.79,39.82],[-39.22,38.46],[-40.2,33.77],[-31.22,31.92],[-30.24,36.61],[-24.93,35.51],[-25.66,32.01],[-24.27,31.7],[-28.13,13.19],[-26.53,12.81],[-26.78,11.66],[-26.05,11.49],[-27.61,5.15],[-27.14,5.05],[-27.45,3.56],[-27.04,3.46],[-27.12,3.14],[-26.57,3.02],[-26.59,2.92],[-26.46,2.88],[-26.61,2.85],[-27.54,-0.84],[-27.4,-0.94],[-27.56,-0.9],[-27.59,-1.01],[-28.11,-0.89],[-28.17,-1.14],[-28.69,-1.09],[-29.09,-3.0],[-29.61,-2.89],[-31.16,-9.21],[-31.91,-9.03],[-32.18,-10.1],[-33.35,-9.81],[-33.69,-11.2],[-38.31,-10.28],[-39.43,-15.65],[-58.88,-11.65],[-58.78,-11.17],[-59.79,-10.96],[-58.52,-5.08],[-72.18,-2.2],[-71.33,1.83],[-71.71,1.91],[-71.31,3.86],[-72.06,4.02],[-71.22,8.0],[-70.47,7.85],[-70.06,9.81],[-69.67,9.73],[-69.13,12.31],[-69.59,12.6],[-70.04,13.12],[-70.29,13.85],[-70.29,14.49],[-69.52,19.36],[-68.07,26.8],[-66.61,33.02],[-65.59,36.75],[-65.08,37.5],[-64.37,37.9],[-63.78,38.04],[-62.68,43.3],[-60.78,42.91],[-61.27,42.99],[-61.62,42.76],[-61.72,42.31],[-62.0,42.13]]]},{"slug":"03_hoersaalgebaeude","name":"Hörsaalgebäude","var":"v4","angle":350.0,"cx":-90.176,"cy":-48.499,"yoff":-14.72,"bearing":190,"kompass":"Süd","kassette":{"hx":6.68,"y0":0.07,"y1":29.37,"hoehe":17.1},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-65.28,-46.47],[-66.68,-50.79],[-68.73,-55.33],[-68.86,-55.58],[-69.18,-55.75],[-69.26,-56.05],[-69.52,-56.25],[-69.54,-56.48],[-69.82,-56.92],[-69.85,-57.15],[-70.13,-57.58],[-70.15,-57.81],[-70.41,-58.02],[-70.46,-58.47],[-70.74,-58.91],[-70.76,-59.14],[-71.01,-59.34],[-71.04,-59.57],[-71.29,-59.78],[-71.42,-60.69],[-71.93,-61.33],[-71.95,-61.56],[-72.23,-62.0],[-72.36,-62.91],[-72.62,-63.11],[-72.64,-63.34],[-72.89,-63.55],[-72.95,-64.09],[-72.72,-64.11],[-72.67,-64.35],[-70.91,-64.54],[-70.88,-64.73],[-70.5,-64.77],[-74.22,-82.57],[-103.45,-103.91],[-122.75,-42.07],[-117.65,-17.67],[-102.81,-20.72],[-103.53,-24.22],[-94.32,-26.11],[-88.74,0.74],[-73.26,-2.48],[-73.36,-2.97],[-59.71,-5.85],[-60.98,-11.74],[-59.96,-11.94],[-60.06,-12.42],[-59.57,-12.52],[-61.61,-22.26],[-63.18,-22.09],[-63.15,-21.86],[-64.38,-21.76],[-64.56,-23.42],[-64.33,-23.44],[-64.43,-24.36],[-64.24,-24.41],[-64.45,-26.68],[-64.22,-26.7],[-64.25,-26.93],[-64.05,-26.98],[-64.29,-29.48],[-64.1,-29.53],[-64.12,-29.76],[-63.89,-29.79],[-63.94,-30.25],[-64.18,-30.6],[-64.24,-31.11],[-64.04,-31.16],[-64.09,-31.62],[-63.79,-31.66],[-63.73,-36.74],[-64.21,-41.52],[-65.28,-46.47]]]},{"slug":"04_seminargebaeude","name":"Seminargebäude","var":"V1RS","angle":79.0,"cx":-101.375,"cy":24.722,"yoff":-3.2,"bearing":101,"kompass":"Ost","kassette":{"hx":9.53,"y0":0.07,"y1":6.33,"hoehe":27.69},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-101.04,-14.04],[-116.66,-10.82],[-113.2,5.81],[-113.01,5.77],[-110.89,15.98],[-111.07,16.02],[-107.59,32.77],[-107.4,32.73],[-105.28,42.93],[-105.46,42.97],[-102.21,58.61],[-102.2,58.71],[-102.33,58.73],[-102.26,59.06],[-102.06,59.25],[-101.7,61.03],[-86.53,57.87],[-86.81,56.56],[-86.33,56.47],[-89.82,39.73],[-90.39,39.85],[-92.51,29.66],[-91.95,29.54],[-95.44,12.78],[-96.01,12.9],[-98.13,2.71],[-97.57,2.59],[-101.04,-14.04]]]},{"slug":"05_institutsgebaeude","name":"Institutsgebäude","var":"V1RS","angle":348.0,"cx":-71.356,"cy":78.128,"yoff":-3.2,"bearing":192,"kompass":"Süd","kassette":{"hx":9.53,"y0":0.07,"y1":6.33,"hoehe":27.69},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-83.89,70.44],[-86.33,58.85],[-101.01,61.9],[-100.95,62.17],[-101.49,62.28],[-99.19,73.32],[-111.4,75.91],[-107.83,92.93],[-80.75,87.33],[-30.97,75.94],[-34.28,60.17],[-83.89,70.44]]]},{"slug":"06_city_hochhaus","name":"City-Hochhaus","var":"V2R","angle":53.0,"cx":-53.91,"cy":-46.821,"yoff":-3.2,"bearing":127,"kompass":"Südost","kassette":{"hx":6.41,"y0":0.07,"y1":6.33,"hoehe":36.89},"tasche":{"hx":5.23,"y0":1.25,"y1":4.09},"umriss":[[[-33.02,-52.79],[-33.14,-53.43],[-37.3,-53.8],[-41.42,-54.54],[-46.08,-55.95],[-50.59,-57.78],[-54.9,-60.02],[-57.66,-61.75],[-59.5,-63.19],[-60.04,-62.74],[-59.86,-62.53],[-61.13,-61.01],[-63.0,-59.22],[-65.05,-57.66],[-67.27,-56.34],[-67.44,-56.56],[-68.02,-56.13],[-65.75,-51.15],[-64.23,-46.48],[-63.22,-41.67],[-62.73,-36.78],[-62.81,-31.24],[-62.15,-31.06],[-62.06,-31.34],[-58.85,-30.88],[-55.73,-29.97],[-52.78,-28.64],[-52.86,-28.35],[-52.2,-28.17],[-49.13,-33.19],[-48.95,-33.05],[-46.62,-36.35],[-46.24,-36.09],[-46.13,-36.24],[-46.49,-36.52],[-43.65,-39.41],[-41.31,-41.5],[-39.07,-43.25],[-36.03,-45.3],[-31.91,-47.56],[-32.07,-48.23],[-32.35,-48.15],[-32.89,-49.62],[-33.21,-51.14],[-33.3,-52.7],[-33.02,-52.79]]]}];
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+const de = (x, n = 2) => x.toFixed(n).replace(".", ",");
+const LABEL = {   // Kurzname und Lage (mm, Weltlage) in der Übersicht
+  "01_paulinum": ["Paulinum", -48, 40.5], "02_neues_augusteum": ["Augusteum", -54, 30], "03_hoersaalgebaeude": ["Hörsaal", -91, -30],
+  "04_seminargebaeude": ["Seminar", -101, 48], "05_institutsgebaeude": ["Institut", -71, 97], "06_city_hochhaus": ["Hochhaus", -50, -67],
+};
+let sel = Math.max(0, DATA.findIndex((b) => b.var === "V1RS"));
+
+function el(parent, tag, attrs = {}, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  parent.appendChild(e);
+  return e;
+}
+const pts = (a) => a.map((p) => p[0].toFixed(2) + "," + (-p[1]).toFixed(2)).join(" ");   // y wird gespiegelt: Norden / vorn oben
+
+function toWorld(b, x, y) {
+  const a = b.angle * Math.PI / 180, y2 = y + b.yoff;
+  return [x * Math.cos(a) - y2 * Math.sin(a) + b.cx, x * Math.sin(a) + y2 * Math.cos(a) + b.cy];
+}
+function rects(b) {
+  const k = b.kassette, t = b.tasche, v4 = b.var === "v4";
+  return {
+    body: [[-k.hx, k.y0], [k.hx, k.y0], [k.hx, k.y1], [-k.hx, k.y1]],
+    tasche: [[-t.hx, t.y0], [t.hx, t.y0], [t.hx, t.y1], [-t.hx, t.y1]],
+    schmal: [[-k.hx, k.y0], [k.hx, k.y0], [k.hx, t.y0], [-k.hx, t.y0]],
+    breit: v4 ? null : [[-k.hx, t.y1], [k.hx, t.y1], [k.hx, k.y1], [-k.hx, k.y1]],
+  };
+}
+function weltRects(b) {
+  const r = rects(b), o = {};
+  for (const k in r) o[k] = r[k] && r[k].map((p) => toWorld(b, p[0], p[1]));
+  return o;
+}
+function richtung(b) { const a = b.angle * Math.PI / 180; return [Math.sin(a), -Math.cos(a)]; }   // lokal −y in Weltlage
+
+function pfeil(g, von, nach, breite = 1.1, kopf = 3.2) {
+  const dx = nach[0] - von[0], dy = nach[1] - von[1], l = Math.hypot(dx, dy), ux = dx / l, uy = dy / l;
+  const bx = nach[0] - ux * kopf, by = nach[1] - uy * kopf;
+  el(g, "line", { x1: von[0], y1: -von[1], x2: bx, y2: -by, stroke: "var(--narrow)", "stroke-width": breite, "stroke-linecap": "round" });
+  el(g, "polygon", { points: [[nach[0], nach[1]], [bx - uy * kopf * .55, by + ux * kopf * .55], [bx + uy * kopf * .55, by - ux * kopf * .55]].map((p) => p[0].toFixed(2) + "," + (-p[1]).toFixed(2)).join(" "), fill: "var(--narrow)" });
+}
+function kassetteZeichnen(g, w, opt = {}) {
+  el(g, "polygon", { class: "cassbody", points: pts(w.body), fill: "var(--cass)", stroke: "var(--cass-line)", "stroke-width": opt.lw || .5, "stroke-linejoin": "round" });
+  el(g, "polygon", { points: pts(w.tasche), fill: "var(--tasche)", stroke: "var(--cass-line)", "stroke-width": (opt.lw || .5) * .8 });
+  if (w.breit) el(g, "polygon", { points: pts(w.breit), fill: "var(--thick)", "fill-opacity": .75 });
+  el(g, "polygon", { points: pts(w.schmal), fill: "var(--narrow)" });
+}
+function nordpfeil(svg, x, y, l) {
+  const g = el(svg, "g");
+  el(g, "line", { x1: x, y1: y + l, x2: x, y2: y, stroke: "var(--fg)", "stroke-width": l * .07 });
+  el(g, "polygon", { points: `${x},${y - l * .08} ${x - l * .17},${y + l * .28} ${x + l * .17},${y + l * .28}`, fill: "var(--fg)" });
+  el(g, "text", { x, y: y - l * .22, "text-anchor": "middle", "font-size": l * .5, "font-weight": 600 }, "N");
+}
+
+function uebersicht() {
+  const svg = $("uebersicht"); svg.innerHTML = "";
+  const all = DATA.flatMap((b) => b.umriss.flat());
+  const x0 = Math.min(...all.map((p) => p[0])) - 6, x1 = Math.max(...all.map((p) => p[0])) + 6;
+  const y0 = Math.min(...all.map((p) => p[1])) - 6, y1 = Math.max(...all.map((p) => p[1])) + 12;
+  svg.setAttribute("viewBox", `${x0} ${-y1} ${x1 - x0} ${y1 - y0}`);
+  nordpfeil(svg, x0 + 7, -y1 + 11, 12);
+  DATA.forEach((b, i) => {
+    const g = el(svg, "g", { class: "geb", tabindex: 0, role: "button", "aria-label": b.name + ": schmale Seite nach " + b.kompass });
+    b.umriss.forEach((r) => el(g, "polygon", { points: pts(r), fill: i === sel ? "var(--bld)" : "none", stroke: i === sel ? "var(--fg)" : "var(--bld-line)", "stroke-width": i === sel ? .9 : .5, "stroke-linejoin": "round" }));
+    const w = weltRects(b);
+    kassetteZeichnen(g, w, { lw: .35 });
+    const k = b.kassette, c = toWorld(b, 0, (k.y0 + (b.var === "v4" ? 6 : k.y1)) / 2), e = toWorld(b, 0, k.y0), d = richtung(b);
+    pfeil(g, c, [e[0] + d[0] * 9, e[1] + d[1] * 9], 1.2, 3.4);
+    g.addEventListener("click", () => waehle(i));
+    g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); waehle(i); } });
+    const L = LABEL[b.slug];
+    const lbl = el(g, "text", { x: L[1], y: -L[2], "text-anchor": "middle", "font-size": 4, "font-weight": i === sel ? 600 : 400 }, L[0]);
+    lbl.setAttribute("paint-order", "stroke"); lbl.setAttribute("stroke", "var(--surface)"); lbl.setAttribute("stroke-width", 1.4);
+  });
+}
+
+function lage(b) {
+  const svg = $("lage"); svg.innerHTML = "";
+  const k = b.kassette, c = toWorld(b, 0, (k.y0 + (b.var === "v4" ? 6 : k.y1)) / 2), R = 17;
+  svg.setAttribute("viewBox", `${c[0] - R} ${-c[1] - R} ${2 * R} ${2 * R}`);
+  el(svg, "rect", { x: c[0] - R, y: -c[1] - R, width: 2 * R, height: 2 * R, fill: "none" });
+  DATA.forEach((o) => { if (o !== b) o.umriss.forEach((r) => el(svg, "polygon", { points: pts(r), fill: "none", stroke: "var(--nachbar)", "stroke-width": .5 })); });
+  b.umriss.forEach((r) => el(svg, "polygon", { points: pts(r), fill: "var(--bld)", stroke: "var(--bld-line)", "stroke-width": .6, "stroke-linejoin": "round" }));
+  kassetteZeichnen(svg, weltRects(b), { lw: .4 });
+  const e = toWorld(b, 0, k.y0), d = richtung(b);
+  pfeil(svg, c, [e[0] + d[0] * 11, e[1] + d[1] * 11], 1.1, 3);
+  nordpfeil(svg, c[0] - R + 3.5, -c[1] - R + 6.5, 7);
+}
+
+function kassetteMitMassen(b) {
+  const svg = $("kassette"); svg.innerHTML = "";
+  const k = b.kassette, t = b.tasche, v4 = b.var === "v4", yh = v4 ? 18 : k.y1, ym = (t.y0 + t.y1) / 2;
+  const x0 = -k.hx - 6.5, x1 = k.hx + 9, y0 = -8, y1 = yh + 1.5;
+  svg.setAttribute("viewBox", `${x0} ${-y1} ${x1 - x0} ${y1 - y0}`);
+  kassetteZeichnen(svg, rects(b), { lw: .25 });
+  if (v4) {   // lange Kassette: Podest nur angedeutet
+    el(svg, "line", { x1: -k.hx, y1: -yh, x2: k.hx, y2: -yh, stroke: "var(--cass-line)", "stroke-width": .25, "stroke-dasharray": "1 1" });
+    el(svg, "text", { x: 0, y: -(yh - 5), "text-anchor": "middle", "font-size": 1.5, fill: "var(--muted)" }, "Podest bis y = " + de(k.y1, 1));
+  }
+  el(svg, "text", { x: 0, y: -ym + .55, "text-anchor": "middle", "font-size": 1.6 }, "Tasche");
+  const mass = (xa, ya, xb, yb, text, farbe) => {
+    el(svg, "line", { x1: xa, y1: -ya, x2: xb, y2: -yb, stroke: farbe, "stroke-width": .22 });
+    [[xa, ya], [xb, yb]].forEach((p) => el(svg, "circle", { cx: p[0], cy: -p[1], r: .4, fill: farbe }));
+    el(svg, "text", { x: xa + 1, y: -(ya + yb) / 2 + .6, "font-size": 1.9, "font-weight": 600, class: "mono" }, text).style.fill = farbe;
+  };
+  mass(k.hx + 1.6, k.y0, k.hx + 1.6, t.y0, de(t.y0 - k.y0), "var(--narrow)");
+  if (!v4) mass(k.hx + 1.6, t.y1, k.hx + 1.6, k.y1, de(k.y1 - t.y1), "var(--thick)");
+  const sx = k.hx - t.hx;   // Rand seitlich: Maßlinie über die Randbreite, Zahl links daneben
+  el(svg, "line", { x1: -k.hx, y1: -ym, x2: -t.hx, y2: -ym, stroke: "var(--fg)", "stroke-width": .22 });
+  [-k.hx, -t.hx].forEach((x) => el(svg, "circle", { cx: x, cy: -ym, r: .35, fill: "var(--fg)" }));
+  el(svg, "text", { x: -k.hx - .9, y: -ym + .6, "text-anchor": "end", "font-size": 1.9, "font-weight": 600, class: "mono" }, de(sx));
+  el(svg, "polygon", { points: `0,${-(k.y0 - .8)} -.9,${-(k.y0 - 2.2)} .9,${-(k.y0 - 2.2)}`, fill: "var(--fg)" });
+  el(svg, "text", { x: 0, y: -(k.y0 - 4.6), "text-anchor": "middle", "font-size": 1.7 }, "vorn: LED blickt hierher");
+}
+
+function tabelle(b) {
+  const k = b.kassette, t = b.tasche, v4 = b.var === "v4", sx = k.hx - t.hx;
+  const zeilen = [["narrow", "vorn (schmal)", "Seite der LED, zeigt nach " + b.kompass, t.y0 - k.y0]];
+  if (!v4) zeilen.push(["thick", "hinten (breit)", "Seite des Blatts", k.y1 - t.y1]);
+  zeilen.push(["", "links und rechts", v4 ? "Tasche bis zum Rand der Kassette" : (b.var === "V2R" ? "ebenfalls schmal" : "breit, für die Verkettung"), sx]);
+  $("raender").innerHTML = zeilen.map((z) => `<tr><td>${z[0] ? `<span class="dot" style="background:var(--${z[0]})"></span>` : '<span class="dot" style="background:var(--cass)"></span>'}${z[1]}</td><td>${z[2]}</td><td class="n">${de(z[3])}</td></tr>`).join("");
+}
+
+function waehle(i) {
+  sel = i;
+  const b = DATA[i];
+  document.querySelectorAll("#tabs button").forEach((x, j) => x.setAttribute("aria-pressed", j === i ? "true" : "false"));
+  $("richtung").textContent = b.kompass + " (" + b.bearing + "°)";
+  $("untertitel").textContent = "Die schmale Seite der Kassette " + b.var + " zeigt im " + b.name + " nach " + b.kompass + ".";
+  uebersicht(); lage(b); kassetteMitMassen(b); tabelle(b);
+}
+
+DATA.forEach((b, i) => {
+  const t = document.createElement("button");
+  t.type = "button"; t.setAttribute("aria-pressed", "false");
+  t.innerHTML = `${b.name} <span class="typ">${b.var}</span>`;
+  t.addEventListener("click", () => waehle(i));
+  $("tabs").appendChild(t);
+});
+waehle(sel);
+</script>

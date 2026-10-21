@@ -273,6 +273,7 @@ Nicht überschrieben (Handarbeit): `PLAN.md`, `STATUS.md`, alle `*.template.html
 | Dupont-Plan | `plug/views/dupont/view.html` | https://claude.ai/artifact/HUoXswtTaEGpmn4ikCrLah |
 | Institutsgebäude | `plug/build/institute/view.html` | https://claude.ai/artifact/RfeBQrttmpknjsPJphQuUW |
 | Passprobe | `plug/fit_test/page.html` | https://claude.ai/artifact/EWUEh7fdeEpGbfcjBiLhnF |
+| Kassetten-Ausrichtung (schmale Seite je Gebäude) | `plug/kassette_orient/page.html` | https://claude.ai/artifact/XjSS2m8VtUkJ1pMnPVWUVC |
 | Winkelpin Maße | `plug/fit_test/angled_pin.html` | https://claude.ai/artifact/4fBA8t6idKF33UpsA7bd4g |
 | Testdruck-Fahrplan Kassette | `plug/roadmap/page.html` | https://claude.ai/artifact/N6aTutimTgvydCazGWvUQA |
 | Testbogen Nachtdruck 1 | `plug/feedback/page.html` | https://claude.ai/artifact/2DpkhMNjfw2hwz9MhqY3et |
