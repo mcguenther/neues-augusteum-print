@@ -184,10 +184,14 @@ def main():
     ap.add_argument("--scale", type=int, default=P.SCALE_PLAN)
     ap.add_argument("--relief", default=B.RELIEF, help="Fassadenrelief am Ostgiebel des Paulinums (plug/relief.py, Standard %s, wie plug.buildings)" % B.RELIEF)
     ap.add_argument("--ohne-relief", action="store_true", help="ohne Fassadenrelief (Stand davor)")
+    ap.add_argument("--staemme-beige", action="store_true", help="Hof-Einsatz mit Baumstämmen in der Stammfarbe (Beige in der einfarbigen Fassung) statt grün; Dateien mit Endung _staemme_beige")
     ap.add_argument("--out", help="Ausgabeordner für 3MF und Bilder statt der eingecheckten")
     a = ap.parse_args()
     global OUT, PREV
     B.RELIEF = None if a.ohne_relief else a.relief
+    if a.staemme_beige:
+        innenhof.STAMM_ALS_KRONE = False
+    suf = "_staemme_beige" if a.staemme_beige else ""
     if a.out:
         OUT = PREV = a.out
     for d in (OUT, PREV, VIEW if not a.out else OUT):
@@ -201,14 +205,14 @@ def main():
         satz, kosten = F.waehle_filamente([(slug, mesh, hexes, outer.astype(float))], farben, pflicht=PFLICHT.get(slug, ()))
         red = reduziert(t, satz, farben)
         satz = [f for f in satz if (red == f[0]).any()]     # nicht gebrauchte Spulen weglassen (dann reichen weniger als 4)
-        path = os.path.join(OUT, "%s_1zu%d_farbig.3mf" % (slug, a.scale))
+        path = os.path.join(OUT, "%s_1zu%d_farbig%s.3mf" % (slug, a.scale, suf))
         G.export_3mf([(name, mesh, red)], path, profil=satz)
         _, k_haupt = F.waehle_filamente([(slug, mesh, hexes, outer.astype(float))], farben, pflicht=[n for _, n in F.HAUPT])
         red_h = reduziert(t, F.HAUPT, farben)
         haupt.append((name, mesh, red_h))
         red_1 = einfarbig(slug, mesh, hexes, outer, red_h, farben)
         satz_1 = [f for f in F.FILAMENTE if (red_1 == f[0]).any()]
-        path_1 = os.path.join(OUT, "%s_1zu%d_einfarbig.3mf" % (slug, a.scale))
+        path_1 = os.path.join(OUT, "%s_1zu%d_einfarbig%s.3mf" % (slug, a.scale, suf))
         G.export_3mf([(name, mesh, red_1)], path_1, profil=satz_1)
         einzeln[slug] = (name, mesh, red, satz, outer, red_h, red_1)
         info["gebaeude"][slug] = {"name": name, "datei": os.path.basename(path), "satz": [n for _, n in satz],

@@ -46,6 +46,7 @@ ROOF_NZ = G.ROOF_NZ
 
 # Blockiger Umriss (Aussparung und Einsatz sind ein Klotz, keine Stege): Form und Treppen in data/innenhof.json, "form"
 HOF_UEBERMASS = 2.0     # m: OSM-Fläche wird um so viel vergrößert, damit sie bis an die Laser-Grundrisse der Gebäude reicht
+STAMM_ALS_KRONE = True  # Stamm in der Farbe der Krone (grün); False = Stamm in der Stammfarbe der Zonen (plug.colour --staemme-beige)
 STAMM_R_MIN = 1.2       # mm: Mindestradius der Baumstämme (Ø 2,4; Nutzer 21.10.: Stämme mit Ø 0,8 brachen beim Drucken ab)
 KRONE_ABZUG = 1.0       # mm: Kronenradius der Bäume wird um so viel verkleinert (Nutzer 17.10.: Kronen stoßen sonst beim Einsetzen an)
 HOF_MIN_BREITE = 4.0    # mm: Zungen und Zähne im Umriss, die schmaler sind, entfallen (Einsatz bricht dort, Aussparung wird zum Steg)
@@ -371,7 +372,7 @@ def colour_mesh(tm, to_local, eintrag):
             r = np.hypot(cen[:, 0] - o["mitte"][0] * s, cen[:, 1] - o["mitte"][1] * s)
             r0 = max(o.get("stamm_radius", 0.2) * s, STAMM_R_MIN) + 0.05
             # Stamm und Krone in einer Farbe (Nutzer 21.10.: Bäume komplett grün, ein Filament)
-            keys[sel & (r <= r0) & (np.abs(nz) < 0.5)] = "krone"
+            keys[sel & (r <= r0) & (np.abs(nz) < 0.5)] = "krone" if STAMM_ALS_KRONE else "stamm"
         else:
             keys[sel] = typ
     return np.array([farbe.get(k, basis) for k in keys], dtype=object)
