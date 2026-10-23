@@ -38,6 +38,13 @@ SCALE_PLAN = 1300       # Maßstab 1:N; Platte dann 115,6 × 220,8 mm (höchsten
 # Kassette je Gebäude (Konzepte V1RS und V2R: plug/logbook/cassettes.md); v4 ist der Standard (LED strahlt nach oben)
 CASSETTE = {"01_paulinum": "v4", "02_neues_augusteum": "v4", "03_hoersaalgebaeude": "v4",
             "04_seminargebaeude": "V1RS", "05_institutsgebaeude": "V1RS", "06_city_hochhaus": "V2R"}
+# Pinbelegung der Kassetten (Nutzer, Skizze 23.10.2026): Pins 1 bis 4 von der Seite der Bleistiftmarke aus (ein Strich = Belegung I, zwei Striche = II; Strich an
+# Kassette und Plattenunterseite bei der Montage, keine Kerben). Annahme: Marke links mit Blick auf die LED = −x im Kassettensystem, wie `parts.PADS` (GND links).
+# Beide Belegungen sind spiegelsymmetrisch: um 180° gedreht liegt GND wieder auf GND, nur DIN und 5 V tauschen.
+PINBELEGUNG = {"I": ("DIN", "GND", "GND", "5V"), "II": ("GND", "DIN", "5V", "GND")}
+BELEGUNG = {"v4": "II", "V1RS": "I", "V2R": "II"}           # je Kassettentyp
+MARKE_N = {"I": 1, "II": 2}                                  # Anzahl Bleistiftstriche neben Pin 1
+DOCK = {"05_institutsgebaeude": 1, "03_hoersaalgebaeude": 2, "06_city_hochhaus": 3, "02_neues_augusteum": 4, "01_paulinum": 5, "04_seminargebaeude": 6}   # Dock-Nummer je Gebäude (Nutzer; Reihenfolge von DIN/DETECT in plug/power/build_pinout.py)
 HOF_CH_T = 0.4          # Einführfase an der Unterkante des Hof-Einsatzes, wie bei den Gebäudefüßen
 HOF_DEPTH_T = 6.0       # Hof-Einsatz: so tief unter der Oberfläche (Nutzer: 6 mm; vorher 1 mm war zu flach, dann 3 mm), ungetestet
 HOF_CLR_T = 0.15        # Fuge Einsatz zu Aussparung je Seite (19.10.2026: 0,10 -> 0,15 wie die Gebäude-Mulden, Beschluss Passung bei wechselnden Filamenten)

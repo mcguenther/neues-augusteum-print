@@ -616,26 +616,26 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <article class="tile w4">
           <span class="k">Stecken</span>
           <h3>Vier Kontakte. Kein Werkzeug.</h3>
-          <p>Der Fuß des Gebäudes taucht <b>14,2 mm</b> tief in seine Mulde. Von unten kommen vier Stifte durch den Muldenboden und treffen die Buchse in der Kassette. Ohne Kraft, alle vier gleichzeitig.</p>
+          <p>Der Fuß des Gebäudes taucht <b>14,2 mm</b> tief in seine Mulde. Von unten kommen vier Stifte durch den Muldenboden und treffen die Buchse in der Kassette. Ohne Kraft, alle vier gleichzeitig. In den engen Kassetten liegen die Kontakte in zwei Reihenfolgen. Beide sind spiegelsymmetrisch: Steckt eine Kassette gedreht, trifft Masse wieder auf Masse.</p>
           <div class="fig pins">
-            <div class="pin" style="--c:#8a8d94"><i></i><b>Masse</b><span>Pin 1 · GND</span></div>
-            <div class="pin" style="--c:#57a6ff"><i></i><b>Daten</b><span>Pin 2 · DIN</span></div>
-            <div class="pin" style="--c:#ff6b5b"><i></i><b>5 Volt</b><span>Pin 3 · +5 V</span></div>
-            <div class="pin" style="--c:#f0ae4a"><i></i><b>Erkennung</b><span>Pin 4 · DETECT</span></div>
+            <div class="pin" style="--c:#8a8d94"><i></i><b>Masse</b><span>GND</span></div>
+            <div class="pin" style="--c:#57a6ff"><i></i><b>Daten</b><span>DIN</span></div>
+            <div class="pin" style="--c:#ff6b5b"><i></i><b>5 Volt</b><span>+5 V</span></div>
+            <div class="pin" style="--c:#f0ae4a"><i></i><b>Erkennung</b><span>DETECT</span></div>
           </div>
         </article>
 
         <article class="tile dark">
           <span class="k">Erkennen</span>
           <h3>Weiß, was steckt.</h3>
-          <p>Im Gebäude liegt Pin 4 auf Masse. Liest der ESP32 an seinem Eingang <b>LOW</b>, steckt ein Gebäude. Nach 100 ms Entprellung startet die Animation der LED; beim Abziehen geht sie aus.<sup class="fn"><a href="#fn2">2</a></sup></p>
+          <p>Die Kassette legt ihren zweiten Masse-Kontakt auf Masse, am Dock ist das die Erkennung. Liest der ESP32 an seinem Eingang <b>LOW</b>, steckt ein Gebäude. Nach 100 ms Entprellung startet die Animation der LED; beim Abziehen geht sie aus.<sup class="fn"><a href="#fn2">2</a></sup></p>
           <div class="fig docks" id="docks" aria-label="Docks antippen, um ein Gebäude zu ziehen oder zu stecken">
-            <button aria-pressed="true"><span>Paulinum</span><em>GPIO 32</em></button>
-            <button aria-pressed="true"><span>Neues Augusteum</span><em>GPIO 33</em></button>
-            <button aria-pressed="true"><span>Hörsaalgebäude</span><em>GPIO 25</em></button>
-            <button aria-pressed="false"><span>Seminargebäude</span><em>GPIO 26</em></button>
-            <button aria-pressed="true"><span>Institutsgebäude</span><em>GPIO 27</em></button>
-            <button aria-pressed="true"><span>City-Hochhaus</span><em>GPIO 13</em></button>
+            <button aria-pressed="true"><span>Institutsgebäude</span><em>GPIO 32</em></button>
+            <button aria-pressed="true"><span>Hörsaalgebäude</span><em>GPIO 33</em></button>
+            <button aria-pressed="true"><span>City-Hochhaus</span><em>GPIO 25</em></button>
+            <button aria-pressed="true"><span>Neues Augusteum</span><em>GPIO 26</em></button>
+            <button aria-pressed="true"><span>Paulinum</span><em>GPIO 27</em></button>
+            <button aria-pressed="false"><span>Seminargebäude</span><em>GPIO 13</em></button>
           </div>
         </article>
 
@@ -978,8 +978,8 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
             <li><b>Drucken</b> wie in den technischen Daten: 0,2 mm, Gyroid 10 %, ohne Stützen, Brim nur am Hochhaus.</li>
             <li><b>Buchse crimpen</b>, Kassette darüberstülpen und den LED-Streifen oben auflegen.</li>
             <li><b>Kassette</b> von unten in den Schacht des Gebäudes pressen; sie hält beim Schütteln.</li>
-            <li><b>Winkelleisten</b> unter die Platte kleben, die Stifte stehen durch den Muldenboden.</li>
-            <li><b>Verdrahten</b>: Powerbank, Schalter, INA226 und ESP32, je Dock Daten und Erkennung.</li>
+            <li><b>Winkelleisten</b> unter die Platte kleben, die Stifte stehen durch den Muldenboden. Neben Pin 1 einen Bleistiftstrich an Kassette und Platte: einen für Institut und Seminar, zwei für die anderen.</li>
+            <li><b>Verdrahten</b>: Powerbank, Schalter, INA226 und ESP32, je Dock Daten und Erkennung in der Reihenfolge seiner Kassette, Strich an Strich.</li>
             <li><b>Powerbank</b> auf das Plateau über dem Knopf legen, die Klötze darunter kleben.</li>
             <li><b>Platte</b> auf die zwei Zapfen des Sockels stecken, dann den <b>Innenhof</b> einlegen.</li>
             <li><b>Auf den Hut</b>: mit viel Liebe und Heißkleber. Dann die Gebäude stecken.</li>
@@ -1005,7 +1005,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <tr><th>Maße</th><td><b>Steckplatte</b> <span class="mono">115,6 × 220,9 × 14,6 mm</span> (mit Gang und Treppen 16,9)<br><b>Sockel</b> <span class="mono">115,6 × 220,9 × 34,8 mm</span>, zusammen 49,4 mm<br><b>Höchster Punkt</b> City-Hochhaus, 111,3 mm über der Platte, rund 160,7 mm über der Hutfläche</td></tr>
         <tr><th>Gebäude</th><td><b>Paulinum</b> <span class="mono">45,6 × 28,3 × 59,4</span> · <b>Neues Augusteum</b> <span class="mono">47,9 × 58,9 × 40,1</span> · <b>Hörsaalgebäude</b> <span class="mono">63,2 × 104,7 × 32,9</span> · <b>Seminargebäude</b> <span class="mono">30,3 × 76,4 × 35,9</span> · <b>Institutsgebäude</b> <span class="mono">81,1 × 34,1 × 38,6</span> · <b>City-Hochhaus</b> <span class="mono">36,1 × 35,0 × 125,5</span> (mm, mit Fuß)<br>Dazu der <b>Innenhof</b> mit Leibnizdenkmal, Beeten und Bäumen als Einsatz ohne Licht. Am Ostgiebel des Paulinums trägt die Wand ein Relief aus Spitzbogen-Blende, Maßwerkfenster und Rosette, 0,2 bis 0,6 mm tief. Das Neue Augusteum gibt es auch als offene Variante mit zweitem Gewölbe: 16,4 statt 27,9 cm³.</td></tr>
         <tr><th>Licht</th><td><b>9 × WS2812B</b> auf 10-mm-Streifen, 1 LED in Paulinum, Neuem Augusteum und Hörsaalgebäude, 2 in Seminar-, Institutsgebäude und Hochhaus. Höchstens 60 mA je LED. Dauerlicht warmweiß (#FFF4E8) bei 99 %; beim Einstecken eine von acht Animationen bei 95 %, bis 9,5 s.</td></tr>
-        <tr><th>Steuerung</th><td><b>ESP32-DevKit WROOM-32</b>, 30 Pin, USB-C. Daten an GPIO 23, 19, 18, 17, 16, 4; Erkennung an GPIO 32, 33, 25, 26, 27, 13. 330 Ω in jeder Datenleitung. Firmware mit ESPHome (WLAN, API, OTA, Home Assistant); Erkennung mit Pull-up und 100 ms Entprellung. Lastpuls für die Powerbank: GPIO 14, 300 ms alle 5 s, in Home Assistant abschaltbar. Die Steuerung läuft auch ohne Home Assistant: Weboberfläche auf Port 80 mit Passwort, Updates auch über den Browser; ohne Heim-WLAN öffnet der ESP32 nach 30 s den Hotspot „Doktorhut-Max-Setup“ mit Einrichtungsportal.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
+        <tr><th>Steuerung</th><td><b>ESP32-DevKit WROOM-32</b>, 30 Pin, USB-C. Daten an GPIO 23, 19, 18, 17, 16, 4; Erkennung an GPIO 32, 33, 25, 26, 27, 13 (Dock 1 bis 6: Institutsgebäude, Hörsaalgebäude, City-Hochhaus, Neues Augusteum, Paulinum, Seminargebäude). Kontakte ab Strich: GND, DIN, +5 V, Erkennung; bei den Kassetten mit querem Streifen DIN, GND, Erkennung, +5 V. 330 Ω in jeder Datenleitung. Firmware mit ESPHome (WLAN, API, OTA, Home Assistant); Erkennung mit Pull-up und 100 ms Entprellung. Lastpuls für die Powerbank: GPIO 14, 300 ms alle 5 s, in Home Assistant abschaltbar. Die Steuerung läuft auch ohne Home Assistant: Weboberfläche auf Port 80 mit Passwort, Updates auch über den Browser; ohne Heim-WLAN öffnet der ESP32 nach 30 s den Hotspot „Doktorhut-Max-Setup“ mit Einrichtungsportal.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
         <tr><th>Display</th><td><b>1,3″-OLED</b> (SH1106) 128 × 64, I²C (0x3C), um 180° gedreht, alle 64 Zeilen: Kopfzeile, Leistung in W, Energie seit dem Start in Wh und ein Verlauf der letzten 30 s mit Skala von 0 bis zum Höchstwert; beim Start ein Wipe von 2 s, Takt 250 ms. Messung mit <b>INA226</b> (0x40, Shunt 0,1 Ω, Takt 1 s) in der 5-V-Leitung; SDA GPIO 21, SCL GPIO 22.<sup class="fn"><a href="#fn2">2</a></sup></td></tr>
         <tr><th>Stromversorgung</th><td><b>Intenso XS5000</b>, 5000 mAh, 18,5 Wh, 5 V / 2,1 A, 103 g. Laden über USB-C. Wippschalter KCD11 10 × 15 mm im Plus.</td></tr>
         <tr><th>Steckverbindung</th><td>4 Kontakte je Dock (Masse, Daten, 5 V, Erkennung), 7 Docks. Dupont-Buchse 1 × 4 in einer gedruckten Kassette, Winkelleiste unter der Platte. Kassetten v4, V1RS und V2R.</td></tr>

@@ -7,7 +7,8 @@ from math import ceil
 from pathlib import Path
 
 from plug.power import params as PP
-from plug.power.build_pinout import DETECT, DIN, LEFT, RIGHT
+from plug.power.build_pinout import DETECT, DIN, LEFT, RIGHT, dock_pins
+from plug.testcase import params as P
 
 OUT = Path(__file__).with_name("wiring.html")
 TEMPLATE = Path(__file__).with_name("wiring.template.html").read_text(encoding="utf-8")
@@ -17,6 +18,24 @@ BUILDINGS = [("Paulinum", "Paulinum"), ("Neues Augusteum", "N. Augusteum"), ("H�
              ("Seminargebäude", "Seminar"), ("Institutsgebäude", "Institut"), ("City-Hochhaus", "Hochhaus")]
 # Luftlinie Dock bis Elektronikbox in mm, aus plug/power/concept.html (Dock-Daten "to_elec", Stand nach Hauptschalter und Innenhof-Merge); bei neuer Fachlage neu ablesen
 TO_ELEC = [83.8, 33.7, 10.9, 61.3, 111.1, 0.0]
+# Beide Listen stehen in der Reihenfolge der Slugs (01 Paulinum bis 06 Hochhaus); umsortiert nach den Dock-Nummern des Nutzers (params.DOCK, 23.10.2026)
+_ORDER = sorted(range(6), key=lambda i: P.DOCK[list(P.CASSETTE)[i]])
+BUILDINGS = [BUILDINGS[i] for i in _ORDER]
+TO_ELEC = [TO_ELEC[i] for i in _ORDER]
+BELEG = [P.BELEGUNG[P.CASSETTE[list(P.CASSETTE)[i]]] for i in _ORDER]     # Pinbelegung I oder II je Dock
+
+
+def pin(n, rolle):
+    """Pin-Nummer (ab dem Bleistiftstrich) der Rolle GND, DIN, +5 V oder DETECT an Dock n (0-basiert)."""
+    return [t for _, t in dock_pins(BELEG[n])].index(rolle) + 1
+
+
+def pins_text(rolle):
+    """z. B. „Pin 3 (Dock 1 und 6: Pin 4)“ für eine Rolle über alle Docks."""
+    nr = [pin(n, rolle) for n in range(6)]
+    haupt = max(set(nr), key=nr.count)
+    rest = [n + 1 for n in range(6) if nr[n] != haupt]
+    return f"Pin {haupt}" + (f" (Dock {' und '.join(map(str, rest))}: Pin {nr[rest[0] - 1]})" if rest else "")
 
 
 def wire_len(d):
@@ -126,12 +145,12 @@ def netlist():
     row("P4", "INA226 VBUS", "VIN−", "meist schon auf dem Modul verbunden, Durchgang prüfen")
     row("P5", "Knoten K5", "ESP32 VIN", "Dupont-Ader rot")
     row("P6", "Knoten K5", "+5-V-LED-Schiene", "24 AWG rot, 3 cm: Drahtbrücke, Platzhalter für die geparkte Diode D1")
-    row("P7", "+5-V-LED-Schiene", "C1 Plus und Pin 3 aller 6 Docks", "28 AWG orange; Elko liegend, Plus ohne Streifen")
+    row("P7", "+5-V-LED-Schiene", f"C1 Plus und +5 V aller 6 Docks, {pins_text('+5 V')}", "28 AWG orange; Elko liegend, Plus ohne Streifen")
     grp("Masse")
     row("G1", "USB-A-Stecker schwarz", "GND-Schiene", "24 AWG schwarz")
     row("G2", "ESP32 GND (linke Reihe)", "GND-Schiene", "Dupont-Ader schwarz")
     row("G3", "C1 Minus (Streifen)", "GND-Schiene", "Bein des Elkos")
-    row("G4", "Pin 1 aller 6 Docks", "GND-Schiene", "28 AWG braun")
+    row("G4", f"GND aller 6 Docks, {pins_text('GND')}", "GND-Schiene", "28 AWG braun")
     row("G5", "ESP32 GND (rechte Reihe)", "Y-Knoten zu INA226 GND und OLED GND", "Dupont-Ader schwarz")
     grp("3,3 V und I²C")
     row("V1", "ESP32 3V3", "Y-Knoten zu INA226 VCC und OLED VDD", "Dupont-Ader orange")
@@ -139,9 +158,9 @@ def netlist():
     row("V3", f"ESP32 GPIO22 (SCL)", "Y-Knoten zu INA226 SCL und OLED SCK", "Dupont-Ader violett")
     grp("Docks: Daten und Erkennung")
     for n in range(6):
-        row(f"D{n + 1}", f"ESP32 GPIO{DIN[n]}", f"Pin 2 (DIN) Dock {n + 1}", "Dupont-Ader blau, 330 Ω mitten in der Ader")
+        row(f"D{n + 1}", f"ESP32 GPIO{DIN[n]}", f"Pin {pin(n, 'DIN')} (DIN) Dock {n + 1}", "Dupont-Ader blau, 330 Ω mitten in der Ader")
     for n in range(6):
-        row(f"E{n + 1}", f"ESP32 GPIO{DETECT[n]}", f"Pin 4 (DETECT) Dock {n + 1}", "Dupont-Ader grün")
+        row(f"E{n + 1}", f"ESP32 GPIO{DETECT[n]}", f"Pin {pin(n, 'DETECT')} (DETECT) Dock {n + 1}", "Dupont-Ader grün")
     grp("Optional: Strompuls-Last")
     row("L1", "Knoten K5", "47 Ω, 1 W, dann MOSFET Drain (Bein 2, Mitte)", "rote Ader")
     row("L2", "MOSFET Source (Bein 3, rechts)", "GND-Schiene", "schwarze Ader")
@@ -180,7 +199,9 @@ def docks():
     out = []
     for n, ((name, _), d) in enumerate(zip(BUILDINGS, TO_ELEC)):
         lux = "in der Box" if d == 0 else f"{d:.0f} mm"
-        out.append(f'<tr><td><b>Dock {n + 1}</b></td><td>{name}</td><td class="mono">GPIO{DIN[n]}</td><td class="mono">GPIO{DETECT[n]}</td>'
+        folge = " · ".join(t for _, t in dock_pins(BELEG[n]))
+        out.append(f'<tr><td><b>Dock {n + 1}</b></td><td>{name}</td><td class="mono">{"|" * P.MARKE_N[BELEG[n]]} {BELEG[n]}: {folge}</td>'
+                   f'<td class="mono">GPIO{DIN[n]}</td><td class="mono">GPIO{DETECT[n]}</td>'
                    f'<td class="num">{lux}</td><td class="num"><b>{wire_len(d)} mm</b></td></tr>')
     return "".join(out)
 

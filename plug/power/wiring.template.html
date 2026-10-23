@@ -347,7 +347,7 @@ ol.steps ul { gap: 4px; }
           <text class="tm" x="800" y="322" text-anchor="end">Pin 4 liegt im Gebäude an GND. LOW am ESP32 heißt: Gebäude steckt.</text>
         </svg>
       </div>
-      <figcaption>Das Streifenstück hat Pads für 5 V, DIN und GND. Die Brücke von Pin 4 zu GND sitzt im Gebäude. Der ESP32 liest DETECT mit Pull-up und gibt die Daten erst 100 ms nach LOW frei (ESPHome: <code>delayed_on: 100ms</code>). Der 330-Ω-Widerstand sitzt beim ESP32, nicht im Dock, weil dort nur 3,5 mm Platz ist.</figcaption>
+      <figcaption>Gezeichnet ist ein Dock mit Belegung II (Dock 2 bis 5). Bei Belegung I (Dock 1 und 6) liegen an den Pins 1 bis 4 DIN, GND, DETECT und +5 V. Das Streifenstück hat Pads für 5 V, DIN und GND. Die Brücke von Pin 4 zu GND sitzt im Gebäude. Der ESP32 liest DETECT mit Pull-up und gibt die Daten erst 100 ms nach LOW frei (ESPHome: <code>delayed_on: 100ms</code>). Der 330-Ω-Widerstand sitzt beim ESP32, nicht im Dock, weil dort nur 3,5 mm Platz ist.</figcaption>
     </figure>
 
     <h3>Bild 4: I²C-Bus mit INA226 und OLED</h3>
@@ -423,7 +423,7 @@ ol.steps ul { gap: 4px; }
       <thead><tr><th>Netz</th><th>kommt von</th><th>hängt daran</th><th>nie verbinden mit</th></tr></thead>
       <tbody>
         <tr><td><span class="net n5"><i></i>+5 V (K5)</span></td><td>Powerbank über Schalter und Shunt</td><td>ESP32 VIN, Drahtbrücke zur LED-Schiene, optionale Last, INA226 VIN−/VBUS (nur gemessen)</td><td>3V3, jedem GPIO, INA226-VCC</td></tr>
-        <tr><td><span class="net n5"><i></i>+5 V LED</span></td><td>K5 über die Drahtbrücke, volle 5 V (mit D1 später etwa 4 V)</td><td>6 × Dock Pin 3, C1</td><td>ESP32 VIN (hängt an K5)</td></tr>
+        <tr><td><span class="net n5"><i></i>+5 V LED</span></td><td>K5 über die Drahtbrücke, volle 5 V (mit D1 später etwa 4 V)</td><td>6 × Dock +5 V, C1</td><td>ESP32 VIN (hängt an K5)</td></tr>
         <tr><td><span class="net n3"><i></i>3,3 V</span></td><td>ESP32-Pin 3V3 (Boardregler)</td><td>INA226 VCC, OLED VDD</td><td>5 V, GND</td></tr>
         <tr><td><span class="net nd"><i></i>3,3-V-Signale</span></td><td>ESP32-GPIOs</td><td>DIN (über 330 Ω), DETECT, Gate, SDA, SCL</td><td>5 V an einem GPIO zerstört ihn</td></tr>
         <tr><td><span class="net ng"><i></i>GND</span></td><td>Powerbank</td><td>alles</td><td>–</td></tr>
@@ -676,9 +676,9 @@ interval:
       <tbody>{{DUPONT}}</tbody>
     </table></div>
     <h3>Adern der Docks</h3>
-    <p>Je Dock ein vieradriges Stück Flachbandkabel (28 AWG) in Pinreihenfolge: braun = Pin 1 GND, <b>rot = Pin 2 DIN</b>, orange = Pin 3 +5 V, gelb = Pin 4 DETECT. Rot ist hier also nicht Plus.</p>
+    <p>Je Dock ein vieradriges Stück Flachbandkabel (28 AWG). Die Farbe gehört zur Rolle: braun = GND, <b>rot = DIN</b>, orange = +5 V, gelb = DETECT. Rot ist hier also nicht Plus. Die Reihenfolge an der Leiste hängt von der Kassette ab, gezählt ab dem Bleistiftstrich neben Pin 1. <b>Belegung II</b> (ein Doppelstrich; Dock 2 bis 5) ist braun, rot, orange, gelb, also 1 GND, 2 DIN, 3 +5 V, 4 DETECT. <b>Belegung I</b> (ein Strich; Dock 1 Institutsgebäude, Dock 6 Seminargebäude) ist rot, braun, gelb, orange, also 1 DIN, 2 GND, 3 DETECT, 4 +5 V. Die Kassette legt ihre beiden GND-Pins auf Masse. Am Dock ist der zweite davon DETECT. Pinout und Begründung: <code>plug/power/pinout.html</code>.</p>
     <div class="tbl"><table>
-      <thead><tr><th>Dock</th><th>Gebäude (Vorschlag)</th><th>DIN</th><th>DETECT</th><th class="num">Luftlinie zur Box</th><th class="num">Ader zuschneiden</th></tr></thead>
+      <thead><tr><th>Dock</th><th>Gebäude</th><th>Strich und Pins ab Strich</th><th>DIN</th><th>DETECT</th><th class="num">Luftlinie zur Box</th><th class="num">Ader zuschneiden</th></tr></thead>
       <tbody>{{DOCKS}}</tbody>
     </table></div>
     <p style="margin-top:10px"><small>Luftlinie vom Dock zur Elektronikbox aus der Konzeptseite <code>plug/power/concept.html</code> (Stand nach dem Hauptschalter, Innenhof-Merge eingerechnet). Ader = 1,3 × Luftlinie + 40 mm, auf 5 mm aufgerundet, mindestens 60 mm. Die Zuordnung der Docks zu den Gebäuden ist noch nicht festgelegt. Ändert sich die Fachlage, die Längen neu rechnen. Am Anfang lieber 20 mm länger lassen und beim ESP32-Ende kürzen.</small></p>
@@ -720,7 +720,7 @@ interval:
         <h3>Docks: Adern an die Leisten <span class="time">45 Minuten</span></h3>
         <ul>
           <li>Je Dock 4 Adern Flachband in der Länge aus der Tabelle, 1 mm abisolieren, verzinnen.</li>
-          <li>Pin 1 braun, Pin 2 rot, Pin 3 orange, Pin 4 gelb an die Lötenden der Winkelleiste. Schrumpfschlauch 1,5 mm über jede Lötstelle.</li>
+          <li>Erst den Strich neben Pin 1 an die Unterseite der Platte malen (Bleistift, ein Strich für Belegung I, zwei für II, siehe Tabelle der Adern). Dann die Adern an die Lötenden der Winkelleiste, ab dem Strich: Belegung II braun, rot, orange, gelb; Belegung I (Dock 1 und 6) rot, braun, gelb, orange. Schrumpfschlauch 1,5 mm über jede Lötstelle.</li>
           <li>PLA wird ab etwa 60 °C weich. Wenn möglich, die Adern an die Leiste löten, bevor sie in die Platte geklebt wird. Wenn nicht, pro Lötstelle höchstens 2 Sekunden, mit nasser Spitze und Pausen. Wie das im Test-Dock klappt, ist noch offen.</li>
           <li>Jede Ader mit einem Klebeband-Fähnchen mit der Dock-Nummer kennzeichnen.</li>
         </ul>
@@ -729,7 +729,7 @@ interval:
       <li>
         <h3>Widerstände in die DIN-Adern <span class="time">20 Minuten</span></h3>
         <ul>
-          <li>Je Dock die rote Ader (Pin 2) beim ESP32-Ende durchtrennen und einen 330-Ω-Widerstand dazwischenlöten, Schrumpfschlauch 3 mm darüber.</li>
+          <li>Je Dock die rote Ader (DIN) beim ESP32-Ende durchtrennen und einen 330-Ω-Widerstand dazwischenlöten, Schrumpfschlauch 3 mm darüber.</li>
           <li>Der Widerstand liegt am ESP32-Ende, nicht im Dock-Steckerraum.</li>
           <li>Die andere Seite des Widerstands bekommt die Dupont-Ader zu GPIO23, 19, 18, 17, 16 oder 4.</li>
         </ul>
@@ -738,11 +738,11 @@ interval:
         <h3>Sammelschienen <span class="time">20 Minuten</span></h3>
         <ul>
           <li>Zwei Stücke verzinnter Kupferdraht 1 mm, etwa 45 mm, gerade biegen. Eine ist die <b>GND-Schiene</b>, die andere die <b>+5-V-LED-Schiene</b>.</li>
-          <li>Die GND-Schiene bekommt 10 Drähte: USB-Kabel schwarz, ESP32 GND (linke Reihe), C1 Minus, 6 × Dock Pin 1 (braun) und die Last-Source.</li>
-          <li>Die LED-Schiene bekommt 8 Drähte: die Drahtbrücke zu K5 (Platzhalter für D1), C1 Plus und 6 × Dock Pin 3 (orange).</li>
+          <li>Die GND-Schiene bekommt 10 Drähte: USB-Kabel schwarz, ESP32 GND (linke Reihe), C1 Minus, 6 × braune Dock-Ader (GND) und die Last-Source.</li>
+          <li>Die LED-Schiene bekommt 8 Drähte: die Drahtbrücke zu K5 (Platzhalter für D1), C1 Plus und 6 × orange Dock-Ader (+5 V).</li>
           <li>Jeden Draht mit ca. 4 mm Abstand anlöten, die fertige Schiene in Schrumpfschlauch 6 mm schieben (vorher auf einen Draht aufschieben).</li>
         </ul>
-        <div class="check"><b>Prüfen</b>Zwischen GND-Schiene und LED-Schiene kein Durchgang. Dock-Pins 1 und 3 sind je mit ihrer Schiene verbunden.</div>
+        <div class="check"><b>Prüfen</b>Zwischen GND-Schiene und LED-Schiene kein Durchgang. Die GND- und +5-V-Pins jedes Docks sind je mit ihrer Schiene verbunden.</div>
       </li>
       <li>
         <h3>C1 und die Platzhalter-Brücke <span class="time">10 Minuten</span></h3>
@@ -792,7 +792,7 @@ interval:
           <li>+5 V (K5) gegen GND: kein Durchgang, auch nicht bei Schalter ein.</li>
           <li>LED-Schiene gegen GND: kein Durchgang.</li>
           <li>3V3 gegen GND: kein Durchgang, später am ESP32 prüfen: der Regler zeigt einige kΩ.</li>
-          <li>Je Dock: ESP32-Dupont-Ader bis Pin 2 etwa 330 Ω. Pin 4 bis ESP32-GPIO: Durchgang (0 Ω). Pin 2 gegen Pin 3: offen.</li>
+          <li>Je Dock: ESP32-Dupont-Ader bis zum DIN-Pin etwa 330 Ω. DETECT-Pin bis ESP32-GPIO: Durchgang (0 Ω). DIN gegen +5 V: offen.</li>
           <li>Kein GPIO hat Durchgang zu 5 V oder 3V3.</li>
         </ul>
         <div class="check"><b>Prüfen</b>Alle Punkte erfüllt, bevor der erste Strom fließt.</div>
