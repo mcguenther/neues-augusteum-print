@@ -1,12 +1,12 @@
 """Daten der Produktseite (`product/index.html`): reduzierte 3D-Netze aller Teile in Weltlage und Bilder als WebP.
 
 Liest die fertigen STL (erst `python3 -m plug.campus`, `plug.buildings`, `plug.power.build_unterkasten8`), setzt Steckplatte, sechs
-Gebäude, Hof-Einsatz, Display-Gebäude, Kassetten mit LED-Streifen, Unterkasten (Stand 8), Powerbank, ESP32 und Hauptschalter in eine
+Gebäude, Hof-Einsatz (nach Farben geteilt), Display-Gebäude, Kassetten mit LED-Streifen, Unterkasten (Stand 8), Powerbank, ESP32 und Hauptschalter in eine
 gemeinsame Lage (z = 0 Plattenoberseite, mm) und schreibt
 
 - `product/assets/model.json` Inhaltsverzeichnis (Teil, Gruppe, Versatz, Anzahl, Box) und die Netze als base64 im Feld `bin`
   (Ecken als uint16 über die Gesamtbox, Dreiecke als uint16/uint32; Artifacts liefern keine Binärdateien aus)
-- `product/assets/*.webp`     Bilder aus `vorschau/` für die Seite
+- `product/assets/*.webp`     Bilder aus `vorschau/` für die Seite, dazu das Foto der Farbkachel (`FARBFOTO`, aus dem Fotokatalog)
 
 Aufruf: `python3 -m product.build_assets` (ca. 30 s).
 """
@@ -20,6 +20,11 @@ import fast_simplification
 import numpy as np
 import trimesh
 from PIL import Image
+
+import farben as F
+import generate as G
+import innenhof
+import registrierung as R
 
 from plug import buildings as BU
 from plug import campus as C
@@ -36,7 +41,7 @@ OUT = os.path.join(HERE, "assets")
 GEB = os.path.join(ROOT, "stl", "steckmodul_campus", "gebaeude")
 
 # Anteil der Dreiecke, der nach dem Reduzieren bleibt (Laserscan-Dächer sind sehr fein; für den Bildschirm reicht weniger)
-KEEP = {"building": 0.22, "plate": 0.6, "hof": 0.8}
+KEEP = {"building": 0.22, "plate": 0.6}
 
 TITLES = {
     "01_paulinum": "Paulinum",
@@ -67,6 +72,19 @@ def box(x0, y0, z0, x1, y1, z1):
     return trimesh.creation.box(bounds=[[x0, y0, z0], [x1, y1, z1]])
 
 
+def hof_parts():
+    """Hof-Einsatz nach den Farben aus `innenhof.colour_mesh` geteilt (Pflaster, Platz, Beete, Bänke, Denkmal, Bäume), damit er sich auf
+    der Seite von der Platte abhebt. Der Teil mit der größten Fläche (Pflaster) heißt `hof`, die übrigen `hof_<n>`; Farbe im Feld color."""
+    hof = trimesh.load(os.path.join(ROOT, "stl", "steckmodul_campus", "hof_einsatz_1zu1300.stl"))
+    hexes = innenhof.colour_mesh(hof, ((0.0, 0.0, 0.0), 1000.0 / P.SCALE_PLAN), F.load_farben()[G.HOF["slug"]]).astype(str)
+    keys = sorted(set(hexes), key=lambda h: -hof.area_faces[hexes == h].sum())
+    out = []
+    for i, h in enumerate(keys):
+        sub = hof.submesh([np.flatnonzero(hexes == h)], append=True)
+        out.append(("hof" if i == 0 else "hof_%d" % i, "hof", "Innenhof", sub, h))
+    return out
+
+
 def parts():
     """Liste (name, gruppe, titel, trimesh) in Weltlage."""
     out = []
@@ -75,8 +93,7 @@ def parts():
     plate = trimesh.load(os.path.join(ROOT, "stl", "steckmodul_campus", "steckplatte_1zu1300.stl"))
     minx, miny = plate.bounds[0][:2]                     # Rohkoordinaten der Platte: Unterseite z = 0, Ecke Südwest (minx, miny)
     out.append(("steckplatte", "plate", "Steckplatte", simplify(plate.apply_translation([0, 0, -T]), KEEP["plate"])))
-    hof = trimesh.load(os.path.join(ROOT, "stl", "steckmodul_campus", "hof_einsatz_1zu1300.stl"))
-    out.append(("hof", "hof", "Innenhof", simplify(hof, KEEP["hof"])))
+    out += hof_parts()
 
     for slug, title in TITLES.items():
         m = trimesh.load(os.path.join(GEB, "%s_1zu%d.stl" % (slug, P.SCALE_PLAN)))
@@ -131,11 +148,11 @@ def parts():
 
 
 def write_model(items):
-    allv = np.vstack([m.vertices for *_, m in items])
+    allv = np.vstack([it[3].vertices for it in items])
     lo, hi = allv.min(0), allv.max(0)
     span = hi - lo
     blob, index = bytearray(), []
-    for name, grp, title, m in items:
+    for name, grp, title, m, *color in items:
         q = np.round((np.asarray(m.vertices) - lo) / span * 65535).astype("<u2")
         f = np.asarray(m.faces)
         ft = "<u2" if len(m.vertices) < 65536 else "<u4"
@@ -150,6 +167,8 @@ def write_model(items):
         b = m.bounds
         index.append(dict(name=name, group=grp, title=title, v=[vo, len(m.vertices)], f=[fo, len(f), 2 if ft == "<u2" else 4],
                           box=[round(float(x), 2) for x in list(b[0]) + list(b[1])]))
+        if color:
+            index[-1]["color"] = color[0]
     json.dump(dict(lo=lo.round(4).tolist(), span=span.round(4).tolist(), parts=index, bin=base64.b64encode(bytes(blob)).decode()),
               open(os.path.join(OUT, "model.json"), "w"), ensure_ascii=False)
     tris = sum(p["f"][1] for p in index)
@@ -165,10 +184,26 @@ def write_images():
         print("%-24s %4d × %-4d %4.0f KB" % (dst, im.width, im.height, os.path.getsize(os.path.join(OUT, dst)) / 1024))
 
 
+# Foto der Farbkachel (Messkette Foto → Messung → Filament): Neues Augusteum, domjisch, CC BY 2.0, im Katalog data/messfotos.json
+# geprüft und am Modell ausgerichtet; wird bei Bedarf nach data/cache/fotos/ geladen
+FARBFOTO = ("fl_16719063090", "farbe_foto.webp", (480, 640))
+
+
+def write_farbfoto():
+    fid, dst, (w, h) = FARBFOTO
+    im = R.foto_bild(fid, R.lade_katalog()["fotos"][fid])
+    s = max(w / im.width, h / im.height)
+    im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
+    x, y = (im.width - w) // 2, (im.height - h) // 2
+    im.crop((x, y, x + w, y + h)).save(os.path.join(OUT, dst), "WEBP", quality=84, method=6)
+    print("%-24s %4d × %-4d %4.0f KB" % (dst, w, h, os.path.getsize(os.path.join(OUT, dst)) / 1024))
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     write_model(parts())
     write_images()
+    write_farbfoto()
 
 
 if __name__ == "__main__":

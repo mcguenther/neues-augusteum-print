@@ -190,6 +190,7 @@ sup.fn a { text-decoration: none; }
 }
 .tile.w3 { grid-column: span 3; }
 .tile.w4 { grid-column: span 4; }
+.tile.w6 { grid-column: 1 / -1; }
 .tile h3 { font-size: 26px; font-weight: 600; letter-spacing: -.025em; line-height: 1.1; }
 .tile p { color: var(--muted); font-size: 16px; line-height: 1.45; }
 .tile p b { color: var(--ink); font-weight: 600; }
@@ -199,8 +200,8 @@ sup.fn a { text-decoration: none; }
 .tile.dark p { color: var(--night-muted); }
 .tile.dark p b { color: var(--night-ink); }
 .tile.dark .k { color: var(--accent); }
-@media (max-width: 980px) { .tile, .tile.w3, .tile.w4 { grid-column: span 3; } }
-@media (max-width: 640px) { .features .grid { grid-template-columns: minmax(0, 1fr); } .tile, .tile.w3, .tile.w4 { grid-column: auto; } }
+@media (max-width: 980px) { .tile, .tile.w3, .tile.w4 { grid-column: span 3; } .tile.w6 { grid-column: 1 / -1; } }
+@media (max-width: 640px) { .features .grid { grid-template-columns: minmax(0, 1fr); } .tile, .tile.w3, .tile.w4, .tile.w6 { grid-column: auto; } }
 
 .docks { display: grid; gap: 2px; }
 .docks button {
@@ -332,6 +333,100 @@ sup.fn a { text-decoration: none; }
 .specs-mini span { display: block; margin-top: 8px; font-size: 14px; color: var(--muted); line-height: 1.35; }
 @media (max-width: 900px) { .mech-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; } }
 
+/* ---------- Gebäude (Rundgang) ---------- */
+.bau-grid { margin-top: 48px; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.bau-stage { position: sticky; top: calc(var(--nav-h) + 24px); aspect-ratio: 5 / 4; border-radius: 26px; background: var(--surface); overflow: hidden; }
+.bau-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; }
+.bau-stage .fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+.bau-stage .hint { position: absolute; left: 18px; bottom: 14px; font: 12px var(--font-mono); color: var(--muted); letter-spacing: .04em; }
+.bau-list { display: grid; gap: 2px; }
+.bau-list button {
+  display: grid; grid-template-columns: 2.2em 1fr; align-items: baseline; gap: 2px 8px; text-align: left; cursor: pointer;
+  background: transparent; border: 0; border-top: 1px solid var(--line); padding: 10px 4px; color: var(--muted); font: inherit;
+}
+.bau-list button .no { font: 12px var(--font-mono); color: var(--muted); grid-row: span 2; }
+.bau-list button b { font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: -.015em; color: var(--ink); opacity: .55; transition: opacity .2s; }
+.bau-list button small { grid-column: 2; font-size: 13.5px; }
+.bau-list button[aria-selected="true"] b { opacity: 1; }
+.bau-list button[aria-selected="true"] .no { color: var(--accent-ink); }
+.bau-list button:hover b { opacity: 1; }
+.bau-card { margin-top: 22px; padding: 22px 24px; border-radius: 22px; background: var(--surface); }
+.bau-card h3 { font-size: 24px; font-weight: 600; letter-spacing: -.02em; }
+.bau-card p { margin-top: 10px; color: var(--muted); font-size: 15.5px; line-height: 1.5; }
+.bau-card p b { color: var(--ink); font-weight: 600; }
+.bau-card dl { margin: 16px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 13.5px; }
+.bau-card dt { font-family: var(--font-mono); color: var(--muted); }
+.bau-card dd { margin: 0; font-variant-numeric: tabular-nums; }
+.bau-card .src { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.dots { display: inline-flex; gap: 10px; flex-wrap: wrap; }
+.dots span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent); }
+@media (max-width: 900px) {
+  .bau-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .bau-stage { position: relative; top: 0; }
+  .bau-list { grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; gap: 6px; padding-bottom: 4px; scrollbar-width: none; }
+  .bau-list button { grid-template-columns: auto; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; }
+  .bau-list button .no, .bau-list button small { display: none; }
+  .bau-list button b { font-size: 15px; }
+  .bau-list button[aria-selected="true"] { background: var(--ink); border-color: var(--ink); }
+  .bau-list button[aria-selected="true"] b { color: var(--bg); }
+  .bau-card { margin-top: 4px; }
+}
+.tip {
+  position: absolute; left: 0; top: 0; pointer-events: none; white-space: nowrap; z-index: 2;
+  font: 12.5px var(--font-mono); color: var(--bg); background: var(--ink); padding: 4px 10px; border-radius: 999px;
+  transform: translate(-50%, -150%); opacity: 0; transition: opacity .15s;
+}
+.tip.on { opacity: 1; }
+
+/* ---------- Farbe (Messkette) ---------- */
+.farbe-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 32px; align-items: center; }
+.farbe-chain { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, .55fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.farbe-chain figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.farbe-chain figcaption { font: 11.5px var(--font-mono); color: var(--muted); letter-spacing: .03em; }
+.farbe-chain figcaption b { color: var(--ink); font-weight: 500; }
+.farbe-chain img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; min-height: 0; }
+.farbe-chain .foto { aspect-ratio: 3 / 4; }
+.farbe-chain .modell { object-fit: contain; }
+.swatch-col { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.swatch-col div { flex: var(--w); min-height: 16px; border-radius: 6px; background: var(--c); position: relative; }
+.swatch-col div span { position: absolute; left: 6px; bottom: 3px; font: 10px var(--font-mono); color: #fff; mix-blend-mode: difference; }
+.fil { display: flex; gap: 4px; height: 12px; border-radius: 6px; overflow: hidden; }
+.fil i { flex: var(--w); background: var(--c); }
+@media (max-width: 980px) { .farbe-row { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .farbe-chain { grid-template-columns: minmax(0, 1fr) minmax(0, .7fr); } .farbe-chain figure:last-child { grid-column: 1 / -1; } }
+
+/* ---------- Nachbauen ---------- */
+.make { background: var(--surface); }
+.make-grid { margin-top: 56px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.make-grid h3 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.make-grid .k { display: block; margin-bottom: 8px; font: 12px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent-ink); }
+.files, .bom, .howto { list-style: none; margin: 0; padding: 0; }
+.files li, .bom li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.files li small, .bom li small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; line-height: 1.4; }
+.files a { font-weight: 600; text-decoration: none; color: var(--ink); }
+.files a::after { content: " ↓"; color: var(--accent-ink); font-weight: 500; }
+.files a.dir::after { content: " ›"; }
+.files .mono, .bom .mono { color: var(--muted); font-size: 13px; }
+.bom li b { font-weight: 600; }
+.bom li.opt { opacity: .78; }
+.howto { counter-reset: s; }
+.howto li { counter-increment: s; position: relative; padding: 11px 0 11px 40px; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--muted); line-height: 1.45; }
+.howto li b { color: var(--ink); font-weight: 600; }
+.howto li::before { content: counter(s, decimal-leading-zero); position: absolute; left: 0; top: 12px; font: 12.5px var(--font-mono); color: var(--accent-ink); }
+.make-note { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; font-size: 14px; color: var(--muted); }
+.make-note .btn { font-size: 14px; }
+@media (max-width: 980px) { .make-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; } }
+
+/* ---------- Herkunft ---------- */
+.origin-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.origin-grid div { border-top: 1px solid var(--line); padding-top: 16px; }
+.origin-grid b { display: block; font-family: var(--font-display); font-size: 19px; font-weight: 600; letter-spacing: -.015em; }
+.origin-grid p, .origin-grid li { margin-top: 8px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.origin-grid ul { margin: 0; padding: 0; list-style: none; }
+.origin-grid a { color: var(--accent-ink); text-decoration: none; }
+@media (max-width: 860px) { .origin-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+
 /* ---------- Technische Daten ---------- */
 .tech { background: var(--surface); }
 .tech table { width: 100%; border-collapse: collapse; margin-top: 48px; }
@@ -359,10 +454,11 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   <div class="wrap">
     <a class="brand" href="#top">Campus Augustusplatz</a>
     <ul>
-      <li><a href="#ueberblick">Überblick</a></li>
+      <li><a href="#gebaeude">Gebäude</a></li>
       <li><a href="#funktionen">Funktionen</a></li>
       <li><a href="#licht">Licht</a></li>
       <li><a href="#konstruktion">Konstruktion</a></li>
+      <li><a href="#nachbauen">Nachbauen</a></li>
       <li><a href="#technik">Technische Daten</a></li>
     </ul>
     <span class="scale">1 : 1300</span>
@@ -378,13 +474,14 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       <p class="tag"><b>Der Campus zum Aufstecken.</b> Und zum Leuchten.</p>
       <div class="cta">
         <a class="btn primary" href="#konstruktion">Konstruktion ansehen</a>
-        <a class="btn ghost" href="#technik">Technische Daten</a>
+        <a class="btn ghost" href="#nachbauen">Nachbauen</a>
       </div>
     </div>
     <div class="stage" id="heroStage">
       <img class="poster" src="assets/hero.webp" alt="Der Campus Augustusplatz als farbiges 3D-Modell mit City-Hochhaus, Paulinum und Neuem Augusteum" width="1600" height="898">
       <canvas id="heroCanvas" aria-label="3D-Modell der Steckplatte mit allen Gebäuden, mit der Maus drehbar"></canvas>
-      <span class="hint" id="heroHint">Ziehen zum Drehen</span>
+      <span class="hint" id="heroHint">Ziehen zum Drehen · Gebäude antippen</span>
+      <span class="tip" id="heroTip"></span>
     </div>
   </section>
 
@@ -392,8 +489,8 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     <div class="wrap">
       <ul>
         <li><div class="n">1:1300</div><div class="l">Maßstab, 1 mm ≙ 1,3 m</div></li>
-        <li><div class="n">6</div><div class="l">Gebäude, einzeln steckbar</div></li>
-        <li><div class="n">28</div><div class="l">Kontakte in 7 Docks</div></li>
+        <li><div class="n">6 + 1</div><div class="l">Gebäude zum Stecken und der Innenhof</div></li>
+        <li><div class="n">28</div><div class="l">Kontakte in 7 Docks: 6 Gebäude und das Display</div></li>
         <li><div class="n">9</div><div class="l">LEDs WS2812B, einzeln adressierbar</div></li>
         <li><div class="n">5000<span style="font-size:.45em;letter-spacing:0"> mAh</span></div><div class="l">Powerbank im Sockel</div></li>
       </ul>
@@ -403,6 +500,78 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   <section class="statement" id="ueberblick">
     <div class="wrap">
       <p><span>Vom Paulinum bis zum Uniriesen.</span> Jedes Gebäude ist aus dem Laserscan gerechnet, hohl gedruckt und steckt mit vier Kontakten in seiner Platte. <span>Darunter Strom. Darin Licht.</span></p>
+    </div>
+  </section>
+
+  <!-- ======================= Gebäude ======================= -->
+  <section class="section bauten" id="gebaeude">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Die Gebäude</span>
+        <h2>Sechs Bauten. Ein Hof.</h2>
+        <p>Der Campus am Augustusplatz, wie er seit 2017 dasteht: vom Paulinum bis zum Uniriesen, dazwischen das <b>Leibnizforum</b>. Jedes Teil ist einzeln gedruckt. Antippen zeigt es im Modell.</p>
+      </div>
+      <div class="bau-grid">
+        <div class="bau-stage" id="bauStage">
+          <canvas id="bauCanvas" aria-label="3D-Modell, das gewählte Gebäude ist hervorgehoben, die übrigen sind durchscheinend"></canvas>
+          <div class="fallback" id="bauFallback">3D-Modell wird geladen …</div>
+          <span class="hint">Ziehen zum Drehen</span>
+        </div>
+        <div>
+          <div class="bau-list" role="tablist" aria-label="Gebäude">
+        <button role="tab" id="bt-01_paulinum" aria-controls="bc-01_paulinum" aria-selected="true" data-part="01_paulinum"><span class="no">01</span><b>Paulinum</b><small>Aula und Universitätskirche</small></button>
+        <button role="tab" id="bt-02_neues_augusteum" aria-controls="bc-02_neues_augusteum" aria-selected="false" data-part="02_neues_augusteum"><span class="no">02</span><b>Neues Augusteum</b><small>Hauptgebäude mit Audimax</small></button>
+        <button role="tab" id="bt-03_hoersaalgebaeude" aria-controls="bc-03_hoersaalgebaeude" aria-selected="false" data-part="03_hoersaalgebaeude"><span class="no">03</span><b>Hörsaalgebäude</b><small>mit Mensa am Park</small></button>
+        <button role="tab" id="bt-04_seminargebaeude" aria-controls="bc-04_seminargebaeude" aria-selected="false" data-part="04_seminargebaeude"><span class="no">04</span><b>Seminargebäude</b><small>86 Seminarräume</small></button>
+        <button role="tab" id="bt-05_institutsgebaeude" aria-controls="bc-05_institutsgebaeude" aria-selected="false" data-part="05_institutsgebaeude"><span class="no">05</span><b>Institutsgebäude</b><small>Grimmaische Straße</small></button>
+        <button role="tab" id="bt-06_city_hochhaus" aria-controls="bc-06_city_hochhaus" aria-selected="false" data-part="06_city_hochhaus"><span class="no">06</span><b>City-Hochhaus</b><small>der Uniriese</small></button>
+        <button role="tab" id="bt-hof" aria-controls="bc-hof" aria-selected="false" data-part="hof"><span class="no">07</span><b>Innenhof</b><small>Leibnizforum</small></button>
+          </div>
+      <article class="bau-card" role="tabpanel" id="bc-01_paulinum" aria-labelledby="bt-01_paulinum" data-part="01_paulinum">
+        <h3>Paulinum</h3>
+        <p>Aula und Universitätskirche St. Pauli nach dem Entwurf von <b>Erick van Egeraat</b>, eröffnet im Dezember 2017 an der Stelle der 1968 gesprengten Universitätskirche.</p>
+        <p>Der Ostgiebel trägt ein <b>Relief</b>: Spitzbogen-Blende, Maßwerkfenster und Rosette, 0,2 bis 0,6 mm tief.</p>
+        <dl><dt>Maße</dt><dd>45,6 × 28,3 × 59,4 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>7,3 cm³</dd><dt>LEDs</dt><dd>1 · Kassette v4</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#6b7d8c"></i>Graublau 82 %</span><span><i style="--c:#4a4e54"></i>Space Grey 12 %</span><span><i style="--c:#e6d6bc"></i>Beige 5 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-02_neues_augusteum" aria-labelledby="bt-02_neues_augusteum" data-part="02_neues_augusteum" hidden>
+        <h3>Neues Augusteum</h3>
+        <p>Das Hauptgebäude am Augustusplatz mit dem Auditorium maximum, fertiggestellt 2012. Das Schinkeltor des alten Augusteums ist heute sein Westeingang.</p>
+        <p>Das Gebäude gibt es auch <b>offen</b>, mit einem zweiten Gewölbe unter dem hohen Dach: 16,4 statt 27,9 cm³. Die LED sitzt unter dem hohen Dach.</p>
+        <dl><dt>Maße</dt><dd>47,9 × 58,9 × 40,1 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>27,9 cm³</dd><dt>LEDs</dt><dd>1 · Kassette v4</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#6b7d8c"></i>Graublau 70 %</span><span><i style="--c:#e6d6bc"></i>Beige 16 %</span><span><i style="--c:#4a4e54"></i>Space Grey 14 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-03_hoersaalgebaeude" aria-labelledby="bt-03_hoersaalgebaeude" data-part="03_hoersaalgebaeude" hidden>
+        <h3>Hörsaalgebäude</h3>
+        <p>Aus den 1970er Jahren, nach der Sanierung 2009 wieder eröffnet: 21 Hörsäle, die Campusbibliothek und die Mensa am Park.</p>
+        <p>Das <b>größte Teil</b> der Platte, 104,7 mm lang. In Farbe trägt es das rote Band über dem Sockel.</p>
+        <dl><dt>Maße</dt><dd>63,2 × 104,7 × 32,9 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>42,8 cm³</dd><dt>LEDs</dt><dd>1 · Kassette v4</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#e6d6bc"></i>Beige 62 %</span><span><i style="--c:#7b2433"></i>Weinrot 19 %</span><span><i style="--c:#6b7d8c"></i>Graublau 17 %</span><span><i style="--c:#4a4e54"></i>Space Grey 2 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-04_seminargebaeude" aria-labelledby="bt-04_seminargebaeude" data-part="04_seminargebaeude" hidden>
+        <h3>Seminargebäude</h3>
+        <p>Ebenfalls aus den 1970er Jahren und bis 2009 saniert, mit 86 Seminarräumen. Es schließt den Hof nach Westen.</p>
+        <p>Schmal und lang: Zwei verkettete LEDs strahlen zur Seite, damit das Licht bis in beide Enden reicht.</p>
+        <dl><dt>Maße</dt><dd>30,3 × 76,4 × 35,9 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>11,1 cm³</dd><dt>LEDs</dt><dd>2 · Kassette V1RS</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#e6d6bc"></i>Beige 66 %</span><span><i style="--c:#4a4e54"></i>Space Grey 27 %</span><span><i style="--c:#7b2433"></i>Weinrot 4 %</span><span><i style="--c:#6b7d8c"></i>Graublau 3 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-05_institutsgebaeude" aria-labelledby="bt-05_institutsgebaeude" data-part="05_institutsgebaeude" hidden>
+        <h3>Institutsgebäude</h3>
+        <p>Neubau von 2009 an der Grimmaischen Straße, Sitz der Wirtschaftswissenschaftlichen Fakultät.</p>
+        <p>Der längste Riegel im Norden, 81,1 mm. Auch hier zwei LEDs nebeneinander.</p>
+        <dl><dt>Maße</dt><dd>81,1 × 34,1 × 38,6 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>18,0 cm³</dd><dt>LEDs</dt><dd>2 · Kassette V1RS</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#e6d6bc"></i>Beige 61 %</span><span><i style="--c:#4a4e54"></i>Space Grey 23 %</span><span><i style="--c:#6b7d8c"></i>Graublau 10 %</span><span><i style="--c:#7b2433"></i>Weinrot 7 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-06_city_hochhaus" aria-labelledby="bt-06_city_hochhaus" data-part="06_city_hochhaus" hidden>
+        <h3>City-Hochhaus</h3>
+        <p>1968 bis 1972 nach Plänen von <b>Hermann Henselmann</b> für die Universität gebaut, 142,5 m hoch. Bis heute heißt es in Leipzig „Uniriese“.</p>
+        <p>Die Krone kommt aus dem Laserscan und steht <b>111,3 mm</b> über der Platte. Als einziges Teil braucht es einen Rand (Brim) von 5 mm.</p>
+        <dl><dt>Maße</dt><dd>36,1 × 35,0 × 125,5 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>13,3 cm³</dd><dt>LEDs</dt><dd>2 · Kassette V2R</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#6b7d8c"></i>Graublau 70 %</span><span><i style="--c:#e6d6bc"></i>Beige 27 %</span><span><i style="--c:#4a4e54"></i>Space Grey 3 %</span></span></dd></dl>
+      </article>
+      <article class="bau-card" role="tabpanel" id="bc-hof" aria-labelledby="bt-hof" data-part="hof" hidden>
+        <h3>Innenhof</h3>
+        <p>Das Leibnizforum zwischen den Bauten liegt 2,3 m über der Grimmaischen Straße. In seiner Mitte steht das <b>Leibnizdenkmal</b> von Ernst Julius Hähnel aus dem Jahr 1883.</p>
+        <p>Ein Einsatz <b>ohne Licht</b>: sechs Hochbeete, vier Sitzpodeste, neun Bänke, drei Gleditschien und das Denkmal. Er liegt 6 mm tief in seiner Aussparung, mit 0,15 mm Fuge, und wird nur eingelegt.</p>
+        <dl><dt>Maße</dt><dd>35,2 × 70,6 × 16,4 mm <span style="color:var(--muted)">(mit Fuß)</span></dd><dt>Volumen</dt><dd>12,1 cm³</dd><dt>LEDs</dt><dd>keine</dd><dt>Farben</dt><dd><span class="dots"><span><i style="--c:#e6d6bc"></i>Beige 65 %</span><span><i style="--c:#4a4e54"></i>Space Grey 29 %</span><span><i style="--c:#4f9a3c"></i>Grasgrün 6 %</span></span></dd></dl>
+      </article>
+          <p class="src" style="margin-top:12px;font-size:12px;color:var(--muted)">Farben: Anteil der Außenfläche je Filament in der farbigen Fassung. Zur Geschichte: Wikipedia, Universität Leipzig und City-Hochhaus Leipzig.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -526,7 +695,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
         <article class="tile">
           <span class="k">Befestigung</span>
           <h3>Gemacht für den Doktorhut.</h3>
-          <p>Keine Schrauben, keine Fäden. Der Sockel wird mit <b>Heißkleber</b> auf den Hut geklebt. In der Mitte sitzt eine Erhebung über dem Knopf, acht Gänge führen die Kordel nach außen.<sup class="fn"><a href="#fn3">3</a></sup></p>
+          <p>Keine Schrauben, keine Fäden. Der Sockel hält mit <b>viel Liebe und Heißkleber</b> auf dem Hut. In der Mitte sitzt eine Erhebung über dem Knopf, acht Gänge führen die Kordel nach außen.<sup class="fn"><a href="#fn3">3</a></sup></p>
           <div class="fig hatfig">
             <svg viewBox="0 0 300 160" role="img" aria-label="Draufsicht: Sockel 220,9 × 115,6 mm mit acht Kordelgängen und der Erhebung über dem Knopf in der Mitte des quadratischen Hutdeckels, mit Heißkleber aufgeklebt, die Quaste hängt am Rand">
               <rect x="80" y="10" width="140" height="140" rx="3" fill="color-mix(in srgb, var(--ink) 10%, transparent)"/>
@@ -550,11 +719,38 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
           </div>
         </article>
 
-        <article class="tile">
-          <span class="k">Farbe</span>
-          <h3>Auch in Farbe.</h3>
-          <p>Fassadenfarben aus <b>64 Straßenfotos</b>. Die steckbaren Gebäude gibt es als 3MF mit den vier Hauptfarben Beige, Graublau, Weinrot und Space Grey, oder einfarbig für wenig Filamentwechsel.</p>
-          <div class="fig colorimg"><img src="assets/farbig.webp" alt="Steckplatte mit den sechs Gebäuden in vier Filamentfarben" width="1000" height="764" loading="lazy"></div>
+        <article class="tile dark">
+          <span class="k">Software</span>
+          <h3>Läuft auch ohne Smart Home.</h3>
+          <p>Die Firmware ist mit <b>ESPHome</b> gebaut. Jedes Dock meldet sich als Leuchte an Home Assistant; ohne Home Assistant gibt es eine Weboberfläche mit Passwort, Updates gehen im Browser oder über WLAN. Findet der ESP32 kein bekanntes WLAN, öffnet er nach 30 s den Hotspot <b>Doktorhut-Max-Setup</b> zum Einrichten.<sup class="fn"><a href="#fn2">2</a></sup></p>
+        </article>
+
+        <article class="tile w6">
+          <div class="farbe-row">
+            <div>
+              <span class="k">Farbe</span>
+              <h3 style="margin-top:14px">Auch in Farbe. Gemessen, nicht geraten.</h3>
+              <p style="margin-top:14px">Die Fassadenfarben kommen aus <b>64 Straßenfotos</b>. Jedes Foto ist am 3D-Modell ausgerichtet, besonnte Flächen werden Zelle für Zelle gemessen. Daraus wird das nächste Filament aus vier Hauptfarben: Beige, Graublau, Weinrot und Space Grey. Die Gebäude gibt es als 3MF in diesen Farben oder einfarbig für wenig Filamentwechsel.</p>
+            </div>
+            <div class="farbe-chain" aria-label="Vom Foto über die gemessenen Farben zum Filament, am Beispiel des Neuen Augusteums">
+              <figure><figcaption><b>1 · Foto</b></figcaption><img class="foto" src="assets/farbe_foto.webp" alt="Straßenfoto der Glasfassade des Neuen Augusteums an der Universitätsstraße" width="480" height="640" loading="lazy"><figcaption>Foto: domjisch, CC BY 2.0</figcaption></figure>
+              <figure><figcaption><b>2 · Messung</b></figcaption>
+                <div class="swatch-col">
+                  <div style="--c:#7d8d94;--w:1391"></div>
+                  <div style="--c:#5f7d96;--w:362"></div>
+                  <div style="--c:#6a7477;--w:339"></div>
+                  <div style="--c:#b5adaa;--w:108"></div>
+                  <div style="--c:#525354;--w:96"></div>
+                  <div style="--c:#897e7f;--w:34"></div>
+                </div>
+                <figcaption>Messzellen je Zone, oben Glas und Stein</figcaption>
+              </figure>
+              <figure><figcaption><b>3 · Filament</b></figcaption><img class="modell" src="assets/farbig.webp" alt="Steckplatte mit den sechs Gebäuden in vier Filamentfarben" width="1000" height="764" loading="lazy">
+                <div class="fil" aria-label="Neues Augusteum: Graublau 70 %, Beige 16 %, Space Grey 14 %"><i style="--c:#6b7d8c;--w:70"></i><i style="--c:#e6d6bc;--w:16"></i><i style="--c:#4a4e54;--w:14"></i></div>
+                <figcaption>Neues Augusteum: Graublau 70 %, Beige 16 %, Space Grey 14 %</figcaption>
+              </figure>
+            </div>
+          </div>
         </article>
       </div>
     </div>
@@ -616,7 +812,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
           <article class="step" data-step="1">
             <div class="no">02 · Stecken</div>
             <h3>Jeder Bau hat seine Mulde.</h3>
-            <p>Die Mulden folgen dem echten Grundriss, mit <b>0,15 mm</b> Spiel je Seite. Zwischen Nachbarn bleibt eine Fuge von 1,1 mm.</p>
+            <p>Die Mulden folgen dem echten Grundriss, mit <b>0,15 mm</b> Spiel je Seite. Zwischen Nachbarn bleibt eine Fuge von 1,1 mm. In der Mitte liegt der <b>Innenhof</b> als eigener Einsatz, ohne Licht.</p>
             <dl><dt>14,2 mm</dt><dd>Fuß und Muldentiefe</dd><dt>0,4 mm</dt><dd>Muldenboden mit Pin-Löchern Ø 1,4</dd><dt>4,0 mm</dt><dd>Fase am Fuß, rundum</dd></dl>
           </article>
           <article class="step" data-step="2">
@@ -633,8 +829,8 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
           </article>
           <article class="step" data-step="4">
             <div class="no">05 · Alle Teile</div>
-            <h3>Acht Druckteile und ein Sockel.</h3>
-            <p>Platte, Innenhof und sechs Gebäude kommen als ein Druckpaket. Dazu sechs Kassetten in drei Bauformen, das Display-Gebäude, der Sockel und drei Klötze unter der Powerbank.</p>
+            <h3>Ein Druckpaket. Und alles darunter.</h3>
+            <p>Platte, Innenhof und sechs Gebäude kommen als ein Paket. Dazu sechs Kassetten in drei Bauformen, das Display-Gebäude aus drei Teilen, der Sockel und drei bis vier Klötze unter der Powerbank.</p>
             <dl><dt>v4</dt><dd>Paulinum, Neues Augusteum, Hörsaalgebäude</dd><dt>V1RS</dt><dd>Seminar-, Institutsgebäude</dd><dt>V2R</dt><dd>City-Hochhaus</dd></dl>
           </article>
         </div>
@@ -740,6 +936,63 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     </div>
   </section>
 
+  <!-- ======================= Nachbauen ======================= -->
+  <section class="section make" id="nachbauen">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Nachbauen</span>
+        <h2>Selbst drucken. Selbst stecken.</h2>
+        <p>Alle Druckdateien liegen offen im Repository. Gebraucht werden ein Drucker mit <b>230 × 230 mm</b> Bett, weißes PLA, ein Lötkolben und die Teile aus der Stückliste.<sup class="fn"><a href="#fn3">3</a></sup></p>
+      </div>
+      <div class="make-grid">
+        <div>
+          <span class="k">1 · Drucken</span>
+          <h3>Druckdateien</h3>
+          <ul class="files">
+            <li><a href="https://github.com/mcguenther/neues-augusteum-print/raw/main/stl/steckmodul_campus/druckdaten_campus_1zu1300.zip">Platte, Hof und Gebäude</a><span class="mono">ZIP · STL</span><small>Steckplatte, Innenhof-Einsatz und sechs Hohlgebäude, 1:1300, mit Prüfbericht. 345 cm³ zusammen.</small></li>
+            <li><a href="https://github.com/mcguenther/neues-augusteum-print/raw/main/stl/steckmodul_campus/gebaeude_und_kassetten_1zu1300.zip">Gebäude mit Kassetten</a><span class="mono">ZIP · STL</span><small>Die sechs Gebäude mit ihren Kassetten v4, V1RS und V2R, dazu das offene Neue Augusteum.</small></li>
+            <li><a class="dir" href="https://github.com/mcguenther/neues-augusteum-print/tree/main/stl/steckmodul_display">Display-Gebäude</a><span class="mono">3 × STL</span><small>Körper, Rückdeckel und Frontblende (D1 bis D3) für das 1,3″-OLED.</small></li>
+            <li><a href="https://github.com/mcguenther/neues-augusteum-print/raw/main/stl/steckmodul_unterkasten8/unterkasten8.zip">Sockel, Stand 8</a><span class="mono">ZIP · STL</span><small>Unterkasten mit Knopfraum und Kordelgängen, rund 108 g und knapp 6 h; dazu die Klötze unter der Powerbank.</small></li>
+            <li><a class="dir" href="https://github.com/mcguenther/neues-augusteum-print/tree/main/stl/steckmodul_campus/gebaeude_farbig">Farbige Gebäude</a><span class="mono">3MF</span><small>Je Gebäude farbig oder einfarbig, dazu alle auf einem Bett in den vier Hauptfarben.</small></li>
+          </ul>
+        </div>
+        <div>
+          <span class="k">2 · Besorgen</span>
+          <h3>Stückliste</h3>
+          <ul class="bom">
+            <li><span><b>ESP32-DevKit WROOM-32</b></span><span class="mono">1 ×</span><small>30 Pin, USB-C</small></li>
+            <li><span><b>WS2812B-Streifen</b></span><span class="mono">9 LEDs</span><small>60 LEDs/m, 10 mm breit; 1 oder 2 LEDs je Gebäude</small></li>
+            <li><span><b>Dupont-Buchse 1 × 4</b> und <b>Winkelleiste 4-polig</b></span><span class="mono">je 7 ×</span><small>eine je Dock, Leiste mit 2,0 mm Körper</small></li>
+            <li><span><b>OLED 1,3″ I²C</b> (SH1106) und <b>INA226</b></span><span class="mono">je 1 ×</span><small>Display und Strommessung mit 0,1-Ω-Shunt</small></li>
+            <li><span><b>Powerbank Intenso XS5000</b></span><span class="mono">1 ×</span><small>5000 mAh, 90 × 63 mm, mit USB-A-Kabel</small></li>
+            <li><span><b>Wippschalter KCD11</b></span><span class="mono">1 ×</span><small>10 × 15 mm, im Plus der Powerbank</small></li>
+            <li><span><b>Widerstand 330 Ω</b> und <b>Elko 1000 µF</b></span><span class="mono">6 × · 1 ×</span><small>je Datenleitung einer; der Elko an der 5-V-Schiene</small></li>
+            <li><span><b>Litze, Crimpkontakte, Heißkleber</b></span><span class="mono"></span><small>24 AWG für Strom und Masse, 28 AWG für die Docks</small></li>
+            <li class="opt"><span><b>Lastpuls, optional</b></span><span class="mono"></span><small>MOSFET, 47 Ω / 1 W, 100 Ω und 10 kΩ an GPIO 14: hält die Powerbank wach</small></li>
+          </ul>
+        </div>
+        <div>
+          <span class="k">3 · Zusammenbauen</span>
+          <h3>In acht Schritten</h3>
+          <ol class="howto">
+            <li><b>Drucken</b> wie in den technischen Daten: 0,2 mm, Gyroid 10 %, ohne Stützen, Brim nur am Hochhaus.</li>
+            <li><b>Buchse crimpen</b>, Kassette darüberstülpen und den LED-Streifen oben auflegen.</li>
+            <li><b>Kassette</b> von unten in den Schacht des Gebäudes pressen; sie hält beim Schütteln.</li>
+            <li><b>Winkelleisten</b> unter die Platte kleben, die Stifte stehen durch den Muldenboden.</li>
+            <li><b>Verdrahten</b>: Powerbank, Schalter, INA226 und ESP32, je Dock Daten und Erkennung.</li>
+            <li><b>Powerbank</b> auf das Plateau über dem Knopf legen, die Klötze darunter kleben.</li>
+            <li><b>Platte</b> auf die zwei Zapfen des Sockels stecken, dann den <b>Innenhof</b> einlegen.</li>
+            <li><b>Auf den Hut</b>: mit viel Liebe und Heißkleber. Dann die Gebäude stecken.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="make-note">
+        <a class="btn primary" href="https://github.com/mcguenther/neues-augusteum-print">Repository öffnen</a>
+        <span>Erzeugt aus Python: <span class="mono">plug.campus</span>, <span class="mono">plug.buildings</span>, <span class="mono">plug.power</span>. Alles lässt sich mit eigenen Maßen neu rechnen.</span>
+      </div>
+    </div>
+  </section>
+
   <!-- ======================= Technische Daten ======================= -->
   <section class="section tech" id="technik">
     <div class="wrap">
@@ -762,6 +1015,32 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       </table>
     </div>
   </section>
+
+  <!-- ======================= Herkunft ======================= -->
+  <section class="section" id="herkunft">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Herkunft und Lizenzen</span>
+        <h2>Offene Daten. Offen genannt.</h2>
+        <p>Das Modell ist ein abgeleitetes Werk aus amtlichen und freien Daten. Wer es weitergibt oder druckt und zeigt, nennt bitte die Quellen.</p>
+      </div>
+      <div class="origin-grid">
+        <div><b>Geodaten</b>
+          <ul>
+            <li>Laserscan 2023 © Landesamt für Geobasisinformation Sachsen (GeoSN), <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a></li>
+            <li>3D-Stadtmodell LoD2 und Luftbild 2024 © Stadt Leipzig, <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a></li>
+            <li>© OpenStreetMap-Mitwirkende, <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a></li>
+          </ul>
+        </div>
+        <div><b>Fotos</b>
+          <p>Die Fassadenfarben sind aus freien Fotos von Flickr und Wikimedia Commons gemessen, unter CC BY und CC BY-SA. Urheber und Lizenz jedes Fotos stehen in <a href="https://github.com/mcguenther/neues-augusteum-print/blob/main/FOTOQUELLEN.md">FOTOQUELLEN.md</a>. Das Foto oben: domjisch, „Augusteum (Universität Leipzig)“, <a href="https://www.flickr.com/photos/46604778@N00/16719063090">Flickr</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>, verkleinert und zugeschnitten.</p>
+        </div>
+        <div><b>Modell und Code</b>
+          <p>Geometrie, Druckdateien, Seite und Werkzeuge liegen im Repository <a href="https://github.com/mcguenther/neues-augusteum-print">neues-augusteum-print</a>. Die Gebäude sind keine Kopie von Plänen der Universität, sondern aus den Messdaten oben gerechnet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -772,7 +1051,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       <li id="fn3">Der Sockel mit Knopfraum und Kordelgängen, die Zapfen und das Display-Dock der aktuellen Platte sind gerechnet und geprüft, aber noch nicht gedruckt. Hutknopf Ø 22 × 12 mm (gemessen 11 bis 12), Hut 24 cm angenommen; dann bleiben knapp 10 mm Rand je Seite.</li>
     </ol>
     <div class="src">
-      <span>Stand 20.10.2026</span>
+      <span>Stand 23.10.2026</span>
       <span>3D-Modell: echte Druckdateien, für den Bildschirm vereinfacht (Powerbank und ESP32 als Quader)</span>
       <span>Quelle: <span class="mono">product/build_assets.py</span>, Repo neues-augusteum-print</span>
     </div>
@@ -807,6 +1086,25 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   document.querySelectorAll("#docks button").forEach(function (b) {
     b.addEventListener("click", function () { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true"); });
   });
+
+  /* ---------------- Gebäude: Liste und Karten (das 3D-Modell hängt sich über bauHook an) ---------------- */
+  var bauTabs = Array.prototype.slice.call(document.querySelectorAll(".bau-list button"));
+  var bauCards = Array.prototype.slice.call(document.querySelectorAll(".bau-card"));
+  var bauHook = null;
+  function showBau(part) {
+    bauTabs.forEach(function (b) { b.setAttribute("aria-selected", b.dataset.part === part ? "true" : "false"); b.tabIndex = b.dataset.part === part ? 0 : -1; });
+    bauCards.forEach(function (c) { c.hidden = c.dataset.part !== part; });
+    if (bauHook) bauHook(part);
+  }
+  bauTabs.forEach(function (b, i) {
+    b.addEventListener("click", function () { showBau(b.dataset.part); });
+    b.addEventListener("keydown", function (e) {
+      var d = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault(); var n = bauTabs[(i + d + bauTabs.length) % bauTabs.length]; n.focus(); showBau(n.dataset.part);
+    });
+  });
+  showBau("01_paulinum");
 
   /* ---------------- Navigation über dunklen Bändern ---------------- */
   var nav = document.querySelector(".nav"), darkSecs = document.querySelectorAll(".night, .build");
@@ -866,11 +1164,12 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
   setInterval(function () { if (oledVisible && !reduce) { oledTick += 1; oledFrame(oledTick % 4 === 0); } }, 250);
 
   /* ---------------- 3D ---------------- */
-  if (!window.THREE) { document.getElementById("lightFallback").textContent = "3D-Ansicht nicht verfügbar."; return; }
+  function no3d(t) { ["lightFallback", "bauFallback"].forEach(function (id) { document.getElementById(id).textContent = t; }); }
+  if (!window.THREE) { no3d("3D-Ansicht nicht verfügbar."); return; }
   var T = window.THREE;
 
   function hasGL() { try { var c = document.createElement("canvas"); return !!(c.getContext("webgl") || c.getContext("experimental-webgl")); } catch (e) { return false; } }
-  if (!hasGL()) { document.getElementById("lightFallback").textContent = "3D-Ansicht nicht verfügbar."; return; }
+  if (!hasGL()) { no3d("3D-Ansicht nicht verfügbar."); return; }
 
   var SLUGS = ["01_paulinum", "02_neues_augusteum", "03_hoersaalgebaeude", "04_seminargebaeude", "05_institutsgebaeude", "06_city_hochhaus"];
 
@@ -880,7 +1179,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       for (var i = 0; i < raw.length; i++) u8[i] = raw.charCodeAt(i);
       start(M, u8.buffer);
     })
-    .catch(function () { document.getElementById("lightFallback").textContent = "3D-Modell konnte nicht geladen werden."; });
+    .catch(function () { no3d("3D-Modell konnte nicht geladen werden."); });
 
   function start(M, buf) {
     var geo = {}, info = {};
@@ -910,6 +1209,14 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     setupLight(night);
     var build = new Stage(document.getElementById("buildCanvas"), geo, info, C, "build");
     setupBuild(build, info);
+    var bau = new Stage(document.getElementById("bauCanvas"), geo, info, C, "bau");
+    bau.view = { az: -58, el: 34, dist: 0.62, tz: 20 }; bau.drag = true; bau.auto = false;
+    bau.onReady = function () { document.getElementById("bauFallback").hidden = true; };
+    setupBau(bau, info);
+    setupPick(hero, info, document.getElementById("heroTip"), function (part) {
+      showBau(part);
+      document.getElementById("gebaeude").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    });
   }
 
   /* ---------- Bühne ---------- */
@@ -937,6 +1244,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       ? { plate: "#1b1c21", hof: "#1f2420", building: "#e9e3d6", cassette: "#3a2a24", led: "#ffffff", display: "#2a2a2e", display_front: "#151619", pcb: "#20352a", glass: "#0d1a2a", "case": "#121317", powerbank: "#222", chip: "#111", "switch": "#111" }
       : { plate: "#c9c6be", hof: "#c9cdc0", building: "#f4f2ed", cassette: "#e2733c", led: "#ffe9b0", display: "#2c2e33", display_front: "#1c1d21", pcb: "#2f6f47", glass: "#0f1724", "case": "#c4c2bc", powerbank: "#eeeeea", chip: "#1a1b1e", "switch": "#16171a" };
     if (mode === "build") { COL.plate = "#8b8d93"; COL["case"] = "#5f6168"; COL.hof = "#7f8a76"; COL.building = "#eceae4"; }
+    if (mode === "bau") { COL.plate = "#a3a5aa"; COL["case"] = "#8e9095"; }
 
     Object.keys(geo).forEach(function (name) {
       var p = info[name], g = p.group;
@@ -958,7 +1266,8 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
           var back = new T.Mesh(geo[name], bm); back.visible = false; s.back[name] = back; s.scene.add(back);
         }
       } else {
-        m = mat(COL[g] || "#888", g === "led" ? { emissive: new T.Color("#ffc46b"), emissiveIntensity: 1.2 } : g === "glass" ? { roughness: .25 } : null);
+        var hex = g === "hof" && p.color ? (night ? "#" + new T.Color(p.color).multiplyScalar(.3).getHexString() : p.color) : COL[g] || "#888";
+        m = mat(hex, g === "led" ? { emissive: new T.Color("#ffc46b"), emissiveIntensity: 1.2 } : g === "glass" ? { roughness: .25 } : null);
       }
       var mesh = new T.Mesh(geo[name], m);
       s.meshes[name] = mesh; s.scene.add(mesh);
@@ -1020,7 +1329,7 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     var fov = this.camera.fov * Math.PI / 180, aspect = this.camera.aspect;
     var hf = Math.min(fov, 2 * Math.atan(Math.tan(fov / 2) * aspect));
     var d = 150 / Math.sin(hf / 2) * v.dist;
-    var t = new T.Vector3(this.C.x, this.C.y, v.tz);
+    var t = this.focus || new T.Vector3(this.C.x, this.C.y, v.tz);
     this.camera.position.set(t.x + d * Math.cos(el) * Math.cos(az), t.y + d * Math.cos(el) * Math.sin(az), t.z + d * Math.sin(el));
     this.camera.lookAt(t);
     var w = this.canvas.clientWidth, h = this.canvas.clientHeight;
@@ -1102,6 +1411,86 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     document.getElementById("replay").addEventListener("click", function () { restart(performance.now()); st.first = false; apply(performance.now()); });
   }
 
+  /* ---------- Gebäude-Bühne: gewähltes Teil voll, die übrigen durchscheinend, Kamera fährt hin ---------- */
+  function partOf(name, info) {
+    var g = info[name] && info[name].group;
+    if (g === "hof") return "hof";
+    if (g === "building") return name;
+    if (g === "display" || g === "display_front" || g === "glass" || (g === "pcb" && name.indexOf("display") === 0)) return "display";
+    return null;
+  }
+  function setupBau(st, info) {
+    var hb = info.hof.box, pb = info.steckplatte.box;
+    var goal = null;
+    st.focus = new T.Vector3(st.C.x, st.C.y, 20);
+    function boxOf(part) {
+      if (part !== "hof") return info[part].box;
+      return [hb[0], hb[1], 0, hb[3], hb[4], 10];
+    }
+    function select(part, quiet) {
+      if (!info[part]) return;
+      Object.keys(st.meshes).forEach(function (n) {
+        var m = st.meshes[n].material, own = partOf(n, info) === part, g = info[n].group;
+        var ghost = !own && g !== "plate" && g !== "case" && !(g === "hof" && part !== "hof");
+        m.transparent = ghost; m.opacity = ghost ? 0.22 : 1; m.depthWrite = !ghost; m.needsUpdate = true;
+      });
+      // Blick von außen auf das Teil: Richtung von der Plattenmitte weg, beim Hof von Nordosten wie in der Explosion
+      var b = boxOf(part), cx = (b[0] + b[3]) / 2, cy = (b[1] + b[4]) / 2, h = b[5];
+      var az = part === "hof" ? 118 : Math.atan2(cy - (pb[1] + pb[4]) / 2, cx - (pb[0] + pb[3]) / 2) * 180 / Math.PI;
+      var size = Math.max(b[3] - b[0], b[4] - b[1], h);
+      goal = { az: az - 20, el: part === "hof" ? 52 : 30, dist: part === "hof" ? 0.42 : Math.max(0.34, Math.min(0.95, size / 170 + 0.12)), x: cx, y: cy, z: h * 0.45 };
+      st.view.az += st.yaw; st.view.el = Math.max(-25, Math.min(80, st.view.el + st.pitch)); st.yaw = 0; st.pitch = 0;
+      if (reduce || quiet) step(1);
+      st.dirty = true;
+    }
+    function step(k) {
+      var v = st.view, da = ((goal.az - v.az + 540) % 360) - 180;
+      v.az += da * k; v.el += (goal.el - v.el) * k; v.dist += (goal.dist - v.dist) * k;
+      st.focus.x += (goal.x - st.focus.x) * k; st.focus.y += (goal.y - st.focus.y) * k; st.focus.z += (goal.z - st.focus.z) * k;
+      if (Math.abs(da) < 0.05 && Math.abs(goal.dist - v.dist) < 0.001 && st.focus.distanceTo(new T.Vector3(goal.x, goal.y, goal.z)) < 0.05) goal = null;
+      st.dirty = true;
+    }
+    st.update = function () { if (goal) step(0.08); };
+    setupPick(st, info, null, showBau);
+    var first = (bauTabs.filter(function (b) { return b.getAttribute("aria-selected") === "true"; })[0] || bauTabs[0]).dataset.part;
+    select(first, true);
+    bauHook = select;
+  }
+
+  /* ---------- Teile unter dem Zeiger: Name zeigen, Antippen wählt ---------- */
+  function setupPick(st, info, tip, onPick) {
+    var ray = new T.Raycaster(), ndc = new T.Vector2(), down = null;
+    var targets = Object.keys(st.meshes).filter(function (n) { return partOf(n, info); }).map(function (n) { st.meshes[n].userData.name = n; return st.meshes[n]; });
+    var NAMES = { hof: "Innenhof · Leibnizforum", display: "Display-Gebäude" };
+    function hit(e) {
+      var r = st.canvas.getBoundingClientRect();
+      ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ndc, st.camera);
+      var hs = ray.intersectObjects(targets.filter(function (m) { return !m.material.transparent; }), false);
+      return hs.length ? partOf(hs[0].object.userData.name, info) : null;
+    }
+    st.canvas.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") return;
+      var part = hit(e);
+      st.canvas.style.cursor = part ? "pointer" : "";
+      if (!tip) return;
+      if (part) {
+        var r = st.canvas.getBoundingClientRect(), pr = st.canvas.parentNode.getBoundingClientRect();
+        tip.textContent = NAMES[part] || info[part].title;
+        tip.style.left = (e.clientX - pr.left) + "px"; tip.style.top = (e.clientY - pr.top) + "px";
+      }
+      tip.classList.toggle("on", !!part);
+    });
+    st.canvas.addEventListener("pointerleave", function () { if (tip) tip.classList.remove("on"); });
+    st.canvas.addEventListener("pointerdown", function (e) { down = { x: e.clientX, y: e.clientY }; });
+    st.canvas.addEventListener("pointerup", function (e) {
+      if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) { down = null; return; }
+      down = null;
+      var part = hit(e);
+      if (part && part !== "display") onPick(part);
+    });
+  }
+
   /* ---------- Konstruktions-Bühne ---------- */
   function setupBuild(st, info) {
     var section = document.getElementById("konstruktion");
@@ -1109,18 +1498,25 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
     var dots = Array.prototype.slice.call(document.querySelectorAll("#progress span"));
     var labelsEl = document.getElementById("labels");
     st.shiftX = 0.14;
-    // Schlüsselbilder: lift = Gebäude hoch, kas = Kassetten aus dem Schacht, cut = Schnitt, split = Platte über den Sockel, inner = Inhalt hoch
+    // Schlüsselbilder: lift = Gebäude hoch, spread = Gebäude seitlich vom Hof weg, hof = Innenhof hoch, kas = Kassetten aus dem Schacht,
+    // cut = Schnitt, split = Platte über den Sockel, inner = Inhalt hoch
     var K = [
-      { az: -58, el: 24, dist: 1.02, tz: 20, lift: 0, kas: 0, cut: 0, split: 0, inner: 0 },
-      { az: -66, el: 38, dist: 0.98, tz: 36, lift: 58, kas: 0, cut: 0, split: 0, inner: 0 },
-      { az: 22, el: 16, dist: 0.86, tz: 26, lift: 0, kas: 0, cut: 1, split: 0, inner: 0 },
-      { az: -52, el: 30, dist: 1.0, tz: 30, lift: 0, kas: 0, cut: 0, split: 62, inner: 0 },
-      { az: -40, el: 22, dist: 1.34, tz: 62, lift: 64, kas: 34, cut: 0, split: 66, inner: 16 }
+      { az: -58, el: 24, dist: 1.02, tz: 20, lift: 0, spread: 0, hof: 0, kas: 0, cut: 0, split: 0, inner: 0 },
+      { az: 118, el: 50, dist: 1.18, tz: 32, lift: 36, spread: 34, hof: 8, kas: 0, cut: 0, split: 0, inner: 0 },
+      { az: 22, el: 16, dist: 0.86, tz: 26, lift: 0, spread: 0, hof: 0, kas: 0, cut: 1, split: 0, inner: 0 },
+      { az: -52, el: 30, dist: 1.0, tz: 30, lift: 0, spread: 0, hof: 0, kas: 0, cut: 0, split: 62, inner: 0 },
+      { az: -40, el: 22, dist: 1.34, tz: 62, lift: 64, spread: 0, hof: 29, kas: 34, cut: 0, split: 66, inner: 16 }
     ];
+    // Richtung jedes Gebäudes von der Hofmitte weg (Kassetten und LEDs gehen mit ihrem Gebäude)
+    var hb = info.hof.box, hc = [(hb[0] + hb[3]) / 2, (hb[1] + hb[4]) / 2], dir = {};
+    SLUGS.forEach(function (sl) {
+      var b = info[sl].box, dx = (b[0] + b[3]) / 2 - hc[0], dy = (b[1] + b[4]) / 2 - hc[1], n = Math.hypot(dx, dy) || 1;
+      dir[sl] = dir["kassette_" + sl] = dir["led_" + sl] = [dx / n, dy / n];
+    });
     var LAB = [
       { t: "Mulde, 14,2 mm tief", part: "03_hoersaalgebaeude", at: "floor", steps: [1] },
       { t: "Display-Gebäude", part: "display_glass", at: "top", steps: [1, 4] },
-      { t: "Innenhof-Einsatz", part: "hof", at: "top", steps: [1] },
+      { t: "Innenhof · Leibnizforum", part: "hof", at: "top", steps: [1] },
       { t: "Kassette mit Buchse", part: "kassette_02_neues_augusteum", at: "top", steps: [2, 4] },
       { t: "Wand 0,8 mm", part: "06_city_hochhaus", at: "mid", steps: [2] },
       { t: "LED", part: "led_01_paulinum", at: "top", steps: [2] },
@@ -1144,9 +1540,13 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       if (g === "case" || g === "switch") return 0;
       if (g === "powerbank" || g === "chip" || (g === "pcb" && name === "esp32")) return s.inner;
       if (g === "plate") return up;
-      if (g === "hof") return up + s.lift * 0.45;
+      if (g === "hof") return up + s.hof;
       if (g === "cassette" || g === "led") return up + s.lift - s.kas;
       return up + s.lift;   // Gebäude und Display
+    }
+    function place(mesh, n, s) {
+      var d = dir[n] || [0, 0];
+      mesh.position.set(d[0] * s.spread, d[1] * s.spread, offsets(n, s));
     }
     function apply() {
       var x = progress(), i = Math.min(K.length - 2, Math.floor(x)), f = ease(Math.max(0, Math.min(1, x - i)));
@@ -1155,12 +1555,12 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       state = s;
       weights = K.map(function (_, j) { return Math.max(0, 1 - Math.abs(x - j) * 1.6); });
       st.view = { az: s.az, el: s.el, dist: s.dist, tz: s.tz };
-      Object.keys(st.meshes).forEach(function (n) { st.meshes[n].position.z = offsets(n, s); });
-      Object.keys(st.back).forEach(function (n) { st.back[n].position.z = offsets(n, s); st.back[n].visible = s.cut > 0.01; });
+      Object.keys(st.meshes).forEach(function (n) { place(st.meshes[n], n, s); });
+      Object.keys(st.back).forEach(function (n) { place(st.back[n], n, s); st.back[n].visible = s.cut > 0.01; });
       st.shadow.material.opacity = 1 - Math.min(1, s.split / 60) * 0.3;
       Object.keys(st.planes).forEach(function (n) {
         var bx = info[n].box, kb = info["kassette_" + n].box, kc = (kb[0] + kb[3]) / 2;
-        var c = (bx[3] + 1) + (kc - bx[3] - 1) * s.cut;
+        var c = (bx[3] + 1) + (kc - bx[3] - 1) * s.cut + (dir[n] ? dir[n][0] * s.spread : 0);
         st.planes[n].constant = c;
       });
       var k = Math.round(x);
@@ -1176,9 +1576,9 @@ footer .src { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--l
       var w = st.canvas.clientWidth, h = st.canvas.clientHeight;
       LAB.forEach(function (l) {
         var b = info[l.part].box, z = l.at === "floor" ? -12 : l.at === "mid" ? (b[2] + b[5]) / 2 : b[5];
-        var dz = st.meshes[l.part] ? st.meshes[l.part].position.z : 0;
-        if (l.at === "floor") dz = state.split;
-        v.set((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, z + dz).project(st.camera);
+        var mp = st.meshes[l.part] ? st.meshes[l.part].position : v.set(0, 0, 0), dx = mp.x, dy = mp.y, dz = mp.z;
+        if (l.at === "floor") { dx = dy = 0; dz = state.split; }
+        v.set((b[0] + b[3]) / 2 + dx, (b[1] + b[4]) / 2 + dy, z + dz).project(st.camera);
         var o = Math.max.apply(null, l.steps.map(function (j) { return weights[j]; }));
         l.el.style.opacity = v.z < 1 ? o.toFixed(2) : 0;
         l.el.style.left = ((v.x + 1) / 2 * w).toFixed(1) + "px";
