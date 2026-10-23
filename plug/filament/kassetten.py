@@ -8,6 +8,9 @@ v4 (Paulinum, Neues Augusteum, Hörsaalgebäude), V1RS (Seminar-, Institutsgebä
 Der LED-Streifen ist nicht in der STL (Kaufteil), wird aber mitgeprüft. Geprüft: dicht, Kollision der Kassette samt LED-Streifen mit dem fertigen Gebäude-STL
 (Weltlage über `plug.buildings.place`), Streifen überschneidet die Kassette nicht und liegt auf Podest bzw. Blatt auf (Oberkante der Kassette wie im Schacht gebaut).
 
+Pinbelegung je Kassette (23.10.2026, `params.PINBELEGUNG`, Markierung nur mit Bleistift bei der Montage, keine Kerben) steht in der Ausgabe; dazu die Prüfung, ob ein
+Gebäude mit um 180° gedrehter Kassette noch auf die Pins passt (Kollision mit dem Gebäude-STL und Versatz der Buchse gegen die Pin-Reihe; es darf nicht passen).
+
 Aufruf (aus dem Wurzelverzeichnis, erst `python3 -m plug.buildings`):
     python3 -m plug.filament.kassetten
 """
@@ -60,7 +63,9 @@ def main():
         tm = to_tm(m)
         path = os.path.join(OUT, "%s_kassette_%s.stl" % (slug, var))
         tm.export(path)
-        text = "  %-62s %5.2f × %5.2f × %5.2f mm  %5.0f mm³  dicht=%s" % (os.path.relpath(path, HERE), *tm.extents, tm.volume, tm.is_watertight)
+        bel = P.BELEGUNG[var]
+        text = "  %-62s %5.2f × %5.2f × %5.2f mm  %5.0f mm³  dicht=%s  Belegung %s (%s)" % (
+            os.path.relpath(path, HERE), *tm.extents, tm.volume, tm.is_watertight, bel, " | ".join(P.PINBELEGUNG[bel]))
         led = streifen(var)
         ueber = (mf(tm) ^ mf(to_tm(led))).volume()                      # Streifen in der Kassette (soll 0 sein)
         text += "  Streifen in Kassette %.3f mm³" % ueber
@@ -75,6 +80,13 @@ def main():
             kol = (mf(geb) ^ mf(gm)).volume()
             text += "  Kollision Gebäude mit Kassette und Streifen %.3f mm³" % kol
             ok &= kol < 0.5
+            dy = P.dims_plan()["y_kass0"] - yc                          # um 180° gedreht um die Schachtmitte (Verpolung): passt sie trotzdem hinein?
+            rot = (m + led).translate([0, dy, -P.dims_plan()["F"]]).rotate([0, 0, 180]).translate([0, -dy, 0])
+            kol180 = (mf(geb) ^ mf(to_tm(B.place(rot, places[slug], yc)))).volume()
+            ypin = P.kass_dims()["ypin"] if var == "v4" else V.dims(var)["ypin"]
+            versatz = abs(2 * (dy + ypin))                              # Taschenmitte gedreht gegen die Pin-Reihe (y = 0 im Gebäudesystem)
+            text += "  um 180° gedreht: Kollision %.1f mm³, Buchse %.2f mm neben den Pins" % (kol180, versatz)
+            ok &= kol180 > 1.0 or versatz > 0.8                         # gedreht darf das Gebäude nicht auf die Pins passen
         ok &= bool(tm.is_watertight)
         print(text)
     print("alle dicht, keine Kollisionen" if ok else "ACHTUNG: nicht dicht oder Kollision")

@@ -30,6 +30,29 @@ Die Kassette wird mit dem Streifenende voran von unten durch den Schacht im Fuß
 Lösung (Vorschlag des Nutzers): Blatt oben in die Mitte versetzen (Vorderseite y = 2,6, Versatz 1,54 als 45°-Schräge, zuerst 0,8 an der hinteren Wand hoch). Chip zu Chip 5,6 (2 × 2,2 + 1,2), Unterbau 6,4 tief, Luft 0,4 vorn und hinten.
 Der hintere Streifen ist um 180° gedreht aufgeklebt; die Streifen sind verkettet (DOUT des vorderen an DIN des hinteren, drei kurze Adern), nur ein Satz Adern von der Buchse. Zwei LEDs: etwa 120 mA bei Weiß.
 
+## Pinbelegung und Docks (Nutzer, 23.10.2026)
+
+Für die Adern ist in den Kassetten sehr wenig Platz, deshalb liegen die Kontakte je Bauform anders. Der Nutzer hat sie auf einer Skizze festgehalten. Gezählt wird ab einem
+**Bleistiftstrich**, den man bei der Montage neben Pin 1 an die Kassette und an die Unterseite der Steckplatte macht. Kerben oder Schlitze gibt es ausdrücklich nicht. Annahme, an den
+gebauten Kassetten zu prüfen: Mit Blick auf die LED liegt der Strich links (−x im Kassettensystem), wie `parts.PADS` (GND links).
+
+| Belegung | Strich | Kassette | Pin 1 | Pin 2 | Pin 3 | Pin 4 | Dock-Pins (am Dock wird der zweite GND zu DETECT) |
+|---|---|---|---|---|---|---|---|
+| I | einer | V1RS (quer) | DIN (gelb) | GND | GND | 5 V (rot) | DIN, GND, DETECT, +5 V |
+| II | zwei | v4, V2R (hochkant) | GND | DIN | 5 V | GND | GND, DIN, +5 V, DETECT |
+
+| Dock | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| Gebäude | Institutsgebäude | Hörsaalgebäude | City-Hochhaus | Neues Augusteum | Paulinum | Seminargebäude |
+| Belegung | I | II | II | II | II | I |
+
+Werte in `plug/testcase/params.py` (`PINBELEGUNG`, `BELEGUNG`, `MARKE_N`, `DOCK`), daraus `plug/power/pinout.html` und `wiring.html` (Pins je Dock, Adernfolge, Messpunkte).
+
+**Verpolung:** Beide Belegungen sind spiegelsymmetrisch. Steckt die Kassette um 180° gedreht, liegt GND wieder auf GND, und nur DIN und 5 V tauschen die Plätze. Über die 330 Ω in der
+Datenleitung fließen dann wenige mA (abgeschätzt, nicht getestet), die LED bleibt dunkel, DETECT meldet trotzdem „steckt“. Mechanisch passt ein Gebäude mit gedrehter Kassette nicht auf die
+Pins: Die Buchse liegt dann bei v4 24,1 mm, bei V1RS und V2R 1,06 mm neben der Pin-Reihe, und V1RS bzw. V2R stoßen mit dem Streifen an (1,3 bis 10,1 mm³). Das prüft
+`python3 -m plug.filament.kassetten` bei jedem Lauf.
+
 ## Offene Punkte
 
 - **Fit in die Gebäude: zurückgestellt**, bis der Maßstab ganz genau feststeht. Zwischenstand (`plug/testcase/variants_fit.json`, Wand ab 1,2 mm, Schnitt in der nötigen Höhe): bei 1:1500 passt V2 in City-Hochhaus und Paulinum, V2R nur ins Hochhaus; bei 1:1000 kommt Neues Augusteum dazu. V1R und V1RS sind darin **nicht** enthalten.

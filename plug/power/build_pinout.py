@@ -1,9 +1,13 @@
 """Pinout-Seite für den ESP32 (WROOM-32, 30 Pin) in der Steckplatte: `python3 -m plug.power.build_pinout`.
 
 Schreibt `plug/power/pinout.html` (Artifact). Die Pin-Tabelle `PINS` ist die einzige Quelle für Zeichnung,
-Tabelle und Zähler. Die Zuordnung der Docks steht in `DIN` und `DETECT`.
+Tabelle und Zähler. Die Zuordnung der Docks steht in `DIN` und `DETECT`, Gebäude, Kassette und Pinbelegung je Dock in `plug/testcase/params.py`
+(`DOCK`, `CASSETTE`, `BELEGUNG`, `PINBELEGUNG`).
 """
 from pathlib import Path
+
+from plug.filament.geom import NAMEN
+from plug.testcase import params as P
 
 OUT = Path(__file__).with_name("pinout.html")
 
@@ -115,12 +119,31 @@ def table():
     return "".join(rows)
 
 
+def dock_pins(bel):
+    """Rollen der Dock-Pins 1 bis 4 (ab dem Bleistiftstrich) für eine Belegung: die Kassette legt beide GND-Pins auf Masse, am Dock ist der zweite davon DETECT."""
+    out, gnd = [], 0
+    for p in P.PINBELEGUNG[bel]:
+        if p == "GND":
+            gnd += 1
+            out.append(("det", "DETECT") if gnd == 2 else ("gnd", "GND"))
+        else:
+            out.append(("din", "DIN") if p == "DIN" else ("pwr", "+5 V"))
+    return out
+
+
 def docks():
     label = {g: l for g, l, *_ in LEFT + RIGHT if g is not None}
+    slug_of = {n: s for s, n in P.DOCK.items()}
     rows = []
     for n in range(6):
+        slug = slug_of[n + 1]
+        var = P.CASSETTE[slug]
+        bel = P.BELEGUNG[var]
+        pins = " ".join(f'<span class="chip {c}">{i + 1} {t}</span>' for i, (c, t) in enumerate(dock_pins(bel)))
         rows.append(
-            f'<tr><td><b>Dock {n + 1}</b></td><td class="mono">GPIO{DIN[n]} <small>{label[DIN[n]]}</small></td>'
+            f'<tr><td><b>Dock {n + 1}</b></td><td>{NAMEN[slug]}<small>{var}</small></td>'
+            f'<td class="mono">{"|" * P.MARKE_N[bel]} <small>{bel}</small></td><td>{pins}</td>'
+            f'<td class="mono">GPIO{DIN[n]} <small>{label[DIN[n]]}</small></td>'
             f'<td class="mono">GPIO{DETECT[n]} <small>{label[DETECT[n]]}</small></td></tr>'
         )
     return "".join(rows)
